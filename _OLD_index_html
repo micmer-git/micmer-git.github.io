@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Mio Sito Web</title>
+</head>
+<body>
+    <header>
+        <h1>Benvenuto nel mio sito web</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Chi Sono</a></li>
+            <li><a href="#">Contattami</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section>
+            <h2>Chi Sono</h2>
+            <p>Benvenuti nel mio sito web personale. Sono un appassionato di informatica e mi piace condividere conoscenze e risorse con gli altri.</p>
+        </section>
+
+        <section>
+            <h2>Contattami</h2>
+            <p>Puoi contattarmi all'indirizzo email: <a href="mailto:tuo@email.com">tuo@email.com</a></p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Il Mio Sito Web</p>
+    </footer>
+</body>
+</html>
