@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Link to your CSS file -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="dashboard-container">
+    <!-- Loading Indicator -->
+    <div id="loading">Loading your dashboard...</div>
+
+    <!-- Rank Section -->
+    <div class="rank-section" style="display: none;">
+      <div class="rank-title">Current Rank: <span id="current-rank"></span></div>
+      <div class="rank-emoji" id="rank-emoji">🥉</div>
+      <div class="progress-container" id="progress-container">
+        <div class="progress-labels">
+          <span id="current-rank-label"></span>
+          <span id="next-rank-label"></span>
+        </div>
+        <div class="progress-bar" id="progress-bar"></div>
+        <div class="tooltip" id="rank-tooltip">
+          <h3>Rank Progression</h3>
+          <ul id="rank-list">
+            <!-- Rank list will be populated here -->
+          </ul>
+        </div>
+      </div>
+      <div>Points: <span id="current-points"></span> / <span id="next-rank-points"></span></div>
+    </div>
+
+    <!-- Lifetime Stats -->
+    <div class="lifetime-stats" style="display: none;">
+      <div class="stat-item">
+        <div class="icon">🚴‍♂️</div>
+        <div class="value" id="distance-value"></div>
+        <div class="week-gain" id="distance-week-gain"></div>
+      </div>
+      <div class="stat-item">
+        <div class="icon">🏔️</div>
+        <div class="value" id="elevation-value"></div>
+        <div class="week-gain" id="elevation-week-gain"></div>
+      </div>
+      <div class="stat-item">
+        <div class="icon">🍕</div>
+        <div class="value" id="calories-value"></div>
+        <div class="week-gain" id="calories-week-gain"></div>
+      </div>
+    </div>
+
+    <!-- Weekly Stats -->
+    <div class="weekly-stats" style="display: none;">
+      <h2>Weekly Stats</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>Total Hours</h3>
+          <p id="weekly-hours">-- hrs</p>
+        </div>
+        <div class="stat-card">
+          <h3>Total Distance</h3>
+          <p id="weekly-distance">-- km</p>
+        </div>
+        <div class="stat-card">
+          <h3>Total Elevation Gain</h3>
+          <p id="weekly-elevation">-- m</p>
+        </div>
+        <div class="stat-card">
+          <h3>Total Calories Burned</h3>
+          <p id="weekly-calories">-- kcal</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>
