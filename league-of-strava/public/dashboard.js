@@ -1,12 +1,12 @@
-// New Variables
 let allActivities = [];
-let activitiesDisplayed = 0;
-const activitiesPerLoad = 200;
+let currentPage = 1;
+const perPage = 200;
+let hasMoreActivities = true;
 
-async function fetchStravaData() {
-  console.log('Fetching Strava data from /api/strava-data');
+async function fetchStravaData(page = 1, per_page = 200) {
+  console.log(`Fetching Strava data - Page: ${page}, Per Page: ${per_page}`);
   try {
-    const response = await fetch('/api/strava-data');
+    const response = await fetch(`/api/strava-data?page=${page}&per_page=${per_page}`);
     if (!response.ok) {
       if (response.status === 401) {
         console.warn('Unauthorized access, redirecting to landing page');
@@ -17,29 +17,403 @@ async function fetchStravaData() {
     const data = await response.json();
     console.log('Strava data fetched successfully:', data);
     console.log('Response JSON:', JSON.stringify(data, null, 2)); // Print response JSON to console
-    displayDashboard(data);
-    document.getElementById('loading').style.display = 'none'; // Hide loading indicator
-    // Show dashboard sections
-    document.querySelectorAll('.rank-section, .lifetime-stats, .weekly-stats').forEach(section => {
-      section.style.display = 'block';
-    });
+
+    // Append new activities to allActivities
+    allActivities = allActivities.concat(data.activities);
+
+    // Display fetched activities
+    displayActivities(data.activities);
+
+    // Update totals and ranks
+    updateTotalsAndRanks();
+
+    // Update hasMoreActivities flag
+    hasMoreActivities = data.hasMore;
+
+    // Show or hide "Load More" button based on hasMoreActivities
+    const loadMoreButton = document.getElementById('load-more-button');
+    if (hasMoreActivities) {
+      loadMoreButton.style.display = 'block';
+    } else {
+      loadMoreButton.style.display = 'none';
+    }
+
+    // Hide "Loading..." indicator after the first load
+    if (page === 1) {
+      document.getElementById('loading').style.display = 'none'; // Hide loading indicator
+      // Show dashboard sections
+      document.querySelectorAll('.rank-section, .lifetime-stats, .weekly-stats').forEach(section => {
+        section.style.display = 'block';
+      });
+    }
   } catch (error) {
     console.error('Error fetching Strava data:', error);
     document.getElementById('dashboard-container').innerHTML = '<p>Error loading data.</p>';
   }
 }
 
+function updateTotalsAndRanks() {
+  // Calculate totals based on allActivities
+  const totals = calculateTotals(allActivities);
+  console.log('Calculated cumulative totals:', totals);
+
+  // Update dashboard stats
+  updateDashboardStats(totals);
+
+  // Recalculate and update ranks
+  const rankInfo = calculateRank(totals.hours);
+  console.log('Updated Rank Info:', rankInfo);
+  updateRankSection(rankInfo);
+}
+
+function updateRankSection(rankInfo) {
+  // Update Rank Section
+  const currentRankElement = document.getElementById('current-rank');
+  const rankEmojiElement = document.getElementById('rank-emoji');
+  const progressBarElement = document.getElementById('progress-bar');
+  const currentRankLabelElement = document.getElementById('current-rank-label');
+  const nextRankLabelElement = document.getElementById('next-rank-label');
+  const currentPointsElement = document.getElementById('current-points');
+  const nextRankPointsElement = document.getElementById('next-rank-points');
+
+  if (!currentRankElement || !rankEmojiElement || !progressBarElement || !currentRankLabelElement || !nextRankLabelElement || !currentPointsElement || !nextRankPointsElement) {
+    console.error('One or more rank-related DOM elements are missing.');
+    return;
+  }
+
+  currentRankElement.textContent = rankInfo.currentRank.name;
+  rankEmojiElement.textContent = rankInfo.currentRank.emoji;
+  progressBarElement.style.width = `${rankInfo.progressPercent}%`;
+  currentRankLabelElement.textContent = rankInfo.currentRank.name;
+  nextRankLabelElement.textContent = rankInfo.nextRank.name;
+  currentPointsElement.textContent = Math.round(rankInfo.currentPoints);
+  nextRankPointsElement.textContent = Math.round(rankInfo.nextRank.minPoints);
+
+  // Populate Rank Tooltip
+  const rankListElement = document.getElementById('rank-list');
+  if (!rankListElement) {
+    console.error('Rank list element is missing.');
+  } else {
+    rankListElement.innerHTML = '';
+    rankConfig.forEach(rank => {
+      const li = document.createElement('li');
+      li.textContent = `${rank.name} (${rank.minPoints} pts)`;
+      rankListElement.appendChild(li);
+    });
+    console.log('Rank tooltip populated');
+  }
+}
+
+
+function updateDashboardStats(totals) {
+  // Update Lifetime Stats
+  const distanceValueElement = document.getElementById('distance-value');
+  const distanceWeekGainElement = document.getElementById('distance-week-gain');
+  const elevationValueElement = document.getElementById('elevation-value');
+  const elevationWeekGainElement = document.getElementById('elevation-week-gain');
+  const caloriesValueElement = document.getElementById('calories-value');
+  const caloriesWeekGainElement = document.getElementById('calories-week-gain');
+
+  if (!distanceValueElement || !distanceWeekGainElement || !elevationValueElement || !elevationWeekGainElement || !caloriesValueElement || !caloriesWeekGainElement) {
+    console.error('One or more lifetime stats DOM elements are missing.');
+  } else {
+    distanceValueElement.textContent = `${Math.round(totals.distance / 1000)} 🚴‍♂️`; // Rounded
+    distanceWeekGainElement.textContent = `+${Math.round(totals.distanceThisWeek / 1000)} this week`;
+
+    elevationValueElement.textContent = `${Math.round(totals.elevation)} 🏔️`;
+    elevationWeekGainElement.textContent = `+${Math.round(totals.elevationThisWeek)} this week`;
+
+    caloriesValueElement.textContent = `${Math.round(totals.calories)} 🍕`;
+    caloriesWeekGainElement.textContent = `+${Math.round(totals.caloriesThisWeek)} this week`;
+  }
+
+  // Update YTD Stats
+  const weeklyHoursElement = document.getElementById('weekly-hours');
+  const weeklyDistanceElement = document.getElementById('weekly-distance');
+  const weeklyElevationElement = document.getElementById('weekly-elevation');
+  const weeklyCaloriesElement = document.getElementById('weekly-calories');
+
+  if (!weeklyHoursElement || !weeklyDistanceElement || !weeklyElevationElement || !weeklyCaloriesElement) {
+    console.error('One or more YTD stats DOM elements are missing.');
+  } else {
+    weeklyHoursElement.textContent = isNaN(totals.hoursThisWeek) ? '0.0 hrs' : `${totals.hoursThisWeek.toFixed(1)} hrs`;
+    weeklyDistanceElement.textContent = isNaN(totals.distanceThisWeek) ? '0.0 km' : `${(totals.distanceThisWeek / 1000).toFixed(1)} km`;
+    weeklyElevationElement.textContent = isNaN(totals.elevationThisWeek) ? '0 m' : `${totals.elevationThisWeek} m`;
+    weeklyCaloriesElement.textContent = isNaN(totals.caloriesThisWeek) ? '0 kcal' : `${totals.caloriesThisWeek} kcal`;
+  }
+}
+
+
 function displayDashboard(data) {
   const stravaData = {
     athlete: data.athlete,
     activities: data.activities,
     totals: data.totals,
-    renderRanksAndStats(data);
-
   };
 
-  // Your existing displayData function to render the dashboard
-  displayData(stravaData);
+  console.log('Rendering dashboard with Strava data');
+
+  // Calculate Rank
+  const totalPoints = Number(stravaData.totals.hours) || 0; // Ensure it's a number
+  console.log(`Total Points: ${totalPoints}`);
+
+  const rankInfo = calculateRank(totalPoints);
+  console.log('Rank Info:', rankInfo);
+
+  // Update Rank Section
+  const currentRankElement = document.getElementById('current-rank');
+  const rankEmojiElement = document.getElementById('rank-emoji');
+  const progressBarElement = document.getElementById('progress-bar');
+  const currentRankLabelElement = document.getElementById('current-rank-label');
+  const nextRankLabelElement = document.getElementById('next-rank-label');
+  const currentPointsElement = document.getElementById('current-points');
+  const nextRankPointsElement = document.getElementById('next-rank-points');
+
+  if (!currentRankElement || !rankEmojiElement || !progressBarElement || !currentRankLabelElement || !nextRankLabelElement || !currentPointsElement || !nextRankPointsElement) {
+    console.error('One or more rank-related DOM elements are missing.');
+    return;
+  }
+
+  currentRankElement.textContent = rankInfo.currentRank.name;
+  rankEmojiElement.textContent = rankInfo.currentRank.emoji;
+  progressBarElement.style.width = `${rankInfo.progressPercent}%`;
+  currentRankLabelElement.textContent = rankInfo.currentRank.name;
+  nextRankLabelElement.textContent = rankInfo.nextRank.name;
+  currentPointsElement.textContent = totalPoints.toFixed(1); // Rounded
+  nextRankPointsElement.textContent = rankInfo.nextRank.minPoints;
+
+  // Populate Rank Tooltip
+  const rankListElement = document.getElementById('rank-list');
+  if (!rankListElement) {
+    console.error('Rank list element is missing.');
+  } else {
+    rankListElement.innerHTML = '';
+    rankConfig.forEach(rank => {
+      const li = document.createElement('li');
+      li.textContent = `${rank.name} (${rank.minPoints} pts)`;
+      rankListElement.appendChild(li);
+    });
+    console.log('Rank tooltip populated');
+  }
+
+  // Update YTD Stats (Totals)
+  const ytdTotals = stravaData.totals;
+  console.log('YTD Totals:', ytdTotals);
+
+  // Get Lifetime Stats
+  const lifetimeStats = getLifetimeStats(stravaData.totals, ytdTotals);
+  console.log('Lifetime Stats:', lifetimeStats);
+
+  // Update Lifetime Stats Section
+  const distanceValueElement = document.getElementById('distance-value');
+  const distanceWeekGainElement = document.getElementById('distance-week-gain');
+  const elevationValueElement = document.getElementById('elevation-value');
+  const elevationWeekGainElement = document.getElementById('elevation-week-gain');
+  const caloriesValueElement = document.getElementById('calories-value');
+  const caloriesWeekGainElement = document.getElementById('calories-week-gain');
+
+  if (!distanceValueElement || !distanceWeekGainElement || !elevationValueElement || !elevationWeekGainElement || !caloriesValueElement || !caloriesWeekGainElement) {
+    console.error('One or more lifetime stats DOM elements are missing.');
+  } else {
+    distanceValueElement.textContent = `${lifetimeStats.distance.icons} 🚴‍♂️`;
+    distanceWeekGainElement.textContent = `+${lifetimeStats.distance.weekGain} this week`;
+
+    elevationValueElement.textContent = `${lifetimeStats.elevation.icons} 🏔️`;
+    elevationWeekGainElement.textContent = `+${lifetimeStats.elevation.weekGain} this week`;
+
+    caloriesValueElement.textContent = `${lifetimeStats.calories.icons} 🍕`;
+    caloriesWeekGainElement.textContent = `+${lifetimeStats.calories.weekGain} this week`;
+  }
+
+  // Update YTD Stats Section
+  const weeklyHoursElement = document.getElementById('weekly-hours');
+  const weeklyDistanceElement = document.getElementById('weekly-distance');
+  const weeklyElevationElement = document.getElementById('weekly-elevation');
+  const weeklyCaloriesElement = document.getElementById('weekly-calories');
+
+  if (!weeklyHoursElement || !weeklyDistanceElement || !weeklyElevationElement || !weeklyCaloriesElement) {
+    console.error('One or more YTD stats DOM elements are missing.');
+  } else {
+    weeklyHoursElement.textContent = `${ytdTotals.hours.toFixed(1)} hrs`;
+    weeklyDistanceElement.textContent = `${(ytdTotals.distance / 1000).toFixed(1)} km`;
+    weeklyElevationElement.textContent = `${ytdTotals.elevation} m`;
+    weeklyCaloriesElement.textContent = `${ytdTotals.calories} kcal`;
+  }
+
+  console.log('Dashboard rendering complete');
+
+  // Add Event Listeners for Tooltips
+  addTooltipListeners();
+}
+
+function displayActivities(activities) {
+  const activitiesContainer = document.getElementById('activities-container');
+  activities.forEach(activity => {
+    const activityElement = document.createElement('div');
+    activityElement.classList.add('activity-item');
+    activityElement.innerHTML = `
+      <h3>${activity.name}</h3>
+      <p>Date: ${new Date(activity.start_date).toLocaleDateString()}</p>
+      <p>Distance: ${(activity.distance / 1000).toFixed(2)} km</p>
+      <p>Duration: ${(activity.moving_time / 3600).toFixed(2)} hrs</p>
+      <p>Elevation Gain: ${activity.total_elevation_gain} m</p>
+      <p>Calories: ${activity.kilojoules || 0} kcal</p>
+    `;
+    activitiesContainer.appendChild(activityElement);
+  });
+}
+
+// New Function: Load More Activities
+function loadMoreActivities() {
+  const activitiesContainer = document.getElementById('activities-container');
+  if (!activitiesContainer) {
+    console.error('Activities container element is missing.');
+    return;
+  }
+
+  // Determine the next set of activities to display
+  const nextActivities = allActivities.slice(activitiesDisplayed, activitiesDisplayed + activitiesPerLoad);
+  if (nextActivities.length === 0) {
+    console.log('No more activities to load.');
+    document.getElementById('load-more-button').style.display = 'none';
+    return;
+  }
+
+  nextActivities.forEach(activity => {
+    const activityElement = createActivityElement(activity);
+    activitiesContainer.appendChild(activityElement);
+  });
+
+  activitiesDisplayed += activitiesPerLoad;
+  console.log(`Displayed ${activitiesDisplayed} out of ${allActivities.length} activities`);
+
+  // Hide Load More button if all activities are displayed
+  if (activitiesDisplayed >= allActivities.length) {
+    document.getElementById('load-more-button').style.display = 'none';
+  }
+}
+
+// New Function: Create Activity Element
+function createActivityElement(activity) {
+  const activityDiv = document.createElement('div');
+  activityDiv.classList.add('activity');
+
+  const date = new Date(activity.start_date);
+  const formattedDate = date.toLocaleDateString();
+
+  activityDiv.innerHTML = `
+    <h4>${activity.name}</h4>
+    <p>Date: ${formattedDate}</p>
+    <p>Duration: ${(activity.moving_time / 3600).toFixed(1)} hrs</p>
+    <p>Distance: ${(activity.distance / 1000).toFixed(1)} km</p>
+    <p>Elevation Gain: ${activity.total_elevation_gain} m</p>
+    <p>Calories: ${activity.kilojoules || 0} kcal</p>
+  `;
+
+  return activityDiv;
+}
+document.getElementById('load-more-button').addEventListener('click', () => {
+  if (hasMoreActivities) {
+    currentPage++;
+    fetchStravaData(currentPage, perPage);
+  } else {
+    console.log('No more activities to load.');
+  }
+});
+function renderRanksAndStats(data) {
+  console.log('Rendering dashboard with Strava data');
+
+  // Calculate Rank
+  const totalPoints = Number(data.totals.hours) || 0; // Ensure it's a number
+  console.log(`Total Points: ${totalPoints}`);
+
+  const rankInfo = calculateRank(totalPoints);
+  console.log('Rank Info:', rankInfo);
+
+  // Update Rank Section
+  const currentRankElement = document.getElementById('current-rank');
+  const rankEmojiElement = document.getElementById('rank-emoji');
+  const progressBarElement = document.getElementById('progress-bar');
+  const currentRankLabelElement = document.getElementById('current-rank-label');
+  const nextRankLabelElement = document.getElementById('next-rank-label');
+  const currentPointsElement = document.getElementById('current-points');
+  const nextRankPointsElement = document.getElementById('next-rank-points');
+
+  if (!currentRankElement || !rankEmojiElement || !progressBarElement || !currentRankLabelElement || !nextRankLabelElement || !currentPointsElement || !nextRankPointsElement) {
+    console.error('One or more rank-related DOM elements are missing.');
+    return;
+  }
+
+  currentRankElement.textContent = rankInfo.currentRank.name;
+  rankEmojiElement.textContent = rankInfo.currentRank.emoji;
+  progressBarElement.style.width = `${rankInfo.progressPercent}%`;
+  currentRankLabelElement.textContent = rankInfo.currentRank.name;
+  nextRankLabelElement.textContent = rankInfo.nextRank.name;
+  currentPointsElement.textContent = totalPoints;
+  nextRankPointsElement.textContent = rankInfo.nextRank.minPoints;
+
+  // Populate Rank Tooltip
+  const rankListElement = document.getElementById('rank-list');
+  if (!rankListElement) {
+    console.error('Rank list element is missing.');
+  } else {
+    rankListElement.innerHTML = '';
+    rankConfig.forEach(rank => {
+      const li = document.createElement('li');
+      li.textContent = `${rank.name} (${rank.minPoints} pts)`;
+      rankListElement.appendChild(li);
+    });
+    console.log('Rank tooltip populated');
+  }
+
+  // YTD Totals
+  const ytdTotals = data.totals;
+  console.log('YTD Totals:', ytdTotals);
+
+  // Get Lifetime Stats
+  const lifetimeStats = getLifetimeStats(data.totals, ytdTotals);
+  console.log('Lifetime Stats:', lifetimeStats);
+
+  // Update Lifetime Stats Section
+  const distanceValueElement = document.getElementById('distance-value');
+  const distanceWeekGainElement = document.getElementById('distance-week-gain');
+  const elevationValueElement = document.getElementById('elevation-value');
+  const elevationWeekGainElement = document.getElementById('elevation-week-gain');
+  const caloriesValueElement = document.getElementById('calories-value');
+  const caloriesWeekGainElement = document.getElementById('calories-week-gain');
+
+  if (!distanceValueElement || !distanceWeekGainElement || !elevationValueElement || !elevationWeekGainElement || !caloriesValueElement || !caloriesWeekGainElement) {
+    console.error('One or more lifetime stats DOM elements are missing.');
+  } else {
+    distanceValueElement.textContent = `${lifetimeStats.distance.icons} 🚴‍♂️`;
+    distanceWeekGainElement.textContent = `+${lifetimeStats.distance.weekGain} this week`;
+
+    elevationValueElement.textContent = `${lifetimeStats.elevation.icons} 🏔️`;
+    elevationWeekGainElement.textContent = `+${lifetimeStats.elevation.weekGain} this week`;
+
+    caloriesValueElement.textContent = `${lifetimeStats.calories.icons} 🍕`;
+    caloriesWeekGainElement.textContent = `+${lifetimeStats.calories.weekGain} this week`;
+  }
+
+  // Update YTD Stats
+  const weeklyHoursElement = document.getElementById('weekly-hours');
+  const weeklyDistanceElement = document.getElementById('weekly-distance');
+  const weeklyElevationElement = document.getElementById('weekly-elevation');
+  const weeklyCaloriesElement = document.getElementById('weekly-calories');
+
+  if (!weeklyHoursElement || !weeklyDistanceElement || !weeklyElevationElement || !weeklyCaloriesElement) {
+    console.error('One or more YTD stats DOM elements are missing.');
+  } else {
+    weeklyHoursElement.textContent = isNaN(ytdTotals.hours) ? '0.0 hrs' : `${ytdTotals.hours.toFixed(1)} hrs`;
+    weeklyDistanceElement.textContent = isNaN(ytdTotals.distance) ? '0.0 km' : `${(ytdTotals.distance / 1000).toFixed(1)} km`;
+    weeklyElevationElement.textContent = isNaN(ytdTotals.elevation) ? '0 m' : `${ytdTotals.elevation} m`;
+    weeklyCaloriesElement.textContent = isNaN(ytdTotals.calories) ? '0 kcal' : `${ytdTotals.calories} kcal`;
+  }
+
+  console.log('Dashboard rendering complete');
+
+  // Add Event Listeners for Tooltips
+  addTooltipListeners();
 }
 
 function calculateTotals(activities) {
@@ -59,13 +433,33 @@ function calculateTotals(activities) {
     elevation: 0, // in meters
     calories: 0, // in kilojoules or as per Strava's data
     activities: ytdActivities.length,
+    hoursThisWeek: 0,
+    distanceThisWeek: 0,
+    elevationThisWeek: 0,
+    caloriesThisWeek: 0,
   };
 
   ytdActivities.forEach(activity => {
     totals.hours += activity.moving_time / 3600;
     totals.distance += activity.distance;
     totals.elevation += activity.total_elevation_gain;
-    totals.calories += activity.kilojoules || 0; // Strava may provide 'kilojoules' instead of 'calories'
+    totals.calories += activity.kilojoules || 0;
+  });
+
+  // Calculate 'This Week' totals
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(today.getDate() - 7);
+
+  const weekActivities = ytdActivities.filter(activity => {
+    const activityDate = new Date(activity.start_date);
+    return activityDate >= oneWeekAgo && activityDate <= today;
+  });
+
+  weekActivities.forEach(activity => {
+    totals.hoursThisWeek += activity.moving_time / 3600;
+    totals.distanceThisWeek += activity.distance;
+    totals.elevationThisWeek += activity.total_elevation_gain;
+    totals.caloriesThisWeek += activity.kilojoules || 0;
   });
 
   console.log('Calculated YTD Totals:', totals);
@@ -185,13 +579,13 @@ function displayData(stravaData) {
   // Add Event Listeners for Tooltips
   addTooltipListeners();
 }
-function calculateRank(totalPoints) {
-  console.log(`Calculating rank for total points: ${totalPoints}`);
+function calculateRank(totalHours) {
+  console.log(`Calculating rank for total hours: ${totalHours}`);
   let currentRank = rankConfig[0];
   let nextRank = rankConfig[1];
 
   for (let i = 0; i < rankConfig.length; i++) {
-    if (totalPoints >= rankConfig[i].minPoints) {
+    if (totalHours >= rankConfig[i].minPoints) {
       currentRank = rankConfig[i];
       nextRank = rankConfig[i + 1] || rankConfig[i]; // If at top rank
     } else {
@@ -200,9 +594,9 @@ function calculateRank(totalPoints) {
   }
 
   // Calculate progress percentage
-  const pointsIntoCurrentRank = totalPoints - currentRank.minPoints;
+  const pointsIntoCurrentRank = totalHours - currentRank.minPoints;
   const pointsBetweenRanks = nextRank.minPoints - currentRank.minPoints;
-  const progressPercent = (pointsIntoCurrentRank / pointsBetweenRanks) * 100;
+  const progressPercent = pointsBetweenRanks > 0 ? (pointsIntoCurrentRank / pointsBetweenRanks) * 100 : 100;
 
   console.log('Calculated Rank Info:', {
     currentRank,
@@ -216,8 +610,8 @@ function calculateRank(totalPoints) {
     currentRank,
     nextRank,
     progressPercent,
-    pointsIntoCurrentRank,
-    pointsBetweenRanks,
+    currentPoints: totalHours,
+    // Adjust 'nextRank.minPoints' as needed based on your ranking logic
   };
 }
 
@@ -350,7 +744,7 @@ function hideTooltip() {
 }
 
 
-// Initialize
+// Initialize dashboard by fetching the first page of activities
 document.addEventListener('DOMContentLoaded', () => {
-  fetchStravaData();
+  fetchStravaData(currentPage, perPage);
 });

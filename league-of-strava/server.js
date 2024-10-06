@@ -87,6 +87,7 @@ app.get('/dashboard', (req, res) => {
 app.get('/api/strava-data', async (req, res) => {
   console.log('Received request for Strava data');
   const accessToken = req.cookies.strava_token;
+  const { page = 1, per_page = 200 } = req.query; // Default to page 1, 200 per page
 
   if (!accessToken) {
     console.warn('No access token found in cookies');
@@ -101,52 +102,33 @@ app.get('/api/strava-data', async (req, res) => {
     });
     console.log('Fetched athlete profile');
 
-    // Fetch activities with pagination up to 500
-    console.log('Fetching activities from Strava');
-    let page = 1;
-    let allActivities = [];
-    const maxActivities = 500;
-    let fetchedActivities;
+    // Fetch activities based on pagination
+    console.log(`Fetching activities from Strava - Page: ${page}, Per Page: ${per_page}`);
+    const activitiesResponse = await axios.get('https://www.strava.com/api/v3/athlete/activities', {
+      headers: { Authorization: `Bearer ${accessToken}` },
+      params: { per_page: per_page, page: page },
+    });
+    const fetchedActivities = activitiesResponse.data;
+    console.log(`Fetched ${fetchedActivities.length} activities from page ${page}`);
 
-    while (allActivities.length < maxActivities) {
-      const response = await axios.get('https://www.strava.com/api/v3/athlete/activities', {
-        headers: { Authorization: `Bearer ${accessToken}` },
-        params: { per_page: 200, page: page },
-      });
-      fetchedActivities = response.data;
-      if (fetchedActivities.length === 0) break; // No more activities
-      allActivities = allActivities.concat(fetchedActivities);
-      console.log(`Fetched ${fetchedActivities.length} activities from page ${page}`);
-      page++;
-      if (allActivities.length >= maxActivities) break;
-    }
+    // Calculate totals for the fetched activities
+    const totals = calculateTotals(fetchedActivities);
+    console.log('Calculated totals for fetched activities:', totals);
 
-    // Trim to maxActivities if exceeded
-    if (allActivities.length > maxActivities) {
-      allActivities = allActivities.slice(0, maxActivities);
-      console.log(`Trimmed activities to ${maxActivities}`);
-    }
-
-    // Sort activities by start_date ascending (oldest first)
-    allActivities.sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
-    console.log('Sorted activities by date ascending');
-
-    console.log(`Total activities fetched: ${allActivities.length}`);
-
-    const totals = calculateTotals(allActivities);
-    console.log('Calculated totals:', totals);
+    // Determine if more activities are available
+    const hasMore = fetchedActivities.length === parseInt(per_page, 10);
 
     res.json({
       athlete: athleteResponse.data,
-      activities: allActivities,
+      activities: fetchedActivities,
       totals: totals,
+      hasMore: hasMore,
     });
   } catch (error) {
     console.error('Error fetching Strava data:', error.response ? error.response.data : error.message);
     res.status(500).json({ error: 'Failed to fetch data' });
   }
 });
-
 
 // Function to calculate totals from activities
 function calculateTotals(activities) {
