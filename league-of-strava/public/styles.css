@@ -1,3 +1,6 @@
+/* Import Montserrat font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
 /* Reset styles */
 * {
   margin: 0;
@@ -7,7 +10,7 @@
 
 /* Body styles */
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Montserrat', sans-serif;
   background-color: #f4f6f8;
   color: #333;
 }
@@ -88,6 +91,58 @@ body {
   width: 80%;
   text-align: left;
   z-index: 10;
+  pointer-events: none; /* Prevent tooltip from blocking clicks */
+
+}
+.rank-details {
+  text-align: right;
+  font-size: 16px;
+  margin-top: -10px;
+  /* Responsive positioning */
+  position: relative;
+}
+
+@media (max-width: 600px) {
+  .rank-details {
+    text-align: center;
+    margin-top: 10px;
+  }
+}
+
+/* Style for Achievements to be on the same line */
+.lifetime-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 30px;
+  align-items: center;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.stat-item {
+  text-align: center;
+  flex: 1 1 30%; /* Three items per row */
+  margin: 10px 0;
+}
+
+/* Remove individual emoji titles and use gem icon for tooltip */
+.gem-icon, .pizza-icon, .distance-icon {
+  cursor: pointer;
+}
+.rank-details {
+  text-align: right;
+  font-size: 16px;
+  margin-top: -10px;
+}
+
+@media (max-width: 600px) {
+  .rank-details {
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  .stat-item {
+    flex: 1 1 100%;
+  }
 }
 
 .tooltip h3 {
@@ -109,10 +164,13 @@ body {
   justify-content: space-around;
   margin-bottom: 30px;
   align-items: center;
+  flex-wrap: wrap; /* Ensure wrapping on smaller screens */
 }
 
 .stat-item {
   text-align: center;
+  flex: 1 1 30%; /* Allows three items per row */
+  margin: 10px 0;
 }
 
 .stat-item .icon {
@@ -126,6 +184,7 @@ body {
 
 .stat-item .week-gain {
   color: green;
+  font-weight: bold;
   font-size: 14px;
 }
 
@@ -162,6 +221,24 @@ body {
 
 .stat-card p {
   font-size: 16px;
+  color: #555;
+}
+
+/* Next Rank Emoji and Hours Needed */
+.next-rank-info {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.next-rank-info .next-rank-emoji {
+  font-size: 30px;
+  margin-left: 10px;
+}
+
+.next-rank-info .hours-needed {
+  font-size: 14px;
   color: #555;
 }
 

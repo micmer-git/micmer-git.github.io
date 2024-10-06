@@ -24,36 +24,36 @@
         <div class="progress-bar" id="progress-bar"></div>
         <div class="tooltip" id="rank-tooltip">
           <h3>Rank Progression</h3>
-          <ul id="rank-list">
-            <!-- Rank list will be populated here -->
-          </ul>
+          <ul id="rank-list"></ul>
         </div>
       </div>
-      <div>Points: <span id="current-points"></span> / <span id="next-rank-points"></span></div>
+      <div class="rank-details">
+        <span>Points: <strong id="current-points"></strong> / <strong id="next-rank-points"></strong> hrs for next rank</span>
+      </div>
     </div>
 
     <!-- Lifetime Stats -->
     <div class="lifetime-stats" style="display: none;">
       <div class="stat-item">
-        <div class="icon">🚴‍♂️</div>
-        <div class="value" id="distance-value"></div>
-        <div class="week-gain" id="distance-week-gain"></div>
-      </div>
-      <div class="stat-item">
-        <div class="icon">🏔️</div>
+        <div class="icon gem-icon" title="Elevation Gem: 1000m per gem">🏔️</div>
         <div class="value" id="elevation-value"></div>
-        <div class="week-gain" id="elevation-week-gain"></div>
+        <div class="week-gain bold-green" id="elevation-week-gain"></div>
       </div>
       <div class="stat-item">
-        <div class="icon">🍕</div>
+        <div class="icon pizza-icon" title="Pizza: 1000kcal per pizza">🍕</div>
         <div class="value" id="calories-value"></div>
-        <div class="week-gain" id="calories-week-gain"></div>
+        <div class="week-gain bold-green" id="calories-week-gain"></div>
+      </div>
+      <div class="stat-item">
+        <div class="icon distance-icon" title="Distance: 100km per icon">🚴‍♂️</div>
+        <div class="value" id="distance-value"></div>
+        <div class="week-gain bold-green" id="distance-week-gain"></div>
       </div>
     </div>
 
-    <!-- Weekly Stats -->
+    <!-- YTD Stats -->
     <div class="weekly-stats" style="display: none;">
-      <h2>Weekly Stats</h2>
+      <h2>YTD Stats</h2>
       <div class="stats-grid">
         <div class="stat-card">
           <h3>Total Hours</h3>
@@ -73,6 +73,14 @@
         </div>
       </div>
     </div>
+
+    <!-- Activities Container -->
+    <div id="activities-container" class="activities-container" style="display: none;">
+      <!-- Activities will be dynamically loaded here -->
+    </div>
+
+    <!-- Load More Button -->
+    <button id="load-more-button" style="display: none;">Load More</button>
   </div>
 
   <script src="dashboard.js"></script>

@@ -1,3 +1,8 @@
+// New Variables
+let allActivities = [];
+let activitiesDisplayed = 0;
+const activitiesPerLoad = 200;
+
 async function fetchStravaData() {
   console.log('Fetching Strava data from /api/strava-data');
   try {
@@ -11,6 +16,7 @@ async function fetchStravaData() {
     }
     const data = await response.json();
     console.log('Strava data fetched successfully:', data);
+    console.log('Response JSON:', JSON.stringify(data, null, 2)); // Print response JSON to console
     displayDashboard(data);
     document.getElementById('loading').style.display = 'none'; // Hide loading indicator
     // Show dashboard sections
@@ -24,18 +30,49 @@ async function fetchStravaData() {
 }
 
 function displayDashboard(data) {
-  console.log('Displaying dashboard with data:', data);
-
   const stravaData = {
     athlete: data.athlete,
     activities: data.activities,
     totals: data.totals,
+    renderRanksAndStats(data);
+
   };
 
   // Your existing displayData function to render the dashboard
   displayData(stravaData);
 }
 
+function calculateTotals(activities) {
+  // Implement YTD filtering
+  const currentYear = new Date().getFullYear();
+  const startOfYear = new Date(currentYear, 0, 1); // January 1st
+  const today = new Date();
+
+  const ytdActivities = activities.filter(activity => {
+    const activityDate = new Date(activity.start_date);
+    return activityDate >= startOfYear && activityDate <= today;
+  });
+
+  let totals = {
+    hours: 0,
+    distance: 0, // in meters
+    elevation: 0, // in meters
+    calories: 0, // in kilojoules or as per Strava's data
+    activities: ytdActivities.length,
+  };
+
+  ytdActivities.forEach(activity => {
+    totals.hours += activity.moving_time / 3600;
+    totals.distance += activity.distance;
+    totals.elevation += activity.total_elevation_gain;
+    totals.calories += activity.kilojoules || 0; // Strava may provide 'kilojoules' instead of 'calories'
+  });
+
+  console.log('Calculated YTD Totals:', totals);
+  return totals;
+}
+
+// Existing displayData function from your previous code
 function displayData(stravaData) {
   console.log('Rendering dashboard with Strava data');
 
@@ -136,15 +173,18 @@ function displayData(stravaData) {
   if (!weeklyHoursElement || !weeklyDistanceElement || !weeklyElevationElement || !weeklyCaloriesElement) {
     console.error('One or more weekly stats DOM elements are missing.');
   } else {
-    weeklyHoursElement.textContent = `${weeklyTotals.hours.toFixed(1)} hrs`;
-    weeklyDistanceElement.textContent = `${(weeklyTotals.distance / 1000).toFixed(1)} km`;
-    weeklyElevationElement.textContent = `${weeklyTotals.elevation} m`;
-    weeklyCaloriesElement.textContent = `${weeklyTotals.calories} kcal`;
+    // Prevent NaN by checking if totals.hours is a number
+    weeklyHoursElement.textContent = isNaN(weeklyTotals.hours) ? '0.0 hrs' : `${weeklyTotals.hours.toFixed(1)} hrs`;
+    weeklyDistanceElement.textContent = isNaN(weeklyTotals.distance) ? '0.0 km' : `${(weeklyTotals.distance / 1000).toFixed(1)} km`;
+    weeklyElevationElement.textContent = isNaN(weeklyTotals.elevation) ? '0 m' : `${weeklyTotals.elevation} m`;
+    weeklyCaloriesElement.textContent = isNaN(weeklyTotals.calories) ? '0 kcal' : `${weeklyTotals.calories} kcal`;
   }
 
   console.log('Dashboard rendering complete');
-}
 
+  // Add Event Listeners for Tooltips
+  addTooltipListeners();
+}
 function calculateRank(totalPoints) {
   console.log(`Calculating rank for total points: ${totalPoints}`);
   let currentRank = rankConfig[0];
@@ -229,6 +269,86 @@ const rankConfig = [
   { name: 'Grandmaster 1', emoji: '🚀', minPoints: 1000 },
   { name: 'Challenger', emoji: '🌟', minPoints: 1050 },
 ];
+
+// Function to add event listeners for rank overview popup
+function addRankOverviewEventListeners() {
+  const rankContainer = document.getElementById('progress-container');
+  const currentRankTitle = document.getElementById('current-rank');
+
+  if (rankContainer && currentRankTitle) {
+    rankContainer.addEventListener('click', toggleTooltip);
+    currentRankTitle.addEventListener('click', toggleTooltip);
+  } else {
+    console.error('Rank container or current rank title element is missing.');
+  }
+}
+
+function toggleTooltip() {
+  const tooltip = document.getElementById('rank-tooltip');
+  if (tooltip) {
+    tooltip.style.display = tooltip.style.display === 'block' ? 'none' : 'block';
+  } else {
+    console.error('Rank tooltip element is missing.');
+  }
+}
+
+function addTooltipListeners() {
+  // Tooltip for Rank Section
+  const rankContainer = document.getElementById('progress-container');
+  const rankTooltip = document.getElementById('rank-tooltip');
+
+  rankContainer.addEventListener('mouseenter', () => {
+    rankTooltip.style.display = 'block';
+  });
+
+  rankContainer.addEventListener('mouseleave', () => {
+    rankTooltip.style.display = 'none';
+  });
+
+  // Tooltip for Achievements
+  const achievementIcons = document.querySelectorAll('.gem-icon, .pizza-icon, .distance-icon');
+  achievementIcons.forEach(icon => {
+    icon.addEventListener('mouseenter', () => {
+      const title = icon.getAttribute('title');
+      showTooltip(icon, title);
+    });
+
+    icon.addEventListener('mouseleave', () => {
+      hideTooltip();
+    });
+  });
+}
+
+function showTooltip(element, text) {
+  let tooltip = document.getElementById('achievement-tooltip');
+  if (!tooltip) {
+    tooltip = document.createElement('div');
+    tooltip.id = 'achievement-tooltip';
+    tooltip.style.position = 'absolute';
+    tooltip.style.backgroundColor = '#fff';
+    tooltip.style.color = '#333';
+    tooltip.style.padding = '10px';
+    tooltip.style.borderRadius = '5px';
+    tooltip.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
+    tooltip.style.fontSize = '14px';
+    tooltip.style.zIndex = '1000';
+    document.body.appendChild(tooltip);
+  }
+  tooltip.textContent = text;
+  const rect = element.getBoundingClientRect();
+  tooltip.style.top = `${rect.top - 40}px`;
+  tooltip.style.left = `${rect.left + rect.width / 2}px`;
+  tooltip.style.transform = 'translateX(-50%)';
+  tooltip.style.display = 'block';
+}
+
+function hideTooltip() {
+  const tooltip = document.getElementById('achievement-tooltip');
+  if (tooltip) {
+    tooltip.style.display = 'none';
+  }
+}
+
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
