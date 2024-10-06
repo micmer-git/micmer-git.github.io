@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Strava Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* Reset styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Body styles */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f8;
+      color: #333;
+    }
+
+    /* Container */
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Profile section */
+    .profile {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .profile img {
+      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+    }
+
+    .profile h1 {
+      font-size: 24px;
+      margin-top: 10px;
+    }
+
+    .profile .rank {
+      font-size: 18px;
+      color: #888;
+    }
+
+    /* Stats section */
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background-color: #fff;
+      width: 48%;
+      margin-bottom: 15px;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-card h2 {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .stat-card p {
+      font-size: 16px;
+      color: #555;
+    }
+
+    /* Achievements section */
+    .achievements {
+      margin-bottom: 30px;
+    }
+
+    .achievements h2 {
+      font-size: 22px;
+      margin-bottom: 15px;
+    }
+
+    .achievement-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .achievement {
+      background-color: #fff;
+      width: 31%;
+      margin-bottom: 15px;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .achievement .icon {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+
+    .achievement p {
+      font-size: 16px;
+      color: #555;
+    }
+
+    /* Chart section */
+    .charts {
+      margin-bottom: 30px;
+    }
+
+    .charts h2 {
+      font-size: 22px;
+      margin-bottom: 15px;
+    }
+
+    .chart {
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .chart-bar {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      height: 150px;
+      margin-bottom: 10px;
+    }
+
+    .chart-bar div {
+      background-color: #4caf50;
+      width: 12%;
+      border-radius: 4px 4px 0 0;
+      text-align: center;
+      color: #fff;
+      position: relative;
+    }
+
+    .chart-bar div span {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-bottom: 5px;
+      font-size: 12px;
+    }
+
+    .chart-labels {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .chart-labels span {
+      font-size: 12px;
+      color: #888;
+      width: 12%;
+      text-align: center;
+    }
+
+    /* Responsive design */
+    @media (max-width: 600px) {
+      .stat-card, .achievement {
+        width: 100%;
+      }
+
+      .chart-bar div {
+        width: 12%;
+      }
+
+      .chart-labels span {
+        width: 12%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Profile Section -->
+    <div class="profile">
+      <img src="https://via.placeholder.com/100" alt="Profile Picture">
+      <h1>John Doe</h1>
+      <p class="rank">Rank: <strong>Gold</strong></p>
+    </div>
+
+    <!-- Weekly Stats Section -->
+    <div class="stats">
+      <div class="stat-card">
+        <h2>Total Hours</h2>
+        <p>10 hrs</p>
+      </div>
+      <div class="stat-card">
+        <h2>Total Kilocalories</h2>
+        <p>3500 kcal 🍕</p>
+      </div>
+      <div class="stat-card">
+        <h2>Total Distance</h2>
+        <p>80 km</p>
+      </div>
+      <div class="stat-card">
+        <h2>Total Elevation Gain</h2>
+        <p>1200 m</p>
+      </div>
+    </div>
+
+    <!-- Achievements Section -->
+    <div class="achievements">
+      <h2>Achievements</h2>
+      <div class="achievement-list">
+        <div class="achievement">
+          <div class="icon">🏔️</div>
+          <p>Elevation Gem</p>
+        </div>
+        <div class="achievement">
+          <div class="icon">🍕</div>
+          <p>Pizza Gem</p>
+        </div>
+        <div class="achievement">
+          <div class="icon">💎</div>
+          <p>Activities Gem</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts">
+      <h2>Weekly Activity</h2>
+      <div class="chart">
+        <div class="chart-bar">
+          <div style="height: 60%;" title="Monday">
+            <span>3h</span>
+          </div>
+          <div style="height: 80%;" title="Tuesday">
+            <span>4h</span>
+          </div>
+          <div style="height: 40%;" title="Wednesday">
+            <span>2h</span>
+          </div>
+          <div style="height: 90%;" title="Thursday">
+            <span>4.5h</span>
+          </div>
+          <div style="height: 50%;" title="Friday">
+            <span>2.5h</span>
+          </div>
+          <div style="height: 70%;" title="Saturday">
+            <span>3.5h</span>
+          </div>
+          <div style="height: 30%;" title="Sunday">
+            <span>1.5h</span>
+          </div>
+        </div>
+        <div class="chart-labels">
+          <span>Mon</span>
+          <span>Tue</span>
+          <span>Wed</span>
+          <span>Thu</span>
+          <span>Fri</span>
+          <span>Sat</span>
+          <span>Sun</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
