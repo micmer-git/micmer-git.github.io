@@ -1,678 +1,701 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>micmer</title><style>
-/* cspell:disable-file */
-/* webkit printing magic: print all background colors */
-html {
-	-webkit-print-color-adjust: exact;
-}
-* {
-	box-sizing: border-box;
-	-webkit-print-color-adjust: exact;
-}
-
-html,
-body {
-	margin: 0;
-	padding: 0;
-}
-@media only screen {
-	body {
-		margin: 2em auto;
-		max-width: 900px;
-		color: rgb(55, 53, 47);
-	}
-}
-
-body {
-	line-height: 1.5;
-	white-space: pre-wrap;
-}
-
-a,
-a.visited {
-	color: inherit;
-	text-decoration: underline;
-}
-
-.pdf-relative-link-path {
-	font-size: 80%;
-	color: #444;
-}
-
-h1,
-h2,
-h3 {
-	letter-spacing: -0.01em;
-	line-height: 1.2;
-	font-weight: 600;
-	margin-bottom: 0;
-}
-
-.page-title {
-	font-size: 2.5rem;
-	font-weight: 700;
-	margin-top: 0;
-	margin-bottom: 0.75em;
-}
-
-h1 {
-	font-size: 1.875rem;
-	margin-top: 1.875rem;
-}
-
-h2 {
-	font-size: 1.5rem;
-	margin-top: 1.5rem;
-}
-
-h3 {
-	font-size: 1.25rem;
-	margin-top: 1.25rem;
-}
-
-.source {
-	border: 1px solid #ddd;
-	border-radius: 3px;
-	padding: 1.5em;
-	word-break: break-all;
-}
-
-.callout {
-	border-radius: 3px;
-	padding: 1rem;
-}
-
-figure {
-	margin: 1.25em 0;
-	page-break-inside: avoid;
-}
-
-figcaption {
-	opacity: 0.5;
-	font-size: 85%;
-	margin-top: 0.5em;
-}
-
-mark {
-	background-color: transparent;
-}
-
-.indented {
-	padding-left: 1.5em;
-}
-
-hr {
-	background: transparent;
-	display: block;
-	width: 100%;
-	height: 1px;
-	visibility: visible;
-	border: none;
-	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
-}
-
-img {
-	max-width: 100%;
-}
-
-@media only print {
-	img {
-		max-height: 100vh;
-		object-fit: contain;
-	}
-}
-
-@page {
-	margin: 1in;
-}
-
-.collection-content {
-	font-size: 0.875rem;
-}
-
-.column-list {
-	display: flex;
-	justify-content: space-between;
-}
-
-.column {
-	padding: 0 1em;
-}
-
-.column:first-child {
-	padding-left: 0;
-}
-
-.column:last-child {
-	padding-right: 0;
-}
-
-.table_of_contents-item {
-	display: block;
-	font-size: 0.875rem;
-	line-height: 1.3;
-	padding: 0.125rem;
-}
-
-.table_of_contents-indent-1 {
-	margin-left: 1.5rem;
-}
-
-.table_of_contents-indent-2 {
-	margin-left: 3rem;
-}
-
-.table_of_contents-indent-3 {
-	margin-left: 4.5rem;
-}
-
-.table_of_contents-link {
-	text-decoration: none;
-	opacity: 0.7;
-	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
-}
-
-table,
-th,
-td {
-	border: 1px solid rgba(55, 53, 47, 0.09);
-	border-collapse: collapse;
-}
-
-table {
-	border-left: none;
-	border-right: none;
-}
-
-th,
-td {
-	font-weight: normal;
-	padding: 0.25em 0.5em;
-	line-height: 1.5;
-	min-height: 1.5em;
-	text-align: left;
-}
-
-th {
-	color: rgba(55, 53, 47, 0.6);
-}
-
-ol,
-ul {
-	margin: 0;
-	margin-block-start: 0.6em;
-	margin-block-end: 0.6em;
-}
-
-li > ol:first-child,
-li > ul:first-child {
-	margin-block-start: 0.6em;
-}
-
-ul > li {
-	list-style: disc;
-}
-
-ul.to-do-list {
-	padding-inline-start: 0;
-}
-
-ul.to-do-list > li {
-	list-style: none;
-}
-
-.to-do-children-checked {
-	text-decoration: line-through;
-	opacity: 0.375;
-}
-
-ul.toggle > li {
-	list-style: none;
-}
-
-ul {
-	padding-inline-start: 1.7em;
-}
-
-ul > li {
-	padding-left: 0.1em;
-}
-
-ol {
-	padding-inline-start: 1.6em;
-}
-
-ol > li {
-	padding-left: 0.2em;
-}
-
-.mono ol {
-	padding-inline-start: 2em;
-}
-
-.mono ol > li {
-	text-indent: -0.4em;
-}
-
-.toggle {
-	padding-inline-start: 0em;
-	list-style-type: none;
-}
-
-/* Indent toggle children */
-.toggle > li > details {
-	padding-left: 1.7em;
-}
-
-.toggle > li > details > summary {
-	margin-left: -1.1em;
-}
-
-.selected-value {
-	display: inline-block;
-	padding: 0 0.5em;
-	background: rgba(206, 205, 202, 0.5);
-	border-radius: 3px;
-	margin-right: 0.5em;
-	margin-top: 0.3em;
-	margin-bottom: 0.3em;
-	white-space: nowrap;
-}
-
-.collection-title {
-	display: inline-block;
-	margin-right: 1em;
-}
-
-.page-description {
-    margin-bottom: 2em;
-}
-
-.simple-table {
-	margin-top: 1em;
-	font-size: 0.875rem;
-	empty-cells: show;
-}
-.simple-table td {
-	height: 29px;
-	min-width: 120px;
-}
-
-.simple-table th {
-	height: 29px;
-	min-width: 120px;
-}
-
-.simple-table-header-color {
-	background: rgb(247, 246, 243);
-	color: black;
-}
-.simple-table-header {
-	font-weight: 500;
-}
-
-time {
-	opacity: 0.5;
-}
-
-.icon {
-	display: inline-block;
-	max-width: 1.2em;
-	max-height: 1.2em;
-	text-decoration: none;
-	vertical-align: text-bottom;
-	margin-right: 0.5em;
-}
-
-img.icon {
-	border-radius: 3px;
-}
-
-.user-icon {
-	width: 1.5em;
-	height: 1.5em;
-	border-radius: 100%;
-	margin-right: 0.5rem;
-}
-
-.user-icon-inner {
-	font-size: 0.8em;
-}
-
-.text-icon {
-	border: 1px solid #000;
-	text-align: center;
-}
-
-.page-cover-image {
-	display: block;
-	object-fit: cover;
-	width: 100%;
-	max-height: 30vh;
-}
-
-.page-header-icon {
-	font-size: 3rem;
-	margin-bottom: 1rem;
-}
-
-.page-header-icon-with-cover {
-	margin-top: -0.72em;
-	margin-left: 0.07em;
-}
-
-.page-header-icon img {
-	border-radius: 3px;
-}
-
-.link-to-page {
-	margin: 1em 0;
-	padding: 0;
-	border: none;
-	font-weight: 500;
-}
-
-p > .user {
-	opacity: 0.5;
-}
-
-td > .user,
-td > time {
-	white-space: nowrap;
-}
-
-input[type="checkbox"] {
-	transform: scale(1.5);
-	margin-right: 0.6em;
-	vertical-align: middle;
-}
-
-p {
-	margin-top: 0.5em;
-	margin-bottom: 0.5em;
-}
-
-.image {
-	border: none;
-	margin: 1.5em 0;
-	padding: 0;
-	border-radius: 0;
-	text-align: center;
-}
-
-.code,
-code {
-	background: rgba(135, 131, 120, 0.15);
-	border-radius: 3px;
-	padding: 0.2em 0.4em;
-	border-radius: 3px;
-	font-size: 85%;
-	tab-size: 2;
-}
-
-code {
-	color: #eb5757;
-}
-
-.code {
-	padding: 1.5em 1em;
-}
-
-.code-wrap {
-	white-space: pre-wrap;
-	word-break: break-all;
-}
-
-.code > code {
-	background: none;
-	padding: 0;
-	font-size: 100%;
-	color: inherit;
-}
-
-blockquote {
-	font-size: 1.25em;
-	margin: 1em 0;
-	padding-left: 1em;
-	border-left: 3px solid rgb(55, 53, 47);
-}
-
-.bookmark {
-	text-decoration: none;
-	max-height: 8em;
-	padding: 0;
-	display: flex;
-	width: 100%;
-	align-items: stretch;
-}
-
-.bookmark-title {
-	font-size: 0.85em;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	height: 1.75em;
-	white-space: nowrap;
-}
-
-.bookmark-text {
-	display: flex;
-	flex-direction: column;
-}
-
-.bookmark-info {
-	flex: 4 1 180px;
-	padding: 12px 14px 14px;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-}
-
-.bookmark-image {
-	width: 33%;
-	flex: 1 1 180px;
-	display: block;
-	position: relative;
-	object-fit: cover;
-	border-radius: 1px;
-}
-
-.bookmark-description {
-	color: rgba(55, 53, 47, 0.6);
-	font-size: 0.75em;
-	overflow: hidden;
-	max-height: 4.5em;
-	word-break: break-word;
-}
-
-.bookmark-href {
-	font-size: 0.75em;
-	margin-top: 0.25em;
-}
-
-.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
-.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
-.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
-.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
-.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
-.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
-.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
-.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
-.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
-.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
-.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
-.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
-.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
-.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
-.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
-.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
-.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
-.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
-.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
-.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
-.highlight-default {
-	color: rgba(55, 53, 47, 1);
-}
-.highlight-gray {
-	color: rgba(120, 119, 116, 1);
-	fill: rgba(120, 119, 116, 1);
-}
-.highlight-brown {
-	color: rgba(159, 107, 83, 1);
-	fill: rgba(159, 107, 83, 1);
-}
-.highlight-orange {
-	color: rgba(217, 115, 13, 1);
-	fill: rgba(217, 115, 13, 1);
-}
-.highlight-yellow {
-	color: rgba(203, 145, 47, 1);
-	fill: rgba(203, 145, 47, 1);
-}
-.highlight-teal {
-	color: rgba(68, 131, 97, 1);
-	fill: rgba(68, 131, 97, 1);
-}
-.highlight-blue {
-	color: rgba(51, 126, 169, 1);
-	fill: rgba(51, 126, 169, 1);
-}
-.highlight-purple {
-	color: rgba(144, 101, 176, 1);
-	fill: rgba(144, 101, 176, 1);
-}
-.highlight-pink {
-	color: rgba(193, 76, 138, 1);
-	fill: rgba(193, 76, 138, 1);
-}
-.highlight-red {
-	color: rgba(212, 76, 71, 1);
-	fill: rgba(212, 76, 71, 1);
-}
-.highlight-gray_background {
-	background: rgba(241, 241, 239, 1);
-}
-.highlight-brown_background {
-	background: rgba(244, 238, 238, 1);
-}
-.highlight-orange_background {
-	background: rgba(251, 236, 221, 1);
-}
-.highlight-yellow_background {
-	background: rgba(251, 243, 219, 1);
-}
-.highlight-teal_background {
-	background: rgba(237, 243, 236, 1);
-}
-.highlight-blue_background {
-	background: rgba(231, 243, 248, 1);
-}
-.highlight-purple_background {
-	background: rgba(244, 240, 247, 0.8);
-}
-.highlight-pink_background {
-	background: rgba(249, 238, 243, 0.8);
-}
-.highlight-red_background {
-	background: rgba(253, 235, 236, 1);
-}
-.block-color-default {
-	color: inherit;
-	fill: inherit;
-}
-.block-color-gray {
-	color: rgba(120, 119, 116, 1);
-	fill: rgba(120, 119, 116, 1);
-}
-.block-color-brown {
-	color: rgba(159, 107, 83, 1);
-	fill: rgba(159, 107, 83, 1);
-}
-.block-color-orange {
-	color: rgba(217, 115, 13, 1);
-	fill: rgba(217, 115, 13, 1);
-}
-.block-color-yellow {
-	color: rgba(203, 145, 47, 1);
-	fill: rgba(203, 145, 47, 1);
-}
-.block-color-teal {
-	color: rgba(68, 131, 97, 1);
-	fill: rgba(68, 131, 97, 1);
-}
-.block-color-blue {
-	color: rgba(51, 126, 169, 1);
-	fill: rgba(51, 126, 169, 1);
-}
-.block-color-purple {
-	color: rgba(144, 101, 176, 1);
-	fill: rgba(144, 101, 176, 1);
-}
-.block-color-pink {
-	color: rgba(193, 76, 138, 1);
-	fill: rgba(193, 76, 138, 1);
-}
-.block-color-red {
-	color: rgba(212, 76, 71, 1);
-	fill: rgba(212, 76, 71, 1);
-}
-.block-color-gray_background {
-	background: rgba(241, 241, 239, 1);
-}
-.block-color-brown_background {
-	background: rgba(244, 238, 238, 1);
-}
-.block-color-orange_background {
-	background: rgba(251, 236, 221, 1);
-}
-.block-color-yellow_background {
-	background: rgba(251, 243, 219, 1);
-}
-.block-color-teal_background {
-	background: rgba(237, 243, 236, 1);
-}
-.block-color-blue_background {
-	background: rgba(231, 243, 248, 1);
-}
-.block-color-purple_background {
-	background: rgba(244, 240, 247, 0.8);
-}
-.block-color-pink_background {
-	background: rgba(249, 238, 243, 0.8);
-}
-.block-color-red_background {
-	background: rgba(253, 235, 236, 1);
-}
-.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
-.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
-.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
-.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
-.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
-.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
-.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
-.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
-.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
-.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
-.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
-.select-value-color-pageGlass { background-color: undefined; }
-.select-value-color-washGlass { background-color: undefined; }
-
-.checkbox {
-	display: inline-flex;
-	vertical-align: text-bottom;
-	width: 16;
-	height: 16;
-	background-size: 16px;
-	margin-left: 2px;
-	margin-right: 5px;
-}
-
-.checkbox-on {
-	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
-}
-
-.checkbox-off {
-	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
-}
-	
-</style></head><body><article id="e6d52ba1-5481-4595-b2ec-a4669c938d67" class="page sans"><header><img class="page-cover-image" src="https://www.notion.so/images/page-cover/solid_blue.png" style="object-position:center 40%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon">Ⓜ️</span></div><h1 class="page-title">micmer</h1><p class="page-description"></p></header><div class="page-body"><h1 id="97860742-bd67-4b7b-afbd-0982d0af9eda" class=""><a href="https://www.notion.so/viaggi-e954d852de1d41a481b737f5d8c5214f?pvs=21">✈️ viaggi</a></h1><h1 id="4d3df52b-76e6-4f2a-8174-491a14ea470f" class=""><a href="https://www.notion.so/ff-futuro-fortissimo-f41e153b16654108991832eae044338c?pvs=21">🎼 futuro fortissimo</a></h1><h1 id="5a79f36e-2a53-4d86-9aa2-c59ffe45f7e7" class=""><a href="https://www.notion.so/parole-0cc4c20f6b4a47ff80a7cea3f060c493?pvs=21">🔠 parole</a></h1><h1 id="55b8f115-d59b-4cbd-bcda-798638c3595c" class=""><a href="https://www.notion.so/VeI2ax-f88a35be652d42d6afd6236d1a525127?pvs=21">🎮 vei2ax</a></h1><h1 id="b649db72-5d9d-458e-b032-1376293c62d5" class=""><a href="https://www.notion.so/Rassegna-stampa-5afb4178eccc45c5807d4e80e7b64b43?pvs=21">🗞️ rassegna stampa</a></h1><p id="e010b29b-fd3b-4f68-8296-0af4ee363302" class="">
-</p><p id="4b4a7ed8-59aa-427c-8b2e-dbf705448051" class="">
-</p><hr id="30636239-8677-4c1e-ae93-eae0d8db5a5f"/><div id="ea75cc24-6bab-436c-bca9-17ae2e9024d2" class="column-list"><div id="a5ca19c3-a5e3-4ca0-8dd2-8731d00ce439" style="width:20%" class="column"><figure id="e954d852-de1d-41a4-81b7-37f5d8c5214f" class="link-to-page"><a href="https://www.notion.so/viaggi-e954d852de1d41a481b737f5d8c5214f?pvs=21"><span class="icon">✈️</span>viaggi</a></figure></div><div id="e124cf47-6386-48b0-a0de-833158dc96a9" style="width:20%" class="column"><figure id="f41e153b-1665-4108-9918-32eae044338c" class="link-to-page"><a href="https://www.notion.so/ff-futuro-fortissimo-f41e153b16654108991832eae044338c?pvs=21"><img class="icon" src="micmer%20e6d52ba154814595b2eca4669c938d67/ff%20futuro%20fortissimo%20f41e153b16654108991832eae044338c/d10dfc41-6a05-40ff-a854-938b2061dcdd_887x887.webp"/>ff | futuro fortissimo </a></figure></div><div id="7a0b6a29-eada-492c-ae3e-7d4b8a05262e" style="width:20%" class="column"><figure id="0cc4c20f-6b4a-47ff-80a7-cea3f060c493" class="link-to-page"><a href="https://www.notion.so/parole-0cc4c20f6b4a47ff80a7cea3f060c493?pvs=21"><span class="icon">🔠</span>parole</a></figure></div><div id="b1212992-b307-41e9-bef3-7b3fcbd45269" style="width:20%" class="column"><figure id="f88a35be-652d-42d6-afd6-236d1a525127" class="link-to-page"><a href="https://www.notion.so/VeI2ax-f88a35be652d42d6afd6236d1a525127?pvs=21"><span class="icon">🎮</span>VeI2ax</a></figure></div><div id="34467056-37da-4e37-b510-3d0cb73accfe" style="width:20%" class="column"><figure id="5afb4178-eccc-45c5-807d-4e80e7b64b43" class="link-to-page"><a href="https://www.notion.so/Rassegna-stampa-5afb4178eccc45c5807d4e80e7b64b43?pvs=21"><span class="icon">🗞️</span>Rassegna stampa</a></figure></div></div></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- SEO & Metadata -->
+    <title>Michele Merelli | Profile</title>
+    <meta name="description" content="Personal website of Michele Merelli. Multidisciplinary professional, Futurist, and Business Developer based in Milan. Explore apps, articles, and the Futuro Fortissimo newsletter.">
+    <meta name="keywords" content="Michele Merelli, Futuro Fortissimo, Newsletter, Innovation, Technology, Milan, Portfolio, Engineer, Blockchain, AI Apps, Mangia Fortissimo">
+    <meta name="author" content="Michele Merelli">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+    <!-- Open Graph / Facebook / LinkedIn -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://micmer-git.github.io/">
+    <meta property="og:title" content="Michele Merelli | Profile">
+    <meta property="og:description" content="Innovation, Tech, and Future. Discover Futuro Fortissimo and AI Apps by Michele Merelli.">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://micmer-git.github.io/">
+    <meta property="twitter:title" content="Michele Merelli | Profile">
+    <meta property="twitter:description" content="Innovation, Tech, and Future. Discover Futuro Fortissimo and AI Apps by Michele Merelli.">
+
+    <!-- Super Geo SEO (Milan, Italy) -->
+    <meta name="geo.region" content="IT-MI">
+    <meta name="geo.placename" content="Milan">
+    <meta name="geo.position" content="45.4642;9.1900">
+    <meta name="ICBM" content="45.4642, 9.1900">
+
+    <!-- Structured Data (JSON-LD) for Google Knowledge Graph -->
+    <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Michele Merelli",
+      "jobTitle": "Multidisciplinary Professional & Futurist",
+      "url": "https://micmer-git.github.io/",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Milan",
+        "addressRegion": "MI",
+        "addressCountry": "Italy"
+      },
+      "sameAs": [
+        "https://www.linkedin.com/in/michelemerelli/",
+        "https://fortissimo.substack.com/",
+        "https://www.strava.com/athletes/14488475",
+        "https://www.youtube.com/@VeI2ax"
+      ]
+    }
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=VT323&display=swap" rel="stylesheet">
+    
+    <!-- Babel Standalone -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+              pixel: ['"VT323"', 'monospace'],
+            },
+            colors: {
+              'brand-bg': '#f8f9fa',
+              'brand-dark': '#202124',
+              // Google I/O Palette
+              'io-blue': '#4285F4',
+              'io-red': '#EA4335',
+              'io-yellow': '#FBBC04',
+              'io-green': '#34A853',
+              'io-gray': '#5f6368',
+            },
+            boxShadow: {
+              'neo': '4px 4px 0px 0px rgba(32,33,36,1)',
+              'neo-hover': '6px 6px 0px 0px rgba(32,33,36,1)',
+              'neo-sm': '2px 2px 0px 0px rgba(32,33,36,1)',
+            },
+            animation: {
+              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            }
+          }
+        }
+      }
+    </script>
+    
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.2.0",
+        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+        "lucide-react": "https://esm.sh/lucide-react@0.263.1"
+      }
+    }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f8f9fa;
+            border-left: 2px solid #202124;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #202124;
+            border-radius: 0;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4285F4;
+        }
+
+        /* "Quadretti" Grid Pattern */
+        .bg-grid-pattern {
+            background-image: 
+                linear-gradient(to right, #000000 1px, transparent 1px),
+                linear-gradient(to bottom, #000000 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        /* Pixel Art Text: MIC MER */
+        /* Adjusted to be centered. Original drawing roughly 15px wide x 11px high */
+        .pixel-scene {
+            width: 1px;
+            height: 1px;
+            background: transparent;
+            box-shadow: 
+                /* --- M (Blue) --- */
+                1px 1px 0 0 #4285F4, 1px 2px 0 0 #4285F4, 1px 3px 0 0 #4285F4, 1px 4px 0 0 #4285F4, 1px 5px 0 0 #4285F4,
+                2px 2px 0 0 #4285F4, 3px 3px 0 0 #4285F4, 4px 2px 0 0 #4285F4,
+                5px 1px 0 0 #4285F4, 5px 2px 0 0 #4285F4, 5px 3px 0 0 #4285F4, 5px 4px 0 0 #4285F4, 5px 5px 0 0 #4285F4,
+
+                /* --- I (Red) --- */
+                7px 1px 0 0 #EA4335, 8px 1px 0 0 #EA4335, 9px 1px 0 0 #EA4335,
+                8px 2px 0 0 #EA4335, 8px 3px 0 0 #EA4335, 8px 4px 0 0 #EA4335,
+                7px 5px 0 0 #EA4335, 8px 5px 0 0 #EA4335, 9px 5px 0 0 #EA4335,
+
+                /* --- C (Yellow) --- */
+                11px 2px 0 0 #FBBC04, 11px 3px 0 0 #FBBC04, 11px 4px 0 0 #FBBC04,
+                12px 1px 0 0 #FBBC04, 13px 1px 0 0 #FBBC04, 14px 1px 0 0 #FBBC04,
+                12px 5px 0 0 #FBBC04, 13px 5px 0 0 #FBBC04, 14px 5px 0 0 #FBBC04,
+                14px 2px 0 0 #FBBC04, 14px 4px 0 0 #FBBC04, /* Tips */
+
+                /* --- M (Green) --- */
+                1px 7px 0 0 #34A853, 1px 8px 0 0 #34A853, 1px 9px 0 0 #34A853, 1px 10px 0 0 #34A853, 1px 11px 0 0 #34A853,
+                2px 8px 0 0 #34A853, 3px 9px 0 0 #34A853, 4px 8px 0 0 #34A853,
+                5px 7px 0 0 #34A853, 5px 8px 0 0 #34A853, 5px 9px 0 0 #34A853, 5px 10px 0 0 #34A853, 5px 11px 0 0 #34A853,
+
+                /* --- E (Blue) --- */
+                7px 7px 0 0 #4285F4, 7px 8px 0 0 #4285F4, 7px 9px 0 0 #4285F4, 7px 10px 0 0 #4285F4, 7px 11px 0 0 #4285F4,
+                8px 7px 0 0 #4285F4, 9px 7px 0 0 #4285F4, 10px 7px 0 0 #4285F4,
+                8px 9px 0 0 #4285F4, 9px 9px 0 0 #4285F4,
+                8px 11px 0 0 #4285F4, 9px 11px 0 0 #4285F4, 10px 11px 0 0 #4285F4,
+
+                /* --- R (Red) --- */
+                12px 7px 0 0 #EA4335, 12px 8px 0 0 #EA4335, 12px 9px 0 0 #EA4335, 12px 10px 0 0 #EA4335, 12px 11px 0 0 #EA4335,
+                13px 7px 0 0 #EA4335, 14px 7px 0 0 #EA4335,
+                15px 8px 0 0 #EA4335,
+                13px 9px 0 0 #EA4335, 14px 9px 0 0 #EA4335,
+                14px 10px 0 0 #EA4335, 15px 11px 0 0 #EA4335;
+        }
+        
+        .avatar-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: transparent; 
+            image-rendering: pixelated;
+        }
+    </style>
+  </head>
+  <body class="text-brand-dark antialiased selection:bg-io-yellow selection:text-black min-h-screen relative overflow-x-hidden">
+    <div id="root"></div>
+    
+    <script type="text/babel" data-type="module">
+      import React, { useState } from 'react';
+      import ReactDOM from 'react-dom/client';
+      import { 
+        Linkedin, 
+        Mail, 
+        ArrowUpRight, 
+        Youtube, 
+        Utensils,
+        BookOpen,
+        Activity,
+        FileText,
+        Archive,
+        X,
+        ChevronRight,
+        ChevronDown,
+        MapPin,
+        Calendar,
+        Cpu,
+        Globe,
+        Zap,
+        Heart,
+        Coffee,
+        Trophy,
+        Music,
+        Plane,
+        Newspaper,
+        LayoutGrid,
+        CloudRain,
+        Gamepad2
+      } from 'lucide-react';
+
+      // --- Data Content ---
+
+      const wikiData = {
+        "Natura": [
+            { title: "ff.58 Le banane inquinano troppo?", desc: "Emissioni, costo vita umana e hamburger vs asparagi.", link: "https://fortissimo.substack.com/p/ff58-le-banane-inquinano-troppo" },
+            { title: "ff.51 La religione del 21esimo secolo", desc: "Il sottile equilibrio tra Greta, Greenpeace e speranza.", link: "https://fortissimo.substack.com/p/ff51-la-religione-del-21esimo-secolo" },
+            { title: "ff.20 Greta in bici?", desc: "Da Isola dei cani di Wes Anderson a Van Moof.", link: "https://fortissimo.substack.com/p/-ff20-greta-in-bici" },
+            { title: "ff.33 Le piante ci salveranno?", desc: "Algoritmi, cattura di CO2 e problemi da risolvere.", link: "https://fortissimo.substack.com/p/-ff33-le-piante-ci-salveranno" },
+            { title: "ff.5 Elettrizzante", desc: "Tesla, Van Moof, Duracell? La sfida della mobilità.", link: "https://fortissimo.substack.com/p/-ff5-elettrizzante" },
+            { title: "ff.34 Ripensare le città", desc: "Lezioni dal COVID e dal cambiamento climatico.", link: "https://fortissimo.substack.com/p/ff34-ripensare-le-citta" },
+            { title: "ff.91 I sassi, le luci, il sale", desc: "Litio, laghi salati, arte e nucleare.", link: "https://fortissimo.substack.com/p/ff90-il-sale-della-terra" }
+        ],
+        "Tecnologia": [
+            { title: "ff.127 Jazz con ChatGPT", desc: "Rick Rubin, Vibe Coding e Leopardi quantistico.", link: "https://fortissimo.substack.com/p/ff127-jazz-con-chatgpt" },
+            { title: "ff.117 Viviamo in una simulazione", desc: "Tra Hong Kong, Oscar e Black Mirror.", link: "https://fortissimo.substack.com/p/ff117-viviamo-in-una-simulazione" },
+            { title: "ff.116 L'anno del serpente / 2", desc: "Rileggere l'AI grazie a Nietzsche.", link: "https://fortissimo.substack.com/p/ff116-lanno-del-serpente-2" },
+            { title: "ff.112 Acqua imprevedibile", desc: "Previsioni, OpenAI O3 e guadagnare tempo.", link: "https://fortissimo.substack.com/p/ff112-acqua-imprevedibile" },
+            { title: "ff.102 Il futuro in una conchiglia", desc: "Salvini in arabo e la rivincita di Wuhan.", link: "https://fortissimo.substack.com/p/ff102-il-futuro-in-una-conchiglia" },
+            { title: "ff.88 Singolarità nel 2029?", desc: "L'accelerazione robotica grazie a ChatGPT.", link: "https://fortissimo.substack.com/p/ff88-singolarita-nel-2029" },
+            { title: "ff.54 Come capire una rivoluzione", desc: "Scanner neurali e vita dentro il cambiamento.", link: "https://fortissimo.substack.com/p/ff54-come-capire-una-rivoluzione" },
+            { title: "ff.103 Fuoco, Ferro, Intelligenza", desc: "Modello o1 di OpenAI: la nuova era.", link: "https://fortissimo.substack.com/p/ff103-fuoco-ferro-intelligenza" }
+        ],
+        "Società": [
+            { title: "ff.125 USA: crollo di un impero", desc: "Chi sostituirà l'America? Cina o Internet?", link: "https://fortissimo.substack.com/p/ff125-usa-crollo-di-un-impero" },
+            { title: "ff.13 Popolazioni e polluzioni", desc: "Demografia, Nigeria e trend relazionali.", link: "https://fortissimo.substack.com/p/-ff13-popolazioni-e-polluzioni" },
+            { title: "ff.44 Che ansia! (pt. 1)", desc: "Perché pensare meno al futuro a volte fa bene.", link: "https://fortissimo.substack.com/p/ff42-che-ansia-pt-1" },
+            { title: "ff.62 Come evitare il burnout", desc: "Un'alternativa al lavoro d'ufficio 9-5.", link: "https://fortissimo.substack.com/p/ff61-come-evitare-il-burnout" },
+            { title: "ff.89 Meno Tinder, più relazioni", desc: "Piccolo principe, Conad e persone oltre le cose.", link: "https://fortissimo.substack.com/p/ff89-meno-tinder-piu-relazioni" },
+            { title: "ff.97 Tocchiamoci di più!", desc: "La scienza dei benefici di un abbraccio.", link: "https://fortissimo.substack.com/p/ff97-tocchiamoci-di-piu" }
+        ],
+        "Cibo & Corpo": [
+            { title: "ff.122 Naturale è meglio?", desc: "Cervello vs Supercomputer, scarpe di vermi.", link: "https://fortissimo.substack.com/p/ff122-naturale-e-meglio" },
+            { title: "ff.19 L'Hamburger di Hemingway", desc: "Mucche e fornelli inquinanti.", link: "https://fortissimo.substack.com/p/ff17-lhambuger-di-hemingway" },
+            { title: "ff.39 Come ti vesti?", desc: "Impatto della fast-fashion e vestiti tecnologici.", link: "https://fortissimo.substack.com/p/ff39-come-ti-vesti" },
+            { title: "ff.113 Fame chimica", desc: "Che rapporto avere col cibo?", link: "https://fortissimo.substack.com/p/ff113-fame-chimica" }
+        ]
+      };
+
+      const pressData = {
+        "Rassegna Stampa": [
+            { title: "Eco di Bergamo", date: "14 Ottobre 2018", link: "https://www.notion.so/Eco-di-Bergamo-14-Ottobre-2018-9a9966f9bf6747198527245ccd67ad56" },
+            { title: "Il Giornale", date: "19 Luglio 2018", link: "https://www.notion.so/Il-Giornale-19-Luglio-2018-a1a7cd3a29644a7da987cb6e3eb2abf7" },
+            { title: "Al Vento", date: "12 Ottobre 2023", link: "https://www.notion.so/Al-Vento-12-Ottobre-2023-af459d0df7af4a00b0d5aaf0a8ef74b0" },
+            { title: "Podcast Bigoni", date: "Intervista", link: "https://www.notion.so/Podcast-Bigoni-24e41b31f60e80f8aa99e357d42ba35e" }
+        ],
+        "Radio e TV": [
+            { title: "RadioDj", date: "2024", link: "https://youtu.be/EdWh8nnMikE?si=TR64Bu8Rv4bFfqci" },
+            { title: "RaiGulp - VeI2ax", date: "2011", link: "https://youtu.be/D0Ogtbyk9Ho" },
+            { title: "Famiglia Merelli Mattino 5", date: "2005", link: "https://youtu.be/OMpfHwwslaU" },
+            { title: "Famiglia Merelli Rai", date: "2023", link: "https://youtu.be/7SbaoWOgJGo" }
+        ],
+        "Cicloviaggi": [
+            { title: "Puglia in 2 giorni", desc: "Video Diario", link: "https://youtu.be/-9ufTKGf0k0" },
+            { title: "Lessinia Gravel", desc: "Video Diario", link: "https://youtu.be/ydvaoNrq2cQ" },
+            { title: "Mio Nonno", desc: "Racconto", link: "https://youtu.be/GgHG6KmDwlo" }
+        ]
+      };
+
+      const appsList = [
+            {
+                name: 'Mangia Fortissimo',
+                desc: 'AI Recipe Assistant',
+                action: 'OPEN APP',
+                icon: <Utensils size={32} />,
+                url: 'https://ai.studio/apps/drive/1uoLqlNLJwaPKWcPuwAiD-2GCnzXY2jHz',
+                color: 'bg-io-yellow',
+                textColor: 'text-brand-dark',
+                border: 'border-brand-dark'
+            },
+            {
+                name: 'Leggi Fortissimo',
+                desc: 'AI Reading Companion',
+                action: 'READ NOW',
+                icon: <BookOpen size={32} />,
+                url: 'https://aistudio.google.com/app/prompts?state=%7B%22ids%22:%5B%221WPA0lWFGzTQP_gb7z6FWUEUGio91gAc4%22%5D,%22action%22:%22open%22,%22userId%22:%22106401608954636383910%22,%22resourceKeys%22:%7B%7D%7D&usp=sharing',
+                color: 'bg-io-green',
+                textColor: 'text-white',
+                border: 'border-brand-dark'
+            },
+            {
+                name: 'League of Strava',
+                desc: 'Compete & Analyze',
+                action: 'COMPETE',
+                icon: <Trophy size={32} />,
+                url: 'https://league-of-strava-9c2ffc34069e.herokuapp.com/',
+                color: 'bg-io-red',
+                textColor: 'text-white',
+                border: 'border-brand-dark'
+            },
+            {
+                name: 'Meteo Fortissimo',
+                desc: 'AI Weather Forecast',
+                action: 'CHECK NOW',
+                icon: <CloudRain size={32} />,
+                url: 'https://ai.studio/apps/drive/1SxGdC2joJZHbcU3BgSchJI87Z9pAiqss',
+                color: 'bg-io-blue',
+                textColor: 'text-white',
+                border: 'border-brand-dark'
+            },
+            {
+                name: 'Yu-Gi-Oh Japanese',
+                desc: 'Learn with Cards',
+                action: 'START DUEL',
+                icon: <Gamepad2 size={32} />,
+                url: 'https://ai.studio/apps/drive/1oqLZiu7sr0wKv-5ruI-baKPVhh72_skH',
+                color: 'bg-io-yellow',
+                textColor: 'text-brand-dark',
+                border: 'border-brand-dark'
+            }
+      ];
+
+      const categories = {
+        "Natura": <Globe size={20} />,
+        "Tecnologia": <Zap size={20} />,
+        "Società": <Heart size={20} />,
+        "Cibo & Corpo": <Coffee size={20} />
+      };
+
+      // --- Components ---
+
+      const Card = ({ children, className = '', onClick, noPadding = false }) => {
+        return (
+          <div 
+            onClick={onClick}
+            className={`
+              bg-white rounded-none border-2 border-brand-dark 
+              shadow-neo transition-all duration-200 ease-out
+              ${onClick ? 'hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-neo-hover cursor-pointer active:translate-x-[0px] active:translate-y-[0px] active:shadow-neo' : ''}
+              flex flex-col relative overflow-hidden
+              ${noPadding ? '' : 'p-6 md:p-8'}
+              ${className}
+            `}
+          >
+            {children}
+          </div>
+        );
+      };
+
+      const PixelScene = () => (
+        <div className="avatar-container">
+            {/* Translated by roughly -half width (-8px) and -half height (-6px) to center the 15x11 drawing relative to the scale origin */}
+            <div style={{transform: 'scale(7) translate(-8px, -6px)'}} className="pixel-scene"></div>
+        </div>
+      );
+
+      const Overlay = ({ isOpen, onClose, title, color, children }) => {
+        if (!isOpen) return null;
+        return (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-8 bg-brand-dark/80 backdrop-blur-sm animate-in fade-in duration-200">
+                <div className="bg-brand-bg w-full max-w-4xl h-[95vh] md:h-[90vh] rounded-none border-4 border-brand-dark shadow-neo hover:shadow-neo-hover overflow-hidden flex flex-col">
+                    {/* Header */}
+                    <div className={`${color} border-b-4 border-brand-dark p-6 flex justify-between items-center bg-grid-pattern relative`}>
+                        <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none"></div>
+                        <div className="bg-white border-2 border-brand-dark p-4 rounded-none shadow-neo-sm relative z-10">
+                            <h2 className="font-pixel text-4xl md:text-5xl text-brand-dark mb-0 leading-none tracking-tight uppercase">{title}</h2>
+                        </div>
+                        <button onClick={onClose} className="bg-white border-2 border-brand-dark p-3 rounded-none hover:bg-io-red hover:text-white transition-colors shadow-neo-sm hover:shadow-none translate-x-0 hover:translate-y-1 relative z-10">
+                            <X size={24} />
+                        </button>
+                    </div>
+                    {/* Content */}
+                    <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-6">
+                        {children}
+                    </div>
+                </div>
+            </div>
+        );
+      };
+
+      const WikiContent = () => {
+        const [openSection, setOpenSection] = useState(null);
+        const toggleSection = (section) => setOpenSection(openSection === section ? null : section);
+
+        return (
+            <>
+                <div className="bg-white border-2 border-brand-dark p-6 rounded-none shadow-sm">
+                    <p className="font-mono text-base md:text-lg mb-4">
+                        Benvenuti! Questa è una pubblicazione digitale in continua evoluzione, con contenuti da <a href="https://fortissimo.substack.com/" target="_blank" className="underline decoration-4 decoration-io-blue hover:bg-io-blue/20 transition-colors">futuro fortissimo</a>.
+                    </p>
+                    <div className="bg-brand-bg border-l-8 border-io-green p-4 font-mono text-sm">
+                        "Per quanto riguarda il futuro, il tuo compito non è prevederlo, ma renderlo possibile." — Antoine de Saint-Exupery
+                    </div>
+                </div>
+                <div className="grid gap-4">
+                    {Object.entries(wikiData).map(([category, items]) => (
+                        <div key={category} className="border-2 border-brand-dark rounded-none bg-white overflow-hidden transition-all">
+                            <button 
+                                onClick={() => toggleSection(category)}
+                                className={`w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition-colors ${openSection === category ? 'bg-io-blue/10' : ''}`}
+                            >
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 bg-brand-dark text-white rounded-none">
+                                        {categories[category]}
+                                    </div>
+                                    <span className="font-pixel text-3xl mt-1">{category}</span>
+                                </div>
+                                {openSection === category ? <ChevronDown size={24}/> : <ChevronRight size={24}/>}
+                            </button>
+                            {openSection === category && (
+                                <div className="border-t-2 border-brand-dark bg-brand-bg">
+                                    {items.map((item, idx) => (
+                                        <a 
+                                            key={idx} 
+                                            href={item.link} 
+                                            target="_blank" 
+                                            rel="noreferrer"
+                                            className="block p-5 border-b-2 border-brand-dark last:border-0 hover:bg-white transition-colors group relative"
+                                        >
+                                            <div className="absolute left-0 top-0 bottom-0 w-1 bg-io-yellow opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                            <h4 className="font-bold text-lg mb-1 flex items-center gap-2 group-hover:text-io-blue font-sans">
+                                                {item.title} <ArrowUpRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            </h4>
+                                            <p className="text-gray-600 text-sm font-mono leading-relaxed">{item.desc}</p>
+                                        </a>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            </>
+        );
+      };
+
+      const AppsContent = () => (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {appsList.map((app) => (
+                <div 
+                    key={app.name} 
+                    className={`${app.color} border-4 ${app.border} p-6 flex flex-col justify-between min-h-[250px] shadow-neo group hover:shadow-neo-hover hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all cursor-pointer`}
+                    onClick={() => window.open(app.url, '_blank')}
+                >
+                    <div className="flex justify-between items-start">
+                        <div className={`p-3 bg-white border-2 border-brand-dark shadow-sm text-brand-dark rounded-none`}>
+                            {app.icon}
+                        </div>
+                        <ArrowUpRight size={28} className={app.textColor === 'text-white' ? 'text-white' : 'text-brand-dark'} />
+                    </div>
+                    <div>
+                        <h3 className={`font-pixel text-4xl ${app.textColor} mb-2 leading-none`}>{app.name}</h3>
+                        <p className={`font-bold font-mono text-xs uppercase tracking-widest opacity-90 mb-4 ${app.textColor}`}>{app.desc}</p>
+                        <div className={`inline-block px-4 py-2 border-2 border-brand-dark bg-white text-brand-dark font-pixel text-xl shadow-sm group-hover:shadow-none transition-shadow`}>
+                          {app.action}
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+      );
+
+      const PressContent = () => (
+        <div className="space-y-8">
+            {Object.entries(pressData).map(([section, items]) => (
+                <div key={section} className="space-y-4">
+                    <h3 className="font-pixel text-3xl text-brand-dark border-b-2 border-brand-dark pb-2 inline-block">{section}</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {items.map((item, i) => (
+                            <a 
+                                key={i}
+                                href={item.link}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="bg-white border-2 border-brand-dark p-4 shadow-sm hover:shadow-neo-sm hover:bg-gray-50 transition-all flex justify-between items-center group"
+                            >
+                                <div>
+                                    <h4 className="font-bold text-lg leading-tight group-hover:text-io-blue transition-colors">{item.title}</h4>
+                                    <p className="font-mono text-sm text-gray-500 mt-1">{item.date || item.desc}</p>
+                                </div>
+                                <ArrowUpRight size={20} className="text-gray-400 group-hover:text-brand-dark" />
+                            </a>
+                        ))}
+                    </div>
+                </div>
+            ))}
+        </div>
+      );
+
+      const App = () => {
+        const [activeOverlay, setActiveOverlay] = useState(null);
+
+        const closeOverlay = () => setActiveOverlay(null);
+
+        const socialLinks = [
+          { name: 'Newsletter', icon: <FileText size={20} />, url: 'https://fortissimo.substack.com/p/ff139-e-stato-lai', bg: 'hover:bg-io-yellow', text: 'text-brand-dark' },
+          { name: 'LinkedIn', icon: <Linkedin size={20} />, url: 'https://www.linkedin.com/in/michelemerelli/', bg: 'hover:bg-io-blue hover:text-white', text: 'text-brand-dark' },
+          { name: 'Strava', icon: <Activity size={20} />, url: 'https://www.strava.com/athletes/14488475', bg: 'hover:bg-io-red hover:text-white', text: 'text-brand-dark' },
+          { name: 'YouTube', icon: <Youtube size={20} />, url: 'https://www.youtube.com/@VeI2ax', bg: 'hover:bg-io-green hover:text-white', text: 'text-brand-dark' }
+        ];
+
+        return (
+          <div className="min-h-screen relative flex flex-col justify-center overflow-x-hidden">
+            
+            {/* BACKGROUND */}
+            <div className="fixed inset-0 z-0 bg-white"></div>
+            <div className="absolute top-0 left-0 right-0 h-[60vh] bg-grid-pattern opacity-10 mask-image-gradient-to-b"></div>
+            <div className="absolute top-0 left-0 right-0 h-[60vh] bg-gradient-to-b from-transparent to-white"></div>
+            <div className="fixed bottom-0 left-0 right-0 h-[60vh] bg-gradient-to-t from-indigo-200 via-pink-100 to-transparent opacity-60 z-0 pointer-events-none"></div>
+
+            <div className="p-4 md:p-8 lg:p-12 max-w-5xl mx-auto w-full relative z-10">
+              <main className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                {/* 1. Profile / Info Card */}
+                <div className="md:col-span-2 rounded-none border-4 border-brand-dark shadow-neo bg-white flex flex-col overflow-hidden relative group">
+                  <div className="bg-io-blue border-b-4 border-brand-dark p-6 relative overflow-hidden">
+                      <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none"></div>
+                      <div className="flex justify-between items-center relative z-10">
+                          <div className="bg-white border-2 border-brand-dark p-3 px-6 rounded-none shadow-neo-sm">
+                              <h1 className="font-pixel text-5xl text-brand-dark leading-none tracking-tight">MICHELE MERELLI</h1>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div className="bg-white p-6 flex-1 flex flex-col sm:flex-row gap-8 items-center sm:items-stretch">
+                      <div className="flex-shrink-0 w-36 h-36 border-4 border-brand-dark rounded-none overflow-hidden shadow-neo-sm flex items-center justify-center">
+                          <PixelScene />
+                      </div>
+
+                      {/* Stats Grid: Mobile = 1 line (grid cols 4), Desktop = grid cols 2 */}
+                      <div className="flex-1 w-full grid grid-cols-4 sm:grid-cols-2 gap-2 sm:gap-4">
+                           <div className="flex flex-col p-1 sm:p-3 bg-white border-2 border-io-red rounded-none shadow-[2px_2px_0px_0px_#EA4335] sm:shadow-[4px_4px_0px_0px_#EA4335] hover:translate-x-1 transition-transform cursor-default">
+                              <span className="font-mono text-[9px] sm:text-[10px] text-io-red uppercase font-bold tracking-widest mb-0 sm:mb-1">Loc</span>
+                              <div className="flex items-center gap-1 sm:gap-2 font-bold font-sans text-brand-dark text-xs sm:text-lg">
+                                  MI, IT <MapPin size={14} className="text-io-red hidden sm:block" />
+                              </div>
+                           </div>
+                           <div className="flex flex-col p-1 sm:p-3 bg-white border-2 border-io-yellow rounded-none shadow-[2px_2px_0px_0px_#FBBC04] sm:shadow-[4px_4px_0px_0px_#FBBC04] hover:translate-x-1 transition-transform cursor-default">
+                              <span className="font-mono text-[9px] sm:text-[10px] text-io-yellow uppercase font-bold tracking-widest mb-0 sm:mb-1">Born</span>
+                              <div className="flex items-center gap-1 sm:gap-2 font-bold font-sans text-brand-dark text-xs sm:text-lg">
+                                  1994 <Calendar size={14} className="text-io-yellow hidden sm:block" />
+                              </div>
+                           </div>
+                           <a href="mailto:michelemerelli.8@gmail.com" className="flex flex-col p-1 sm:p-3 bg-white border-2 border-io-green rounded-none shadow-[2px_2px_0px_0px_#34A853] sm:shadow-[4px_4px_0px_0px_#34A853] hover:translate-x-1 hover:bg-io-green/5 transition-all cursor-pointer">
+                              <span className="font-mono text-[9px] sm:text-[10px] text-io-green uppercase font-bold tracking-widest mb-0 sm:mb-1">Email</span>
+                              <div className="flex items-center gap-1 sm:gap-2 font-bold font-sans text-brand-dark text-xs sm:text-lg truncate">
+                                  Gmail <Mail size={14} className="text-io-green hidden sm:block" />
+                              </div>
+                           </a>
+                           <a href="https://drive.google.com/file/d/1J-3KZLJ2AVqPxMlo1c_rmP15QtrQ2ztH/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="flex flex-col p-1 sm:p-3 bg-white border-2 border-io-blue rounded-none shadow-[2px_2px_0px_0px_#4285F4] sm:shadow-[4px_4px_0px_0px_#4285F4] hover:translate-x-1 hover:bg-io-blue/5 transition-all cursor-pointer">
+                              <span className="font-mono text-[9px] sm:text-[10px] text-io-blue uppercase font-bold tracking-widest mb-0 sm:mb-1">MSc</span>
+                              <div className="flex items-center gap-1 sm:gap-2 font-bold font-sans text-brand-dark text-xs sm:text-lg truncate">
+                                  Nano <Cpu size={14} className="text-io-blue hidden sm:block" />
+                              </div>
+                           </a>
+                      </div>
+                  </div>
+                </div>
+
+                {/* 2. Social Dock */}
+                <Card className="flex flex-col justify-center gap-3 bg-white">
+                   <div className="grid grid-cols-1 gap-3 h-full">
+                      {socialLinks.map((link) => (
+                          <a key={link.name} href={link.url} target="_blank" rel="noopener noreferrer" className={`flex items-center justify-between p-4 rounded-none border-2 border-brand-dark bg-white transition-all shadow-sm hover:shadow-neo-sm ${link.bg} group h-full`}>
+                              <div className="flex items-center gap-3">
+                                  <span className={`${link.text} group-hover:text-inherit`}>{link.icon}</span>
+                                  <span className={`font-bold font-pixel text-2xl mt-1 text-brand-dark group-hover:text-inherit`}>{link.name}</span>
+                              </div>
+                              <ArrowUpRight size={20} className="text-brand-dark group-hover:text-inherit" />
+                          </a>
+                      ))}
+                   </div>
+                </Card>
+
+                {/* 3. Futuro Fortissimo - Wiki Trigger (Full Width) - MOVED UP TO ROW 2 */}
+                <Card 
+                    className="md:col-span-3 bg-io-yellow group min-h-[220px] justify-between text-brand-dark cursor-pointer relative overflow-hidden border-4 border-brand-dark"
+                    onClick={() => setActiveOverlay('wiki')}
+                >
+                    <div className="absolute inset-0 bg-grid-pattern opacity-20"></div>
+                    <div className="flex justify-between items-start relative z-10">
+                        <div className={`p-3 bg-white border-2 border-brand-dark shadow-sm text-brand-dark rounded-none`}>
+                            <Archive size={28} />
+                        </div>
+                        <div className="px-3 py-1 bg-brand-dark text-white text-xs font-pixel rounded-none border border-white/20">
+                            KNOWLEDGE BASE
+                        </div>
+                    </div>
+                    <div className="relative z-10 mt-auto">
+                        <h3 className="font-pixel text-6xl mb-1 leading-none">FUTURO FORTISSIMO</h3>
+                        <p className="font-bold font-mono text-base opacity-100 mb-4">Archive & Knowledge Base</p>
+                        <div className="inline-block px-3 py-1 border-2 border-brand-dark bg-white text-brand-dark font-pixel text-lg shadow-sm group-hover:shadow-none transition-shadow">
+                          EXPLORE WIKI ->
+                        </div>
+                    </div>
+                </Card>
+
+                {/* 4. MicMer Apps - Grouped Opener */}
+                <Card 
+                    className="bg-io-red group min-h-[220px] justify-between cursor-pointer border-4 border-brand-dark"
+                    onClick={() => setActiveOverlay('apps')}
+                >
+                    <div className="flex justify-between items-start">
+                        <div className="p-3 bg-white border-2 border-brand-dark shadow-sm text-brand-dark rounded-none">
+                            <LayoutGrid size={28} />
+                        </div>
+                        <div className="w-10 h-10 bg-black/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                             <ArrowUpRight size={24} className="text-white" />
+                        </div>
+                    </div>
+                    <div className="mt-auto">
+                        <h3 className="font-pixel text-4xl mb-1 leading-none text-brand-dark">MICMER APPS</h3>
+                        <p className="font-bold font-mono text-sm opacity-90 mb-4 text-brand-dark">Recipes, Reading & Sport</p>
+                        <div className="inline-block px-3 py-1 border-2 border-brand-dark bg-white text-brand-dark font-pixel text-lg shadow-sm group-hover:shadow-none transition-shadow">
+                          OPEN FOLDER ->
+                        </div>
+                    </div>
+                </Card>
+
+                {/* 5. Press & Travels - New Card */}
+                <Card 
+                    className="bg-white group min-h-[220px] justify-between text-brand-dark cursor-pointer border-4 border-brand-dark"
+                    onClick={() => setActiveOverlay('press')}
+                >
+                    <div className="flex justify-between items-start">
+                        <div className="p-3 bg-white border-2 border-brand-dark shadow-sm text-brand-dark rounded-none">
+                            <Plane size={28} />
+                        </div>
+                        <div className="w-10 h-10 bg-io-blue/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                             <ArrowUpRight size={24} className="text-brand-dark" />
+                        </div>
+                    </div>
+                    <div className="mt-auto">
+                        <h3 className="font-pixel text-4xl mb-1 leading-none">PRESS & TRAVELS</h3>
+                        <p className="font-bold font-mono text-sm opacity-60 mb-4">Articles & Diaries</p>
+                        <div className="inline-block px-3 py-1 border-2 border-brand-dark bg-brand-dark text-white font-pixel text-lg shadow-sm group-hover:shadow-none transition-shadow">
+                          VIEW ARCHIVE ->
+                        </div>
+                    </div>
+                </Card>
+
+                {/* 6. Spotify Card */}
+                <Card 
+                    className="bg-[#1DB954] group min-h-[220px] justify-between text-brand-dark cursor-pointer border-4 border-brand-dark"
+                    onClick={() => window.open('https://open.spotify.com/show/7ukghSFquExHfZCmNG8jl3', '_blank')}
+                >
+                    <div className="flex justify-between items-start">
+                        <div className="p-3 bg-white border-2 border-brand-dark shadow-sm text-brand-dark rounded-none">
+                            <Music size={28} />
+                        </div>
+                        <div className="w-10 h-10 bg-black/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                             <ArrowUpRight size={24} className="text-brand-dark" />
+                        </div>
+                    </div>
+                    <div className="mt-auto">
+                        <h3 className="font-pixel text-4xl mb-1 leading-none">SPOTIFY</h3>
+                        <p className="font-bold font-mono text-sm opacity-100 mb-4">Listen to the Podcast</p>
+                        <div className="inline-block px-3 py-1 border-2 border-brand-dark bg-white text-brand-dark font-pixel text-lg shadow-sm group-hover:shadow-none transition-shadow">
+                          LISTEN ->
+                        </div>
+                    </div>
+                </Card>
+
+              </main>
+
+              {/* OVERLAYS */}
+              <Overlay isOpen={activeOverlay === 'wiki'} onClose={closeOverlay} title="FUTURO FORTISSIMO" color="bg-io-yellow">
+                  <WikiContent />
+              </Overlay>
+
+              <Overlay isOpen={activeOverlay === 'apps'} onClose={closeOverlay} title="MICMER APPS" color="bg-io-red">
+                  <AppsContent />
+              </Overlay>
+
+              <Overlay isOpen={activeOverlay === 'press'} onClose={closeOverlay} title="PRESS & TRAVELS" color="bg-white">
+                  <PressContent />
+              </Overlay>
+
+            </div>
+          </div>
+        );
+      };
+
+      const rootElement = document.getElementById('root');
+      if (rootElement) {
+        const root = ReactDOM.createRoot(rootElement);
+        root.render(
+          <React.StrictMode>
+            <App />
+          </React.StrictMode>
+        );
+      }
+    </script>
+  </body>
+</html>

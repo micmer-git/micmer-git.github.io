@@ -1,0 +1,1 @@
+// Logic moved to index.html for standalone execution on GitHub Pages.
