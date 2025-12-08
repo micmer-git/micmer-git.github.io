@@ -268,6 +268,7 @@
             { title: "Famiglia Merelli Rai", date: "2023", link: "https://youtu.be/7SbaoWOgJGo" }
         ],
         "Cicloviaggi": [
+            { title: "Orezzo-Roma in bici", desc: "Diario di viaggio", link: "./viaggi/orezzo-roma.html" },
             { title: "Puglia in 2 giorni", desc: "Video Diario", link: "https://youtu.be/-9ufTKGf0k0" },
             { title: "Lessinia Gravel", desc: "Video Diario", link: "https://youtu.be/ydvaoNrq2cQ" },
             { title: "Mio Nonno", desc: "Racconto", link: "https://youtu.be/GgHG6KmDwlo" }
@@ -579,9 +580,9 @@
                 </Card>
 
                 {/* 3. Futuro Fortissimo - Wiki Trigger (Full Width) - MOVED UP TO ROW 2 */}
-                <Card 
+                <Card
                     className="md:col-span-3 bg-io-yellow group min-h-[220px] justify-between text-brand-dark cursor-pointer relative overflow-hidden border-4 border-brand-dark"
-                    onClick={() => setActiveOverlay('wiki')}
+                    onClick={() => window.open('https://futurofortissimo.github.io/', '_blank')}
                 >
                     <div className="absolute inset-0 bg-grid-pattern opacity-20"></div>
                     <div className="flex justify-between items-start relative z-10">
