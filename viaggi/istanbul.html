@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Istanbul! | Viaggi</title>
+  <meta name="description" content="Racconto di viaggio a Istanbul tra palazzi, moschee, tramonti sul Bosforo e appunti di diario.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=VT323&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            pixel: ['"VT323"', 'monospace'],
+            mono: ['"Plus Jakarta Sans"', 'monospace'],
+          },
+          colors: {
+            'brand-bg': '#f8f9fa',
+            'brand-dark': '#202124',
+            'io-blue': '#4285F4',
+            'io-red': '#EA4335',
+            'io-yellow': '#FBBC04',
+            'io-green': '#34A853',
+          },
+          boxShadow: {
+            'neo': '4px 4px 0px 0px rgba(32,33,36,1)',
+            'neo-hover': '6px 6px 0px 0px rgba(32,33,36,1)',
+            'neo-sm': '2px 2px 0px 0px rgba(32,33,36,1)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .bg-grid-pattern {
+      background-image:
+        linear-gradient(to right, #000000 1px, transparent 1px),
+        linear-gradient(to bottom, #000000 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+    .content-prose img {
+      border: 4px solid #202124;
+      box-shadow: 4px 4px 0px 0px rgba(32,33,36,1);
+      margin: 16px 0;
+    }
+  </style>
+</head>
+<body class="bg-brand-bg text-brand-dark min-h-screen relative">
+  <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
+  <div class="absolute top-0 left-0 right-0 h-[45vh] bg-gradient-to-b from-io-blue/20 via-white to-transparent"></div>
+  <div class="absolute bottom-0 left-0 right-0 h-[45vh] bg-gradient-to-t from-io-yellow/10 via-white to-transparent"></div>
+
+  <div class="relative z-10 max-w-5xl mx-auto p-4 md:p-8 space-y-6">
+    <header class="flex items-center justify-between">
+      <a href="../index.html" class="inline-flex items-center gap-2 text-brand-dark font-bold font-sans border-2 border-brand-dark bg-white px-4 py-2 shadow-neo-sm hover:shadow-neo-hover hover:-translate-y-1 transition-all">
+        <span class="text-lg">←</span>
+        Torna alla home
+      </a>
+      <div class="px-3 py-1 border-2 border-brand-dark bg-white font-pixel text-xl shadow-neo-sm">Viaggi</div>
+    </header>
+
+    <main class="bg-white border-4 border-brand-dark shadow-neo p-6 md:p-10 space-y-8">
+      <div class="flex flex-col gap-3 border-b-4 border-brand-dark pb-6">
+        <p class="text-sm font-mono uppercase tracking-[0.2em] text-io-blue">Diario di viaggio</p>
+        <h1 class="font-pixel text-5xl leading-tight">Istanbul!</h1>
+        <p class="font-sans text-lg text-gray-700">Appunti sparsi di un viaggio tra Europa e Asia</p>
+      </div>
+
+      <article id="travel-content" class="content-prose space-y-6 text-[15px] leading-relaxed font-mono"></article>
+    </main>
+  </div>
+
+  <script>
+    fetch('./istanbul.md')
+      .then((res) => res.text())
+      .then((text) => {
+        const html = marked.parse(text, { breaks: true });
+        document.getElementById('travel-content').innerHTML = html;
+      })
+      .catch(() => {
+        document.getElementById('travel-content').innerHTML = '<p class="text-red-600">Impossibile caricare il diario di viaggio.</p>';
+      });
+  </script>
+</body>
+</html>
