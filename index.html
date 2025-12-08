@@ -768,13 +768,17 @@
         </div>
       );
 
-      const ResourcesContent = () => {
+      const ResourcesContent = ({ initialIndex = 0 }) => {
         const [searchTerm, setSearchTerm] = useState('');
-        const [selectedResource, setSelectedResource] = useState(resourcesData[0]);
-        const [activeSection, setActiveSection] = useState('data');
+        const [selectedResource, setSelectedResource] = useState(resourcesData[initialIndex]);
+        const [activeSection, setActiveSection] = useState('content');
 
         useEffect(() => {
-          setActiveSection('data');
+          setSelectedResource(resourcesData[initialIndex]);
+        }, [initialIndex]);
+
+        useEffect(() => {
+          setActiveSection('content');
         }, [selectedResource]);
 
         const filteredResources = resourcesData.filter((resource) => {
@@ -870,6 +874,7 @@
 
       const App = () => {
         const [activeOverlay, setActiveOverlay] = useState(null);
+        const [resourceIndex, setResourceIndex] = useState(0);
 
         const closeOverlay = () => setActiveOverlay(null);
 
@@ -1022,9 +1027,10 @@
 
                 {/* 6. Resources Card */}
                 <Card
-                    className="bg-io-green/80 group min-h-[220px] justify-between text-brand-dark cursor-pointer border-4 border-brand-dark"
-                    onClick={() => setActiveOverlay('resources')}
+                    className="bg-io-green/80 group min-h-[220px] justify-between text-brand-dark cursor-pointer border-4 border-brand-dark relative overflow-hidden"
+                    onClick={() => { setResourceIndex(0); setActiveOverlay('resources'); }}
                 >
+                    <div className="absolute inset-0 bg-grid-pattern opacity-15 pointer-events-none"></div>
                     <div className="flex justify-between items-start">
                         <div className="p-3 bg-white border-2 border-brand-dark shadow-sm text-brand-dark rounded-none">
                             <FileText size={28} />
@@ -1036,8 +1042,10 @@
                     <div className="mt-auto">
                         <h3 className="font-pixel text-4xl mb-1 leading-none">RESOURCES</h3>
                         <p className="font-bold font-mono text-sm opacity-90 mb-4">Tagged docs & chapters</p>
-                        <div className="inline-block px-3 py-1 border-2 border-brand-dark bg-white text-brand-dark font-pixel text-lg shadow-sm group-hover:shadow-none transition-shadow">
-                          OPEN READER ->
+                        <div className="inline-flex items-center gap-2 px-3 py-1 border-2 border-brand-dark bg-io-green text-white font-pixel text-lg shadow-sm group-hover:shadow-none transition-shadow relative overflow-hidden">
+                          <span className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none"></span>
+                          <span className="relative">OPEN READER</span>
+                          <ArrowUpRight size={18} className="relative" />
                         </div>
                     </div>
                 </Card>
@@ -1080,7 +1088,7 @@
               </Overlay>
 
               <Overlay isOpen={activeOverlay === 'resources'} onClose={closeOverlay} title="RESOURCES" color="bg-io-green/80">
-                  <ResourcesContent />
+                  <ResourcesContent initialIndex={resourceIndex} />
               </Overlay>
 
             </div>
