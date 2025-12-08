@@ -1050,7 +1050,29 @@
                     </div>
                 </Card>
 
-                {/* 7. Spotify Card */}
+                {/* 7. Done Page */}
+                <Card
+                    className="bg-white group min-h-[220px] justify-between text-brand-dark cursor-pointer border-4 border-brand-dark"
+                    onClick={() => window.open('./done.html', '_self')}
+                >
+                    <div className="flex justify-between items-start">
+                        <div className="p-3 bg-white border-2 border-brand-dark shadow-sm text-brand-dark rounded-none">
+                            <Trophy size={28} />
+                        </div>
+                        <div className="w-10 h-10 bg-io-yellow/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                             <ArrowUpRight size={24} className="text-brand-dark" />
+                        </div>
+                    </div>
+                    <div className="mt-auto">
+                        <h3 className="font-pixel text-4xl mb-1 leading-none">DONE LIST</h3>
+                        <p className="font-bold font-mono text-sm opacity-70 mb-4">A Burkeman-inspired log of completed milestones</p>
+                        <div className="inline-block px-3 py-1 border-2 border-brand-dark bg-io-yellow text-brand-dark font-pixel text-lg shadow-sm group-hover:shadow-none transition-shadow">
+                          VIEW PAGE ->
+                        </div>
+                    </div>
+                </Card>
+
+                {/* 8. Spotify Card */}
                 <Card
                     className="bg-[#1DB954] group min-h-[220px] justify-between text-brand-dark cursor-pointer border-4 border-brand-dark"
                     onClick={() => window.open('https://open.spotify.com/show/7ukghSFquExHfZCmNG8jl3', '_blank')}
