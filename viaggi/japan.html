@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <title>Giappone Travel Diary (Draft)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&family=VT323&display=swap" rel="stylesheet">
+    <style>
+      body { margin: 0; padding: 0; overflow: hidden; font-family: 'Open Sans', sans-serif; background: white; color: #202124; }
+      .snap-container { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+      .snap-container::-webkit-scrollbar { display: none; }
+      .slide { height: 100vh; width: 100%; scroll-snap-align: center; position: relative; display: flex; flex-direction: column; justify-content: center; padding: 2rem; box-sizing: border-box; border-bottom: 1px solid #f3f4f6; opacity: 0; transition: opacity 0.8s ease-in-out; }
+      .slide.visible { opacity: 1; }
+      .font-pixel { font-family: 'VT323', monospace; }
+      .progress-bar { position: absolute; left: 0; top: 0; width: 8px; height: 100%; background: #f3f4f6; z-index: 10; }
+      .progress-fill { width: 100%; transition: height 0.3s; }
+      .modal { position: fixed; inset: 0; background: white; z-index: 100; display: none; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
+      .modal.open { display: flex; opacity: 1; }
+      .modal img { max-width: 90%; max-height: 80vh; object-fit: contain; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+      .btn-close { position: absolute; top: 20px; right: 20px; padding: 10px; background: #f3f4f6; border-radius: 50%; cursor: pointer; border: none; }
+      .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: white; border-radius: 50%; width: 48px; height: 48px; display: flex; items-center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); cursor: pointer; border: none; z-index: 101; }
+      .nav-prev { left: 20px; }
+      .nav-next { right: 20px; }
+
+      @media (min-width: 768px) { .slide { padding: 4rem; } }
+    </style>
+</head>
+<body>
+    <div class="fixed top-4 left-4 z-50">
+      <a href="../index.html" class="inline-flex items-center gap-2 bg-white border-2 border-gray-900 text-gray-900 font-bold px-4 py-2 shadow-md hover:shadow-lg transition-all">
+        <span aria-hidden="true">←</span>
+        Torna alla home
+      </a>
+    </div>
+
+    <div id="app" class="snap-container"></div>
+
+    <div id="modal" class="modal">
+        <button class="btn-close" onclick="closeModal()">✕</button>
+        <button class="nav-btn nav-prev" onclick="nextImage(-1)">‹</button>
+        <img id="modal-img" src="" alt="">
+        <button class="nav-btn nav-next" onclick="nextImage(1)">›</button>
+    </div>
+
+    <script>
+      const baseSlides = [
+        {
+          id: 'intro-cover',
+          sectionId: 'intro',
+          type: 'cover',
+          title: 'GIAPPONE',
+          date: 'Bozza 2025',
+          color: '#E11D48',
+          images: ['https://images.unsplash.com/photo-1518548419970-58e3b4079a7c?auto=format&fit=crop&w=1200&q=80']
+        },
+        {
+          id: 'intro-content-0',
+          sectionId: 'intro',
+          type: 'content',
+          color: '#E11D48',
+          text: [
+            'Appunti sparsi per preparare il diario di viaggio in Giappone.',
+            'La pagina è pronta per caricare foto, dettagli e racconti appena saranno disponibili.'
+          ]
+        },
+        {
+          id: 'tokyo-night',
+          sectionId: 'preview',
+          type: 'image-feature',
+          color: '#0EA5E9',
+          imageUrl: 'https://images.unsplash.com/photo-1505069447924-6877790f26b7?auto=format&fit=crop&w=1400&q=80',
+          figureId: '01'
+        },
+        {
+          id: 'kyoto-plan',
+          sectionId: 'preview',
+          type: 'content',
+          color: '#22C55E',
+          text: [
+            'Segmenta le tappe (Tokyo, Kyoto, Osaka, montagna) per aggiungere foto e note giorno per giorno.',
+            'Premi su un\'immagine per aprirla a tutto schermo: tutto è già pronto per l\'upload definitivo.'
+          ]
+        }
+      ];
+
+      const slidesData = baseSlides.map((slide, idx) => ({
+        ...slide,
+        index: idx,
+        totalInSequence: baseSlides.length
+      }));
+
+      const app = document.getElementById('app');
+      const modal = document.getElementById('modal');
+      const modalImg = document.getElementById('modal-img');
+      let currentModalImages = [];
+      let currentImageIndex = 0;
+
+      // Render Slides
+      slidesData.forEach((slide, idx) => {
+          const el = document.createElement('section');
+          el.className = 'slide';
+          el.id = 'slide-' + idx;
+
+          let contentHtml = '';
+          const barHeight = ((slide.index + 1) / slide.totalInSequence) * 100;
+
+          const progressBar = `
+            <div class="progress-bar">
+                <div class="progress-fill" style="height: ${barHeight}%; background-color: ${slide.color}"></div>
+            </div>
+          `;
+
+          if (slide.type === 'cover') {
+              contentHtml = `
+                  <div class="max-w-5xl mx-auto w-full pl-6">
+                      <div class="font-pixel text-3xl uppercase opacity-80" style="color: ${slide.color}">${slide.date || ''}</div>
+                      <h1 class="font-pixel text-7xl md:text-9xl leading-none uppercase mt-4">${slide.title}</h1>
+                      <div class="w-32 h-4 mt-6" style="background-color: ${slide.color}"></div>
+                  </div>
+              `;
+          } else if (slide.type === 'content') {
+              contentHtml = `
+                 <div class="max-w-5xl mx-auto w-full relative pl-6">
+                    <div class="absolute -left-8 top-0 font-pixel text-9xl opacity-5 select-none" style="color: ${slide.color}">${slide.sectionId}</div>
+                    <div class="prose prose-2xl">
+                        ${slide.text.map(p => `<p class=\"font-sans text-2xl md:text-4xl mb-8 leading-relaxed\">${p}</p>`).join('')}
+                    </div>
+                 </div>
+              `;
+          } else if (slide.type === 'image-feature') {
+              contentHtml = `
+                  <div class="w-full h-full flex items-center justify-center relative p-4 cursor-zoom-in" onclick="openModal(['${slide.imageUrl}'])">
+                      <img src="${slide.imageUrl}" class="max-w-full max-h-full object-contain shadow-2xl border-4 border-white" alt="${slide.title || 'Immagine'}">
+                      <div class="absolute bottom-4 left-4 font-pixel text-2xl bg-white px-2 text-gray-400">FIG. ${slide.figureId || slide.index + 1}</div>
+                  </div>
+              `;
+          }
+
+          el.innerHTML = progressBar + contentHtml;
+          app.appendChild(el);
+      });
+
+      // Intersection Observer for Animation
+      const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                  entry.target.classList.add('visible');
+              }
+          });
+      }, { threshold: 0.2 });
+
+      document.querySelectorAll('.slide').forEach(slide => observer.observe(slide));
+
+      // Modal Logic
+      window.openModal = (images) => {
+          currentModalImages = images;
+          currentImageIndex = 0;
+          updateModalImage();
+          modal.classList.add('open');
+      };
+
+      window.closeModal = () => {
+          modal.classList.remove('open');
+      };
+
+      window.nextImage = (dir) => {
+          currentImageIndex = (currentImageIndex + dir + currentModalImages.length) % currentModalImages.length;
+          updateModalImage();
+      };
+
+      function updateModalImage() {
+          modalImg.src = currentModalImages[currentImageIndex];
+      }
+    </script>
+</body>
+</html>
