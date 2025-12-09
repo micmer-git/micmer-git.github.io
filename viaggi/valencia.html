@@ -40,6 +40,47 @@
         linear-gradient(to bottom, #000000 1px, transparent 1px);
       background-size: 24px 24px;
     }
+
+    :root {
+      --page-height: 80vh;
+    }
+
+    @media (max-width: 768px) {
+      :root {
+        --page-height: 78vh;
+      }
+    }
+
+    .snap-reader {
+      height: var(--page-height);
+      scroll-snap-type: y mandatory;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+      scroll-padding-top: 1.5rem;
+      padding-right: 0.5rem;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .snap-page {
+      min-height: var(--page-height);
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1rem;
+      padding: 1rem 0;
+    }
+
+    @media (max-width: 768px) {
+      .snap-reader {
+        padding-right: 0;
+      }
+
+      .snap-page {
+        justify-content: flex-start;
+      }
+    }
   </style>
 </head>
 <body class="bg-brand-bg text-brand-dark min-h-screen relative">
@@ -67,8 +108,8 @@
         <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/6c873b11-0571-4d4d-adf0-7937adccf71f/image1.jpeg" alt="Scorcio di Valencia" class="w-full border-4 border-brand-dark shadow-neo-sm">
       </figure>
 
-      <article class="space-y-10 text-[15px] leading-relaxed font-mono">
-        <section class="space-y-4">
+      <article class="snap-reader text-[15px] leading-relaxed font-mono">
+        <section class="snap-page space-y-4">
           <blockquote class="border-l-4 border-io-red pl-4 italic text-gray-700">
             <p>Il viaggio sempre ricomincia, ha sempre da ricominciare, come l’esistenza, e ogni sua annotazione è un prologo; se il percorso nel mondo si trasferisce nella scrittura, esso si prolunga nel trasloco dalla realtà alla carta – scrivere appunti, ritoccarli, cancellarli parzialmente, riscriverli, spostarli, variarne la disposizione. Montaggio delle parole e delle immagini, colte dal finestrino del treno o attraversando a piedi una strada e girando l’angolo. Solo con la morte, ricorda Karl Rahner, grande teologo in cammino, cessa lo <em>status viatoris</em> dell’uomo, la sua condizione esistenziale di viaggiatore. Viaggiare dunque ha a che fare con la morte, come ben sapevano Baudelaire o Gadda, ma è anche un differire la morte; rimandare il più possibile l’arrivo, l’incontro con l’essenziale.</p>
             <p class="mt-2">Claudio Magris, <em>L'infinito viaggiare.</em></p>
@@ -76,7 +117,7 @@
           <p>Dopo questa introduzione inaspettata, che però ha modo di ricordarmi di una delle esperienze più importanti della mia vita, possiamo iniziare!</p>
         </section>
 
-        <section class="space-y-4">
+        <section class="snap-page space-y-4">
           <h2 class="font-pixel text-3xl border-l-8 border-io-yellow pl-3">Presentazione</h2>
           <p>Eccomi qui, finalmente, con un, o forse sarebbe meglio dire <em>il</em> primo articolo del mio blog! Dopo lunghi tentennamenti, ho deciso di narrare il mio viaggio a Valencia con Sara, per vari motivi:</p>
           <ul class="list-disc pl-6 space-y-2">
@@ -87,13 +128,13 @@
           <p>Quel che farò sarà semplicemente riportare le nostre giornate, con le luci più alte del sol. Per concludere questa loquace presentazione, un ringraziamento a <strong>Sara</strong>, che con la sua energia ha ulteriormente accresciuto lo stupore e la meraviglia sorti durante la vacanza.</p>
         </section>
 
-        <section class="space-y-4">
+        <section class="snap-page space-y-4">
           <h2 class="font-pixel text-3xl border-l-8 border-io-green pl-3">Preparativi</h2>
           <p>Valencia è una città di medie dimensioni, costituita dalla <strong>città vecchia</strong> e dalla <strong>città della scienza</strong>. Una zona ciclabile molto verde, giacente sul letto del fiume <strong>Turìa</strong>, percorre l'intera città da nord-ovest a sud-est.</p>
           <p>Per orientarci abbiamo scaricato una mappa offline con <strong>CityMaps2Go</strong>, scoperto ristoranti con <strong>Love Valencia</strong> e pianificato gli spostamenti con <strong>MetroValencia</strong> ed <strong>EMTValencia</strong>. Per il pernottamento consigliamo <strong>La Casita</strong>, di Pilar, in calle Reig Genoves, prenotata tramite <strong>AirBnB</strong>.</p>
         </section>
 
-        <section class="space-y-6">
+        <section class="snap-page space-y-6">
           <h2 class="font-pixel text-3xl border-l-8 border-io-blue pl-3">La vacanza</h2>
 
           <div class="space-y-4">

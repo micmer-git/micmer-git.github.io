@@ -51,6 +51,47 @@
       margin: 16px 0;
     }
 
+    :root {
+      --page-height: 80vh;
+    }
+
+    @media (max-width: 768px) {
+      :root {
+        --page-height: 78vh;
+      }
+    }
+
+    .snap-reader {
+      height: var(--page-height);
+      scroll-snap-type: y mandatory;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+      scroll-padding-top: 1.5rem;
+      padding-right: 0.5rem;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .snap-page {
+      min-height: var(--page-height);
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1rem;
+      padding: 1rem 0;
+    }
+
+    @media (max-width: 768px) {
+      .snap-reader {
+        padding-right: 0;
+      }
+
+      .snap-page {
+        justify-content: flex-start;
+      }
+    }
+
     .toc-pill {
       display: inline-flex;
       align-items: center;
@@ -102,7 +143,7 @@
         <div id="toc-links" class="flex flex-wrap gap-2"></div>
       </nav>
 
-      <article id="travel-content" class="content-prose space-y-6 text-[17px] md:text-lg leading-8 font-mono"></article>
+      <article id="travel-content" class="content-prose snap-reader text-[17px] md:text-lg leading-8 font-mono"></article>
     </main>
   </div>
 
@@ -120,6 +161,36 @@
         .replace(/-+/g, '-');
 
       return baseSlug || fallback;
+    };
+
+    const paginateContent = () => {
+      if (!travelContent) return;
+
+      const nodes = Array.from(travelContent.childNodes).filter((node) => {
+        return !(node.nodeType === Node.TEXT_NODE && !(node.textContent || '').trim());
+      });
+
+      if (!nodes.length) return;
+
+      const fragment = document.createDocumentFragment();
+      let currentPage = document.createElement('section');
+      currentPage.className = 'snap-page space-y-4';
+
+      nodes.forEach((node) => {
+        if (node.nodeType === Node.ELEMENT_NODE && node.tagName === 'H2' && currentPage.childNodes.length) {
+          fragment.appendChild(currentPage);
+          currentPage = document.createElement('section');
+          currentPage.className = 'snap-page space-y-4';
+        }
+        currentPage.appendChild(node);
+      });
+
+      if (currentPage.childNodes.length) {
+        fragment.appendChild(currentPage);
+      }
+
+      travelContent.innerHTML = '';
+      travelContent.appendChild(fragment);
     };
 
     const buildToc = () => {
@@ -150,6 +221,7 @@
       .then((text) => {
         const html = marked.parse(text, { breaks: true });
         travelContent.innerHTML = html;
+        paginateContent();
         buildToc();
       })
       .catch(() => {
