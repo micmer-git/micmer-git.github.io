@@ -7,6 +7,7 @@
   <meta name="description" content="Diario e guida di viaggio a Valencia: appunti, immagini e consigli pratici.">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=VT323&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="reader.css">
   <script>
     tailwind.config = {
       theme: {
@@ -41,46 +42,6 @@
       background-size: 24px 24px;
     }
 
-    :root {
-      --page-height: 80vh;
-    }
-
-    @media (max-width: 768px) {
-      :root {
-        --page-height: 78vh;
-      }
-    }
-
-    .snap-reader {
-      height: var(--page-height);
-      scroll-snap-type: y mandatory;
-      overflow-y: auto;
-      scroll-behavior: smooth;
-      scroll-padding-top: 1.5rem;
-      padding-right: 0.5rem;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .snap-page {
-      min-height: var(--page-height);
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 1rem;
-      padding: 1rem 0;
-    }
-
-    @media (max-width: 768px) {
-      .snap-reader {
-        padding-right: 0;
-      }
-
-      .snap-page {
-        justify-content: flex-start;
-      }
-    }
   </style>
 </head>
 <body class="bg-brand-bg text-brand-dark min-h-screen relative">
@@ -108,115 +69,132 @@
         <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/6c873b11-0571-4d4d-adf0-7937adccf71f/image1.jpeg" alt="Scorcio di Valencia" class="w-full border-4 border-brand-dark shadow-neo-sm">
       </figure>
 
-      <article class="snap-reader text-[15px] leading-relaxed font-mono">
-        <section class="snap-page space-y-4">
-          <blockquote class="border-l-4 border-io-red pl-4 italic text-gray-700">
-            <p>Il viaggio sempre ricomincia, ha sempre da ricominciare, come l’esistenza, e ogni sua annotazione è un prologo; se il percorso nel mondo si trasferisce nella scrittura, esso si prolunga nel trasloco dalla realtà alla carta – scrivere appunti, ritoccarli, cancellarli parzialmente, riscriverli, spostarli, variarne la disposizione. Montaggio delle parole e delle immagini, colte dal finestrino del treno o attraversando a piedi una strada e girando l’angolo. Solo con la morte, ricorda Karl Rahner, grande teologo in cammino, cessa lo <em>status viatoris</em> dell’uomo, la sua condizione esistenziale di viaggiatore. Viaggiare dunque ha a che fare con la morte, come ben sapevano Baudelaire o Gadda, ma è anche un differire la morte; rimandare il più possibile l’arrivo, l’incontro con l’essenziale.</p>
-            <p class="mt-2">Claudio Magris, <em>L'infinito viaggiare.</em></p>
-          </blockquote>
-          <p>Dopo questa introduzione inaspettata, che però ha modo di ricordarmi di una delle esperienze più importanti della mia vita, possiamo iniziare!</p>
-        </section>
+      
+<div class="reader-shell">
+  <div class="reader-head">
+    <div>
+      <p class="text-sm font-mono uppercase tracking-[0.2em] text-io-blue">Lettura fluida</p>
+      <h2 class="font-pixel text-3xl leading-tight">Scorri il racconto</h2>
+    </div>
+    <div class="reader-counter" data-chunk-counter>0 / 0</div>
+  </div>
+  <div class="reader-track" data-reader-track></div>
+  <div class="reader-progress-wrapper">
+    <div class="reader-progress" data-reader-progress></div>
+  </div>
+</div>
 
-        <section class="snap-page space-y-4">
-          <h2 class="font-pixel text-3xl border-l-8 border-io-yellow pl-3">Presentazione</h2>
-          <p>Eccomi qui, finalmente, con un, o forse sarebbe meglio dire <em>il</em> primo articolo del mio blog! Dopo lunghi tentennamenti, ho deciso di narrare il mio viaggio a Valencia con Sara, per vari motivi:</p>
-          <ul class="list-disc pl-6 space-y-2">
-            <li>è un inizio senz'altro più <em>leggero</em>, per un blog che in alcuni articoli potrà risultare una <strong>peperonata</strong>, a confronto;</li>
-            <li>è un modo per <em>ri-cordare</em> la nostra prima-vera vacanza insieme, in cui son stato benissimo;</li>
-            <li>ed è un modo per fornire una guida e idee ai futuri viaggiatori che dispiegheranno le proprie vele in questa formidabile città.</li>
-          </ul>
-          <p>Quel che farò sarà semplicemente riportare le nostre giornate, con le luci più alte del sol. Per concludere questa loquace presentazione, un ringraziamento a <strong>Sara</strong>, che con la sua energia ha ulteriormente accresciuto lo stupore e la meraviglia sorti durante la vacanza.</p>
-        </section>
+<article class="hidden" data-text-source aria-hidden="true">
+  <section class="space-y-4">
+    <blockquote class="border-l-4 border-io-red pl-4 italic text-gray-700">
+      <p>Il viaggio sempre ricomincia, ha sempre da ricominciare, come l’esistenza, e ogni sua annotazione è un prologo; se il percorso nel mondo si trasferisce nella scrittura, esso si prolunga nel trasloco dalla realtà alla carta – scrivere appunti, ritoccarli, cancellarli parzialmente, riscriverli, spostarli, variarne la disposizione. Montaggio delle parole e delle immagini, colte dal finestrino del treno o attraversando a piedi una strada e girando l’angolo. Solo con la morte, ricorda Karl Rahner, grande teologo in cammino, cessa lo <em>status viatoris</em> dell’uomo, la sua condizione esistenziale di viaggiatore. Viaggiare dunque ha a che fare con la morte, come ben sapevano Baudelaire o Gadda, ma è anche un differire la morte; rimandare il più possibile l’arrivo, l’incontro con l’essenziale.</p>
+      <p class="mt-2">Claudio Magris, <em>L'infinito viaggiare.</em></p>
+    </blockquote>
+    <p>Dopo questa introduzione inaspettata, che però ha modo di ricordarmi di una delle esperienze più importanti della mia vita, possiamo iniziare!</p>
+  </section>
 
-        <section class="snap-page space-y-4">
-          <h2 class="font-pixel text-3xl border-l-8 border-io-green pl-3">Preparativi</h2>
-          <p>Valencia è una città di medie dimensioni, costituita dalla <strong>città vecchia</strong> e dalla <strong>città della scienza</strong>. Una zona ciclabile molto verde, giacente sul letto del fiume <strong>Turìa</strong>, percorre l'intera città da nord-ovest a sud-est.</p>
-          <p>Per orientarci abbiamo scaricato una mappa offline con <strong>CityMaps2Go</strong>, scoperto ristoranti con <strong>Love Valencia</strong> e pianificato gli spostamenti con <strong>MetroValencia</strong> ed <strong>EMTValencia</strong>. Per il pernottamento consigliamo <strong>La Casita</strong>, di Pilar, in calle Reig Genoves, prenotata tramite <strong>AirBnB</strong>.</p>
-        </section>
+  <section class="space-y-4">
+    <p>È il nostro primo viaggio senza bagaglio da stiva e nonostante alcuni dubbi sulle compagnie, EasyJet ci regalerà un viaggio senza intoppi, preso a inizio aprile per metà maggio.</p>
+    <ul class="list-disc list-inside space-y-2">
+      <li><strong>500€</strong> circa di volo (A/R) e hotel a persona</li>
+      <li>Hotel nel quartiere <strong>Eixample</strong> in <strong>Carrrer Gran Via de Les Corts Catalanes</strong> per il mio ritorno/trasferta a Milano</li>
+      <li>Temperatura sui 18-26 gradi (perfetta!)</li>
+      <li>Curiosità: tante persone fanno <strong>crossfit all'aperto</strong></li>
+    </ul>
+    <p>Ci sono molte cose da vedere e altrettante attività per riempire il tempo, dai musei e la storia all’insegna del buon cibo e relax.</p>
+  </section>
 
-        <section class="snap-page space-y-6">
-          <h2 class="font-pixel text-3xl border-l-8 border-io-blue pl-3">La vacanza</h2>
+  <section class="space-y-4">
+    <h2 class="font-pixel text-3xl border-l-8 border-io-green pl-3">Preparativi</h2>
+    <p>Valencia è una città di medie dimensioni, costituita dalla <strong>città vecchia</strong> e dalla <strong>città della scienza</strong>. Una zona ciclabile molto verde, giacente sul letto del fiume <strong>Turìa</strong>, percorre l'intera città da nord-ovest a sud-est.</p>
+    <p>Per orientarci abbiamo scaricato una mappa offline con <strong>CityMaps2Go</strong>, scoperto ristoranti con <strong>Love Valencia</strong> e pianificato gli spostamenti con <strong>MetroValencia</strong> ed <strong>EMTValencia</strong>. Per il pernottamento consigliamo <strong>La Casita</strong>, di Pilar, in calle Reig Genoves, prenotata tramite <strong>AirBnB</strong>.</p>
+  </section>
 
-          <div class="space-y-4">
-            <h3 class="font-pixel text-2xl">Giovedì 12 settembre 2013</h3>
-            <p>Siamo atterrati intorno alle 19.30 all'aeroporto e, con un biglietto da 3,90€, siamo giunti in centro grazie alla metropolitana. Scesi alla fermata di Machado, ho perso la mia prima scommessa valenciana, restando bloccato in metropolitana.</p>
-            <figure class="space-y-2">
-              <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/ead66460-2f8b-4a4f-b821-ea9dda7ce8d7/image2.jpeg" alt="Metropolitana di Valencia" class="w-full border-4 border-brand-dark shadow-neo-sm">
-            </figure>
-            <p>Arrivati in Calle Reig Genoves, eravamo titubanti riguardo l'appartamento, ma la Tia di Pilar ci ha accolto cordialmente. Dopo un breve giro nella città vecchia, avvolta da una patina di irrealtà, siamo tornati verso casa percorrendo vie colorate illuminate da lampioni simmetrici.</p>
-          </div>
+  <section class="space-y-6">
+    <h2 class="font-pixel text-3xl border-l-8 border-io-blue pl-3">La vacanza</h2>
 
-          <div class="space-y-4">
-            <h3 class="font-pixel text-2xl">Venerdì 13 settembre 2013</h3>
-            <figure class="space-y-2">
-              <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/4d9aacc9-08b7-4724-9275-759be01721ac/image3.jpeg" alt="Mercato Centrale di Valencia" class="w-full border-4 border-brand-dark shadow-neo-sm">
-            </figure>
-            <p>La vacanza vera e propria è iniziata con il sole cocente sulla città vecchia. Colazione nei giardini, visita al <strong>Mercato Centrale</strong> tra profumi e salumi, ingresso alla cattedrale e alla <em>Lonja de la Seda</em>. Gli edifici imponenti creano scorci fenomenali: il consiglio è visitare senza fretta.</p>
-            <figure class="grid md:grid-cols-2 gap-4">
-              <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/6f974cd5-b856-4764-ae2d-454d232f25c0/image4.jpeg" alt="Dettagli del mercato" class="w-full border-4 border-brand-dark shadow-neo-sm">
-              <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/b34f43da-a19e-4d5d-864c-7b33fb49a7c1/image5.jpeg" alt="Vicolo della città vecchia" class="w-full border-4 border-brand-dark shadow-neo-sm">
-            </figure>
-            <p>Pranzo in <strong>Calle Ribera</strong> con menù economici, uno sguardo a Plaza de Toros e ai negozi di Carrer de Colón. Nel pomeriggio tramonto al mare con Daniela, conosciuta all'Apple Store, e cena con piatti tradizionali dopo una visita a Massamagrell.</p>
-            <figure class="grid md:grid-cols-2 gap-4">
-              <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/1d0ff4ba-d3ce-483e-9b4b-94a7b0a7b369/image9.jpeg" alt="Street art a Valencia" class="w-full border-4 border-brand-dark shadow-neo-sm">
-              <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/3ad69c06-4316-49df-95d0-b0de2321c5fd/image11.jpeg" alt="Ponte sul Turìa" class="w-full border-4 border-brand-dark shadow-neo-sm">
-            </figure>
-          </div>
+    <div class="space-y-4">
+      <h3 class="font-pixel text-2xl">Giovedì 12 settembre 2013</h3>
+      <p>Siamo atterrati intorno alle 19.30 all'aeroporto e, con un biglietto da 3,90€, siamo giunti in centro grazie alla metropolitana. Scesi alla fermata di Machado, ho perso la mia prima scommessa valenciana, restando bloccato in metropolitana.</p>
+      <figure class="space-y-2">
+        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/ead66460-2f8b-4a4f-b821-ea9dda7ce8d7/image2.jpeg" alt="Metropolitana di Valencia" class="w-full border-4 border-brand-dark shadow-neo-sm">
+      </figure>
+      <p>Arrivati in Calle Reig Genoves, eravamo titubanti riguardo l'appartamento, ma la Tia di Pilar ci ha accolto cordialmente. Dopo un breve giro nella città vecchia, avvolta da una patina di irrealtà, siamo tornati verso casa percorrendo vie colorate illuminate da lampioni simmetrici.</p>
+    </div>
 
-          <div class="space-y-4">
-            <h3 class="font-pixel text-2xl">Sabato 14 settembre 2013</h3>
-            <p>Giornata dedicata alla <strong>Città della Scienza e delle Arti</strong>. Con EMTValencia abbiamo raggiunto il complesso di Calatrava, metafisico nelle sue architetture bianche che si specchiano nell'acqua. Abbiamo scelto la combinazione Museo della Scienza + Oceanogràfic.</p>
-            <figure class="grid md:grid-cols-3 gap-4">
-              <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/e0103df2-6d22-4f9b-8c5b-296b8b8a1eac/image17.jpeg" alt="Città della Scienza" class="w-full border-4 border-brand-dark shadow-neo-sm">
-              <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/b9681593-fd55-4b07-9d30-e61a271f8f00/image18.jpeg" alt="Dettagli del museo" class="w-full border-4 border-brand-dark shadow-neo-sm">
-              <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/8afca8fd-a467-4572-81d1-b232a9ba32b7/image19.jpeg" alt="Architettura di Calatrava" class="w-full border-4 border-brand-dark shadow-neo-sm">
-            </figure>
-            <p>Il Museo della Scienza offre esperimenti interattivi, sezioni dedicate alla domotica e un'esposizione sul genoma umano con 22 zone tematiche. Nel pomeriggio Oceanogràfic: tunnel sottomarini, spettacolo dei delfini e incontri con leoni marini e squali.</p>
-            <figure class="grid md:grid-cols-3 gap-4">
-              <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/283e0f46-ecf4-404f-b9c4-2f4d6578af2b/image23.jpeg" alt="Esperimenti interattivi" class="w-full border-4 border-brand-dark shadow-neo-sm">
-              <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/4a805f1a-1be0-4304-a062-482bbe9d5622/image27.jpeg" alt="Tunnel dell'Oceanogràfic" class="w-full border-4 border-brand-dark shadow-neo-sm">
-              <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/ef81fe18-8175-4d98-aa45-960e4d30189e/image28.jpeg" alt="Delfini in vasca" class="w-full border-4 border-brand-dark shadow-neo-sm">
-            </figure>
-            <p>La serata è proseguita tra l'Umbreacle e le luci serali del complesso, prima di un lungo ritorno a piedi verso casa.</p>
-          </div>
+    <div class="space-y-4">
+      <h3 class="font-pixel text-2xl">Venerdì 13 settembre 2013</h3>
+      <figure class="space-y-2">
+        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/4d9aacc9-08b7-4724-9275-759be01721ac/image3.jpeg" alt="Mercato Centrale di Valencia" class="w-full border-4 border-brand-dark shadow-neo-sm">
+      </figure>
+      <p>La vacanza vera e propria è iniziata con il sole cocente sulla città vecchia. Colazione nei giardini, visita al <strong>Mercato Centrale</strong> tra profumi e salumi, ingresso alla cattedrale e alla <em>Lonja de la Seda</em>. Gli edifici imponenti creano scorci fenomenali: il consiglio è visitare senza fretta.</p>
+      <figure class="grid md:grid-cols-2 gap-4">
+        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/6f974cd5-b856-4764-ae2d-454d232f25c0/image4.jpeg" alt="Dettagli del mercato" class="w-full border-4 border-brand-dark shadow-neo-sm">
+        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/b34f43da-a19e-4d5d-864c-7b33fb49a7c1/image5.jpeg" alt="Vicolo della città vecchia" class="w-full border-4 border-brand-dark shadow-neo-sm">
+      </figure>
+      <p>Pranzo in <strong>Calle Ribera</strong> con menù economici, uno sguardo a Plaza de Toros e ai negozi di Carrer de Colón. Nel pomeriggio tramonto al mare con Daniela, conosciuta all'Apple Store, e cena con piatti tradizionali dopo una visit a Massamagrell.</p>
+      <figure class="grid md:grid-cols-2 gap-4">
+        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/1d0ff4ba-d3ce-483e-9b4b-94a7b0a7b369/image9.jpeg" alt="Street art a Valencia" class="w-full border-4 border-brand-dark shadow-neo-sm">
+        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/3ad69c06-4316-49df-95d0-b0de2321c5fd/image11.jpeg" alt="Ponte sul Turìa" class="w-full border-4 border-brand-dark shadow-neo-sm">
+      </figure>
+    </div>
 
-          <div class="space-y-4">
-            <h3 class="font-pixel text-2xl">Domenica 15 settembre 2013</h3>
-            <p>Giornata più calma, iniziata con un brunch a base di pasta al pesto. Visita all'IVAM con mostre fotografiche e dedicate alla moda, poi al Museo delle Belle Arti tra pale d'altare, Goya e Degrain.</p>
-            <figure class="grid md:grid-cols-2 gap-4">
-              <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/480b5605-3775-4590-9574-0e8cd2349563/image31.jpeg" alt="Mostra all'IVAM" class="w-full border-4 border-brand-dark shadow-neo-sm">
-              <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/1ae39a08-b741-409c-a28a-0afb954967bc/image34.jpeg" alt="Museo delle Belle Arti" class="w-full border-4 border-brand-dark shadow-neo-sm">
-            </figure>
-            <p>Passeggiata nei <strong>Jardines de Monforte</strong>, tramonto sulla spiaggia di Les Arenes tra gatti curiosi e pontile panoramico. Serata vivace al porto, mercatino e caipiroska al Vlue prima di rientrare.</p>
-          </div>
+    <div class="space-y-4">
+      <h3 class="font-pixel text-2xl">Sabato 14 settembre 2013</h3>
+      <p>Giornata dedicata alla <strong>Città della Scienza e delle Arti</strong>. Con EMTValencia abbiamo raggiunto il complesso di Calatrava, metafisico nelle sue architetture bianche che si specchiano nell'acqua. Abbiamo scelto la combinazione Museo della Scienza + Oceanogràfic.</p>
+      <figure class="grid md:grid-cols-3 gap-4">
+        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/e0103df2-6d22-4f9b-8c5b-296b8b8a1eac/image17.jpeg" alt="Città della Scienza" class="w-full border-4 border-brand-dark shadow-neo-sm">
+        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/b9681593-fd55-4b07-9d30-e61a271f8f00/image18.jpeg" alt="Dettagli del museo" class="w-full border-4 border-brand-dark shadow-neo-sm">
+        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/8afca8fd-a467-4572-81d1-b232a9ba32b7/image19.jpeg" alt="Architettura di Calatrava" class="w-full border-4 border-brand-dark shadow-neo-sm">
+      </figure>
+      <p>Il Museo della Scienza offre esperimenti interattivi, sezioni dedicate alla domotica e un'esposizione sul genoma umano con 22 zone tematiche. Nel pomeriggio Oceanogràfic: tunnel sottomarini, spettacolo dei delfini e incontri con leoni marini e squali.</p>
+      <figure class="grid md:grid-cols-3 gap-4">
+        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/283e0f46-ecf4-404f-b9c4-2f4d6578af2b/image23.jpeg" alt="Esperimenti interattivi" class="w-full border-4 border-brand-dark shadow-neo-sm">
+        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/4a805f1a-1be0-4304-a062-482bbe9d5622/image27.jpeg" alt="Tunnel dell'Oceanogràfic" class="w-full border-4 border-brand-dark shadow-neo-sm">
+        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/ef81fe18-8175-4d98-aa45-960e4d30189e/image28.jpeg" alt="Delfini in vasca" class="w-full border-4 border-brand-dark shadow-neo-sm">
+      </figure>
+      <p>La serata è proseguita tra l'Umbreacle e le luci serali del complesso, prima di un lungo ritorno a piedi verso casa.</p>
+    </div>
 
-          <div class="space-y-4">
-            <h3 class="font-pixel text-2xl">Lunedì 16 settembre 2013</h3>
-            <p>Ultima giornata piena, vissuta in bicicletta. Noleggio da <strong>ValenciaBikes</strong> e immersione nel parco del Turìa fino al <strong>Gulliver gigante</strong>, tra scivoli e rampe.</p>
-            <figure class="grid md:grid-cols-2 gap-4">
-              <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/26e453e9-90eb-4601-b629-a5d2f380e44b/image38.jpeg" alt="Percorsi nel Turìa" class="w-full border-4 border-brand-dark shadow-neo-sm">
-              <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/0233141e-ee22-46c9-b0f3-9ae8d516b109/image39.jpeg" alt="Laghetto nel parco" class="w-full border-4 border-brand-dark shadow-neo-sm">
-            </figure>
-            <p>Costeggiando l'Oceanogràfic abbiamo raggiunto la spiaggia a sud della città, con acqua limpida e macchia mediterranea, per poi proseguire verso l'<strong>Albufera</strong>. Dopo chilometri tra risaie e ciclabili diramate, siamo arrivati a <strong>El Palmar</strong> per una paella valenciana accompagnata da Tinto de Verano.</p>
-            <figure class="grid md:grid-cols-2 gap-4">
-              <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/fcc0855e-0bdd-4024-bd17-d54372b74dc1/image40.jpeg" alt="Spiaggia verso l'Albufera" class="w-full border-4 border-brand-dark shadow-neo-sm">
-              <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/13e954a9-0e12-406a-ab53-a19b351488de/image42.jpeg" alt="Ristorante a El Palmar" class="w-full border-4 border-brand-dark shadow-neo-sm">
-            </figure>
-            <p>Il rientro notturno, rischiarato da una luna piena, ha concluso una giornata intensa e memorabile.</p>
-          </div>
+    <div class="space-y-4">
+      <h3 class="font-pixel text-2xl">Domenica 15 settembre 2013</h3>
+      <p>Giornata più calma, iniziata con un brunch a base di pasta al pesto. Visita all'IVAM con mostre fotografiche e dedicate alla moda, poi al Museo delle Belle Arti tra pale d'altare, Goya e Degrain.</p>
+      <figure class="grid md:grid-cols-2 gap-4">
+        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/480b5605-3775-4590-9574-0e8cd2349563/image31.jpeg" alt="Mostra all'IVAM" class="w-full border-4 border-brand-dark shadow-neo-sm">
+        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/1ae39a08-b741-409c-a28a-0afb954967bc/image34.jpeg" alt="Museo delle Belle Arti" class="w-full border-4 border-brand-dark shadow-neo-sm">
+      </figure>
+      <p>Passeggiata nei <strong>Jardines de Monforte</strong>, tramonto sulla spiaggia di Les Arenes tra gatti curiosi e pontile panoramico. Serata vivace al porto, mercatino e caipiroska al Vlue prima di rientrare.</p>
+    </div>
 
-          <div class="space-y-4">
-            <h3 class="font-pixel text-2xl">Martedì 17 settembre 2013</h3>
-            <p>Ultima mezza giornata tra valigie e spesa per la cena del rientro. Il <strong>MuVIM</strong> ci ha stupiti con mostre su tipografia e credenze popolari, mentre l'Apple Store è stata l'occasione per salutare Daniela.</p>
-            <figure class="grid md:grid-cols-2 gap-4">
-              <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/ff637d04-5b53-4e52-9bde-236aedaeb865/image44.jpeg" alt="Allestimento al MuVIM" class="w-full border-4 border-brand-dark shadow-neo-sm">
-              <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/23c9bb71-7abd-49ca-a4c4-b427c8f03183/image45.jpeg" alt="Agua de Valencia" class="w-full border-4 border-brand-dark shadow-neo-sm">
-            </figure>
-            <p>Ultima tappa per assaggiare l'<strong>Agua de Valencia</strong> in Avinguda de Maria Cristina, con effetto sorpresa. Corse finali verso l'aeroporto, cena sul volo per Bergamo e un freddo che ha sigillato la fine di un viaggio luminosa quanto indimenticabile.</p>
-          </div>
-        </section>
-      </article>
+    <div class="space-y-4">
+      <h3 class="font-pixel text-2xl">Lunedì 16 settembre 2013</h3>
+      <p>Ultima giornata piena, vissuta in bicicletta. Noleggio da <strong>ValenciaBikes</strong> e immersione nel parco del Turìa fino al <strong>Gulliver gigante</strong>, tra scivoli e rampe.</p>
+      <figure class="grid md:grid-cols-2 gap-4">
+        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/26e453e9-90eb-4601-b629-a5d2f380e44b/image38.jpeg" alt="Percorsi nel Turìa" class="w-full border-4 border-brand-dark shadow-neo-sm">
+        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/0233141e-ee22-46c9-b0f3-9ae8d516b109/image39.jpeg" alt="Laghetto nel parco" class="w-full border-4 border-brand-dark shadow-neo-sm">
+      </figure>
+      <p>Costeggiando l'Oceanogràfic abbiamo raggiunto la spiaggia a sud della città, con acqua limpida e macchia mediterranea, per poi proseguire verso l'<strong>Albufera</strong>. Dopo chilometri tra risaie e ciclabili diramate, siamo arrivati a <strong>El Palmar</strong> per una paella valenciana accompagnata da Tinto de Verano.</p>
+      <figure class="grid md:grid-cols-2 gap-4">
+        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/fcc0855e-0bdd-4024-bd17-d54372b74dc1/image40.jpeg" alt="Spiaggia verso l'Albufera" class="w-full border-4 border-brand-dark shadow-neo-sm">
+        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/13e954a9-0e12-406a-ab53-a19b351488de/image42.jpeg" alt="Ristorante a El Palmar" class="w-full border-4 border-brand-dark shadow-neo-sm">
+      </figure>
+      <p>Il rientro notturno, rischiarato da una luna piena, ha concluso una giornata intensa e memorabile.</p>
+    </div>
+
+    <div class="space-y-4">
+      <h3 class="font-pixel text-2xl">Martedì 17 settembre 2013</h3>
+      <p>Ultima mezza giornata tra valigie e spesa per la cena del rientro. Il <strong>MuVIM</strong> ci ha stupiti con mostre su tipografia e credenze popolari, mentre l'Apple Store è stata l'occasione per salutare Daniela.</p>
+      <figure class="grid md:grid-cols-2 gap-4">
+        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/ff637d04-5b53-4e52-9bde-236aedaeb865/image44.jpeg" alt="Allestimento al MuVIM" class="w-full border-4 border-brand-dark shadow-neo-sm">
+        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/23c9bb71-7abd-49ca-a4c4-b427c8f03183/image45.jpeg" alt="Agua de Valencia" class="w-full border-4 border-brand-dark shadow-neo-sm">
+      </figure>
+      <p>Ultima tappa per assaggiare l'<strong>Agua de Valencia</strong> in Avinguda de Maria Cristina, con effetto sorpresa. Corse finali verso l'aeroporto, cena sul volo per Bergamo e un freddo che ha sigillato la fine di un viaggio luminosa quanto indimenticabile.</p>
+    </div>
+  </section>
+</article>
+
     </main>
   </div>
+  <script src="reader.js"></script>
 </body>
 </html>

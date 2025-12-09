@@ -7,6 +7,7 @@
   <meta name="description" content="Diario di viaggio in bicicletta da Orezzo a Roma.">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=VT323&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="reader.css">
   <script>
     tailwind.config = {
       theme: {
@@ -43,47 +44,6 @@
         linear-gradient(to right, #000000 1px, transparent 1px),
         linear-gradient(to bottom, #000000 1px, transparent 1px);
       background-size: 24px 24px;
-    }
-
-    :root {
-      --page-height: 80vh;
-    }
-
-    @media (max-width: 768px) {
-      :root {
-        --page-height: 78vh;
-      }
-    }
-
-    .snap-reader {
-      height: var(--page-height);
-      scroll-snap-type: y mandatory;
-      overflow-y: auto;
-      scroll-behavior: smooth;
-      scroll-padding-top: 1.5rem;
-      padding-right: 0.5rem;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .snap-page {
-      min-height: var(--page-height);
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 1rem;
-      padding: 1rem 0;
-    }
-
-    @media (max-width: 768px) {
-      .snap-reader {
-        padding-right: 0;
-      }
-
-      .snap-page {
-        justify-content: flex-start;
-      }
     }
 
     .toc-pill {
@@ -134,15 +94,23 @@
         <figcaption class="text-sm text-gray-600 font-mono">Vignetta di Altan, tratta dal libro <em>Tre uomini in bicicletta</em>, di Paolo Rumiz.</figcaption>
       </figure>
 
-      <nav aria-label="Navigazione tappe" class="sticky top-4 z-20 bg-white/95 backdrop-blur border-2 border-brand-dark shadow-neo-sm px-4 py-3 flex flex-wrap items-center gap-3">
-        <span class="font-pixel text-2xl">Tappe</span>
-        <a class="toc-pill" href="#giorno-1">Giorno 1</a>
-        <a class="toc-pill" href="#giorno-2">Giorno 2</a>
-        <a class="toc-pill" href="#giorno-3">Giorno 3</a>
-        <a class="toc-pill" href="#giorno-4">Giorno 4</a>
-      </nav>
+      
 
-      <article class="snap-reader text-[17px] md:text-lg leading-8 font-mono">
+      
+<div class="reader-shell">
+  <div class="reader-head">
+    <div>
+      <p class="text-sm font-mono uppercase tracking-[0.2em] text-io-blue">Lettura fluida</p>
+      <h2 class="font-pixel text-3xl leading-tight">Scorri il racconto</h2>
+    </div>
+    <div class="reader-counter" data-chunk-counter>0 / 0</div>
+  </div>
+  <div class="reader-track" data-reader-track></div>
+  <div class="reader-progress-wrapper">
+    <div class="reader-progress" data-reader-progress></div>
+  </div>
+</div>
+<article class="hidden" data-text-source aria-hidden="true" text-[17px] md:text-lg leading-8 font-mono">
         <p>Per una sfida con me stesso, per vedere un po’ di mondo che c’è là fuori, per la settimana della mobilità sostenibile, per buttar giù qualche chilo, per il tanto tempo disponibile, per stare un po’ col mio fratello, e colla mia bicicletta nonché per un pizzico di follia.</p>
 
         <section class="snap-page space-y-4" id="giorno-1">
@@ -390,5 +358,6 @@
       </article>
     </main>
   </div>
+  <script src="reader.js"></script>
 </body>
 </html>
