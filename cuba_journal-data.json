@@ -1,0 +1,86 @@
+{
+  "title": "Cuba, appunti di un viaggio",
+  "tagline": "Taccuino di strada tra Habana Vieja, valli di tabacco e notti di salsa",
+  "heroImage": {
+    "src": "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?auto=format&fit=crop&w=1600&q=80",
+    "alt": "Auto d'epoca a L'Avana"
+  },
+  "quote": {
+    "text": "Cuba è un'energia che vibra: ne respiri la musica nell'aria e la resilienza negli sguardi.",
+    "author": "Taccuino dell'Avana, maggio 2024"
+  },
+  "sections": [
+    {
+      "title": "Atterrare a L'Avana",
+      "paragraphs": [
+        "L'aeroporto José Martí ci accoglie con un caldo che sembra un abbraccio. In città ci muoviamo con un taxi colectivo, finestrini aperti e musica ovunque.",
+        "Sistemazione in una casa particular di Habana Vieja: patio interno, mattonelle colorate e una signora che ci offre caffè forte come un prologo a tutto il resto."
+      ],
+      "highlights": [
+        "Cambio in CUC sostituito da CUP; pagare in contanti è la regola.",
+        "Internet a tempo nelle plazas Wi-Fi: compriamo le card ETECSA e facciamo scorta per la settimana.",
+        "A piedi tra Plaza Vieja, Calle Obispo e il Malecón al tramonto."
+      ],
+      "image": {
+        "src": "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&w=1400&q=80",
+        "alt": "Tramonto sul Malecón"
+      }
+    },
+    {
+      "title": "Tra rum e storia",
+      "paragraphs": [
+        "Il Museo del Ron racconta la filiera della canna da zucchero, ma è l'assaggio finale che spiega davvero la pazienza di un invecchiamento da 7 anni.",
+        "Alla Bodeguita del Medio ascoltiamo un gruppo improvvisare guaracha. Il mojito costa meno di 4€, il sorriso del cameriere vale il doppio."],
+      "highlights": [
+        "Prenotare in anticipo la visita alla Fábrica de Arte Cubano (F.A.C.) per evitare la fila.",
+        "Provare la “ropa vieja” con riso congri: comfort food cubano per eccellenza.",
+        "Portare contanti piccoli per mance e toilette."],
+      "image": {
+        "src": "https://images.unsplash.com/photo-1516569422757-420c699c2239?auto=format&fit=crop&w=1400&q=80",
+        "alt": "Bicchieri di rum"
+      }
+    },
+    {
+      "title": "Gita a Viñales",
+      "paragraphs": [
+        "Partiamo all'alba con un'auto d'epoca: tre ore di strada e poi le mogotes di Viñales, montagne tonde che sembrano cupole verdi.",
+        "A cavallo attraversiamo i campi di tabacco. Un contadino ci mostra le foglie stese e ci racconta che il 90% del raccolto è dello Stato; il resto lo vende in casa come sigari artigianali."],
+      "highlights": [
+        "Cappello e crema solare indispensabili: il sole picchia senza pietà.",
+        "Comprare sigari solo se hanno l'anilla rimovibile, così da non avere problemi in aeroporto.",
+        "Provare il succo di canna da zucchero spremuto al momento nei paladares di campagna."],
+      "image": {
+        "src": "https://images.unsplash.com/photo-1523906630133-f6934a1ab1b4?auto=format&fit=crop&w=1400&q=80",
+        "alt": "Piantagioni di tabacco a Viñales"
+      }
+    },
+    {
+      "title": "Trinidad e la musica",
+      "paragraphs": [
+        "Strade acciottolate, case pastello e scale musicali: Trinidad è un set fotografico vivente.",
+        "La Casa de la Música anima la piazza ogni sera. Salire sui gradini con una birra in mano e ballare salsa con sconosciuti è quasi obbligatorio."],
+      "highlights": [
+        "Da Playa Ancón l'acqua è caldissima: portare maschera per vedere i pesci vicino agli scogli.",
+        "Assaggiare il canchánchara, cocktail a base di miele, limone e aguardiente.",
+        "Occhio ai ciottoli bagnati: scarpe con suola antiscivolo salvano le caviglie."],
+      "image": {
+        "src": "https://images.unsplash.com/photo-1529921879218-fc1e1a86f4fd?auto=format&fit=crop&w=1400&q=80",
+        "alt": "Case colorate di Trinidad"
+      }
+    },
+    {
+      "title": "Ritorno e consigli pratici",
+      "paragraphs": [
+        "Ultimo giro al mercato di San José per comprare poster e magneti. La fila per il taxi all'aeroporto può essere lunga: partiamo con largo anticipo.",
+        "Nessuna carta di credito statunitense: verifichiamo prima con la banca. I CUP avanzati vanno spesi, non riconvertiti."],
+      "highlights": [
+        "App offline imprescindibili: mappe e traduzioni salvate prima di partire.",
+        "Borraccia filtrante utile quando l'acqua in bottiglia scarseggia nei kiosko.",
+        "Lasciare spazio in valigia per i souvenir di rum: bottiglie ben avvolte nei vestiti."],
+      "image": {
+        "src": "https://images.unsplash.com/photo-1501630834273-4b5604d2ee31?auto=format&fit=crop&w=1400&q=80",
+        "alt": "Souvenir con bandiera cubana"
+      }
+    }
+  ]
+}
