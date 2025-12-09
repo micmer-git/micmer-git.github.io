@@ -7,6 +7,7 @@
   <meta name="description" content="Diario di viaggio a Cuba tra Havana, Viñales, Trinidad e Varadero nell'agosto 2023.">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=VT323&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="reader.css">
   <script>
     tailwind.config = {
       theme: {
@@ -43,47 +44,6 @@
         linear-gradient(to right, #000000 1px, transparent 1px),
         linear-gradient(to bottom, #000000 1px, transparent 1px);
       background-size: 24px 24px;
-    }
-
-    :root {
-      --page-height: 80vh;
-    }
-
-    @media (max-width: 768px) {
-      :root {
-        --page-height: 78vh;
-      }
-    }
-
-    .snap-reader {
-      height: var(--page-height);
-      scroll-snap-type: y mandatory;
-      overflow-y: auto;
-      scroll-behavior: smooth;
-      scroll-padding-top: 1.5rem;
-      padding-right: 0.5rem;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .snap-page {
-      min-height: var(--page-height);
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 1rem;
-      padding: 1rem 0;
-    }
-
-    @media (max-width: 768px) {
-      .snap-reader {
-        padding-right: 0;
-      }
-
-      .snap-page {
-        justify-content: flex-start;
-      }
     }
 
     .toc-pill {
@@ -134,23 +94,23 @@
         <figcaption class="text-sm text-gray-600 font-mono">Malecon, tra caldo umido e Chevrolet pastello.</figcaption>
       </figure>
 
-      <nav aria-label="Navigazione giornaliera" class="sticky top-4 z-20 bg-white/95 backdrop-blur border-2 border-brand-dark shadow-neo-sm px-4 py-3 flex flex-wrap items-center gap-3">
-        <span class="font-pixel text-2xl">Indice</span>
-        <a class="toc-pill" href="#prologo">Prologo</a>
-        <a class="toc-pill" href="#domenica-13">13 ago</a>
-        <a class="toc-pill" href="#lunedi-14">14 ago</a>
-        <a class="toc-pill" href="#martedi-15">15 ago</a>
-        <a class="toc-pill" href="#mercoledi-16">16 ago</a>
-        <a class="toc-pill" href="#giovedi-17">17 ago</a>
-        <a class="toc-pill" href="#venerdi-18">18 ago</a>
-        <a class="toc-pill" href="#sabato-19">19 ago</a>
-        <a class="toc-pill" href="#domenica-20">20 ago</a>
-        <a class="toc-pill" href="#lunedi-21">21 ago</a>
-        <a class="toc-pill" href="#martedi-22">22 ago</a>
-        <a class="toc-pill" href="#mercoledi-23">23 ago</a>
-      </nav>
+      
 
-      <article class="snap-reader text-[17px] md:text-lg leading-8 font-mono">
+      
+<div class="reader-shell">
+  <div class="reader-head">
+    <div>
+      <p class="text-sm font-mono uppercase tracking-[0.2em] text-io-blue">Lettura fluida</p>
+      <h2 class="font-pixel text-3xl leading-tight">Scorri il racconto</h2>
+    </div>
+    <div class="reader-counter" data-chunk-counter>0 / 0</div>
+  </div>
+  <div class="reader-track" data-reader-track></div>
+  <div class="reader-progress-wrapper">
+    <div class="reader-progress" data-reader-progress></div>
+  </div>
+</div>
+<article class="hidden" data-text-source aria-hidden="true" text-[17px] md:text-lg leading-8 font-mono">
         <section class="snap-page space-y-4" id="prologo">
           <h2 class="font-pixel text-3xl border-l-8 border-io-red pl-3">Prologo</h2>
           <p>Febbraio. Giornate corte, freddo e voglia di caldo. Io e Michele, da ora in poi Michele1 e Michele2, fissiamo un volo per l’estate. Asia? Centro America? Dopo Singapore e Vietnam, il pensiero va a Cuba: meglio prima che l’embargo finisca. Biglietti comprati, pagina Notion e chat dedicata, <strong>Crypto Cuba Social Club</strong>.</p>
@@ -275,5 +235,6 @@
       </article>
     </main>
   </div>
+  <script src="reader.js"></script>
 </body>
 </html>

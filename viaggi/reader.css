@@ -1,0 +1,111 @@
+.reader-shell {
+  border: 2px solid #202124;
+  background: #ffffffd9;
+  box-shadow: 4px 4px 0px 0px rgba(32, 33, 36, 0.65);
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.reader-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem 0.75rem;
+}
+
+.reader-head h2 {
+  font-family: "VT323", monospace;
+  font-size: 1.8rem;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+.reader-track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 100%);
+  gap: 1rem;
+  overflow-x: auto;
+  padding: 0.5rem 1.5rem 1.25rem;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.reader-track:focus-visible {
+  outline: 3px solid #4285f4;
+  outline-offset: 2px;
+}
+
+.reader-track::-webkit-scrollbar {
+  height: 12px;
+}
+
+.reader-track::-webkit-scrollbar-thumb {
+  background: #202124;
+  border-radius: 999px;
+}
+
+.reader-track::-webkit-scrollbar-track {
+  background: #e5e7eb;
+}
+
+.reader-slide {
+  scroll-snap-align: start;
+  background: #ffffff;
+  border: 2px solid #202124;
+  border-radius: 20px;
+  padding: 1.5rem;
+  min-height: 320px;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  line-height: 1.65;
+  font-size: 1.05rem;
+  color: #202124;
+  box-shadow: 2px 2px 0px 0px rgba(32, 33, 36, 0.5);
+}
+
+.reader-slide p {
+  margin: 0;
+}
+
+.reader-progress-wrapper {
+  height: 8px;
+  background: #e5e7eb;
+  margin: 0 1.5rem 1.25rem;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 2px solid #202124;
+}
+
+.reader-progress {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #4285f4, #34a853);
+  transition: width 180ms ease;
+}
+
+.reader-counter {
+  font-family: "Plus Jakarta Sans", monospace;
+  font-weight: 700;
+  background: #202124;
+  color: #ffffff;
+  padding: 0.35rem 0.65rem;
+  border-radius: 14px;
+  border: 2px solid #202124;
+  box-shadow: 2px 2px 0px 0px rgba(32, 33, 36, 0.35);
+  min-width: 86px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .reader-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .reader-slide {
+    font-size: 1rem;
+    min-height: 280px;
+  }
+}
