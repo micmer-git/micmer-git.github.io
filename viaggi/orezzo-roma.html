@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Orezzo-Roma in bici | Viaggi</title>
   <meta name="description" content="Diario di viaggio in bicicletta da Orezzo a Roma.">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=VT323&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=VT323&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="reader.css">
   <script>
@@ -98,17 +98,22 @@
 
       
 <div class="reader-shell">
+  <div class="reader-progress-wrapper" aria-hidden="true">
+    <div class="reader-progress" data-reader-progress></div>
+  </div>
   <div class="reader-head">
     <div>
       <p class="text-sm font-mono uppercase tracking-[0.2em] text-io-blue">Lettura fluida</p>
       <h2 class="font-pixel text-3xl leading-tight">Scorri il racconto</h2>
+      <p class="reader-meta">Corridoio di lettura centrato, scorrimento a sezioni e tasti freccia o barra spaziatrice per navigare.</p>
     </div>
     <div class="reader-counter" data-chunk-counter>0 / 0</div>
   </div>
-  <div class="reader-track" data-reader-track></div>
-  <div class="reader-progress-wrapper">
-    <div class="reader-progress" data-reader-progress></div>
+  <div class="reader-stage">
+    <div class="reader-track" data-reader-track></div>
+    <div class="reader-dots" data-reader-dots aria-hidden="true"></div>
   </div>
+  <button class="reader-fab" type="button" data-reader-next aria-label="Vai alla sezione successiva">↓</button>
 </div>
 <article class="hidden" data-text-source aria-hidden="true" text-[17px] md:text-lg leading-8 font-mono">
         <p>Per una sfida con me stesso, per vedere un po’ di mondo che c’è là fuori, per la settimana della mobilità sostenibile, per buttar giù qualche chilo, per il tanto tempo disponibile, per stare un po’ col mio fratello, e colla mia bicicletta nonché per un pizzico di follia.</p>
