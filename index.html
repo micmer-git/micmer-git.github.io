@@ -945,7 +945,7 @@
 
                 {/* 2. Social Dock */}
                 <Card className="flex flex-col justify-center gap-3 bg-white">
-                   <div className="grid grid-cols-2 gap-3 h-full">
+                   <div className="grid grid-cols-2 md:grid-cols-1 gap-3 h-full">
                       {socialLinks.map((link) => (
                           <a key={link.name} href={link.url} target="_blank" rel="noopener noreferrer" className={`flex items-center justify-between p-3 sm:p-4 rounded-none border-2 border-brand-dark bg-white transition-all shadow-sm hover:shadow-neo-sm ${link.bg} group h-full`}>
                               <div className="flex items-center gap-2 sm:gap-3">

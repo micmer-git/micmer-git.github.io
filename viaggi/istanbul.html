@@ -35,6 +35,10 @@
     }
   </script>
   <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
     .bg-grid-pattern {
       background-image:
         linear-gradient(to right, #000000 1px, transparent 1px),
@@ -45,6 +49,27 @@
       border: 4px solid #202124;
       box-shadow: 4px 4px 0px 0px rgba(32,33,36,1);
       margin: 16px 0;
+    }
+
+    .toc-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 0.85rem;
+      border: 2px solid #202124;
+      background: #ffffff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      box-shadow: 2px 2px 0px 0px rgba(32, 33, 36, 1);
+      transition: transform 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
+    }
+
+    .toc-pill:hover {
+      transform: translateY(-2px);
+      box-shadow: 4px 4px 0px 0px rgba(32, 33, 36, 1);
+      background: #eef2ff;
     }
   </style>
 </head>
@@ -69,19 +94,71 @@
         <p class="font-sans text-lg text-gray-700">Appunti sparsi di un viaggio tra Europa e Asia</p>
       </div>
 
-      <article id="travel-content" class="content-prose space-y-6 text-[15px] leading-relaxed font-mono"></article>
+      <nav aria-label="Navigazione sezioni" class="sticky top-4 z-20 bg-white/95 backdrop-blur border-2 border-brand-dark shadow-neo-sm px-4 py-3 space-y-2">
+        <div class="flex flex-wrap items-center gap-3">
+          <span class="font-pixel text-2xl">Indice</span>
+          <span class="text-sm font-mono uppercase tracking-wide text-gray-600">Scorri o clicca per leggere i capitoli</span>
+        </div>
+        <div id="toc-links" class="flex flex-wrap gap-2"></div>
+      </nav>
+
+      <article id="travel-content" class="content-prose space-y-6 text-[17px] md:text-lg leading-8 font-mono"></article>
     </main>
   </div>
 
   <script>
+    const travelContent = document.getElementById('travel-content');
+    const tocLinks = document.getElementById('toc-links');
+
+    const slugify = (text, fallback) => {
+      const baseSlug = text
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[^a-z0-9\s-]/g, '')
+        .trim()
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+
+      return baseSlug || fallback;
+    };
+
+    const buildToc = () => {
+      if (!travelContent || !tocLinks) return;
+
+      const headings = travelContent.querySelectorAll('h2');
+      tocLinks.innerHTML = '';
+
+      if (!headings.length) {
+        tocLinks.innerHTML = '<span class="text-sm font-mono text-gray-600">Contenuto in caricamento...</span>';
+        return;
+      }
+
+      headings.forEach((heading, index) => {
+        const slug = slugify(heading.textContent || '', `sezione-${index}`);
+        heading.id = heading.id || slug;
+
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.className = 'toc-pill';
+        link.textContent = heading.textContent || `Sezione ${index + 1}`;
+        tocLinks.appendChild(link);
+      });
+    };
+
     fetch('./istanbul.md')
       .then((res) => res.text())
       .then((text) => {
         const html = marked.parse(text, { breaks: true });
-        document.getElementById('travel-content').innerHTML = html;
+        travelContent.innerHTML = html;
+        buildToc();
       })
       .catch(() => {
-        document.getElementById('travel-content').innerHTML = '<p class="text-red-600">Impossibile caricare il diario di viaggio.</p>';
+        if (travelContent) {
+          travelContent.innerHTML = '<p class="text-red-600">Impossibile caricare il diario di viaggio.</p>';
+        }
+        if (tocLinks) {
+          tocLinks.innerHTML = '<span class="text-sm font-mono text-red-600">Indice non disponibile.</span>';
+        }
       });
   </script>
 </body>

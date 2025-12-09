@@ -34,11 +34,36 @@
     }
   </script>
   <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
     .bg-grid-pattern {
       background-image:
         linear-gradient(to right, #000000 1px, transparent 1px),
         linear-gradient(to bottom, #000000 1px, transparent 1px);
       background-size: 24px 24px;
+    }
+
+    .toc-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 0.85rem;
+      border: 2px solid #202124;
+      background: #ffffff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      box-shadow: 2px 2px 0px 0px rgba(32, 33, 36, 1);
+      transition: transform 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
+    }
+
+    .toc-pill:hover {
+      transform: translateY(-2px);
+      box-shadow: 4px 4px 0px 0px rgba(32, 33, 36, 1);
+      background: #eef2ff;
     }
   </style>
 </head>
@@ -68,13 +93,29 @@
         <figcaption class="text-sm text-gray-600 font-mono">Malecon, tra caldo umido e Chevrolet pastello.</figcaption>
       </figure>
 
-      <article class="space-y-10 text-[15px] leading-relaxed font-mono">
-        <section class="space-y-4">
+      <nav aria-label="Navigazione giornaliera" class="sticky top-4 z-20 bg-white/95 backdrop-blur border-2 border-brand-dark shadow-neo-sm px-4 py-3 flex flex-wrap items-center gap-3">
+        <span class="font-pixel text-2xl">Indice</span>
+        <a class="toc-pill" href="#prologo">Prologo</a>
+        <a class="toc-pill" href="#domenica-13">13 ago</a>
+        <a class="toc-pill" href="#lunedi-14">14 ago</a>
+        <a class="toc-pill" href="#martedi-15">15 ago</a>
+        <a class="toc-pill" href="#mercoledi-16">16 ago</a>
+        <a class="toc-pill" href="#giovedi-17">17 ago</a>
+        <a class="toc-pill" href="#venerdi-18">18 ago</a>
+        <a class="toc-pill" href="#sabato-19">19 ago</a>
+        <a class="toc-pill" href="#domenica-20">20 ago</a>
+        <a class="toc-pill" href="#lunedi-21">21 ago</a>
+        <a class="toc-pill" href="#martedi-22">22 ago</a>
+        <a class="toc-pill" href="#mercoledi-23">23 ago</a>
+      </nav>
+
+      <article class="space-y-10 text-[17px] md:text-lg leading-8 font-mono">
+        <section class="space-y-4" id="prologo">
           <h2 class="font-pixel text-3xl border-l-8 border-io-red pl-3">Prologo</h2>
           <p>Febbraio. Giornate corte, freddo e voglia di caldo. Io e Michele, da ora in poi Michele1 e Michele2, fissiamo un volo per l’estate. Asia? Centro America? Dopo Singapore e Vietnam, il pensiero va a Cuba: meglio prima che l’embargo finisca. Biglietti comprati, pagina Notion e chat dedicata, <strong>Crypto Cuba Social Club</strong>.</p>
         </section>
 
-        <section class="space-y-4">
+        <section class="space-y-4" id="domenica-13">
           <h2 class="font-pixel text-3xl border-l-8 border-io-yellow pl-3">Domenica 13 agosto – Havana</h2>
           <p>Dopo due giorni a Madrid e un volo Iberojet con tre ore di ritardo, atterriamo ad Havana di notte. I controlli volano, il Wi‑Fi no. Una <strong>folata di umido ci riempie la faccia</strong> nella zona taxi, come un bagno turco. Taxi verso il Malecón: palazzi anni ’60, musica e gente seduta sul muretto. L’AirBnB è decadente quanto ci aspettavamo, tra specchi opachi e bottiglie di rum.</p>
           <div class="grid md:grid-cols-2 gap-4">
@@ -83,7 +124,7 @@
           </div>
         </section>
 
-        <section class="space-y-4">
+        <section class="space-y-4" id="lunedi-14">
           <h2 class="font-pixel text-3xl border-l-8 border-io-green pl-3">Lunedì 14 agosto – Havana</h2>
           <p>Colazione rimandata per esplorare Galiano: strade diroccate, senzatetto e contrasti con la nostra estetica occidentale. <strong>Il Garmin al polso potrebbe far sopravvivere una persona per un anno.</strong> In centro veniamo fermati per cambi di valuta e racconti di vita. Con <strong>Sheriff</strong> negoziamo pesos a 200:1, acquistiamo brioches e un succo di mango destinato a diventare metro di paragone.</p>
           <p>Visitiamo il Campidoglio, San Francesco e i viali turistici. Pranzo in ristorante statale a 520 pesos tra <strong>mosche che ronzano ovunque</strong>. Sera al Floridita con Daiquiri, musica Buena Vista Social Club e passeggiata tra palazzi affascinanti.</p>
@@ -94,7 +135,7 @@
           </div>
         </section>
 
-        <section class="space-y-4">
+        <section class="space-y-4" id="martedi-15">
           <h2 class="font-pixel text-3xl border-l-8 border-io-blue pl-3">Martedì 15 agosto – Viñales</h2>
           <p>Taxi collettivo al mattino, pioggia torrenziale e buche riparate al volo. Arriviamo da Pedrito: diluvio, caffè e pianificazione del trekking a cavallo. <strong>Michelata dissetante? No, pomodoro e birra con sale sul bordo.</strong> Relax tra bar e un campo da calcio con montagne a cornice.</p>
           <div class="grid md:grid-cols-2 gap-4">
@@ -104,7 +145,7 @@
           <p>Cena mancata di aragosta al ristorante statale, ripieghiamo per un bar di Che e Cuba, tramonto infuocato e Daiquiri al mango al 3J. Sveglia alle 5:20 per l’alba.</p>
         </section>
 
-        <section class="space-y-4">
+        <section class="space-y-4" id="mercoledi-16">
           <h2 class="font-pixel text-3xl border-l-8 border-io-red pl-3">Mercoledì 16 agosto – Viñales</h2>
           <p>Colazione abbondante e partenza su triciclo elettrico nel buio. <strong>Torcia del cellulare, scrofa con 8 maialini e serpente sul sentiero.</strong> Alba arancione su mogotes, visita a produzione di caffè e tabacco: sigaro con miele alle 8:30.</p>
           <p>Trekking a cavallo nel fango, grotta turistica e rientro affamati. Panino servito con <strong>foglio di carta per fax</strong>, poi pasta all’amatriciana alternativa e corsa verso il lago con crampi. Cena panoramica all’Agroecological Sunset e attesa per un tavolo al 3J.</p>
@@ -115,7 +156,7 @@
           </div>
         </section>
 
-        <section class="space-y-4">
+        <section class="space-y-4" id="giovedi-17">
           <h2 class="font-pixel text-3xl border-l-8 border-io-yellow pl-3">Giovedì 17 agosto – Trinidad</h2>
           <p>Viazul lungo, scambio taxi a Havana e arrivo a Trinidad senza alloggio. Casa Sandra piena, approdiamo al <strong>“Garage”</strong> con proprietari sudati ma accoglienti. Subito mare: trattativa con taxi, poi triciclo sgangherato che ci porta verso Playa Ancón tra sudore condiviso.</p>
           <p>Bagno caraibico meritato, <strong>mojiti con formiche galleggianti</strong> e pizza a portafoglio sulla strada del ritorno. Cena al Jazz Café con musica alternative e serata tra baretti e Casa de la Musica.</p>
@@ -125,7 +166,7 @@
           </div>
         </section>
 
-        <section class="space-y-4">
+        <section class="space-y-4" id="venerdi-18">
           <h2 class="font-pixel text-3xl border-l-8 border-io-green pl-3">Venerdì 18 agosto – Trinidad</h2>
           <p>Corsa all’alba, <strong>anziano con maglietta Supreme</strong> che incoraggia. Colazione del Garage ottima, prenotiamo cavalli per Ojo del Pilón. Brunch con glitter azzurro e capello incorporato, poi Café Don Pepe per un jugo nel verde.</p>
           <p>Escursione a cavallo tra canna da zucchero e caffè, arrivo alla pozza con <strong>tre “miliziani” che chiedono 500 pesos</strong>. Cascata e rientro nel fango, cena vista tramonto all’Agroecological Sunset e nottata alla discoteca in grotta <strong>Disco Ayala</strong>, unica vera oasi di leggerezza cubana.</p>
@@ -136,7 +177,7 @@
           </div>
         </section>
 
-        <section class="space-y-4">
+        <section class="space-y-4" id="sabato-19">
           <h2 class="font-pixel text-3xl border-l-8 border-io-blue pl-3">Sabato 19 agosto – Trinidad</h2>
           <p>Ricerca di nuova casa: sfoglie di <em>Sapori Italiani</em>, nuova sistemazione aristocratica con <strong>Playstation 4 e Diablo 3</strong> all’ingresso. Colazione internazionale all’Adita Café per un’ora di Wi‑Fi decente.</p>
           <p>Corsa verso Playa La Boca sotto la pioggia, jugo e pasticcini locali per pochi pesos (<strong>il font del bar tradisce l’igiene</strong>). Pomeriggio di racconti con la proprietaria ingegnere e il figlio ballerino di salsa, pensieri su social e fuga dall’isola.</p>
@@ -147,7 +188,7 @@
           </div>
         </section>
 
-        <section class="space-y-4">
+        <section class="space-y-4" id="domenica-20">
           <h2 class="font-pixel text-3xl border-l-8 border-io-red pl-3">Domenica 20 agosto – Varadero</h2>
           <p>Colazione del “Diablo” quasi gratuita e taxi collettivo verso Varadero (raccomandazione di non parlare dei prezzi: <strong>turismo come mafiosa omertà</strong>). Arrivo in AirBnB elegante alla 32esima, pranzo al Vernisagge, cambio pesos a 235 e spiaggia affollata di cubani e lattine.</p>
           <p>Pizza a portafoglio dolce come merenda, ritorno tra amici di Pedro e russi in canotta. Cena semplice con pizza hawaiana e <strong>sigaro del popolo che pizzica la gola</strong>.</p>
@@ -158,7 +199,7 @@
           </div>
         </section>
 
-        <section class="space-y-4">
+        <section class="space-y-4" id="lunedi-21">
           <h2 class="font-pixel text-3xl border-l-8 border-io-yellow pl-3">Lunedì 21 agosto – Varadero</h2>
           <p>Running verso la Mansione Du Pont all’alba, vista oceano e campo da golf. Spiaggia più tranquilla: lettini a 100 CUP, mojito, chiacchiere con sardi su riti di iniziazione sanguinolenti a Havana. Panini, succhi e un’altra pizza (meno riuscita). Pomeriggio di pioggia, caffè e cioccolato 85% importato.</p>
           <p>Cena economica da <em>El Melaito</em> con tovagliolo di <strong>carta igienica che ci mummifica</strong>. Passeggiata tra resort dai cartelli anni ’90 tradotti in russo.</p>
@@ -168,7 +209,7 @@
           </div>
         </section>
 
-        <section class="space-y-4">
+        <section class="space-y-4" id="martedi-22">
           <h2 class="font-pixel text-3xl border-l-8 border-io-green pl-3">Martedì 22 agosto – Havana</h2>
           <p>Taxi collettivo con deviazioni per resort, autista che <strong>finge di usare un taser su un russo</strong>. Arrivo da Casa David y Lidia Diaz, oasi con cortile verde. Camminata infinita verso Plaza de la Revolución tra autostrade e monumenti a Che e Martì.</p>
           <p>Bar letterario Cuba Libro, poi cena all’Habana Blues con fari marini e acquari fluorescenti. Sosta all’Hotel Nacional per studiare la colazione da 10€, vista sulla città e cimeli di VIP.</p>
@@ -180,7 +221,7 @@
           <p>Notte sulla terrazza de La Guarida, cocktail a 6€ e vista su Havana, <strong>banconota da 100€ nel barattolo delle mance</strong> e ritorno a terra tra frasi nazionalistiche.</p>
         </section>
 
-        <section class="space-y-4">
+        <section class="space-y-4" id="mercoledi-23">
           <h2 class="font-pixel text-3xl border-l-8 border-io-blue pl-3">Mercoledì 23 agosto – Havana</h2>
           <p>Colazione al Nacional dalle 7: omelette, panini e musica live. Conversazione interrotta da una signora cubana che saluta con un <strong>“it was a pleasure to meet you”</strong> quando si parla di crisi. Montecristo pagati con carta, stanza dove hanno dormito Zucchero e Matteo Renzi segnalate.</p>
           <p>Passeggiata finale tra Callejon de Hamel, Museo della Rivoluzione (chiuso) e reverse cat-calling. Pizza rapida prima del volo, ultimi avocado toast fatti in casa con l’<strong>inerzia di Cuba e l’attrito statico del comunismo</strong> come riflessione finale.</p>
