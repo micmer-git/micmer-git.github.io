@@ -45,6 +45,47 @@
       background-size: 24px 24px;
     }
 
+    :root {
+      --page-height: 80vh;
+    }
+
+    @media (max-width: 768px) {
+      :root {
+        --page-height: 78vh;
+      }
+    }
+
+    .snap-reader {
+      height: var(--page-height);
+      scroll-snap-type: y mandatory;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+      scroll-padding-top: 1.5rem;
+      padding-right: 0.5rem;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .snap-page {
+      min-height: var(--page-height);
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1rem;
+      padding: 1rem 0;
+    }
+
+    @media (max-width: 768px) {
+      .snap-reader {
+        padding-right: 0;
+      }
+
+      .snap-page {
+        justify-content: flex-start;
+      }
+    }
+
     .toc-pill {
       display: inline-flex;
       align-items: center;
@@ -101,10 +142,10 @@
         <a class="toc-pill" href="#giorno-4">Giorno 4</a>
       </nav>
 
-      <article class="space-y-8 text-[17px] md:text-lg leading-8 font-mono">
+      <article class="snap-reader text-[17px] md:text-lg leading-8 font-mono">
         <p>Per una sfida con me stesso, per vedere un po’ di mondo che c’è là fuori, per la settimana della mobilità sostenibile, per buttar giù qualche chilo, per il tanto tempo disponibile, per stare un po’ col mio fratello, e colla mia bicicletta nonché per un pizzico di follia.</p>
 
-        <section class="space-y-4" id="giorno-1">
+        <section class="snap-page space-y-4" id="giorno-1">
           <h2 class="font-pixel text-3xl border-l-8 border-io-red pl-3">Giorno 1: Orezzo – Ravarano, 192km</h2>
           <p class="text-sm text-gray-600">Immagini per gentile concessione di Google Italia. Al pippottino e ai chilometri che ha a fianco non fate troppo caso.</p>
           <figure class="space-y-3">
@@ -158,7 +199,7 @@
           </div>
         </section>
 
-        <section class="space-y-4" id="giorno-2">
+        <section class="snap-page space-y-4" id="giorno-2">
           <h2 class="font-pixel text-3xl border-l-8 border-io-blue pl-3">Giorno 2: Ravarano – Riparbella, 204km</h2>
           <figure class="space-y-3">
             <img src="https://michelemerelli.files.wordpress.com/2015/09/schermata-2015-09-26-alle-17-32-55.png?w=1024&h=775" alt="Mappa della tappa 2" class="w-full border-4 border-brand-dark shadow-neo-sm">
@@ -209,7 +250,7 @@
           </div>
         </section>
 
-        <section class="space-y-4" id="giorno-3">
+        <section class="snap-page space-y-4" id="giorno-3">
           <h2 class="font-pixel text-3xl border-l-8 border-io-green pl-3">Giorno 3: Riparbella – Montalto di Castro, 186km</h2>
           <figure class="space-y-3">
             <img src="https://michelemerelli.files.wordpress.com/2015/09/schermata-2015-09-27-alle-11-33-34.png?w=1024&h=832" alt="Mappa della tappa 3" class="w-full border-4 border-brand-dark shadow-neo-sm">
@@ -282,7 +323,7 @@
           </figure>
         </section>
 
-        <section class="space-y-4" id="giorno-4">
+        <section class="snap-page space-y-4" id="giorno-4">
           <h2 class="font-pixel text-3xl border-l-8 border-io-yellow pl-3">Giorno 4: Montalto di Castro – Roma, 107km</h2>
           <p class="font-semibold">Tappa piatta, pianeggiante, dritta. Un po’ sulla costa, un po’ nel frenetico entroterra. Qualche artificiale saliscendi e poi i colli, in prossimità della Capitale.</p>
           <figure class="space-y-3">
