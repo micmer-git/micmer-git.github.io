@@ -1,205 +1,126 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Valencia | Viaggi</title>
-  <meta name="description" content="Diario e guida di viaggio a Valencia: appunti, immagini e consigli pratici.">
-  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=VT323&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="reader.css">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-            pixel: ['"VT323"', 'monospace'],
-            mono: ['"Plus Jakarta Sans"', 'monospace'],
-          },
-          colors: {
-            'brand-bg': '#f8f9fa',
-            'brand-dark': '#202124',
-            'io-blue': '#4285F4',
-            'io-red': '#EA4335',
-            'io-yellow': '#FBBC04',
-            'io-green': '#34A853',
-          },
-          boxShadow: {
-            'neo': '4px 4px 0px 0px rgba(32,33,36,1)',
-            'neo-hover': '6px 6px 0px 0px rgba(32,33,36,1)',
-            'neo-sm': '2px 2px 0px 0px rgba(32,33,36,1)',
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    .bg-grid-pattern {
-      background-image:
-        linear-gradient(to right, #000000 1px, transparent 1px),
-        linear-gradient(to bottom, #000000 1px, transparent 1px);
-      background-size: 24px 24px;
-    }
-
-  </style>
-</head>
-<body class="bg-brand-bg text-brand-dark min-h-screen relative">
-  <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
-  <div class="absolute top-0 left-0 right-0 h-[45vh] bg-gradient-to-b from-io-yellow/20 via-white to-transparent"></div>
-  <div class="absolute bottom-0 left-0 right-0 h-[45vh] bg-gradient-to-t from-io-blue/10 via-white to-transparent"></div>
-
-  <div class="relative z-10 max-w-5xl mx-auto p-4 md:p-8 space-y-6">
-    <header class="flex items-center justify-between">
-      <a href="../index.html" class="inline-flex items-center gap-2 text-brand-dark font-bold font-sans border-2 border-brand-dark bg-white px-4 py-2 shadow-neo-sm hover:shadow-neo-hover hover:-translate-y-1 transition-all">
-        <span class="text-lg">←</span>
-        Torna alla home
-      </a>
-      <div class="px-3 py-1 border-2 border-brand-dark bg-white font-pixel text-xl shadow-neo-sm">Viaggi</div>
-    </header>
-
-    <main class="bg-white border-4 border-brand-dark shadow-neo p-6 md:p-10 space-y-8">
-      <div class="flex flex-col gap-3 border-b-4 border-brand-dark pb-6">
-        <p class="text-sm font-mono uppercase tracking-[0.2em] text-io-blue">Diario di viaggio</p>
-        <h1 class="font-pixel text-5xl leading-tight">Valencia</h1>
-        <p class="font-sans text-lg text-gray-700">Ricordi, appunti e consigli per una vacanza luminosa</p>
-      </div>
-
-      <figure class="space-y-3">
-        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/6c873b11-0571-4d4d-adf0-7937adccf71f/image1.jpeg" alt="Scorcio di Valencia" class="w-full border-4 border-brand-dark shadow-neo-sm">
-      </figure>
-
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <title>Crypto Cuba Social Club - Export</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&family=VT323&display=swap" rel="stylesheet">
+    <style>
+      body { margin: 0; padding: 0; overflow: hidden; font-family: 'Open Sans', sans-serif; background: white; color: #202124; }
+      .snap-container { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+      .snap-container::-webkit-scrollbar { display: none; }
+      .slide { height: 100vh; width: 100%; scroll-snap-align: center; position: relative; display: flex; flex-direction: column; justify-content: center; padding: 2rem; box-sizing: border-box; border-bottom: 1px solid #f3f4f6; opacity: 0; transition: opacity 0.8s ease-in-out; }
+      .slide.visible { opacity: 1; }
+      .font-pixel { font-family: 'VT323', monospace; }
+      .progress-bar { position: absolute; left: 0; top: 0; width: 8px; height: 100%; background: #f3f4f6; z-index: 10; }
+      .progress-fill { width: 100%; transition: height 0.3s; }
+      .modal { position: fixed; inset: 0; background: white; z-index: 100; display: none; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
+      .modal.open { display: flex; opacity: 1; }
+      .modal img { max-width: 90%; max-height: 80vh; object-fit: contain; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+      .btn-close { position: absolute; top: 20px; right: 20px; padding: 10px; background: #f3f4f6; border-radius: 50%; cursor: pointer; border: none; }
+      .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: white; border-radius: 50%; width: 48px; height: 48px; display: flex; items-center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); cursor: pointer; border: none; z-index: 101; }
+      .nav-prev { left: 20px; }
+      .nav-next { right: 20px; }
       
-<div class="reader-shell">
-  <div class="reader-progress-wrapper" aria-hidden="true">
-    <div class="reader-progress" data-reader-progress></div>
-  </div>
-  <div class="reader-head">
-    <div>
-      <p class="text-sm font-mono uppercase tracking-[0.2em] text-io-blue">Lettura fluida</p>
-      <h2 class="font-pixel text-3xl leading-tight">Scorri il racconto</h2>
-      <p class="reader-meta">Corridoio di lettura centrato, scorrimento a sezioni e tasti freccia o barra spaziatrice per navigare.</p>
-    </div>
-    <div class="reader-counter" data-chunk-counter>0 / 0</div>
-  </div>
-  <div class="reader-stage">
-    <div class="reader-track" data-reader-track></div>
-    <div class="reader-dots" data-reader-dots aria-hidden="true"></div>
-  </div>
-  <button class="reader-fab" type="button" data-reader-next aria-label="Vai alla sezione successiva">↓</button>
-</div>
+      @media (min-width: 768px) { .slide { padding: 4rem; } }
+    </style>
+</head>
+<body>
+    <div id="app" class="snap-container"></div>
 
-<article class="hidden" data-text-source aria-hidden="true">
-  <section class="space-y-4">
-    <blockquote class="border-l-4 border-io-red pl-4 italic text-gray-700">
-      <p>Il viaggio sempre ricomincia, ha sempre da ricominciare, come l’esistenza, e ogni sua annotazione è un prologo; se il percorso nel mondo si trasferisce nella scrittura, esso si prolunga nel trasloco dalla realtà alla carta – scrivere appunti, ritoccarli, cancellarli parzialmente, riscriverli, spostarli, variarne la disposizione. Montaggio delle parole e delle immagini, colte dal finestrino del treno o attraversando a piedi una strada e girando l’angolo. Solo con la morte, ricorda Karl Rahner, grande teologo in cammino, cessa lo <em>status viatoris</em> dell’uomo, la sua condizione esistenziale di viaggiatore. Viaggiare dunque ha a che fare con la morte, come ben sapevano Baudelaire o Gadda, ma è anche un differire la morte; rimandare il più possibile l’arrivo, l’incontro con l’essenziale.</p>
-      <p class="mt-2">Claudio Magris, <em>L'infinito viaggiare.</em></p>
-    </blockquote>
-    <p>Dopo questa introduzione inaspettata, che però ha modo di ricordarmi di una delle esperienze più importanti della mia vita, possiamo iniziare!</p>
-  </section>
-
-  <section class="space-y-4">
-    <p>È il nostro primo viaggio senza bagaglio da stiva e nonostante alcuni dubbi sulle compagnie, EasyJet ci regalerà un viaggio senza intoppi, preso a inizio aprile per metà maggio.</p>
-    <ul class="list-disc list-inside space-y-2">
-      <li><strong>500€</strong> circa di volo (A/R) e hotel a persona</li>
-      <li>Hotel nel quartiere <strong>Eixample</strong> in <strong>Carrrer Gran Via de Les Corts Catalanes</strong> per il mio ritorno/trasferta a Milano</li>
-      <li>Temperatura sui 18-26 gradi (perfetta!)</li>
-      <li>Curiosità: tante persone fanno <strong>crossfit all'aperto</strong></li>
-    </ul>
-    <p>Ci sono molte cose da vedere e altrettante attività per riempire il tempo, dai musei e la storia all’insegna del buon cibo e relax.</p>
-  </section>
-
-  <section class="space-y-4">
-    <h2 class="font-pixel text-3xl border-l-8 border-io-green pl-3">Preparativi</h2>
-    <p>Valencia è una città di medie dimensioni, costituita dalla <strong>città vecchia</strong> e dalla <strong>città della scienza</strong>. Una zona ciclabile molto verde, giacente sul letto del fiume <strong>Turìa</strong>, percorre l'intera città da nord-ovest a sud-est.</p>
-    <p>Per orientarci abbiamo scaricato una mappa offline con <strong>CityMaps2Go</strong>, scoperto ristoranti con <strong>Love Valencia</strong> e pianificato gli spostamenti con <strong>MetroValencia</strong> ed <strong>EMTValencia</strong>. Per il pernottamento consigliamo <strong>La Casita</strong>, di Pilar, in calle Reig Genoves, prenotata tramite <strong>AirBnB</strong>.</p>
-  </section>
-
-  <section class="space-y-6">
-    <h2 class="font-pixel text-3xl border-l-8 border-io-blue pl-3">La vacanza</h2>
-
-    <div class="space-y-4">
-      <h3 class="font-pixel text-2xl">Giovedì 12 settembre 2013</h3>
-      <p>Siamo atterrati intorno alle 19.30 all'aeroporto e, con un biglietto da 3,90€, siamo giunti in centro grazie alla metropolitana. Scesi alla fermata di Machado, ho perso la mia prima scommessa valenciana, restando bloccato in metropolitana.</p>
-      <figure class="space-y-2">
-        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/ead66460-2f8b-4a4f-b821-ea9dda7ce8d7/image2.jpeg" alt="Metropolitana di Valencia" class="w-full border-4 border-brand-dark shadow-neo-sm">
-      </figure>
-      <p>Arrivati in Calle Reig Genoves, eravamo titubanti riguardo l'appartamento, ma la Tia di Pilar ci ha accolto cordialmente. Dopo un breve giro nella città vecchia, avvolta da una patina di irrealtà, siamo tornati verso casa percorrendo vie colorate illuminate da lampioni simmetrici.</p>
+    <div id="modal" class="modal">
+        <button class="btn-close" onclick="closeModal()">✕</button>
+        <button class="nav-btn nav-prev" onclick="nextImage(-1)">‹</button>
+        <img id="modal-img" src="" alt="">
+        <button class="nav-btn nav-next" onclick="nextImage(1)">›</button>
     </div>
 
-    <div class="space-y-4">
-      <h3 class="font-pixel text-2xl">Venerdì 13 settembre 2013</h3>
-      <figure class="space-y-2">
-        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/4d9aacc9-08b7-4724-9275-759be01721ac/image3.jpeg" alt="Mercato Centrale di Valencia" class="w-full border-4 border-brand-dark shadow-neo-sm">
-      </figure>
-      <p>La vacanza vera e propria è iniziata con il sole cocente sulla città vecchia. Colazione nei giardini, visita al <strong>Mercato Centrale</strong> tra profumi e salumi, ingresso alla cattedrale e alla <em>Lonja de la Seda</em>. Gli edifici imponenti creano scorci fenomenali: il consiglio è visitare senza fretta.</p>
-      <figure class="grid md:grid-cols-2 gap-4">
-        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/6f974cd5-b856-4764-ae2d-454d232f25c0/image4.jpeg" alt="Dettagli del mercato" class="w-full border-4 border-brand-dark shadow-neo-sm">
-        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/b34f43da-a19e-4d5d-864c-7b33fb49a7c1/image5.jpeg" alt="Vicolo della città vecchia" class="w-full border-4 border-brand-dark shadow-neo-sm">
-      </figure>
-      <p>Pranzo in <strong>Calle Ribera</strong> con menù economici, uno sguardo a Plaza de Toros e ai negozi di Carrer de Colón. Nel pomeriggio tramonto al mare con Daniela, conosciuta all'Apple Store, e cena con piatti tradizionali dopo una visit a Massamagrell.</p>
-      <figure class="grid md:grid-cols-2 gap-4">
-        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/1d0ff4ba-d3ce-483e-9b4b-94a7b0a7b369/image9.jpeg" alt="Street art a Valencia" class="w-full border-4 border-brand-dark shadow-neo-sm">
-        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/3ad69c06-4316-49df-95d0-b0de2321c5fd/image11.jpeg" alt="Ponte sul Turìa" class="w-full border-4 border-brand-dark shadow-neo-sm">
-      </figure>
-    </div>
+    <script>
+      const slidesData = [{"id":"intro-cover","sectionId":"intro","type":"cover","title":"CUBA: PROLOGO","color":"#4285F4","images":["https://michelemerelli.files.wordpress.com/2023/08/pxl_20230821_111330640.jpg?w=1024"],"index":0,"totalInSequence":54},{"id":"intro-content-0","sectionId":"intro","type":"content","text":["Febbraio. Giornate corte. Freddo. Voglia di caldo. Io e Michele, d’ora un poi rispettivamente Michele1 e Michele2, decidiamo di fissare un volo per la lontana estate.","Asia. Centro America. Qualsiasi cosa, basta allontanarci un po’ dalla Valle Seriana. Singapore è un’opzione, ma il volo che abbiamo visto si alza nel giro di due giorni. Vietnam l’altra. Ma cerchiamo quanto possa piovere e ci spaventano i Monsoni."],"color":"#4285F4","index":1,"totalInSequence":54},{"id":"intro-content-1","sectionId":"intro","type":"content","text":["Allora, perché non Cuba? D’altronde prima o poi bisogna pur visitarla questa peculiare isola, no? Meglio prima che l’embargo finisca, questa la narrazione degli ultimi anni.","Prenotiamo quindi i biglietti aerei e creiamo una pagina Notion per monitorare tutto il planning, da buon ingegneri. Poi, il gruppo WhatsApp dove tenere le nostre conversazioni. Una chat parallela dato che siamo solo noi due Micheli. Si chiama Crypto Cuba Social Club."],"color":"#4285F4","index":2,"totalInSequence":54},{"id":"intro-img-0","sectionId":"intro","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230821_111330640.jpg?w=1024","color":"#4285F4","index":3,"totalInSequence":54},{"id":"day-1-cover","sectionId":"day-1","type":"cover","title":"HAVANA ARRIVAL","date":"Domenica 13 Agosto 2023","color":"#EA4335","images":["https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_051739853.mp_.jpg?w=1024"],"index":4,"totalInSequence":54},{"id":"day-1-content-0","sectionId":"day-1","type":"content","text":["Fast forward qualche mese più tre ore di ritardo e siamo sul volo Iberojet da Madrid a Havana. Dei due giorni di Madrid interlocutori, della festa di Latina per il santo patrono, così come dello scambio con Gabriele negli uffici di WeWork o della festa colombiana per le strade non è questo il tempo.","Il volo è noioso, specie nella mappa che mostra uno sproporzionato aereo che si fa breccia nell’Atlantico. Torno con la mente a New York. E’ esattamente la stessa grafica. Il cibo un po’ parco, ma comunque piacevole."],"color":"#EA4335","index":5,"totalInSequence":54},{"id":"day-1-content-1","sectionId":"day-1","type":"content","text":["Atterriamo che è piena notte. I controlli vanno spediti. Proviamo a connetterci al Wi-Fi gratuito dell’aeroporto. Non va nulla. Usciamo nella zona dei Taxi, una folata di umido ci riempie la faccia, come il bagno turco di qualche mese prima nelle Dolomiti.","Sarà un bagno cubano lungo 10 giorni. Dopo aver ricontrollato i biglietti coi nomi, finalmente troviamo il nostro taxi. Ci porta velocemente in centro. Lungo la strada, viva, un sacco di persone ai lati. Qualche locale o rivenditore. Tutti a piedi."],"color":"#EA4335","index":6,"totalInSequence":54},{"id":"day-1-img-0","sectionId":"day-1","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_051739853.mp_.jpg?w=1024","color":"#EA4335","index":7,"totalInSequence":54},{"id":"day-1-content-2","sectionId":"day-1","type":"content","text":["Arriviamo all’hotel che è l’unico edificio lindo e bianco del Malecon, il lungo mare trafficato che percorre Havana a nord. Il nostro AirBnB, scoglio iniziale di sicurezza e unico prenotato in anticipo, è decadente proprio come ti aspetteresti un edificio dalle grandi arcate del Malecón. Ci sono specchi parzialmente riflettenti e bottiglie di rum che ricordano, come le Chevrolet che sfrecciano fuori, gli anni 60."],"color":"#EA4335","index":8,"totalInSequence":54},{"id":"day-2-cover","sectionId":"day-2","type":"cover","title":"GALIANO & THE CITY","date":"Lunedì 14 Agosto 2023","color":"#FBBC05","images":["https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_051706802.mp_.jpg?w=576","https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_111859691.mp_.jpg?w=576","https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_114100715.mp_.jpg?w=576","https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_152718365.mp_.jpg?w=576","https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_113612581.mp_.jpg?w=576","https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_113724289.mp_.jpg?w=576","https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_115539246.mp_.jpg?w=576","https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_133105740.mp_.jpg?w=576","https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_143610181.mp_.jpg?w=576","https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_231214157.mp_.jpg?w=576","https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_232224591.mp_-edited.jpg","https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_163427586.mp_-1.jpg?w=576","https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_173252336.mp_-1.jpg?w=576","https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_184523464.action_pan-01.cover_-1.jpg?w=576","https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_224017826.mp_.jpg?w=576","https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_233752274.mp_.jpg?w=576","https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_234924807.mp_.jpg?w=576","https://michelemerelli.files.wordpress.com/2023/08/pxl_20230815_012240486.mp_.jpg?w=576"],"index":9,"totalInSequence":54},{"id":"day-2-content-0","sectionId":"day-2","type":"content","text":["Ci svegliamo con un cielo limpido e l’oceano fuori dalla finestra. E’ un bellissimo hotel, bianco e con palme che rompono la monotonia. Sebbene ci venga proposta una colazione (a 5€, tariffa tipica), decidiamo di uscire a esplorare."],"color":"#FBBC05","index":10,"totalInSequence":54},{"id":"day-2-content-1","sectionId":"day-2","type":"content","text":["Fuori dall’hotel, in zona Galiano, il primo confronto con la realtà. Strade diroccate, senza tetto (alcuni senza una gamba o un braccio) che ci guardano come alieni. Mi sento uno stupido ostentatore, in polo Lacoste dietro ai miei Oakley. Il Garmin che ho al polso probabilmente potrebbe far sopravvivere una di queste persone per più di un anno."],"color":"#FBBC05","index":11,"totalInSequence":54},{"id":"day-2-img-0","sectionId":"day-2","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_051706802.mp_.jpg?w=576","color":"#FBBC05","index":12,"totalInSequence":54},{"id":"day-2-content-2","sectionId":"day-2","type":"content","text":["Arrivati in centro, nella zona del Campidoglio, verso Havana Vecchia, la zona più turistica, siamo assaliti da persone che propongono cambio di monete, che ci chiedono da dove veniamo, che ci dicono di avere parenti e conoscenti in Italia.","Uno ci propone un cambio di euro 1:200 pesos. Ci fa strano, perché la banca cambia 1:120. Sheriff, così si presenta, ci inizia a raccontare la sua vita, scappando da Milano e da un matrimonio andato a puttane. Un po’ in tutti i sensi. Sì, perché ora a Havana sa come divertirsi."],"color":"#FBBC05","index":13,"totalInSequence":54},{"id":"day-2-content-3","sectionId":"day-2","type":"content","text":["Cerchiamo un posto per pranzo, vogliamo iniziare a provare l’emozione di un ristorante dello stato, con prezzi calmierati e qualità tutta da scoprire. Ci ferma l’offerta di un pollo con riso e cerveza a 520 pesos. Praticamente 2€. La qualità è bassa, come testimoniano le mosche che ronzano un po’ ovunque, ma il pranzo popolare nei ristoranti calmierati statali va provato."],"color":"#FBBC05","index":14,"totalInSequence":54},{"id":"day-2-img-1","sectionId":"day-2","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_111859691.mp_.jpg?w=576","color":"#FBBC05","index":15,"totalInSequence":54},{"id":"day-2-content-4","sectionId":"day-2","type":"content","text":["Il giro serale inizia con un Daiquiri al Floridita. E’ un locale palesemente presente sulle Lonley Planet di tutto il mondo. Dentro un sacco di occidentali che filmano un gruppo di cantanti che cantano i classici dei Buena Vista Social Club."],"color":"#FBBC05","index":16,"totalInSequence":54},{"id":"day-2-img-2","sectionId":"day-2","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_114100715.mp_.jpg?w=576","color":"#FBBC05","index":17,"totalInSequence":54},{"id":"day-2-img-3","sectionId":"day-2","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_152718365.mp_.jpg?w=576","color":"#FBBC05","index":18,"totalInSequence":54},{"id":"day-2-img-4","sectionId":"day-2","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_113612581.mp_.jpg?w=576","color":"#FBBC05","index":19,"totalInSequence":54},{"id":"day-2-img-5","sectionId":"day-2","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_113724289.mp_.jpg?w=576","color":"#FBBC05","index":20,"totalInSequence":54},{"id":"day-2-img-6","sectionId":"day-2","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_115539246.mp_.jpg?w=576","color":"#FBBC05","index":21,"totalInSequence":54},{"id":"day-2-img-7","sectionId":"day-2","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_133105740.mp_.jpg?w=576","color":"#FBBC05","index":22,"totalInSequence":54},{"id":"day-2-img-8","sectionId":"day-2","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_143610181.mp_.jpg?w=576","color":"#FBBC05","index":23,"totalInSequence":54},{"id":"day-2-img-9","sectionId":"day-2","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_231214157.mp_.jpg?w=576","color":"#FBBC05","index":24,"totalInSequence":54},{"id":"day-2-img-10","sectionId":"day-2","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_232224591.mp_-edited.jpg","color":"#FBBC05","index":25,"totalInSequence":54},{"id":"day-2-img-11","sectionId":"day-2","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_163427586.mp_-1.jpg?w=576","color":"#FBBC05","index":26,"totalInSequence":54},{"id":"day-2-img-12","sectionId":"day-2","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_173252336.mp_-1.jpg?w=576","color":"#FBBC05","index":27,"totalInSequence":54},{"id":"day-2-img-13","sectionId":"day-2","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_184523464.action_pan-01.cover_-1.jpg?w=576","color":"#FBBC05","index":28,"totalInSequence":54},{"id":"day-2-img-14","sectionId":"day-2","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_224017826.mp_.jpg?w=576","color":"#FBBC05","index":29,"totalInSequence":54},{"id":"day-2-img-15","sectionId":"day-2","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_233752274.mp_.jpg?w=576","color":"#FBBC05","index":30,"totalInSequence":54},{"id":"day-2-img-16","sectionId":"day-2","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230814_234924807.mp_.jpg?w=576","color":"#FBBC05","index":31,"totalInSequence":54},{"id":"day-2-img-17","sectionId":"day-2","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230815_012240486.mp_.jpg?w=576","color":"#FBBC05","index":32,"totalInSequence":54},{"id":"day-3-cover","sectionId":"day-3","type":"cover","title":"VIÑALES RAIN","date":"Martedì 15 Agosto 2023","color":"#34A853","images":["https://michelemerelli.files.wordpress.com/2023/08/pxl_20230815_170919528.mp_.jpg?w=1024","https://michelemerelli.files.wordpress.com/2023/08/pxl_20230815_171554417.mp_.jpg?w=1024","https://michelemerelli.files.wordpress.com/2023/08/pxl_20230815_200259232.mp_.jpg?w=576","https://michelemerelli.files.wordpress.com/2023/08/pxl_20230815_201856193.mp_.jpg?w=576","https://michelemerelli.files.wordpress.com/2023/08/pxl_20230815_202552359.mp_.jpg?w=576","https://michelemerelli.files.wordpress.com/2023/08/pxl_20230816_001445609.mp_.jpg?w=576","https://michelemerelli.files.wordpress.com/2023/08/pxl_20230816_002438130.mp_.jpg?w=576","https://michelemerelli.files.wordpress.com/2023/08/pxl_20230816_011910881.mp_.jpg?w=576","https://michelemerelli.files.wordpress.com/2023/08/pxl_20230815_215919773.mp_.jpg?w=1024","https://michelemerelli.files.wordpress.com/2023/08/pxl_20230816_005225592.mp_-edited-1.jpg"],"index":33,"totalInSequence":54},{"id":"day-3-content-0","sectionId":"day-3","type":"content","text":["Ci svegliamo alla buon’ora, alle 8 arriverà il taxi per Viñales. Facciamo tappa al Cafe Arcangel, poco lontano da casa. Qui, troviamo una colazione abbondante e delle buonissime brioches. Mentre gustiamo la colazione, si siedono accanto a noi due italiani. Sono simpaticissimi. Lui, Michele, il terzo del gruppo, al Cafe Arcangel."],"color":"#34A853","index":34,"totalInSequence":54},{"id":"day-3-content-1","sectionId":"day-3","type":"content","text":["Il taxi non è puntualissimo, ma arriva. Il viaggio, con aria condizionata, seppure un po’ scomodo, corre veloce. Sull’autostrada non mancano carretti che attraversano la strada o la percorrono contro mano. Poco dopo metà viaggio, la pioggia torrenziale. I tergicristalli per fortuna sembrano funzionare, anche se vanno a scatti."],"color":"#34A853","index":35,"totalInSequence":54},{"id":"day-3-img-0","sectionId":"day-3","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230815_170919528.mp_.jpg?w=1024","color":"#34A853","index":36,"totalInSequence":54},{"id":"day-3-content-2","sectionId":"day-3","type":"content","text":["La pioggia non si ferma e noi siamo a Vinales. Non abbiamo idea di dove dormiremo. L’autista propone un posto e accordiamo di farci portare lì. Ci accoglie Pedrito, con la sua abbondante pancia, che ci mostra la camera mentre il diluvio scende a cascata dal tetto."],"color":"#34A853","index":37,"totalInSequence":54},{"id":"day-3-content-3","sectionId":"day-3","type":"content","text":["Poi, placatasi la tempesta, l’esplorazione della città. Un bar, molto internazionale (3J Bar de Tapas), ci accoglie per un aperitivo. Prendiamo la Michelata, visto che il nostro nome sembra essere un tema ricorrente, ed è proprio una michelata di stupidità. Arriva infatti questo miscuglio di pomodoro e birra con sale cosparso lungo il bordo del bicchiere come fosse uno shot di tequila. Decisamente non dissetante."],"color":"#34A853","index":38,"totalInSequence":54},{"id":"day-3-img-1","sectionId":"day-3","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230815_171554417.mp_.jpg?w=1024","color":"#34A853","index":39,"totalInSequence":54},{"id":"day-3-content-4","sectionId":"day-3","type":"content","text":["Passiamo nel relax il pomeriggio, esplorando la piccola città e scoprendo un campo da calcio rudimentale costeggiato da alte montagne isolate. Una bambina, in Crocs rosa in mezzo a un campo da baseball arancio acceso, ci guarda con molte domande.","Ripieghiamo per un ristorante sulla strada, sedendo sotto una bandiera di Che e una di Cuba. Il tramonto si infiamma, i riflessi dell’arancio invadono la strada."],"color":"#34A853","index":40,"totalInSequence":54},{"id":"day-3-img-2","sectionId":"day-3","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230815_200259232.mp_.jpg?w=576","color":"#34A853","index":41,"totalInSequence":54},{"id":"day-3-img-3","sectionId":"day-3","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230815_201856193.mp_.jpg?w=576","color":"#34A853","index":42,"totalInSequence":54},{"id":"day-3-img-4","sectionId":"day-3","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230815_202552359.mp_.jpg?w=576","color":"#34A853","index":43,"totalInSequence":54},{"id":"day-3-img-5","sectionId":"day-3","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230816_001445609.mp_.jpg?w=576","color":"#34A853","index":44,"totalInSequence":54},{"id":"day-3-img-6","sectionId":"day-3","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230816_002438130.mp_.jpg?w=576","color":"#34A853","index":45,"totalInSequence":54},{"id":"day-3-img-7","sectionId":"day-3","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230816_011910881.mp_.jpg?w=576","color":"#34A853","index":46,"totalInSequence":54},{"id":"day-3-img-8","sectionId":"day-3","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230815_215919773.mp_.jpg?w=1024","color":"#34A853","index":47,"totalInSequence":54},{"id":"day-3-img-9","sectionId":"day-3","type":"image-feature","imageUrl":"https://michelemerelli.files.wordpress.com/2023/08/pxl_20230816_005225592.mp_-edited-1.jpg","color":"#34A853","index":48,"totalInSequence":54},{"id":"day-4-cover","sectionId":"day-4","type":"cover","title":"THE VALLEY","date":"Mercoledì 16 Agosto 2023","color":"#4285F4","images":[],"index":49,"totalInSequence":54},{"id":"day-4-content-0","sectionId":"day-4","type":"content","text":["Ci svegliamo storditi, la colazione però è abbondante e variegata. Jugo fresco. Mango. Una frittata dolce. Poi, l’arrivo del nostro trasporto, un triciclo con motorizzazione elettrica e un pezzo di legno scomodissimo come sedia posteriore.","Si fa breccia nella vibrante notte di Viñales, illuminando con il suo faro situazioni del tutto rurali. Come, per esempio, un contadino che falcia erba a lato della strada nel buio completo."],"color":"#4285F4","index":50,"totalInSequence":54},{"id":"day-4-content-1","sectionId":"day-4","type":"content","text":["Veniamo fatti scendere nel nulla e, accompagnati da un local saggiamente munito di stivali bianchi, le pedule dell’isola, ci addentriamo in un sentiero di fango. Le torce dei cellulari hanno sostituito quelle del triciclo. Illuminano scene surreali, come quella di una scrofa con 8 maialini.","L’alba non tarda, è di un arancione piacevole, ma meno colorata del tramonto del giorno precedente. Riprendiamo poi la camminata in un sentiero segnato dalle piogge torrenziali, per poi arrivare in una zona contadina dove i buoi trainano ancora aratri come fossimo nell’800."],"color":"#4285F4","index":51,"totalInSequence":54},{"id":"day-4-content-2","sectionId":"day-4","type":"content","text":["Ci sediamo quindi in una locale fabbrica di caffè e tabacco. Qui inizia una sbrigativa introduzione alle tecniche di produzione. Mentre il nostro caffè, macinato a mano da noi, ribolle in una Bialetti annerita dal fuoco vivo, ci sediamo per ammirare la formazione di un sigaro, con veloci movimenti di mano della nostra guida."],"color":"#4285F4","index":52,"totalInSequence":54},{"id":"day-4-content-3","sectionId":"day-4","type":"content","text":["Fumiamo il sigaro, dopo aver posto miele sulle nostre labbra – filtro naturale – e sorseggiano del rum locale. Sono le 8.30 di mattina. Poi, arrivano i nostri cavalli ed inizia una spedizione nel fango."],"color":"#4285F4","index":53,"totalInSequence":54}];
+      
+      const app = document.getElementById('app');
+      const modal = document.getElementById('modal');
+      const modalImg = document.getElementById('modal-img');
+      let currentModalImages = [];
+      let currentImageIndex = 0;
 
-    <div class="space-y-4">
-      <h3 class="font-pixel text-2xl">Sabato 14 settembre 2013</h3>
-      <p>Giornata dedicata alla <strong>Città della Scienza e delle Arti</strong>. Con EMTValencia abbiamo raggiunto il complesso di Calatrava, metafisico nelle sue architetture bianche che si specchiano nell'acqua. Abbiamo scelto la combinazione Museo della Scienza + Oceanogràfic.</p>
-      <figure class="grid md:grid-cols-3 gap-4">
-        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/e0103df2-6d22-4f9b-8c5b-296b8b8a1eac/image17.jpeg" alt="Città della Scienza" class="w-full border-4 border-brand-dark shadow-neo-sm">
-        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/b9681593-fd55-4b07-9d30-e61a271f8f00/image18.jpeg" alt="Dettagli del museo" class="w-full border-4 border-brand-dark shadow-neo-sm">
-        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/8afca8fd-a467-4572-81d1-b232a9ba32b7/image19.jpeg" alt="Architettura di Calatrava" class="w-full border-4 border-brand-dark shadow-neo-sm">
-      </figure>
-      <p>Il Museo della Scienza offre esperimenti interattivi, sezioni dedicate alla domotica e un'esposizione sul genoma umano con 22 zone tematiche. Nel pomeriggio Oceanogràfic: tunnel sottomarini, spettacolo dei delfini e incontri con leoni marini e squali.</p>
-      <figure class="grid md:grid-cols-3 gap-4">
-        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/283e0f46-ecf4-404f-b9c4-2f4d6578af2b/image23.jpeg" alt="Esperimenti interattivi" class="w-full border-4 border-brand-dark shadow-neo-sm">
-        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/4a805f1a-1be0-4304-a062-482bbe9d5622/image27.jpeg" alt="Tunnel dell'Oceanogràfic" class="w-full border-4 border-brand-dark shadow-neo-sm">
-        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/ef81fe18-8175-4d98-aa45-960e4d30189e/image28.jpeg" alt="Delfini in vasca" class="w-full border-4 border-brand-dark shadow-neo-sm">
-      </figure>
-      <p>La serata è proseguita tra l'Umbreacle e le luci serali del complesso, prima di un lungo ritorno a piedi verso casa.</p>
-    </div>
+      // Render Slides
+      slidesData.forEach((slide, idx) => {
+          const el = document.createElement('section');
+          el.className = 'slide';
+          el.id = 'slide-' + idx;
+          
+          let contentHtml = '';
+          const barHeight = ((slide.index + 1) / slide.totalInSequence) * 100;
 
-    <div class="space-y-4">
-      <h3 class="font-pixel text-2xl">Domenica 15 settembre 2013</h3>
-      <p>Giornata più calma, iniziata con un brunch a base di pasta al pesto. Visita all'IVAM con mostre fotografiche e dedicate alla moda, poi al Museo delle Belle Arti tra pale d'altare, Goya e Degrain.</p>
-      <figure class="grid md:grid-cols-2 gap-4">
-        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/480b5605-3775-4590-9574-0e8cd2349563/image31.jpeg" alt="Mostra all'IVAM" class="w-full border-4 border-brand-dark shadow-neo-sm">
-        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/1ae39a08-b741-409c-a28a-0afb954967bc/image34.jpeg" alt="Museo delle Belle Arti" class="w-full border-4 border-brand-dark shadow-neo-sm">
-      </figure>
-      <p>Passeggiata nei <strong>Jardines de Monforte</strong>, tramonto sulla spiaggia di Les Arenes tra gatti curiosi e pontile panoramico. Serata vivace al porto, mercatino e caipiroska al Vlue prima di rientrare.</p>
-    </div>
+          const progressBar = `
+            <div class="progress-bar">
+                <div class="progress-fill" style="height: ${barHeight}%; background-color: ${slide.color}"></div>
+            </div>
+          `;
 
-    <div class="space-y-4">
-      <h3 class="font-pixel text-2xl">Lunedì 16 settembre 2013</h3>
-      <p>Ultima giornata piena, vissuta in bicicletta. Noleggio da <strong>ValenciaBikes</strong> e immersione nel parco del Turìa fino al <strong>Gulliver gigante</strong>, tra scivoli e rampe.</p>
-      <figure class="grid md:grid-cols-2 gap-4">
-        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/26e453e9-90eb-4601-b629-a5d2f380e44b/image38.jpeg" alt="Percorsi nel Turìa" class="w-full border-4 border-brand-dark shadow-neo-sm">
-        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/0233141e-ee22-46c9-b0f3-9ae8d516b109/image39.jpeg" alt="Laghetto nel parco" class="w-full border-4 border-brand-dark shadow-neo-sm">
-      </figure>
-      <p>Costeggiando l'Oceanogràfic abbiamo raggiunto la spiaggia a sud della città, con acqua limpida e macchia mediterranea, per poi proseguire verso l'<strong>Albufera</strong>. Dopo chilometri tra risaie e ciclabili diramate, siamo arrivati a <strong>El Palmar</strong> per una paella valenciana accompagnata da Tinto de Verano.</p>
-      <figure class="grid md:grid-cols-2 gap-4">
-        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/fcc0855e-0bdd-4024-bd17-d54372b74dc1/image40.jpeg" alt="Spiaggia verso l'Albufera" class="w-full border-4 border-brand-dark shadow-neo-sm">
-        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/13e954a9-0e12-406a-ab53-a19b351488de/image42.jpeg" alt="Ristorante a El Palmar" class="w-full border-4 border-brand-dark shadow-neo-sm">
-      </figure>
-      <p>Il rientro notturno, rischiarato da una luna piena, ha concluso una giornata intensa e memorabile.</p>
-    </div>
+          if (slide.type === 'cover') {
+              contentHtml = `
+                  <div class="max-w-5xl mx-auto w-full pl-6">
+                      <div class="font-pixel text-3xl uppercase opacity-80" style="color: ${slide.color}">${slide.date || ''}</div>
+                      <h1 class="font-pixel text-7xl md:text-9xl leading-none uppercase mt-4">${slide.title}</h1>
+                      <div class="w-32 h-4 mt-6" style="background-color: ${slide.color}"></div>
+                  </div>
+              `;
+          } else if (slide.type === 'content') {
+              contentHtml = `
+                 <div class="max-w-5xl mx-auto w-full relative pl-6">
+                    <div class="absolute -left-8 top-0 font-pixel text-9xl opacity-5 select-none" style="color: ${slide.color}">${slide.index}</div>
+                    <div class="prose prose-2xl">
+                        ${slide.text.map(p => `<p class="font-sans text-2xl md:text-4xl mb-8 leading-relaxed">${p}</p>`).join('')}
+                    </div>
+                 </div>
+              `;
+          } else if (slide.type === 'image-feature') {
+              contentHtml = `
+                  <div class="w-full h-full flex items-center justify-center relative p-4 cursor-zoom-in" onclick="openModal(['${slide.imageUrl}'])">
+                      <img src="${slide.imageUrl}" class="max-w-full max-h-full object-contain shadow-2xl border-4 border-white" />
+                      <div class="absolute bottom-4 left-4 font-pixel text-2xl bg-white px-2 text-gray-400">FIG. ${slide.index}</div>
+                  </div>
+              `;
+          }
 
-    <div class="space-y-4">
-      <h3 class="font-pixel text-2xl">Martedì 17 settembre 2013</h3>
-      <p>Ultima mezza giornata tra valigie e spesa per la cena del rientro. Il <strong>MuVIM</strong> ci ha stupiti con mostre su tipografia e credenze popolari, mentre l'Apple Store è stata l'occasione per salutare Daniela.</p>
-      <figure class="grid md:grid-cols-2 gap-4">
-        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/ff637d04-5b53-4e52-9bde-236aedaeb865/image44.jpeg" alt="Allestimento al MuVIM" class="w-full border-4 border-brand-dark shadow-neo-sm">
-        <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/c18d6a0a-0cda-418b-969c-0abdb3fc54a7/23c9bb71-7abd-49ca-a4c4-b427c8f03183/image45.jpeg" alt="Agua de Valencia" class="w-full border-4 border-brand-dark shadow-neo-sm">
-      </figure>
-      <p>Ultima tappa per assaggiare l'<strong>Agua de Valencia</strong> in Avinguda de Maria Cristina, con effetto sorpresa. Corse finali verso l'aeroporto, cena sul volo per Bergamo e un freddo che ha sigillato la fine di un viaggio luminosa quanto indimenticabile.</p>
-    </div>
-  </section>
-</article>
+          el.innerHTML = progressBar + contentHtml;
+          app.appendChild(el);
+      });
 
-    </main>
-  </div>
-  <script src="reader.js"></script>
+      // Intersection Observer for Animation
+      const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                  entry.target.classList.add('visible');
+              }
+          });
+      }, { threshold: 0.2 });
+
+      document.querySelectorAll('.slide').forEach(slide => observer.observe(slide));
+
+      // Modal Logic
+      window.openModal = (images) => {
+          currentModalImages = images;
+          currentImageIndex = 0;
+          updateModalImage();
+          modal.classList.add('open');
+      };
+
+      window.closeModal = () => {
+          modal.classList.remove('open');
+      };
+
+      window.nextImage = (dir) => {
+          currentImageIndex = (currentImageIndex + dir + currentModalImages.length) % currentModalImages.length;
+          updateModalImage();
+      };
+
+      function updateModalImage() {
+          modalImg.src = currentModalImages[currentImageIndex];
+      }
+    </script>
 </body>
 </html>
