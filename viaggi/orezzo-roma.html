@@ -34,11 +34,36 @@
     }
   </script>
   <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
     .bg-grid-pattern {
       background-image:
         linear-gradient(to right, #000000 1px, transparent 1px),
         linear-gradient(to bottom, #000000 1px, transparent 1px);
       background-size: 24px 24px;
+    }
+
+    .toc-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 0.85rem;
+      border: 2px solid #202124;
+      background: #ffffff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      box-shadow: 2px 2px 0px 0px rgba(32, 33, 36, 1);
+      transition: transform 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
+    }
+
+    .toc-pill:hover {
+      transform: translateY(-2px);
+      box-shadow: 4px 4px 0px 0px rgba(32, 33, 36, 1);
+      background: #eef2ff;
     }
   </style>
 </head>
@@ -68,10 +93,18 @@
         <figcaption class="text-sm text-gray-600 font-mono">Vignetta di Altan, tratta dal libro <em>Tre uomini in bicicletta</em>, di Paolo Rumiz.</figcaption>
       </figure>
 
-      <article class="space-y-8 text-[15px] leading-relaxed font-mono">
+      <nav aria-label="Navigazione tappe" class="sticky top-4 z-20 bg-white/95 backdrop-blur border-2 border-brand-dark shadow-neo-sm px-4 py-3 flex flex-wrap items-center gap-3">
+        <span class="font-pixel text-2xl">Tappe</span>
+        <a class="toc-pill" href="#giorno-1">Giorno 1</a>
+        <a class="toc-pill" href="#giorno-2">Giorno 2</a>
+        <a class="toc-pill" href="#giorno-3">Giorno 3</a>
+        <a class="toc-pill" href="#giorno-4">Giorno 4</a>
+      </nav>
+
+      <article class="space-y-8 text-[17px] md:text-lg leading-8 font-mono">
         <p>Per una sfida con me stesso, per vedere un po’ di mondo che c’è là fuori, per la settimana della mobilità sostenibile, per buttar giù qualche chilo, per il tanto tempo disponibile, per stare un po’ col mio fratello, e colla mia bicicletta nonché per un pizzico di follia.</p>
 
-        <section class="space-y-4">
+        <section class="space-y-4" id="giorno-1">
           <h2 class="font-pixel text-3xl border-l-8 border-io-red pl-3">Giorno 1: Orezzo – Ravarano, 192km</h2>
           <p class="text-sm text-gray-600">Immagini per gentile concessione di Google Italia. Al pippottino e ai chilometri che ha a fianco non fate troppo caso.</p>
           <figure class="space-y-3">
@@ -125,7 +158,7 @@
           </div>
         </section>
 
-        <section class="space-y-4">
+        <section class="space-y-4" id="giorno-2">
           <h2 class="font-pixel text-3xl border-l-8 border-io-blue pl-3">Giorno 2: Ravarano – Riparbella, 204km</h2>
           <figure class="space-y-3">
             <img src="https://michelemerelli.files.wordpress.com/2015/09/schermata-2015-09-26-alle-17-32-55.png?w=1024&h=775" alt="Mappa della tappa 2" class="w-full border-4 border-brand-dark shadow-neo-sm">
@@ -176,7 +209,7 @@
           </div>
         </section>
 
-        <section class="space-y-4">
+        <section class="space-y-4" id="giorno-3">
           <h2 class="font-pixel text-3xl border-l-8 border-io-green pl-3">Giorno 3: Riparbella – Montalto di Castro, 186km</h2>
           <figure class="space-y-3">
             <img src="https://michelemerelli.files.wordpress.com/2015/09/schermata-2015-09-27-alle-11-33-34.png?w=1024&h=832" alt="Mappa della tappa 3" class="w-full border-4 border-brand-dark shadow-neo-sm">
@@ -249,7 +282,7 @@
           </figure>
         </section>
 
-        <section class="space-y-4">
+        <section class="space-y-4" id="giorno-4">
           <h2 class="font-pixel text-3xl border-l-8 border-io-yellow pl-3">Giorno 4: Montalto di Castro – Roma, 107km</h2>
           <p class="font-semibold">Tappa piatta, pianeggiante, dritta. Un po’ sulla costa, un po’ nel frenetico entroterra. Qualche artificiale saliscendi e poi i colli, in prossimità della Capitale.</p>
           <figure class="space-y-3">
