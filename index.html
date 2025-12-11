@@ -267,7 +267,10 @@
             { title: "RaiGulp - VeI2ax", date: "2011", link: "https://youtu.be/D0Ogtbyk9Ho" },
             { title: "Famiglia Merelli Mattino 5", date: "2005", link: "https://youtu.be/OMpfHwwslaU" },
             { title: "Famiglia Merelli Rai", date: "2023", link: "https://youtu.be/7SbaoWOgJGo" }
-        ],
+        ]
+      };
+
+      const travelsData = {
         "Cicloviaggi": [
             { title: "Cuba", desc: "Guida e ricordi di viaggio", link: "./viaggi/valencia.html" },
             { title: "Giappone", desc: "Bozza del diario di viaggio", link: "./viaggi/japan.html" },
@@ -749,6 +752,33 @@
                     <h3 className="font-pixel text-3xl text-brand-dark border-b-2 border-brand-dark pb-2 inline-block">{section}</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {items.map((item, i) => (
+                            <a
+                                key={i}
+                                href={item.link}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="bg-white border-2 border-brand-dark p-4 shadow-sm hover:shadow-neo-sm hover:bg-gray-50 transition-all flex justify-between items-center group"
+                            >
+                                <div>
+                                    <h4 className="font-bold text-lg leading-tight group-hover:text-io-blue transition-colors">{item.title}</h4>
+                                    <p className="font-mono text-sm text-gray-500 mt-1">{item.date || item.desc}</p>
+                                </div>
+                                <ArrowUpRight size={20} className="text-gray-400 group-hover:text-brand-dark" />
+                            </a>
+                        ))}
+                    </div>
+                </div>
+            ))}
+        </div>
+      );
+
+      const TravelsContent = () => (
+        <div className="space-y-8">
+            {Object.entries(travelsData).map(([section, items]) => (
+                <div key={section} className="space-y-4">
+                    <h3 className="font-pixel text-3xl text-brand-dark border-b-2 border-brand-dark pb-2 inline-block">{section}</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {items.map((item, i) => (
                             <a 
                                 key={i}
                                 href={item.link}
@@ -1004,29 +1034,51 @@
                     </div>
                 </Card>
 
-                {/* 5. Press & Travels - New Card */}
+                {/* 5. Press Card */}
                 <Card
                     className="bg-white group min-h-[220px] justify-between text-brand-dark cursor-pointer border-4 border-brand-dark"
                     onClick={() => setActiveOverlay('press')}
                 >
                     <div className="flex justify-between items-start">
                         <div className="p-3 bg-white border-2 border-brand-dark shadow-sm text-brand-dark rounded-none">
-                            <Plane size={28} />
+                            <Newspaper size={28} />
                         </div>
                         <div className="w-10 h-10 bg-io-blue/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
                              <ArrowUpRight size={24} className="text-brand-dark" />
                         </div>
                     </div>
                     <div className="mt-auto">
-                        <h3 className="font-pixel text-4xl mb-1 leading-none">PRESS & TRAVELS</h3>
-                        <p className="font-bold font-mono text-sm opacity-60 mb-4">Articles & Diaries</p>
+                        <h3 className="font-pixel text-4xl mb-1 leading-none">PRESS</h3>
+                        <p className="font-bold font-mono text-sm opacity-60 mb-4">Articles & Interviews</p>
                         <div className="inline-block px-3 py-1 border-2 border-brand-dark bg-brand-dark text-white font-pixel text-lg shadow-sm group-hover:shadow-none transition-shadow">
-                          VIEW ARCHIVE ->
+                          VIEW CLIPPINGS ->
                         </div>
                     </div>
                 </Card>
 
-                {/* 6. Resources Card */}
+                {/* 6. Travels Card */}
+                <Card
+                    className="bg-io-red group min-h-[220px] justify-between text-brand-dark cursor-pointer border-4 border-brand-dark"
+                    onClick={() => setActiveOverlay('travels')}
+                >
+                    <div className="flex justify-between items-start">
+                        <div className="p-3 bg-white border-2 border-brand-dark shadow-sm text-brand-dark rounded-none">
+                            <Plane size={28} />
+                        </div>
+                        <div className="w-10 h-10 bg-black/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                             <ArrowUpRight size={24} className="text-brand-dark" />
+                        </div>
+                    </div>
+                    <div className="mt-auto">
+                        <h3 className="font-pixel text-4xl mb-1 leading-none">TRAVELS</h3>
+                        <p className="font-bold font-mono text-sm opacity-90 mb-4">Cycling diaries & guides</p>
+                        <div className="inline-block px-3 py-1 border-2 border-brand-dark bg-white text-brand-dark font-pixel text-lg shadow-sm group-hover:shadow-none transition-shadow">
+                          VIEW JOURNALS ->
+                        </div>
+                    </div>
+                </Card>
+
+                {/* 7. Resources Card */}
                 <Card
                     className="bg-io-green/80 group min-h-[220px] justify-between text-brand-dark cursor-pointer border-4 border-brand-dark relative overflow-hidden"
                     onClick={() => { setResourceIndex(0); setActiveOverlay('resources'); }}
@@ -1051,7 +1103,7 @@
                     </div>
                 </Card>
 
-                {/* 7. Done Page */}
+                {/* 8. Done Page */}
                 <Card
                     className="bg-white group min-h-[220px] justify-between text-brand-dark cursor-pointer border-4 border-brand-dark"
                     onClick={() => window.open('./done.html', '_self')}
@@ -1073,7 +1125,7 @@
                     </div>
                 </Card>
 
-                {/* 8. Spotify Card */}
+                {/* 9. Spotify Card */}
                 <Card
                     className="bg-[#1DB954] group min-h-[220px] justify-between text-brand-dark cursor-pointer border-4 border-brand-dark"
                     onClick={() => window.open('https://open.spotify.com/show/7ukghSFquExHfZCmNG8jl3', '_blank')}
@@ -1106,8 +1158,12 @@
                   <AppsContent />
               </Overlay>
 
-              <Overlay isOpen={activeOverlay === 'press'} onClose={closeOverlay} title="PRESS & TRAVELS" color="bg-white">
+              <Overlay isOpen={activeOverlay === 'press'} onClose={closeOverlay} title="PRESS" color="bg-white">
                   <PressContent />
+              </Overlay>
+
+              <Overlay isOpen={activeOverlay === 'travels'} onClose={closeOverlay} title="TRAVELS" color="bg-io-red">
+                  <TravelsContent />
               </Overlay>
 
               <Overlay isOpen={activeOverlay === 'resources'} onClose={closeOverlay} title="RESOURCES" color="bg-io-green/80">
