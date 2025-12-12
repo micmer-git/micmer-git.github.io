@@ -799,115 +799,169 @@
         </div>
       );
 
-      const ResourcesContent = ({ initialIndex = 0 }) => {
-        const [searchTerm, setSearchTerm] = useState('');
-        const [selectedResource, setSelectedResource] = useState(resourcesData[initialIndex]);
-        const [activeSection, setActiveSection] = useState('content');
+        const ResourcesContent = ({ initialIndex = 0, onSelectResource }) => {
+          const [searchTerm, setSearchTerm] = useState('');
+          const [selectedResource, setSelectedResource] = useState(resourcesData[initialIndex]);
+          const [activeSection, setActiveSection] = useState('content');
 
-        useEffect(() => {
-          setSelectedResource(resourcesData[initialIndex]);
-        }, [initialIndex]);
+          useEffect(() => {
+            const safeIndex = Math.min(Math.max(0, initialIndex), resourcesData.length - 1);
+            setSelectedResource(resourcesData[safeIndex]);
+          }, [initialIndex]);
 
-        useEffect(() => {
-          setActiveSection('content');
-        }, [selectedResource]);
+          useEffect(() => {
+            setActiveSection('content');
+          }, [selectedResource]);
 
-        const filteredResources = resourcesData.filter((resource) => {
+          useEffect(() => {
+            if (!selectedResource) return;
+            const selectedIndex = resourcesData.findIndex((resource) => resource.title === selectedResource.title);
+            if (selectedIndex !== -1) {
+              onSelectResource?.(selectedIndex);
+            }
+          }, [selectedResource, onSelectResource]);
+
+          const filteredResources = resourcesData.filter((resource) => {
             const text = searchTerm.toLowerCase();
             return (
-                resource.title.toLowerCase().includes(text) ||
-                resource.source.toLowerCase().includes(text) ||
-                resource.type.toLowerCase().includes(text) ||
-                resource.tags.some((tag) => tag.toLowerCase().includes(text))
+              resource.title.toLowerCase().includes(text) ||
+              resource.source.toLowerCase().includes(text) ||
+              resource.type.toLowerCase().includes(text) ||
+              resource.tags.some((tag) => tag.toLowerCase().includes(text))
             );
-        });
+          });
 
-        const sectionLabels = {
-          data: 'Data',
-          deepDive: 'Deep Dive',
-          argumentStructure: 'Argument Structure',
-          content: 'Full Content'
+          const sectionLabels = {
+            data: 'Data',
+            deepDive: 'Deep Dive',
+            argumentStructure: 'Argument Structure',
+            content: 'Full Content'
+          };
+
+          return (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="space-y-4">
+                <div className="bg-white border-2 border-brand-dark p-4 shadow-sm">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Search size={18} className="text-brand-dark" />
+                    <h3 className="font-pixel text-2xl">Search</h3>
+                  </div>
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="Filter by title, source, or tag"
+                    className="w-full border-2 border-brand-dark px-3 py-2 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-io-blue"
+                  />
+                </div>
+                <div className="space-y-3">
+                  {filteredResources.length === 0 && (
+                    <div className="bg-white border-2 border-brand-dark p-4 font-mono text-sm">No resources match this search.</div>
+                  )}
+                  {filteredResources.map((resource) => (
+                    <button
+                      key={resource.title}
+                      onClick={() => setSelectedResource(resource)}
+                      className={`w-full text-left border-2 border-brand-dark bg-white p-4 shadow-sm hover:shadow-neo-sm transition-all ${selectedResource?.title === resource.title ? 'bg-io-blue/10' : ''}`}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="font-mono text-[11px] uppercase tracking-widest text-gray-600">{resource.type}</p>
+                          <h4 className="font-pixel text-2xl leading-tight">{resource.title}</h4>
+                          <p className="font-mono text-xs text-gray-600 mt-1">Source: {resource.source}</p>
+                        </div>
+                        <ArrowUpRight size={18} className="text-brand-dark" />
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="lg:col-span-2 space-y-4">
+                {selectedResource ? (
+                  <>
+                    <div className="flex flex-wrap gap-2 items-center">
+                      <span className="px-2 py-1 border border-brand-dark bg-io-green/20 font-mono text-[10px] uppercase tracking-widest">{selectedResource.type}</span>
+                      <span className="px-2 py-1 border border-brand-dark bg-io-yellow/40 font-mono text-[10px] uppercase tracking-widest">{selectedResource.source}</span>
+                      {selectedResource.tags.map((tag) => (
+                        <span key={tag} className="px-2 py-1 border border-brand-dark bg-white font-mono text-[10px] uppercase tracking-widest">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {Object.entries(sectionLabels).map(([key, label]) => (
+                        <button
+                          key={key}
+                          onClick={() => setActiveSection(key)}
+                          className={`px-3 py-2 border-2 border-brand-dark font-pixel text-sm shadow-sm transition-all ${activeSection === key ? 'bg-io-blue text-white' : 'bg-white hover:shadow-neo-sm'}`}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="bg-white border-2 border-brand-dark p-4 shadow-neo max-h-[65vh] overflow-y-auto">
+                      <div className="resource-content" dangerouslySetInnerHTML={{ __html: selectedResource.sections[activeSection] }} />
+                    </div>
+                  </>
+                ) : (
+                  <div className="bg-white border-2 border-brand-dark p-4 font-mono text-sm">Select a resource to view its content.</div>
+                )}
+              </div>
+            </div>
+          );
         };
 
-        return (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="space-y-4">
-                    <div className="bg-white border-2 border-brand-dark p-4 shadow-sm">
-                        <div className="flex items-center gap-2 mb-3">
-                            <Search size={18} className="text-brand-dark" />
-                            <h3 className="font-pixel text-2xl">Search</h3>
-                        </div>
-                        <input
-                            type="text"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            placeholder="Filter by title, source, or tag"
-                            className="w-full border-2 border-brand-dark px-3 py-2 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-io-blue"
-                        />
-                    </div>
-                    <div className="space-y-3">
-                        {filteredResources.length === 0 && (
-                            <div className="bg-white border-2 border-brand-dark p-4 font-mono text-sm">No resources match this search.</div>
-                        )}
-                        {filteredResources.map((resource) => (
-                            <button
-                                key={resource.title}
-                                onClick={() => setSelectedResource(resource)}
-                                className={`w-full text-left border-2 border-brand-dark bg-white p-4 shadow-sm hover:shadow-neo-sm transition-all ${selectedResource?.title === resource.title ? 'bg-io-blue/10' : ''}`}
-                            >
-                                <div className="flex items-start justify-between gap-3">
-                                    <div>
-                                        <p className="font-mono text-[11px] uppercase tracking-widest text-gray-600">{resource.type}</p>
-                                        <h4 className="font-pixel text-2xl leading-tight">{resource.title}</h4>
-                                        <p className="font-mono text-xs text-gray-600 mt-1">Source: {resource.source}</p>
-                                    </div>
-                                    <ArrowUpRight size={18} className="text-brand-dark" />
-                                </div>
-                            </button>
-                        ))}
-                    </div>
-                </div>
+        const App = () => {
+          const [activeOverlay, setActiveOverlay] = useState(null);
+          const [resourceIndex, setResourceIndex] = useState(0);
+          const overlayKeys = ['wiki', 'apps', 'press', 'travels', 'resources'];
 
-                <div className="lg:col-span-2 space-y-4">
-                    {selectedResource ? (
-                        <>
-                            <div className="flex flex-wrap gap-2 items-center">
-                                <span className="px-2 py-1 border border-brand-dark bg-io-green/20 font-mono text-[10px] uppercase tracking-widest">{selectedResource.type}</span>
-                                <span className="px-2 py-1 border border-brand-dark bg-io-yellow/40 font-mono text-[10px] uppercase tracking-widest">{selectedResource.source}</span>
-                                {selectedResource.tags.map((tag) => (
-                                    <span key={tag} className="px-2 py-1 border border-brand-dark bg-white font-mono text-[10px] uppercase tracking-widest">
-                                        {tag}
-                                    </span>
-                                ))}
-                            </div>
-                            <div className="flex flex-wrap gap-2">
-                                {Object.entries(sectionLabels).map(([key, label]) => (
-                                    <button
-                                        key={key}
-                                        onClick={() => setActiveSection(key)}
-                                        className={`px-3 py-2 border-2 border-brand-dark font-pixel text-sm shadow-sm transition-all ${activeSection === key ? 'bg-io-blue text-white' : 'bg-white hover:shadow-neo-sm'}`}
-                                    >
-                                        {label}
-                                    </button>
-                                ))}
-                            </div>
-                            <div className="bg-white border-2 border-brand-dark p-4 shadow-neo max-h-[65vh] overflow-y-auto">
-                                <div className="resource-content" dangerouslySetInnerHTML={{ __html: selectedResource.sections[activeSection] }} />
-                            </div>
-                        </>
-                    ) : (
-                        <div className="bg-white border-2 border-brand-dark p-4 font-mono text-sm">Select a resource to view its content.</div>
-                    )}
-                </div>
-            </div>
-        );
-      };
+          const closeOverlay = () => setActiveOverlay(null);
 
-      const App = () => {
-        const [activeOverlay, setActiveOverlay] = useState(null);
-        const [resourceIndex, setResourceIndex] = useState(0);
+          const openOverlay = (overlay, options = {}) => {
+            if (overlay === 'resources') {
+              const { resourceIndex: nextIndex = 0 } = options;
+              const safeIndex = Math.min(Math.max(0, nextIndex), resourcesData.length - 1);
+              setResourceIndex(safeIndex);
+            }
+            setActiveOverlay(overlay);
+          };
 
-        const closeOverlay = () => setActiveOverlay(null);
+          useEffect(() => {
+            const params = new URLSearchParams(window.location.search);
+            const viewParam = params.get('view');
+            const resourceParam = params.get('resource');
+
+            if (viewParam && overlayKeys.includes(viewParam)) {
+              if (viewParam === 'resources' && resourceParam !== null) {
+                const parsedIndex = parseInt(resourceParam, 10);
+                if (!Number.isNaN(parsedIndex)) {
+                  const safeIndex = Math.min(Math.max(0, parsedIndex), resourcesData.length - 1);
+                  setResourceIndex(safeIndex);
+                }
+              }
+              setActiveOverlay(viewParam);
+            }
+          }, []);
+
+          useEffect(() => {
+            const url = new URL(window.location.href);
+
+            if (activeOverlay && overlayKeys.includes(activeOverlay)) {
+              url.searchParams.set('view', activeOverlay);
+              if (activeOverlay === 'resources') {
+                url.searchParams.set('resource', resourceIndex.toString());
+              } else {
+                url.searchParams.delete('resource');
+              }
+            } else {
+              url.searchParams.delete('view');
+              url.searchParams.delete('resource');
+            }
+
+            window.history.replaceState({}, '', url);
+          }, [activeOverlay, resourceIndex]);
 
         const socialLinks = [
           { name: 'Newsletter', icon: <FileText size={20} />, url: 'https://fortissimo.substack.com/p/ff139-e-stato-lai', bg: 'hover:bg-io-yellow', text: 'text-brand-dark' },
@@ -1013,10 +1067,10 @@
                 </Card>
 
                 {/* 4. MicMer Apps - Grouped Opener */}
-                <Card 
-                    className="bg-io-red group min-h-[220px] justify-between cursor-pointer border-4 border-brand-dark"
-                    onClick={() => setActiveOverlay('apps')}
-                >
+                  <Card
+                      className="bg-io-red group min-h-[220px] justify-between cursor-pointer border-4 border-brand-dark"
+                      onClick={() => openOverlay('apps')}
+                  >
                     <div className="flex justify-between items-start">
                         <div className="p-3 bg-white border-2 border-brand-dark shadow-sm text-brand-dark rounded-none">
                             <LayoutGrid size={28} />
@@ -1035,10 +1089,10 @@
                 </Card>
 
                 {/* 5. Press Card */}
-                <Card
-                    className="bg-white group min-h-[220px] justify-between text-brand-dark cursor-pointer border-4 border-brand-dark"
-                    onClick={() => setActiveOverlay('press')}
-                >
+                  <Card
+                      className="bg-white group min-h-[220px] justify-between text-brand-dark cursor-pointer border-4 border-brand-dark"
+                      onClick={() => openOverlay('press')}
+                  >
                     <div className="flex justify-between items-start">
                         <div className="p-3 bg-white border-2 border-brand-dark shadow-sm text-brand-dark rounded-none">
                             <Newspaper size={28} />
@@ -1057,10 +1111,10 @@
                 </Card>
 
                 {/* 6. Travels Card */}
-                <Card
-                    className="bg-io-red group min-h-[220px] justify-between text-brand-dark cursor-pointer border-4 border-brand-dark"
-                    onClick={() => setActiveOverlay('travels')}
-                >
+                  <Card
+                      className="bg-io-red group min-h-[220px] justify-between text-brand-dark cursor-pointer border-4 border-brand-dark"
+                      onClick={() => openOverlay('travels')}
+                  >
                     <div className="flex justify-between items-start">
                         <div className="p-3 bg-white border-2 border-brand-dark shadow-sm text-brand-dark rounded-none">
                             <Plane size={28} />
@@ -1079,10 +1133,10 @@
                 </Card>
 
                 {/* 7. Resources Card */}
-                <Card
-                    className="bg-io-green/80 group min-h-[220px] justify-between text-brand-dark cursor-pointer border-4 border-brand-dark relative overflow-hidden"
-                    onClick={() => { setResourceIndex(0); setActiveOverlay('resources'); }}
-                >
+                  <Card
+                      className="bg-io-green/80 group min-h-[220px] justify-between text-brand-dark cursor-pointer border-4 border-brand-dark relative overflow-hidden"
+                      onClick={() => openOverlay('resources', { resourceIndex: 0 })}
+                  >
                     <div className="absolute inset-0 bg-grid-pattern opacity-15 pointer-events-none"></div>
                     <div className="flex justify-between items-start">
                         <div className="p-3 bg-white border-2 border-brand-dark shadow-sm text-brand-dark rounded-none">
@@ -1166,9 +1220,9 @@
                   <TravelsContent />
               </Overlay>
 
-              <Overlay isOpen={activeOverlay === 'resources'} onClose={closeOverlay} title="RESOURCES" color="bg-io-green/80">
-                  <ResourcesContent initialIndex={resourceIndex} />
-              </Overlay>
+                <Overlay isOpen={activeOverlay === 'resources'} onClose={closeOverlay} title="RESOURCES" color="bg-io-green/80">
+                    <ResourcesContent initialIndex={resourceIndex} onSelectResource={setResourceIndex} />
+                </Overlay>
 
             </div>
           </div>
