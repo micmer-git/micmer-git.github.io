@@ -741,23 +741,23 @@
       };
 
       const AppsContent = () => (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-2 gap-3 md:gap-4">
             {appsList.map((app) => (
-                <div 
-                    key={app.name} 
-                    className={`${app.color} border-4 ${app.border} p-6 flex flex-col justify-between min-h-[250px] shadow-neo group hover:shadow-neo-hover hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all cursor-pointer`}
+                <div
+                    key={app.name}
+                    className={`${app.color} border-[3px] ${app.border} p-4 flex flex-col justify-between min-h-[190px] shadow-neo group hover:shadow-neo-hover hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all cursor-pointer`}
                     onClick={() => window.open(app.url, '_blank')}
                 >
                     <div className="flex justify-between items-start">
-                        <div className={`p-3 bg-white border-2 border-brand-dark shadow-sm text-brand-dark rounded-none`}>
-                            {app.icon}
+                        <div className={`p-2 bg-white border-2 border-brand-dark shadow-sm text-brand-dark rounded-none`}>
+                            {React.cloneElement(app.icon, { size: 24 })}
                         </div>
-                        <ArrowUpRight size={28} className={app.textColor === 'text-white' ? 'text-white' : 'text-brand-dark'} />
+                        <ArrowUpRight size={22} className={app.textColor === 'text-white' ? 'text-white' : 'text-brand-dark'} />
                     </div>
-                    <div>
-                        <h3 className={`font-pixel text-4xl ${app.textColor} mb-2 leading-none`}>{app.name}</h3>
-                        <p className={`font-bold font-mono text-xs uppercase tracking-widest opacity-90 mb-4 ${app.textColor}`}>{app.desc}</p>
-                        <div className={`inline-block px-4 py-2 border-2 border-brand-dark bg-white text-brand-dark font-pixel text-xl shadow-sm group-hover:shadow-none transition-shadow`}>
+                    <div className="space-y-2">
+                        <h3 className={`font-pixel text-3xl ${app.textColor} leading-none`}>{app.name}</h3>
+                        <p className={`font-bold font-mono text-[10px] uppercase tracking-[0.08em] opacity-90 ${app.textColor}`}>{app.desc}</p>
+                        <div className={`inline-block px-3 py-1.5 border-2 border-brand-dark bg-white text-brand-dark font-pixel text-lg shadow-sm group-hover:shadow-none transition-shadow`}>
                           {app.action}
                         </div>
                     </div>
