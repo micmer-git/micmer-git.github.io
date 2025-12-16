@@ -1062,98 +1062,87 @@
 
                 {/* 3. Futuro Fortissimo - Wiki Trigger (Full Width) - MOVED UP TO ROW 2 */}
                 <Card
-                    className="md:col-span-3 bg-io-yellow group min-h-[220px] justify-between text-brand-dark cursor-pointer relative overflow-hidden border-4 border-brand-dark"
+                    className="md:col-span-3 bg-io-yellow group min-h-[120px] justify-center text-brand-dark cursor-pointer relative overflow-hidden border-4 border-brand-dark"
                     onClick={() => window.open('https://futurofortissimo.github.io/', '_blank')}
+                    noPadding
                 >
                     <div className="absolute inset-0 bg-grid-pattern opacity-20"></div>
-                    <div className="flex justify-between items-start relative z-10">
-                        <div className={`p-3 bg-white border-2 border-brand-dark shadow-sm text-brand-dark rounded-none`}>
-                            <Archive size={28} />
+                    <div className="relative z-10 w-full flex items-center justify-between gap-3 p-4 md:p-6">
+                        <div className="flex items-center gap-3">
+                            <span className="text-2xl">📚</span>
+                            <h3 className="font-pixel text-4xl md:text-5xl leading-none">FUTURO FORTISSIMO</h3>
                         </div>
-                        <div className="px-3 py-1 bg-brand-dark text-white text-xs font-pixel rounded-none border border-white/20">
-                            KNOWLEDGE BASE
+                        <div className="w-10 h-10 bg-brand-dark/10 flex items-center justify-center rounded-none">
+                            <ArrowUpRight size={24} className="text-brand-dark" />
                         </div>
-                    </div>
-                    <div className="relative z-10 mt-auto">
-                        <h3 className="font-pixel text-6xl mb-1 leading-none">FUTURO FORTISSIMO</h3>
                     </div>
                 </Card>
 
                 {/* 4. MicMer Apps - Grouped Opener */}
                   <Card
-                      className="bg-io-red group min-h-[220px] justify-between cursor-pointer border-4 border-brand-dark"
+                      className="bg-io-red group min-h-[120px] justify-center cursor-pointer border-4 border-brand-dark"
                       onClick={() => openOverlay('apps')}
+                      noPadding
                   >
-                    <div className="flex justify-between items-start">
-                        <div className="p-3 bg-white border-2 border-brand-dark shadow-sm text-brand-dark rounded-none">
-                            <LayoutGrid size={28} />
+                    <div className="flex items-center justify-between w-full p-4 md:p-6">
+                        <div className="flex items-center gap-3">
+                            <span className="text-2xl">🧭</span>
+                            <h3 className="font-pixel text-3xl md:text-4xl leading-none text-brand-dark">MICMER APPS</h3>
                         </div>
-                        <div className="w-10 h-10 bg-black/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                        <div className="w-10 h-10 bg-black/10 flex items-center justify-center">
                              <ArrowUpRight size={24} className="text-white" />
                         </div>
-                    </div>
-                    <div className="mt-auto">
-                        <h3 className="font-pixel text-4xl mb-1 leading-none text-brand-dark">MICMER APPS</h3>
                     </div>
                 </Card>
 
                 {/* 5. Press Card */}
                   <Card
-                      className="bg-white group min-h-[220px] justify-between text-brand-dark cursor-pointer border-4 border-brand-dark"
+                      className="bg-white group min-h-[120px] justify-center text-brand-dark cursor-pointer border-4 border-brand-dark"
                       onClick={() => openOverlay('press')}
+                      noPadding
                   >
-                    <div className="flex justify-between items-start">
-                        <div className="p-3 bg-white border-2 border-brand-dark shadow-sm text-brand-dark rounded-none">
-                            <Newspaper size={28} />
+                    <div className="flex items-center justify-between w-full p-4 md:p-6">
+                        <div className="flex items-center gap-3">
+                            <span className="text-2xl">📰</span>
+                            <h3 className="font-pixel text-3xl md:text-4xl leading-none">PRESS</h3>
                         </div>
-                        <div className="w-10 h-10 bg-io-blue/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                        <div className="w-10 h-10 bg-io-blue/10 flex items-center justify-center">
                              <ArrowUpRight size={24} className="text-brand-dark" />
                         </div>
-                    </div>
-                    <div className="mt-auto">
-                        <h3 className="font-pixel text-4xl mb-1 leading-none">PRESS</h3>
                     </div>
                 </Card>
 
                 {/* 6. Travels Card */}
                   <Card
-                      className="bg-io-red group min-h-[220px] justify-between text-brand-dark cursor-pointer border-4 border-brand-dark"
+                      className="bg-io-red group min-h-[120px] justify-center text-brand-dark cursor-pointer border-4 border-brand-dark"
                       onClick={() => openOverlay('travels')}
+                      noPadding
                   >
-                    <div className="flex justify-between items-start">
-                        <div className="p-3 bg-white border-2 border-brand-dark shadow-sm text-brand-dark rounded-none">
-                            <Plane size={28} />
+                    <div className="flex items-center justify-between w-full p-4 md:p-6">
+                        <div className="flex items-center gap-3">
+                            <span className="text-2xl">✈️</span>
+                            <h3 className="font-pixel text-3xl md:text-4xl leading-none">TRAVELS</h3>
                         </div>
-                        <div className="w-10 h-10 bg-black/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                        <div className="w-10 h-10 bg-black/10 flex items-center justify-center">
                              <ArrowUpRight size={24} className="text-brand-dark" />
                         </div>
-                    </div>
-                    <div className="mt-auto">
-                        <h3 className="font-pixel text-4xl mb-1 leading-none">TRAVELS</h3>
                     </div>
                 </Card>
 
                 {/* 7. Resources Card */}
                   <Card
-                      className="bg-io-green/80 group min-h-[220px] justify-between text-brand-dark cursor-pointer border-4 border-brand-dark relative overflow-hidden"
+                      className="bg-io-green/80 group min-h-[120px] justify-center text-brand-dark cursor-pointer border-4 border-brand-dark relative overflow-hidden"
                       onClick={() => openOverlay('resources', { resourceIndex: 0 })}
+                      noPadding
                   >
                     <div className="absolute inset-0 bg-grid-pattern opacity-15 pointer-events-none"></div>
-                    <div className="flex justify-between items-start">
-                        <div className="p-3 bg-white border-2 border-brand-dark shadow-sm text-brand-dark rounded-none">
-                            <FileText size={28} />
+                    <div className="flex items-center justify-between w-full p-4 md:p-6 relative z-10">
+                        <div className="flex items-center gap-3">
+                            <span className="text-2xl">📂</span>
+                            <h3 className="font-pixel text-3xl md:text-4xl leading-none">RESOURCES</h3>
                         </div>
-                        <div className="w-10 h-10 bg-black/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                        <div className="w-10 h-10 bg-black/10 flex items-center justify-center">
                              <ArrowUpRight size={24} className="text-brand-dark" />
-                        </div>
-                    </div>
-                    <div className="mt-auto">
-                        <h3 className="font-pixel text-4xl mb-1 leading-none">RESOURCES</h3>
-                        <p className="font-bold font-mono text-sm opacity-90 mb-4">Tagged docs & chapters</p>
-                        <div className="inline-flex items-center gap-2 px-3 py-1 border-2 border-brand-dark bg-io-green text-white font-pixel text-lg shadow-sm group-hover:shadow-none transition-shadow relative overflow-hidden">
-                          <span className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none"></span>
-                          <span className="relative">OPEN READER</span>
-                          <ArrowUpRight size={18} className="relative" />
                         </div>
                     </div>
                 </Card>
