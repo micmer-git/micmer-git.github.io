@@ -557,7 +557,6 @@
       const appsList = [
             {
                 name: 'Mangia Fortissimo',
-                desc: 'AI Recipe Assistant',
                 action: 'OPEN APP',
                 icon: <Utensils size={32} />,
                 url: 'https://ai.studio/apps/drive/1uoLqlNLJwaPKWcPuwAiD-2GCnzXY2jHz',
@@ -567,7 +566,6 @@
             },
             {
                 name: 'BuonNatalissimo!!11!',
-                desc: 'Festive story generator',
                 action: 'CELEBRATE',
                 icon: <Snowflake size={32} />,
                 url: 'https://ai.studio/apps/drive/1DJiEYZuHFr2OY2ut3ChH1Tbmy8zrAad6',
@@ -577,7 +575,6 @@
             },
             {
                 name: 'Leggi Fortissimo',
-                desc: 'AI Reading Companion',
                 action: 'READ NOW',
                 icon: <BookOpen size={32} />,
                 url: 'https://aistudio.google.com/app/prompts?state=%7B%22ids%22:%5B%221WPA0lWFGzTQP_gb7z6FWUEUGio91gAc4%22%5D,%22action%22:%22open%22,%22userId%22:%22106401608954636383910%22,%22resourceKeys%22:%7B%7D%7D&usp=sharing',
@@ -587,7 +584,6 @@
             },
             {
                 name: 'League of Strava',
-                desc: 'Compete & Analyze',
                 action: 'COMPETE',
                 icon: <Trophy size={32} />,
                 url: 'https://league-of-strava-9c2ffc34069e.herokuapp.com/',
@@ -597,7 +593,6 @@
             },
             {
                 name: 'Stravadex',
-                desc: 'Ride Data Companion',
                 action: 'OPEN APP',
                 icon: <Activity size={32} />,
                 url: 'https://ai.studio/apps/drive/1zNLUjQwue_uH_JXcendnirdaiX_6wM8D',
@@ -607,9 +602,8 @@
             },
             {
                 name: 'Meteo Fortissimo',
-                desc: 'AI Weather Forecast',
                 action: 'CHECK NOW',
-                icon: <CloudRain size={32} />, 
+                icon: <CloudRain size={32} />,
                 url: 'https://ai.studio/apps/drive/1SxGdC2joJZHbcU3BgSchJI87Z9pAiqss',
                 color: 'bg-io-blue',
                 textColor: 'text-white',
@@ -617,7 +611,6 @@
             },
             {
                 name: 'Yu-Gi-Oh Japanese',
-                desc: 'Learn with Cards',
                 action: 'START DUEL',
                 icon: <Gamepad2 size={32} />,
                 url: 'https://ai.studio/apps/drive/1oqLZiu7sr0wKv-5ruI-baKPVhh72_skH',
@@ -755,9 +748,6 @@
                     </div>
                     <div className="flex-1 min-w-0">
                         <h3 className={`font-pixel text-2xl md:text-3xl ${app.textColor} leading-none truncate`}>{app.name}</h3>
-                        <p className={`font-bold font-mono text-[10px] uppercase tracking-[0.08em] opacity-90 ${app.textColor} truncate`}>
-                          {app.desc}
-                        </p>
                     </div>
                     <ArrowUpRight size={20} className={app.textColor === 'text-white' ? 'text-white' : 'text-brand-dark'} />
                 </a>
@@ -1057,9 +1047,9 @@
 
                 {/* 2. Social Dock */}
                 <Card className="flex flex-col justify-center gap-3 bg-white">
-                   <div className="grid grid-cols-2 md:grid-cols-1 gap-3 h-full">
+                  <div className="grid grid-cols-2 md:grid-cols-1 gap-3 h-full">
                       {socialLinks.map((link) => (
-                          <a key={link.name} href={link.url} target="_blank" rel="noopener noreferrer" className={`flex items-center justify-between p-3 sm:p-4 rounded-none border-2 border-brand-dark bg-white transition-all shadow-sm hover:shadow-neo-sm ${link.bg} group h-full`}>
+                          <a key={link.name} href={link.url} target="_blank" rel="noopener noreferrer" className={`flex items-center justify-between p-2 sm:p-4 rounded-none border-2 border-brand-dark bg-white transition-all shadow-sm hover:shadow-neo-sm ${link.bg} group h-full`}>
                               <div className="flex items-center gap-2 sm:gap-3">
                                   <span className={`${link.text} group-hover:text-inherit`}>{link.icon}</span>
                                   <span className={`font-bold font-pixel text-xl sm:text-2xl mt-1 text-brand-dark group-hover:text-inherit`}>{link.name}</span>
@@ -1086,10 +1076,6 @@
                     </div>
                     <div className="relative z-10 mt-auto">
                         <h3 className="font-pixel text-6xl mb-1 leading-none">FUTURO FORTISSIMO</h3>
-                        <p className="font-bold font-mono text-base opacity-100 mb-4">Archive & Knowledge Base</p>
-                        <div className="inline-block px-3 py-1 border-2 border-brand-dark bg-white text-brand-dark font-pixel text-lg shadow-sm group-hover:shadow-none transition-shadow">
-                          EXPLORE WIKI ->
-                        </div>
                     </div>
                 </Card>
 
@@ -1108,10 +1094,6 @@
                     </div>
                     <div className="mt-auto">
                         <h3 className="font-pixel text-4xl mb-1 leading-none text-brand-dark">MICMER APPS</h3>
-                        <p className="font-bold font-mono text-sm opacity-90 mb-4 text-brand-dark">Recipes, Reading & Sport</p>
-                        <div className="inline-block px-3 py-1 border-2 border-brand-dark bg-white text-brand-dark font-pixel text-lg shadow-sm group-hover:shadow-none transition-shadow">
-                          OPEN FOLDER ->
-                        </div>
                     </div>
                 </Card>
 
@@ -1130,10 +1112,6 @@
                     </div>
                     <div className="mt-auto">
                         <h3 className="font-pixel text-4xl mb-1 leading-none">PRESS</h3>
-                        <p className="font-bold font-mono text-sm opacity-60 mb-4">Articles & Interviews</p>
-                        <div className="inline-block px-3 py-1 border-2 border-brand-dark bg-brand-dark text-white font-pixel text-lg shadow-sm group-hover:shadow-none transition-shadow">
-                          VIEW CLIPPINGS ->
-                        </div>
                     </div>
                 </Card>
 
@@ -1152,10 +1130,6 @@
                     </div>
                     <div className="mt-auto">
                         <h3 className="font-pixel text-4xl mb-1 leading-none">TRAVELS</h3>
-                        <p className="font-bold font-mono text-sm opacity-90 mb-4">Cycling diaries & guides</p>
-                        <div className="inline-block px-3 py-1 border-2 border-brand-dark bg-white text-brand-dark font-pixel text-lg shadow-sm group-hover:shadow-none transition-shadow">
-                          VIEW JOURNALS ->
-                        </div>
                     </div>
                 </Card>
 
