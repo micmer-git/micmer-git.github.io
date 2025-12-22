@@ -1,14 +1,87 @@
 let allActivities = [];
+let athleteProfile = null;
 let currentPage = 1;
 const perPage = 200;
 let hasMoreActivities = true;
-let currentTotals = null;
-let compareTotals = null;
-let compareRecentTotals = null;
-let compareAthlete = null;
-let compareStats = null;
+const AUTO_FETCH_ALL = true;
 
-const compareStorageKey = 'stravaCompareAthletes';
+const ROUND_TRIP_DISTANCE_KM = 40;
+const EVEREST_ELEVATION_M = 8848;
+const COIN_GRID = {
+  distanceKmStep: 10,
+  elevationMetersStep: 250,
+};
+const MEDAL_VALUES = {
+  gold: 10,
+  silver: 6,
+  bronze: 3,
+};
+
+function getFirstNumber(...values) {
+  for (const value of values) {
+    if (Number.isFinite(value)) {
+      return value;
+    }
+  }
+  return null;
+}
+
+function getAssignedCoins(activity) {
+  return getFirstNumber(
+    activity.coins,
+    activity.coin,
+    activity.points,
+    activity.worth,
+    activity.activityWorth
+  );
+}
+
+function getMedalSummary(activity) {
+  if (Array.isArray(activity.medals)) {
+    const medals = activity.medals.map(medal => String(medal).toLowerCase());
+    const value = medals.reduce((sum, medal) => sum + (MEDAL_VALUES[medal] || 0), 0);
+    return { count: medals.length, value };
+  }
+
+  if (typeof activity.medal === 'string') {
+    const medal = activity.medal.toLowerCase();
+    return { count: 1, value: MEDAL_VALUES[medal] || 0 };
+  }
+
+  const explicitValue = getFirstNumber(activity.medal_value, activity.medalValue);
+  if (explicitValue !== null) {
+    return { count: explicitValue > 0 ? 1 : 0, value: explicitValue };
+  }
+
+  if (Number.isFinite(activity.achievement_count)) {
+    return {
+      count: activity.achievement_count,
+      value: activity.achievement_count * MEDAL_VALUES.bronze,
+    };
+  }
+
+  return { count: 0, value: 0 };
+}
+
+function calculateGridValue(activity) {
+  const distanceKm = (activity.distance || 0) / 1000;
+  const elevation = activity.total_elevation_gain || 0;
+  const distanceCoins = Math.floor(distanceKm / COIN_GRID.distanceKmStep);
+  const elevationCoins = Math.floor(elevation / COIN_GRID.elevationMetersStep);
+  return distanceCoins + elevationCoins;
+}
+
+function calculateActivityWorth(activity) {
+  const assignedCoins = getAssignedCoins(activity);
+  const medalSummary = getMedalSummary(activity);
+  const gridValue = calculateGridValue(activity);
+  return {
+    coins: assignedCoins !== null ? assignedCoins : gridValue + medalSummary.value,
+    medalValue: medalSummary.value,
+    medalCount: medalSummary.count,
+    gridValue,
+  };
+}
 
 async function fetchStravaData(page = 1, per_page = 200) {
   console.log(`Fetching Strava data - Page: ${page}, Per Page: ${per_page}`);
@@ -28,6 +101,11 @@ async function fetchStravaData(page = 1, per_page = 200) {
     // Append new activities to allActivities
     allActivities = allActivities.concat(data.activities);
 
+    if (!athleteProfile && data.athlete) {
+      athleteProfile = data.athlete;
+      updateProfileDetails(athleteProfile);
+    }
+
     // Display fetched activities
     displayActivities(data.activities);
 
@@ -39,19 +117,26 @@ async function fetchStravaData(page = 1, per_page = 200) {
 
     // Show or hide "Load More" button based on hasMoreActivities
     const loadMoreButton = document.getElementById('load-more-button');
-    if (hasMoreActivities) {
-      loadMoreButton.style.display = 'block';
-    } else {
-      loadMoreButton.style.display = 'none';
+    if (loadMoreButton) {
+      if (hasMoreActivities && !AUTO_FETCH_ALL) {
+        loadMoreButton.style.display = 'block';
+      } else {
+        loadMoreButton.style.display = 'none';
+      }
     }
 
     // Hide "Loading..." indicator after the first load
     if (page === 1) {
       document.getElementById('loading').style.display = 'none'; // Hide loading indicator
       // Show dashboard sections
-      document.querySelectorAll('.rank-section, .lifetime-stats, .weekly-stats').forEach(section => {
+      document.querySelectorAll('.profile-section, .rank-section, .lifetime-stats, .weekly-stats, .leaderboard-section').forEach(section => {
         section.style.display = 'block';
       });
+    }
+
+    if (AUTO_FETCH_ALL && hasMoreActivities) {
+      currentPage = page + 1;
+      await fetchStravaData(currentPage, perPage);
     }
   } catch (error) {
     console.error('Error fetching Strava data:', error);
@@ -67,12 +152,76 @@ function updateTotalsAndRanks() {
 
   // Update dashboard stats
   updateDashboardStats(totals);
-  updateComparisonDeltas();
+  updateProfileAndLeaderboard(totals);
 
   // Recalculate and update ranks
   const rankInfo = calculateRank(totals.hours);
   console.log('Updated Rank Info:', rankInfo);
   updateRankSection(rankInfo);
+}
+
+function updateProfileDetails(athlete) {
+  const avatarElement = document.getElementById('profile-avatar');
+  const nameElement = document.getElementById('profile-name');
+  const usernameElement = document.getElementById('profile-username');
+
+  if (avatarElement) {
+    avatarElement.src = athlete.profile || '';
+    avatarElement.alt = athlete.username ? `${athlete.username} avatar` : 'Athlete avatar';
+  }
+  if (nameElement) {
+    const fullName = [athlete.firstname, athlete.lastname].filter(Boolean).join(' ');
+    nameElement.textContent = fullName || athlete.username || 'Athlete';
+  }
+  if (usernameElement) {
+    usernameElement.textContent = athlete.username ? `@${athlete.username}` : '';
+  }
+}
+
+function updateProfileAndLeaderboard(totals) {
+  const profileCoinsElement = document.getElementById('profile-coins');
+  const profileMedalsElement = document.getElementById('profile-medals');
+  const profileBalanceElement = document.getElementById('profile-balance');
+  const profileRoundTripsElement = document.getElementById('profile-round-trips');
+  const profileEverestElement = document.getElementById('profile-everest');
+
+  const leaderboardCoinsElement = document.getElementById('leaderboard-coins');
+  const leaderboardMedalsElement = document.getElementById('leaderboard-medals');
+  const leaderboardBalanceElement = document.getElementById('leaderboard-balance');
+  const leaderboardRoundTripsElement = document.getElementById('leaderboard-round-trips');
+  const leaderboardEverestElement = document.getElementById('leaderboard-everest');
+
+  if (profileCoinsElement) {
+    profileCoinsElement.textContent = Math.round(totals.coins).toString();
+  }
+  if (profileMedalsElement) {
+    profileMedalsElement.textContent = Math.round(totals.medals).toString();
+  }
+  if (profileBalanceElement) {
+    profileBalanceElement.textContent = Math.round(totals.balance).toString();
+  }
+  if (profileRoundTripsElement) {
+    profileRoundTripsElement.textContent = totals.roundTrips.toFixed(2);
+  }
+  if (profileEverestElement) {
+    profileEverestElement.textContent = totals.everest.toFixed(2);
+  }
+
+  if (leaderboardCoinsElement) {
+    leaderboardCoinsElement.textContent = Math.round(totals.coins).toString();
+  }
+  if (leaderboardMedalsElement) {
+    leaderboardMedalsElement.textContent = Math.round(totals.medals).toString();
+  }
+  if (leaderboardBalanceElement) {
+    leaderboardBalanceElement.textContent = Math.round(totals.balance).toString();
+  }
+  if (leaderboardRoundTripsElement) {
+    leaderboardRoundTripsElement.textContent = totals.roundTrips.toFixed(2);
+  }
+  if (leaderboardEverestElement) {
+    leaderboardEverestElement.textContent = totals.everest.toFixed(2);
+  }
 }
 
 function updateRankSection(rankInfo) {
@@ -605,40 +754,42 @@ function renderRanksAndStats(data) {
 }
 
 function calculateTotals(activities) {
-  // Implement YTD filtering
-  const currentYear = new Date().getFullYear();
-  const startOfYear = new Date(currentYear, 0, 1); // January 1st
   const today = new Date();
-
-  const ytdActivities = activities.filter(activity => {
-    const activityDate = new Date(activity.start_date);
-    return activityDate >= startOfYear && activityDate <= today;
-  });
-
   let totals = {
     hours: 0,
     distance: 0, // in meters
     elevation: 0, // in meters
     calories: 0, // in kilojoules or as per Strava's data
-    activities: ytdActivities.length,
+    activities: activities.length,
     hoursThisWeek: 0,
     distanceThisWeek: 0,
     elevationThisWeek: 0,
     caloriesThisWeek: 0,
+    coins: 0,
+    medals: 0,
+    medalValue: 0,
+    balance: 0,
+    roundTrips: 0,
+    everest: 0,
   };
 
-  ytdActivities.forEach(activity => {
+  activities.forEach(activity => {
     totals.hours += activity.moving_time / 3600;
     totals.distance += activity.distance;
     totals.elevation += activity.total_elevation_gain;
     totals.calories += activity.kilojoules || 0;
+
+    const activityWorth = calculateActivityWorth(activity);
+    totals.coins += activityWorth.coins;
+    totals.medals += activityWorth.medalCount;
+    totals.medalValue += activityWorth.medalValue;
   });
 
   // Calculate 'This Week' totals
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(today.getDate() - 7);
 
-  const weekActivities = ytdActivities.filter(activity => {
+  const weekActivities = activities.filter(activity => {
     const activityDate = new Date(activity.start_date);
     return activityDate >= oneWeekAgo && activityDate <= today;
   });
@@ -650,7 +801,11 @@ function calculateTotals(activities) {
     totals.caloriesThisWeek += activity.kilojoules || 0;
   });
 
-  console.log('Calculated YTD Totals:', totals);
+  totals.roundTrips = totals.distance / (ROUND_TRIP_DISTANCE_KM * 1000);
+  totals.everest = totals.elevation / EVEREST_ELEVATION_M;
+  totals.balance = totals.coins;
+
+  console.log('Calculated Totals (All Activities):', totals);
   return totals;
 }
 
