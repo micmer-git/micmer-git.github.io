@@ -130,6 +130,40 @@ app.get('/api/strava-data', async (req, res) => {
   }
 });
 
+// API endpoint to fetch comparison athlete stats
+app.get('/api/strava-compare', async (req, res) => {
+  console.log('Received request for compare athlete');
+  const accessToken = req.cookies.strava_token;
+  const { athleteId } = req.query;
+
+  if (!accessToken) {
+    console.warn('No access token found in cookies');
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  if (!athleteId) {
+    return res.status(400).json({ error: 'Athlete ID is required' });
+  }
+
+  try {
+    const athleteResponse = await axios.get(`https://www.strava.com/api/v3/athletes/${athleteId}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    const statsResponse = await axios.get(`https://www.strava.com/api/v3/athletes/${athleteId}/stats`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    res.json({
+      athlete: athleteResponse.data,
+      stats: statsResponse.data,
+    });
+  } catch (error) {
+    console.error('Error fetching comparison athlete:', error.response ? error.response.data : error.message);
+    res.status(500).json({ error: 'Failed to fetch comparison athlete' });
+  }
+});
+
 // Function to calculate totals from activities
 function calculateTotals(activities) {
   let totals = {

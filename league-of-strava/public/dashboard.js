@@ -147,6 +147,7 @@ async function fetchStravaData(page = 1, per_page = 200) {
 function updateTotalsAndRanks() {
   // Calculate totals based on allActivities
   const totals = calculateTotals(allActivities);
+  currentTotals = totals;
   console.log('Calculated cumulative totals:', totals);
 
   // Update dashboard stats
@@ -298,6 +299,78 @@ function updateDashboardStats(totals) {
     weeklyElevationElement.textContent = isNaN(totals.elevationThisWeek) ? '0 m' : `${totals.elevationThisWeek} m`;
     weeklyCaloriesElement.textContent = isNaN(totals.caloriesThisWeek) ? '0 kcal' : `${totals.caloriesThisWeek} kcal`;
   }
+}
+
+function updateComparisonDeltas() {
+  const banner = document.getElementById('compare-banner');
+  const bannerName = document.getElementById('compare-athlete-name');
+
+  if (!currentTotals || !compareTotals) {
+    banner.style.display = 'none';
+    bannerName.textContent = '';
+    resetCompareDelta('distance-compare-delta');
+    resetCompareDelta('elevation-compare-delta');
+    resetCompareDelta('calories-compare-delta');
+    resetCompareDelta('weekly-hours-compare-delta');
+    resetCompareDelta('weekly-distance-compare-delta');
+    resetCompareDelta('weekly-elevation-compare-delta');
+    resetCompareDelta('weekly-calories-compare-delta');
+    return;
+  }
+
+  banner.style.display = 'block';
+  bannerName.textContent = compareAthlete?.firstname ? `${compareAthlete.firstname} ${compareAthlete.lastname || ''}`.trim() : 'Selected athlete';
+
+  setCompareDelta('distance-compare-delta', currentTotals.distance, compareTotals.distance, 'm');
+  setCompareDelta('elevation-compare-delta', currentTotals.elevation, compareTotals.elevation, 'm');
+  setCompareDelta('calories-compare-delta', currentTotals.calories, compareTotals.calories, 'kcal');
+
+  setCompareDelta('weekly-hours-compare-delta', currentTotals.hoursThisWeek, compareRecentTotals?.hours, 'hrs');
+  setCompareDelta('weekly-distance-compare-delta', currentTotals.distanceThisWeek, compareRecentTotals?.distance, 'm');
+  setCompareDelta('weekly-elevation-compare-delta', currentTotals.elevationThisWeek, compareRecentTotals?.elevation, 'm');
+  setCompareDelta('weekly-calories-compare-delta', currentTotals.caloriesThisWeek, compareRecentTotals?.calories, 'kcal');
+}
+
+function setCompareDelta(elementId, currentValue, otherValue, unit) {
+  const element = document.getElementById(elementId);
+  if (!element) {
+    return;
+  }
+  if (otherValue === null || otherValue === undefined || Number.isNaN(otherValue)) {
+    element.textContent = 'Comparison unavailable';
+    element.className = 'compare-delta neutral';
+    return;
+  }
+  const delta = currentValue - otherValue;
+  const formattedDelta = formatDelta(delta, unit);
+  element.textContent = formattedDelta;
+  if (delta > 0) {
+    element.className = 'compare-delta positive';
+  } else if (delta < 0) {
+    element.className = 'compare-delta negative';
+  } else {
+    element.className = 'compare-delta neutral';
+  }
+}
+
+function resetCompareDelta(elementId) {
+  const element = document.getElementById(elementId);
+  if (!element) {
+    return;
+  }
+  element.textContent = '';
+  element.className = 'compare-delta';
+}
+
+function formatDelta(delta, unit) {
+  if (unit === 'm') {
+    const kmDelta = delta / 1000;
+    return `${kmDelta >= 0 ? '+' : ''}${kmDelta.toFixed(1)} km vs compare`;
+  }
+  if (unit === 'hrs') {
+    return `${delta >= 0 ? '+' : ''}${delta.toFixed(1)} hrs vs compare`;
+  }
+  return `${delta >= 0 ? '+' : ''}${Math.round(delta)} ${unit} vs compare`;
 }
 
 
@@ -477,6 +550,113 @@ document.getElementById('load-more-button').addEventListener('click', () => {
     console.log('No more activities to load.');
   }
 });
+
+function toggleMenu(open) {
+  const menu = document.getElementById('dashboard-menu');
+  if (!menu) {
+    return;
+  }
+  const shouldOpen = open !== undefined ? open : !menu.classList.contains('open');
+  menu.classList.toggle('open', shouldOpen);
+  menu.setAttribute('aria-hidden', (!shouldOpen).toString());
+}
+
+function getStoredCompareAthletes() {
+  const stored = localStorage.getItem(compareStorageKey);
+  return stored ? JSON.parse(stored) : [];
+}
+
+function storeCompareAthlete(athlete) {
+  if (!athlete || !athlete.id) {
+    return;
+  }
+  const stored = getStoredCompareAthletes();
+  const existing = stored.find(item => item.id === athlete.id);
+  if (!existing) {
+    stored.push({ id: athlete.id, name: `${athlete.firstname} ${athlete.lastname || ''}`.trim() });
+    localStorage.setItem(compareStorageKey, JSON.stringify(stored));
+  }
+}
+
+function populateCompareSelect() {
+  const select = document.getElementById('compare-user-select');
+  if (!select) {
+    return;
+  }
+  const stored = getStoredCompareAthletes();
+  select.innerHTML = `
+    <option value="">Select athlete</option>
+    ${stored.map(item => `<option value="${item.id}">${item.name || item.id}</option>`).join('')}
+    <option value="custom">Custom athlete ID</option>
+  `;
+}
+
+async function fetchCompareData(athleteId) {
+  const response = await fetch(`/api/strava-compare?athleteId=${athleteId}`);
+  if (!response.ok) {
+    throw new Error(`Compare fetch failed: ${response.statusText}`);
+  }
+  return response.json();
+}
+
+function aggregateStats(stats, bucket) {
+  const ride = stats[`${bucket}_ride_totals`] || {};
+  const run = stats[`${bucket}_run_totals`] || {};
+  const swim = stats[`${bucket}_swim_totals`] || {};
+
+  return {
+    hours: ((ride.moving_time || 0) + (run.moving_time || 0) + (swim.moving_time || 0)) / 3600 || 0,
+    distance: (ride.distance || 0) + (run.distance || 0) + (swim.distance || 0),
+    elevation: (ride.elevation_gain || 0) + (run.elevation_gain || 0) + (swim.elevation_gain || 0),
+    calories: null,
+  };
+}
+
+async function handleCompareLoad() {
+  const select = document.getElementById('compare-user-select');
+  const input = document.getElementById('compare-user-id');
+  const status = document.getElementById('compare-status');
+  if (!select || !input || !status) {
+    return;
+  }
+
+  const selectedValue = select.value;
+  const athleteId = selectedValue === 'custom' ? input.value.trim() : selectedValue;
+
+  if (!athleteId) {
+    status.textContent = 'Please select or enter an athlete ID.';
+    return;
+  }
+
+  status.textContent = 'Loading comparison...';
+
+  try {
+    const data = await fetchCompareData(athleteId);
+    compareAthlete = data.athlete;
+    compareStats = data.stats;
+    compareTotals = aggregateStats(data.stats, 'ytd');
+    compareRecentTotals = aggregateStats(data.stats, 'recent');
+    storeCompareAthlete(compareAthlete);
+    populateCompareSelect();
+    updateComparisonDeltas();
+    status.textContent = `Comparing with ${compareAthlete.firstname} ${compareAthlete.lastname || ''}`.trim();
+  } catch (error) {
+    console.error('Comparison fetch failed', error);
+    status.textContent = 'Unable to load comparison. Check athlete ID and access.';
+  }
+}
+
+function handleCompareClear() {
+  compareTotals = null;
+  compareRecentTotals = null;
+  compareAthlete = null;
+  compareStats = null;
+  const status = document.getElementById('compare-status');
+  if (status) {
+    status.textContent = 'Comparison cleared.';
+  }
+  updateComparisonDeltas();
+}
 function renderRanksAndStats(data) {
   console.log('Rendering dashboard with Strava data');
 
@@ -910,4 +1090,31 @@ function hideTooltip() {
 // Initialize dashboard by fetching the first page of activities
 document.addEventListener('DOMContentLoaded', () => {
   fetchStravaData(currentPage, perPage);
+
+  populateCompareSelect();
+  const menuToggle = document.getElementById('menu-toggle');
+  const menuClose = document.getElementById('menu-close');
+  const compareSelect = document.getElementById('compare-user-select');
+  const compareInputs = document.getElementById('compare-inputs');
+  const compareLoad = document.getElementById('compare-load');
+  const compareClear = document.getElementById('compare-clear');
+
+  if (menuToggle) {
+    menuToggle.addEventListener('click', () => toggleMenu(true));
+  }
+  if (menuClose) {
+    menuClose.addEventListener('click', () => toggleMenu(false));
+  }
+  if (compareSelect && compareInputs) {
+    compareSelect.addEventListener('change', () => {
+      compareInputs.style.display = compareSelect.value === 'custom' ? 'block' : 'none';
+    });
+    compareInputs.style.display = compareSelect.value === 'custom' ? 'block' : 'none';
+  }
+  if (compareLoad) {
+    compareLoad.addEventListener('click', handleCompareLoad);
+  }
+  if (compareClear) {
+    compareClear.addEventListener('click', handleCompareClear);
+  }
 });

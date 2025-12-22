@@ -15,6 +15,151 @@ body {
   color: #333;
 }
 
+/* Header and Menu */
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background-color: #fff;
+  border-bottom: 1px solid #e3e6ea;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.dashboard-title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.menu-toggle,
+.menu-close {
+  border: none;
+  background: #f4f6f8;
+  border-radius: 8px;
+  font-size: 22px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.dashboard-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 280px;
+  background: #fff;
+  border-right: 1px solid #e3e6ea;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.1);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  padding: 20px;
+  z-index: 100;
+}
+
+.dashboard-menu.open {
+  transform: translateX(0);
+}
+
+.menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.menu-section h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.menu-section label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: #555;
+}
+
+.menu-section select,
+.menu-section input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #d5d7db;
+  margin-bottom: 12px;
+  font-family: inherit;
+}
+
+.compare-inputs {
+  margin-top: 6px;
+}
+
+.menu-actions {
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+}
+
+.menu-button {
+  padding: 10px 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #FC4C02;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.menu-button.secondary {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.menu-note {
+  font-size: 12px;
+  color: #777;
+  margin-top: 10px;
+}
+
+.menu-status {
+  font-size: 13px;
+  color: #333;
+  margin-top: 8px;
+}
+
+/* Compare Banner */
+.compare-banner {
+  background-color: #fef7e0;
+  color: #6f4f00;
+  border: 1px solid #f3d38a;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin: 12px 0 20px;
+  font-weight: 600;
+}
+
+/* Compare Delta */
+.compare-delta {
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.compare-delta.positive {
+  color: #1a7f37;
+  font-weight: 600;
+}
+
+.compare-delta.negative {
+  color: #c62828;
+  font-weight: 600;
+}
+
+.compare-delta.neutral {
+  color: #777;
+}
+
 /* Container */
 #dashboard-container {
   max-width: 800px;
