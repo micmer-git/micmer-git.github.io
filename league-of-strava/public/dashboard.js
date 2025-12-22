@@ -4,6 +4,13 @@ let currentPage = 1;
 const perPage = 200;
 let hasMoreActivities = true;
 const AUTO_FETCH_ALL = true;
+let currentTotals = null;
+let compareTotals = null;
+let compareRecentTotals = null;
+let compareAthlete = null;
+let compareStats = null;
+let compareDerivedTotals = null;
+const compareStorageKey = 'compare-athletes';
 
 const ROUND_TRIP_DISTANCE_KM = 40;
 const EVEREST_ELEVATION_M = 8848;
@@ -129,7 +136,7 @@ async function fetchStravaData(page = 1, per_page = 200) {
     if (page === 1) {
       document.getElementById('loading').style.display = 'none'; // Hide loading indicator
       // Show dashboard sections
-      document.querySelectorAll('.profile-section, .rank-section, .lifetime-stats, .weekly-stats, .leaderboard-section').forEach(section => {
+      document.querySelectorAll('.profile-section, .rank-section, .lifetime-stats, .weekly-stats').forEach(section => {
         section.style.display = 'block';
       });
     }
@@ -152,7 +159,8 @@ function updateTotalsAndRanks() {
 
   // Update dashboard stats
   updateDashboardStats(totals);
-  updateProfileAndLeaderboard(totals);
+  updateProfileStats(totals);
+  updateComparisonDeltas();
 
   // Recalculate and update ranks
   const rankInfo = calculateRank(totals.hours);
@@ -178,18 +186,12 @@ function updateProfileDetails(athlete) {
   }
 }
 
-function updateProfileAndLeaderboard(totals) {
+function updateProfileStats(totals) {
   const profileCoinsElement = document.getElementById('profile-coins');
   const profileMedalsElement = document.getElementById('profile-medals');
   const profileBalanceElement = document.getElementById('profile-balance');
   const profileRoundTripsElement = document.getElementById('profile-round-trips');
   const profileEverestElement = document.getElementById('profile-everest');
-
-  const leaderboardCoinsElement = document.getElementById('leaderboard-coins');
-  const leaderboardMedalsElement = document.getElementById('leaderboard-medals');
-  const leaderboardBalanceElement = document.getElementById('leaderboard-balance');
-  const leaderboardRoundTripsElement = document.getElementById('leaderboard-round-trips');
-  const leaderboardEverestElement = document.getElementById('leaderboard-everest');
 
   if (profileCoinsElement) {
     profileCoinsElement.textContent = Math.round(totals.coins).toString();
@@ -205,22 +207,6 @@ function updateProfileAndLeaderboard(totals) {
   }
   if (profileEverestElement) {
     profileEverestElement.textContent = totals.everest.toFixed(2);
-  }
-
-  if (leaderboardCoinsElement) {
-    leaderboardCoinsElement.textContent = Math.round(totals.coins).toString();
-  }
-  if (leaderboardMedalsElement) {
-    leaderboardMedalsElement.textContent = Math.round(totals.medals).toString();
-  }
-  if (leaderboardBalanceElement) {
-    leaderboardBalanceElement.textContent = Math.round(totals.balance).toString();
-  }
-  if (leaderboardRoundTripsElement) {
-    leaderboardRoundTripsElement.textContent = totals.roundTrips.toFixed(2);
-  }
-  if (leaderboardEverestElement) {
-    leaderboardEverestElement.textContent = totals.everest.toFixed(2);
   }
 }
 
@@ -315,6 +301,16 @@ function updateComparisonDeltas() {
     resetCompareDelta('weekly-distance-compare-delta');
     resetCompareDelta('weekly-elevation-compare-delta');
     resetCompareDelta('weekly-calories-compare-delta');
+    resetCompareDelta('profile-coins-compare-delta');
+    resetCompareDelta('profile-medals-compare-delta');
+    resetCompareDelta('profile-balance-compare-delta');
+    resetCompareDelta('profile-round-trips-compare-delta');
+    resetCompareDelta('profile-everest-compare-delta');
+    resetComparePlot('profile-coins-plot');
+    resetComparePlot('profile-medals-plot');
+    resetComparePlot('profile-balance-plot');
+    resetComparePlot('profile-round-trips-plot');
+    resetComparePlot('profile-everest-plot');
     return;
   }
 
@@ -329,6 +325,18 @@ function updateComparisonDeltas() {
   setCompareDelta('weekly-distance-compare-delta', currentTotals.distanceThisWeek, compareRecentTotals?.distance, 'm');
   setCompareDelta('weekly-elevation-compare-delta', currentTotals.elevationThisWeek, compareRecentTotals?.elevation, 'm');
   setCompareDelta('weekly-calories-compare-delta', currentTotals.caloriesThisWeek, compareRecentTotals?.calories, 'kcal');
+
+  setCompareDelta('profile-coins-compare-delta', currentTotals.coins, compareDerivedTotals?.coins, 'coins');
+  setCompareDelta('profile-medals-compare-delta', currentTotals.medals, compareDerivedTotals?.medals, 'medals');
+  setCompareDelta('profile-balance-compare-delta', currentTotals.balance, compareDerivedTotals?.balance, 'coins');
+  setCompareDelta('profile-round-trips-compare-delta', currentTotals.roundTrips, compareDerivedTotals?.roundTrips, 'round trips');
+  setCompareDelta('profile-everest-compare-delta', currentTotals.everest, compareDerivedTotals?.everest, 'everests');
+
+  setComparePlot('profile-coins-plot', currentTotals.coins, compareDerivedTotals?.coins);
+  setComparePlot('profile-medals-plot', currentTotals.medals, compareDerivedTotals?.medals);
+  setComparePlot('profile-balance-plot', currentTotals.balance, compareDerivedTotals?.balance);
+  setComparePlot('profile-round-trips-plot', currentTotals.roundTrips, compareDerivedTotals?.roundTrips);
+  setComparePlot('profile-everest-plot', currentTotals.everest, compareDerivedTotals?.everest);
 }
 
 function setCompareDelta(elementId, currentValue, otherValue, unit) {
@@ -362,6 +370,44 @@ function resetCompareDelta(elementId) {
   element.className = 'compare-delta';
 }
 
+function setComparePlot(elementId, currentValue, otherValue) {
+  const element = document.getElementById(elementId);
+  if (!element) {
+    return;
+  }
+  const currentBar = element.querySelector('.plot-current');
+  const compareBar = element.querySelector('.plot-compare');
+  if (!currentBar || !compareBar) {
+    return;
+  }
+  if (otherValue === null || otherValue === undefined || Number.isNaN(otherValue)) {
+    element.classList.add('unavailable');
+    currentBar.style.width = '100%';
+    compareBar.style.width = '0%';
+    return;
+  }
+  element.classList.remove('unavailable');
+  const maxValue = Math.max(currentValue, otherValue, 1);
+  currentBar.style.width = `${(currentValue / maxValue) * 100}%`;
+  compareBar.style.width = `${(otherValue / maxValue) * 100}%`;
+}
+
+function resetComparePlot(elementId) {
+  const element = document.getElementById(elementId);
+  if (!element) {
+    return;
+  }
+  const currentBar = element.querySelector('.plot-current');
+  const compareBar = element.querySelector('.plot-compare');
+  if (currentBar) {
+    currentBar.style.width = '';
+  }
+  if (compareBar) {
+    compareBar.style.width = '';
+  }
+  element.classList.remove('unavailable');
+}
+
 function formatDelta(delta, unit) {
   if (unit === 'm') {
     const kmDelta = delta / 1000;
@@ -369,6 +415,9 @@ function formatDelta(delta, unit) {
   }
   if (unit === 'hrs') {
     return `${delta >= 0 ? '+' : ''}${delta.toFixed(1)} hrs vs compare`;
+  }
+  if (unit === 'round trips' || unit === 'everests') {
+    return `${delta >= 0 ? '+' : ''}${delta.toFixed(2)} ${unit} vs compare`;
   }
   return `${delta >= 0 ? '+' : ''}${Math.round(delta)} ${unit} vs compare`;
 }
@@ -612,6 +661,23 @@ function aggregateStats(stats, bucket) {
   };
 }
 
+function buildCompareDerivedTotals(totals) {
+  if (!totals) {
+    return null;
+  }
+  const distanceKm = totals.distance / 1000;
+  const distanceCoins = Math.floor(distanceKm / COIN_GRID.distanceKmStep);
+  const elevationCoins = Math.floor(totals.elevation / COIN_GRID.elevationMetersStep);
+  const coins = distanceCoins + elevationCoins;
+  return {
+    coins,
+    medals: 0,
+    balance: coins,
+    roundTrips: totals.distance / (ROUND_TRIP_DISTANCE_KM * 1000),
+    everest: totals.elevation / EVEREST_ELEVATION_M,
+  };
+}
+
 async function handleCompareLoad() {
   const select = document.getElementById('compare-user-select');
   const input = document.getElementById('compare-user-id');
@@ -636,6 +702,7 @@ async function handleCompareLoad() {
     compareStats = data.stats;
     compareTotals = aggregateStats(data.stats, 'ytd');
     compareRecentTotals = aggregateStats(data.stats, 'recent');
+    compareDerivedTotals = buildCompareDerivedTotals(compareTotals);
     storeCompareAthlete(compareAthlete);
     populateCompareSelect();
     updateComparisonDeltas();
@@ -651,6 +718,7 @@ function handleCompareClear() {
   compareRecentTotals = null;
   compareAthlete = null;
   compareStats = null;
+  compareDerivedTotals = null;
   const status = document.getElementById('compare-status');
   if (status) {
     status.textContent = 'Comparison cleared.';
