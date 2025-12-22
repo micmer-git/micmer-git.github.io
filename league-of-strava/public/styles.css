@@ -320,45 +320,30 @@ body {
   font-weight: 700;
 }
 
-/* Leaderboard Section */
-.leaderboard-section {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  margin-bottom: 30px;
+.compare-plot {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-top: 8px;
+  height: 6px;
 }
 
-.leaderboard-section h2 {
-  font-size: 20px;
-  margin-bottom: 15px;
-}
-
-.leaderboard-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 12px;
-}
-
-.leaderboard-item {
-  background-color: #f4f6f8;
-  border-radius: 10px;
-  padding: 12px;
-  text-align: center;
-}
-
-.leaderboard-item .label {
+.compare-plot span {
   display: block;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #666;
-  margin-bottom: 6px;
+  height: 6px;
+  border-radius: 999px;
 }
 
-.leaderboard-item .value {
-  font-size: 18px;
-  font-weight: 700;
+.compare-plot .plot-current {
+  background-color: #FC4C02;
+}
+
+.compare-plot .plot-compare {
+  background-color: #4a90e2;
+}
+
+.compare-plot.unavailable {
+  opacity: 0.4;
 }
 
 /* Style for Individual Activity Items */
