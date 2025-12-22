@@ -208,7 +208,6 @@
         Heart,
         Coffee,
         Trophy,
-        Music,
         Plane,
         Newspaper,
         LayoutGrid,
@@ -579,6 +578,15 @@
                 icon: <BookOpen size={32} />,
                 url: 'https://aistudio.google.com/app/prompts?state=%7B%22ids%22:%5B%221WPA0lWFGzTQP_gb7z6FWUEUGio91gAc4%22%5D,%22action%22:%22open%22,%22userId%22:%22106401608954636383910%22,%22resourceKeys%22:%7B%7D%7D&usp=sharing',
                 color: 'bg-io-green',
+                textColor: 'text-white',
+                border: 'border-brand-dark'
+            },
+            {
+                name: 'Oracolo Fortissimo',
+                action: 'ASK NOW',
+                icon: <Search size={32} />,
+                url: 'https://ai.studio/apps/drive/1vbJvWYXl52FuhcePzThY_c9nuQQJbR1H',
+                color: 'bg-io-blue',
                 textColor: 'text-white',
                 border: 'border-brand-dark'
             },
@@ -1124,18 +1132,23 @@
 
                 {/* 7. Resources Card */}
                   <Card
-                      className="bg-io-green/80 group min-h-[120px] justify-center text-brand-dark cursor-pointer border-4 border-brand-dark relative overflow-hidden"
+                      className="bg-io-green/80 group min-h-[120px] justify-between text-brand-dark cursor-pointer border-4 border-brand-dark relative overflow-hidden"
                       onClick={() => openOverlay('resources', { resourceIndex: 0 })}
                       noPadding
                   >
                     <div className="absolute inset-0 bg-grid-pattern opacity-15 pointer-events-none"></div>
-                    <div className="flex items-center justify-between w-full p-4 md:p-6 relative z-10">
-                        <div className="flex items-center gap-3">
-                            <span className="text-2xl">📂</span>
-                            <h3 className="font-pixel text-3xl md:text-4xl leading-none">RESOURCES</h3>
+                    <div className="relative z-10 flex flex-col justify-between h-full p-4 md:p-6">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <span className="text-2xl">📂</span>
+                                <h3 className="font-pixel text-3xl md:text-4xl leading-none">RESOURCES</h3>
+                            </div>
+                            <div className="w-10 h-10 bg-black/10 flex items-center justify-center">
+                                 <ArrowUpRight size={24} className="text-brand-dark" />
+                            </div>
                         </div>
-                        <div className="w-10 h-10 bg-black/10 flex items-center justify-center">
-                             <ArrowUpRight size={24} className="text-brand-dark" />
+                        <div className="mt-4 inline-block px-3 py-1 border-2 border-brand-dark bg-white text-brand-dark font-pixel text-lg shadow-sm group-hover:shadow-none transition-shadow">
+                          OPEN ->
                         </div>
                     </div>
                 </Card>
@@ -1158,28 +1171,6 @@
                         <p className="font-bold font-mono text-sm opacity-70 mb-4">A Burkeman-inspired log of completed milestones</p>
                         <div className="inline-block px-3 py-1 border-2 border-brand-dark bg-io-yellow text-brand-dark font-pixel text-lg shadow-sm group-hover:shadow-none transition-shadow">
                           VIEW PAGE ->
-                        </div>
-                    </div>
-                </Card>
-
-                {/* 9. Spotify Card */}
-                <Card
-                    className="bg-[#1DB954] group min-h-[220px] justify-between text-brand-dark cursor-pointer border-4 border-brand-dark"
-                    onClick={() => window.open('https://open.spotify.com/show/7ukghSFquExHfZCmNG8jl3', '_blank')}
-                >
-                    <div className="flex justify-between items-start">
-                        <div className="p-3 bg-white border-2 border-brand-dark shadow-sm text-brand-dark rounded-none">
-                            <Music size={28} />
-                        </div>
-                        <div className="w-10 h-10 bg-black/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
-                             <ArrowUpRight size={24} className="text-brand-dark" />
-                        </div>
-                    </div>
-                    <div className="mt-auto">
-                        <h3 className="font-pixel text-4xl mb-1 leading-none">SPOTIFY</h3>
-                        <p className="font-bold font-mono text-sm opacity-100 mb-4">Listen to the Podcast</p>
-                        <div className="inline-block px-3 py-1 border-2 border-brand-dark bg-white text-brand-dark font-pixel text-lg shadow-sm group-hover:shadow-none transition-shadow">
-                          LISTEN ->
                         </div>
                     </div>
                 </Card>
