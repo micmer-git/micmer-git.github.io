@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Il Signore dei kJ · Michele Merelli</title>
-<meta name="description" content="L'incudine sotto le ruote — 1.233 sortite, 44.200 km, 881.868 metri di dislivello, 777.035 kJ scolpiti un giorno alla volta.">
+<meta name="description" content="Tre anni, 1233 sortite, 44.200 chilometri e 881.868 metri di salita: Michele Merelli forgia 777.035 kJ in sette Anelli, uno per ogni centinaio di migliaia di Joule strappati al pedale, alla scarpa, alla pelle. 2238 ore in sella o in corsa o in acqua, 1046 giorni attivi su 1095. Una saga in tre stagioni, scritta con le gambe.">
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -44,8 +44,36 @@
   .chapter-body p { margin-bottom: 14px; }
   .chapter-body p::first-letter { /* drop cap on first paragraph */ }
   .chapter:first-child .chapter-body > p:first-child::first-letter { font-family: 'Cinzel', serif; font-size: 3.2rem; float: left; line-height: 0.9; padding: 4px 8px 0 0; color: var(--gold); }
+  /* Inline strava links — phrase-wrapping with subtle gold underline + arrow */
+  a.strava-inline { color: var(--accent); text-decoration: none; background-image: linear-gradient(transparent 60%, var(--gold-soft) 60%); padding: 0 1px; transition: background 0.25s ease, color 0.25s ease; position: relative; white-space: normal; }
+  a.strava-inline:hover { color: var(--gold); background-image: linear-gradient(transparent 0%, var(--gold-soft) 100%); }
+  a.strava-inline .strava-mark { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 0.7em; color: var(--gold); margin-left: 2px; opacity: 0.6; transition: transform 0.2s ease, opacity 0.2s ease; }
+  a.strava-inline:hover .strava-mark { opacity: 1; transform: translate(2px, -2px); }
+  /* Legacy class kept for safety */
   a.strava-link { color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent); font-family: 'IBM Plex Mono', monospace; font-size: 0.8em; padding: 0 3px; }
   a.strava-link:hover { background: var(--gold-soft); }
+  /* Book / anello visual */
+  .book { position: relative; }
+  .ring-glyph { position: absolute; left: -88px; top: -4px; color: var(--gold); opacity: 0.55; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s; }
+  .book.reveal.in .ring-glyph { transform: rotate(360deg); opacity: 1; }
+  .ring-glyph svg { filter: drop-shadow(0 0 6px var(--gold-soft)); }
+  .kj-range { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+  /* Hero ring counter */
+  .ring-bar { display: flex; gap: 10px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
+  .ring-pill { width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; font-size: 0.85rem; color: var(--gold); background: var(--paper); position: relative; transition: all 0.4s ease; box-shadow: inset 0 0 0 0 var(--gold); }
+  .ring-pill.forged { background: linear-gradient(135deg, var(--gold) 0%, #d4a843 50%, var(--gold) 100%); color: var(--paper); box-shadow: 0 0 12px var(--gold-soft), inset 0 0 8px rgba(255,255,255,0.3); animation: ring-pulse 3.6s ease-in-out infinite; }
+  .ring-pill.partial { background: conic-gradient(var(--gold) calc(var(--p) * 1%), var(--paper) 0); }
+  .ring-pill.partial::after { content: attr(data-pct) "%"; font-size: 0.55rem; position: absolute; bottom: -16px; color: var(--muted); letter-spacing: 0.05em; }
+  @keyframes ring-pulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 12px var(--gold-soft); } 50% { transform: scale(1.06); box-shadow: 0 0 20px rgba(184,134,11,0.45); } }
+  /* Scroll reveal */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+  /* Hero feat counter animation */
+  .feat .num { transition: color 0.4s; }
+  .feat .num.counted { animation: shimmer 2.4s ease-out 1; }
+  @keyframes shimmer { 0% { color: var(--ink); } 30% { color: var(--gold); text-shadow: 0 0 12px var(--gold-soft); } 100% { color: var(--gold); } }
+  /* Subtle parchment background grain */
+  body::before { content: ""; position: fixed; inset: 0; background-image: radial-gradient(circle at 25% 30%, rgba(184,134,11,0.04) 0, transparent 40%), radial-gradient(circle at 75% 70%, rgba(139,46,31,0.03) 0, transparent 35%); pointer-events: none; z-index: -1; }
   .compagnia { background: var(--paper); border: 1px solid var(--rule); padding: 24px 26px; margin: 50px 0; border-radius: 4px; }
   .compagnia h3 { font-family: 'Cinzel', serif; font-size: 1rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; text-align: center; }
   .compagnia ul { list-style: none; padding: 0; }
@@ -75,36 +103,40 @@
   <span class="accent">una saga in tre stagioni</span>
   Il Signore dei kJ
 </h1>
-<p class="subtitle">L'incudine sotto le ruote — 1.233 sortite, 44.200 km, 881.868 metri di dislivello, 777.035 kJ scolpiti un giorno alla volta.</p>
+<p class="subtitle">Tre anni, 1233 sortite, 44.200 chilometri e 881.868 metri di salita: Michele Merelli forgia 777.035 kJ in sette Anelli, uno per ogni centinaio di migliaia di Joule strappati al pedale, alla scarpa, alla pelle. 2238 ore in sella o in corsa o in acqua, 1046 giorni attivi su 1095. Una saga in tre stagioni, scritta con le gambe.</p>
 
 <div class="ornament">⚜ · ⚜ · ⚜</div>
 
 <!-- ── 5 FEATURES ──────────────────────────────────────────── -->
-<section class="stats-hero">
-  <h2>I cinque sigilli del viaggio</h2>
-  <div class="feat-grid">
+<section class="stats-hero reveal">
+  <h2>I sette anelli e i cinque sigilli</h2>
+  <div class="ring-bar" aria-label="7 anelli forgiati su 7">
+    <div class="ring-pill forged" title="Anello forgiato (100.000 kJ)">⚜</div><div class="ring-pill forged" title="Anello forgiato (100.000 kJ)">⚜</div><div class="ring-pill forged" title="Anello forgiato (100.000 kJ)">⚜</div><div class="ring-pill forged" title="Anello forgiato (100.000 kJ)">⚜</div><div class="ring-pill forged" title="Anello forgiato (100.000 kJ)">⚜</div><div class="ring-pill forged" title="Anello forgiato (100.000 kJ)">⚜</div><div class="ring-pill forged" title="Anello forgiato (100.000 kJ)">⚜</div>
+    <div class="ring-pill partial" style="--p:77" data-pct="77" title="Anello in forgiatura">⚒</div>
+  </div>
+  <div class="feat-grid" style="margin-top: 36px;">
     <div class="feat">
-      <div class="num">777</div>
+      <div class="num" data-target="7">0</div>
       <div class="label">Anelli forgiati</div>
-      <div class="note">777,035 kJ · 1 anello / 1.000 kJ</div>
+      <div class="note">777,035 kJ · 1 anello / 100.000 kJ</div>
     </div>
     <div class="feat">
-      <div class="num">99.7×</div>
+      <div class="num" data-target="99.7" data-suffix="×" data-decimals="1">0</div>
       <div class="label">Volte l'Everest</div>
-      <div class="note">881,868 m totali</div>
+      <div class="note">881,868 m saliti</div>
     </div>
     <div class="feat">
-      <div class="num">1.10×</div>
+      <div class="num" data-target="1.10" data-suffix="×" data-decimals="2">0</div>
       <div class="label">Giri equatoriali</div>
-      <div class="note">44,200 km · 40.075 km/giro</div>
+      <div class="note">44,200 km</div>
     </div>
     <div class="feat">
-      <div class="num">93.3</div>
+      <div class="num" data-target="93.3" data-decimals="1">0</div>
       <div class="label">Giorni di moto</div>
-      <div class="note">2238 ore complessive</div>
+      <div class="note">2238 ore di lavoro</div>
     </div>
     <div class="feat">
-      <div class="num">186</div>
+      <div class="num" data-target="186">0</div>
       <div class="label">Streak max</div>
       <div class="note">giorni consecutivi · 2025-06-11</div>
     </div>
@@ -112,124 +144,160 @@
 </section>
 
 <!-- Prologue -->
-<div class="prologue"><p>Il 29 aprile 2023 un ragazzo di Bergamo registra la prima delle 1.233 attività che, tre anni dopo, formeranno questa cronaca. Allora non lo sapeva. Pedalava, correva, segnava le ore. Solo a posteriori, con 44.200 km alle spalle, 881.868 metri saliti, 2.238 ore di lavoro e 777.035 kJ di energia spesa, la traiettoria si lascia leggere — un solco netto, scavato un giorno alla volta su 1.046 dei 1.095 giorni del calendario.</p></div>
+<div class="prologue"><p>Il 29 aprile 2023 Michele non lo sa, ma è all'imbocco di un sentiero lungo tre anni. Bergamo dietro, le Orobie davanti, una bici, un paio di scarpe, e quella ostinazione ingegneristica che misura tutto in watt e in metri di dislivello. Da quel giorno conterà 1233 uscite, accumulerà 44.200 km, salirà 881.868 metri — quasi cento volte l'Everest dal mare. Forgerà, kJ dopo kJ, sette Anelli di Potenza. Questa è la sua storia.</p></div>
 
 <!-- Books -->
 
-    <section class="book">
-      <h2 class="book-title">Libro I — La Forgiatura</h2>
+    <section class="book reveal" data-anello="1">
+      <div class="ring-glyph" aria-hidden="true">
+        <svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="30" cy="30" r="14" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/><text x="30" y="35" text-anchor="middle" font-family="Cinzel" font-size="14" fill="currentColor">1</text></svg>
+      </div>
+      <div class="kj-range">0 → 100.000</div>
+      <h2 class="book-title">Anello I — Il Primo Fuoco</h2>
       
-        <article class="chapter">
-          <h3 class="chapter-title">Capitolo 1 — Il primo anello</h3>
-          <div class="chapter-body"><p>Il 2023 si chiude con 237 attività distribuite su 452 ore: ride e run quasi alla pari, già la cifra che reggerà tutto il triennio. 9.570 km percorsi, 196.175 metri saliti, 28.632 punti di training load. Numeri da apprendista, ma con la metrica della costanza già in piedi.</p><p>La traccia non è ancora una compagnia: è un atleta solo, al lavoro 237 volte. Si pedala in val Brembana, si corre attorno a Bergamo, si bracciate al lago. La Run pesa per circa metà delle uscite e cuce le giornate corte; la Ride raccoglie la quasi totalità dei 196.175 m di dislivello stagionale.</p><p>Quel che manca al 2023 è il colpo singolo che riassume l'anno. Serve un primo anello — 9.570 km, 452 ore — prima che si possa cominciare a forgiare il secondo.</p></div>
+        <article class="chapter reveal">
+          <h3 class="chapter-title">1.1 — La prima fiamma orobica</h3>
+          <div class="chapter-body"><p>Maggio 2023. Michele riapre la stagione con la fame di chi ha aspettato l'inverno per troppo tempo. Il 27 maggio parte per quella che, nei suoi appunti, resterà una delle uscite madri: 194,8 km e 4810 metri di dislivello, 5843 kJ in una sola giornata, training load 641. Bergamo è ancora addormentata quando lui è già sulla terza salita.</p><p>Sei giorni dopo, il 2 giugno, replica con 160 km e 4136 m, altri 4597 kJ nelle gambe. Non è preparazione: è dichiarazione d'intenti. Il 2023 di Michele inizia da qui — 237 attività, 9570 km, 196.175 metri saliti, 126.904 kJ totali nell'anno. Il Primo Fuoco brucia.</p></div>
         </article>
-        <article class="chapter">
-          <h3 class="chapter-title">Capitolo 2 — Le prime lunghe</h3>
-          <div class="chapter-body"><p>Il 27 maggio arriva la prima sortita oltre i centonovanta: 194,8 km, 4.810 m di dislivello, 5.843 kJ, training load 641. È la cifra che certifica che la base regge il carico. Sei giorni dopo, il 2 giugno, altri 160 km e 4.136 m con 4.597 kJ: distanza dimezzata, densità del salire raddoppiata.</p><p>Sono giornate da sei e sette ore in sella, dove il calcolo cambia da allenarsi a durare. Il 27 maggio porta a casa 641 punti di training load in un'unica uscita: più del doppio di una settimana media di quei mesi.</p></div>
-        </article>
-        <article class="chapter">
-          <h3 class="chapter-title">Capitolo 3 — I trecentonove di giugno</h3>
-          <div class="chapter-body"><p>Il 4 giugno è la giornata fuori scala dell'intero 2023: 309,4 km in una sola uscita, 2.300 m di dislivello, 6.970 kJ di lavoro, 797 punti di training load. È il record stagionale di chilometri singoli, quasi il doppio della già lunga del 27 maggio. Le ore in sella si avvicinano alla cifra delle dieci.</p><p>Il dislivello, qui, è basso: 2.300 m su 309 km significano pianura e mezzofondo. Il taglio del lavoro cambia — diventa macinata pura. Una corda tesa che non si spezza per quasi 800 punti di TL in una giornata sola.</p></div>
-        </article>
-        <article class="chapter">
-          <h3 class="chapter-title">Capitolo 4 — Estate, e il 200 di Natale</h3>
-          <div class="chapter-body"><p>Il 5 agosto, 181,5 km e 4.158 m con 5.284 kJ e training load 606: la sintesi tra la lunga di maggio e il dislivello di giugno, ora ripetibile sotto il caldo. Il 2023 sta imparando a durare anche con quaranta gradi addosso.</p><p>Quando l'anno sembra spegnersi, il 27 dicembre 2023 entra in archivio una pedalata di 200,4 km a basso dislivello (1.478 m), TL 279. Una lunga lenta a ridosso del Natale, che chiude i 9.570 km dell'anno e prepara, senza saperlo, il salto del 2024.</p></div>
+        <article class="chapter reveal">
+          <h3 class="chapter-title">1.2 — Il fabbro silenzioso</h3>
+          <div class="chapter-body"><p>Tra una salita e l'altra, Michele intreccia le discipline come un fabbro intreccia il ferro. La corsa entra a regime — saranno 507 sortite di Run nei tre anni, 8313 km e 157.129 metri di dislivello cumulati. Le Orobie diventano laboratorio: ogni rampa una temperatura, ogni discesa un raffreddamento.</p><p>I primi 100.000 kJ arrivano in silenzio, senza una giornata-bandiera. Sono la somma di centinaia di mattine ordinarie. È l'Anello che nessuno vede forgiarsi, quello che dà la forma al dito.</p></div>
         </article>
     </section>
-    <section class="book">
-      <h2 class="book-title">Libro II — L'Espansione</h2>
+    <section class="book reveal" data-anello="2">
+      <div class="ring-glyph" aria-hidden="true">
+        <svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="30" cy="30" r="14" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/><text x="30" y="35" text-anchor="middle" font-family="Cinzel" font-size="14" fill="currentColor">2</text></svg>
+      </div>
+      <div class="kj-range">100.000 → 200.000</div>
+      <h2 class="book-title">Anello II — La Forgia delle Orobie</h2>
       
-        <article class="chapter">
-          <h3 class="chapter-title">Capitolo 1 — Da 237 a 378</h3>
-          <div class="chapter-body"><p>Il 2024 sale a 378 attività, +59% sul 2023, e 14.308 km, +49%. Il dislivello stagionale tocca 281.720 m, quasi mezzo Everest in più. Le ore lavorate diventano 693, 42.997 i punti di training load. Il volume si è normalizzato come abitudine quotidiana.</p><p>Cambia anche la composizione. La Ride si fa dorsale: produce 163.739 kJ contro i 126.904 dell'anno prima. La Run regge in parallelo, e cominciano a pesare il VirtualRide e il BackcountrySki, che porteranno entrambi metri e ore quando le strade chiudono.</p></div>
+        <article class="chapter reveal">
+          <h3 class="chapter-title">2.1 — Il Trecento di giugno</h3>
+          <div class="chapter-body"><p>Il 4 giugno 2023 Michele attacca un'idea che è già un Anello di per sé: 309,4 km in una sola giornata. 2300 metri di dislivello, 6970 kJ bruciati, training load 797 — il numero più alto del biennio. È il giorno in cui il pedale smette di essere mezzo e diventa metro: misura quanto in profondità Michele riesce a scendere dentro se stesso prima di tornare a galla.</p><p>Una settimana dopo, l'11 giugno, ribadisce con 177,8 km e 3389 m. Il 5 agosto torna a 181,5 km e 4158 m, altri 5284 kJ. Il 2023 si chiuderà con 28.632 di TL accumulato: il martello batte regolare.</p></div>
         </article>
-        <article class="chapter">
-          <h3 class="chapter-title">Capitolo 2 — Saliscendi delle Orobie</h3>
-          <div class="chapter-body"><p>Il 1° giugno, 169,8 km e 3.319 m con 5.102 kJ — training load 675, più alto di qualsiasi singola uscita del 2023 intero. Tre settimane dopo, il 22 giugno, una giornata di pura montagna: 120 km, 4.002 m. È il primo 4.000 di dislivello in una singola pedalata.</p><p>I quattromila non si fanno casualmente: significano cinque o sei colli concatenati, sei o sette ore in sella, una gestione dell'alimentazione che si separa dalla pedalata corta. La giornata del 22 giugno apre una nuova taglia.</p></div>
-        </article>
-        <article class="chapter">
-          <h3 class="chapter-title">Capitolo 3 — Quattromila al giorno</h3>
-          <div class="chapter-body"><p>Il 7 luglio è il vertice del periodo: 135,8 km, 4.532 m di dislivello, 4.656 kJ, training load 598. Tre settimane dopo, il 27 luglio, 152,2 km e 4.176 m. Due uscite quasi simmetriche, in cui il numero ricorrente è il quattromila salito in un giorno.</p><p>Il 9 agosto: 177 km, 4.000 m, 5.407 kJ, TL 596. La giornata che concentra tutto — distanza lunga, dislivello da montagna, lavoro misurato sopra i 5.000 kJ. Il 2024 trova la formula del sei o sette ripetuto.</p></div>
-        </article>
-        <article class="chapter">
-          <h3 class="chapter-title">Capitolo 4 — Cervinia, settemila in un giorno</h3>
-          <div class="chapter-body"><p>Il 21 dicembre 2024, disciplina AlpineSki: 76,2 km percorsi, 7.172 m di dislivello in una sola giornata sugli sci a Cervinia (<a class="strava-link" href="https://www.strava.com/activities/13162191120" target="_blank" rel="noopener">↗ Strava</a>). È il singolo dato di dislivello più alto dell'intero triennio: di più nemmeno la somma delle tre migliori pedalate da quattromila messe in fila.</p><p>Il calcolatore dei kJ qui si ferma — lo sci alpino non equivale alla potenza di una pedalata. Ma TL e tempo dicono il loro. Si è aggiunto un fuoco diverso al banco da forgia: la neve, che alza i conti del dislivello senza chiedere watt.</p></div>
-        </article>
-        <article class="chapter">
-          <h3 class="chapter-title">Capitolo 5 — Boom Boom Boom</h3>
-          <div class="chapter-body"><p>Il 31 dicembre 2024 chiude l'anno con la pedalata di Capodanno: 56,5 km, 2.110 m, 2.198 kJ, training load 289 (<a class="strava-link" href="https://www.strava.com/activities/13229494442" target="_blank" rel="noopener">↗ Strava</a>). Tre Gande in fila, come tre botti: la liturgia del finire l'anno in sella è ormai stabilita.</p><p>Il 2024 esce con 163.739 kJ totali, 281.720 m saliti, 693 ore in attività: 241 in più del 2023. Sotto i numeri, qualcosa si è acceso: la stagione che viene non sarà un'altra espansione lineare, sarà un anno con eventi nominabili.</p></div>
+        <article class="chapter reveal">
+          <h3 class="chapter-title">2.2 — Capodanno con la bici</h3>
+          <div class="chapter-body"><p>Il 27 dicembre 2023 Michele decide che l'anno non finisce in poltrona: 200,4 km di Morning Ride per onorare il calendario, 1478 m di dislivello, training load 279. Una sortita asciutta, di pianura e di freddo, che chiude l'anno e apre il successivo come un cardine bene oliato.</p></div>
         </article>
     </section>
-    <section class="book">
-      <h2 class="book-title">Libro III — La Compagnia</h2>
+    <section class="book reveal" data-anello="3">
+      <div class="ring-glyph" aria-hidden="true">
+        <svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="30" cy="30" r="14" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/><text x="30" y="35" text-anchor="middle" font-family="Cinzel" font-size="14" fill="currentColor">3</text></svg>
+      </div>
+      <div class="kj-range">200.000 → 300.000</div>
+      <h2 class="book-title">Anello III — La Stagione che Cresce</h2>
       
-        <article class="chapter">
-          <h3 class="chapter-title">Capitolo 1 — Il brindisi e il Leone</h3>
-          <div class="chapter-body"><p>L'1 gennaio 2025: 104,2 km al primo dell'anno, 1.117 m, 2.858 kJ (<a class="strava-link" href="https://www.strava.com/activities/13239049163" target="_blank" rel="noopener">↗ Strava</a>). Tre follie nella stessa giornata — i cento del primo, la crono di Michele Sarzilla, il tempo del corto. Training load 322.</p><p>Due giorni dopo, il 3 gennaio, 70,2 km a 1.653 m con Leo (<a class="strava-link" href="https://www.strava.com/activities/13253688082" target="_blank" rel="noopener">↗ Strava</a>): 2.292 kJ, TL 294. La sera leoni, la mattina coglioni — la formula che attraverserà l'intera annata si stabilisce qui, in due uscite ravvicinate per 174 km totali.</p></div>
+        <article class="chapter reveal">
+          <h3 class="chapter-title">3.1 — 2024, l'anno della cadenza</h3>
+          <div class="chapter-body"><p>Il 2024 è l'anno in cui Michele alza il volume senza alzare la voce: 378 attività, 14.308 km, 281.720 metri di dislivello, 693 ore di lavoro, 163.739 kJ. Più 60% di sortite rispetto al 2023, +47% di chilometri. Eppure i numeri singoli sembrano simili — perché la differenza non è nel picco, è nella regolarità.</p><p>Il 1° giugno 2024 firma 169,8 km e 3319 m, 5102 kJ, TL 675. Il 7 luglio infila 135,8 km con 4532 m di dislivello — un rapporto metri/km che racconta meglio di qualunque parola che Michele, ormai, le salite le cerca, non le subisce.</p></div>
         </article>
-        <article class="chapter">
-          <h3 class="chapter-title">Capitolo 2 — Da Bergamo a Bologna in bici</h3>
-          <div class="chapter-body"><p>L'1 marzo, 234 km in linea da Bergamo a Bologna (<a class="strava-link" href="https://www.strava.com/activities/13758862053" target="_blank" rel="noopener">↗ Strava</a>): 875 m di dislivello — la pianura padana — ma 5.688 kJ di lavoro continuo e training load 559. Tapering dichiarato in vista della Maratona di Bologna; un test da Ironman travestito da trasferta domestica.</p><p>I 234 km in linea raccontano un'evoluzione precisa rispetto al 309 del giugno 2023: stessa stoffa di lunga, ma con meccanica diversa. Qui si pedala per arrivare in un'altra città, con capolinea preciso. Il giro in cerchio è chiuso.</p></div>
-        </article>
-        <article class="chapter">
-          <h3 class="chapter-title">Capitolo 3 — I Colli ritrovati e la Pasqua di Thomas</h3>
-          <div class="chapter-body"><p>L'8 marzo, 112,8 km e 2.282 m sui Colli (<a class="strava-link" href="https://www.strava.com/activities/13821468076" target="_blank" rel="noopener">↗ Strava</a>); il 29 marzo, 129,8 km e 2.704 m con il gruppetto della Swatt (<a class="strava-link" href="https://www.strava.com/activities/14019332148" target="_blank" rel="noopener">↗ Strava</a>); il 12 aprile, 117,9 km e 3.309 m in val Brembana (<a class="strava-link" href="https://www.strava.com/activities/14154102951" target="_blank" rel="noopener">↗ Strava</a>). Tre uscite in sei settimane, dislivello in crescita progressiva da 2.282 a 3.309 m.</p><p>Il 18 aprile, Venerdì Santo: 90,1 km e 2.016 m (<a class="strava-link" href="https://www.strava.com/activities/14211073256" target="_blank" rel="noopener">↗ Strava</a>), TL 306. Il 19, Pasqua, la giornata che apre tutto: 207,8 km e 3.872 m con Thomas Rossi — Ghisallo, Sormano, Culmine, Selvino in fila (<a class="strava-link" href="https://www.strava.com/activities/14223854853" target="_blank" rel="noopener">↗ Strava</a>). 5.718 kJ, training load 609. Una via crucis al chilometro 100, una resurrezione al 200.</p></div>
-        </article>
-        <article class="chapter">
-          <h3 class="chapter-title">Capitolo 4 — Liegi-Bastogne-Liège</h3>
-          <div class="chapter-body"><p>Il 26 aprile 2025, Belgio: 253 km, 4.231 m di dislivello, 6.201 kJ, training load 745 (<a class="strava-link" href="https://www.strava.com/activities/14292735306" target="_blank" rel="noopener">↗ Strava</a>). È la singola pedalata più impegnativa del triennio per combinazione di distanza, dislivello e lavoro meccanico — più del 309 del 2023 (chilometraggio senza salite), più della Bergamo-Bologna (distanza senza i 4.000 metri).</p><p>Sette anni di apertura, scrive lui: il vomito al km 200 della prima volta, il fratello Luca in scia stavolta, le Ardenne umide come si conviene. La cifra che chiude un cerchio aperto sette anni prima — 253 km e 4.231 m sono la firma in calce a un patto.</p></div>
-        </article>
-        <article class="chapter">
-          <h3 class="chapter-title">Capitolo 5 — Manghen, Rolle, Artavaggio</h3>
-          <div class="chapter-body"><p>Il 22 giugno, 129,7 km e 2.755 m con Federico Fagiani — la Torta della Pesenti (<a class="strava-link" href="https://www.strava.com/activities/14879137032" target="_blank" rel="noopener">↗ Strava</a>). Anni di conoscenza virtuale che diventano sei ore di asfalto e una torta. 3.556 kJ, TL 424.</p><p>Il 29 giugno, due mesi esatti dall'infortunio: 157,6 km e 3.895 m sul Manghen e Rolle (<a class="strava-link" href="https://www.strava.com/activities/14952371134" target="_blank" rel="noopener">↗ Strava</a>), 3.214 kJ. Una settimana dopo, il 7 luglio, 136 km e 3.204 m sui Piani di Artavaggio (<a class="strava-link" href="https://www.strava.com/activities/15034359196" target="_blank" rel="noopener">↗ Strava</a>) — una banana, una focaccia, una torta a 6,50 €. La rinascita coincide con il ritorno alla quota: 3.000-4.000 metri di dislivello per uscita sono di nuovo l'unità di misura.</p></div>
-        </article>
-        <article class="chapter">
-          <h3 class="chapter-title">Capitolo 6 — Crocedomini, Gavia, Trivigno</h3>
-          <div class="chapter-body"><p>Il 19 agosto, Crocedomini: 150,9 km e 3.048 m, 4.256 kJ, TL 457 (<a class="strava-link" href="https://www.strava.com/activities/15510225406" target="_blank" rel="noopener">↗ Strava</a>). Sei ore mentali in più. Il 25 agosto la mossa più audace della stagione: 192,8 km da Orezzo al Gavia e a Tirano, 3.174 m, 4.961 kJ (<a class="strava-link" href="https://www.strava.com/activities/15580126058" target="_blank" rel="noopener">↗ Strava</a>) — il Gavia raggiunto da casa. Il giorno dopo, ritorno: 126,4 km da Tirano al Trivigno fino a Orezzo, 2.204 m, 3.318 kJ (<a class="strava-link" href="https://www.strava.com/activities/15590025370" target="_blank" rel="noopener">↗ Strava</a>).</p><p>In due giorni: 319 km, 5.378 m, 8.279 kJ. Il 2025 chiude i conti dell'anno a 15.701 km, 306.785 m, 357.923 kJ — più del doppio dei kJ del 2023 (126.904), più del doppio del 2024 (163.739). Lo streak consecutivo più lungo del triennio si chiude il 13 dicembre: 186 giorni in fila, dall'11 giugno.</p></div>
+        <article class="chapter reveal">
+          <h3 class="chapter-title">3.2 — Sole d'agosto, gambe d'agosto</h3>
+          <div class="chapter-body"><p>Il 9 agosto 2024 Michele copre 177 km e sale 4000 metri spaccati, altri 5407 kJ nel libro mastro. Il 27 luglio era già stato a 152,2 km con 4176 m. Le Orobie sono diventate cortile: ogni domenica un quadrante diverso, ogni quadrante un Anello che si stringe.</p></div>
         </article>
     </section>
-    <section class="book">
-      <h2 class="book-title">Libro IV — Il Ritorno del Ferro</h2>
+    <section class="book reveal" data-anello="4">
+      <div class="ring-glyph" aria-hidden="true">
+        <svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="30" cy="30" r="14" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/><text x="30" y="35" text-anchor="middle" font-family="Cinzel" font-size="14" fill="currentColor">4</text></svg>
+      </div>
+      <div class="kj-range">300.000 → 400.000</div>
+      <h2 class="book-title">Anello IV — L'Inverno Alto</h2>
       
-        <article class="chapter">
-          <h3 class="chapter-title">Capitolo 1 — I primi cento giorni</h3>
-          <div class="chapter-body"><p>Il 2026 si apre con 149 attività in 120 giorni di calendario: 4.621 km, 97.187 m di dislivello, 253 ore, 128.469 kJ — già abbondantemente sopra il totale kJ dell'intero 2023 (126.904). Il volume del primo trimestre dichiara che la macchina è settata.</p><p>Il 17 febbraio, Bunny di Carnevale: 101,4 km e 2.002 m, 2.897 kJ, TL 311 (<a class="strava-link" href="https://www.strava.com/activities/17425655328" target="_blank" rel="noopener">↗ Strava</a>). Lovely Colli, scrive — la frase che dopo tre anni vuole dire tornare. L'11 giorni dopo, il 28 febbraio, Un colle alla volta: 106,5 km e 2.213 m, 3.026 kJ, TL 362 (<a class="strava-link" href="https://www.strava.com/activities/17551198404" target="_blank" rel="noopener">↗ Strava</a>).</p></div>
+        <article class="chapter reveal">
+          <h3 class="chapter-title">4.1 — Cervinia, le pelli, i 7172</h3>
+          <div class="chapter-body"><p>Il 21 dicembre 2024 Michele cambia elemento: lascia la bici, calza gli sci d'alpinismo, e <a class="strava-inline" href="https://www.strava.com/activities/13162191120" target="_blank" rel="noopener">sale 7172 metri di dislivello in 76,2 km con il Cervinia Viking Ski Team<span class="strava-mark">↗</span></a>. È l'inverno alto, quello che non scolpisce kJ ma scolpisce qualcos'altro — la pazienza del passo lento, la lettura del manto, il silenzio sopra i tremila. L'Anello IV ha questo riflesso freddo dentro.</p><p>Le 23 sortite di BackcountrySki dei tre anni accumuleranno 27.395 metri di salita in 273 km. Una disciplina laterale che però tiene in vita una parte di Michele che sulla bici resta dormiente: la montagna verticale, vera.</p></div>
         </article>
-        <article class="chapter">
-          <h3 class="chapter-title">Capitolo 2 — Pasqua di nuovo</h3>
-          <div class="chapter-body"><p>Il 3 aprile 2026: 139,2 km e 2.760 m sul Culmine e San Gallo, 3.814 kJ, TL 406 (<a class="strava-link" href="https://www.strava.com/activities/17959916063" target="_blank" rel="noopener">↗ Strava</a>). Doppia torta al Culmine come benzina. Il 5 aprile, 124,1 km e 2.501 m a Vigolo (<a class="strava-link" href="https://www.strava.com/activities/17985159931" target="_blank" rel="noopener">↗ Strava</a>): cinque ore a 200+ W medi, 3.664 kJ. Il blocco volume Ironman è dichiarato — primo blocco done-ish.</p><p>L'unità di misura, in questo aprile, non è più la singola uscita: è la sequenza. Tre uscite in una settimana sopra le quattro ore, kJ cumulativi sopra i 11.000, tre training load oltre 400 in fila.</p></div>
+        <article class="chapter reveal">
+          <h3 class="chapter-title">4.2 — Il triplo botto del 31 dicembre</h3>
+          <div class="chapter-body"><p><a class="strava-inline" href="https://www.strava.com/activities/13229494442" target="_blank" rel="noopener">Il 31 dicembre 2024 Michele chiude l'anno con tre Gandas, 56,5 km e 2110 metri<span class="strava-mark">↗</span></a>, 2198 kJ. Il commento Strava è lapidario: "Fireworks usually end with 3 booms." L'Italia spara petardi, lui spara salite. Training load 289 a Capodanno: il fabbro non spegne la forgia, la copre solo per la notte.</p></div>
         </article>
-        <article class="chapter">
-          <h3 class="chapter-title">Capitolo 3 — Montecampione e San Marco</h3>
-          <div class="chapter-body"><p>Il 12 aprile, Montecampione versione aprile: 132,5 km e 3.154 m, 4.112 kJ, training load 452 (<a class="strava-link" href="https://www.strava.com/activities/18076925246" target="_blank" rel="noopener">↗ Strava</a>). Tremila finalmente, scrive: il primo 3.000 di dislivello dell'anno. Better at the end than the start, come al solito.</p><p>Il 18 aprile, San Marco con il Leone: 130,4 km e 3.028 m (<a class="strava-link" href="https://www.strava.com/activities/18156255279" target="_blank" rel="noopener">↗ Strava</a>). Da Milano a duemila metri, un avocado e una birra lungo la strada. 3.969 kJ, TL 469 — il punto più alto del 2026 fino a oggi. Il Leone, già presenza del 3 gennaio 2025, torna nelle annate di apertura e di chiusura: filo che attraversa due stagioni e 200,6 km di registro.</p></div>
+    </section>
+    <section class="book reveal" data-anello="5">
+      <div class="ring-glyph" aria-hidden="true">
+        <svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="30" cy="30" r="14" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/><text x="30" y="35" text-anchor="middle" font-family="Cinzel" font-size="14" fill="currentColor">5</text></svg>
+      </div>
+      <div class="kj-range">400.000 → 500.000</div>
+      <h2 class="book-title">Anello V — La Compagnia Si Allarga</h2>
+      
+        <article class="chapter reveal">
+          <h3 class="chapter-title">5.1 — Il brindisi di Sarzilla</h3>
+          <div class="chapter-body"><p><a class="strava-inline" href="https://www.strava.com/activities/13239049163" target="_blank" rel="noopener">Il 1° gennaio 2025 Michele esce per 104,2 km al primo dell'anno, con la crono di Michele Sarzilla in coda<span class="strava-mark">↗</span></a>: 1117 m, 2858 kJ, TL 322. "Follia il corto, follia 100 km, follia la crono" — tre follie in una mattina. Due giorni dopo <a class="strava-inline" href="https://www.strava.com/activities/13253688082" target="_blank" rel="noopener">insegue Leo per 70,2 km e 1653 metri<span class="strava-mark">↗</span></a>, altri 2292 kJ: "never a good idea to keep it up with Leo." La Compagnia entra in scena.</p></div>
         </article>
-        <article class="chapter">
-          <h3 class="chapter-title">Capitolo 4 — Verso il ferro</h3>
-          <div class="chapter-body"><p>Aprile 2026 si chiude su 4.621 km e 97.187 m di dislivello in quattro mesi: la traiettoria che porta al ferro è dichiarata. Il triennio ha cumulato 44.200 km, 881.868 m, 2.238 ore, 777.035 kJ — tutto su 1.046 dei 1.095 giorni di calendario.</p><p>Resta da pedalare l'estate. Restano da nuotare i prossimi chilometri di vasca, dopo i 121 km già accumulati nel triennio (47 sessioni Swim più 5 OpenWater). Resta da correre, perché 507 sortite di Run sono il binario invisibile sotto tutto. Il prossimo capitolo non è scritto: i numeri lo dicono in arrivo.</p></div>
+        <article class="chapter reveal">
+          <h3 class="chapter-title">5.2 — Federico, Thomas e gli altri</h3>
+          <div class="chapter-body"><p><a class="strava-inline" href="https://www.strava.com/activities/14879137032" target="_blank" rel="noopener">Il 22 giugno 2025 Michele copre 129,7 km con Federico Fagiani, 2755 m e 3556 kJ<span class="strava-mark">↗</span></a> — "giornata da incorniciare che passa da anni di conoscenze virtuali." La bici è anche questo: relazioni che maturano in watt condivisi.</p><p><a class="strava-inline" href="https://www.strava.com/activities/14223854853" target="_blank" rel="noopener">Il giorno di Pasqua, il 19 aprile 2025, Michele firma 207,8 km con Thomas Rossi: Ghisallo, Sormano, Culmine, Selvino — 3872 metri, 5718 kJ, TL 609<span class="strava-mark">↗</span></a>. Via crucis, morte e resurrezione tutte insieme, scrive lui. Quel giorno l'Anello V smette di essere solo suo.</p></div>
+        </article>
+        <article class="chapter reveal">
+          <h3 class="chapter-title">5.3 — La torta della Pesenti</h3>
+          <div class="chapter-body"><p>Il 2025 sarà l'anno della massa critica: 469 attività, 15.701 km, 306.785 metri di dislivello, 840 ore, 357.923 kJ totali. Più del doppio dei kJ del 2023. È l'anno in cui Michele costruisce il suo streak più lungo: 186 giorni consecutivi attivi, dall'11 giugno al 13 dicembre 2025. Sei mesi senza saltare un giorno.</p></div>
+        </article>
+    </section>
+    <section class="book reveal" data-anello="6">
+      <div class="ring-glyph" aria-hidden="true">
+        <svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="30" cy="30" r="14" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/><text x="30" y="35" text-anchor="middle" font-family="Cinzel" font-size="14" fill="currentColor">6</text></svg>
+      </div>
+      <div class="kj-range">500.000 → 600.000</div>
+      <h2 class="book-title">Anello VI — La Lunga Cavalcata</h2>
+      
+        <article class="chapter reveal">
+          <h3 class="chapter-title">6.1 — Bergamo → Bologna</h3>
+          <div class="chapter-body"><p><a class="strava-inline" href="https://www.strava.com/activities/13758862053" target="_blank" rel="noopener">Il 1° marzo 2025 Michele parte da Bergamo e arriva a Bologna in bici: 234 km, 875 metri di dislivello, 5688 kJ, TL 559<span class="strava-mark">↗</span></a>. La definisce "il tapering che continua, ironman weekend test". È la prima volta che il Ferro entra esplicitamente nel suo vocabolario. La Lunga Cavalcata comincia da una pianura.</p></div>
+        </article>
+        <article class="chapter reveal">
+          <h3 class="chapter-title">6.2 — Liegi, con il fratello</h3>
+          <div class="chapter-body"><p><a class="strava-inline" href="https://www.strava.com/activities/14292735306" target="_blank" rel="noopener">Il 26 aprile 2025 Michele chiude i 253 km della Liegi-Bastogne-Liegi con il fratello Luca: 4231 metri, 6201 kJ, training load 745<span class="strava-mark">↗</span></a>. Sette anni dopo aver vomitato al km 200 alla prima edizione, Michele torna e chiude l'affare. "Memorable day of Belgium, of cycling, of family." Le Ardenne diventano la chiave dell'Anello VI: il chilometraggio non è più resistenza, è memoria.</p></div>
+        </article>
+        <article class="chapter reveal">
+          <h3 class="chapter-title">6.3 — Dolomiti, due mesi dopo</h3>
+          <div class="chapter-body"><p><a class="strava-inline" href="https://www.strava.com/activities/14952371134" target="_blank" rel="noopener">Il 29 giugno 2025, esattamente due mesi dopo l'infortunio, Michele attraversa Manghen e Rolle: 157,6 km, 3895 metri, training load 433<span class="strava-mark">↗</span></a>. "Life is the best thing we have, especially in Dolomites." L'Anello VI ha questo dentro: il ritorno, mai scontato.</p></div>
+        </article>
+        <article class="chapter reveal">
+          <h3 class="chapter-title">6.4 — Crocedomini, Gavia, Trivigno</h3>
+          <div class="chapter-body"><p>L'agosto 2025 di Michele è una sequenza che basterebbe da sola a un libro. <a class="strava-inline" href="https://www.strava.com/activities/15510225406" target="_blank" rel="noopener">Il 19 agosto sale Crocedomini in 150,9 km e 3048 metri, 4256 kJ<span class="strava-mark">↗</span></a>. <a class="strava-inline" href="https://www.strava.com/activities/15580126058" target="_blank" rel="noopener">Il 25 fa Orezzo-Gavia-Tirano: 192,8 km e 3174 m, 4961 kJ<span class="strava-mark">↗</span></a>. <a class="strava-inline" href="https://www.strava.com/activities/15590025370" target="_blank" rel="noopener">Il giorno dopo, 26 agosto, torna da Tirano via Trivigno: 126,4 km e 2204 m<span class="strava-mark">↗</span></a>. Tre giorni di seguito, 470 km e quasi 8500 metri di dislivello cumulati. La Lunga Cavalcata diventa letterale.</p></div>
+        </article>
+    </section>
+    <section class="book reveal" data-anello="7">
+      <div class="ring-glyph" aria-hidden="true">
+        <svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="30" cy="30" r="14" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/><text x="30" y="35" text-anchor="middle" font-family="Cinzel" font-size="14" fill="currentColor">7</text></svg>
+      </div>
+      <div class="kj-range">600.000 → 777.035</div>
+      <h2 class="book-title">Anello VII — Verso il Ferro</h2>
+      
+        <article class="chapter reveal">
+          <h3 class="chapter-title">7.1 — L'acqua, la disciplina che mancava</h3>
+          <div class="chapter-body"><p>Il settimo Anello cambia elemento. 47 sortite di Swim per 121 km, più 5 OpenWaterSwim per altri 7 km. Per uno scalatore puro è poco; per Michele è la disciplina che gli mancava, quella che separa il ciclista dal triatleta. <a class="strava-inline" href="https://www.strava.com/activities/15714625231" target="_blank" rel="noopener">Il 6 settembre 2025 fa il "little test" a due settimane da una gara: 144 km e 982 metri, 357 di TL<span class="strava-mark">↗</span></a>. È un Michele diverso, che misura le calorie con il pane e la marmellata: "Nutrition as shown + 3 sandwich with jam."</p></div>
+        </article>
+        <article class="chapter reveal">
+          <h3 class="chapter-title">7.2 — Il blocco volume di Pasqua</h3>
+          <div class="chapter-body"><p><a class="strava-inline" href="https://www.strava.com/activities/17985159931" target="_blank" rel="noopener">Il 5 aprile 2026 Michele chiude l'IRONMAN volume block 1 con 124,1 km e 2501 metri, 3664 kJ<span class="strava-mark">↗</span></a>. "Vigolo senza gamba. Poi pian piano… 5h 200+W okokok." <a class="strava-inline" href="https://www.strava.com/activities/18076925246" target="_blank" rel="noopener">Una settimana dopo, il 12, attacca Montecampione 1800 nella sua versione di aprile: 132,5 km, 3154 metri, 4112 kJ, TL 452<span class="strava-mark">↗</span></a> — "April version = deadly version."</p><p><a class="strava-inline" href="https://www.strava.com/activities/18156255279" target="_blank" rel="noopener">Il 18 aprile 2026, con Leo, Michele copre 130,4 km e 3028 metri fino a 2000 di quota, 3969 kJ<span class="strava-mark">↗</span></a>, trovando un avocado e una birra lungo la strada. "Blessed." Il Ferro non è ancora arrivato, ma il martello batte già al suo ritmo.</p></div>
+        </article>
+        <article class="chapter reveal">
+          <h3 class="chapter-title">7.3 — I sette Anelli</h3>
+          <div class="chapter-body"><p>Al 29 aprile 2026 il libro mastro segna 777.035 kJ. Sette Anelli pieni, più 77.035 kJ di sfregi sul margine — il numero non è scelto, è quello che è. 1046 giorni attivi su 1095: 95,5%. Tre anni vissuti quasi senza pause. Il fabbro ha quasi finito.</p></div>
         </article>
     </section>
 
 <!-- Epilogue -->
-<div class="epilogue"><p>Al 29 aprile 2026 il libro si ferma qui: 1.233 attività registrate, 44.200 km macinati, 881.868 m saliti, 2.238 ore, 777.035 kJ di lavoro meccanico, 135.746 punti di training load. Tre stagioni piene e un quarto di stagione in corso. Lo streak consecutivo più lungo (186 giorni, dall'11 giugno al 13 dicembre 2025) è già archivio; quello in corso, no. Il martello ha riposato solo 49 giorni su 1.095 — il resto è stato Compagnia.</p></div>
+<div class="epilogue"><p>29 aprile 2026. Michele ha 31 anni, 149 attività già nel libro del nuovo anno, 4621 km e 97.187 metri di dislivello da gennaio. 128.469 kJ in quattro mesi — il ritmo più alto della saga. Davanti a lui c'è il Ferro: l'Ironman che è entrato nel vocabolario a marzo 2025 e da allora non se ne è più andato. Dietro, sette Anelli di Potenza che nessuno gli toglierà. Il sentiero non finisce, cambia solo elemento: dall'asfalto all'acqua, dalla forgia al mare. Bergamo resta il punto di partenza. Le gambe sanno dove andare.</p></div>
 
 <!-- Compagnia -->
 <section class="compagnia">
   <h3>La Compagnia</h3>
   <ul>
-    <li>Ride: 506 sortite, 32.192 km, 656.079 m saliti, 423.118 kJ — la disciplina dorsale del triennio.</li>
-<li>Run: 507 sortite, 8.313 km, 157.129 m, 299.634 kJ — la parità numerica con la Ride, il binario invisibile sotto tutto.</li>
-<li>Hike: 58 uscite, 457 km, 30.733 m saliti — le montagne lente dei giorni di scarico.</li>
-<li>VirtualRide: 57 sessioni, 2.660 km, 54.283 kJ — l'inverno chiuso al chiuso.</li>
-<li>Swim: 47 vasche, 121 km — il terzo arto, in costruzione verso l'Ironman.</li>
-<li>BackcountrySki: 23 uscite, 273 km, 27.395 m — l'inverno alto, dove la strada finisce.</li>
-<li>OpenWaterSwim: 5 uscite, 7 km — il ponte fra vasca e gara.</li>
-<li>Liuke: compagno della pedalata Alternative Commute, 94 km e 1.646 m verso il lavoro (2 aprile 2025).</li>
-<li>Luca Merelli: il fratello di Liegi-Bastogne-Liège, 253 km e 4.231 m sotto la pioggia delle Ardenne (26 aprile 2025).</li>
-<li>Federico Fagiani: la Torta della Pesenti, 129,7 km e 2.755 m che chiudono anni di amicizia virtuale (22 giugno 2025).</li>
-<li>Thomas Rossi: la Pasqua delle quattro salite — Ghisallo, Sormano, Culmine, Selvino — 207,8 km e 3.872 m (19 aprile 2025).</li>
-<li>Leo: la sera leoni la mattina coglioni, 70,2 km e 1.653 m a inizio gennaio 2025; ricompare per il San Marco di aprile 2026.</li>
-<li>Michele Sarzilla: la crono dell'1 gennaio 2025, 104,2 km in fila al brindisi.</li>
-<li>I Colli di Bergamo: la cattedrale ricorrente — Culmine, Selvino, Ghisallo, Sormano — sfondo di centinaia delle 506 ride totali.</li>
+    <li>Luca Merelli, fratello: 253 km di Liegi-Bastogne-Liegi e 4231 metri condivisi il 26 aprile 2025, l'affare aperto sette anni prima e finalmente chiuso.</li>
+<li>Federico Fagiani: la torta della Pesenti, 129,7 km e 2755 m il 22 giugno 2025 — anni di conoscenze virtuali diventati watt.</li>
+<li>Thomas Rossi: Pasqua 2025, 207,8 km e 3872 m, Ghisallo-Sormano-Culmine-Selvino in un giorno solo.</li>
+<li>Leo: il leone con cui non si tiene il passo, 70,2 km il 3 gennaio 2025 e 130,4 km fino a 2000 m il 18 aprile 2026.</li>
+<li>Michele Sarzilla: la crono di Capodanno 2025, 104,2 km al primo dell'anno con TL 322.</li>
+<li>Cervinia Viking Ski Team: 7172 metri saliti in pelli il 21 dicembre 2024, l'inverno alto.</li>
+<li>La Bici da strada: 506 sortite, 32.192 km, 656.079 metri di dislivello, 423.118 kJ — la disciplina madre.</li>
+<li>La Corsa: 507 Run, 8313 km, 157.129 m e 299.634 kJ — la disciplina gemella, in pari con la bici per numero di uscite.</li>
+<li>Le Orobie: cortile e laboratorio, sfondo del 90% delle salite, da Culmine a Crocedomini a Selvino.</li>
+<li>Le Dolomiti: Manghen e Rolle, 157,6 km e 3895 m il 29 giugno 2025, due mesi dopo l'infortunio.</li>
+<li>Le Ardenne: 253 km e 4231 m di pioggia belga, l'umidità che resta nelle ossa.</li>
+<li>La Pianura padana: 234 km da Bergamo a Bologna il 1° marzo 2025, il primo cenno al Ferro.</li>
+<li>Lo Zwift / VirtualRide: 57 sortite e 2660 km al chiuso, 54.283 kJ — il forno acceso anche d'inverno.</li>
+<li>L'Acqua: 47 Swim più 5 OpenWaterSwim per 128 km totali, l'elemento che apre l'Anello VII e prepara il prossimo libro.</li>
   </ul>
 </section>
 
@@ -657,6 +725,57 @@
 <div class="colophon">
   Generato il 2026-04-29 · dati: <a href="https://intervals.icu" target="_blank">intervals.icu</a> · attività: <a href="https://www.strava.com/athletes/" target="_blank">Strava</a>
 </div>
+
+<script>
+(function() {
+  // ── Scroll-reveal: fade+rise on entering viewport
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    }
+  }, { rootMargin: '0px 0px -60px 0px', threshold: 0.05 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Mark prologue + chapters as reveal too if not already
+  document.querySelectorAll('.prologue, .chapter, .compagnia, .epilogue, table.bookshelf, .annual-stats')
+    .forEach(el => { el.classList.add('reveal'); io.observe(el); });
+
+  // ── Counter animation: count from 0 to data-target with easing
+  function animateCounter(el) {
+    const target = parseFloat(el.dataset.target);
+    const decimals = parseInt(el.dataset.decimals || '0');
+    const suffix = el.dataset.suffix || '';
+    const dur = 1600;
+    const t0 = performance.now();
+    function frame(now) {
+      const t = Math.min(1, (now - t0) / dur);
+      const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
+      const v = target * eased;
+      const formatted = decimals > 0 ? v.toFixed(decimals) : Math.floor(v).toLocaleString('it-IT');
+      el.textContent = formatted + suffix;
+      if (t < 1) requestAnimationFrame(frame);
+      else { el.textContent = (decimals > 0 ? target.toFixed(decimals) : target.toLocaleString('it-IT')) + suffix; el.classList.add('counted'); }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  const counterIo = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (e.isIntersecting) { animateCounter(e.target); counterIo.unobserve(e.target); }
+    }
+  }, { threshold: 0.3 });
+  document.querySelectorAll('.feat .num[data-target]').forEach(el => counterIo.observe(el));
+
+  // ── Smooth scroll for ToC if any anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const id = a.getAttribute('href').slice(1);
+      const el = document.getElementById(id);
+      if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    });
+  });
+})();
+</script>
 
 </body>
 </html>
