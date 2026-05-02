@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Il Signore dei kJ · Michele Merelli</title>
+<meta name="description" content="Tre anni, 1233 sortite, 44.200 chilometri e 881.868 metri di salita: Michele Merelli forgia 777.035 kJ in sette Anelli, uno per ogni centinaio di migliaia di Joule strappati al pedale, alla scarpa, alla pelle. 2238 ore in sella o in corsa o in acqua, 1046 giorni attivi su 1095. Una saga in tre stagioni, scritta con le gambe.">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf6ed;
+    --paper: #fffdf6;
+    --ink: #2a2317;
+    --gold: #b8860b;
+    --gold-soft: rgba(184,134,11,0.12);
+    --rule: #d4c8a8;
+    --muted: #6b5f48;
+    --accent: #8b2e1f;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: var(--bg); color: var(--ink); }
+  body {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 19px; line-height: 1.7;
+    max-width: 720px; margin: 0 auto;
+    padding: 60px 28px 100px;
+  }
+  h1.book-main { font-family: 'Cinzel', serif; font-size: 2.6rem; font-weight: 700; letter-spacing: 0.04em; text-align: center; line-height: 1.15; color: var(--ink); }
+  h1.book-main .accent { color: var(--gold); display: block; font-size: 0.6em; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 8px; }
+  .subtitle { font-style: italic; text-align: center; color: var(--muted); font-size: 1.1rem; margin: 18px auto 50px; max-width: 560px; }
+  .ornament { text-align: center; color: var(--gold); margin: 30px 0 20px; font-size: 1.4rem; letter-spacing: 1em; }
+  .stats-hero { background: var(--paper); border: 1px solid var(--rule); padding: 30px 26px; margin: 40px 0; border-radius: 4px; }
+  .stats-hero h2 { font-family: 'Cinzel', serif; font-size: 0.85rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); text-align: center; margin-bottom: 24px; font-weight: 600; }
+  .feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 18px 24px; }
+  .feat { text-align: center; }
+  .feat .num { font-family: 'Cinzel', serif; font-size: 2rem; color: var(--gold); font-weight: 700; line-height: 1; }
+  .feat .label { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-top: 6px; }
+  .feat .note { font-size: 0.85rem; color: var(--muted); font-style: italic; margin-top: 4px; }
+  .prologue { font-style: italic; border-left: 3px solid var(--gold); padding: 8px 0 8px 22px; margin: 40px 0; color: #3a3220; font-size: 1.05rem; }
+  .book { margin: 70px 0; }
+  h2.book-title { font-family: 'Cinzel', serif; font-size: 1.4rem; letter-spacing: 0.08em; color: var(--accent); border-bottom: 2px solid var(--gold); padding-bottom: 10px; margin-bottom: 30px; }
+  .chapter { margin-bottom: 36px; }
+  h3.chapter-title { font-family: 'Cinzel', serif; font-size: 1.15rem; font-weight: 600; color: var(--ink); margin-bottom: 12px; letter-spacing: 0.02em; }
+  .chapter-body p { margin-bottom: 14px; }
+  .chapter-body p::first-letter { /* drop cap on first paragraph */ }
+  .chapter:first-child .chapter-body > p:first-child::first-letter { font-family: 'Cinzel', serif; font-size: 3.2rem; float: left; line-height: 0.9; padding: 4px 8px 0 0; color: var(--gold); }
+  /* Inline strava links — phrase-wrapping with subtle gold underline + arrow */
+  a.strava-inline { color: var(--accent); text-decoration: none; background-image: linear-gradient(transparent 60%, var(--gold-soft) 60%); padding: 0 1px; transition: background 0.25s ease, color 0.25s ease; position: relative; white-space: normal; }
+  a.strava-inline:hover { color: var(--gold); background-image: linear-gradient(transparent 0%, var(--gold-soft) 100%); }
+  a.strava-inline .strava-mark { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 0.7em; color: var(--gold); margin-left: 2px; opacity: 0.6; transition: transform 0.2s ease, opacity 0.2s ease; }
+  a.strava-inline:hover .strava-mark { opacity: 1; transform: translate(2px, -2px); }
+  /* Legacy class kept for safety */
+  a.strava-link { color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent); font-family: 'IBM Plex Mono', monospace; font-size: 0.8em; padding: 0 3px; }
+  a.strava-link:hover { background: var(--gold-soft); }
+  /* Book / anello visual */
+  .book { position: relative; }
+  .ring-glyph { position: absolute; left: -88px; top: -4px; color: var(--gold); opacity: 0.55; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s; }
+  .book.reveal.in .ring-glyph { transform: rotate(360deg); opacity: 1; }
+  .ring-glyph svg { filter: drop-shadow(0 0 6px var(--gold-soft)); }
+  .kj-range { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+  /* Hero ring counter */
+  .ring-bar { display: flex; gap: 10px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
+  .ring-pill { width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; font-size: 0.85rem; color: var(--gold); background: var(--paper); position: relative; transition: all 0.4s ease; box-shadow: inset 0 0 0 0 var(--gold); }
+  .ring-pill.forged { background: linear-gradient(135deg, var(--gold) 0%, #d4a843 50%, var(--gold) 100%); color: var(--paper); box-shadow: 0 0 12px var(--gold-soft), inset 0 0 8px rgba(255,255,255,0.3); animation: ring-pulse 3.6s ease-in-out infinite; }
+  .ring-pill.partial { background: conic-gradient(var(--gold) calc(var(--p) * 1%), var(--paper) 0); }
+  .ring-pill.partial::after { content: attr(data-pct) "%"; font-size: 0.55rem; position: absolute; bottom: -16px; color: var(--muted); letter-spacing: 0.05em; }
+  @keyframes ring-pulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 12px var(--gold-soft); } 50% { transform: scale(1.06); box-shadow: 0 0 20px rgba(184,134,11,0.45); } }
+  /* Scroll reveal */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+  /* Hero feat counter animation */
+  .feat .num { transition: color 0.4s; }
+  .feat .num.counted { animation: shimmer 2.4s ease-out 1; }
+  @keyframes shimmer { 0% { color: var(--ink); } 30% { color: var(--gold); text-shadow: 0 0 12px var(--gold-soft); } 100% { color: var(--gold); } }
+  /* Subtle parchment background grain */
+  body::before { content: ""; position: fixed; inset: 0; background-image: radial-gradient(circle at 25% 30%, rgba(184,134,11,0.04) 0, transparent 40%), radial-gradient(circle at 75% 70%, rgba(139,46,31,0.03) 0, transparent 35%); pointer-events: none; z-index: -1; }
+  .compagnia { background: var(--paper); border: 1px solid var(--rule); padding: 24px 26px; margin: 50px 0; border-radius: 4px; }
+  .compagnia h3 { font-family: 'Cinzel', serif; font-size: 1rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; text-align: center; }
+  .compagnia ul { list-style: none; padding: 0; }
+  .compagnia li { padding: 8px 0; border-bottom: 1px dashed var(--rule); }
+  .compagnia li:last-child { border-bottom: none; }
+  table.bookshelf { width: 100%; border-collapse: collapse; margin: 30px 0; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; }
+  table.bookshelf caption { font-family: 'Cinzel', serif; font-size: 1rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; text-align: left; }
+  table.bookshelf th { text-align: left; border-bottom: 1px solid var(--gold); padding: 6px 4px; color: var(--muted); font-weight: 600; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; }
+  table.bookshelf td { padding: 5px 4px; border-bottom: 1px dashed var(--rule); }
+  table.bookshelf td.num { text-align: right; color: var(--gold); }
+  table.bookshelf td.link a { color: var(--accent); text-decoration: none; font-size: 1rem; }
+  table.bookshelf td.link a:hover { color: var(--gold); }
+  .annual-stats { width: 100%; border-collapse: collapse; margin: 22px 0; font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem; }
+  .annual-stats th { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--gold); color: var(--muted); }
+  .annual-stats td { padding: 5px 8px; border-bottom: 1px dashed var(--rule); }
+  .epilogue { font-style: italic; text-align: center; margin: 60px auto 30px; max-width: 560px; color: var(--muted); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 24px 0; }
+  .colophon { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; text-align: center; color: var(--muted); margin-top: 60px; letter-spacing: 0.1em; }
+  .colophon a { color: var(--gold); }
+  details { margin: 18px 0; }
+  details summary { cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  @media (max-width: 600px) { body { font-size: 17px; padding: 30px 18px 60px; } h1.book-main { font-size: 1.9rem; } .feat .num { font-size: 1.5rem; } }
+</style>
+</head>
+<body>
+
+<h1 class="book-main">
+  <span class="accent">una saga in tre stagioni</span>
+  Il Signore dei kJ
+</h1>
+<p class="subtitle">Tre anni, 1233 sortite, 44.200 chilometri e 881.868 metri di salita: Michele Merelli forgia 777.035 kJ in sette Anelli, uno per ogni centinaio di migliaia di Joule strappati al pedale, alla scarpa, alla pelle. 2238 ore in sella o in corsa o in acqua, 1046 giorni attivi su 1095. Una saga in tre stagioni, scritta con le gambe.</p>
+
+<div class="ornament">⚜ · ⚜ · ⚜</div>
+
+<!-- ── 5 FEATURES ──────────────────────────────────────────── -->
+<section class="stats-hero reveal">
+  <h2>I sette anelli e i cinque sigilli</h2>
+  <div class="ring-bar" aria-label="7 anelli forgiati su 7">
+    <div class="ring-pill forged" title="Anello forgiato (100.000 kJ)">⚜</div><div class="ring-pill forged" title="Anello forgiato (100.000 kJ)">⚜</div><div class="ring-pill forged" title="Anello forgiato (100.000 kJ)">⚜</div><div class="ring-pill forged" title="Anello forgiato (100.000 kJ)">⚜</div><div class="ring-pill forged" title="Anello forgiato (100.000 kJ)">⚜</div><div class="ring-pill forged" title="Anello forgiato (100.000 kJ)">⚜</div><div class="ring-pill forged" title="Anello forgiato (100.000 kJ)">⚜</div>
+    <div class="ring-pill partial" style="--p:77" data-pct="77" title="Anello in forgiatura">⚒</div>
+  </div>
+  <div class="feat-grid" style="margin-top: 36px;">
+    <div class="feat">
+      <div class="num" data-target="7">0</div>
+      <div class="label">Anelli forgiati</div>
+      <div class="note">777,035 kJ · 1 anello / 100.000 kJ</div>
+    </div>
+    <div class="feat">
+      <div class="num" data-target="99.7" data-suffix="×" data-decimals="1">0</div>
+      <div class="label">Volte l'Everest</div>
+      <div class="note">881,868 m saliti</div>
+    </div>
+    <div class="feat">
+      <div class="num" data-target="1.10" data-suffix="×" data-decimals="2">0</div>
+      <div class="label">Giri equatoriali</div>
+      <div class="note">44,200 km</div>
+    </div>
+    <div class="feat">
+      <div class="num" data-target="93.3" data-decimals="1">0</div>
+      <div class="label">Giorni di moto</div>
+      <div class="note">2238 ore di lavoro</div>
+    </div>
+    <div class="feat">
+      <div class="num" data-target="186">0</div>
+      <div class="label">Streak max</div>
+      <div class="note">giorni consecutivi · 2025-06-11</div>
+    </div>
+  </div>
+</section>
+
+<!-- Prologue -->
+<div class="prologue"><p>Il 29 aprile 2023 Michele non lo sa, ma è all'imbocco di un sentiero lungo tre anni. Bergamo dietro, le Orobie davanti, una bici, un paio di scarpe, e quella ostinazione ingegneristica che misura tutto in watt e in metri di dislivello. Da quel giorno conterà 1233 uscite, accumulerà 44.200 km, salirà 881.868 metri — quasi cento volte l'Everest dal mare. Forgerà, kJ dopo kJ, sette Anelli di Potenza. Questa è la sua storia.</p></div>
+
+<!-- Books -->
+
+    <section class="book reveal" data-anello="1">
+      <div class="ring-glyph" aria-hidden="true">
+        <svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="30" cy="30" r="14" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/><text x="30" y="35" text-anchor="middle" font-family="Cinzel" font-size="14" fill="currentColor">1</text></svg>
+      </div>
+      <div class="kj-range">0 → 100.000</div>
+      <h2 class="book-title">Anello I — Il Primo Fuoco</h2>
+      
+        <article class="chapter reveal">
+          <h3 class="chapter-title">1.1 — La prima fiamma orobica</h3>
+          <div class="chapter-body"><p>Maggio 2023. Michele riapre la stagione con la fame di chi ha aspettato l'inverno per troppo tempo. Il 27 maggio parte per quella che, nei suoi appunti, resterà una delle uscite madri: 194,8 km e 4810 metri di dislivello, 5843 kJ in una sola giornata, training load 641. Bergamo è ancora addormentata quando lui è già sulla terza salita.</p><p>Sei giorni dopo, il 2 giugno, replica con 160 km e 4136 m, altri 4597 kJ nelle gambe. Non è preparazione: è dichiarazione d'intenti. Il 2023 di Michele inizia da qui — 237 attività, 9570 km, 196.175 metri saliti, 126.904 kJ totali nell'anno. Il Primo Fuoco brucia.</p></div>
+        </article>
+        <article class="chapter reveal">
+          <h3 class="chapter-title">1.2 — Il fabbro silenzioso</h3>
+          <div class="chapter-body"><p>Tra una salita e l'altra, Michele intreccia le discipline come un fabbro intreccia il ferro. La corsa entra a regime — saranno 507 sortite di Run nei tre anni, 8313 km e 157.129 metri di dislivello cumulati. Le Orobie diventano laboratorio: ogni rampa una temperatura, ogni discesa un raffreddamento.</p><p>I primi 100.000 kJ arrivano in silenzio, senza una giornata-bandiera. Sono la somma di centinaia di mattine ordinarie. È l'Anello che nessuno vede forgiarsi, quello che dà la forma al dito.</p></div>
+        </article>
+    </section>
+    <section class="book reveal" data-anello="2">
+      <div class="ring-glyph" aria-hidden="true">
+        <svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="30" cy="30" r="14" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/><text x="30" y="35" text-anchor="middle" font-family="Cinzel" font-size="14" fill="currentColor">2</text></svg>
+      </div>
+      <div class="kj-range">100.000 → 200.000</div>
+      <h2 class="book-title">Anello II — La Forgia delle Orobie</h2>
+      
+        <article class="chapter reveal">
+          <h3 class="chapter-title">2.1 — Il Trecento di giugno</h3>
+          <div class="chapter-body"><p>Il 4 giugno 2023 Michele attacca un'idea che è già un Anello di per sé: 309,4 km in una sola giornata. 2300 metri di dislivello, 6970 kJ bruciati, training load 797 — il numero più alto del biennio. È il giorno in cui il pedale smette di essere mezzo e diventa metro: misura quanto in profondità Michele riesce a scendere dentro se stesso prima di tornare a galla.</p><p>Una settimana dopo, l'11 giugno, ribadisce con 177,8 km e 3389 m. Il 5 agosto torna a 181,5 km e 4158 m, altri 5284 kJ. Il 2023 si chiuderà con 28.632 di TL accumulato: il martello batte regolare.</p></div>
+        </article>
+        <article class="chapter reveal">
+          <h3 class="chapter-title">2.2 — Capodanno con la bici</h3>
+          <div class="chapter-body"><p>Il 27 dicembre 2023 Michele decide che l'anno non finisce in poltrona: 200,4 km di Morning Ride per onorare il calendario, 1478 m di dislivello, training load 279. Una sortita asciutta, di pianura e di freddo, che chiude l'anno e apre il successivo come un cardine bene oliato.</p></div>
+        </article>
+    </section>
+    <section class="book reveal" data-anello="3">
+      <div class="ring-glyph" aria-hidden="true">
+        <svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="30" cy="30" r="14" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/><text x="30" y="35" text-anchor="middle" font-family="Cinzel" font-size="14" fill="currentColor">3</text></svg>
+      </div>
+      <div class="kj-range">200.000 → 300.000</div>
+      <h2 class="book-title">Anello III — La Stagione che Cresce</h2>
+      
+        <article class="chapter reveal">
+          <h3 class="chapter-title">3.1 — 2024, l'anno della cadenza</h3>
+          <div class="chapter-body"><p>Il 2024 è l'anno in cui Michele alza il volume senza alzare la voce: 378 attività, 14.308 km, 281.720 metri di dislivello, 693 ore di lavoro, 163.739 kJ. Più 60% di sortite rispetto al 2023, +47% di chilometri. Eppure i numeri singoli sembrano simili — perché la differenza non è nel picco, è nella regolarità.</p><p>Il 1° giugno 2024 firma 169,8 km e 3319 m, 5102 kJ, TL 675. Il 7 luglio infila 135,8 km con 4532 m di dislivello — un rapporto metri/km che racconta meglio di qualunque parola che Michele, ormai, le salite le cerca, non le subisce.</p></div>
+        </article>
+        <article class="chapter reveal">
+          <h3 class="chapter-title">3.2 — Sole d'agosto, gambe d'agosto</h3>
+          <div class="chapter-body"><p>Il 9 agosto 2024 Michele copre 177 km e sale 4000 metri spaccati, altri 5407 kJ nel libro mastro. Il 27 luglio era già stato a 152,2 km con 4176 m. Le Orobie sono diventate cortile: ogni domenica un quadrante diverso, ogni quadrante un Anello che si stringe.</p></div>
+        </article>
+    </section>
+    <section class="book reveal" data-anello="4">
+      <div class="ring-glyph" aria-hidden="true">
+        <svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="30" cy="30" r="14" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/><text x="30" y="35" text-anchor="middle" font-family="Cinzel" font-size="14" fill="currentColor">4</text></svg>
+      </div>
+      <div class="kj-range">300.000 → 400.000</div>
+      <h2 class="book-title">Anello IV — L'Inverno Alto</h2>
+      
+        <article class="chapter reveal">
+          <h3 class="chapter-title">4.1 — Cervinia, le pelli, i 7172</h3>
+          <div class="chapter-body"><p>Il 21 dicembre 2024 Michele cambia elemento: lascia la bici, calza gli sci d'alpinismo, e <a class="strava-inline" href="https://www.strava.com/activities/13162191120" target="_blank" rel="noopener">sale 7172 metri di dislivello in 76,2 km con il Cervinia Viking Ski Team<span class="strava-mark">↗</span></a>. È l'inverno alto, quello che non scolpisce kJ ma scolpisce qualcos'altro — la pazienza del passo lento, la lettura del manto, il silenzio sopra i tremila. L'Anello IV ha questo riflesso freddo dentro.</p><p>Le 23 sortite di BackcountrySki dei tre anni accumuleranno 27.395 metri di salita in 273 km. Una disciplina laterale che però tiene in vita una parte di Michele che sulla bici resta dormiente: la montagna verticale, vera.</p></div>
+        </article>
+        <article class="chapter reveal">
+          <h3 class="chapter-title">4.2 — Il triplo botto del 31 dicembre</h3>
+          <div class="chapter-body"><p><a class="strava-inline" href="https://www.strava.com/activities/13229494442" target="_blank" rel="noopener">Il 31 dicembre 2024 Michele chiude l'anno con tre Gandas, 56,5 km e 2110 metri<span class="strava-mark">↗</span></a>, 2198 kJ. Il commento Strava è lapidario: "Fireworks usually end with 3 booms." L'Italia spara petardi, lui spara salite. Training load 289 a Capodanno: il fabbro non spegne la forgia, la copre solo per la notte.</p></div>
+        </article>
+    </section>
+    <section class="book reveal" data-anello="5">
+      <div class="ring-glyph" aria-hidden="true">
+        <svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="30" cy="30" r="14" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/><text x="30" y="35" text-anchor="middle" font-family="Cinzel" font-size="14" fill="currentColor">5</text></svg>
+      </div>
+      <div class="kj-range">400.000 → 500.000</div>
+      <h2 class="book-title">Anello V — La Compagnia Si Allarga</h2>
+      
+        <article class="chapter reveal">
+          <h3 class="chapter-title">5.1 — Il brindisi di Sarzilla</h3>
+          <div class="chapter-body"><p><a class="strava-inline" href="https://www.strava.com/activities/13239049163" target="_blank" rel="noopener">Il 1° gennaio 2025 Michele esce per 104,2 km al primo dell'anno, con la crono di Michele Sarzilla in coda<span class="strava-mark">↗</span></a>: 1117 m, 2858 kJ, TL 322. "Follia il corto, follia 100 km, follia la crono" — tre follie in una mattina. Due giorni dopo <a class="strava-inline" href="https://www.strava.com/activities/13253688082" target="_blank" rel="noopener">insegue Leo per 70,2 km e 1653 metri<span class="strava-mark">↗</span></a>, altri 2292 kJ: "never a good idea to keep it up with Leo." La Compagnia entra in scena.</p></div>
+        </article>
+        <article class="chapter reveal">
+          <h3 class="chapter-title">5.2 — Federico, Thomas e gli altri</h3>
+          <div class="chapter-body"><p><a class="strava-inline" href="https://www.strava.com/activities/14879137032" target="_blank" rel="noopener">Il 22 giugno 2025 Michele copre 129,7 km con Federico Fagiani, 2755 m e 3556 kJ<span class="strava-mark">↗</span></a> — "giornata da incorniciare che passa da anni di conoscenze virtuali." La bici è anche questo: relazioni che maturano in watt condivisi.</p><p><a class="strava-inline" href="https://www.strava.com/activities/14223854853" target="_blank" rel="noopener">Il giorno di Pasqua, il 19 aprile 2025, Michele firma 207,8 km con Thomas Rossi: Ghisallo, Sormano, Culmine, Selvino — 3872 metri, 5718 kJ, TL 609<span class="strava-mark">↗</span></a>. Via crucis, morte e resurrezione tutte insieme, scrive lui. Quel giorno l'Anello V smette di essere solo suo.</p></div>
+        </article>
+        <article class="chapter reveal">
+          <h3 class="chapter-title">5.3 — La torta della Pesenti</h3>
+          <div class="chapter-body"><p>Il 2025 sarà l'anno della massa critica: 469 attività, 15.701 km, 306.785 metri di dislivello, 840 ore, 357.923 kJ totali. Più del doppio dei kJ del 2023. È l'anno in cui Michele costruisce il suo streak più lungo: 186 giorni consecutivi attivi, dall'11 giugno al 13 dicembre 2025. Sei mesi senza saltare un giorno.</p></div>
+        </article>
+    </section>
+    <section class="book reveal" data-anello="6">
+      <div class="ring-glyph" aria-hidden="true">
+        <svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="30" cy="30" r="14" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/><text x="30" y="35" text-anchor="middle" font-family="Cinzel" font-size="14" fill="currentColor">6</text></svg>
+      </div>
+      <div class="kj-range">500.000 → 600.000</div>
+      <h2 class="book-title">Anello VI — La Lunga Cavalcata</h2>
+      
+        <article class="chapter reveal">
+          <h3 class="chapter-title">6.1 — Bergamo → Bologna</h3>
+          <div class="chapter-body"><p><a class="strava-inline" href="https://www.strava.com/activities/13758862053" target="_blank" rel="noopener">Il 1° marzo 2025 Michele parte da Bergamo e arriva a Bologna in bici: 234 km, 875 metri di dislivello, 5688 kJ, TL 559<span class="strava-mark">↗</span></a>. La definisce "il tapering che continua, ironman weekend test". È la prima volta che il Ferro entra esplicitamente nel suo vocabolario. La Lunga Cavalcata comincia da una pianura.</p></div>
+        </article>
+        <article class="chapter reveal">
+          <h3 class="chapter-title">6.2 — Liegi, con il fratello</h3>
+          <div class="chapter-body"><p><a class="strava-inline" href="https://www.strava.com/activities/14292735306" target="_blank" rel="noopener">Il 26 aprile 2025 Michele chiude i 253 km della Liegi-Bastogne-Liegi con il fratello Luca: 4231 metri, 6201 kJ, training load 745<span class="strava-mark">↗</span></a>. Sette anni dopo aver vomitato al km 200 alla prima edizione, Michele torna e chiude l'affare. "Memorable day of Belgium, of cycling, of family." Le Ardenne diventano la chiave dell'Anello VI: il chilometraggio non è più resistenza, è memoria.</p></div>
+        </article>
+        <article class="chapter reveal">
+          <h3 class="chapter-title">6.3 — Dolomiti, due mesi dopo</h3>
+          <div class="chapter-body"><p><a class="strava-inline" href="https://www.strava.com/activities/14952371134" target="_blank" rel="noopener">Il 29 giugno 2025, esattamente due mesi dopo l'infortunio, Michele attraversa Manghen e Rolle: 157,6 km, 3895 metri, training load 433<span class="strava-mark">↗</span></a>. "Life is the best thing we have, especially in Dolomites." L'Anello VI ha questo dentro: il ritorno, mai scontato.</p></div>
+        </article>
+        <article class="chapter reveal">
+          <h3 class="chapter-title">6.4 — Crocedomini, Gavia, Trivigno</h3>
+          <div class="chapter-body"><p>L'agosto 2025 di Michele è una sequenza che basterebbe da sola a un libro. <a class="strava-inline" href="https://www.strava.com/activities/15510225406" target="_blank" rel="noopener">Il 19 agosto sale Crocedomini in 150,9 km e 3048 metri, 4256 kJ<span class="strava-mark">↗</span></a>. <a class="strava-inline" href="https://www.strava.com/activities/15580126058" target="_blank" rel="noopener">Il 25 fa Orezzo-Gavia-Tirano: 192,8 km e 3174 m, 4961 kJ<span class="strava-mark">↗</span></a>. <a class="strava-inline" href="https://www.strava.com/activities/15590025370" target="_blank" rel="noopener">Il giorno dopo, 26 agosto, torna da Tirano via Trivigno: 126,4 km e 2204 m<span class="strava-mark">↗</span></a>. Tre giorni di seguito, 470 km e quasi 8500 metri di dislivello cumulati. La Lunga Cavalcata diventa letterale.</p></div>
+        </article>
+    </section>
+    <section class="book reveal" data-anello="7">
+      <div class="ring-glyph" aria-hidden="true">
+        <svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="30" cy="30" r="14" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/><text x="30" y="35" text-anchor="middle" font-family="Cinzel" font-size="14" fill="currentColor">7</text></svg>
+      </div>
+      <div class="kj-range">600.000 → 777.035</div>
+      <h2 class="book-title">Anello VII — Verso il Ferro</h2>
+      
+        <article class="chapter reveal">
+          <h3 class="chapter-title">7.1 — L'acqua, la disciplina che mancava</h3>
+          <div class="chapter-body"><p>Il settimo Anello cambia elemento. 47 sortite di Swim per 121 km, più 5 OpenWaterSwim per altri 7 km. Per uno scalatore puro è poco; per Michele è la disciplina che gli mancava, quella che separa il ciclista dal triatleta. <a class="strava-inline" href="https://www.strava.com/activities/15714625231" target="_blank" rel="noopener">Il 6 settembre 2025 fa il "little test" a due settimane da una gara: 144 km e 982 metri, 357 di TL<span class="strava-mark">↗</span></a>. È un Michele diverso, che misura le calorie con il pane e la marmellata: "Nutrition as shown + 3 sandwich with jam."</p></div>
+        </article>
+        <article class="chapter reveal">
+          <h3 class="chapter-title">7.2 — Il blocco volume di Pasqua</h3>
+          <div class="chapter-body"><p><a class="strava-inline" href="https://www.strava.com/activities/17985159931" target="_blank" rel="noopener">Il 5 aprile 2026 Michele chiude l'IRONMAN volume block 1 con 124,1 km e 2501 metri, 3664 kJ<span class="strava-mark">↗</span></a>. "Vigolo senza gamba. Poi pian piano… 5h 200+W okokok." <a class="strava-inline" href="https://www.strava.com/activities/18076925246" target="_blank" rel="noopener">Una settimana dopo, il 12, attacca Montecampione 1800 nella sua versione di aprile: 132,5 km, 3154 metri, 4112 kJ, TL 452<span class="strava-mark">↗</span></a> — "April version = deadly version."</p><p><a class="strava-inline" href="https://www.strava.com/activities/18156255279" target="_blank" rel="noopener">Il 18 aprile 2026, con Leo, Michele copre 130,4 km e 3028 metri fino a 2000 di quota, 3969 kJ<span class="strava-mark">↗</span></a>, trovando un avocado e una birra lungo la strada. "Blessed." Il Ferro non è ancora arrivato, ma il martello batte già al suo ritmo.</p></div>
+        </article>
+        <article class="chapter reveal">
+          <h3 class="chapter-title">7.3 — I sette Anelli</h3>
+          <div class="chapter-body"><p>Al 29 aprile 2026 il libro mastro segna 777.035 kJ. Sette Anelli pieni, più 77.035 kJ di sfregi sul margine — il numero non è scelto, è quello che è. 1046 giorni attivi su 1095: 95,5%. Tre anni vissuti quasi senza pause. Il fabbro ha quasi finito.</p></div>
+        </article>
+    </section>
+
+<!-- Epilogue -->
+<div class="epilogue"><p>29 aprile 2026. Michele ha 31 anni, 149 attività già nel libro del nuovo anno, 4621 km e 97.187 metri di dislivello da gennaio. 128.469 kJ in quattro mesi — il ritmo più alto della saga. Davanti a lui c'è il Ferro: l'Ironman che è entrato nel vocabolario a marzo 2025 e da allora non se ne è più andato. Dietro, sette Anelli di Potenza che nessuno gli toglierà. Il sentiero non finisce, cambia solo elemento: dall'asfalto all'acqua, dalla forgia al mare. Bergamo resta il punto di partenza. Le gambe sanno dove andare.</p></div>
+
+<!-- Compagnia -->
+<section class="compagnia">
+  <h3>La Compagnia</h3>
+  <ul>
+    <li>Luca Merelli, fratello: 253 km di Liegi-Bastogne-Liegi e 4231 metri condivisi il 26 aprile 2025, l'affare aperto sette anni prima e finalmente chiuso.</li>
+<li>Federico Fagiani: la torta della Pesenti, 129,7 km e 2755 m il 22 giugno 2025 — anni di conoscenze virtuali diventati watt.</li>
+<li>Thomas Rossi: Pasqua 2025, 207,8 km e 3872 m, Ghisallo-Sormano-Culmine-Selvino in un giorno solo.</li>
+<li>Leo: il leone con cui non si tiene il passo, 70,2 km il 3 gennaio 2025 e 130,4 km fino a 2000 m il 18 aprile 2026.</li>
+<li>Michele Sarzilla: la crono di Capodanno 2025, 104,2 km al primo dell'anno con TL 322.</li>
+<li>Cervinia Viking Ski Team: 7172 metri saliti in pelli il 21 dicembre 2024, l'inverno alto.</li>
+<li>La Bici da strada: 506 sortite, 32.192 km, 656.079 metri di dislivello, 423.118 kJ — la disciplina madre.</li>
+<li>La Corsa: 507 Run, 8313 km, 157.129 m e 299.634 kJ — la disciplina gemella, in pari con la bici per numero di uscite.</li>
+<li>Le Orobie: cortile e laboratorio, sfondo del 90% delle salite, da Culmine a Crocedomini a Selvino.</li>
+<li>Le Dolomiti: Manghen e Rolle, 157,6 km e 3895 m il 29 giugno 2025, due mesi dopo l'infortunio.</li>
+<li>Le Ardenne: 253 km e 4231 m di pioggia belga, l'umidità che resta nelle ossa.</li>
+<li>La Pianura padana: 234 km da Bergamo a Bologna il 1° marzo 2025, il primo cenno al Ferro.</li>
+<li>Lo Zwift / VirtualRide: 57 sortite e 2660 km al chiuso, 54.283 kJ — il forno acceso anche d'inverno.</li>
+<li>L'Acqua: 47 Swim più 5 OpenWaterSwim per 128 km totali, l'elemento che apre l'Anello VII e prepara il prossimo libro.</li>
+  </ul>
+</section>
+
+<!-- Bookshelf: milestone activities -->
+<details>
+  <summary>📖 La biblioteca delle imprese (42 eventi · click per espandere)</summary>
+  <table class="bookshelf">
+    <thead>
+      <tr><th>Data</th><th>Tipo</th><th>Nome</th><th>Distanza</th><th>Dislivello</th><th>kJ</th><th></th></tr>
+    </thead>
+    <tbody>
+      
+    <tr>
+      <td class="date">2023-05-27</td>
+      <td class="type">Ride</td>
+      <td class="name">Morning Ride</td>
+      <td class="num">194.8 km</td>
+      <td class="num">4810 m</td>
+      <td class="num">5843 kJ</td>
+      <td class="link"></td>
+    </tr>
+    <tr>
+      <td class="date">2023-06-02</td>
+      <td class="type">Ride</td>
+      <td class="name">Morning Ride</td>
+      <td class="num">160 km</td>
+      <td class="num">4136 m</td>
+      <td class="num">4597 kJ</td>
+      <td class="link"></td>
+    </tr>
+    <tr>
+      <td class="date">2023-06-04</td>
+      <td class="type">Ride</td>
+      <td class="name">Morning Ride</td>
+      <td class="num">309.4 km</td>
+      <td class="num">2300 m</td>
+      <td class="num">6970 kJ</td>
+      <td class="link"></td>
+    </tr>
+    <tr>
+      <td class="date">2023-06-11</td>
+      <td class="type">Ride</td>
+      <td class="name">Morning Ride</td>
+      <td class="num">177.8 km</td>
+      <td class="num">3389 m</td>
+      <td class="num">4524 kJ</td>
+      <td class="link"></td>
+    </tr>
+    <tr>
+      <td class="date">2023-08-05</td>
+      <td class="type">Ride</td>
+      <td class="name">Morning Ride</td>
+      <td class="num">181.5 km</td>
+      <td class="num">4158 m</td>
+      <td class="num">5284 kJ</td>
+      <td class="link"></td>
+    </tr>
+    <tr>
+      <td class="date">2023-12-27</td>
+      <td class="type">Ride</td>
+      <td class="name">Morning Ride</td>
+      <td class="num">200.4 km</td>
+      <td class="num">1478 m</td>
+      <td class="num"></td>
+      <td class="link"></td>
+    </tr>
+    <tr>
+      <td class="date">2024-06-01</td>
+      <td class="type">Ride</td>
+      <td class="name">Morning Ride</td>
+      <td class="num">169.8 km</td>
+      <td class="num">3319 m</td>
+      <td class="num">5102 kJ</td>
+      <td class="link"></td>
+    </tr>
+    <tr>
+      <td class="date">2024-06-22</td>
+      <td class="type">Ride</td>
+      <td class="name">Morning Ride</td>
+      <td class="num">120 km</td>
+      <td class="num">4002 m</td>
+      <td class="num"></td>
+      <td class="link"></td>
+    </tr>
+    <tr>
+      <td class="date">2024-07-07</td>
+      <td class="type">Ride</td>
+      <td class="name">Morning Ride</td>
+      <td class="num">135.8 km</td>
+      <td class="num">4532 m</td>
+      <td class="num">4656 kJ</td>
+      <td class="link"></td>
+    </tr>
+    <tr>
+      <td class="date">2024-07-27</td>
+      <td class="type">Ride</td>
+      <td class="name">Morning Ride</td>
+      <td class="num">152.2 km</td>
+      <td class="num">4176 m</td>
+      <td class="num"></td>
+      <td class="link"></td>
+    </tr>
+    <tr>
+      <td class="date">2024-08-09</td>
+      <td class="type">Ride</td>
+      <td class="name">Morning Ride</td>
+      <td class="num">177 km</td>
+      <td class="num">4000 m</td>
+      <td class="num">5407 kJ</td>
+      <td class="link"></td>
+    </tr>
+    <tr>
+      <td class="date">2024-12-21</td>
+      <td class="type">AlpineSki</td>
+      <td class="name">⛰️(Cervinia Viking Ski Team)</td>
+      <td class="num">76.2 km</td>
+      <td class="num">7172 m</td>
+      <td class="num"></td>
+      <td class="link"><a href="https://www.strava.com/activities/13162191120" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2024-12-31</td>
+      <td class="type">Ride</td>
+      <td class="name">🎆 (Boom Boom Boom)</td>
+      <td class="num">56.5 km</td>
+      <td class="num">2110 m</td>
+      <td class="num">2198 kJ</td>
+      <td class="link"><a href="https://www.strava.com/activities/13229494442" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2025-01-01</td>
+      <td class="type">Ride</td>
+      <td class="name">🥂(Micheli's Toast)</td>
+      <td class="num">104.2 km</td>
+      <td class="num">1117 m</td>
+      <td class="num">2858 kJ</td>
+      <td class="link"><a href="https://www.strava.com/activities/13239049163" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2025-01-03</td>
+      <td class="type">Ride</td>
+      <td class="name">🦁(La sera Leoni...)</td>
+      <td class="num">70.2 km</td>
+      <td class="num">1653 m</td>
+      <td class="num">2292 kJ</td>
+      <td class="link"><a href="https://www.strava.com/activities/13253688082" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2025-03-01</td>
+      <td class="type">Ride</td>
+      <td class="name">🤡(From Bergamo to Bologna Marathon)</td>
+      <td class="num">234 km</td>
+      <td class="num">875 m</td>
+      <td class="num">5688 kJ</td>
+      <td class="link"><a href="https://www.strava.com/activities/13758862053" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2025-03-08</td>
+      <td class="type">Ride</td>
+      <td class="name">🏗️(Colli Work In Progress)</td>
+      <td class="num">112.8 km</td>
+      <td class="num">2282 m</td>
+      <td class="num">3214 kJ</td>
+      <td class="link"><a href="https://www.strava.com/activities/13821468076" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2025-03-29</td>
+      <td class="type">Ride</td>
+      <td class="name">🤡(Swatt Club Explosion)</td>
+      <td class="num">129.8 km</td>
+      <td class="num">2704 m</td>
+      <td class="num">3690 kJ</td>
+      <td class="link"><a href="https://www.strava.com/activities/14019332148" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2025-04-02</td>
+      <td class="type">Ride</td>
+      <td class="name">💼(Alternative Commute)</td>
+      <td class="num">94 km</td>
+      <td class="num">1646 m</td>
+      <td class="num">2550 kJ</td>
+      <td class="link"><a href="https://www.strava.com/activities/14060527756" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2025-04-04</td>
+      <td class="type">Ride</td>
+      <td class="name">🥙(Fight for piadina)</td>
+      <td class="num">76.5 km</td>
+      <td class="num">1125 m</td>
+      <td class="num">3373 kJ</td>
+      <td class="link"><a href="https://www.strava.com/activities/14076919493" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2025-04-12</td>
+      <td class="type">Ride</td>
+      <td class="name">☘️(3 is my lucky number)</td>
+      <td class="num">117.9 km</td>
+      <td class="num">3309 m</td>
+      <td class="num">3957 kJ</td>
+      <td class="link"><a href="https://www.strava.com/activities/14154102951" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2025-04-18</td>
+      <td class="type">Ride</td>
+      <td class="name">✝️(Good Friday)</td>
+      <td class="num">90.1 km</td>
+      <td class="num">2016 m</td>
+      <td class="num">2680 kJ</td>
+      <td class="link"><a href="https://www.strava.com/activities/14211073256" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2025-04-19</td>
+      <td class="type">Ride</td>
+      <td class="name">🕊️(Pasqua 2025)</td>
+      <td class="num">207.8 km</td>
+      <td class="num">3872 m</td>
+      <td class="num">5718 kJ</td>
+      <td class="link"><a href="https://www.strava.com/activities/14223854853" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2025-04-26</td>
+      <td class="type">Ride</td>
+      <td class="name">🇧🇪(Liegi - Bastogne - Liège 2025)</td>
+      <td class="num">253 km</td>
+      <td class="num">4231 m</td>
+      <td class="num">6201 kJ</td>
+      <td class="link"><a href="https://www.strava.com/activities/14292735306" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2025-06-22</td>
+      <td class="type">Ride</td>
+      <td class="name">🥧(La Torta della Pesenti)</td>
+      <td class="num">129.7 km</td>
+      <td class="num">2755 m</td>
+      <td class="num">3556 kJ</td>
+      <td class="link"><a href="https://www.strava.com/activities/14879137032" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2025-06-29</td>
+      <td class="type">Ride</td>
+      <td class="name">🥭(Manghen e Rolle)</td>
+      <td class="num">157.6 km</td>
+      <td class="num">3895 m</td>
+      <td class="num">3214 kJ</td>
+      <td class="link"><a href="https://www.strava.com/activities/14952371134" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2025-07-07</td>
+      <td class="type">Ride</td>
+      <td class="name">🐦‍🔥(Piani di Artavaggio)</td>
+      <td class="num">136 km</td>
+      <td class="num">3204 m</td>
+      <td class="num"></td>
+      <td class="link"><a href="https://www.strava.com/activities/15034359196" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2025-08-03</td>
+      <td class="type">Ride</td>
+      <td class="name">💱 (Non Fare L'Avaro)</td>
+      <td class="num">122.8 km</td>
+      <td class="num">2861 m</td>
+      <td class="num">3648 kJ</td>
+      <td class="link"><a href="https://www.strava.com/activities/15327496337" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2025-08-09</td>
+      <td class="type">Ride</td>
+      <td class="name">👄(Passabocche e altri bocconi)</td>
+      <td class="num">126.4 km</td>
+      <td class="num">2702 m</td>
+      <td class="num">3588 kJ</td>
+      <td class="link"><a href="https://www.strava.com/activities/15396067624" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2025-08-12</td>
+      <td class="type">Ride</td>
+      <td class="name">🪨(Cima Rest Day)</td>
+      <td class="num">188 km</td>
+      <td class="num">2469 m</td>
+      <td class="num"></td>
+      <td class="link"><a href="https://www.strava.com/activities/15432760841" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2025-08-15</td>
+      <td class="type">Ride</td>
+      <td class="name">♨️ (Guglielmo a Ferragosto)</td>
+      <td class="num">130.3 km</td>
+      <td class="num">3029 m</td>
+      <td class="num"></td>
+      <td class="link"><a href="https://www.strava.com/activities/15465537624" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2025-08-19</td>
+      <td class="type">Ride</td>
+      <td class="name">⛑️(Crocedomini of Legs)</td>
+      <td class="num">150.9 km</td>
+      <td class="num">3048 m</td>
+      <td class="num">4256 kJ</td>
+      <td class="link"><a href="https://www.strava.com/activities/15510225406" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2025-08-25</td>
+      <td class="type">Ride</td>
+      <td class="name">🚂(Orezzo - Gavia - Tirano)</td>
+      <td class="num">192.8 km</td>
+      <td class="num">3174 m</td>
+      <td class="num">4961 kJ</td>
+      <td class="link"><a href="https://www.strava.com/activities/15580126058" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2025-08-26</td>
+      <td class="type">Ride</td>
+      <td class="name">🔱(Tirano - Trivigno - Orezzo)</td>
+      <td class="num">126.4 km</td>
+      <td class="num">2204 m</td>
+      <td class="num">3318 kJ</td>
+      <td class="link"><a href="https://www.strava.com/activities/15590025370" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2025-09-06</td>
+      <td class="type">Ride</td>
+      <td class="name">🤡(Clown Weekend / 1)</td>
+      <td class="num">144 km</td>
+      <td class="num">982 m</td>
+      <td class="num"></td>
+      <td class="link"><a href="https://www.strava.com/activities/15714625231" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2025-10-05</td>
+      <td class="type">Ride</td>
+      <td class="name">🚧(The Farno Initialization)</td>
+      <td class="num">72.6 km</td>
+      <td class="num">2116 m</td>
+      <td class="num">2386 kJ</td>
+      <td class="link"><a href="https://www.strava.com/activities/16039790394" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2026-02-17</td>
+      <td class="type">Ride</td>
+      <td class="name">🐇(Bunny di Carnevale)</td>
+      <td class="num">101.4 km</td>
+      <td class="num">2002 m</td>
+      <td class="num">2897 kJ</td>
+      <td class="link"><a href="https://www.strava.com/activities/17425655328" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2026-02-28</td>
+      <td class="type">Ride</td>
+      <td class="name">🧵(Un colle alla volta)</td>
+      <td class="num">106.5 km</td>
+      <td class="num">2213 m</td>
+      <td class="num">3026 kJ</td>
+      <td class="link"><a href="https://www.strava.com/activities/17551198404" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2026-04-03</td>
+      <td class="type">Ride</td>
+      <td class="name">🐓(Prima che il gallo canti - 3 volte)</td>
+      <td class="num">139.2 km</td>
+      <td class="num">2760 m</td>
+      <td class="num">3814 kJ</td>
+      <td class="link"><a href="https://www.strava.com/activities/17959916063" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2026-04-05</td>
+      <td class="type">Ride</td>
+      <td class="name">🗿(Easter (l)Eggs)</td>
+      <td class="num">124.1 km</td>
+      <td class="num">2501 m</td>
+      <td class="num">3664 kJ</td>
+      <td class="link"><a href="https://www.strava.com/activities/17985159931" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2026-04-12</td>
+      <td class="type">Ride</td>
+      <td class="name">🏴‍☠️(Montecampione 1800)</td>
+      <td class="num">132.5 km</td>
+      <td class="num">3154 m</td>
+      <td class="num">4112 kJ</td>
+      <td class="link"><a href="https://www.strava.com/activities/18076925246" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    <tr>
+      <td class="date">2026-04-18</td>
+      <td class="type">Ride</td>
+      <td class="name">🆗(ok san marco)</td>
+      <td class="num">130.4 km</td>
+      <td class="num">3028 m</td>
+      <td class="num">3969 kJ</td>
+      <td class="link"><a href="https://www.strava.com/activities/18156255279" target="_blank" rel="noopener">↗</a></td>
+    </tr>
+    </tbody>
+  </table>
+</details>
+
+<!-- Annual stats -->
+<details>
+  <summary>📊 Per stagione</summary>
+  <table class="annual-stats">
+    <thead><tr><th>Anno</th><th>Att.</th><th>Distanza</th><th>Dislivello</th><th>Ore</th><th>kJ</th><th>TL</th></tr></thead>
+    <tbody>
+    <tr><td>2023</td><td>237</td><td>9,570 km</td><td>196,175 m</td><td>452 h</td><td>126,904 kJ</td><td>28632</td></tr>
+    <tr><td>2024</td><td>378</td><td>14,308 km</td><td>281,720 m</td><td>693 h</td><td>163,739 kJ</td><td>42997</td></tr>
+    <tr><td>2025</td><td>469</td><td>15,701 km</td><td>306,785 m</td><td>840 h</td><td>357,923 kJ</td><td>48561</td></tr>
+    <tr><td>2026</td><td>149</td><td>4,621 km</td><td>97,187 m</td><td>253 h</td><td>128,469 kJ</td><td>15556</td></tr></tbody>
+  </table>
+  <table class="annual-stats">
+    <thead><tr><th>Disciplina</th><th>Att.</th><th>Distanza</th><th>Dislivello</th><th>Ore</th></tr></thead>
+    <tbody>
+    <tr><td>Run</td><td>507</td><td>8,313 km</td><td>157,129 m</td><td>653 h</td></tr>
+    <tr><td>Ride</td><td>506</td><td>32,192 km</td><td>656,079 m</td><td>1320 h</td></tr>
+    <tr><td>Hike</td><td>58</td><td>457 km</td><td>30,733 m</td><td>92 h</td></tr>
+    <tr><td>VirtualRide</td><td>57</td><td>2,660 km</td><td>394 m</td><td>72 h</td></tr>
+    <tr><td>Swim</td><td>47</td><td>121 km</td><td>0 m</td><td>41 h</td></tr>
+    <tr><td>BackcountrySki</td><td>23</td><td>273 km</td><td>27,395 m</td><td>44 h</td></tr>
+    <tr><td>Other</td><td>17</td><td>0 km</td><td>0 m</td><td>0 h</td></tr>
+    <tr><td>OpenWaterSwim</td><td>5</td><td>7 km</td><td>0 m</td><td>2 h</td></tr>
+    <tr><td>AlpineSki</td><td>4</td><td>130 km</td><td>7,175 m</td><td>6 h</td></tr>
+    <tr><td>TrailRun</td><td>4</td><td>47 km</td><td>2,962 m</td><td>5 h</td></tr>
+    <tr><td>WeightTraining</td><td>3</td><td>0 km</td><td>0 m</td><td>2 h</td></tr>
+    <tr><td>Yoga</td><td>1</td><td>0 km</td><td>0 m</td><td>0 h</td></tr>
+    <tr><td>Workout</td><td>1</td><td>0 km</td><td>0 m</td><td>0 h</td></tr></tbody>
+  </table>
+</details>
+
+<div class="colophon">
+  Generato il 2026-04-29 · dati: <a href="https://intervals.icu" target="_blank">intervals.icu</a> · attività: <a href="https://www.strava.com/athletes/" target="_blank">Strava</a>
+</div>
+
+<script>
+(function() {
+  // ── Scroll-reveal: fade+rise on entering viewport
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    }
+  }, { rootMargin: '0px 0px -60px 0px', threshold: 0.05 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Mark prologue + chapters as reveal too if not already
+  document.querySelectorAll('.prologue, .chapter, .compagnia, .epilogue, table.bookshelf, .annual-stats')
+    .forEach(el => { el.classList.add('reveal'); io.observe(el); });
+
+  // ── Counter animation: count from 0 to data-target with easing
+  function animateCounter(el) {
+    const target = parseFloat(el.dataset.target);
+    const decimals = parseInt(el.dataset.decimals || '0');
+    const suffix = el.dataset.suffix || '';
+    const dur = 1600;
+    const t0 = performance.now();
+    function frame(now) {
+      const t = Math.min(1, (now - t0) / dur);
+      const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
+      const v = target * eased;
+      const formatted = decimals > 0 ? v.toFixed(decimals) : Math.floor(v).toLocaleString('it-IT');
+      el.textContent = formatted + suffix;
+      if (t < 1) requestAnimationFrame(frame);
+      else { el.textContent = (decimals > 0 ? target.toFixed(decimals) : target.toLocaleString('it-IT')) + suffix; el.classList.add('counted'); }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  const counterIo = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (e.isIntersecting) { animateCounter(e.target); counterIo.unobserve(e.target); }
+    }
+  }, { threshold: 0.3 });
+  document.querySelectorAll('.feat .num[data-target]').forEach(el => counterIo.observe(el));
+
+  // ── Smooth scroll for ToC if any anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const id = a.getAttribute('href').slice(1);
+      const el = document.getElementById(id);
+      if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
