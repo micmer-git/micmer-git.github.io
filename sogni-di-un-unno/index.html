@@ -180,7 +180,29 @@
     font-style: italic; color: var(--ink-soft); margin-bottom: 22px;
     font-size: 1.02rem; line-height: 1.55;
   }
-  .chart-svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .chart-svg { width: 100%; display: block; overflow: visible; }
+  #chart1 { aspect-ratio: 900/360; }
+  #chart2 { aspect-ratio: 900/280; }
+  #chart3 { aspect-ratio: 900/320; }
+  #chart4 { aspect-ratio: 900/240; }
+  #chart5 { aspect-ratio: 900/480; }
+  #chart6 { aspect-ratio: 900/320; }
+  /* On mobile: SVGs render small (~360px wide), so user-units inside viewBox shrink ~40%.
+     Bump SVG font sizes inside viewBox so labels stay legible (~10-12px on screen). */
+  @media (max-width: 720px) {
+    /* Mobile: keep viewBox aspect to avoid empty space; bump SVG fonts (user-units → ~10-12px on screen) */
+    .chart-svg .axis-label { font-size: 22px; }
+    .chart-svg .annot { font-size: 20px; }
+    .chart-svg .hour-label { font-size: 22px; }
+    /* Allow horizontal swipe on widest charts so detail isn't lost */
+    #chart1, #chart2, #chart3, #chart6 {
+      min-height: 280px;
+      aspect-ratio: auto;
+      height: 280px;
+    }
+    #chart4 { aspect-ratio: auto; height: 240px; }
+    #chart5 { aspect-ratio: 1/1; max-width: 96vw; margin: 0 auto; }
+  }
   .chart-foot {
     margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--rule);
     font-family: 'IBM Plex Mono', monospace; font-size: 0.74rem;
@@ -420,7 +442,7 @@
   <p class="chart-sub">
     Garmin attribuisce un voto da 0 a 100 a ogni notte. Qui sopra, la media settimanale di cinque anni: <em>Poor</em> sotto i 60, <em>Fair</em> tra 60 e 80, <em>Good</em> sopra gli 80. La linea dorata è la media mobile a 12 settimane. I cerchietti dorati con emoji sono i <em>20 eventi-cardine</em> del biennio: gare, infortuni, viaggi, monumenti — passa il cursore sopra per leggerli.
   </p>
-  <svg id="chart1" class="chart-svg" viewBox="0 0 900 360" preserveAspectRatio="none"></svg>
+  <svg id="chart1" class="chart-svg" viewBox="0 0 900 360" preserveAspectRatio="xMidYMid meet"></svg>
   <div class="legend">
     <span class="lg"><span class="swatch" style="background:var(--good)"></span>Good ≥ 80</span>
     <span class="lg"><span class="swatch" style="background:var(--fair)"></span>Fair 60–79</span>
@@ -438,7 +460,7 @@
   <p class="chart-sub">
     Il tempo passato a dormire — non quello a letto. Le linee tratteggiate marcano <em>7h</em> (la soglia "consigliata") e <em>8h</em> (quella "ideale"). Negli anni il mio numero scende: la pre-pandemia 2021 dormiva quasi otto ore, l'<em>Unno-2026</em> ne dorme sei e mezzo.
   </p>
-  <svg id="chart2" class="chart-svg" viewBox="0 0 900 280" preserveAspectRatio="none"></svg>
+  <svg id="chart2" class="chart-svg" viewBox="0 0 900 280" preserveAspectRatio="xMidYMid meet"></svg>
   <div class="legend">
     <span class="lg"><span class="swatch" style="background:var(--line)"></span>durata settimanale</span>
     <span class="lg"><span class="swatch" style="background:var(--moving);height:2px"></span>media mobile 12s</span>
@@ -454,7 +476,7 @@
   <p class="chart-sub">
     Due linee sulla stessa giornata: la lavanda è l'ora del coricamento, l'ambra è l'ora della sveglia. La banda fra le due è la <em>finestra del sonno</em>. Negli anni si stringe: si va a letto sempre più presto e ci si alza sempre più presto.
   </p>
-  <svg id="chart3" class="chart-svg" viewBox="0 0 900 320" preserveAspectRatio="none"></svg>
+  <svg id="chart3" class="chart-svg" viewBox="0 0 900 320" preserveAspectRatio="xMidYMid meet"></svg>
   <div class="legend">
     <span class="lg"><span class="swatch" style="background:var(--bedtime)"></span>coricamento</span>
     <span class="lg"><span class="swatch" style="background:var(--waketime)"></span>sveglia</span>
@@ -470,7 +492,7 @@
   <p class="chart-sub">
     Una mappa di calore: ogni cella è la media mensile dello score. Il rosso ruggine è "Poor", il verde menta è "Good". Si leggono le notti di settembre 2025 (Ironman gomma a terra), il maggio 2025 dopo la clavicola, e l'estate 2022 — con qualcosa che assomigliava a un sonno regolare.
   </p>
-  <svg id="chart4" class="chart-svg" viewBox="0 0 900 240" preserveAspectRatio="none"></svg>
+  <svg id="chart4" class="chart-svg" viewBox="0 0 900 240" preserveAspectRatio="xMidYMid meet"></svg>
   <div class="legend">
     <span class="lg"><span class="dot" style="background:var(--poor)"></span>≤ 65</span>
     <span class="lg"><span class="dot" style="background:var(--fair)"></span>66–79</span>
@@ -501,7 +523,7 @@
   <p class="chart-sub">
     Ogni cerchio è una settimana del biennio: l'ascissa è il <em>Training Load</em> totale (la fatica accumulata in sette giorni secondo intervals.icu), l'ordinata è lo score di sonno medio della stessa settimana. La dimensione del cerchio è il numero di sortite. Si vede una correlazione lieve ma reale: <strong>oltre i 1.500 di TL, lo score raramente sale sopra 80</strong>.
   </p>
-  <svg id="chart6" class="chart-svg" viewBox="0 0 900 320" preserveAspectRatio="none"></svg>
+  <svg id="chart6" class="chart-svg" viewBox="0 0 900 320" preserveAspectRatio="xMidYMid meet"></svg>
   <div class="legend">
     <span class="lg"><span class="dot" style="background:var(--good)"></span>score ≥ 80</span>
     <span class="lg"><span class="dot" style="background:var(--fair)"></span>60–79</span>
