@@ -190,18 +190,17 @@
   /* On mobile: SVGs render small (~360px wide), so user-units inside viewBox shrink ~40%.
      Bump SVG font sizes inside viewBox so labels stay legible (~10-12px on screen). */
   @media (max-width: 720px) {
-    /* Mobile: keep viewBox aspect to avoid empty space; bump SVG fonts (user-units → ~10-12px on screen) */
+    /* Mobile: explicit pixel heights (no aspect-ratio dependency for older iOS) + larger SVG fonts */
     .chart-svg .axis-label { font-size: 22px; }
     .chart-svg .annot { font-size: 20px; }
     .chart-svg .hour-label { font-size: 22px; }
-    /* Allow horizontal swipe on widest charts so detail isn't lost */
-    #chart1, #chart2, #chart3, #chart6 {
-      min-height: 280px;
-      aspect-ratio: auto;
-      height: 280px;
-    }
-    #chart4 { aspect-ratio: auto; height: 240px; }
-    #chart5 { aspect-ratio: 1/1; max-width: 96vw; margin: 0 auto; }
+    .chart-svg { aspect-ratio: auto !important; }
+    #chart1 { height: 280px; }
+    #chart2 { height: 240px; }
+    #chart3 { height: 260px; }
+    #chart4 { height: 240px; }
+    #chart5 { height: 360px; max-width: 96vw; margin: 0 auto; }
+    #chart6 { height: 280px; }
   }
   .chart-foot {
     margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--rule);
@@ -594,6 +593,30 @@
   if (!('IntersectionObserver' in window)) return; // graceful fallback: everything visible
   document.documentElement.classList.add('has-io');
 })();
+
+// SAFETY NETS at top level (independent of fetch): force charts visible after delay
+setTimeout(() => {
+  document.querySelectorAll('.chart-block').forEach(b => {
+    const r = b.getBoundingClientRect();
+    if (r.top < window.innerHeight && r.bottom > 0) b.classList.add('in');
+  });
+}, 1500);
+setTimeout(() => {
+  document.querySelectorAll('.chart-block:not(.in)').forEach(b => b.classList.add('in'));
+}, 3500);
+// Re-check on scroll (edge case where IO misses elements)
+let scrollTick = false;
+window.addEventListener('scroll', () => {
+  if (scrollTick) return;
+  scrollTick = true;
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.chart-block:not(.in)').forEach(b => {
+      const r = b.getBoundingClientRect();
+      if (r.top < window.innerHeight * 0.95 && r.bottom > 0) b.classList.add('in');
+    });
+    scrollTick = false;
+  });
+}, {passive: true});
 
 (async function() {
   const [data, load] = await Promise.all([
@@ -1238,19 +1261,7 @@
     }, {threshold: 0.05});
     document.querySelectorAll('.chart-block').forEach(b => blockObs.observe(b));
   }
-  // Safety net: 1.5s after load, ensure any visible-in-viewport block is unhidden
-  // (covers iOS Safari edge cases where IntersectionObserver may miss elements
-  // already in the initial viewport, or async fetch delay timing issues).
-  setTimeout(() => {
-    document.querySelectorAll('.chart-block').forEach(b => {
-      const r = b.getBoundingClientRect();
-      if (r.top < window.innerHeight && r.bottom > 0) b.classList.add('in');
-    });
-  }, 1500);
-  // Ultimate fallback: 4s after load, force-show ALL chart blocks regardless
-  setTimeout(() => {
-    document.querySelectorAll('.chart-block:not(.in)').forEach(b => b.classList.add('in'));
-  }, 4000);
+  // (safety nets moved to top-level above fetch — they run regardless of fetch state)
 
   // ===========================================================
   // Subtle parallax for star layers
