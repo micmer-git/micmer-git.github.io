@@ -159,10 +159,10 @@
     margin: 70px 0; padding: 28px 24px 32px;
     background: var(--paper); border: 1px solid var(--rule); border-radius: 16px;
     position: relative;
-    opacity: 0; transform: translateY(40px);
-    transition: opacity 1s cubic-bezier(0.16,1,0.3,1), transform 1s cubic-bezier(0.16,1,0.3,1);
   }
-  .chart-block.in { opacity: 1; transform: translateY(0); }
+  /* Animation enhancement (non-blocking): only when JS+IntersectionObserver supported */
+  html.has-io .chart-block { opacity: 0; transform: translateY(40px); transition: opacity 1s cubic-bezier(0.16,1,0.3,1), transform 1s cubic-bezier(0.16,1,0.3,1); }
+  html.has-io .chart-block.in { opacity: 1; transform: translateY(0); }
   .chart-block::before {
     content: "✦"; position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
     background: var(--bg); padding: 0 14px; color: var(--moon); font-size: 1rem;
@@ -219,26 +219,25 @@
   }
   .legend .dot { width: 8px; height: 8px; border-radius: 50%; }
 
-  /* === SVG draw animations === */
-  .draw-line { stroke-dasharray: 5000; stroke-dashoffset: 5000; }
-  .chart-block.in .draw-line { animation: draw 2.6s cubic-bezier(0.16,1,0.3,1) forwards; }
-  .chart-block.in .draw-line.delay { animation-delay: 0.5s; }
+  /* === SVG draw animations === Only with JS+IntersectionObserver — fail-open: lines visible by default */
+  html.has-io .draw-line { stroke-dasharray: 5000; stroke-dashoffset: 5000; }
+  html.has-io .chart-block.in .draw-line { animation: draw 2.6s cubic-bezier(0.16,1,0.3,1) forwards; }
+  html.has-io .chart-block.in .draw-line.delay { animation-delay: 0.5s; }
   @keyframes draw { to { stroke-dashoffset: 0; } }
 
-  .reveal-fade { opacity: 0; }
-  .chart-block.in .reveal-fade { animation: fadeIn 1.4s ease-out 0.6s forwards; }
+  html.has-io .reveal-fade { opacity: 0; }
+  html.has-io .chart-block.in .reveal-fade { animation: fadeIn 1.4s ease-out 0.6s forwards; }
   @keyframes fadeIn { to { opacity: 1; } }
 
   /* Data point hover */
   .data-pt { cursor: pointer; transition: r 0.18s ease, opacity 0.2s; }
   .data-pt:hover { r: 5; }
 
-  /* Event marker on charts */
-  .event-mark {
-    cursor: pointer; opacity: 0; transition: transform 0.2s, opacity 0.5s;
-  }
-  .chart-block.in .event-mark { animation: popIn 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+  /* Event marker on charts (visible by default, animated as enhancement) */
+  .event-mark { cursor: pointer; transition: transform 0.2s; }
   .event-mark:hover { transform: scale(1.4); }
+  html.has-io .event-mark { opacity: 0; }
+  html.has-io .chart-block.in .event-mark { animation: popIn 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards; }
   @keyframes popIn { from { opacity: 0; transform: scale(0); } to { opacity: 1; transform: scale(1); } }
 
   /* Annotations */
@@ -590,6 +589,12 @@
 <div id="tooltip"></div>
 
 <script>
+// Animation flag: only enable opacity-based reveals if IntersectionObserver actually fires
+(function bootstrapAnim(){
+  if (!('IntersectionObserver' in window)) return; // graceful fallback: everything visible
+  document.documentElement.classList.add('has-io');
+})();
+
 (async function() {
   const [data, load] = await Promise.all([
     fetch('data.json').then(r => r.json()),
@@ -1227,10 +1232,25 @@
   // ===========================================================
   // IntersectionObserver for chart-block reveal
   // ===========================================================
-  const blockObs = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
-  }, {threshold: 0.15});
-  document.querySelectorAll('.chart-block').forEach(b => blockObs.observe(b));
+  if ('IntersectionObserver' in window) {
+    const blockObs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+    }, {threshold: 0.05});
+    document.querySelectorAll('.chart-block').forEach(b => blockObs.observe(b));
+  }
+  // Safety net: 1.5s after load, ensure any visible-in-viewport block is unhidden
+  // (covers iOS Safari edge cases where IntersectionObserver may miss elements
+  // already in the initial viewport, or async fetch delay timing issues).
+  setTimeout(() => {
+    document.querySelectorAll('.chart-block').forEach(b => {
+      const r = b.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0) b.classList.add('in');
+    });
+  }, 1500);
+  // Ultimate fallback: 4s after load, force-show ALL chart blocks regardless
+  setTimeout(() => {
+    document.querySelectorAll('.chart-block:not(.in)').forEach(b => b.classList.add('in'));
+  }, 4000);
 
   // ===========================================================
   // Subtle parallax for star layers
