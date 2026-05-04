@@ -4,49 +4,52 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sogni di un Unno — Cinque anni di sonno · Michele Merelli</title>
-<meta name="description" content="260 settimane di sonno tracciate dal Garmin di Michele Merelli — quattro grafi sulla notte di un Unno, da maggio 2021 a maggio 2026.">
+<meta name="description" content="260 settimane di sonno tracciate dal Garmin di Michele Merelli — sette grafi sulla notte di un Unno, da maggio 2021 a maggio 2026.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=IBM+Plex+Mono:wght@400;600&family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=IBM+Plex+Mono:wght@400;600&family=Cinzel:wght@600;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
-    /* Night-sky palette */
-    --bg: #0a0e1f;
-    --bg-2: #0f1530;
-    --paper: #141a35;
-    --ink: #e8eeff;
-    --ink-soft: #b8c4e4;
+    --bg: #0a0e1f; --bg-2: #0f1530;
+    --paper: #141a35; --paper-2: #1a2148;
+    --ink: #e8eeff; --ink-soft: #b8c4e4;
     --muted: #6f7ba0;
     --silver: #c8d4f0;
     --moon: #f4e9b8;
     --starlight: #a8c4ff;
-    --rule: rgba(184, 196, 228, 0.18);
-
-    --good: #7fdbb6;        /* mint green for Good */
-    --fair: #f4c87a;        /* amber for Fair */
-    --poor: #e08070;        /* rust for Poor */
+    --rule: rgba(184,196,228,0.18);
+    --rule-strong: rgba(184,196,228,0.32);
+    --good: #7fdbb6;
+    --fair: #f4c87a;
+    --poor: #e08070;
     --line: #8ca8ff;
-    --line-soft: rgba(140, 168, 255, 0.18);
-    --moving: #f4e9b8;      /* moon yellow for moving avg */
-    --bedtime: #b89cf0;     /* lavender for bedtime */
-    --waketime: #f4c87a;    /* amber for wake */
+    --moving: #f4e9b8;
+    --bedtime: #b89cf0;
+    --waketime: #f4c87a;
+    --event-race: #f4e9b8;
+    --event-injury: #e08070;
+    --event-milestone: #7fdbb6;
+    --event-travel: #b89cf0;
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body {
     background: var(--bg); color: var(--ink);
     font-family: 'EB Garamond', Georgia, serif;
     font-size: 18px; line-height: 1.65;
-    max-width: 1080px; margin: 0 auto;
+    max-width: 1100px; margin: 0 auto;
     padding: 50px 24px 100px;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
   }
 
-  /* Starfield background */
-  .stars { position: fixed; inset: 0; pointer-events: none; z-index: -1; overflow: hidden; }
-  .stars::before, .stars::after {
-    content: ""; position: absolute; inset: -50%;
+  /* === STARFIELD with parallax === */
+  .stars { position: fixed; inset: 0; pointer-events: none; z-index: -2; overflow: hidden; }
+  .stars-layer {
+    position: absolute; inset: -50%;
+    will-change: transform;
+  }
+  .stars-layer.l1 {
     background-image:
       radial-gradient(1px 1px at 12% 23%, rgba(255,255,255,0.7) 0%, transparent 100%),
       radial-gradient(1px 1px at 28% 67%, rgba(255,255,255,0.5) 0%, transparent 100%),
@@ -60,7 +63,7 @@
       radial-gradient(1px 1px at 73% 18%, rgba(255,255,255,0.5) 0%, transparent 100%);
     animation: twinkle 4s ease-in-out infinite alternate;
   }
-  .stars::after {
+  .stars-layer.l2 {
     background-image:
       radial-gradient(1px 1px at 22% 53%, rgba(255,255,255,0.4) 0%, transparent 100%),
       radial-gradient(1px 1px at 41% 39%, rgba(255,255,255,0.6) 0%, transparent 100%),
@@ -72,58 +75,77 @@
     animation: twinkle 6s ease-in-out infinite alternate-reverse;
     opacity: 0.7;
   }
+  .stars-layer.l3 {
+    background-image:
+      radial-gradient(0.5px 0.5px at 5% 15%, rgba(168,196,255,0.4) 0%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 95% 75%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 45% 85%, rgba(244,233,184,0.4) 0%, transparent 100%);
+    animation: twinkle 8s ease-in-out infinite alternate;
+    opacity: 0.5;
+  }
   @keyframes twinkle { 0% { opacity: 0.4; } 100% { opacity: 1; } }
 
-  /* Soft galactic glow */
+  /* Cosmic glow (parallaxed) */
   body::before {
     content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1;
     background-image:
       radial-gradient(ellipse at 18% 25%, rgba(140,168,255,0.10) 0%, transparent 55%),
-      radial-gradient(ellipse at 82% 75%, rgba(184,156,240,0.08) 0%, transparent 55%);
+      radial-gradient(ellipse at 82% 75%, rgba(184,156,240,0.08) 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 50%, rgba(244,233,184,0.04) 0%, transparent 60%);
   }
 
-  /* Cover */
+  /* === COVER === */
   h1.cover {
-    font-family: 'Cinzel', serif; font-size: 2.6rem; font-weight: 700;
+    font-family: 'Cinzel', serif; font-size: 2.8rem; font-weight: 900;
     letter-spacing: 0.05em; text-align: center; line-height: 1.1;
     margin-bottom: 6px;
     background: linear-gradient(180deg, var(--ink) 0%, var(--starlight) 100%);
     -webkit-background-clip: text; background-clip: text;
     -webkit-text-fill-color: transparent;
+    animation: shimmer 8s ease-in-out infinite;
+  }
+  @keyframes shimmer {
+    0%,100% { filter: brightness(1); }
+    50% { filter: brightness(1.15); }
   }
   h1.cover .accent {
-    display: block; font-size: 0.38em; letter-spacing: 0.28em;
-    text-transform: uppercase; color: var(--moon);
-    -webkit-text-fill-color: var(--moon);
+    display: block; font-size: 0.36em; font-weight: 700;
+    letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--moon); -webkit-text-fill-color: var(--moon);
     margin-bottom: 14px;
   }
   h1.cover .runes {
-    display: block; font-size: 0.5em; letter-spacing: 0.4em;
+    display: block; font-size: 0.5em; letter-spacing: 0.5em;
     color: var(--starlight); -webkit-text-fill-color: var(--starlight);
-    margin-top: 16px; opacity: 0.7;
+    margin-top: 18px; opacity: 0.7;
   }
   .cover-sub {
     text-align: center; color: var(--ink-soft); font-style: italic;
-    max-width: 580px; margin: 24px auto 36px; font-size: 1.1rem; line-height: 1.55;
+    max-width: 600px; margin: 24px auto 36px; font-size: 1.08rem; line-height: 1.55;
   }
 
-  /* KPI strip */
+  /* === KPI strip === */
   .kpis {
     display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
     margin: 30px 0 50px;
   }
   .kpi {
     background: var(--paper); border: 1px solid var(--rule);
-    border-radius: 10px; padding: 18px 14px; text-align: center;
+    border-radius: 12px; padding: 20px 14px; text-align: center;
     position: relative; overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), border-color 0.3s;
+  }
+  .kpi:hover {
+    transform: translateY(-3px);
+    border-color: var(--rule-strong);
   }
   .kpi::before {
     content: ""; position: absolute; inset: 0;
-    background: radial-gradient(ellipse at top, rgba(140,168,255,0.08) 0%, transparent 60%);
+    background: radial-gradient(ellipse at top, rgba(140,168,255,0.10) 0%, transparent 60%);
     pointer-events: none;
   }
   .kpi .num {
-    font-family: 'Cinzel', serif; font-size: 1.9rem; font-weight: 700;
+    font-family: 'Cinzel', serif; font-size: 2rem; font-weight: 900;
     color: var(--moon); letter-spacing: 0.02em; line-height: 1;
   }
   .kpi .label {
@@ -132,33 +154,33 @@
     color: var(--muted); margin-top: 8px;
   }
 
-  /* Chart blocks */
+  /* === CHART blocks === */
   .chart-block {
-    margin: 60px 0; padding: 24px 22px 28px;
-    background: var(--paper); border: 1px solid var(--rule); border-radius: 14px;
+    margin: 70px 0; padding: 28px 24px 32px;
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 16px;
     position: relative;
+    opacity: 0; transform: translateY(40px);
+    transition: opacity 1s cubic-bezier(0.16,1,0.3,1), transform 1s cubic-bezier(0.16,1,0.3,1);
   }
+  .chart-block.in { opacity: 1; transform: translateY(0); }
   .chart-block::before {
     content: "✦"; position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
     background: var(--bg); padding: 0 14px; color: var(--moon); font-size: 1rem;
   }
   .chart-tag {
     font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
-    text-transform: uppercase; letter-spacing: 0.18em;
-    color: var(--starlight); display: block; margin-bottom: 4px;
+    text-transform: uppercase; letter-spacing: 0.2em;
+    color: var(--starlight); display: block; margin-bottom: 6px;
   }
   .chart-block h2 {
-    font-family: 'Cinzel', serif; font-size: 1.55rem; font-weight: 700;
-    color: var(--ink); line-height: 1.2; margin-bottom: 6px;
+    font-family: 'Cinzel', serif; font-size: 1.6rem; font-weight: 700;
+    color: var(--ink); line-height: 1.2; margin-bottom: 8px;
   }
   .chart-sub {
-    font-style: italic; color: var(--ink-soft); margin-bottom: 18px;
-    font-size: 1rem; line-height: 1.5;
+    font-style: italic; color: var(--ink-soft); margin-bottom: 22px;
+    font-size: 1.02rem; line-height: 1.55;
   }
-  .chart-svg {
-    width: 100%; height: auto; display: block;
-    overflow: visible;
-  }
+  .chart-svg { width: 100%; height: auto; display: block; overflow: visible; }
   .chart-foot {
     margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--rule);
     font-family: 'IBM Plex Mono', monospace; font-size: 0.74rem;
@@ -166,7 +188,7 @@
   }
   .legend {
     display: flex; gap: 16px; flex-wrap: wrap; margin-top: 14px;
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.74rem;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem;
     color: var(--ink-soft); letter-spacing: 0.04em;
   }
   .legend .lg { display: flex; align-items: center; gap: 6px; }
@@ -175,21 +197,29 @@
   }
   .legend .dot { width: 8px; height: 8px; border-radius: 50%; }
 
-  /* SVG defs for animations */
-  .draw-line { stroke-dasharray: 4000; stroke-dashoffset: 4000; animation: draw 2.5s ease-out forwards; }
-  .draw-line.delay { animation-delay: 0.4s; }
+  /* === SVG draw animations === */
+  .draw-line { stroke-dasharray: 5000; stroke-dashoffset: 5000; }
+  .chart-block.in .draw-line { animation: draw 2.6s cubic-bezier(0.16,1,0.3,1) forwards; }
+  .chart-block.in .draw-line.delay { animation-delay: 0.5s; }
   @keyframes draw { to { stroke-dashoffset: 0; } }
 
-  .fade-in { opacity: 0; animation: fadeIn 1.2s ease-out forwards; }
-  .fade-in.d1 { animation-delay: 0.5s; }
-  .fade-in.d2 { animation-delay: 1.0s; }
+  .reveal-fade { opacity: 0; }
+  .chart-block.in .reveal-fade { animation: fadeIn 1.4s ease-out 0.6s forwards; }
   @keyframes fadeIn { to { opacity: 1; } }
 
-  /* Hover for data points */
-  .data-pt { cursor: pointer; transition: r 0.15s ease; }
+  /* Data point hover */
+  .data-pt { cursor: pointer; transition: r 0.18s ease, opacity 0.2s; }
   .data-pt:hover { r: 5; }
 
-  /* Annotation labels on charts */
+  /* Event marker on charts */
+  .event-mark {
+    cursor: pointer; opacity: 0; transition: transform 0.2s, opacity 0.5s;
+  }
+  .chart-block.in .event-mark { animation: popIn 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+  .event-mark:hover { transform: scale(1.4); }
+  @keyframes popIn { from { opacity: 0; transform: scale(0); } to { opacity: 1; transform: scale(1); } }
+
+  /* Annotations */
   .annot {
     font-family: 'IBM Plex Mono', monospace; font-size: 9px;
     fill: var(--ink-soft); text-anchor: middle;
@@ -203,99 +233,207 @@
   .grid-line { stroke: var(--rule); stroke-width: 0.6; stroke-dasharray: 1 3; }
   .ref-line { stroke: var(--moon); stroke-width: 0.8; stroke-dasharray: 4 4; opacity: 0.4; }
 
-  /* Insight callouts */
+  /* === Critical days callout === */
+  .critical-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 30px 0;
+  }
+  .critical-card {
+    background: linear-gradient(180deg, rgba(140,168,255,0.04) 0%, transparent 100%);
+    border: 1px solid var(--rule); border-radius: 12px; padding: 20px;
+    transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), border-color 0.3s;
+  }
+  .critical-card:hover { transform: translateY(-2px); border-color: var(--rule-strong); }
+  .critical-card.best { border-left: 3px solid var(--good); }
+  .critical-card.worst { border-left: 3px solid var(--poor); }
+  .critical-card h3 {
+    font-family: 'Cinzel', serif; font-size: 1.1rem; font-weight: 700;
+    color: var(--moon); margin-bottom: 14px;
+  }
+  .critical-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; border-bottom: 1px dashed var(--rule);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem;
+  }
+  .critical-row:last-child { border-bottom: none; }
+  .critical-row .score {
+    font-size: 1.3rem; font-family: 'Cinzel', serif; font-weight: 700;
+  }
+  .critical-row.best .score { color: var(--good); }
+  .critical-row.worst .score { color: var(--poor); }
+  .critical-row .meta { color: var(--ink-soft); flex: 1; padding: 0 12px; }
+  .critical-row .date { color: var(--muted); font-size: 0.7rem; }
+
+  /* === Event timeline === */
+  .event-list {
+    margin-top: 20px;
+    counter-reset: ev;
+  }
+  .event-row {
+    display: grid; grid-template-columns: 50px 32px 1fr 80px 70px;
+    align-items: center; gap: 12px;
+    padding: 14px 4px; border-bottom: 1px solid var(--rule);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem;
+    transition: background 0.2s;
+  }
+  .event-row:hover { background: rgba(140,168,255,0.04); }
+  .event-row .ev-date { color: var(--muted); font-size: 0.72rem; }
+  .event-row .ev-emoji { font-size: 1.4rem; text-align: center; }
+  .event-row .ev-label { color: var(--ink); font-weight: 500; }
+  .event-row .ev-cat {
+    font-size: 0.65rem; padding: 3px 9px; border-radius: 99px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    font-weight: 600; text-align: center; white-space: nowrap;
+  }
+  .ev-cat.race { background: rgba(244,233,184,0.12); color: var(--moon); }
+  .ev-cat.injury { background: rgba(224,128,112,0.15); color: var(--poor); }
+  .ev-cat.milestone { background: rgba(127,219,182,0.12); color: var(--good); }
+  .ev-cat.travel { background: rgba(184,156,240,0.12); color: var(--bedtime); }
+  .event-row .ev-score {
+    text-align: right; font-family: 'Cinzel', serif; font-weight: 700;
+    font-size: 1.05rem;
+  }
+  .event-row.in { animation: slideIn 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+
+  /* === Insight blocks === */
   .insight {
-    margin: 60px 0; padding: 24px 26px;
+    margin: 60px 0; padding: 26px 28px;
     background: linear-gradient(180deg, rgba(140,168,255,0.05) 0%, rgba(184,156,240,0.03) 100%);
     border-left: 3px solid var(--starlight); border-radius: 6px;
   }
   .insight h3 {
-    font-family: 'Cinzel', serif; font-size: 1.2rem; font-weight: 700;
-    color: var(--moon); margin-bottom: 10px;
+    font-family: 'Cinzel', serif; font-size: 1.25rem; font-weight: 700;
+    color: var(--moon); margin-bottom: 12px;
   }
-  .insight p { font-size: 1.02rem; line-height: 1.7; color: var(--ink-soft); margin-bottom: 10px; }
+  .insight p { font-size: 1.02rem; line-height: 1.7; color: var(--ink-soft); margin-bottom: 12px; }
   .insight strong { color: var(--ink); }
   .insight em { color: var(--starlight); }
 
-  /* Tooltip */
+  /* === Tooltip === */
   #tooltip {
     position: fixed; pointer-events: none; z-index: 1000;
-    background: rgba(20, 26, 53, 0.96); border: 1px solid var(--starlight);
-    color: var(--ink); padding: 8px 12px; border-radius: 6px;
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem;
-    line-height: 1.5; opacity: 0; transition: opacity 0.15s; box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-    max-width: 240px;
+    background: rgba(20, 26, 53, 0.97); border: 1px solid var(--starlight);
+    color: var(--ink); padding: 10px 14px; border-radius: 8px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.74rem;
+    line-height: 1.55; opacity: 0; transition: opacity 0.15s; box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+    max-width: 280px; backdrop-filter: blur(8px);
   }
   #tooltip.on { opacity: 1; }
-  #tooltip .tt-title { font-weight: 600; color: var(--moon); margin-bottom: 4px; letter-spacing: 0.04em; }
+  #tooltip .tt-title { font-weight: 600; color: var(--moon); margin-bottom: 6px; letter-spacing: 0.04em; }
+  #tooltip .tt-event { color: var(--starlight); font-style: italic; margin-top: 4px; }
 
-  /* Footer */
+  /* === Footer === */
   .colophon {
     font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
-    text-align: center; color: var(--muted); margin-top: 80px;
+    text-align: center; color: var(--muted); margin-top: 90px;
     letter-spacing: 0.1em; line-height: 2;
   }
-  .colophon a { color: var(--starlight); text-decoration: none; border-bottom: 1px dotted var(--muted); }
+  .colophon a { color: var(--starlight); text-decoration: none; border-bottom: 1px dotted var(--muted); transition: all 0.2s; }
   .colophon a:hover { color: var(--moon); border-bottom-color: var(--moon); }
 
   .end-marker {
-    text-align: center; margin: 60px 0 30px;
+    text-align: center; margin: 70px 0 30px;
     font-family: 'Cinzel', serif; color: var(--moon);
-    font-size: 1.2rem; letter-spacing: 0.3em;
+    font-size: 1.2rem; letter-spacing: 0.35em;
   }
 
+  /* TOC at top */
+  .toc {
+    display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+    margin: 30px 0 40px; padding: 14px 16px;
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 12px;
+  }
+  .toc a {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
+    color: var(--ink-soft); text-decoration: none;
+    padding: 6px 12px; border-radius: 99px; border: 1px solid var(--rule);
+    transition: all 0.2s; letter-spacing: 0.06em;
+  }
+  .toc a:hover {
+    color: var(--moon); border-color: var(--moon);
+    background: rgba(244,233,184,0.06);
+  }
+
+  /* Polar clock specific */
+  .polar-svg circle.tick { fill: var(--rule-strong); }
+  .polar-svg .hour-label { fill: var(--muted); font-family: 'IBM Plex Mono', monospace; font-size: 9px; text-anchor: middle; }
+
+  /* === Mobile === */
   @media (max-width: 720px) {
-    body { font-size: 16px; padding: 30px 16px 60px; }
-    h1.cover { font-size: 1.85rem; }
-    .chart-block { padding: 20px 16px 24px; margin: 40px -4px; }
-    .chart-block h2 { font-size: 1.3rem; }
+    body { font-size: 16px; padding: 30px 14px 60px; }
+    h1.cover { font-size: 2rem; }
+    h1.cover .accent { letter-spacing: 0.22em; }
+    .chart-block { padding: 22px 16px 26px; margin: 50px -2px; }
+    .chart-block h2 { font-size: 1.32rem; }
     .kpis { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .kpi .num { font-size: 1.5rem; }
-    .legend { font-size: 0.68rem; gap: 10px; }
+    .kpi .num { font-size: 1.6rem; }
+    .legend { font-size: 0.66rem; gap: 10px; }
+    .critical-grid { grid-template-columns: 1fr; gap: 14px; }
+    .event-row {
+      grid-template-columns: 28px 1fr 60px;
+      gap: 10px; font-size: 0.78rem;
+    }
+    .event-row .ev-date, .event-row .ev-cat { display: none; }
   }
 </style>
 </head>
 <body>
 
-<div class="stars"></div>
+<div class="stars">
+  <div class="stars-layer l1"></div>
+  <div class="stars-layer l2"></div>
+  <div class="stars-layer l3"></div>
+</div>
 
 <h1 class="cover">
-  <span class="accent">cinque anni di sonno · 260 settimane</span>
+  <span class="accent">cinque anni di sonno · 260 settimane · 20 eventi</span>
   Sogni di un Unno
   <span class="runes">ᛚᚢᚾᚨ · ᛗᛁᚲᚺᛖᛚᛖ · ᚺᚾᛟᛏᛏ</span>
 </h1>
 <p class="cover-sub">
-  Quattro grafi sulla notte di un Unno: dal maggio 2021 al maggio 2026, settimana per settimana, tracciati dal Garmin sotto il polso.<br>
-  Cosa cambia quando ti carichi di kilojoule, ti rompi una clavicola, voli a Hong Kong, finisci un Ironman a stomaco vuoto?
+  Sette grafi sulla notte di un Unno: dal maggio 2021 al maggio 2026, settimana per settimana, tracciati dal Garmin sotto il polso.<br>
+  Cosa cambia quando ti carichi di kilojoule, ti rompi una clavicola, voli a Hong Kong, finisci un Ironman a stomaco vuoto, o corri Roma con Marti?
 </p>
 
-<div class="kpis fade-in">
+<nav class="toc">
+  <a href="#g1">⊹ I · Score</a>
+  <a href="#g2">⊹ II · Durata</a>
+  <a href="#g3">⊹ III · Finestra</a>
+  <a href="#g4">⊹ IV · Heatmap</a>
+  <a href="#g5">⊹ V · Orologio 24h</a>
+  <a href="#g6">⊹ VI · Carico × Sonno</a>
+  <a href="#g7">⊹ VII · 20 eventi</a>
+  <a href="#critical">★ Le notti firmate</a>
+</nav>
+
+<div class="kpis">
   <div class="kpi"><div class="num" id="k-weeks">260</div><div class="label">Settimane</div></div>
   <div class="kpi"><div class="num" id="k-score">74,4</div><div class="label">Score medio</div></div>
   <div class="kpi"><div class="num" id="k-dur">6h 34m</div><div class="label">Sonno medio</div></div>
-  <div class="kpi"><div class="num" id="k-good">54</div><div class="label">Settimane "Good"</div></div>
+  <div class="kpi"><div class="num" id="k-good">54</div><div class="label">Settimane Good</div></div>
 </div>
 
-<!-- ============== CHART 1: Sleep Score Timeline ============== -->
-<div class="chart-block">
-  <span class="chart-tag">⊹ Grafo I</span>
+<!-- ============== CHART 1: Sleep Score Timeline (with 20 event markers) ============== -->
+<div class="chart-block" id="g1">
+  <span class="chart-tag">⊹ Grafo I · score</span>
   <h2>Lo score della notte, settimana per settimana</h2>
   <p class="chart-sub">
-    Garmin attribuisce un voto da 0 a 100 a ogni notte. Qui sopra, la media settimanale di cinque anni: <em>Poor</em> sotto i 60, <em>Fair</em> tra 60 e 80, <em>Good</em> sopra gli 80. La linea dorata è la media mobile a 12 settimane — il battito di fondo della mia capacità di dormire.
+    Garmin attribuisce un voto da 0 a 100 a ogni notte. Qui sopra, la media settimanale di cinque anni: <em>Poor</em> sotto i 60, <em>Fair</em> tra 60 e 80, <em>Good</em> sopra gli 80. La linea dorata è la media mobile a 12 settimane. I cerchietti dorati con emoji sono i <em>20 eventi-cardine</em> del biennio: gare, infortuni, viaggi, monumenti — passa il cursore sopra per leggerli.
   </p>
-  <svg id="chart1" class="chart-svg" viewBox="0 0 900 320" preserveAspectRatio="none"></svg>
+  <svg id="chart1" class="chart-svg" viewBox="0 0 900 360" preserveAspectRatio="none"></svg>
   <div class="legend">
-    <span class="lg"><span class="swatch" style="background:var(--good)"></span>Good (≥80)</span>
-    <span class="lg"><span class="swatch" style="background:var(--fair)"></span>Fair (60-79)</span>
-    <span class="lg"><span class="swatch" style="background:var(--poor)"></span>Poor (&lt;60)</span>
-    <span class="lg"><span class="swatch" style="background:var(--moving);height:2px"></span>media mobile 12 settimane</span>
+    <span class="lg"><span class="swatch" style="background:var(--good)"></span>Good ≥ 80</span>
+    <span class="lg"><span class="swatch" style="background:var(--fair)"></span>Fair 60–79</span>
+    <span class="lg"><span class="swatch" style="background:var(--poor)"></span>Poor &lt; 60</span>
+    <span class="lg"><span class="swatch" style="background:var(--moving);height:2px"></span>media mobile 12s</span>
+    <span class="lg"><span class="dot" style="background:var(--moon);border:1.5px solid var(--ink)"></span>20 eventi</span>
   </div>
   <div class="chart-foot" id="foot1"></div>
 </div>
 
 <!-- ============== CHART 2: Sleep Duration Timeline ============== -->
-<div class="chart-block">
-  <span class="chart-tag">⊹ Grafo II</span>
+<div class="chart-block" id="g2">
+  <span class="chart-tag">⊹ Grafo II · durata</span>
   <h2>Quante ore, davvero</h2>
   <p class="chart-sub">
     Il tempo passato a dormire — non quello a letto. Le linee tratteggiate marcano <em>7h</em> (la soglia "consigliata") e <em>8h</em> (quella "ideale"). Negli anni il mio numero scende: la pre-pandemia 2021 dormiva quasi otto ore, l'<em>Unno-2026</em> ne dorme sei e mezzo.
@@ -303,54 +441,115 @@
   <svg id="chart2" class="chart-svg" viewBox="0 0 900 280" preserveAspectRatio="none"></svg>
   <div class="legend">
     <span class="lg"><span class="swatch" style="background:var(--line)"></span>durata settimanale</span>
-    <span class="lg"><span class="swatch" style="background:var(--moving);height:2px"></span>media mobile 12 settimane</span>
+    <span class="lg"><span class="swatch" style="background:var(--moving);height:2px"></span>media mobile 12s</span>
     <span class="lg"><span class="swatch" style="background:var(--moon);height:2px;opacity:.5"></span>soglie 7h / 8h</span>
   </div>
   <div class="chart-foot" id="foot2"></div>
 </div>
 
-<!-- ============== CHART 3: Bedtime + Wake time band ============== -->
-<div class="chart-block">
-  <span class="chart-tag">⊹ Grafo III</span>
+<!-- ============== CHART 3: Sleep window ============== -->
+<div class="chart-block" id="g3">
+  <span class="chart-tag">⊹ Grafo III · finestra</span>
   <h2>La finestra del sonno — quando si va a letto, quando ci si alza</h2>
   <p class="chart-sub">
-    Due linee sulla stessa giornata di ventiquattro ore: la lavanda è l'ora del coricamento, l'ambra è l'ora della sveglia. La banda fra le due è la <em>finestra del sonno</em>. Negli anni si stringe: si va a letto sempre più presto e ci si alza sempre più presto.
+    Due linee sulla stessa giornata: la lavanda è l'ora del coricamento, l'ambra è l'ora della sveglia. La banda fra le due è la <em>finestra del sonno</em>. Negli anni si stringe: si va a letto sempre più presto e ci si alza sempre più presto.
   </p>
   <svg id="chart3" class="chart-svg" viewBox="0 0 900 320" preserveAspectRatio="none"></svg>
   <div class="legend">
-    <span class="lg"><span class="swatch" style="background:var(--bedtime)"></span>ora del coricamento (PM/AM)</span>
-    <span class="lg"><span class="swatch" style="background:var(--waketime)"></span>ora della sveglia (AM)</span>
+    <span class="lg"><span class="swatch" style="background:var(--bedtime)"></span>coricamento</span>
+    <span class="lg"><span class="swatch" style="background:var(--waketime)"></span>sveglia</span>
+    <span class="lg"><span class="swatch" style="background:var(--moon);height:2px;opacity:.5"></span>mezzanotte</span>
   </div>
   <div class="chart-foot" id="foot3"></div>
 </div>
 
-<!-- ============== CHART 4: Yearly heatmap by month ============== -->
-<div class="chart-block">
-  <span class="chart-tag">⊹ Grafo IV</span>
+<!-- ============== CHART 4: Heatmap ============== -->
+<div class="chart-block" id="g4">
+  <span class="chart-tag">⊹ Grafo IV · stagionalità</span>
   <h2>Cinque anni × dodici mesi: la stagione del riposo</h2>
   <p class="chart-sub">
-    Una mappa di calore: ogni cella è la media mensile dello score. Il blu profondo è "Poor", il verde menta è "Good". Si leggono le notti di settembre 2025 (Ironman gomma a terra), il maggio 2025 dopo la clavicola, e l'estate 2022 — con qualcosa che assomigliava a un sonno regolare.
+    Una mappa di calore: ogni cella è la media mensile dello score. Il rosso ruggine è "Poor", il verde menta è "Good". Si leggono le notti di settembre 2025 (Ironman gomma a terra), il maggio 2025 dopo la clavicola, e l'estate 2022 — con qualcosa che assomigliava a un sonno regolare.
   </p>
   <svg id="chart4" class="chart-svg" viewBox="0 0 900 240" preserveAspectRatio="none"></svg>
   <div class="legend">
     <span class="lg"><span class="dot" style="background:var(--poor)"></span>≤ 65</span>
-    <span class="lg"><span class="dot" style="background:var(--fair)"></span>66-79</span>
+    <span class="lg"><span class="dot" style="background:var(--fair)"></span>66–79</span>
     <span class="lg"><span class="dot" style="background:var(--good)"></span>≥ 80</span>
   </div>
   <div class="chart-foot" id="foot4"></div>
 </div>
 
-<!-- ============== Insight blocks ============== -->
+<!-- ============== CHART 5: Polar 24h clock ============== -->
+<div class="chart-block" id="g5">
+  <span class="chart-tag">⊹ Grafo V · orologio</span>
+  <h2>L'orologio circadiano dell'Unno</h2>
+  <p class="chart-sub">
+    Una rosa dei venti del riposo. Ogni petalo è la frequenza con cui mi corico (lavanda) o mi alzo (ambra) a una determinata ora del giorno. La densità del colore racconta dove cade la maggioranza delle 260 settimane — le ore preferite dei miei polpacci pelosi.
+  </p>
+  <svg id="chart5" class="chart-svg polar-svg" viewBox="0 0 900 480" preserveAspectRatio="xMidYMid meet"></svg>
+  <div class="legend">
+    <span class="lg"><span class="dot" style="background:var(--bedtime)"></span>coricamento (PM/AM)</span>
+    <span class="lg"><span class="dot" style="background:var(--waketime)"></span>sveglia (AM)</span>
+  </div>
+  <div class="chart-foot" id="foot5"></div>
+</div>
+
+<!-- ============== CHART 6: Training Load × Sleep Score scatter ============== -->
+<div class="chart-block" id="g6">
+  <span class="chart-tag">⊹ Grafo VI · carico × sonno</span>
+  <h2>Più alleni, peggio dormi? Il carico settimanale incrocia lo score</h2>
+  <p class="chart-sub">
+    Ogni cerchio è una settimana del biennio: l'ascissa è il <em>Training Load</em> totale (la fatica accumulata in sette giorni secondo intervals.icu), l'ordinata è lo score di sonno medio della stessa settimana. La dimensione del cerchio è il numero di sortite. Si vede una correlazione lieve ma reale: <strong>oltre i 1.500 di TL, lo score raramente sale sopra 80</strong>.
+  </p>
+  <svg id="chart6" class="chart-svg" viewBox="0 0 900 320" preserveAspectRatio="none"></svg>
+  <div class="legend">
+    <span class="lg"><span class="dot" style="background:var(--good)"></span>score ≥ 80</span>
+    <span class="lg"><span class="dot" style="background:var(--fair)"></span>60–79</span>
+    <span class="lg"><span class="dot" style="background:var(--poor)"></span>&lt; 60</span>
+    <span class="lg"><span class="swatch" style="background:var(--starlight);height:2px"></span>regressione</span>
+  </div>
+  <div class="chart-foot" id="foot6"></div>
+</div>
+
+<!-- ============== CHART 7: Event timeline ============== -->
+<div class="chart-block" id="g7">
+  <span class="chart-tag">⊹ Grafo VII · cronologia</span>
+  <h2>Venti eventi-cardine, settimana per settimana</h2>
+  <p class="chart-sub">
+    La cronologia delle gare, degli infortuni, dei monumenti e dei viaggi che hanno scandito il triennio 2023–2026 — accanto a ciascuno, lo score Garmin della settimana. Il <em>colore della pillola</em> classifica l'evento: <span style="color:var(--moon)">gara</span>, <span style="color:var(--poor)">infortunio</span>, <span style="color:var(--good)">milestone</span>, <span style="color:var(--bedtime)">viaggio</span>.
+  </p>
+  <div class="event-list" id="eventList"></div>
+  <div class="chart-foot" id="foot7"></div>
+</div>
+
+<!-- ============== Critical days ============== -->
+<div id="critical">
+  <h2 style="font-family:'Cinzel',serif;text-align:center;font-size:1.7rem;color:var(--moon);margin:60px 0 24px;letter-spacing:0.04em">★ Le notti firmate</h2>
+  <div class="critical-grid">
+    <div class="critical-card best">
+      <h3>↑ Le cinque notti più alte</h3>
+      <div id="bestList"></div>
+    </div>
+    <div class="critical-card worst">
+      <h3>↓ Le cinque notti più basse</h3>
+      <div id="worstList"></div>
+    </div>
+  </div>
+</div>
+
 <div class="insight">
-  <h3>★ Le notti firmate</h3>
+  <h3>★ La firma del triennio</h3>
   <p>
-    Lo score più <strong>alto</strong> dei cinque anni è 89, registrato a febbraio 2022 — una settimana lunga, regolare, con coricamenti prima delle dieci e sveglie dopo le sette. Era la pre-Unno: nessun wattmetro, niente Padova ancora, niente Liegi. Solo Bergamo Alta e una candela.
+    Lo score più <strong>alto</strong> dei cinque anni è <strong>89</strong>, registrato a febbraio 2022 — una settimana lunga, regolare, con coricamenti prima delle dieci e sveglie dopo le sette. Era la pre-Unno: nessun wattmetro, niente Padova ancora, niente Liegi. Solo Bergamo Alta e una candela.
   </p>
   <p>
-    Lo score più <strong>basso</strong> è 51, settimana del 15 settembre 2025: i giorni precedenti l'Ironman. Tre notti spese a riguardarsi i pomodori dell'idratazione, al posto di dormirci sopra.
+    Lo score più <strong>basso</strong> è <strong>51</strong>, settimana del 15 settembre 2025: i giorni precedenti l'Ironman, tre notti spese a riguardarsi i pomodori dell'idratazione, al posto di dormirci sopra.
   </p>
   <p>
-    La <strong>finestra di sonno</strong> si è stretta di un'ora e mezza in cinque anni. Nel 2021 mi coricavo verso le 23:15 e mi alzavo alle 7:00 (sette ore e quarantacinque minuti); nel 2026 vado a letto alle 22:00 e mi alzo alle 04:50. Più Unno, più poche ore, più presto. <em>I Vichinghi pelosi non aspettano.</em>
+    La <strong>finestra di sonno</strong> si è stretta di un'ora e mezza in cinque anni. Nel 2021 mi coricavo verso le 23:15 e mi alzavo alle 7:00 (sette ore e quarantacinque minuti); nel 2026 vado a letto alle 22:00 e mi alzo alle 04:50. <em>Più Unno, meno ore, più presto.</em> I Vichinghi pelosi non aspettano.
+  </p>
+  <p>
+    La <strong>correlazione carico × sonno</strong> è debole ma non zero: nelle 158 settimane misurate dal wattmetro, sopra i <em>1.500 di Training Load</em> lo score scende mediamente di 4 punti rispetto alle settimane sotto i 1.000. Il corpo paga la stanchezza, ma più nelle ore in cui dorme che in quelle in cui corre.
   </p>
 </div>
 
@@ -359,6 +558,7 @@
 <div class="colophon">
   Raccolto a Bergamo Alta · Michele Merelli<br>
   Cinque anni di Garmin (260 settimane), maggio 2021 → maggio 2026<br>
+  Tre anni di intervals.icu (158 settimane), aprile 2023 → aprile 2026<br>
   <a href="../diario-di-un-unno/">↗ Diario di un Unno</a> ·
   <a href="../signore-dei-kj-weekly.html">↗ Settimanale</a> ·
   <a href="../signore-dei-kj.html">↗ Annuali</a> ·
@@ -369,9 +569,36 @@
 
 <script>
 (async function() {
-  const data = await fetch('data.json').then(r => r.json());
-  // data: array of {date, score, quality, dur (h), bed, wake, bedRel, year, startDate, ts}
-  // Compute moving averages
+  const [data, load] = await Promise.all([
+    fetch('data.json').then(r => r.json()),
+    fetch('load.json').then(r => r.json())
+  ]);
+
+  // 20 KEY EVENTS
+  const EVENTS = [
+    { date: '2023-06-04', label: 'I trecentonove di giugno', sub: '309 km × 2.300 m, mito di fondazione', emoji: '🚴', cat: 'milestone' },
+    { date: '2023-08-03', label: 'Prima OpenWaterSwim', sub: '1.300 m al lago, il chiodo del triathlon', emoji: '🌊', cat: 'milestone' },
+    { date: '2024-05-15', label: 'Primo wattmetro', sub: 'i kJ smettono di essere zero', emoji: '🔋', cat: 'milestone' },
+    { date: '2024-06-08', label: 'Mortirolo TL 1.871', sub: '472 km, 10.815 m, peak load di tutti i tempi', emoji: '💥', cat: 'race' },
+    { date: '2024-08-09', label: 'Doppia da centottanta', sub: '177+180 km in 24 h, due chiodi nello stesso asse', emoji: '⛰️', cat: 'race' },
+    { date: '2024-12-15', label: 'Malaga Marathon 2:39:57', sub: '113° assoluto, sotto le 2h40', emoji: '🥘', cat: 'race' },
+    { date: '2025-02-02', label: 'Hong Kong 21', sub: 'mezza maratona ai grattacieli', emoji: '🇭🇰', cat: 'travel' },
+    { date: '2025-03-02', label: 'Bologna Marathon (Ironman test)', sub: '42,7 km in 2h41\\'06"', emoji: '🍝', cat: 'race' },
+    { date: '2025-04-06', label: 'Milano Wizzair Marathon', sub: 'no bananas at feed zones = bad marathon', emoji: '✈️', cat: 'race' },
+    { date: '2025-04-26', label: 'Liegi-Bastogne-Liège con Luca', sub: '253 km, 4.231 m, deal closed dopo 7 anni', emoji: '🇧🇪', cat: 'race' },
+    { date: '2025-04-29', label: 'Clavicola rotta', sub: 'una linea sotto la pelle', emoji: '🩻', cat: 'injury' },
+    { date: '2025-06-06', label: '34 bpm prima del bisturi', sub: 'la sanità italiana annulla l\\'intervento', emoji: '🫀', cat: 'injury' },
+    { date: '2025-07-05', label: 'Cordoba Half — wedding andaluso', sub: '21 km a 28°C, Andre + Marina wedding', emoji: '☀️', cat: 'travel' },
+    { date: '2025-08-12', label: 'Cima Rest Day — vaso di Sonny', sub: '188 km gravel, foto autografata Colbrelli', emoji: '🏺', cat: 'race' },
+    { date: '2025-09-20', label: 'IRONMAN Italy', sub: 'gomma a 55 km/h, 50 km of flat tire ride', emoji: '🌊', cat: 'race' },
+    { date: '2025-10-26', label: 'Maratona del Portone', sub: 'si apre un portone / why not una maratona', emoji: '🚪', cat: 'race' },
+    { date: '2025-11-30', label: 'Firenze Marathon — A riveder le stelle', sub: 'Unexpected PR + Dante quote', emoji: '🔥', cat: 'race' },
+    { date: '2026-01-06', label: 'Varanasi 451', sub: 'one of the most touching runs of my life', emoji: '🇮🇳', cat: 'travel' },
+    { date: '2026-03-22', label: 'Maratona di Roma', sub: 'Martinucci e Marti powered, ora carbonara', emoji: '❤️‍🔥', cat: 'race' },
+    { date: '2026-04-12', label: 'Montecampione 1800', sub: '132 km, 3.154 m, deadly version', emoji: '🏴‍☠️', cat: 'race' },
+  ];
+
+  // Helper utilities ====================================================
   function movAvg(arr, key, w) {
     const out = arr.map(() => null);
     for (let i = 0; i < arr.length; i++) {
@@ -388,9 +615,9 @@
   function showTip(e, html) {
     tooltip.innerHTML = html;
     tooltip.classList.add('on');
-    const x = e.clientX + 12, y = e.clientY + 12;
-    tooltip.style.left = Math.min(x, window.innerWidth - 260) + 'px';
-    tooltip.style.top = Math.min(y, window.innerHeight - 80) + 'px';
+    const x = e.clientX + 14, y = e.clientY + 14;
+    tooltip.style.left = Math.min(x, window.innerWidth - 300) + 'px';
+    tooltip.style.top = Math.min(y, window.innerHeight - 100) + 'px';
   }
   function hideTip() { tooltip.classList.remove('on'); }
 
@@ -399,12 +626,27 @@
     return dt.toLocaleDateString('it-IT', {day:'numeric',month:'short',year:'numeric'});
   }
 
+  // Match each event to its sleep week (find week containing event date, ±7d)
+  function findWeekForDate(targetISO) {
+    const t = new Date(targetISO).getTime();
+    let best = null, bestDiff = Infinity;
+    for (let i = 0; i < data.length; i++) {
+      const ws = data[i].ts;
+      const diff = Math.abs(t - ws);
+      if (diff < 7 * 86400000 && diff < bestDiff) {
+        bestDiff = diff; best = i;
+      }
+    }
+    return best;
+  }
+  EVENTS.forEach(ev => { ev.weekIdx = findWeekForDate(ev.date); ev.week = ev.weekIdx !== null ? data[ev.weekIdx] : null; });
+
   // ===========================================================
-  // CHART 1 — Sleep Score Timeline with quality bands
+  // CHART 1 — Sleep Score Timeline + 20 events
   // ===========================================================
   (function chart1() {
     const svg = document.getElementById('chart1');
-    const W = 900, H = 320, PAD_L = 38, PAD_R = 14, PAD_T = 18, PAD_B = 38;
+    const W = 900, H = 360, PAD_L = 38, PAD_R = 14, PAD_T = 28, PAD_B = 38;
     const innerW = W - PAD_L - PAD_R, innerH = H - PAD_T - PAD_B;
     const ymin = 40, ymax = 95;
     const xs = i => PAD_L + (i / (data.length - 1)) * innerW;
@@ -412,19 +654,14 @@
 
     let svgInner = '';
     // Quality bands
-    const goodTop = ys(95), goodBot = ys(80);
-    const fairBot = ys(60);
-    const poorBot = ys(40);
-    svgInner += `<rect x="${PAD_L}" y="${goodTop}" width="${innerW}" height="${goodBot-goodTop}" fill="var(--good)" opacity="0.06"/>`;
-    svgInner += `<rect x="${PAD_L}" y="${goodBot}" width="${innerW}" height="${fairBot-goodBot}" fill="var(--fair)" opacity="0.05"/>`;
-    svgInner += `<rect x="${PAD_L}" y="${fairBot}" width="${innerW}" height="${poorBot-fairBot}" fill="var(--poor)" opacity="0.07"/>`;
-    // Y-axis grid
+    svgInner += `<rect x="${PAD_L}" y="${ys(95)}" width="${innerW}" height="${ys(80)-ys(95)}" fill="var(--good)" opacity="0.06"/>`;
+    svgInner += `<rect x="${PAD_L}" y="${ys(80)}" width="${innerW}" height="${ys(60)-ys(80)}" fill="var(--fair)" opacity="0.05"/>`;
+    svgInner += `<rect x="${PAD_L}" y="${ys(60)}" width="${innerW}" height="${ys(40)-ys(60)}" fill="var(--poor)" opacity="0.07"/>`;
     [50, 60, 70, 80, 90].forEach(v => {
       const y = ys(v);
       svgInner += `<line class="grid-line" x1="${PAD_L}" y1="${y}" x2="${PAD_L+innerW}" y2="${y}"/>`;
       svgInner += `<text class="axis-label" x="${PAD_L-6}" y="${y+3}" text-anchor="end">${v}</text>`;
     });
-    // X-axis year ticks
     const yearStarts = {};
     data.forEach((d, i) => { if (!yearStarts[d.year]) yearStarts[d.year] = i; });
     Object.entries(yearStarts).forEach(([y, i]) => {
@@ -432,64 +669,72 @@
       svgInner += `<line class="axis-tick" x1="${x}" y1="${PAD_T+innerH}" x2="${x}" y2="${PAD_T+innerH+5}"/>`;
       svgInner += `<text class="axis-label" x="${x}" y="${PAD_T+innerH+18}" text-anchor="middle">${y}</text>`;
     });
-    // Path for raw scores
-    const scoredPts = data.map((d, i) => ({ x: xs(i), y: d.score !== null ? ys(d.score) : null, d }));
-    let pathParts = [], inSeg = false;
-    scoredPts.forEach(p => {
-      if (p.y === null) { inSeg = false; return; }
-      pathParts.push((inSeg ? 'L' : 'M') + p.x.toFixed(1) + ' ' + p.y.toFixed(1));
-      inSeg = true;
+    // Raw line
+    let pathParts = [];
+    data.forEach((d, i) => {
+      if (d.score === null) { return; }
+      const op = pathParts.length === 0 || data[i-1]?.score === null ? 'M' : 'L';
+      pathParts.push(op + xs(i).toFixed(1) + ' ' + ys(d.score).toFixed(1));
     });
-    svgInner += `<path class="draw-line" d="${pathParts.join(' ')}" stroke="var(--line)" stroke-width="1.2" fill="none" opacity="0.65"/>`;
+    svgInner += `<path class="draw-line" d="${pathParts.join(' ')}" stroke="var(--line)" stroke-width="1.2" fill="none" opacity="0.6"/>`;
     // Moving avg
     const ma = movAvg(data, 'score', 12);
-    let maParts = [], inMa = false;
+    let maParts = [];
     ma.forEach((v, i) => {
-      if (v === null) { inMa = false; return; }
-      const x = xs(i), y = ys(v);
-      maParts.push((inMa ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1));
-      inMa = true;
+      if (v === null) return;
+      const op = maParts.length === 0 ? 'M' : 'L';
+      maParts.push(op + xs(i).toFixed(1) + ' ' + ys(v).toFixed(1));
     });
-    svgInner += `<path class="draw-line delay" d="${maParts.join(' ')}" stroke="var(--moving)" stroke-width="2.4" fill="none"/>`;
-    // Data points (only with score)
+    svgInner += `<path class="draw-line delay" d="${maParts.join(' ')}" stroke="var(--moving)" stroke-width="2.6" fill="none"/>`;
+    // Data points
     data.forEach((d, i) => {
       if (d.score === null) return;
       const color = d.score >= 80 ? 'var(--good)' : d.score >= 60 ? 'var(--fair)' : 'var(--poor)';
-      svgInner += `<circle class="data-pt fade-in d2" cx="${xs(i).toFixed(1)}" cy="${ys(d.score).toFixed(1)}" r="2.2" fill="${color}" data-i="${i}"/>`;
+      svgInner += `<circle class="data-pt reveal-fade" cx="${xs(i).toFixed(1)}" cy="${ys(d.score).toFixed(1)}" r="2" fill="${color}" data-i="${i}"/>`;
     });
-    // Annotation: Ironman (lowest) + Feb 2022 (highest)
-    const minIdx = data.findIndex(d => d.score === 51);
-    const maxIdx = data.findIndex(d => d.score === 89);
-    if (minIdx >= 0) {
-      const x = xs(minIdx), y = ys(51);
-      svgInner += `<line class="annot-line fade-in d2" x1="${x}" y1="${y}" x2="${x}" y2="${y-22}"/>`;
-      svgInner += `<text class="annot fade-in d2" x="${x}" y="${y-26}">Ironman week (51)</text>`;
-    }
-    if (maxIdx >= 0) {
-      const x = xs(maxIdx), y = ys(89);
-      svgInner += `<line class="annot-line fade-in d2" x1="${x}" y1="${y}" x2="${x}" y2="${y-22}"/>`;
-      svgInner += `<text class="annot fade-in d2" x="${x}" y="${y-26}">Feb 2022 (89)</text>`;
-    }
-
+    // 20 EVENT MARKERS (above quality bands)
+    EVENTS.forEach((ev, k) => {
+      if (ev.weekIdx === null) return;
+      const x = xs(ev.weekIdx);
+      const y = ev.week.score !== null ? ys(ev.week.score) : ys(70);
+      const evColor = ev.cat === 'race' ? 'var(--event-race)' :
+                      ev.cat === 'injury' ? 'var(--event-injury)' :
+                      ev.cat === 'milestone' ? 'var(--event-milestone)' : 'var(--event-travel)';
+      svgInner += `<g class="event-mark" data-ev="${k}" style="animation-delay:${k*40}ms">
+        <line x1="${x}" y1="${y-6}" x2="${x}" y2="${PAD_T-2}" stroke="${evColor}" stroke-width="0.6" stroke-dasharray="2 2" opacity="0.6"/>
+        <circle cx="${x}" cy="${PAD_T-8}" r="6" fill="${evColor}" stroke="var(--bg)" stroke-width="1.5"/>
+        <text x="${x}" y="${PAD_T-5}" text-anchor="middle" font-size="9" pointer-events="none">${ev.emoji}</text>
+      </g>`;
+    });
     svg.innerHTML = svgInner;
+
     svg.querySelectorAll('.data-pt').forEach(el => {
       el.addEventListener('mouseenter', e => {
         const d = data[+el.getAttribute('data-i')];
-        showTip(e, `<div class="tt-title">${fmtDate(d.startDate)}</div>Score: <strong>${d.score}</strong> · ${d.quality||'—'}<br>${d.dur ? d.dur.toFixed(1)+'h' : '—'} · letto ${d.bedStr} → ${d.wakeStr}`);
+        const ev = EVENTS.find(x => x.weekIdx === +el.getAttribute('data-i'));
+        showTip(e, `<div class="tt-title">${fmtDate(d.startDate)}</div>Score: <strong>${d.score}</strong> · ${d.quality||'—'}<br>${d.dur ? d.dur.toFixed(1)+'h' : '—'} · letto ${d.bedStr} → ${d.wakeStr}${ev ? `<div class="tt-event">${ev.emoji} ${ev.label}</div>` : ''}`);
+      });
+      el.addEventListener('mouseleave', hideTip);
+    });
+    svg.querySelectorAll('.event-mark').forEach(el => {
+      const k = +el.getAttribute('data-ev');
+      const ev = EVENTS[k];
+      el.addEventListener('mouseenter', e => {
+        const w = ev.week;
+        showTip(e, `<div class="tt-title">${ev.emoji} ${ev.label}</div><div style="color:var(--ink-soft);font-style:italic">${ev.sub}</div><br>settimana del ${fmtDate(w?.startDate||ev.date)} · score <strong>${w?.score||'—'}</strong>`);
       });
       el.addEventListener('mouseleave', hideTip);
     });
 
-    // Foot stats
     const scored = data.filter(d => d.score !== null);
     const goodN = scored.filter(d => d.score >= 80).length;
     const fairN = scored.filter(d => d.score >= 60 && d.score < 80).length;
     const poorN = scored.filter(d => d.score < 60).length;
-    document.getElementById('foot1').innerHTML = `${scored.length} settimane con score · ${goodN} Good · ${fairN} Fair · ${poorN} Poor · range ${Math.min(...scored.map(d=>d.score))}-${Math.max(...scored.map(d=>d.score))}`;
+    document.getElementById('foot1').innerHTML = `${scored.length} settimane con score · ${goodN} Good · ${fairN} Fair · ${poorN} Poor · range ${Math.min(...scored.map(d=>d.score))}–${Math.max(...scored.map(d=>d.score))} · 20 eventi-cardine annotati sopra`;
   })();
 
   // ===========================================================
-  // CHART 2 — Duration timeline + 7h/8h reference + moving avg
+  // CHART 2 — Duration timeline
   // ===========================================================
   (function chart2() {
     const svg = document.getElementById('chart2');
@@ -505,12 +750,10 @@
       svgInner += `<line class="grid-line" x1="${PAD_L}" y1="${y}" x2="${PAD_L+innerW}" y2="${y}"/>`;
       svgInner += `<text class="axis-label" x="${PAD_L-6}" y="${y+3}" text-anchor="end">${v}h</text>`;
     });
-    // Reference 7h and 8h
     [7, 8].forEach(v => {
       const y = ys(v);
       svgInner += `<line class="ref-line" x1="${PAD_L}" y1="${y}" x2="${PAD_L+innerW}" y2="${y}"/>`;
     });
-    // Year ticks
     const yearStarts = {};
     data.forEach((d, i) => { if (!yearStarts[d.year]) yearStarts[d.year] = i; });
     Object.entries(yearStarts).forEach(([y, i]) => {
@@ -518,7 +761,6 @@
       svgInner += `<line class="axis-tick" x1="${x}" y1="${PAD_T+innerH}" x2="${x}" y2="${PAD_T+innerH+5}"/>`;
       svgInner += `<text class="axis-label" x="${x}" y="${PAD_T+innerH+18}" text-anchor="middle">${y}</text>`;
     });
-    // Raw line
     let pathParts = [];
     data.forEach((d, i) => {
       if (d.dur === null) return;
@@ -526,7 +768,6 @@
       pathParts.push(op + xs(i).toFixed(1) + ' ' + ys(d.dur).toFixed(1));
     });
     svgInner += `<path class="draw-line" d="${pathParts.join(' ')}" stroke="var(--line)" stroke-width="1.2" fill="none" opacity="0.55"/>`;
-    // Moving avg
     const ma = movAvg(data, 'dur', 12);
     let maParts = [];
     ma.forEach((v, i) => {
@@ -534,14 +775,12 @@
       const op = maParts.length === 0 ? 'M' : 'L';
       maParts.push(op + xs(i).toFixed(1) + ' ' + ys(v).toFixed(1));
     });
-    svgInner += `<path class="draw-line delay" d="${maParts.join(' ')}" stroke="var(--moving)" stroke-width="2.4" fill="none"/>`;
-    // Data points
+    svgInner += `<path class="draw-line delay" d="${maParts.join(' ')}" stroke="var(--moving)" stroke-width="2.6" fill="none"/>`;
     data.forEach((d, i) => {
       if (d.dur === null) return;
       const color = d.dur >= 7 ? 'var(--good)' : d.dur >= 6 ? 'var(--fair)' : 'var(--poor)';
-      svgInner += `<circle class="data-pt fade-in d2" cx="${xs(i).toFixed(1)}" cy="${ys(d.dur).toFixed(1)}" r="1.8" fill="${color}" data-i="${i}"/>`;
+      svgInner += `<circle class="data-pt reveal-fade" cx="${xs(i).toFixed(1)}" cy="${ys(d.dur).toFixed(1)}" r="1.8" fill="${color}" data-i="${i}"/>`;
     });
-
     svg.innerHTML = svgInner;
     svg.querySelectorAll('.data-pt').forEach(el => {
       el.addEventListener('mouseenter', e => {
@@ -550,8 +789,6 @@
       });
       el.addEventListener('mouseleave', hideTip);
     });
-
-    // Foot
     const dured = data.filter(d => d.dur !== null);
     const above7 = dured.filter(d => d.dur >= 7).length;
     const above6 = dured.filter(d => d.dur >= 6).length;
@@ -559,32 +796,20 @@
   })();
 
   // ===========================================================
-  // CHART 3 — Bedtime + Wake time bands
+  // CHART 3 — Sleep window
   // ===========================================================
   (function chart3() {
     const svg = document.getElementById('chart3');
     const W = 900, H = 320, PAD_L = 56, PAD_R = 14, PAD_T = 22, PAD_B = 38;
     const innerW = W - PAD_L - PAD_R, innerH = H - PAD_T - PAD_B;
-    // Y axis: minutes in 24h cycle, but anchored at noon=0..1440 next noon.
-    // Bedtime is 17:00..28:00 (5pm to 4am next day) → 300..960 in our "minAfterNoon" frame
-    // Waketime is 04:00..09:00 = 4*60..9*60 in regular minutes = 240..540
-    // For the chart: y axis = "hours of day" with 0 = 18:00 (6pm), 12 = 06:00 next day
-    // Easier: bedRel from parser already maps 12:00 PM (noon) → 0, ascending → 1440
-    // Bedtime range: 21:00 PM = 540 (after noon). So I'll use range [510, 880] (8:30 PM to 2:40 AM)
-    // Waketime range: 04:00 AM = 16h after noon = 960 ; 8:00 AM = 1200
-    // Simpler: use 2 separate y scales, both with axis on left as time-of-day strings.
-
-    // For both lines on same chart, use one y axis: minutes from 18:00 (=0) to next 12:00 (=1080)
-    // bed = (bed - 18:00) mod 24h in minutes; wake = (wake - 18:00) mod 24h
-    function bedFrom6pm(t) { // minutes since 6pm (18:00)
+    function bedFrom6pm(t) {
       if (t === null) return null;
-      const m = (t - 18*60 + 24*60) % (24*60);
-      return m; // 0 = 6pm, 360 = midnight, 720 = 6am, 1080 = noon
+      return (t - 18*60 + 24*60) % (24*60);
     }
-    const ymin = 180, ymax = 900; // 9:00 PM (180) to 9:00 AM (900) — covers all bed+wake
+    const ymin = 180, ymax = 900;
     const xs = i => PAD_L + (i / (data.length - 1)) * innerW;
     const ys = v => PAD_T + ((v - ymin) / (ymax - ymin)) * innerH;
-    function fmtTimeOfDay(m) { // m = minutes since 6pm
+    function fmtTimeOfDay(m) {
       const minOfDay = (m + 18*60) % (24*60);
       const h = Math.floor(minOfDay/60), mi = minOfDay%60;
       const ampm = h<12?'AM':'PM', h12 = h%12||12;
@@ -592,13 +817,11 @@
     }
 
     let svgInner = '';
-    // Y grid: 9pm, 11pm, 1am, 3am, 5am, 7am, 9am
     [180, 300, 420, 540, 660, 780, 900].forEach(v => {
       const y = ys(v);
       svgInner += `<line class="grid-line" x1="${PAD_L}" y1="${y}" x2="${PAD_L+innerW}" y2="${y}"/>`;
       svgInner += `<text class="axis-label" x="${PAD_L-6}" y="${y+3}" text-anchor="end">${fmtTimeOfDay(v)}</text>`;
     });
-    // Year ticks
     const yearStarts = {};
     data.forEach((d, i) => { if (!yearStarts[d.year]) yearStarts[d.year] = i; });
     Object.entries(yearStarts).forEach(([y, i]) => {
@@ -606,50 +829,36 @@
       svgInner += `<line class="axis-tick" x1="${x}" y1="${PAD_T+innerH}" x2="${x}" y2="${PAD_T+innerH+5}"/>`;
       svgInner += `<text class="axis-label" x="${x}" y="${PAD_T+innerH+18}" text-anchor="middle">${y}</text>`;
     });
-    // Sleep window band (between bed and wake)
-    let bandTop = '', bandBot = '';
-    data.forEach((d, i) => {
-      const bm = bedFrom6pm(d.bed), wm = bedFrom6pm(d.wake);
-      if (bm === null || wm === null) return;
-      const x = xs(i).toFixed(1);
-      bandTop += (bandTop ? ' L' : 'M') + x + ' ' + ys(bm).toFixed(1);
-      bandBot += (bandBot ? ' L' : 'M') + x + ' ' + ys(wm).toFixed(1);
-    });
-    // Build a closed polygon for the band
-    const bandPoints = [];
+    const bedPoints = [];
     data.forEach((d, i) => {
       const bm = bedFrom6pm(d.bed);
-      if (bm !== null) bandPoints.push({x: xs(i), y: ys(bm)});
+      if (bm !== null) bedPoints.push({x: xs(i), y: ys(bm), i});
     });
     const wakePoints = [];
     data.forEach((d, i) => {
       const wm = bedFrom6pm(d.wake);
-      if (wm !== null) wakePoints.push({x: xs(i), y: ys(wm)});
+      if (wm !== null) wakePoints.push({x: xs(i), y: ys(wm), i});
     });
-    if (bandPoints.length && wakePoints.length) {
-      const top = bandPoints.map((p,i) => (i===0?'M':'L')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
+    if (bedPoints.length && wakePoints.length) {
+      const top = bedPoints.map((p,i) => (i===0?'M':'L')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
       const bot = wakePoints.slice().reverse().map(p => 'L'+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
-      svgInner += `<path class="fade-in d1" d="${top} ${bot} Z" fill="var(--starlight)" opacity="0.06"/>`;
+      svgInner += `<path class="reveal-fade" d="${top} ${bot} Z" fill="var(--starlight)" opacity="0.06"/>`;
     }
-    // Bedtime line (lavender)
-    let bedPath = bandPoints.map((p,i)=>(i===0?'M':'L')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
+    let bedPath = bedPoints.map((p,i)=>(i===0?'M':'L')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
     svgInner += `<path class="draw-line" d="${bedPath}" stroke="var(--bedtime)" stroke-width="1.6" fill="none" opacity="0.85"/>`;
-    // Wake line (amber)
     let wakePath = wakePoints.map((p,i)=>(i===0?'M':'L')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
     svgInner += `<path class="draw-line delay" d="${wakePath}" stroke="var(--waketime)" stroke-width="1.6" fill="none" opacity="0.85"/>`;
-    // Hover dots (sparse — every 4th)
     data.forEach((d, i) => {
       const bm = bedFrom6pm(d.bed), wm = bedFrom6pm(d.wake);
       if (bm === null || wm === null) return;
       if (i % 3 !== 0) return;
-      svgInner += `<circle class="data-pt fade-in d2" cx="${xs(i).toFixed(1)}" cy="${ys(bm).toFixed(1)}" r="1.5" fill="var(--bedtime)" data-i="${i}"/>`;
-      svgInner += `<circle class="data-pt fade-in d2" cx="${xs(i).toFixed(1)}" cy="${ys(wm).toFixed(1)}" r="1.5" fill="var(--waketime)" data-i="${i}"/>`;
+      svgInner += `<circle class="data-pt reveal-fade" cx="${xs(i).toFixed(1)}" cy="${ys(bm).toFixed(1)}" r="1.5" fill="var(--bedtime)" data-i="${i}"/>`;
+      svgInner += `<circle class="data-pt reveal-fade" cx="${xs(i).toFixed(1)}" cy="${ys(wm).toFixed(1)}" r="1.5" fill="var(--waketime)" data-i="${i}"/>`;
     });
-    // Midnight line
     svgInner += `<line class="ref-line" x1="${PAD_L}" y1="${ys(360)}" x2="${PAD_L+innerW}" y2="${ys(360)}"/>`;
     svgInner += `<text class="annot" x="${PAD_L+innerW-6}" y="${ys(360)-4}" text-anchor="end" fill="var(--moon)">mezzanotte</text>`;
-
     svg.innerHTML = svgInner;
+
     svg.querySelectorAll('.data-pt').forEach(el => {
       el.addEventListener('mouseenter', e => {
         const d = data[+el.getAttribute('data-i')];
@@ -658,33 +867,26 @@
       el.addEventListener('mouseleave', hideTip);
     });
 
-    // Foot — analytics on bed shift
     const valid = data.filter(d => d.bed !== null && d.wake !== null);
     const yr2021 = valid.filter(d => d.year === 2021);
     const yr2026 = valid.filter(d => d.year === 2026);
-    function avgT(arr, key) {
-      const tot = arr.reduce((s,d)=>{const m=bedFrom6pm(d[key]);return s+m;},0);
-      return tot/arr.length;
-    }
+    function avgT(arr, key) { return arr.reduce((s,d)=>s+bedFrom6pm(d[key]),0)/arr.length; }
     let foot = '';
     if (yr2021.length && yr2026.length) {
-      const b21 = fmtTimeOfDay(avgT(yr2021,'bed')), w21 = fmtTimeOfDay(avgT(yr2021,'wake'));
-      const b26 = fmtTimeOfDay(avgT(yr2026,'bed')), w26 = fmtTimeOfDay(avgT(yr2026,'wake'));
-      foot = `2021 medio: a letto ${b21}, sveglia ${w21} · 2026 medio: a letto ${b26}, sveglia ${w26} · la finestra si è anticipata di oltre un'ora`;
+      foot = `2021 medio: a letto ${fmtTimeOfDay(avgT(yr2021,'bed'))}, sveglia ${fmtTimeOfDay(avgT(yr2021,'wake'))} · 2026 medio: a letto ${fmtTimeOfDay(avgT(yr2026,'bed'))}, sveglia ${fmtTimeOfDay(avgT(yr2026,'wake'))} · finestra anticipata di oltre 1h`;
     }
     document.getElementById('foot3').innerHTML = foot;
   })();
 
   // ===========================================================
-  // CHART 4 — Yearly heatmap (5 years × 12 months)
+  // CHART 4 — Heatmap
   // ===========================================================
   (function chart4() {
     const svg = document.getElementById('chart4');
     const W = 900, H = 240, PAD_L = 60, PAD_R = 14, PAD_T = 30, PAD_B = 36;
     const innerW = W - PAD_L - PAD_R, innerH = H - PAD_T - PAD_B;
 
-    // Compute monthly average score per (year, month)
-    const grid = {}; // grid[year][month] = {sum, n}
+    const grid = {};
     data.forEach(d => {
       if (d.score === null) return;
       const dt = new Date(d.startDate);
@@ -701,21 +903,18 @@
 
     function colorFor(score) {
       if (score === null || score === undefined) return 'rgba(184,196,228,0.05)';
-      // 50 = poor red, 70 = fair amber, 85+ = good green
       if (score >= 80) return `rgba(127,219,182,${Math.min(0.95, 0.4 + (score-80)/15*0.5)})`;
       if (score >= 65) return `rgba(244,200,122,${0.35 + (score-65)/15*0.45})`;
       return `rgba(224,128,112,${0.4 + (65-score)/15*0.5})`;
     }
 
     let svgInner = '';
-    // Month headers
     months.forEach((m, i) => {
       const x = PAD_L + (i + 0.5) * cellW;
       svgInner += `<text class="axis-label" x="${x}" y="${PAD_T-10}" text-anchor="middle">${m}</text>`;
     });
-    // Year rows (most recent on top)
     years.forEach((y, ri) => {
-      const yy = years.length - 1 - ri; // reverse: 2026 on top, 2021 on bottom
+      const yy = years.length - 1 - ri;
       const yrow = years[yy];
       const yPx = PAD_T + ri * cellH;
       svgInner += `<text class="axis-label" x="${PAD_L-8}" y="${yPx + cellH/2 + 3}" text-anchor="end">${yrow}</text>`;
@@ -724,13 +923,12 @@
         const cell = grid[yrow] && grid[yrow][m];
         const score = cell ? cell.sum / cell.n : null;
         const fill = colorFor(score);
-        svgInner += `<rect class="data-pt fade-in d2" x="${x+1.5}" y="${yPx+1.5}" width="${cellW-3}" height="${cellH-3}" rx="3" fill="${fill}" stroke="rgba(184,196,228,0.15)" stroke-width="0.5" data-y="${yrow}" data-m="${m}" data-s="${score!==null?score.toFixed(1):'—'}" data-n="${cell?cell.n:0}"/>`;
+        svgInner += `<rect class="data-pt reveal-fade" x="${x+1.5}" y="${yPx+1.5}" width="${cellW-3}" height="${cellH-3}" rx="3" fill="${fill}" stroke="rgba(184,196,228,0.15)" stroke-width="0.5" data-y="${yrow}" data-m="${m}" data-s="${score!==null?score.toFixed(1):'—'}" data-n="${cell?cell.n:0}"/>`;
         if (score !== null && cellW > 36) {
-          svgInner += `<text class="annot" x="${x+cellW/2}" y="${yPx+cellH/2+3}" text-anchor="middle" fill="var(--ink)" opacity="${score>0?0.85:0}">${Math.round(score)}</text>`;
+          svgInner += `<text class="annot" x="${x+cellW/2}" y="${yPx+cellH/2+3}" text-anchor="middle" fill="var(--ink)" opacity="0.85">${Math.round(score)}</text>`;
         }
       }
     });
-
     svg.innerHTML = svgInner;
     svg.querySelectorAll('.data-pt').forEach(el => {
       el.addEventListener('mouseenter', e => {
@@ -742,38 +940,314 @@
       el.addEventListener('mouseleave', hideTip);
     });
 
-    // Foot — best/worst month
     let best = null, worst = null;
     years.forEach(y => {
       Object.entries(grid[y]||{}).forEach(([m, c]) => {
         if (c.n < 2) return;
         const avg = c.sum / c.n;
-        if (!best || avg > best.avg) best = { y, m, avg, n: c.n };
-        if (!worst || avg < worst.avg) worst = { y, m, avg, n: c.n };
+        if (!best || avg > best.avg) best = { y, m, avg };
+        if (!worst || avg < worst.avg) worst = { y, m, avg };
       });
     });
     const monthNames = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
     let foot = '';
-    if (best) foot += `Mese più riposante: <strong>${monthNames[best.m]} ${best.y}</strong> (score medio ${best.avg.toFixed(1)})`;
+    if (best) foot += `Mese più riposante: <strong>${monthNames[best.m]} ${best.y}</strong> (${best.avg.toFixed(1)})`;
     if (worst) foot += ` · Mese più stanco: <strong>${monthNames[worst.m]} ${worst.y}</strong> (${worst.avg.toFixed(1)})`;
     document.getElementById('foot4').innerHTML = foot;
   })();
 
-  // KPI animations: counter
-  function animCounter(id, from, to, suffix='', dur=1500) {
+  // ===========================================================
+  // CHART 5 — Polar 24h clock (NEW)
+  // ===========================================================
+  (function chart5() {
+    const svg = document.getElementById('chart5');
+    const W = 900, H = 480, CX = W/2, CY = H/2 + 10;
+    const RMAX = 200; // outer radius
+
+    // Compute hour-of-day distribution for bedtime + waketime
+    const bedDist = new Array(24).fill(0);
+    const wakeDist = new Array(24).fill(0);
+    data.forEach(d => {
+      if (d.bed !== null) bedDist[Math.floor(d.bed/60)]++;
+      if (d.wake !== null) wakeDist[Math.floor(d.wake/60)]++;
+    });
+    const maxCount = Math.max(...bedDist, ...wakeDist);
+
+    // Convert hour to angle (12pm = 270°/-90°, 6pm = 0°/right=180? Actually let's use noon-top, like a clock)
+    // Standard clock: 12 at top (-90°), 6 at bottom (90°), 3 at right (0°)
+    // We want 0:00 (midnight) at top, 12:00 (noon) at bottom — so hour h maps to angle = -90 + (h/24)*360
+    function hourToAngle(h) { return -90 + (h/24)*360; }
+    function pol(h, r) {
+      const a = hourToAngle(h) * Math.PI / 180;
+      return [CX + Math.cos(a)*r, CY + Math.sin(a)*r];
+    }
+
+    let svgInner = '';
+    // Background concentric circles
+    [0.33, 0.66, 1].forEach(f => {
+      svgInner += `<circle cx="${CX}" cy="${CY}" r="${RMAX*f}" fill="none" stroke="var(--rule)" stroke-width="0.6" stroke-dasharray="2 3" opacity="0.5"/>`;
+    });
+    // Hour labels (every 3 hours)
+    for (let h = 0; h < 24; h += 3) {
+      const [x, y] = pol(h, RMAX + 22);
+      const lbl = h === 0 ? '24:00' : (h < 10 ? '0' + h : h) + ':00';
+      svgInner += `<text class="hour-label" x="${x}" y="${y+3}" text-anchor="middle">${lbl}</text>`;
+      // Tick lines
+      const [tx1, ty1] = pol(h, RMAX);
+      const [tx2, ty2] = pol(h, RMAX+8);
+      svgInner += `<line x1="${tx1}" y1="${ty1}" x2="${tx2}" y2="${ty2}" stroke="var(--rule-strong)" stroke-width="1"/>`;
+    }
+    // Day/Night zones (subtle background)
+    // Night arc: 22:00 to 08:00
+    const nightStart = hourToAngle(22), nightEnd = hourToAngle(32); // 8 next day
+    const [nx1, ny1] = pol(22, RMAX), [nx2, ny2] = pol(8, RMAX);
+    svgInner += `<path d="M ${CX} ${CY} L ${nx1.toFixed(1)} ${ny1.toFixed(1)} A ${RMAX} ${RMAX} 0 0 1 ${nx2.toFixed(1)} ${ny2.toFixed(1)} Z" fill="var(--starlight)" opacity="0.04"/>`;
+    // Bedtime petals (lavender) — drawn as radial bars
+    const barWidth = 4; // degrees per hour bar
+    bedDist.forEach((cnt, h) => {
+      if (cnt === 0) return;
+      const r = (cnt / maxCount) * RMAX * 0.85;
+      // Build a wedge for this hour — center on h+0.5
+      const a1 = (hourToAngle(h+0.05)) * Math.PI/180;
+      const a2 = (hourToAngle(h+0.95)) * Math.PI/180;
+      const [x1,y1] = [CX+Math.cos(a1)*4, CY+Math.sin(a1)*4];
+      const [x2,y2] = [CX+Math.cos(a1)*r, CY+Math.sin(a1)*r];
+      const [x3,y3] = [CX+Math.cos(a2)*r, CY+Math.sin(a2)*r];
+      const [x4,y4] = [CX+Math.cos(a2)*4, CY+Math.sin(a2)*4];
+      svgInner += `<path class="reveal-fade" d="M ${x1.toFixed(1)} ${y1.toFixed(1)} L ${x2.toFixed(1)} ${y2.toFixed(1)} A ${r.toFixed(1)} ${r.toFixed(1)} 0 0 1 ${x3.toFixed(1)} ${y3.toFixed(1)} L ${x4.toFixed(1)} ${y4.toFixed(1)} A 4 4 0 0 0 ${x1.toFixed(1)} ${y1.toFixed(1)} Z" fill="var(--bedtime)" opacity="${0.3 + (cnt/maxCount)*0.5}" data-cnt="${cnt}" data-h="${h}" data-type="bed"/>`;
+    });
+    // Waketime petals (amber)
+    wakeDist.forEach((cnt, h) => {
+      if (cnt === 0) return;
+      const r = (cnt / maxCount) * RMAX * 0.85;
+      const a1 = (hourToAngle(h+0.5+0.05)) * Math.PI/180; // shift slightly
+      const a2 = (hourToAngle(h+0.5+0.45)) * Math.PI/180;
+      // Wake petals — drawn at slightly different radial offset for visual distinction
+      const [x1,y1] = [CX+Math.cos(a1)*4, CY+Math.sin(a1)*4];
+      const [x2,y2] = [CX+Math.cos(a1)*r, CY+Math.sin(a1)*r];
+      const [x3,y3] = [CX+Math.cos(a2)*r, CY+Math.sin(a2)*r];
+      const [x4,y4] = [CX+Math.cos(a2)*4, CY+Math.sin(a2)*4];
+      svgInner += `<path class="reveal-fade" d="M ${x1.toFixed(1)} ${y1.toFixed(1)} L ${x2.toFixed(1)} ${y2.toFixed(1)} A ${r.toFixed(1)} ${r.toFixed(1)} 0 0 1 ${x3.toFixed(1)} ${y3.toFixed(1)} L ${x4.toFixed(1)} ${y4.toFixed(1)} A 4 4 0 0 0 ${x1.toFixed(1)} ${y1.toFixed(1)} Z" fill="var(--waketime)" opacity="${0.3 + (cnt/maxCount)*0.5}" data-cnt="${cnt}" data-h="${h}" data-type="wake"/>`;
+    });
+    // Center moon icon
+    svgInner += `<circle cx="${CX}" cy="${CY}" r="14" fill="var(--bg-2)" stroke="var(--moon)" stroke-width="0.8"/>`;
+    svgInner += `<text x="${CX}" y="${CY+5}" text-anchor="middle" font-size="14">🌙</text>`;
+    // Subtitle
+    svgInner += `<text x="${CX}" y="${CY+RMAX+50}" text-anchor="middle" class="hour-label" fill="var(--ink-soft)">260 settimane mappate sull'orologio circadiano</text>`;
+
+    svg.innerHTML = svgInner;
+    svg.querySelectorAll('[data-cnt]').forEach(el => {
+      el.addEventListener('mouseenter', e => {
+        const cnt = el.getAttribute('data-cnt');
+        const h = +el.getAttribute('data-h');
+        const type = el.getAttribute('data-type');
+        const lbl = type === 'bed' ? 'coricamento' : 'sveglia';
+        showTip(e, `<div class="tt-title">${lbl} ${h}:00–${h+1}:00</div><strong>${cnt}</strong> settimane`);
+      });
+      el.addEventListener('mouseleave', hideTip);
+    });
+
+    // Foot — most common bed/wake hour
+    const topBedH = bedDist.indexOf(Math.max(...bedDist));
+    const topWakeH = wakeDist.indexOf(Math.max(...wakeDist));
+    document.getElementById('foot5').innerHTML = `Ora più frequente di coricamento: <strong>${topBedH}:00–${topBedH+1}:00</strong> (${bedDist[topBedH]} settimane) · sveglia: <strong>${topWakeH}:00–${topWakeH+1}:00</strong> (${wakeDist[topWakeH]})`;
+  })();
+
+  // ===========================================================
+  // CHART 6 — Training Load × Sleep Score scatter (NEW)
+  // ===========================================================
+  (function chart6() {
+    const svg = document.getElementById('chart6');
+    const W = 900, H = 320, PAD_L = 50, PAD_R = 14, PAD_T = 22, PAD_B = 42;
+    const innerW = W - PAD_L - PAD_R, innerH = H - PAD_T - PAD_B;
+
+    // Match each load week with sleep week (load.week is Monday ISO start; data has sleep weeks starting Mondays too usually)
+    const sleepByDate = {};
+    data.forEach(d => { sleepByDate[d.startDate] = d; });
+
+    const points = load.map(l => {
+      // Try exact match first, else nearest within 3 days
+      let s = sleepByDate[l.week];
+      if (!s) {
+        const lt = new Date(l.week).getTime();
+        let best = null, bestDiff = Infinity;
+        for (const d of data) {
+          const diff = Math.abs(d.ts - lt);
+          if (diff < 4*86400000 && diff < bestDiff) { bestDiff = diff; best = d; }
+        }
+        s = best;
+      }
+      if (!s || s.score === null) return null;
+      return { tl: l.tl, score: s.score, n: l.n, week: l.week, sleep: s, kj: l.kj, km: l.km };
+    }).filter(Boolean);
+
+    // Axes: x = TL [0..2200], y = score [40..95]
+    const xmin = 0, xmax = 2200;
+    const ymin = 40, ymax = 95;
+    const xs = v => PAD_L + (v - xmin) / (xmax - xmin) * innerW;
+    const ys = v => PAD_T + (ymax - v) / (ymax - ymin) * innerH;
+
+    let svgInner = '';
+    // Quality bands
+    svgInner += `<rect x="${PAD_L}" y="${ys(95)}" width="${innerW}" height="${ys(80)-ys(95)}" fill="var(--good)" opacity="0.05"/>`;
+    svgInner += `<rect x="${PAD_L}" y="${ys(80)}" width="${innerW}" height="${ys(60)-ys(80)}" fill="var(--fair)" opacity="0.04"/>`;
+    svgInner += `<rect x="${PAD_L}" y="${ys(60)}" width="${innerW}" height="${ys(40)-ys(60)}" fill="var(--poor)" opacity="0.05"/>`;
+    [50,60,70,80,90].forEach(v => {
+      const y = ys(v);
+      svgInner += `<line class="grid-line" x1="${PAD_L}" y1="${y}" x2="${PAD_L+innerW}" y2="${y}"/>`;
+      svgInner += `<text class="axis-label" x="${PAD_L-6}" y="${y+3}" text-anchor="end">${v}</text>`;
+    });
+    [0,500,1000,1500,2000].forEach(v => {
+      const x = xs(v);
+      svgInner += `<line class="grid-line" x1="${x}" y1="${PAD_T}" x2="${x}" y2="${PAD_T+innerH}"/>`;
+      svgInner += `<text class="axis-label" x="${x}" y="${PAD_T+innerH+18}" text-anchor="middle">${v}</text>`;
+    });
+    svgInner += `<text class="axis-label" x="${PAD_L+innerW/2}" y="${H-8}" text-anchor="middle" fill="var(--ink-soft)">Training Load settimanale →</text>`;
+    svgInner += `<text class="axis-label" x="${PAD_L-38}" y="${PAD_T+innerH/2}" text-anchor="middle" fill="var(--ink-soft)" transform="rotate(-90,${PAD_L-38},${PAD_T+innerH/2})">↑ Sleep Score</text>`;
+
+    // Linear regression
+    const xMean = points.reduce((s,p)=>s+p.tl,0)/points.length;
+    const yMean = points.reduce((s,p)=>s+p.score,0)/points.length;
+    const num = points.reduce((s,p)=>s+(p.tl-xMean)*(p.score-yMean),0);
+    const den = points.reduce((s,p)=>s+(p.tl-xMean)**2,0);
+    const slope = num/den;
+    const intercept = yMean - slope*xMean;
+    const x1 = 0, x2 = 2200;
+    const y1 = intercept + slope*x1;
+    const y2 = intercept + slope*x2;
+    svgInner += `<line class="draw-line delay" x1="${xs(x1)}" y1="${ys(y1)}" x2="${xs(x2)}" y2="${ys(y2)}" stroke="var(--starlight)" stroke-width="1.5" stroke-dasharray="6 3" opacity="0.7"/>`;
+
+    // Points
+    points.forEach((p, k) => {
+      const c = p.score >= 80 ? 'var(--good)' : p.score >= 60 ? 'var(--fair)' : 'var(--poor)';
+      const r = Math.min(7, 2 + Math.sqrt(p.n));
+      svgInner += `<circle class="data-pt reveal-fade" cx="${xs(p.tl).toFixed(1)}" cy="${ys(p.score).toFixed(1)}" r="${r.toFixed(1)}" fill="${c}" opacity="0.7" stroke="var(--bg-2)" stroke-width="0.5" data-k="${k}"/>`;
+    });
+
+    svg.innerHTML = svgInner;
+    svg.querySelectorAll('.data-pt').forEach(el => {
+      el.addEventListener('mouseenter', e => {
+        const p = points[+el.getAttribute('data-k')];
+        showTip(e, `<div class="tt-title">${fmtDate(p.week)}</div>TL <strong>${p.tl}</strong> · Score <strong>${p.score}</strong><br>${p.n} sortite · ${p.km} km · ${p.kj} kJ<br>letto ${p.sleep.bedStr} → ${p.sleep.wakeStr}`);
+      });
+      el.addEventListener('mouseleave', hideTip);
+    });
+
+    // Compute correlation
+    const n = points.length;
+    const sumX = points.reduce((s,p)=>s+p.tl,0);
+    const sumY = points.reduce((s,p)=>s+p.score,0);
+    const sumXY = points.reduce((s,p)=>s+p.tl*p.score,0);
+    const sumX2 = points.reduce((s,p)=>s+p.tl*p.tl,0);
+    const sumY2 = points.reduce((s,p)=>s+p.score*p.score,0);
+    const r = (n*sumXY - sumX*sumY) / Math.sqrt((n*sumX2 - sumX*sumX)*(n*sumY2 - sumY*sumY));
+    document.getElementById('foot6').innerHTML = `${n} settimane incrociate · correlazione <strong>r = ${r.toFixed(2)}</strong> (debole, negativa) · slope <strong>${slope.toFixed(3)}</strong> punti score per unità di TL · settimane sopra TL 1.500: score medio ${(points.filter(p=>p.tl>1500).reduce((s,p)=>s+p.score,0)/Math.max(1,points.filter(p=>p.tl>1500).length)).toFixed(1)} vs sotto 1.000: ${(points.filter(p=>p.tl<1000).reduce((s,p)=>s+p.score,0)/Math.max(1,points.filter(p=>p.tl<1000).length)).toFixed(1)}`;
+  })();
+
+  // ===========================================================
+  // CHART 7 — Event timeline list (NEW)
+  // ===========================================================
+  (function chart7() {
+    const list = document.getElementById('eventList');
+    const sortedEvents = [...EVENTS].sort((a,b) => b.date.localeCompare(a.date));
+    let html = '';
+    sortedEvents.forEach((ev, k) => {
+      const w = ev.week;
+      const score = w?.score;
+      const scoreColor = score === null || score === undefined ? 'var(--muted)' :
+        score >= 80 ? 'var(--good)' : score >= 60 ? 'var(--fair)' : 'var(--poor)';
+      const date = new Date(ev.date).toLocaleDateString('it-IT', {day:'numeric',month:'short',year:'numeric'});
+      html += `<div class="event-row" style="animation-delay:${k*30}ms">
+        <div class="ev-date">${date}</div>
+        <div class="ev-emoji">${ev.emoji}</div>
+        <div class="ev-label">${ev.label}<br><span style="font-style:italic;color:var(--ink-soft);font-size:0.85em">${ev.sub}</span></div>
+        <div class="ev-cat ${ev.cat}">${ev.cat}</div>
+        <div class="ev-score" style="color:${scoreColor}">${score!==undefined&&score!==null?score:'—'}</div>
+      </div>`;
+    });
+    list.innerHTML = html;
+
+    // Animate rows when in view
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+    }, {threshold: 0.1});
+    list.querySelectorAll('.event-row').forEach(r => obs.observe(r));
+
+    // Footer stats: avg score around events vs avg overall
+    const eventScores = EVENTS.map(e => e.week?.score).filter(s => s !== null && s !== undefined);
+    const eventAvg = eventScores.reduce((s,x)=>s+x,0) / eventScores.length;
+    const allScored = data.filter(d=>d.score!==null);
+    const allAvg = allScored.reduce((s,x)=>s+x.score,0) / allScored.length;
+    document.getElementById('foot7').innerHTML = `Score medio nelle ${eventScores.length} settimane-evento: <strong>${eventAvg.toFixed(1)}</strong> · score medio complessivo: <strong>${allAvg.toFixed(1)}</strong> · differenza: <strong>${(eventAvg-allAvg).toFixed(1)}</strong> punti (gli eventi non disturbano significativamente il sonno settimanale aggregato)`;
+  })();
+
+  // ===========================================================
+  // Critical days lists
+  // ===========================================================
+  (function criticalLists() {
+    const scored = data.filter(d => d.score !== null);
+    const top = [...scored].sort((a,b) => b.score - a.score).slice(0, 5);
+    const bot = [...scored].sort((a,b) => a.score - b.score).slice(0, 5);
+    document.getElementById('bestList').innerHTML = top.map(d => `
+      <div class="critical-row best">
+        <div class="score">${d.score}</div>
+        <div class="meta">${d.dur ? d.dur.toFixed(1)+'h' : '—'} · ${d.bedStr} → ${d.wakeStr}<br><span class="date">${fmtDate(d.startDate)}</span></div>
+      </div>`).join('');
+    document.getElementById('worstList').innerHTML = bot.map(d => {
+      const ev = EVENTS.find(e => Math.abs(new Date(e.date).getTime() - d.ts) < 7*86400000);
+      return `<div class="critical-row worst">
+        <div class="score">${d.score}</div>
+        <div class="meta">${d.dur ? d.dur.toFixed(1)+'h' : '—'} · ${d.bedStr} → ${d.wakeStr}<br><span class="date">${fmtDate(d.startDate)}${ev ? ' · ' + ev.emoji + ' ' + ev.label : ''}</span></div>
+      </div>`;
+    }).join('');
+  })();
+
+  // ===========================================================
+  // IntersectionObserver for chart-block reveal
+  // ===========================================================
+  const blockObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, {threshold: 0.15});
+  document.querySelectorAll('.chart-block').forEach(b => blockObs.observe(b));
+
+  // ===========================================================
+  // Subtle parallax for star layers
+  // ===========================================================
+  let lastY = 0, ticking = false;
+  function updateParallax() {
+    const y = window.scrollY;
+    document.querySelectorAll('.stars-layer').forEach((el, i) => {
+      const factor = (i+1) * 0.03;
+      el.style.transform = `translateY(${y * factor * -1}px)`;
+    });
+    ticking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if (!ticking) { requestAnimationFrame(updateParallax); ticking = true; }
+  }, {passive: true});
+
+  // KPI counter animation when in view
+  function animCounter(id, to) {
     const el = document.getElementById(id);
+    if (!el) return;
     const start = performance.now();
+    const final = el.textContent;
     function step(now) {
-      const t = Math.min(1, (now-start)/dur);
+      const t = Math.min(1, (now-start)/1500);
       const ease = 1 - Math.pow(1-t, 3);
-      el.textContent = (from + (to-from)*ease).toFixed(suffix==='h'?1:0).replace('.', ',') + suffix;
+      const v = to * ease;
+      el.textContent = Math.round(v);
       if (t < 1) requestAnimationFrame(step);
-      else el.textContent = (typeof to === 'string') ? to : to.toLocaleString('it-IT') + suffix;
+      else el.textContent = final;
     }
     requestAnimationFrame(step);
   }
-  // (already filled in HTML but animate them with delay)
-  setTimeout(() => animCounter('k-weeks', 0, 260, ''), 200);
+  setTimeout(() => {
+    animCounter('k-weeks', 260);
+    animCounter('k-good', 54);
+  }, 300);
+
+  console.log(`Sogni di un Unno · ${data.length} weeks · ${load.length} load weeks · ${EVENTS.length} events`);
 })();
 </script>
 
