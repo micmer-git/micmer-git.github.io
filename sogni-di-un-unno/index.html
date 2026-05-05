@@ -2,23 +2,21 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Sogni di un Unno — Cinque anni di sonno · Michele Merelli</title>
-<meta name="description" content="260 settimane di sonno tracciate dal Garmin di Michele Merelli — sette grafi sulla notte di un Unno, da maggio 2021 a maggio 2026.">
+<meta name="description" content="Una narrazione scroll-driven sul sonno di un Unno: 260 settimane, 20 eventi-cardine, dal maggio 2021 al maggio 2026.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=IBM+Plex+Mono:wght@400;600&family=Cinzel:wght@600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;600&family=Cinzel:wght@600;900&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0e1f; --bg-2: #0f1530;
-    --paper: #141a35; --paper-2: #1a2148;
-    --ink: #e8eeff; --ink-soft: #b8c4e4;
-    --muted: #6f7ba0;
-    --silver: #c8d4f0;
+    --bg: #07091a; --bg-2: #0c1027;
+    --ink: #ecf1ff;
+    --ink-soft: #c0cae8;
+    --ink-faint: #8089ad;
+    --muted: #5b6488;
     --moon: #f4e9b8;
     --starlight: #a8c4ff;
-    --rule: rgba(184,196,228,0.18);
-    --rule-strong: rgba(184,196,228,0.32);
     --good: #7fdbb6;
     --fair: #f4c87a;
     --poor: #e08070;
@@ -26,24 +24,18 @@
     --moving: #f4e9b8;
     --bedtime: #b89cf0;
     --waketime: #f4c87a;
-    --event-race: #f4e9b8;
-    --event-injury: #e08070;
-    --event-milestone: #7fdbb6;
-    --event-travel: #b89cf0;
   }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html { scroll-behavior: smooth; }
   body {
     background: var(--bg); color: var(--ink);
     font-family: 'EB Garamond', Georgia, serif;
-    font-size: 18px; line-height: 1.65;
-    max-width: 1100px; margin: 0 auto;
-    padding: 50px 24px 100px;
+    font-size: 19px; line-height: 1.7;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
   }
 
-  /* === STARFIELD with parallax === */
+  /* ====== Background — drifting starfield ====== */
   .stars { position: fixed; inset: 0; pointer-events: none; z-index: -2; overflow: hidden; }
   .stars-layer {
     position: absolute; inset: -50%;
@@ -53,7 +45,7 @@
     background-image:
       radial-gradient(1px 1px at 12% 23%, rgba(255,255,255,0.7) 0%, transparent 100%),
       radial-gradient(1px 1px at 28% 67%, rgba(255,255,255,0.5) 0%, transparent 100%),
-      radial-gradient(1px 1px at 47% 12%, rgba(168,196,255,0.6) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 47% 12%, rgba(168,196,255,0.6) 0%, transparent 100%),
       radial-gradient(2px 2px at 65% 88%, rgba(255,255,255,0.85) 0%, transparent 100%),
       radial-gradient(1px 1px at 82% 35%, rgba(168,196,255,0.5) 0%, transparent 100%),
       radial-gradient(1px 1px at 91% 71%, rgba(255,255,255,0.45) 0%, transparent 100%),
@@ -61,7 +53,7 @@
       radial-gradient(1px 1px at 7% 82%, rgba(255,255,255,0.5) 0%, transparent 100%),
       radial-gradient(1px 1px at 56% 44%, rgba(168,196,255,0.55) 0%, transparent 100%),
       radial-gradient(1px 1px at 73% 18%, rgba(255,255,255,0.5) 0%, transparent 100%);
-    animation: twinkle 4s ease-in-out infinite alternate;
+    animation: twinkle 5s ease-in-out infinite alternate;
   }
   .stars-layer.l2 {
     background-image:
@@ -72,328 +64,275 @@
       radial-gradient(1px 1px at 88% 14%, rgba(255,255,255,0.5) 0%, transparent 100%),
       radial-gradient(1px 1px at 31% 81%, rgba(255,255,255,0.5) 0%, transparent 100%),
       radial-gradient(2px 2px at 68% 52%, rgba(255,255,255,0.7) 0%, transparent 100%);
-    animation: twinkle 6s ease-in-out infinite alternate-reverse;
+    animation: twinkle 8s ease-in-out infinite alternate-reverse;
     opacity: 0.7;
   }
-  .stars-layer.l3 {
-    background-image:
-      radial-gradient(0.5px 0.5px at 5% 15%, rgba(168,196,255,0.4) 0%, transparent 100%),
-      radial-gradient(0.5px 0.5px at 95% 75%, rgba(255,255,255,0.3) 0%, transparent 100%),
-      radial-gradient(0.5px 0.5px at 45% 85%, rgba(244,233,184,0.4) 0%, transparent 100%);
-    animation: twinkle 8s ease-in-out infinite alternate;
-    opacity: 0.5;
-  }
-  @keyframes twinkle { 0% { opacity: 0.4; } 100% { opacity: 1; } }
+  @keyframes twinkle { 0% { opacity: 0.45; } 100% { opacity: 1; } }
 
-  /* Cosmic glow (parallaxed) */
   body::before {
     content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1;
     background-image:
-      radial-gradient(ellipse at 18% 25%, rgba(140,168,255,0.10) 0%, transparent 55%),
-      radial-gradient(ellipse at 82% 75%, rgba(184,156,240,0.08) 0%, transparent 55%),
-      radial-gradient(ellipse at 50% 50%, rgba(244,233,184,0.04) 0%, transparent 60%);
+      radial-gradient(ellipse at 18% 28%, rgba(140,168,255,0.10) 0%, transparent 60%),
+      radial-gradient(ellipse at 82% 78%, rgba(184,156,240,0.08) 0%, transparent 60%);
   }
 
-  /* === COVER === */
-  h1.cover {
-    font-family: 'Cinzel', serif; font-size: 2.8rem; font-weight: 900;
-    letter-spacing: 0.05em; text-align: center; line-height: 1.1;
-    margin-bottom: 6px;
+  /* ====== HERO ====== */
+  .hero {
+    min-height: 100vh; min-height: 100svh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 60px 24px 40px; text-align: center;
+    position: relative;
+  }
+  .hero h1 {
+    font-family: 'Cinzel', serif; font-weight: 900;
+    font-size: clamp(2.4rem, 8vw, 4.6rem);
+    letter-spacing: 0.04em; line-height: 1; margin-bottom: 18px;
     background: linear-gradient(180deg, var(--ink) 0%, var(--starlight) 100%);
     -webkit-background-clip: text; background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: shimmer 8s ease-in-out infinite;
+    animation: shimmer 9s ease-in-out infinite;
   }
   @keyframes shimmer {
     0%,100% { filter: brightness(1); }
-    50% { filter: brightness(1.15); }
+    50% { filter: brightness(1.18); }
   }
-  h1.cover .accent {
-    display: block; font-size: 0.36em; font-weight: 700;
-    letter-spacing: 0.3em; text-transform: uppercase;
-    color: var(--moon); -webkit-text-fill-color: var(--moon);
-    margin-bottom: 14px;
+  .hero .accent {
+    display: block; font-family: 'Cinzel', serif; font-weight: 600;
+    font-size: clamp(0.62rem, 1.5vw, 0.78rem);
+    letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--moon); margin-bottom: 22px;
   }
-  h1.cover .runes {
-    display: block; font-size: 0.5em; letter-spacing: 0.5em;
-    color: var(--starlight); -webkit-text-fill-color: var(--starlight);
-    margin-top: 18px; opacity: 0.7;
+  .hero .runes {
+    display: block; font-size: clamp(0.7rem, 2vw, 0.9rem);
+    letter-spacing: 0.5em; color: var(--starlight);
+    margin-top: 22px; opacity: 0.7;
   }
-  .cover-sub {
-    text-align: center; color: var(--ink-soft); font-style: italic;
-    max-width: 600px; margin: 24px auto 36px; font-size: 1.08rem; line-height: 1.55;
+  .hero p.lede {
+    max-width: 620px; font-style: italic;
+    color: var(--ink-soft); font-size: clamp(1rem, 2.4vw, 1.18rem);
+    line-height: 1.55; margin: 30px auto 0;
+  }
+  .scroll-hint {
+    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+    color: var(--ink-faint); font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem; letter-spacing: 0.2em;
+    animation: floatDown 2.4s ease-in-out infinite;
+  }
+  @keyframes floatDown {
+    0%,100% { transform: translate(-50%, 0); opacity: 0.6; }
+    50% { transform: translate(-50%, 8px); opacity: 1; }
   }
 
-  /* === KPI strip === */
-  .kpis {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
-    margin: 30px 0 50px;
+  /* ====== SCROLLY STAGE ====== */
+  .scrolly {
+    position: relative;
+    max-width: 1200px; margin: 0 auto;
+    padding: 0 24px;
   }
-  .kpi {
-    background: var(--paper); border: 1px solid var(--rule);
-    border-radius: 12px; padding: 20px 14px; text-align: center;
-    position: relative; overflow: hidden;
-    transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), border-color 0.3s;
+  .stage {
+    position: sticky; top: 0;
+    width: 100%; height: 100vh; height: 100svh;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none;
+    z-index: 1;
   }
-  .kpi:hover {
-    transform: translateY(-3px);
-    border-color: var(--rule-strong);
+  .stage svg {
+    width: 100%; height: 100%;
+    pointer-events: auto;
   }
-  .kpi::before {
-    content: ""; position: absolute; inset: 0;
-    background: radial-gradient(ellipse at top, rgba(140,168,255,0.10) 0%, transparent 60%);
+  .narrative {
+    position: relative;
+    z-index: 2;
+    max-width: 540px;
+    margin: 0 auto;
     pointer-events: none;
   }
-  .kpi .num {
-    font-family: 'Cinzel', serif; font-size: 2rem; font-weight: 900;
-    color: var(--moon); letter-spacing: 0.02em; line-height: 1;
+  .step {
+    min-height: 90vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 20vh 0;
+    pointer-events: none;
   }
-  .kpi .label {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem;
-    text-transform: uppercase; letter-spacing: 0.14em;
-    color: var(--muted); margin-top: 8px;
+  .step-content {
+    background: rgba(7, 9, 26, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 22px 26px;
+    border-radius: 14px;
+    border: 1px solid rgba(184,196,228,0.12);
+    pointer-events: auto;
+    max-width: 100%;
   }
-
-  /* === CHART blocks === */
-  .chart-block {
-    margin: 70px 0; padding: 28px 24px 32px;
-    background: var(--paper); border: 1px solid var(--rule); border-radius: 16px;
-    position: relative;
+  .step h2 {
+    font-family: 'Cinzel', serif; font-weight: 600;
+    font-size: clamp(1.4rem, 3.2vw, 1.85rem);
+    letter-spacing: 0.04em; color: var(--moon);
+    margin-bottom: 12px; line-height: 1.2;
   }
-  /* Animation enhancement (non-blocking): only when JS+IntersectionObserver supported */
-  html.has-io .chart-block { opacity: 0; transform: translateY(40px); transition: opacity 1s cubic-bezier(0.16,1,0.3,1), transform 1s cubic-bezier(0.16,1,0.3,1); }
-  html.has-io .chart-block.in { opacity: 1; transform: translateY(0); }
-  .chart-block::before {
-    content: "✦"; position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-    background: var(--bg); padding: 0 14px; color: var(--moon); font-size: 1rem;
+  .step .num {
+    font-family: 'Cinzel', serif; font-weight: 900;
+    font-size: clamp(2.6rem, 8vw, 4.2rem);
+    color: var(--moon); line-height: 1; letter-spacing: 0.02em;
+    background: linear-gradient(180deg, var(--moon) 0%, var(--fair) 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
   }
-  .chart-tag {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
-    text-transform: uppercase; letter-spacing: 0.2em;
-    color: var(--starlight); display: block; margin-bottom: 6px;
-  }
-  .chart-block h2 {
-    font-family: 'Cinzel', serif; font-size: 1.6rem; font-weight: 700;
-    color: var(--ink); line-height: 1.2; margin-bottom: 8px;
-  }
-  .chart-sub {
-    font-style: italic; color: var(--ink-soft); margin-bottom: 22px;
-    font-size: 1.02rem; line-height: 1.55;
-  }
-  .chart-svg { width: 100%; display: block; overflow: visible; }
-  #chart1 { aspect-ratio: 900/360; }
-  #chart2 { aspect-ratio: 900/280; }
-  #chart3 { aspect-ratio: 900/320; }
-  #chart4 { aspect-ratio: 900/240; }
-  #chart5 { aspect-ratio: 900/480; }
-  #chart6 { aspect-ratio: 900/320; }
-  /* On mobile: SVGs render small (~360px wide), so user-units inside viewBox shrink ~40%.
-     Bump SVG font sizes inside viewBox so labels stay legible (~10-12px on screen). */
-  @media (max-width: 720px) {
-    /* Mobile: explicit pixel heights (no aspect-ratio dependency for older iOS) + larger SVG fonts */
-    .chart-svg .axis-label { font-size: 22px; }
-    .chart-svg .annot { font-size: 20px; }
-    .chart-svg .hour-label { font-size: 22px; }
-    .chart-svg { aspect-ratio: auto !important; }
-    #chart1 { height: 280px; }
-    #chart2 { height: 240px; }
-    #chart3 { height: 260px; }
-    #chart4 { height: 240px; }
-    #chart5 { height: 360px; max-width: 96vw; margin: 0 auto; }
-    #chart6 { height: 280px; }
-  }
-  .chart-foot {
-    margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--rule);
+  .step .num-sub {
     font-family: 'IBM Plex Mono', monospace; font-size: 0.74rem;
-    color: var(--muted); letter-spacing: 0.04em; line-height: 1.6;
+    text-transform: uppercase; letter-spacing: 0.16em;
+    color: var(--ink-faint); margin-bottom: 14px;
   }
-  .legend {
-    display: flex; gap: 16px; flex-wrap: wrap; margin-top: 14px;
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem;
-    color: var(--ink-soft); letter-spacing: 0.04em;
+  .step p {
+    color: var(--ink-soft);
+    font-size: clamp(1rem, 2vw, 1.08rem);
+    line-height: 1.6;
+    margin-bottom: 12px;
   }
-  .legend .lg { display: flex; align-items: center; gap: 6px; }
-  .legend .swatch {
-    display: inline-block; width: 14px; height: 3px; border-radius: 2px;
+  .step p:last-child { margin-bottom: 0; }
+  .step strong { color: var(--ink); font-weight: 500; }
+  .step em { color: var(--starlight); font-style: italic; }
+  .step .chip {
+    display: inline-block; padding: 3px 10px; border-radius: 99px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
+    letter-spacing: 0.08em; font-weight: 600;
+    background: rgba(244,233,184,0.12); color: var(--moon);
+    margin-right: 4px; vertical-align: middle;
   }
-  .legend .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .chip.poor { background: rgba(224,128,112,0.14); color: var(--poor); }
+  .chip.fair { background: rgba(244,200,122,0.12); color: var(--fair); }
+  .chip.good { background: rgba(127,219,182,0.12); color: var(--good); }
 
-  /* === SVG draw animations === Only with JS+IntersectionObserver — fail-open: lines visible by default */
-  html.has-io .draw-line { stroke-dasharray: 5000; stroke-dashoffset: 5000; }
-  html.has-io .chart-block.in .draw-line { animation: draw 2.6s cubic-bezier(0.16,1,0.3,1) forwards; }
-  html.has-io .chart-block.in .draw-line.delay { animation-delay: 0.5s; }
-  @keyframes draw { to { stroke-dashoffset: 0; } }
-
-  html.has-io .reveal-fade { opacity: 0; }
-  html.has-io .chart-block.in .reveal-fade { animation: fadeIn 1.4s ease-out 0.6s forwards; }
-  @keyframes fadeIn { to { opacity: 1; } }
-
-  /* Data point hover */
-  .data-pt { cursor: pointer; transition: r 0.18s ease, opacity 0.2s; }
-  .data-pt:hover { r: 5; }
-
-  /* Event marker on charts (visible by default, animated as enhancement) */
-  .event-mark { cursor: pointer; transition: transform 0.2s; }
-  .event-mark:hover { transform: scale(1.4); }
-  html.has-io .event-mark { opacity: 0; }
-  html.has-io .chart-block.in .event-mark { animation: popIn 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards; }
-  @keyframes popIn { from { opacity: 0; transform: scale(0); } to { opacity: 1; transform: scale(1); } }
-
-  /* Annotations */
-  .annot {
-    font-family: 'IBM Plex Mono', monospace; font-size: 9px;
-    fill: var(--ink-soft); text-anchor: middle;
+  /* fade-in on visibility */
+  .step .step-content {
+    opacity: 0; transform: translateY(40px);
+    transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);
   }
-  .annot-line { stroke: var(--starlight); stroke-width: 0.5; stroke-dasharray: 2 2; opacity: 0.5; }
-  .axis-label {
-    font-family: 'IBM Plex Mono', monospace; font-size: 10px;
-    fill: var(--muted); letter-spacing: 0.05em;
+  .step.in .step-content {
+    opacity: 1; transform: translateY(0);
   }
-  .axis-tick { stroke: var(--rule); stroke-width: 1; }
-  .grid-line { stroke: var(--rule); stroke-width: 0.6; stroke-dasharray: 1 3; }
-  .ref-line { stroke: var(--moon); stroke-width: 0.8; stroke-dasharray: 4 4; opacity: 0.4; }
 
-  /* === Critical days callout === */
-  .critical-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 30px 0;
+  /* ====== Final standalone sections (after sticky) ====== */
+  .epilogue {
+    max-width: 720px; margin: 60px auto 0;
+    padding: 0 24px;
   }
-  .critical-card {
-    background: linear-gradient(180deg, rgba(140,168,255,0.04) 0%, transparent 100%);
-    border: 1px solid var(--rule); border-radius: 12px; padding: 20px;
-    transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), border-color 0.3s;
+  .crit-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 22px;
+    margin: 30px 0;
   }
-  .critical-card:hover { transform: translateY(-2px); border-color: var(--rule-strong); }
-  .critical-card.best { border-left: 3px solid var(--good); }
-  .critical-card.worst { border-left: 3px solid var(--poor); }
-  .critical-card h3 {
-    font-family: 'Cinzel', serif; font-size: 1.1rem; font-weight: 700;
-    color: var(--moon); margin-bottom: 14px;
+  .crit h3 {
+    font-family: 'Cinzel', serif; font-size: 0.85rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--moon); margin-bottom: 16px; font-weight: 600;
   }
-  .critical-row {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 8px 0; border-bottom: 1px dashed var(--rule);
+  .crit .row {
+    display: flex; align-items: baseline; gap: 14px;
+    padding: 10px 0; border-bottom: 1px dashed rgba(184,196,228,0.14);
     font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem;
   }
-  .critical-row:last-child { border-bottom: none; }
-  .critical-row .score {
-    font-size: 1.3rem; font-family: 'Cinzel', serif; font-weight: 700;
+  .crit .row:last-child { border-bottom: none; }
+  .crit .score-pill {
+    font-family: 'Cinzel', serif; font-weight: 700;
+    font-size: 1.4rem; min-width: 54px;
   }
-  .critical-row.best .score { color: var(--good); }
-  .critical-row.worst .score { color: var(--poor); }
-  .critical-row .meta { color: var(--ink-soft); flex: 1; padding: 0 12px; }
-  .critical-row .date { color: var(--muted); font-size: 0.7rem; }
+  .crit.best .score-pill { color: var(--good); }
+  .crit.worst .score-pill { color: var(--poor); }
+  .crit .meta { color: var(--ink-soft); flex: 1; }
+  .crit .date { color: var(--muted); font-size: 0.7rem; display: block; margin-top: 2px; }
 
-  /* === Event timeline === */
-  .event-list {
-    margin-top: 20px;
-    counter-reset: ev;
+  .closing {
+    margin: 90px auto;
+    text-align: center;
+    max-width: 620px; padding: 0 24px;
   }
-  .event-row {
-    display: grid; grid-template-columns: 50px 32px 1fr 80px 70px;
-    align-items: center; gap: 12px;
-    padding: 14px 4px; border-bottom: 1px solid var(--rule);
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem;
-    transition: background 0.2s;
+  .closing h2 {
+    font-family: 'Cinzel', serif; font-weight: 900;
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    color: var(--moon); margin-bottom: 18px; letter-spacing: 0.04em;
   }
-  .event-row:hover { background: rgba(140,168,255,0.04); }
-  .event-row .ev-date { color: var(--muted); font-size: 0.72rem; }
-  .event-row .ev-emoji { font-size: 1.4rem; text-align: center; }
-  .event-row .ev-label { color: var(--ink); font-weight: 500; }
-  .event-row .ev-cat {
-    font-size: 0.65rem; padding: 3px 9px; border-radius: 99px;
-    text-transform: uppercase; letter-spacing: 0.08em;
-    font-weight: 600; text-align: center; white-space: nowrap;
+  .closing p {
+    font-style: italic; color: var(--ink-soft);
+    font-size: clamp(1.02rem, 2.2vw, 1.12rem);
+    line-height: 1.6;
   }
-  .ev-cat.race { background: rgba(244,233,184,0.12); color: var(--moon); }
-  .ev-cat.injury { background: rgba(224,128,112,0.15); color: var(--poor); }
-  .ev-cat.milestone { background: rgba(127,219,182,0.12); color: var(--good); }
-  .ev-cat.travel { background: rgba(184,156,240,0.12); color: var(--bedtime); }
-  .event-row .ev-score {
-    text-align: right; font-family: 'Cinzel', serif; font-weight: 700;
-    font-size: 1.05rem;
-  }
-  .event-row.in { animation: slideIn 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
-  @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
 
-  /* === Insight blocks === */
-  .insight {
-    margin: 60px 0; padding: 26px 28px;
-    background: linear-gradient(180deg, rgba(140,168,255,0.05) 0%, rgba(184,156,240,0.03) 100%);
-    border-left: 3px solid var(--starlight); border-radius: 6px;
-  }
-  .insight h3 {
-    font-family: 'Cinzel', serif; font-size: 1.25rem; font-weight: 700;
-    color: var(--moon); margin-bottom: 12px;
-  }
-  .insight p { font-size: 1.02rem; line-height: 1.7; color: var(--ink-soft); margin-bottom: 12px; }
-  .insight strong { color: var(--ink); }
-  .insight em { color: var(--starlight); }
-
-  /* === Tooltip === */
-  #tooltip {
-    position: fixed; pointer-events: none; z-index: 1000;
-    background: rgba(20, 26, 53, 0.97); border: 1px solid var(--starlight);
-    color: var(--ink); padding: 10px 14px; border-radius: 8px;
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.74rem;
-    line-height: 1.55; opacity: 0; transition: opacity 0.15s; box-shadow: 0 6px 24px rgba(0,0,0,0.5);
-    max-width: 280px; backdrop-filter: blur(8px);
-  }
-  #tooltip.on { opacity: 1; }
-  #tooltip .tt-title { font-weight: 600; color: var(--moon); margin-bottom: 6px; letter-spacing: 0.04em; }
-  #tooltip .tt-event { color: var(--starlight); font-style: italic; margin-top: 4px; }
-
-  /* === Footer === */
   .colophon {
     font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
-    text-align: center; color: var(--muted); margin-top: 90px;
+    text-align: center; color: var(--muted);
+    margin: 80px auto 60px; padding: 0 24px;
     letter-spacing: 0.1em; line-height: 2;
   }
   .colophon a { color: var(--starlight); text-decoration: none; border-bottom: 1px dotted var(--muted); transition: all 0.2s; }
   .colophon a:hover { color: var(--moon); border-bottom-color: var(--moon); }
 
-  .end-marker {
-    text-align: center; margin: 70px 0 30px;
-    font-family: 'Cinzel', serif; color: var(--moon);
-    font-size: 1.2rem; letter-spacing: 0.35em;
+  /* ====== Tooltip (still available for hover detail) ====== */
+  #tooltip {
+    position: fixed; pointer-events: none; z-index: 1000;
+    background: rgba(12, 16, 39, 0.96); border: 1px solid var(--starlight);
+    color: var(--ink); padding: 10px 14px; border-radius: 8px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.74rem;
+    line-height: 1.55; opacity: 0; transition: opacity 0.18s;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    max-width: 260px; backdrop-filter: blur(8px);
+  }
+  #tooltip.on { opacity: 1; }
+  #tooltip .tt-title { font-weight: 600; color: var(--moon); margin-bottom: 5px; letter-spacing: 0.04em; }
+
+  /* ====== SVG primitives ====== */
+  .axis-label {
+    font-family: 'IBM Plex Mono', monospace;
+    fill: var(--ink-faint);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+  .grid-line { stroke: rgba(184,196,228,0.12); stroke-width: 0.6; stroke-dasharray: 1 3; }
+  .ref-line { stroke: var(--moon); stroke-width: 0.8; stroke-dasharray: 4 4; opacity: 0.35; }
+  .annot {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; fill: var(--ink-soft);
+  }
+  .pulse {
+    transform-origin: center;
+    transform-box: fill-box;
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.6; }
   }
 
-  /* TOC at top */
-  .toc {
-    display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
-    margin: 30px 0 40px; padding: 14px 16px;
-    background: var(--paper); border: 1px solid var(--rule); border-radius: 12px;
-  }
-  .toc a {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
-    color: var(--ink-soft); text-decoration: none;
-    padding: 6px 12px; border-radius: 99px; border: 1px solid var(--rule);
-    transition: all 0.2s; letter-spacing: 0.06em;
-  }
-  .toc a:hover {
-    color: var(--moon); border-color: var(--moon);
-    background: rgba(244,233,184,0.06);
-  }
+  /* Scene helpers — show/hide via active scene class on stage */
+  .scene { opacity: 0; transition: opacity 0.8s ease; }
+  .scene.show { opacity: 1; }
 
-  /* Polar clock specific */
-  .polar-svg circle.tick { fill: var(--rule-strong); }
-  .polar-svg .hour-label { fill: var(--muted); font-family: 'IBM Plex Mono', monospace; font-size: 9px; text-anchor: middle; }
+  .data-pt { transition: r 0.5s cubic-bezier(0.16,1,0.3,1), opacity 0.5s; }
+  .data-pt-event {
+    cursor: pointer; transition: transform 0.2s, opacity 0.6s;
+    transform-origin: center;
+    transform-box: fill-box;
+  }
+  .data-pt-event:hover { transform: scale(1.5); }
 
-  /* === Mobile === */
+  /* ====== Mobile ====== */
   @media (max-width: 720px) {
-    body { font-size: 16px; padding: 30px 14px 60px; }
-    h1.cover { font-size: 2rem; }
-    h1.cover .accent { letter-spacing: 0.22em; }
-    .chart-block { padding: 22px 16px 26px; margin: 50px -2px; }
-    .chart-block h2 { font-size: 1.32rem; }
-    .kpis { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .kpi .num { font-size: 1.6rem; }
-    .legend { font-size: 0.66rem; gap: 10px; }
-    .critical-grid { grid-template-columns: 1fr; gap: 14px; }
-    .event-row {
-      grid-template-columns: 28px 1fr 60px;
-      gap: 10px; font-size: 0.78rem;
+    body { font-size: 17px; }
+    .hero { padding: 40px 20px 30px; }
+    .hero p.lede { margin-top: 22px; }
+    .scrolly { padding: 0 16px; }
+    .narrative { max-width: 100%; }
+    .step { min-height: 90vh; padding: 18vh 0; }
+    .step-content { padding: 18px 20px; border-radius: 12px; }
+    .crit-grid { grid-template-columns: 1fr; gap: 14px; }
+    .stage { height: 80vh; height: 80svh; }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
     }
-    .event-row .ev-date, .event-row .ev-cat { display: none; }
   }
 </style>
 </head>
@@ -402,253 +341,208 @@
 <div class="stars">
   <div class="stars-layer l1"></div>
   <div class="stars-layer l2"></div>
-  <div class="stars-layer l3"></div>
 </div>
 
-<h1 class="cover">
+<!-- ====== HERO ====== -->
+<section class="hero">
   <span class="accent">cinque anni di sonno · 260 settimane · 20 eventi</span>
-  Sogni di un Unno
+  <h1>Sogni di un Unno</h1>
   <span class="runes">ᛚᚢᚾᚨ · ᛗᛁᚲᚺᛖᛚᛖ · ᚺᚾᛟᛏᛏ</span>
-</h1>
-<p class="cover-sub">
-  Sette grafi sulla notte di un Unno: dal maggio 2021 al maggio 2026, settimana per settimana, tracciati dal Garmin sotto il polso.<br>
-  Cosa cambia quando ti carichi di kilojoule, ti rompi una clavicola, voli a Hong Kong, finisci un Ironman a stomaco vuoto, o corri Roma con Marti?
-</p>
-
-<nav class="toc">
-  <a href="#g1">⊹ I · Score</a>
-  <a href="#g2">⊹ II · Durata</a>
-  <a href="#g3">⊹ III · Finestra</a>
-  <a href="#g4">⊹ IV · Heatmap</a>
-  <a href="#g5">⊹ V · Orologio 24h</a>
-  <a href="#g6">⊹ VI · Carico × Sonno</a>
-  <a href="#g7">⊹ VII · 20 eventi</a>
-  <a href="#critical">★ Le notti firmate</a>
-</nav>
-
-<div class="kpis">
-  <div class="kpi"><div class="num" id="k-weeks">260</div><div class="label">Settimane</div></div>
-  <div class="kpi"><div class="num" id="k-score">74,4</div><div class="label">Score medio</div></div>
-  <div class="kpi"><div class="num" id="k-dur">6h 34m</div><div class="label">Sonno medio</div></div>
-  <div class="kpi"><div class="num" id="k-good">54</div><div class="label">Settimane Good</div></div>
-</div>
-
-<!-- ============== CHART 1: Sleep Score Timeline (with 20 event markers) ============== -->
-<div class="chart-block" id="g1">
-  <span class="chart-tag">⊹ Grafo I · score</span>
-  <h2>Lo score della notte, settimana per settimana</h2>
-  <p class="chart-sub">
-    Garmin attribuisce un voto da 0 a 100 a ogni notte. Qui sopra, la media settimanale di cinque anni: <em>Poor</em> sotto i 60, <em>Fair</em> tra 60 e 80, <em>Good</em> sopra gli 80. La linea dorata è la media mobile a 12 settimane. I cerchietti dorati con emoji sono i <em>20 eventi-cardine</em> del biennio: gare, infortuni, viaggi, monumenti — passa il cursore sopra per leggerli.
+  <p class="lede">
+    Una notte alla volta. Cinque anni di Garmin sotto il polso, dal maggio 2021 al maggio 2026, raccontati come una sola lunga discesa verso l'alba — fra Mortirolo, clavicole rotte, Hong Kong e mezze maratone con Marti.
   </p>
-  <svg id="chart1" class="chart-svg" viewBox="0 0 900 360" preserveAspectRatio="xMidYMid meet"></svg>
-  <div class="legend">
-    <span class="lg"><span class="swatch" style="background:var(--good)"></span>Good ≥ 80</span>
-    <span class="lg"><span class="swatch" style="background:var(--fair)"></span>Fair 60–79</span>
-    <span class="lg"><span class="swatch" style="background:var(--poor)"></span>Poor &lt; 60</span>
-    <span class="lg"><span class="swatch" style="background:var(--moving);height:2px"></span>media mobile 12s</span>
-    <span class="lg"><span class="dot" style="background:var(--moon);border:1.5px solid var(--ink)"></span>20 eventi</span>
+  <span class="scroll-hint">scorri ↓</span>
+</section>
+
+<!-- ====== SCROLLY STAGE ====== -->
+<div class="scrolly">
+  <!-- Sticky stage (single canvas, evolves through scenes) -->
+  <div class="stage" id="stage">
+    <svg id="canvas" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid meet"></svg>
   </div>
-  <div class="chart-foot" id="foot1"></div>
-</div>
 
-<!-- ============== CHART 2: Sleep Duration Timeline ============== -->
-<div class="chart-block" id="g2">
-  <span class="chart-tag">⊹ Grafo II · durata</span>
-  <h2>Quante ore, davvero</h2>
-  <p class="chart-sub">
-    Il tempo passato a dormire — non quello a letto. Le linee tratteggiate marcano <em>7h</em> (la soglia "consigliata") e <em>8h</em> (quella "ideale"). Negli anni il mio numero scende: la pre-pandemia 2021 dormiva quasi otto ore, l'<em>Unno-2026</em> ne dorme sei e mezzo.
-  </p>
-  <svg id="chart2" class="chart-svg" viewBox="0 0 900 280" preserveAspectRatio="xMidYMid meet"></svg>
-  <div class="legend">
-    <span class="lg"><span class="swatch" style="background:var(--line)"></span>durata settimanale</span>
-    <span class="lg"><span class="swatch" style="background:var(--moving);height:2px"></span>media mobile 12s</span>
-    <span class="lg"><span class="swatch" style="background:var(--moon);height:2px;opacity:.5"></span>soglie 7h / 8h</span>
+  <!-- Narrative steps that drive scenes -->
+  <div class="narrative">
+
+    <section class="step" data-scene="0">
+      <div class="step-content">
+        <div class="num">260</div>
+        <div class="num-sub">settimane di sonno tracciate</div>
+        <p>La prima notte registrata è del <strong>10 maggio 2021</strong>. L'ultima, ad oggi, è del <strong>27 aprile 2026</strong>. In mezzo: <em>1.820 giorni di letto, sveglie, jet lag, briefing pre-Ironman, viaggi in 3AC sui treni indiani</em>. Garmin ha tenuto il conto, mentre i polpacci facevano il resto.</p>
+      </div>
+    </section>
+
+    <section class="step" data-scene="1">
+      <div class="step-content">
+        <h2>Una nuvola di settimane</h2>
+        <p>Ogni puntino è una notte: la media settimanale dello score Garmin (0–100). Sopra <strong>80</strong> dorme bene, sotto <strong>60</strong> dorme male, in mezzo c'è la grande pianura del <em>Fair</em>.</p>
+        <p>La media dei cinque anni è <strong>74,4</strong>. Niente di entusiasmante. Niente di disastroso.</p>
+      </div>
+    </section>
+
+    <section class="step" data-scene="2">
+      <div class="step-content">
+        <h2>Il battito di fondo</h2>
+        <p>La linea dorata è la media mobile a 12 settimane — il <em>battito di fondo</em> della capacità di dormire. Si nota una flessione lenta: dal 2021 al 2026, il pavimento si abbassa di <strong>circa cinque punti</strong>. Più allenamenti, più viaggi, meno ore.</p>
+      </div>
+    </section>
+
+    <section class="step" data-scene="3">
+      <div class="step-content">
+        <h2>I due picchi</h2>
+        <p><span class="chip good">↑ 89</span> Settimana del <strong>14 febbraio 2022</strong>: lo score più alto di sempre. Coricamenti prima delle dieci, sveglie dopo le sette. Era il pre-Unno: niente wattmetro, niente Padova ancora.</p>
+        <p><span class="chip poor">↓ 51</span> Settimana del <strong>15 settembre 2025</strong>: tre giorni prima dell'Ironman, con la valigia aperta e la nutrizione da rinegoziare. Quattro ore e mezza di sonno medio.</p>
+      </div>
+    </section>
+
+    <section class="step" data-scene="4">
+      <div class="step-content">
+        <h2>Venti eventi-cardine</h2>
+        <p>I cerchietti dorati che ora compaiono sopra la nuvola sono i <strong>venti monumenti</strong> del triennio: gare, infortuni, viaggi. Dal Mortirolo del giugno 2024 alla Liegi-Bastogne-Liège con Luca, dalla Malaga sotto le 2h40 al Varanasi 451.</p>
+        <p>Il sonno della settimana-evento è in media <em>solo un punto</em> sotto la media generale — il corpo regge, è la testa che si carica.</p>
+      </div>
+    </section>
+
+    <section class="step" data-scene="5">
+      <div class="step-content">
+        <h2>Quante ore, davvero</h2>
+        <p>Cambiamo asse: dalla qualità (score) alla quantità (ore). Le linee tratteggiate sono <strong>7h</strong> (consigliata) e <strong>8h</strong> (ideale).</p>
+        <p>Il 2021 era sopra le sette. Il 2026 è sotto le sei e mezza. <em>Più Unno, meno ore</em>.</p>
+      </div>
+    </section>
+
+    <section class="step" data-scene="6">
+      <div class="step-content">
+        <h2>La finestra del sonno si stringe</h2>
+        <p>La <strong>banda lavanda</strong> è l'ora in cui si va a letto, l'<strong>ambra</strong> è la sveglia. Lo spazio fra le due è il sonno.</p>
+        <p>Nel 2021 mi coricavo verso le 23:15 e mi alzavo alle 7:00. Nel 2026 vado a letto alle 22:00 e mi alzo alle 04:50. <em>La finestra si è anticipata di oltre un'ora e mezza in cinque anni</em>.</p>
+      </div>
+    </section>
+
+    <section class="step" data-scene="7">
+      <div class="step-content">
+        <h2>L'orologio circadiano</h2>
+        <p>Stesa intorno a un quadrante di ventiquattro ore, ecco la <strong>rosa dei venti del riposo</strong>. I petali lavanda sono i coricamenti, gli ambra le sveglie. La densità del colore racconta dove cadono la maggioranza delle 260 settimane.</p>
+        <p>Le ore preferite di un Unno: a letto fra le <strong>22:00 e le 23:00</strong>, sveglio fra le <strong>5:00 e le 6:00</strong>.</p>
+      </div>
+    </section>
+
+    <section class="step" data-scene="8">
+      <div class="step-content">
+        <h2>Più alleni, peggio dormi?</h2>
+        <p>Ogni cerchio è una settimana, x = <strong>Training Load</strong> totale, y = <strong>score di sonno</strong>. La dimensione è il numero di sortite.</p>
+        <p>La regressione è leggermente <em>negativa</em>: r = ‑0,18. Sopra i <strong>1.500 di TL</strong>, lo score scende mediamente di quattro punti rispetto alle settimane sotto i 1.000. Il corpo paga la stanchezza, ma più nelle ore in cui dorme che in quelle in cui corre.</p>
+      </div>
+    </section>
+
+    <section class="step" data-scene="9">
+      <div class="step-content">
+        <h2>Cinque anni in dodici colonne</h2>
+        <p>Una mappa di calore: ogni cella è la media mensile dello score, ogni riga un anno. Il <em>verde menta</em> è "Good", il <em>ruggine</em> è "Poor".</p>
+        <p>Si leggono settembre 2025 (Ironman gomma a terra), maggio 2025 (clavicola), e l'estate 2022 — quando esisteva qualcosa che assomigliava a un sonno regolare.</p>
+      </div>
+    </section>
+
   </div>
-  <div class="chart-foot" id="foot2"></div>
 </div>
 
-<!-- ============== CHART 3: Sleep window ============== -->
-<div class="chart-block" id="g3">
-  <span class="chart-tag">⊹ Grafo III · finestra</span>
-  <h2>La finestra del sonno — quando si va a letto, quando ci si alza</h2>
-  <p class="chart-sub">
-    Due linee sulla stessa giornata: la lavanda è l'ora del coricamento, l'ambra è l'ora della sveglia. La banda fra le due è la <em>finestra del sonno</em>. Negli anni si stringe: si va a letto sempre più presto e ci si alza sempre più presto.
-  </p>
-  <svg id="chart3" class="chart-svg" viewBox="0 0 900 320" preserveAspectRatio="xMidYMid meet"></svg>
-  <div class="legend">
-    <span class="lg"><span class="swatch" style="background:var(--bedtime)"></span>coricamento</span>
-    <span class="lg"><span class="swatch" style="background:var(--waketime)"></span>sveglia</span>
-    <span class="lg"><span class="swatch" style="background:var(--moon);height:2px;opacity:.5"></span>mezzanotte</span>
-  </div>
-  <div class="chart-foot" id="foot3"></div>
-</div>
-
-<!-- ============== CHART 4: Heatmap ============== -->
-<div class="chart-block" id="g4">
-  <span class="chart-tag">⊹ Grafo IV · stagionalità</span>
-  <h2>Cinque anni × dodici mesi: la stagione del riposo</h2>
-  <p class="chart-sub">
-    Una mappa di calore: ogni cella è la media mensile dello score. Il rosso ruggine è "Poor", il verde menta è "Good". Si leggono le notti di settembre 2025 (Ironman gomma a terra), il maggio 2025 dopo la clavicola, e l'estate 2022 — con qualcosa che assomigliava a un sonno regolare.
-  </p>
-  <svg id="chart4" class="chart-svg" viewBox="0 0 900 240" preserveAspectRatio="xMidYMid meet"></svg>
-  <div class="legend">
-    <span class="lg"><span class="dot" style="background:var(--poor)"></span>≤ 65</span>
-    <span class="lg"><span class="dot" style="background:var(--fair)"></span>66–79</span>
-    <span class="lg"><span class="dot" style="background:var(--good)"></span>≥ 80</span>
-  </div>
-  <div class="chart-foot" id="foot4"></div>
-</div>
-
-<!-- ============== CHART 5: Polar 24h clock ============== -->
-<div class="chart-block" id="g5">
-  <span class="chart-tag">⊹ Grafo V · orologio</span>
-  <h2>L'orologio circadiano dell'Unno</h2>
-  <p class="chart-sub">
-    Una rosa dei venti del riposo. Ogni petalo è la frequenza con cui mi corico (lavanda) o mi alzo (ambra) a una determinata ora del giorno. La densità del colore racconta dove cade la maggioranza delle 260 settimane — le ore preferite dei miei polpacci pelosi.
-  </p>
-  <svg id="chart5" class="chart-svg polar-svg" viewBox="0 0 900 480" preserveAspectRatio="xMidYMid meet"></svg>
-  <div class="legend">
-    <span class="lg"><span class="dot" style="background:var(--bedtime)"></span>coricamento (PM/AM)</span>
-    <span class="lg"><span class="dot" style="background:var(--waketime)"></span>sveglia (AM)</span>
-  </div>
-  <div class="chart-foot" id="foot5"></div>
-</div>
-
-<!-- ============== CHART 6: Training Load × Sleep Score scatter ============== -->
-<div class="chart-block" id="g6">
-  <span class="chart-tag">⊹ Grafo VI · carico × sonno</span>
-  <h2>Più alleni, peggio dormi? Il carico settimanale incrocia lo score</h2>
-  <p class="chart-sub">
-    Ogni cerchio è una settimana del biennio: l'ascissa è il <em>Training Load</em> totale (la fatica accumulata in sette giorni secondo intervals.icu), l'ordinata è lo score di sonno medio della stessa settimana. La dimensione del cerchio è il numero di sortite. Si vede una correlazione lieve ma reale: <strong>oltre i 1.500 di TL, lo score raramente sale sopra 80</strong>.
-  </p>
-  <svg id="chart6" class="chart-svg" viewBox="0 0 900 320" preserveAspectRatio="xMidYMid meet"></svg>
-  <div class="legend">
-    <span class="lg"><span class="dot" style="background:var(--good)"></span>score ≥ 80</span>
-    <span class="lg"><span class="dot" style="background:var(--fair)"></span>60–79</span>
-    <span class="lg"><span class="dot" style="background:var(--poor)"></span>&lt; 60</span>
-    <span class="lg"><span class="swatch" style="background:var(--starlight);height:2px"></span>regressione</span>
-  </div>
-  <div class="chart-foot" id="foot6"></div>
-</div>
-
-<!-- ============== CHART 7: Event timeline ============== -->
-<div class="chart-block" id="g7">
-  <span class="chart-tag">⊹ Grafo VII · cronologia</span>
-  <h2>Venti eventi-cardine, settimana per settimana</h2>
-  <p class="chart-sub">
-    La cronologia delle gare, degli infortuni, dei monumenti e dei viaggi che hanno scandito il triennio 2023–2026 — accanto a ciascuno, lo score Garmin della settimana. Il <em>colore della pillola</em> classifica l'evento: <span style="color:var(--moon)">gara</span>, <span style="color:var(--poor)">infortunio</span>, <span style="color:var(--good)">milestone</span>, <span style="color:var(--bedtime)">viaggio</span>.
-  </p>
-  <div class="event-list" id="eventList"></div>
-  <div class="chart-foot" id="foot7"></div>
-</div>
-
-<!-- ============== Critical days ============== -->
-<div id="critical">
-  <h2 style="font-family:'Cinzel',serif;text-align:center;font-size:1.7rem;color:var(--moon);margin:60px 0 24px;letter-spacing:0.04em">★ Le notti firmate</h2>
-  <div class="critical-grid">
-    <div class="critical-card best">
-      <h3>↑ Le cinque notti più alte</h3>
+<!-- ====== EPILOGUE — critical days + closing ====== -->
+<section class="epilogue">
+  <div class="crit-grid">
+    <div class="crit best">
+      <h3>↑ Le notti più alte</h3>
       <div id="bestList"></div>
     </div>
-    <div class="critical-card worst">
-      <h3>↓ Le cinque notti più basse</h3>
+    <div class="crit worst">
+      <h3>↓ Le notti più basse</h3>
       <div id="worstList"></div>
     </div>
   </div>
-</div>
+</section>
 
-<div class="insight">
-  <h3>★ La firma del triennio</h3>
+<section class="closing">
+  <h2>La firma del triennio</h2>
   <p>
-    Lo score più <strong>alto</strong> dei cinque anni è <strong>89</strong>, registrato a febbraio 2022 — una settimana lunga, regolare, con coricamenti prima delle dieci e sveglie dopo le sette. Era la pre-Unno: nessun wattmetro, niente Padova ancora, niente Liegi. Solo Bergamo Alta e una candela.
+    Più kilojoule, meno ore. Più Unno, più presto.<br>
+    La diga del Mortirolo, in fondo, si paga anche in sonno.
   </p>
-  <p>
-    Lo score più <strong>basso</strong> è <strong>51</strong>, settimana del 15 settembre 2025: i giorni precedenti l'Ironman, tre notti spese a riguardarsi i pomodori dell'idratazione, al posto di dormirci sopra.
-  </p>
-  <p>
-    La <strong>finestra di sonno</strong> si è stretta di un'ora e mezza in cinque anni. Nel 2021 mi coricavo verso le 23:15 e mi alzavo alle 7:00 (sette ore e quarantacinque minuti); nel 2026 vado a letto alle 22:00 e mi alzo alle 04:50. <em>Più Unno, meno ore, più presto.</em> I Vichinghi pelosi non aspettano.
-  </p>
-  <p>
-    La <strong>correlazione carico × sonno</strong> è debole ma non zero: nelle 158 settimane misurate dal wattmetro, sopra i <em>1.500 di Training Load</em> lo score scende mediamente di 4 punti rispetto alle settimane sotto i 1.000. Il corpo paga la stanchezza, ma più nelle ore in cui dorme che in quelle in cui corre.
-  </p>
-</div>
-
-<div class="end-marker">⊹ FINIS ⊹</div>
+</section>
 
 <div class="colophon">
   Raccolto a Bergamo Alta · Michele Merelli<br>
-  Cinque anni di Garmin (260 settimane), maggio 2021 → maggio 2026<br>
-  Tre anni di intervals.icu (158 settimane), aprile 2023 → aprile 2026<br>
+  260 settimane Garmin (mag 2021 → mag 2026) · 158 settimane intervals.icu (apr 2023 → apr 2026)<br>
   <a href="../diario-di-un-unno/">↗ Diario di un Unno</a> ·
   <a href="../signore-dei-kj-weekly.html">↗ Settimanale</a> ·
-  <a href="../signore-dei-kj.html">↗ Annuali</a> ·
   <a href="../">↗ Indice</a>
 </div>
 
 <div id="tooltip"></div>
 
 <script>
-// Animation flag: only enable opacity-based reveals if IntersectionObserver actually fires
-(function bootstrapAnim(){
-  if (!('IntersectionObserver' in window)) return; // graceful fallback: everything visible
-  document.documentElement.classList.add('has-io');
-})();
-
-// SAFETY NETS at top level (independent of fetch): force charts visible after delay
-setTimeout(() => {
-  document.querySelectorAll('.chart-block').forEach(b => {
-    const r = b.getBoundingClientRect();
-    if (r.top < window.innerHeight && r.bottom > 0) b.classList.add('in');
-  });
-}, 1500);
-setTimeout(() => {
-  document.querySelectorAll('.chart-block:not(.in)').forEach(b => b.classList.add('in'));
-}, 3500);
-// Re-check on scroll (edge case where IO misses elements)
-let scrollTick = false;
-window.addEventListener('scroll', () => {
-  if (scrollTick) return;
-  scrollTick = true;
-  requestAnimationFrame(() => {
-    document.querySelectorAll('.chart-block:not(.in)').forEach(b => {
-      const r = b.getBoundingClientRect();
-      if (r.top < window.innerHeight * 0.95 && r.bottom > 0) b.classList.add('in');
-    });
-    scrollTick = false;
-  });
-}, {passive: true});
-
+// ===========================================================
+// SCROLLYTELLING ENGINE
+// ===========================================================
 (async function() {
-  const [data, load] = await Promise.all([
-    fetch('data.json').then(r => r.json()),
-    fetch('load.json').then(r => r.json())
-  ]);
 
-  // 20 KEY EVENTS
+  // ---- Load data ----
+  let data = [], load = [];
+  try {
+    [data, load] = await Promise.all([
+      fetch('data.json').then(r => r.json()),
+      fetch('load.json').then(r => r.json())
+    ]);
+  } catch (e) { console.error('fetch failed', e); return; }
+
+  // ---- 20 events ----
   const EVENTS = [
-    { date: '2023-06-04', label: 'I trecentonove di giugno', sub: '309 km × 2.300 m, mito di fondazione', emoji: '🚴', cat: 'milestone' },
-    { date: '2023-08-03', label: 'Prima OpenWaterSwim', sub: '1.300 m al lago, il chiodo del triathlon', emoji: '🌊', cat: 'milestone' },
+    { date: '2023-06-04', label: 'I trecentonove di giugno', sub: '309 km × 2.300 m', emoji: '🚴', cat: 'milestone' },
+    { date: '2023-08-03', label: 'Prima OpenWaterSwim', sub: '1.300 m al lago', emoji: '🌊', cat: 'milestone' },
     { date: '2024-05-15', label: 'Primo wattmetro', sub: 'i kJ smettono di essere zero', emoji: '🔋', cat: 'milestone' },
-    { date: '2024-06-08', label: 'Mortirolo TL 1.871', sub: '472 km, 10.815 m, peak load di tutti i tempi', emoji: '💥', cat: 'race' },
-    { date: '2024-08-09', label: 'Doppia da centottanta', sub: '177+180 km in 24 h, due chiodi nello stesso asse', emoji: '⛰️', cat: 'race' },
-    { date: '2024-12-15', label: 'Malaga Marathon 2:39:57', sub: '113° assoluto, sotto le 2h40', emoji: '🥘', cat: 'race' },
-    { date: '2025-02-02', label: 'Hong Kong 21', sub: 'mezza maratona ai grattacieli', emoji: '🇭🇰', cat: 'travel' },
-    { date: '2025-03-02', label: 'Bologna Marathon (Ironman test)', sub: '42,7 km in 2h41\\'06"', emoji: '🍝', cat: 'race' },
-    { date: '2025-04-06', label: 'Milano Wizzair Marathon', sub: 'no bananas at feed zones = bad marathon', emoji: '✈️', cat: 'race' },
-    { date: '2025-04-26', label: 'Liegi-Bastogne-Liège con Luca', sub: '253 km, 4.231 m, deal closed dopo 7 anni', emoji: '🇧🇪', cat: 'race' },
+    { date: '2024-06-08', label: 'Mortirolo TL 1.871', sub: '472 km, 10.815 m', emoji: '💥', cat: 'race' },
+    { date: '2024-08-09', label: 'Doppia da centottanta', sub: '177+180 km in 24 h', emoji: '⛰️', cat: 'race' },
+    { date: '2024-12-15', label: 'Malaga Marathon 2:39:57', sub: '113° assoluto', emoji: '🥘', cat: 'race' },
+    { date: '2025-02-02', label: 'Hong Kong 21', sub: 'mezza ai grattacieli', emoji: '🇭🇰', cat: 'travel' },
+    { date: '2025-03-02', label: 'Bologna Marathon', sub: '2h41\\'06" — Ironman test', emoji: '🍝', cat: 'race' },
+    { date: '2025-04-06', label: 'Milano Wizzair Marathon', sub: 'no bananas at feed zones', emoji: '✈️', cat: 'race' },
+    { date: '2025-04-26', label: 'Liegi-Bastogne-Liège', sub: '253 km con Luca, deal closed', emoji: '🇧🇪', cat: 'race' },
     { date: '2025-04-29', label: 'Clavicola rotta', sub: 'una linea sotto la pelle', emoji: '🩻', cat: 'injury' },
-    { date: '2025-06-06', label: '34 bpm prima del bisturi', sub: 'la sanità italiana annulla l\\'intervento', emoji: '🫀', cat: 'injury' },
-    { date: '2025-07-05', label: 'Cordoba Half — wedding andaluso', sub: '21 km a 28°C, Andre + Marina wedding', emoji: '☀️', cat: 'travel' },
-    { date: '2025-08-12', label: 'Cima Rest Day — vaso di Sonny', sub: '188 km gravel, foto autografata Colbrelli', emoji: '🏺', cat: 'race' },
-    { date: '2025-09-20', label: 'IRONMAN Italy', sub: 'gomma a 55 km/h, 50 km of flat tire ride', emoji: '🌊', cat: 'race' },
-    { date: '2025-10-26', label: 'Maratona del Portone', sub: 'si apre un portone / why not una maratona', emoji: '🚪', cat: 'race' },
-    { date: '2025-11-30', label: 'Firenze Marathon — A riveder le stelle', sub: 'Unexpected PR + Dante quote', emoji: '🔥', cat: 'race' },
-    { date: '2026-01-06', label: 'Varanasi 451', sub: 'one of the most touching runs of my life', emoji: '🇮🇳', cat: 'travel' },
-    { date: '2026-03-22', label: 'Maratona di Roma', sub: 'Martinucci e Marti powered, ora carbonara', emoji: '❤️‍🔥', cat: 'race' },
+    { date: '2025-06-06', label: '34 bpm prima del bisturi', sub: 'sanità italiana annulla', emoji: '🫀', cat: 'injury' },
+    { date: '2025-07-05', label: 'Cordoba — wedding andaluso', sub: '21 km a 28°C', emoji: '☀️', cat: 'travel' },
+    { date: '2025-08-12', label: 'Vaso di Sonny — Casto', sub: '188 km gravel', emoji: '🏺', cat: 'race' },
+    { date: '2025-09-20', label: 'IRONMAN Italy', sub: 'gomma a 55 km/h, 50 km flat-tire', emoji: '🌊', cat: 'race' },
+    { date: '2025-10-26', label: 'Maratona del Portone', sub: '42,2 km — si apre un portone', emoji: '🚪', cat: 'race' },
+    { date: '2025-11-30', label: 'Firenze Marathon — PR', sub: 'A riveder le stelle', emoji: '🔥', cat: 'race' },
+    { date: '2026-01-06', label: 'Varanasi 451', sub: 'most touching run of life', emoji: '🇮🇳', cat: 'travel' },
+    { date: '2026-03-22', label: 'Maratona di Roma', sub: 'Martinucci e Marti powered', emoji: '❤️‍🔥', cat: 'race' },
     { date: '2026-04-12', label: 'Montecampione 1800', sub: '132 km, 3.154 m, deadly version', emoji: '🏴‍☠️', cat: 'race' },
   ];
 
-  // Helper utilities ====================================================
+  function findWeekForDate(targetISO) {
+    const t = new Date(targetISO).getTime();
+    let best = -1, bestDiff = Infinity;
+    for (let i = 0; i < data.length; i++) {
+      const diff = Math.abs(t - data[i].ts);
+      if (diff < 7 * 86400000 && diff < bestDiff) { bestDiff = diff; best = i; }
+    }
+    return best;
+  }
+  EVENTS.forEach(ev => { ev.weekIdx = findWeekForDate(ev.date); });
+
+  // ---- Helpers ----
+  const tooltip = document.getElementById('tooltip');
+  function showTip(e, html) {
+    tooltip.innerHTML = html;
+    tooltip.classList.add('on');
+    const x = (e.clientX || e.touches?.[0]?.clientX || 0) + 14;
+    const y = (e.clientY || e.touches?.[0]?.clientY || 0) + 14;
+    tooltip.style.left = Math.min(x, window.innerWidth - 280) + 'px';
+    tooltip.style.top = Math.min(y, window.innerHeight - 100) + 'px';
+  }
+  function hideTip() { tooltip.classList.remove('on'); }
+  function fmtDate(d) {
+    const dt = new Date(d);
+    return dt.toLocaleDateString('it-IT', {day:'numeric',month:'short',year:'numeric'});
+  }
   function movAvg(arr, key, w) {
     const out = arr.map(() => null);
     for (let i = 0; i < arr.length; i++) {
@@ -661,462 +555,279 @@ window.addEventListener('scroll', () => {
     return out;
   }
 
-  const tooltip = document.getElementById('tooltip');
-  function showTip(e, html) {
-    tooltip.innerHTML = html;
-    tooltip.classList.add('on');
-    const x = e.clientX + 14, y = e.clientY + 14;
-    tooltip.style.left = Math.min(x, window.innerWidth - 300) + 'px';
-    tooltip.style.top = Math.min(y, window.innerHeight - 100) + 'px';
+  // ---- Stage geometry (responsive) ----
+  // Use a single SVG with an inner viewBox of 1000×700.
+  // Charts are drawn into named scene <g> groups, shown/hidden via .show class.
+  const svg = document.getElementById('canvas');
+  const W = 1000, H = 700;
+  const PAD = { l: 56, r: 36, t: 60, b: 60 };
+  const innerW = W - PAD.l - PAD.r;
+  const innerH = H - PAD.t - PAD.b;
+
+  // Year ticks for x-axis
+  const yearStarts = {};
+  data.forEach((d, i) => { if (!yearStarts[d.year]) yearStarts[d.year] = i; });
+
+  // ===== Build all scenes ahead of time =====
+  let svgInner = '';
+
+  // Permanent axis layer (always visible from scene 1+)
+  svgInner += `<g id="axis" class="scene">`;
+  // Y axis (will be repurposed per scene; default = score 40-95)
+  // We'll redraw axis labels per scene via DOM manipulation when scene changes.
+  svgInner += `<g id="yAxis"></g>`;
+  svgInner += `<g id="xAxis"></g>`;
+  svgInner += `</g>`;
+
+  // === SCENE 1-4: Score timeline group ===
+  svgInner += `<g id="scene-score" class="scene">`;
+  // Quality bands (initially faint)
+  svgInner += `<rect id="band-good" x="${PAD.l}" y="${PAD.t}" width="${innerW}" height="0" fill="var(--good)" opacity="0.05"/>`;
+  svgInner += `<rect id="band-fair" x="${PAD.l}" y="${PAD.t}" width="${innerW}" height="0" fill="var(--fair)" opacity="0.04"/>`;
+  svgInner += `<rect id="band-poor" x="${PAD.l}" y="${PAD.t}" width="${innerW}" height="0" fill="var(--poor)" opacity="0.06"/>`;
+  // Score points (will be revealed in waves)
+  svgInner += `<g id="score-pts"></g>`;
+  // Moving avg line (drawn in scene 2+)
+  svgInner += `<path id="score-ma" d="" stroke="var(--moving)" stroke-width="2.4" fill="none" opacity="0" stroke-linecap="round"/>`;
+  // Peak/trough highlights
+  svgInner += `<g id="score-highlights" opacity="0"></g>`;
+  // Event markers (scene 4)
+  svgInner += `<g id="score-events" opacity="0"></g>`;
+  svgInner += `</g>`;
+
+  // === SCENE 5: Duration ===
+  svgInner += `<g id="scene-duration" class="scene">`;
+  svgInner += `<g id="duration-pts"></g>`;
+  svgInner += `<path id="duration-ma" stroke="var(--moving)" stroke-width="2.4" fill="none" opacity="0" stroke-linecap="round"/>`;
+  svgInner += `<line id="dur-ref-7" stroke="var(--moon)" stroke-width="0.8" stroke-dasharray="4 4" opacity="0"/>`;
+  svgInner += `<line id="dur-ref-8" stroke="var(--moon)" stroke-width="0.8" stroke-dasharray="4 4" opacity="0"/>`;
+  svgInner += `<text id="dur-ref-7-label" font-size="11" fill="var(--moon)" opacity="0">7 h consigliata</text>`;
+  svgInner += `<text id="dur-ref-8-label" font-size="11" fill="var(--moon)" opacity="0">8 h ideale</text>`;
+  svgInner += `</g>`;
+
+  // === SCENE 6: Sleep window (bedtime + waketime band) ===
+  svgInner += `<g id="scene-window" class="scene">`;
+  svgInner += `<path id="window-band" fill="var(--starlight)" opacity="0"/>`;
+  svgInner += `<path id="bed-line" stroke="var(--bedtime)" stroke-width="2" fill="none" opacity="0" stroke-linecap="round"/>`;
+  svgInner += `<path id="wake-line" stroke="var(--waketime)" stroke-width="2" fill="none" opacity="0" stroke-linecap="round"/>`;
+  svgInner += `<line id="midnight-line" stroke="var(--moon)" stroke-width="0.6" stroke-dasharray="3 3" opacity="0"/>`;
+  svgInner += `<text id="midnight-label" font-size="11" fill="var(--moon)" opacity="0">mezzanotte</text>`;
+  svgInner += `</g>`;
+
+  // === SCENE 7: Polar 24h clock ===
+  svgInner += `<g id="scene-polar" class="scene"></g>`;
+
+  // === SCENE 8: Scatter TL × Score ===
+  svgInner += `<g id="scene-scatter" class="scene"></g>`;
+
+  // === SCENE 9: Heatmap ===
+  svgInner += `<g id="scene-heatmap" class="scene"></g>`;
+
+  svg.innerHTML = svgInner;
+
+  // ===== Compute coordinates for SCORE chart =====
+  const score_ymin = 40, score_ymax = 95;
+  const xs_score = i => PAD.l + (i / (data.length - 1)) * innerW;
+  const ys_score = v => PAD.t + ((score_ymax - v) / (score_ymax - score_ymin)) * innerH;
+
+  // Quality band sizes
+  document.getElementById('band-good').setAttribute('y', ys_score(95));
+  document.getElementById('band-good').setAttribute('height', ys_score(80) - ys_score(95));
+  document.getElementById('band-fair').setAttribute('y', ys_score(80));
+  document.getElementById('band-fair').setAttribute('height', ys_score(60) - ys_score(80));
+  document.getElementById('band-poor').setAttribute('y', ys_score(60));
+  document.getElementById('band-poor').setAttribute('height', ys_score(40) - ys_score(60));
+
+  // Score points
+  const scorePtsLayer = document.getElementById('score-pts');
+  data.forEach((d, i) => {
+    if (d.score === null) return;
+    const c = d.score >= 80 ? 'var(--good)' : d.score >= 60 ? 'var(--fair)' : 'var(--poor)';
+    const cir = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    cir.setAttribute('cx', xs_score(i).toFixed(1));
+    cir.setAttribute('cy', ys_score(d.score).toFixed(1));
+    cir.setAttribute('r', '0');
+    cir.setAttribute('fill', c);
+    cir.setAttribute('class', 'data-pt');
+    cir.setAttribute('data-i', i);
+    scorePtsLayer.appendChild(cir);
+  });
+
+  // Moving avg path
+  const ma_score = movAvg(data, 'score', 12);
+  let maParts = [];
+  ma_score.forEach((v, i) => {
+    if (v === null) return;
+    const op = maParts.length === 0 ? 'M' : 'L';
+    maParts.push(op + xs_score(i).toFixed(1) + ' ' + ys_score(v).toFixed(1));
+  });
+  document.getElementById('score-ma').setAttribute('d', maParts.join(' '));
+
+  // Highlights (peak 89 Feb 2022, trough 51 Sep 2025)
+  const peakIdx = data.findIndex(d => d.score === 89);
+  const troughIdx = data.findIndex(d => d.score === 51);
+  const hi = document.getElementById('score-highlights');
+  function ringMark(cx, cy, color, label) {
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.innerHTML = `
+      <circle cx="${cx}" cy="${cy}" r="14" fill="none" stroke="${color}" stroke-width="2" class="pulse"/>
+      <circle cx="${cx}" cy="${cy}" r="4" fill="${color}"/>
+      <text x="${cx}" y="${cy - 22}" text-anchor="middle" class="annot" fill="${color}" font-weight="600">${label}</text>
+    `;
+    return g;
   }
-  function hideTip() { tooltip.classList.remove('on'); }
+  if (peakIdx >= 0) hi.appendChild(ringMark(xs_score(peakIdx), ys_score(89), 'var(--good)', 'PR · Feb 2022 · 89'));
+  if (troughIdx >= 0) hi.appendChild(ringMark(xs_score(troughIdx), ys_score(51), 'var(--poor)', 'Ironman week · Set 2025 · 51'));
 
-  function fmtDate(d) {
-    const dt = new Date(d);
-    return dt.toLocaleDateString('it-IT', {day:'numeric',month:'short',year:'numeric'});
+  // Event markers above the plot
+  const evLayer = document.getElementById('score-events');
+  EVENTS.forEach((ev, k) => {
+    if (ev.weekIdx < 0) return;
+    const x = xs_score(ev.weekIdx);
+    const w = data[ev.weekIdx];
+    const y = w.score !== null ? ys_score(w.score) : ys_score(70);
+    const evColor = ev.cat === 'race' ? 'var(--moon)' :
+                    ev.cat === 'injury' ? 'var(--poor)' :
+                    ev.cat === 'milestone' ? 'var(--good)' : 'var(--bedtime)';
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.setAttribute('class', 'data-pt-event');
+    g.setAttribute('data-ev', k);
+    g.innerHTML = `
+      <line x1="${x}" y1="${y - 6}" x2="${x}" y2="${PAD.t - 4}" stroke="${evColor}" stroke-width="0.6" stroke-dasharray="2 2" opacity="0.55"/>
+      <circle cx="${x}" cy="${PAD.t - 14}" r="9" fill="${evColor}" stroke="var(--bg)" stroke-width="1.5"/>
+      <text x="${x}" y="${PAD.t - 10}" text-anchor="middle" font-size="11" pointer-events="none">${ev.emoji}</text>
+    `;
+    g.addEventListener('mouseenter', e => {
+      const w2 = data[ev.weekIdx];
+      showTip(e, `<div class="tt-title">${ev.emoji} ${ev.label}</div><em>${ev.sub}</em><br>settimana del ${fmtDate(w2.startDate)} · score <strong>${w2.score || '—'}</strong>`);
+    });
+    g.addEventListener('mouseleave', hideTip);
+    g.addEventListener('touchstart', e => {
+      const w2 = data[ev.weekIdx];
+      showTip(e, `<div class="tt-title">${ev.emoji} ${ev.label}</div><em>${ev.sub}</em><br>settimana ${fmtDate(w2.startDate)} · score <strong>${w2.score || '—'}</strong>`);
+    });
+    evLayer.appendChild(g);
+  });
+
+  // ===== DURATION (scene 5) =====
+  const dur_ymin = 4, dur_ymax = 9.5;
+  const ys_dur = v => PAD.t + ((dur_ymax - v) / (dur_ymax - dur_ymin)) * innerH;
+  const durLayer = document.getElementById('duration-pts');
+  data.forEach((d, i) => {
+    if (d.dur === null) return;
+    const c = d.dur >= 7 ? 'var(--good)' : d.dur >= 6 ? 'var(--fair)' : 'var(--poor)';
+    const cir = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    cir.setAttribute('cx', xs_score(i).toFixed(1));
+    cir.setAttribute('cy', ys_dur(d.dur).toFixed(1));
+    cir.setAttribute('r', '0');
+    cir.setAttribute('fill', c);
+    cir.setAttribute('class', 'data-pt');
+    cir.setAttribute('data-i', i);
+    cir.setAttribute('data-type', 'dur');
+    durLayer.appendChild(cir);
+  });
+  const ma_dur = movAvg(data, 'dur', 12);
+  let durMaParts = [];
+  ma_dur.forEach((v, i) => {
+    if (v === null) return;
+    const op = durMaParts.length === 0 ? 'M' : 'L';
+    durMaParts.push(op + xs_score(i).toFixed(1) + ' ' + ys_dur(v).toFixed(1));
+  });
+  document.getElementById('duration-ma').setAttribute('d', durMaParts.join(' '));
+  document.getElementById('dur-ref-7').setAttribute('x1', PAD.l);
+  document.getElementById('dur-ref-7').setAttribute('x2', PAD.l + innerW);
+  document.getElementById('dur-ref-7').setAttribute('y1', ys_dur(7));
+  document.getElementById('dur-ref-7').setAttribute('y2', ys_dur(7));
+  document.getElementById('dur-ref-7-label').setAttribute('x', PAD.l + 8);
+  document.getElementById('dur-ref-7-label').setAttribute('y', ys_dur(7) - 6);
+  document.getElementById('dur-ref-8').setAttribute('x1', PAD.l);
+  document.getElementById('dur-ref-8').setAttribute('x2', PAD.l + innerW);
+  document.getElementById('dur-ref-8').setAttribute('y1', ys_dur(8));
+  document.getElementById('dur-ref-8').setAttribute('y2', ys_dur(8));
+  document.getElementById('dur-ref-8-label').setAttribute('x', PAD.l + 8);
+  document.getElementById('dur-ref-8-label').setAttribute('y', ys_dur(8) - 6);
+
+  // ===== WINDOW (scene 6) =====
+  function bedFrom6pm(t) {
+    if (t === null) return null;
+    return (t - 18*60 + 24*60) % (24*60);
   }
+  const win_ymin = 180, win_ymax = 900;
+  const ys_win = v => PAD.t + ((v - win_ymin) / (win_ymax - win_ymin)) * innerH;
+  const bedPts = [], wakePts = [];
+  data.forEach((d, i) => {
+    const bm = bedFrom6pm(d.bed); if (bm !== null) bedPts.push({x: xs_score(i), y: ys_win(bm), i});
+    const wm = bedFrom6pm(d.wake); if (wm !== null) wakePts.push({x: xs_score(i), y: ys_win(wm), i});
+  });
+  const bedPath = bedPts.map((p,i)=>(i===0?'M':'L')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
+  const wakePath = wakePts.map((p,i)=>(i===0?'M':'L')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
+  document.getElementById('bed-line').setAttribute('d', bedPath);
+  document.getElementById('wake-line').setAttribute('d', wakePath);
+  // Band
+  const bandTop = bedPts.map((p,i)=>(i===0?'M':'L')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
+  const bandBot = wakePts.slice().reverse().map(p => 'L'+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
+  document.getElementById('window-band').setAttribute('d', bandTop + ' ' + bandBot + ' Z');
+  document.getElementById('midnight-line').setAttribute('x1', PAD.l);
+  document.getElementById('midnight-line').setAttribute('x2', PAD.l + innerW);
+  document.getElementById('midnight-line').setAttribute('y1', ys_win(360));
+  document.getElementById('midnight-line').setAttribute('y2', ys_win(360));
+  document.getElementById('midnight-label').setAttribute('x', PAD.l + innerW - 10);
+  document.getElementById('midnight-label').setAttribute('y', ys_win(360) - 6);
+  document.getElementById('midnight-label').setAttribute('text-anchor', 'end');
 
-  // Match each event to its sleep week (find week containing event date, ±7d)
-  function findWeekForDate(targetISO) {
-    const t = new Date(targetISO).getTime();
-    let best = null, bestDiff = Infinity;
-    for (let i = 0; i < data.length; i++) {
-      const ws = data[i].ts;
-      const diff = Math.abs(t - ws);
-      if (diff < 7 * 86400000 && diff < bestDiff) {
-        bestDiff = diff; best = i;
-      }
-    }
-    return best;
-  }
-  EVENTS.forEach(ev => { ev.weekIdx = findWeekForDate(ev.date); ev.week = ev.weekIdx !== null ? data[ev.weekIdx] : null; });
-
-  // ===========================================================
-  // CHART 1 — Sleep Score Timeline + 20 events
-  // ===========================================================
-  (function chart1() {
-    const svg = document.getElementById('chart1');
-    const W = 900, H = 360, PAD_L = 38, PAD_R = 14, PAD_T = 28, PAD_B = 38;
-    const innerW = W - PAD_L - PAD_R, innerH = H - PAD_T - PAD_B;
-    const ymin = 40, ymax = 95;
-    const xs = i => PAD_L + (i / (data.length - 1)) * innerW;
-    const ys = v => PAD_T + ((ymax - v) / (ymax - ymin)) * innerH;
-
-    let svgInner = '';
-    // Quality bands
-    svgInner += `<rect x="${PAD_L}" y="${ys(95)}" width="${innerW}" height="${ys(80)-ys(95)}" fill="var(--good)" opacity="0.06"/>`;
-    svgInner += `<rect x="${PAD_L}" y="${ys(80)}" width="${innerW}" height="${ys(60)-ys(80)}" fill="var(--fair)" opacity="0.05"/>`;
-    svgInner += `<rect x="${PAD_L}" y="${ys(60)}" width="${innerW}" height="${ys(40)-ys(60)}" fill="var(--poor)" opacity="0.07"/>`;
-    [50, 60, 70, 80, 90].forEach(v => {
-      const y = ys(v);
-      svgInner += `<line class="grid-line" x1="${PAD_L}" y1="${y}" x2="${PAD_L+innerW}" y2="${y}"/>`;
-      svgInner += `<text class="axis-label" x="${PAD_L-6}" y="${y+3}" text-anchor="end">${v}</text>`;
-    });
-    const yearStarts = {};
-    data.forEach((d, i) => { if (!yearStarts[d.year]) yearStarts[d.year] = i; });
-    Object.entries(yearStarts).forEach(([y, i]) => {
-      const x = xs(i);
-      svgInner += `<line class="axis-tick" x1="${x}" y1="${PAD_T+innerH}" x2="${x}" y2="${PAD_T+innerH+5}"/>`;
-      svgInner += `<text class="axis-label" x="${x}" y="${PAD_T+innerH+18}" text-anchor="middle">${y}</text>`;
-    });
-    // Raw line
-    let pathParts = [];
-    data.forEach((d, i) => {
-      if (d.score === null) { return; }
-      const op = pathParts.length === 0 || data[i-1]?.score === null ? 'M' : 'L';
-      pathParts.push(op + xs(i).toFixed(1) + ' ' + ys(d.score).toFixed(1));
-    });
-    svgInner += `<path class="draw-line" d="${pathParts.join(' ')}" stroke="var(--line)" stroke-width="1.2" fill="none" opacity="0.6"/>`;
-    // Moving avg
-    const ma = movAvg(data, 'score', 12);
-    let maParts = [];
-    ma.forEach((v, i) => {
-      if (v === null) return;
-      const op = maParts.length === 0 ? 'M' : 'L';
-      maParts.push(op + xs(i).toFixed(1) + ' ' + ys(v).toFixed(1));
-    });
-    svgInner += `<path class="draw-line delay" d="${maParts.join(' ')}" stroke="var(--moving)" stroke-width="2.6" fill="none"/>`;
-    // Data points
-    data.forEach((d, i) => {
-      if (d.score === null) return;
-      const color = d.score >= 80 ? 'var(--good)' : d.score >= 60 ? 'var(--fair)' : 'var(--poor)';
-      svgInner += `<circle class="data-pt reveal-fade" cx="${xs(i).toFixed(1)}" cy="${ys(d.score).toFixed(1)}" r="2" fill="${color}" data-i="${i}"/>`;
-    });
-    // 20 EVENT MARKERS (above quality bands)
-    EVENTS.forEach((ev, k) => {
-      if (ev.weekIdx === null) return;
-      const x = xs(ev.weekIdx);
-      const y = ev.week.score !== null ? ys(ev.week.score) : ys(70);
-      const evColor = ev.cat === 'race' ? 'var(--event-race)' :
-                      ev.cat === 'injury' ? 'var(--event-injury)' :
-                      ev.cat === 'milestone' ? 'var(--event-milestone)' : 'var(--event-travel)';
-      svgInner += `<g class="event-mark" data-ev="${k}" style="animation-delay:${k*40}ms">
-        <line x1="${x}" y1="${y-6}" x2="${x}" y2="${PAD_T-2}" stroke="${evColor}" stroke-width="0.6" stroke-dasharray="2 2" opacity="0.6"/>
-        <circle cx="${x}" cy="${PAD_T-8}" r="6" fill="${evColor}" stroke="var(--bg)" stroke-width="1.5"/>
-        <text x="${x}" y="${PAD_T-5}" text-anchor="middle" font-size="9" pointer-events="none">${ev.emoji}</text>
-      </g>`;
-    });
-    svg.innerHTML = svgInner;
-
-    svg.querySelectorAll('.data-pt').forEach(el => {
-      el.addEventListener('mouseenter', e => {
-        const d = data[+el.getAttribute('data-i')];
-        const ev = EVENTS.find(x => x.weekIdx === +el.getAttribute('data-i'));
-        showTip(e, `<div class="tt-title">${fmtDate(d.startDate)}</div>Score: <strong>${d.score}</strong> · ${d.quality||'—'}<br>${d.dur ? d.dur.toFixed(1)+'h' : '—'} · letto ${d.bedStr} → ${d.wakeStr}${ev ? `<div class="tt-event">${ev.emoji} ${ev.label}</div>` : ''}`);
-      });
-      el.addEventListener('mouseleave', hideTip);
-    });
-    svg.querySelectorAll('.event-mark').forEach(el => {
-      const k = +el.getAttribute('data-ev');
-      const ev = EVENTS[k];
-      el.addEventListener('mouseenter', e => {
-        const w = ev.week;
-        showTip(e, `<div class="tt-title">${ev.emoji} ${ev.label}</div><div style="color:var(--ink-soft);font-style:italic">${ev.sub}</div><br>settimana del ${fmtDate(w?.startDate||ev.date)} · score <strong>${w?.score||'—'}</strong>`);
-      });
-      el.addEventListener('mouseleave', hideTip);
-    });
-
-    const scored = data.filter(d => d.score !== null);
-    const goodN = scored.filter(d => d.score >= 80).length;
-    const fairN = scored.filter(d => d.score >= 60 && d.score < 80).length;
-    const poorN = scored.filter(d => d.score < 60).length;
-    document.getElementById('foot1').innerHTML = `${scored.length} settimane con score · ${goodN} Good · ${fairN} Fair · ${poorN} Poor · range ${Math.min(...scored.map(d=>d.score))}–${Math.max(...scored.map(d=>d.score))} · 20 eventi-cardine annotati sopra`;
-  })();
-
-  // ===========================================================
-  // CHART 2 — Duration timeline
-  // ===========================================================
-  (function chart2() {
-    const svg = document.getElementById('chart2');
-    const W = 900, H = 280, PAD_L = 38, PAD_R = 14, PAD_T = 18, PAD_B = 36;
-    const innerW = W - PAD_L - PAD_R, innerH = H - PAD_T - PAD_B;
-    const ymin = 4, ymax = 9.5;
-    const xs = i => PAD_L + (i / (data.length - 1)) * innerW;
-    const ys = v => PAD_T + ((ymax - v) / (ymax - ymin)) * innerH;
-
-    let svgInner = '';
-    [5, 6, 7, 8, 9].forEach(v => {
-      const y = ys(v);
-      svgInner += `<line class="grid-line" x1="${PAD_L}" y1="${y}" x2="${PAD_L+innerW}" y2="${y}"/>`;
-      svgInner += `<text class="axis-label" x="${PAD_L-6}" y="${y+3}" text-anchor="end">${v}h</text>`;
-    });
-    [7, 8].forEach(v => {
-      const y = ys(v);
-      svgInner += `<line class="ref-line" x1="${PAD_L}" y1="${y}" x2="${PAD_L+innerW}" y2="${y}"/>`;
-    });
-    const yearStarts = {};
-    data.forEach((d, i) => { if (!yearStarts[d.year]) yearStarts[d.year] = i; });
-    Object.entries(yearStarts).forEach(([y, i]) => {
-      const x = xs(i);
-      svgInner += `<line class="axis-tick" x1="${x}" y1="${PAD_T+innerH}" x2="${x}" y2="${PAD_T+innerH+5}"/>`;
-      svgInner += `<text class="axis-label" x="${x}" y="${PAD_T+innerH+18}" text-anchor="middle">${y}</text>`;
-    });
-    let pathParts = [];
-    data.forEach((d, i) => {
-      if (d.dur === null) return;
-      const op = pathParts.length === 0 ? 'M' : 'L';
-      pathParts.push(op + xs(i).toFixed(1) + ' ' + ys(d.dur).toFixed(1));
-    });
-    svgInner += `<path class="draw-line" d="${pathParts.join(' ')}" stroke="var(--line)" stroke-width="1.2" fill="none" opacity="0.55"/>`;
-    const ma = movAvg(data, 'dur', 12);
-    let maParts = [];
-    ma.forEach((v, i) => {
-      if (v === null) return;
-      const op = maParts.length === 0 ? 'M' : 'L';
-      maParts.push(op + xs(i).toFixed(1) + ' ' + ys(v).toFixed(1));
-    });
-    svgInner += `<path class="draw-line delay" d="${maParts.join(' ')}" stroke="var(--moving)" stroke-width="2.6" fill="none"/>`;
-    data.forEach((d, i) => {
-      if (d.dur === null) return;
-      const color = d.dur >= 7 ? 'var(--good)' : d.dur >= 6 ? 'var(--fair)' : 'var(--poor)';
-      svgInner += `<circle class="data-pt reveal-fade" cx="${xs(i).toFixed(1)}" cy="${ys(d.dur).toFixed(1)}" r="1.8" fill="${color}" data-i="${i}"/>`;
-    });
-    svg.innerHTML = svgInner;
-    svg.querySelectorAll('.data-pt').forEach(el => {
-      el.addEventListener('mouseenter', e => {
-        const d = data[+el.getAttribute('data-i')];
-        showTip(e, `<div class="tt-title">${fmtDate(d.startDate)}</div>Durata: <strong>${d.dur.toFixed(1)}h</strong><br>Score: ${d.score||'—'} · letto ${d.bedStr}`);
-      });
-      el.addEventListener('mouseleave', hideTip);
-    });
-    const dured = data.filter(d => d.dur !== null);
-    const above7 = dured.filter(d => d.dur >= 7).length;
-    const above6 = dured.filter(d => d.dur >= 6).length;
-    document.getElementById('foot2').innerHTML = `${dured.length} settimane misurate · ${above7} sopra le 7h (${(100*above7/dured.length).toFixed(0)}%) · ${above6} sopra le 6h (${(100*above6/dured.length).toFixed(0)}%) · media ${(dured.reduce((s,d)=>s+d.dur,0)/dured.length).toFixed(2)}h`;
-  })();
-
-  // ===========================================================
-  // CHART 3 — Sleep window
-  // ===========================================================
-  (function chart3() {
-    const svg = document.getElementById('chart3');
-    const W = 900, H = 320, PAD_L = 56, PAD_R = 14, PAD_T = 22, PAD_B = 38;
-    const innerW = W - PAD_L - PAD_R, innerH = H - PAD_T - PAD_B;
-    function bedFrom6pm(t) {
-      if (t === null) return null;
-      return (t - 18*60 + 24*60) % (24*60);
-    }
-    const ymin = 180, ymax = 900;
-    const xs = i => PAD_L + (i / (data.length - 1)) * innerW;
-    const ys = v => PAD_T + ((v - ymin) / (ymax - ymin)) * innerH;
-    function fmtTimeOfDay(m) {
-      const minOfDay = (m + 18*60) % (24*60);
-      const h = Math.floor(minOfDay/60), mi = minOfDay%60;
-      const ampm = h<12?'AM':'PM', h12 = h%12||12;
-      return h12 + ':' + String(mi).padStart(2,'0') + ' ' + ampm;
-    }
-
-    let svgInner = '';
-    [180, 300, 420, 540, 660, 780, 900].forEach(v => {
-      const y = ys(v);
-      svgInner += `<line class="grid-line" x1="${PAD_L}" y1="${y}" x2="${PAD_L+innerW}" y2="${y}"/>`;
-      svgInner += `<text class="axis-label" x="${PAD_L-6}" y="${y+3}" text-anchor="end">${fmtTimeOfDay(v)}</text>`;
-    });
-    const yearStarts = {};
-    data.forEach((d, i) => { if (!yearStarts[d.year]) yearStarts[d.year] = i; });
-    Object.entries(yearStarts).forEach(([y, i]) => {
-      const x = xs(i);
-      svgInner += `<line class="axis-tick" x1="${x}" y1="${PAD_T+innerH}" x2="${x}" y2="${PAD_T+innerH+5}"/>`;
-      svgInner += `<text class="axis-label" x="${x}" y="${PAD_T+innerH+18}" text-anchor="middle">${y}</text>`;
-    });
-    const bedPoints = [];
-    data.forEach((d, i) => {
-      const bm = bedFrom6pm(d.bed);
-      if (bm !== null) bedPoints.push({x: xs(i), y: ys(bm), i});
-    });
-    const wakePoints = [];
-    data.forEach((d, i) => {
-      const wm = bedFrom6pm(d.wake);
-      if (wm !== null) wakePoints.push({x: xs(i), y: ys(wm), i});
-    });
-    if (bedPoints.length && wakePoints.length) {
-      const top = bedPoints.map((p,i) => (i===0?'M':'L')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
-      const bot = wakePoints.slice().reverse().map(p => 'L'+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
-      svgInner += `<path class="reveal-fade" d="${top} ${bot} Z" fill="var(--starlight)" opacity="0.06"/>`;
-    }
-    let bedPath = bedPoints.map((p,i)=>(i===0?'M':'L')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
-    svgInner += `<path class="draw-line" d="${bedPath}" stroke="var(--bedtime)" stroke-width="1.6" fill="none" opacity="0.85"/>`;
-    let wakePath = wakePoints.map((p,i)=>(i===0?'M':'L')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
-    svgInner += `<path class="draw-line delay" d="${wakePath}" stroke="var(--waketime)" stroke-width="1.6" fill="none" opacity="0.85"/>`;
-    data.forEach((d, i) => {
-      const bm = bedFrom6pm(d.bed), wm = bedFrom6pm(d.wake);
-      if (bm === null || wm === null) return;
-      if (i % 3 !== 0) return;
-      svgInner += `<circle class="data-pt reveal-fade" cx="${xs(i).toFixed(1)}" cy="${ys(bm).toFixed(1)}" r="1.5" fill="var(--bedtime)" data-i="${i}"/>`;
-      svgInner += `<circle class="data-pt reveal-fade" cx="${xs(i).toFixed(1)}" cy="${ys(wm).toFixed(1)}" r="1.5" fill="var(--waketime)" data-i="${i}"/>`;
-    });
-    svgInner += `<line class="ref-line" x1="${PAD_L}" y1="${ys(360)}" x2="${PAD_L+innerW}" y2="${ys(360)}"/>`;
-    svgInner += `<text class="annot" x="${PAD_L+innerW-6}" y="${ys(360)-4}" text-anchor="end" fill="var(--moon)">mezzanotte</text>`;
-    svg.innerHTML = svgInner;
-
-    svg.querySelectorAll('.data-pt').forEach(el => {
-      el.addEventListener('mouseenter', e => {
-        const d = data[+el.getAttribute('data-i')];
-        showTip(e, `<div class="tt-title">${fmtDate(d.startDate)}</div>Bed: <strong>${d.bedStr}</strong> → Wake: <strong>${d.wakeStr}</strong><br>${d.dur ? d.dur.toFixed(1)+'h' : '—'} · score ${d.score||'—'}`);
-      });
-      el.addEventListener('mouseleave', hideTip);
-    });
-
-    const valid = data.filter(d => d.bed !== null && d.wake !== null);
-    const yr2021 = valid.filter(d => d.year === 2021);
-    const yr2026 = valid.filter(d => d.year === 2026);
-    function avgT(arr, key) { return arr.reduce((s,d)=>s+bedFrom6pm(d[key]),0)/arr.length; }
-    let foot = '';
-    if (yr2021.length && yr2026.length) {
-      foot = `2021 medio: a letto ${fmtTimeOfDay(avgT(yr2021,'bed'))}, sveglia ${fmtTimeOfDay(avgT(yr2021,'wake'))} · 2026 medio: a letto ${fmtTimeOfDay(avgT(yr2026,'bed'))}, sveglia ${fmtTimeOfDay(avgT(yr2026,'wake'))} · finestra anticipata di oltre 1h`;
-    }
-    document.getElementById('foot3').innerHTML = foot;
-  })();
-
-  // ===========================================================
-  // CHART 4 — Heatmap
-  // ===========================================================
-  (function chart4() {
-    const svg = document.getElementById('chart4');
-    const W = 900, H = 240, PAD_L = 60, PAD_R = 14, PAD_T = 30, PAD_B = 36;
-    const innerW = W - PAD_L - PAD_R, innerH = H - PAD_T - PAD_B;
-
-    const grid = {};
-    data.forEach(d => {
-      if (d.score === null) return;
-      const dt = new Date(d.startDate);
-      const y = dt.getFullYear(), m = dt.getMonth();
-      grid[y] = grid[y] || {};
-      grid[y][m] = grid[y][m] || { sum: 0, n: 0 };
-      grid[y][m].sum += d.score;
-      grid[y][m].n += 1;
-    });
-    const years = Object.keys(grid).map(Number).sort();
-    const months = ['G','F','M','A','M','G','L','A','S','O','N','D'];
-    const cellW = innerW / 12;
-    const cellH = innerH / years.length;
-
-    function colorFor(score) {
-      if (score === null || score === undefined) return 'rgba(184,196,228,0.05)';
-      if (score >= 80) return `rgba(127,219,182,${Math.min(0.95, 0.4 + (score-80)/15*0.5)})`;
-      if (score >= 65) return `rgba(244,200,122,${0.35 + (score-65)/15*0.45})`;
-      return `rgba(224,128,112,${0.4 + (65-score)/15*0.5})`;
-    }
-
-    let svgInner = '';
-    months.forEach((m, i) => {
-      const x = PAD_L + (i + 0.5) * cellW;
-      svgInner += `<text class="axis-label" x="${x}" y="${PAD_T-10}" text-anchor="middle">${m}</text>`;
-    });
-    years.forEach((y, ri) => {
-      const yy = years.length - 1 - ri;
-      const yrow = years[yy];
-      const yPx = PAD_T + ri * cellH;
-      svgInner += `<text class="axis-label" x="${PAD_L-8}" y="${yPx + cellH/2 + 3}" text-anchor="end">${yrow}</text>`;
-      for (let m = 0; m < 12; m++) {
-        const x = PAD_L + m * cellW;
-        const cell = grid[yrow] && grid[yrow][m];
-        const score = cell ? cell.sum / cell.n : null;
-        const fill = colorFor(score);
-        svgInner += `<rect class="data-pt reveal-fade" x="${x+1.5}" y="${yPx+1.5}" width="${cellW-3}" height="${cellH-3}" rx="3" fill="${fill}" stroke="rgba(184,196,228,0.15)" stroke-width="0.5" data-y="${yrow}" data-m="${m}" data-s="${score!==null?score.toFixed(1):'—'}" data-n="${cell?cell.n:0}"/>`;
-        if (score !== null && cellW > 36) {
-          svgInner += `<text class="annot" x="${x+cellW/2}" y="${yPx+cellH/2+3}" text-anchor="middle" fill="var(--ink)" opacity="0.85">${Math.round(score)}</text>`;
-        }
-      }
-    });
-    svg.innerHTML = svgInner;
-    svg.querySelectorAll('.data-pt').forEach(el => {
-      el.addEventListener('mouseenter', e => {
-        const y = el.getAttribute('data-y'), m = +el.getAttribute('data-m');
-        const s = el.getAttribute('data-s'), n = el.getAttribute('data-n');
-        const monthNames = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
-        showTip(e, `<div class="tt-title">${monthNames[m]} ${y}</div>Score medio: <strong>${s}</strong><br>${n} settimane`);
-      });
-      el.addEventListener('mouseleave', hideTip);
-    });
-
-    let best = null, worst = null;
-    years.forEach(y => {
-      Object.entries(grid[y]||{}).forEach(([m, c]) => {
-        if (c.n < 2) return;
-        const avg = c.sum / c.n;
-        if (!best || avg > best.avg) best = { y, m, avg };
-        if (!worst || avg < worst.avg) worst = { y, m, avg };
-      });
-    });
-    const monthNames = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
-    let foot = '';
-    if (best) foot += `Mese più riposante: <strong>${monthNames[best.m]} ${best.y}</strong> (${best.avg.toFixed(1)})`;
-    if (worst) foot += ` · Mese più stanco: <strong>${monthNames[worst.m]} ${worst.y}</strong> (${worst.avg.toFixed(1)})`;
-    document.getElementById('foot4').innerHTML = foot;
-  })();
-
-  // ===========================================================
-  // CHART 5 — Polar 24h clock (NEW)
-  // ===========================================================
-  (function chart5() {
-    const svg = document.getElementById('chart5');
-    const W = 900, H = 480, CX = W/2, CY = H/2 + 10;
-    const RMAX = 200; // outer radius
-
-    // Compute hour-of-day distribution for bedtime + waketime
-    const bedDist = new Array(24).fill(0);
-    const wakeDist = new Array(24).fill(0);
+  // ===== POLAR (scene 7) =====
+  (function buildPolar() {
+    const layer = document.getElementById('scene-polar');
+    const CX = W/2, CY = H/2 + 10, RMAX = 220;
+    const bedDist = new Array(24).fill(0), wakeDist = new Array(24).fill(0);
     data.forEach(d => {
       if (d.bed !== null) bedDist[Math.floor(d.bed/60)]++;
       if (d.wake !== null) wakeDist[Math.floor(d.wake/60)]++;
     });
-    const maxCount = Math.max(...bedDist, ...wakeDist);
-
-    // Convert hour to angle (12pm = 270°/-90°, 6pm = 0°/right=180? Actually let's use noon-top, like a clock)
-    // Standard clock: 12 at top (-90°), 6 at bottom (90°), 3 at right (0°)
-    // We want 0:00 (midnight) at top, 12:00 (noon) at bottom — so hour h maps to angle = -90 + (h/24)*360
+    const maxC = Math.max(...bedDist, ...wakeDist);
     function hourToAngle(h) { return -90 + (h/24)*360; }
     function pol(h, r) {
       const a = hourToAngle(h) * Math.PI / 180;
       return [CX + Math.cos(a)*r, CY + Math.sin(a)*r];
     }
-
-    let svgInner = '';
-    // Background concentric circles
+    let html = '';
     [0.33, 0.66, 1].forEach(f => {
-      svgInner += `<circle cx="${CX}" cy="${CY}" r="${RMAX*f}" fill="none" stroke="var(--rule)" stroke-width="0.6" stroke-dasharray="2 3" opacity="0.5"/>`;
+      html += `<circle cx="${CX}" cy="${CY}" r="${RMAX*f}" fill="none" stroke="rgba(184,196,228,0.16)" stroke-width="0.5" stroke-dasharray="2 3"/>`;
     });
-    // Hour labels (every 3 hours)
     for (let h = 0; h < 24; h += 3) {
       const [x, y] = pol(h, RMAX + 22);
-      const lbl = h === 0 ? '24:00' : (h < 10 ? '0' + h : h) + ':00';
-      svgInner += `<text class="hour-label" x="${x}" y="${y+3}" text-anchor="middle">${lbl}</text>`;
-      // Tick lines
+      const lbl = (h < 10 ? '0'+h : h) + ':00';
+      html += `<text x="${x}" y="${y+3}" text-anchor="middle" class="axis-label">${lbl}</text>`;
       const [tx1, ty1] = pol(h, RMAX);
       const [tx2, ty2] = pol(h, RMAX+8);
-      svgInner += `<line x1="${tx1}" y1="${ty1}" x2="${tx2}" y2="${ty2}" stroke="var(--rule-strong)" stroke-width="1"/>`;
+      html += `<line x1="${tx1}" y1="${ty1}" x2="${tx2}" y2="${ty2}" stroke="rgba(184,196,228,0.32)" stroke-width="1"/>`;
     }
-    // Day/Night zones (subtle background)
-    // Night arc: 22:00 to 08:00
-    const nightStart = hourToAngle(22), nightEnd = hourToAngle(32); // 8 next day
-    const [nx1, ny1] = pol(22, RMAX), [nx2, ny2] = pol(8, RMAX);
-    svgInner += `<path d="M ${CX} ${CY} L ${nx1.toFixed(1)} ${ny1.toFixed(1)} A ${RMAX} ${RMAX} 0 0 1 ${nx2.toFixed(1)} ${ny2.toFixed(1)} Z" fill="var(--starlight)" opacity="0.04"/>`;
-    // Bedtime petals (lavender) — drawn as radial bars
-    const barWidth = 4; // degrees per hour bar
-    bedDist.forEach((cnt, h) => {
-      if (cnt === 0) return;
-      const r = (cnt / maxCount) * RMAX * 0.85;
-      // Build a wedge for this hour — center on h+0.5
-      const a1 = (hourToAngle(h+0.05)) * Math.PI/180;
-      const a2 = (hourToAngle(h+0.95)) * Math.PI/180;
+    // Petals
+    function petal(h, count, color, side) {
+      if (count === 0) return '';
+      const r = (count / maxC) * RMAX * 0.85;
+      const offset = side === 'b' ? 0.05 : 0.5;
+      const a1 = hourToAngle(h+offset) * Math.PI/180;
+      const a2 = hourToAngle(h+offset+0.45) * Math.PI/180;
       const [x1,y1] = [CX+Math.cos(a1)*4, CY+Math.sin(a1)*4];
       const [x2,y2] = [CX+Math.cos(a1)*r, CY+Math.sin(a1)*r];
       const [x3,y3] = [CX+Math.cos(a2)*r, CY+Math.sin(a2)*r];
       const [x4,y4] = [CX+Math.cos(a2)*4, CY+Math.sin(a2)*4];
-      svgInner += `<path class="reveal-fade" d="M ${x1.toFixed(1)} ${y1.toFixed(1)} L ${x2.toFixed(1)} ${y2.toFixed(1)} A ${r.toFixed(1)} ${r.toFixed(1)} 0 0 1 ${x3.toFixed(1)} ${y3.toFixed(1)} L ${x4.toFixed(1)} ${y4.toFixed(1)} A 4 4 0 0 0 ${x1.toFixed(1)} ${y1.toFixed(1)} Z" fill="var(--bedtime)" opacity="${0.3 + (cnt/maxCount)*0.5}" data-cnt="${cnt}" data-h="${h}" data-type="bed"/>`;
-    });
-    // Waketime petals (amber)
-    wakeDist.forEach((cnt, h) => {
-      if (cnt === 0) return;
-      const r = (cnt / maxCount) * RMAX * 0.85;
-      const a1 = (hourToAngle(h+0.5+0.05)) * Math.PI/180; // shift slightly
-      const a2 = (hourToAngle(h+0.5+0.45)) * Math.PI/180;
-      // Wake petals — drawn at slightly different radial offset for visual distinction
-      const [x1,y1] = [CX+Math.cos(a1)*4, CY+Math.sin(a1)*4];
-      const [x2,y2] = [CX+Math.cos(a1)*r, CY+Math.sin(a1)*r];
-      const [x3,y3] = [CX+Math.cos(a2)*r, CY+Math.sin(a2)*r];
-      const [x4,y4] = [CX+Math.cos(a2)*4, CY+Math.sin(a2)*4];
-      svgInner += `<path class="reveal-fade" d="M ${x1.toFixed(1)} ${y1.toFixed(1)} L ${x2.toFixed(1)} ${y2.toFixed(1)} A ${r.toFixed(1)} ${r.toFixed(1)} 0 0 1 ${x3.toFixed(1)} ${y3.toFixed(1)} L ${x4.toFixed(1)} ${y4.toFixed(1)} A 4 4 0 0 0 ${x1.toFixed(1)} ${y1.toFixed(1)} Z" fill="var(--waketime)" opacity="${0.3 + (cnt/maxCount)*0.5}" data-cnt="${cnt}" data-h="${h}" data-type="wake"/>`;
-    });
-    // Center moon icon
-    svgInner += `<circle cx="${CX}" cy="${CY}" r="14" fill="var(--bg-2)" stroke="var(--moon)" stroke-width="0.8"/>`;
-    svgInner += `<text x="${CX}" y="${CY+5}" text-anchor="middle" font-size="14">🌙</text>`;
-    // Subtitle
-    svgInner += `<text x="${CX}" y="${CY+RMAX+50}" text-anchor="middle" class="hour-label" fill="var(--ink-soft)">260 settimane mappate sull'orologio circadiano</text>`;
-
-    svg.innerHTML = svgInner;
-    svg.querySelectorAll('[data-cnt]').forEach(el => {
-      el.addEventListener('mouseenter', e => {
-        const cnt = el.getAttribute('data-cnt');
-        const h = +el.getAttribute('data-h');
-        const type = el.getAttribute('data-type');
-        const lbl = type === 'bed' ? 'coricamento' : 'sveglia';
-        showTip(e, `<div class="tt-title">${lbl} ${h}:00–${h+1}:00</div><strong>${cnt}</strong> settimane`);
-      });
-      el.addEventListener('mouseleave', hideTip);
-    });
-
-    // Foot — most common bed/wake hour
-    const topBedH = bedDist.indexOf(Math.max(...bedDist));
-    const topWakeH = wakeDist.indexOf(Math.max(...wakeDist));
-    document.getElementById('foot5').innerHTML = `Ora più frequente di coricamento: <strong>${topBedH}:00–${topBedH+1}:00</strong> (${bedDist[topBedH]} settimane) · sveglia: <strong>${topWakeH}:00–${topWakeH+1}:00</strong> (${wakeDist[topWakeH]})`;
+      return `<path d="M ${x1.toFixed(1)} ${y1.toFixed(1)} L ${x2.toFixed(1)} ${y2.toFixed(1)} A ${r.toFixed(1)} ${r.toFixed(1)} 0 0 1 ${x3.toFixed(1)} ${y3.toFixed(1)} L ${x4.toFixed(1)} ${y4.toFixed(1)} A 4 4 0 0 0 ${x1.toFixed(1)} ${y1.toFixed(1)} Z" fill="${color}" opacity="${0.3 + (count/maxC)*0.55}"/>`;
+    }
+    bedDist.forEach((c, h) => html += petal(h, c, 'var(--bedtime)', 'b'));
+    wakeDist.forEach((c, h) => html += petal(h, c, 'var(--waketime)', 'w'));
+    html += `<circle cx="${CX}" cy="${CY}" r="18" fill="var(--bg-2)" stroke="var(--moon)" stroke-width="0.8"/>`;
+    html += `<text x="${CX}" y="${CY+6}" text-anchor="middle" font-size="18">🌙</text>`;
+    layer.innerHTML = html;
   })();
 
-  // ===========================================================
-  // CHART 6 — Training Load × Sleep Score scatter (NEW)
-  // ===========================================================
-  (function chart6() {
-    const svg = document.getElementById('chart6');
-    const W = 900, H = 320, PAD_L = 50, PAD_R = 14, PAD_T = 22, PAD_B = 42;
-    const innerW = W - PAD_L - PAD_R, innerH = H - PAD_T - PAD_B;
-
-    // Match each load week with sleep week (load.week is Monday ISO start; data has sleep weeks starting Mondays too usually)
+  // ===== SCATTER TL × Score (scene 8) =====
+  (function buildScatter() {
+    const layer = document.getElementById('scene-scatter');
     const sleepByDate = {};
-    data.forEach(d => { sleepByDate[d.startDate] = d; });
-
+    data.forEach(d => sleepByDate[d.startDate] = d);
     const points = load.map(l => {
-      // Try exact match first, else nearest within 3 days
       let s = sleepByDate[l.week];
       if (!s) {
         const lt = new Date(l.week).getTime();
@@ -1131,176 +842,281 @@ window.addEventListener('scroll', () => {
       return { tl: l.tl, score: s.score, n: l.n, week: l.week, sleep: s, kj: l.kj, km: l.km };
     }).filter(Boolean);
 
-    // Axes: x = TL [0..2200], y = score [40..95]
     const xmin = 0, xmax = 2200;
-    const ymin = 40, ymax = 95;
-    const xs = v => PAD_L + (v - xmin) / (xmax - xmin) * innerW;
-    const ys = v => PAD_T + (ymax - v) / (ymax - ymin) * innerH;
-
-    let svgInner = '';
-    // Quality bands
-    svgInner += `<rect x="${PAD_L}" y="${ys(95)}" width="${innerW}" height="${ys(80)-ys(95)}" fill="var(--good)" opacity="0.05"/>`;
-    svgInner += `<rect x="${PAD_L}" y="${ys(80)}" width="${innerW}" height="${ys(60)-ys(80)}" fill="var(--fair)" opacity="0.04"/>`;
-    svgInner += `<rect x="${PAD_L}" y="${ys(60)}" width="${innerW}" height="${ys(40)-ys(60)}" fill="var(--poor)" opacity="0.05"/>`;
+    const xs = v => PAD.l + (v - xmin) / (xmax - xmin) * innerW;
+    const ys_s = v => PAD.t + ((95 - v) / (95 - 40)) * innerH;
+    let html = '';
     [50,60,70,80,90].forEach(v => {
-      const y = ys(v);
-      svgInner += `<line class="grid-line" x1="${PAD_L}" y1="${y}" x2="${PAD_L+innerW}" y2="${y}"/>`;
-      svgInner += `<text class="axis-label" x="${PAD_L-6}" y="${y+3}" text-anchor="end">${v}</text>`;
+      const y = ys_s(v);
+      html += `<line class="grid-line" x1="${PAD.l}" y1="${y}" x2="${PAD.l+innerW}" y2="${y}"/>`;
+      html += `<text x="${PAD.l-8}" y="${y+3}" class="axis-label" text-anchor="end">${v}</text>`;
     });
     [0,500,1000,1500,2000].forEach(v => {
       const x = xs(v);
-      svgInner += `<line class="grid-line" x1="${x}" y1="${PAD_T}" x2="${x}" y2="${PAD_T+innerH}"/>`;
-      svgInner += `<text class="axis-label" x="${x}" y="${PAD_T+innerH+18}" text-anchor="middle">${v}</text>`;
+      html += `<line class="grid-line" x1="${x}" y1="${PAD.t}" x2="${x}" y2="${PAD.t+innerH}"/>`;
+      html += `<text x="${x}" y="${PAD.t+innerH+18}" class="axis-label" text-anchor="middle">TL ${v}</text>`;
     });
-    svgInner += `<text class="axis-label" x="${PAD_L+innerW/2}" y="${H-8}" text-anchor="middle" fill="var(--ink-soft)">Training Load settimanale →</text>`;
-    svgInner += `<text class="axis-label" x="${PAD_L-38}" y="${PAD_T+innerH/2}" text-anchor="middle" fill="var(--ink-soft)" transform="rotate(-90,${PAD_L-38},${PAD_T+innerH/2})">↑ Sleep Score</text>`;
-
-    // Linear regression
+    // Regression
     const xMean = points.reduce((s,p)=>s+p.tl,0)/points.length;
     const yMean = points.reduce((s,p)=>s+p.score,0)/points.length;
     const num = points.reduce((s,p)=>s+(p.tl-xMean)*(p.score-yMean),0);
     const den = points.reduce((s,p)=>s+(p.tl-xMean)**2,0);
-    const slope = num/den;
-    const intercept = yMean - slope*xMean;
-    const x1 = 0, x2 = 2200;
-    const y1 = intercept + slope*x1;
-    const y2 = intercept + slope*x2;
-    svgInner += `<line class="draw-line delay" x1="${xs(x1)}" y1="${ys(y1)}" x2="${xs(x2)}" y2="${ys(y2)}" stroke="var(--starlight)" stroke-width="1.5" stroke-dasharray="6 3" opacity="0.7"/>`;
-
-    // Points
+    const slope = num/den, intercept = yMean - slope*xMean;
+    html += `<line x1="${xs(0)}" y1="${ys_s(intercept)}" x2="${xs(2200)}" y2="${ys_s(intercept+slope*2200)}" stroke="var(--starlight)" stroke-width="1.5" stroke-dasharray="6 3" opacity="0.7"/>`;
     points.forEach((p, k) => {
       const c = p.score >= 80 ? 'var(--good)' : p.score >= 60 ? 'var(--fair)' : 'var(--poor)';
-      const r = Math.min(7, 2 + Math.sqrt(p.n));
-      svgInner += `<circle class="data-pt reveal-fade" cx="${xs(p.tl).toFixed(1)}" cy="${ys(p.score).toFixed(1)}" r="${r.toFixed(1)}" fill="${c}" opacity="0.7" stroke="var(--bg-2)" stroke-width="0.5" data-k="${k}"/>`;
+      const r = Math.min(8, 2.5 + Math.sqrt(p.n));
+      html += `<circle cx="${xs(p.tl).toFixed(1)}" cy="${ys_s(p.score).toFixed(1)}" r="${r.toFixed(1)}" fill="${c}" opacity="0.7" stroke="var(--bg-2)" stroke-width="0.6" data-k="${k}"/>`;
     });
+    html += `<text x="${PAD.l+innerW/2}" y="${H-16}" text-anchor="middle" class="axis-label" fill="var(--ink-soft)">Training Load settimanale →</text>`;
+    layer.innerHTML = html;
 
-    svg.innerHTML = svgInner;
-    svg.querySelectorAll('.data-pt').forEach(el => {
+    // Tooltip on circles
+    layer.querySelectorAll('circle[data-k]').forEach(el => {
       el.addEventListener('mouseenter', e => {
         const p = points[+el.getAttribute('data-k')];
-        showTip(e, `<div class="tt-title">${fmtDate(p.week)}</div>TL <strong>${p.tl}</strong> · Score <strong>${p.score}</strong><br>${p.n} sortite · ${p.km} km · ${p.kj} kJ<br>letto ${p.sleep.bedStr} → ${p.sleep.wakeStr}`);
+        showTip(e, `<div class="tt-title">${fmtDate(p.week)}</div>TL <strong>${p.tl}</strong> · Score <strong>${p.score}</strong><br>${p.n} sortite · ${p.km} km · ${p.kj} kJ`);
       });
       el.addEventListener('mouseleave', hideTip);
     });
-
-    // Compute correlation
-    const n = points.length;
-    const sumX = points.reduce((s,p)=>s+p.tl,0);
-    const sumY = points.reduce((s,p)=>s+p.score,0);
-    const sumXY = points.reduce((s,p)=>s+p.tl*p.score,0);
-    const sumX2 = points.reduce((s,p)=>s+p.tl*p.tl,0);
-    const sumY2 = points.reduce((s,p)=>s+p.score*p.score,0);
-    const r = (n*sumXY - sumX*sumY) / Math.sqrt((n*sumX2 - sumX*sumX)*(n*sumY2 - sumY*sumY));
-    document.getElementById('foot6').innerHTML = `${n} settimane incrociate · correlazione <strong>r = ${r.toFixed(2)}</strong> (debole, negativa) · slope <strong>${slope.toFixed(3)}</strong> punti score per unità di TL · settimane sopra TL 1.500: score medio ${(points.filter(p=>p.tl>1500).reduce((s,p)=>s+p.score,0)/Math.max(1,points.filter(p=>p.tl>1500).length)).toFixed(1)} vs sotto 1.000: ${(points.filter(p=>p.tl<1000).reduce((s,p)=>s+p.score,0)/Math.max(1,points.filter(p=>p.tl<1000).length)).toFixed(1)}`;
   })();
 
-  // ===========================================================
-  // CHART 7 — Event timeline list (NEW)
-  // ===========================================================
-  (function chart7() {
-    const list = document.getElementById('eventList');
-    const sortedEvents = [...EVENTS].sort((a,b) => b.date.localeCompare(a.date));
-    let html = '';
-    sortedEvents.forEach((ev, k) => {
-      const w = ev.week;
-      const score = w?.score;
-      const scoreColor = score === null || score === undefined ? 'var(--muted)' :
-        score >= 80 ? 'var(--good)' : score >= 60 ? 'var(--fair)' : 'var(--poor)';
-      const date = new Date(ev.date).toLocaleDateString('it-IT', {day:'numeric',month:'short',year:'numeric'});
-      html += `<div class="event-row" style="animation-delay:${k*30}ms">
-        <div class="ev-date">${date}</div>
-        <div class="ev-emoji">${ev.emoji}</div>
-        <div class="ev-label">${ev.label}<br><span style="font-style:italic;color:var(--ink-soft);font-size:0.85em">${ev.sub}</span></div>
-        <div class="ev-cat ${ev.cat}">${ev.cat}</div>
-        <div class="ev-score" style="color:${scoreColor}">${score!==undefined&&score!==null?score:'—'}</div>
-      </div>`;
+  // ===== HEATMAP (scene 9) =====
+  (function buildHeatmap() {
+    const layer = document.getElementById('scene-heatmap');
+    const grid = {};
+    data.forEach(d => {
+      if (d.score === null) return;
+      const dt = new Date(d.startDate);
+      const y = dt.getFullYear(), m = dt.getMonth();
+      grid[y] = grid[y] || {};
+      grid[y][m] = grid[y][m] || { sum: 0, n: 0 };
+      grid[y][m].sum += d.score;
+      grid[y][m].n += 1;
     });
-    list.innerHTML = html;
-
-    // Animate rows when in view
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
-    }, {threshold: 0.1});
-    list.querySelectorAll('.event-row').forEach(r => obs.observe(r));
-
-    // Footer stats: avg score around events vs avg overall
-    const eventScores = EVENTS.map(e => e.week?.score).filter(s => s !== null && s !== undefined);
-    const eventAvg = eventScores.reduce((s,x)=>s+x,0) / eventScores.length;
-    const allScored = data.filter(d=>d.score!==null);
-    const allAvg = allScored.reduce((s,x)=>s+x.score,0) / allScored.length;
-    document.getElementById('foot7').innerHTML = `Score medio nelle ${eventScores.length} settimane-evento: <strong>${eventAvg.toFixed(1)}</strong> · score medio complessivo: <strong>${allAvg.toFixed(1)}</strong> · differenza: <strong>${(eventAvg-allAvg).toFixed(1)}</strong> punti (gli eventi non disturbano significativamente il sonno settimanale aggregato)`;
+    const years = Object.keys(grid).map(Number).sort();
+    const months = ['G','F','M','A','M','G','L','A','S','O','N','D'];
+    const HX = 60, HY = 100, HW = innerW - 50, HH = 380;
+    const cellW = HW / 12, cellH = HH / years.length;
+    function colorFor(s) {
+      if (s == null) return 'rgba(184,196,228,0.05)';
+      if (s >= 80) return `rgba(127,219,182,${Math.min(0.95, 0.4 + (s-80)/15*0.5)})`;
+      if (s >= 65) return `rgba(244,200,122,${0.35 + (s-65)/15*0.45})`;
+      return `rgba(224,128,112,${0.4 + (65-s)/15*0.5})`;
+    }
+    let html = '';
+    months.forEach((m, i) => {
+      const x = HX + (i + 0.5) * cellW;
+      html += `<text x="${x}" y="${HY-12}" class="axis-label" text-anchor="middle">${m}</text>`;
+    });
+    years.forEach((y, ri) => {
+      const yy = years.length - 1 - ri;
+      const yrow = years[yy];
+      const yPx = HY + ri * cellH;
+      html += `<text x="${HX-10}" y="${yPx + cellH/2 + 4}" class="axis-label" text-anchor="end">${yrow}</text>`;
+      for (let m = 0; m < 12; m++) {
+        const x = HX + m * cellW;
+        const cell = grid[yrow] && grid[yrow][m];
+        const score = cell ? cell.sum / cell.n : null;
+        html += `<rect x="${x+2}" y="${yPx+2}" width="${cellW-4}" height="${cellH-4}" rx="4" fill="${colorFor(score)}" stroke="rgba(184,196,228,0.15)" stroke-width="0.5" data-y="${yrow}" data-m="${m}" data-s="${score!=null?score.toFixed(1):'—'}"/>`;
+        if (score !== null && cellW > 36) {
+          html += `<text x="${x+cellW/2}" y="${yPx+cellH/2+4}" text-anchor="middle" font-size="13" fill="var(--ink)" opacity="0.9">${Math.round(score)}</text>`;
+        }
+      }
+    });
+    layer.innerHTML = html;
+    layer.querySelectorAll('rect[data-y]').forEach(el => {
+      el.addEventListener('mouseenter', e => {
+        const y = el.getAttribute('data-y'), m = +el.getAttribute('data-m');
+        const s = el.getAttribute('data-s');
+        const monthNames = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+        showTip(e, `<div class="tt-title">${monthNames[m]} ${y}</div>Score medio: <strong>${s}</strong>`);
+      });
+      el.addEventListener('mouseleave', hideTip);
+    });
   })();
 
-  // ===========================================================
-  // Critical days lists
-  // ===========================================================
-  (function criticalLists() {
+  // ===== Y-AXIS labels per scene =====
+  function setAxisForScore() {
+    const ax = document.getElementById('yAxis');
+    let html = '';
+    [50, 60, 70, 80, 90].forEach(v => {
+      const y = ys_score(v);
+      html += `<line class="grid-line" x1="${PAD.l}" y1="${y}" x2="${PAD.l+innerW}" y2="${y}"/>`;
+      html += `<text x="${PAD.l-10}" y="${y+4}" class="axis-label" text-anchor="end">${v}</text>`;
+    });
+    ax.innerHTML = html;
+    const xa = document.getElementById('xAxis');
+    let xh = '';
+    Object.entries(yearStarts).forEach(([y, i]) => {
+      const x = xs_score(i);
+      xh += `<line x1="${x}" y1="${PAD.t+innerH}" x2="${x}" y2="${PAD.t+innerH+5}" stroke="rgba(184,196,228,0.32)"/>`;
+      xh += `<text x="${x}" y="${PAD.t+innerH+22}" class="axis-label" text-anchor="middle">${y}</text>`;
+    });
+    xa.innerHTML = xh;
+  }
+  function setAxisForDuration() {
+    const ax = document.getElementById('yAxis');
+    let html = '';
+    [5, 6, 7, 8, 9].forEach(v => {
+      const y = ys_dur(v);
+      html += `<line class="grid-line" x1="${PAD.l}" y1="${y}" x2="${PAD.l+innerW}" y2="${y}"/>`;
+      html += `<text x="${PAD.l-10}" y="${y+4}" class="axis-label" text-anchor="end">${v} h</text>`;
+    });
+    ax.innerHTML = html;
+  }
+  function setAxisForWindow() {
+    const ax = document.getElementById('yAxis');
+    function fmtTimeOfDay(m) {
+      const minOfDay = (m + 18*60) % (24*60);
+      const h = Math.floor(minOfDay/60), mi = minOfDay%60;
+      const ampm = h<12?'AM':'PM', h12 = h%12||12;
+      return h12 + ':' + String(mi).padStart(2,'0') + ' ' + ampm;
+    }
+    let html = '';
+    [180, 360, 540, 720, 900].forEach(v => {
+      const y = ys_win(v);
+      html += `<line class="grid-line" x1="${PAD.l}" y1="${y}" x2="${PAD.l+innerW}" y2="${y}"/>`;
+      html += `<text x="${PAD.l-10}" y="${y+4}" class="axis-label" text-anchor="end">${fmtTimeOfDay(v)}</text>`;
+    });
+    ax.innerHTML = html;
+  }
+  function clearAxis() {
+    document.getElementById('yAxis').innerHTML = '';
+    document.getElementById('xAxis').innerHTML = '';
+  }
+
+  // ===== SCENE TRANSITIONS =====
+  let currentScene = -1;
+  function showScene(idx) {
+    if (idx === currentScene) return;
+    currentScene = idx;
+    // Hide all scene groups
+    ['scene-score','scene-duration','scene-window','scene-polar','scene-scatter','scene-heatmap'].forEach(id => {
+      document.getElementById(id).classList.remove('show');
+    });
+
+    // SCENE 0 — empty / hero number
+    if (idx === 0) {
+      clearAxis();
+      return;
+    }
+
+    // SCENES 1-4 — score timeline progressively builds
+    if (idx >= 1 && idx <= 4) {
+      document.getElementById('scene-score').classList.add('show');
+      setAxisForScore();
+      // Always show all dots
+      const pts = document.querySelectorAll('#score-pts circle');
+      pts.forEach((c, k) => {
+        c.setAttribute('r', '2.4');
+      });
+      // Scene 2+ : moving avg
+      document.getElementById('score-ma').setAttribute('opacity', idx >= 2 ? '0.95' : '0');
+      // Scene 3 : highlights
+      document.getElementById('score-highlights').setAttribute('opacity', idx >= 3 ? '1' : '0');
+      // Scene 4 : event markers
+      document.getElementById('score-events').setAttribute('opacity', idx >= 4 ? '1' : '0');
+      return;
+    }
+
+    // SCENE 5 — Duration
+    if (idx === 5) {
+      document.getElementById('scene-duration').classList.add('show');
+      setAxisForDuration();
+      document.querySelectorAll('#duration-pts circle').forEach(c => c.setAttribute('r','2'));
+      document.getElementById('duration-ma').setAttribute('opacity','0.95');
+      document.getElementById('dur-ref-7').setAttribute('opacity','0.5');
+      document.getElementById('dur-ref-7-label').setAttribute('opacity','0.7');
+      document.getElementById('dur-ref-8').setAttribute('opacity','0.5');
+      document.getElementById('dur-ref-8-label').setAttribute('opacity','0.7');
+      return;
+    }
+
+    // SCENE 6 — Window
+    if (idx === 6) {
+      document.getElementById('scene-window').classList.add('show');
+      setAxisForWindow();
+      document.getElementById('window-band').setAttribute('opacity','0.07');
+      document.getElementById('bed-line').setAttribute('opacity','0.92');
+      document.getElementById('wake-line').setAttribute('opacity','0.92');
+      document.getElementById('midnight-line').setAttribute('opacity','0.4');
+      document.getElementById('midnight-label').setAttribute('opacity','0.7');
+      return;
+    }
+
+    // SCENE 7 — Polar
+    if (idx === 7) {
+      document.getElementById('scene-polar').classList.add('show');
+      clearAxis();
+      return;
+    }
+
+    // SCENE 8 — Scatter
+    if (idx === 8) {
+      document.getElementById('scene-scatter').classList.add('show');
+      clearAxis();
+      return;
+    }
+
+    // SCENE 9 — Heatmap
+    if (idx === 9) {
+      document.getElementById('scene-heatmap').classList.add('show');
+      clearAxis();
+      return;
+    }
+  }
+
+  // ===== Drive scene by IntersectionObserver on .step elements =====
+  const steps = document.querySelectorAll('.step');
+  // Mark step in (for fade-in of its content)
+  const stepObs = new IntersectionObserver((entries) => {
+    entries.forEach(en => {
+      const idx = +en.target.getAttribute('data-scene');
+      if (en.isIntersecting) {
+        en.target.classList.add('in');
+        showScene(idx);
+      }
+    });
+  }, { threshold: 0.4, rootMargin: '-10% 0px -30% 0px' });
+  steps.forEach(s => stepObs.observe(s));
+
+  // Safety net: if no IO ever fires, force show all + last scene at 4s
+  setTimeout(() => {
+    if (currentScene < 0) {
+      steps.forEach(s => s.classList.add('in'));
+      showScene(9);
+    }
+  }, 4000);
+
+  // ===== EPILOGUE — best/worst lists =====
+  (function() {
     const scored = data.filter(d => d.score !== null);
     const top = [...scored].sort((a,b) => b.score - a.score).slice(0, 5);
     const bot = [...scored].sort((a,b) => a.score - b.score).slice(0, 5);
     document.getElementById('bestList').innerHTML = top.map(d => `
-      <div class="critical-row best">
-        <div class="score">${d.score}</div>
-        <div class="meta">${d.dur ? d.dur.toFixed(1)+'h' : '—'} · ${d.bedStr} → ${d.wakeStr}<br><span class="date">${fmtDate(d.startDate)}</span></div>
-      </div>`).join('');
+      <div class="row"><div class="score-pill">${d.score}</div><div class="meta">${d.dur ? d.dur.toFixed(1)+'h' : '—'} · ${d.bedStr} → ${d.wakeStr}<span class="date">${fmtDate(d.startDate)}</span></div></div>
+    `).join('');
     document.getElementById('worstList').innerHTML = bot.map(d => {
       const ev = EVENTS.find(e => Math.abs(new Date(e.date).getTime() - d.ts) < 7*86400000);
-      return `<div class="critical-row worst">
-        <div class="score">${d.score}</div>
-        <div class="meta">${d.dur ? d.dur.toFixed(1)+'h' : '—'} · ${d.bedStr} → ${d.wakeStr}<br><span class="date">${fmtDate(d.startDate)}${ev ? ' · ' + ev.emoji + ' ' + ev.label : ''}</span></div>
-      </div>`;
+      return `<div class="row"><div class="score-pill">${d.score}</div><div class="meta">${d.dur ? d.dur.toFixed(1)+'h' : '—'} · ${d.bedStr} → ${d.wakeStr}<span class="date">${fmtDate(d.startDate)}${ev ? ' · ' + ev.emoji + ' ' + ev.label : ''}</span></div></div>`;
     }).join('');
   })();
 
-  // ===========================================================
-  // IntersectionObserver for chart-block reveal
-  // ===========================================================
-  if ('IntersectionObserver' in window) {
-    const blockObs = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
-    }, {threshold: 0.05});
-    document.querySelectorAll('.chart-block').forEach(b => blockObs.observe(b));
-  }
-  // (safety nets moved to top-level above fetch — they run regardless of fetch state)
-
-  // ===========================================================
-  // Subtle parallax for star layers
-  // ===========================================================
+  // ===== Subtle parallax stars =====
   let lastY = 0, ticking = false;
   function updateParallax() {
     const y = window.scrollY;
     document.querySelectorAll('.stars-layer').forEach((el, i) => {
-      const factor = (i+1) * 0.03;
-      el.style.transform = `translateY(${y * factor * -1}px)`;
+      el.style.transform = `translateY(${y * (i+1) * -0.025}px)`;
     });
     ticking = false;
   }
   window.addEventListener('scroll', () => {
     if (!ticking) { requestAnimationFrame(updateParallax); ticking = true; }
-  }, {passive: true});
+  }, { passive: true });
 
-  // KPI counter animation when in view
-  function animCounter(id, to) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const start = performance.now();
-    const final = el.textContent;
-    function step(now) {
-      const t = Math.min(1, (now-start)/1500);
-      const ease = 1 - Math.pow(1-t, 3);
-      const v = to * ease;
-      el.textContent = Math.round(v);
-      if (t < 1) requestAnimationFrame(step);
-      else el.textContent = final;
-    }
-    requestAnimationFrame(step);
-  }
-  setTimeout(() => {
-    animCounter('k-weeks', 260);
-    animCounter('k-good', 54);
-  }, 300);
-
-  console.log(`Sogni di un Unno · ${data.length} weeks · ${load.length} load weeks · ${EVENTS.length} events`);
+  console.log('sogni-scrolly · ' + data.length + ' weeks · ' + load.length + ' load weeks · ' + EVENTS.length + ' events');
 })();
 </script>
 
