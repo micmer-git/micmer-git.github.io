@@ -100,56 +100,50 @@
     50% { transform: translate(-50%, 8px); opacity: 1; }
   }
 
-  /* ===== SCROLLY — two-column desktop, stacked mobile ===== */
+  /* ===== SCROLLY ===== */
   .scrolly {
     position: relative;
-    max-width: 1280px;
+    max-width: 1320px;
     margin: 0 auto;
     display: grid;
     grid-template-columns: 1.4fr 1fr;
     gap: 30px;
     padding: 0 24px;
   }
-  .stage-col {
-    position: relative;
-  }
+  .stage-col { position: relative; }
   .stage {
-    position: sticky;
-    top: 0;
+    position: sticky; top: 0;
     height: 100vh; height: 100svh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
   }
   .stage svg {
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
     max-height: 90vh;
+    transition: transform 1.2s cubic-bezier(0.16,1,0.3,1);
   }
-  .narrative {
-    position: relative;
-  }
+  .stage svg.zoomed { transform: scale(1.6); }
+
+  .narrative { position: relative; }
   .step {
-    min-height: 80vh;
+    min-height: 70vh;
     display: flex; flex-direction: column; justify-content: center;
-    padding: 10vh 0;
+    padding: 8vh 0;
   }
   .step-content {
-    padding: 4px 0;
-    opacity: 0; transform: translateY(30px);
-    transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
+    opacity: 0; transform: translateY(28px);
+    transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
   }
   .step.in .step-content { opacity: 1; transform: translateY(0); }
 
   .step h2 {
     font-family: 'Cinzel', serif; font-weight: 600;
-    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-size: clamp(1.45rem, 3vw, 1.95rem);
     letter-spacing: 0.03em; color: var(--moon);
     margin-bottom: 14px; line-height: 1.18;
   }
   .step .num {
     font-family: 'Cinzel', serif; font-weight: 900;
-    font-size: clamp(3.6rem, 10vw, 6rem);
+    font-size: clamp(3.4rem, 9vw, 5.8rem);
     line-height: 1; letter-spacing: 0.02em;
     background: linear-gradient(180deg, var(--moon) 0%, var(--fair) 100%);
     -webkit-background-clip: text; background-clip: text;
@@ -179,6 +173,17 @@
   }
   .chip.poor { background: rgba(224,128,112,0.18); color: var(--poor); }
   .chip.good { background: rgba(127,219,182,0.16); color: var(--good); }
+  .chip.travel { background: rgba(184,156,240,0.18); color: var(--bedtime); }
+  .chip.injury { background: rgba(224,128,112,0.18); color: var(--poor); }
+
+  /* Mini-stat bar inside steps */
+  .stat-bar {
+    display: flex; gap: 14px; margin: 14px 0 6px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem;
+    color: var(--ink-faint); letter-spacing: 0.06em;
+    padding-top: 12px; border-top: 1px dashed rgba(184,196,228,0.15);
+  }
+  .stat-bar .v { color: var(--ink); font-weight: 600; }
 
   /* ===== Epilogue ===== */
   .epilogue { max-width: 800px; margin: 60px auto 0; padding: 0 24px; }
@@ -250,30 +255,94 @@
     0%, 100% { transform: scale(1); opacity: 1; }
     50% { transform: scale(1.4); opacity: 0.55; }
   }
-
-  /* Scenes — visible by default; transitions handle smooth swap */
+  .glow {
+    filter: drop-shadow(0 0 8px currentColor) drop-shadow(0 0 14px currentColor);
+  }
   .scene { opacity: 1; transition: opacity 0.7s ease; }
   .scene.hidden { opacity: 0; pointer-events: none; }
-  .data-pt { transition: cy 0.9s cubic-bezier(0.16,1,0.3,1), opacity 0.7s; }
-
-  .data-pt-event { cursor: pointer; transition: transform 0.2s; transform-origin: center; transform-box: fill-box; }
+  .data-pt { transition: cy 0.9s cubic-bezier(0.16,1,0.3,1), opacity 0.7s, r 0.4s; }
+  .data-pt-event {
+    cursor: pointer; transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+    transform-origin: center; transform-box: fill-box;
+  }
+  .data-pt-event.focused { transform: scale(2); }
+  .data-pt-event.focused circle { filter: drop-shadow(0 0 12px var(--moon)); }
   .data-pt-event:hover { transform: scale(1.5); }
+  .stagger-in {
+    opacity: 0; transform: scale(0);
+    animation: pop 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    transform-origin: center; transform-box: fill-box;
+  }
+  @keyframes pop { to { opacity: 1; transform: scale(1); } }
 
-  /* ===== Mobile ===== */
+  /* ===== MOBILE: full-bleed fixed stage + bottom-anchored cards ===== */
   @media (max-width: 900px) {
+    body { font-size: 17px; }
     .scrolly {
       grid-template-columns: 1fr;
       gap: 0;
+      padding: 0;
     }
-    .stage-col { order: 0; }
-    .narrative { order: 1; }
+    .stage-col {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
     .stage {
-      height: 60vh; height: 60svh;
-      top: 60px;  /* leave a bit of breathing room from top */
+      position: absolute;
+      inset: 0;
+      height: 100vh; height: 100svh;
+      top: 0;
+      padding: 12px 6px;
+      pointer-events: auto;
     }
-    .step { min-height: 60vh; padding: 6vh 0; }
-    .step .num { font-size: clamp(3rem, 14vw, 5rem); }
+    .stage svg {
+      max-height: 56vh;
+      max-height: 56svh;
+      margin-top: -8vh; /* lift chart above bottom-card area */
+    }
+
+    .narrative {
+      position: relative;
+      z-index: 2;
+      pointer-events: none;
+      padding: 0 18px;
+    }
+    /* Hero before scrolly is normal flow; scrolly content sits above fixed stage */
+    .step {
+      min-height: 100vh;
+      min-height: 100svh;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end; /* anchor card at bottom */
+      pointer-events: none;
+    }
+    .step-content {
+      pointer-events: auto;
+      background: linear-gradient(180deg, rgba(7,9,26,0) 0%, rgba(7,9,26,0.92) 24%, rgba(7,9,26,0.97) 100%);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 24px 22px 30px;
+      border-radius: 18px 18px 0 0;
+      margin-bottom: 0;
+      border-top: 1px solid rgba(184,196,228,0.14);
+      transform: translateY(40px);
+      max-height: 50vh;
+      max-height: 50svh;
+      overflow-y: auto;
+    }
+    .step.in .step-content { transform: translateY(0); }
+    .step .num { font-size: clamp(3.2rem, 13vw, 4.8rem); }
+    .step h2 { font-size: 1.35rem; margin-bottom: 10px; }
+    .step p { font-size: 1rem; line-height: 1.55; margin-bottom: 10px; }
+    .stat-bar { font-size: 0.66rem; gap: 10px; }
     .crit-grid { grid-template-columns: 1fr; gap: 14px; }
+
+    /* Hide stage during hero (no fixed chart yet) — show only when scrolled past hero */
+    .stage-col { display: none; }
+    .scrolly.engaged .stage-col { display: block; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -299,23 +368,23 @@
 </section>
 
 <!-- ===== SCROLLY ===== -->
-<div class="scrolly">
+<div class="scrolly" id="scrolly">
 
-  <!-- LEFT: sticky stage with single SVG that morphs through scenes -->
   <div class="stage-col">
     <div class="stage" id="stage">
       <svg id="canvas" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid meet"></svg>
     </div>
   </div>
 
-  <!-- RIGHT: narrative steps that drive scenes -->
   <div class="narrative">
 
+    <!-- Story Act I — la materia prima -->
     <section class="step" data-scene="0">
       <div class="step-content">
         <div class="num">260</div>
         <div class="num-sub">settimane di sonno tracciate</div>
-        <p>La prima notte registrata è del <strong>10 maggio 2021</strong>. L'ultima, ad oggi, è del <strong>27 aprile 2026</strong>. In mezzo: <em>1.820 giorni di letto, sveglie, jet lag, briefing pre-Ironman, viaggi in 3AC sui treni indiani</em>. Garmin ha tenuto il conto, mentre i polpacci facevano il resto.</p>
+        <p>La prima notte registrata è del <strong>10 maggio 2021</strong>. L'ultima, ad oggi, è del <strong>27 aprile 2026</strong>. In mezzo: <em>1.820 giorni di letto, sveglie, jet lag, briefing pre-Ironman, viaggi in 3AC sui treni indiani</em>.</p>
+        <p>Garmin ha tenuto il conto, mentre i polpacci facevano il resto.</p>
       </div>
     </section>
 
@@ -324,46 +393,116 @@
         <h2>Una nuvola di settimane</h2>
         <p>Ogni puntino è una notte: la media settimanale dello score Garmin (0–100). Sopra <strong>80</strong> dorme bene, sotto <strong>60</strong> dorme male, in mezzo c'è la grande pianura del <em>Fair</em>.</p>
         <p>La media dei cinque anni è <strong>74,4</strong>. Niente di entusiasmante. Niente di disastroso.</p>
+        <div class="stat-bar"><span><span class="v">260</span> settimane</span><span><span class="v">74.4</span> media</span><span><span class="v">±10.5</span> dev.std</span></div>
       </div>
     </section>
 
     <section class="step" data-scene="2">
       <div class="step-content">
         <h2>Il battito di fondo</h2>
-        <p>La linea dorata è la media mobile a 12 settimane — il <em>battito di fondo</em> della capacità di dormire.</p>
-        <p>Si nota una flessione lenta: dal 2021 al 2026, il pavimento si abbassa di <strong>circa cinque punti</strong>. Più allenamenti, più viaggi, meno ore.</p>
+        <p>La linea dorata è la <strong>media mobile a 12 settimane</strong> — il battito di fondo della capacità di dormire.</p>
+        <p>Si nota una flessione lenta: dal 2021 al 2026, il pavimento si abbassa di <em>circa cinque punti</em>. Più allenamenti, più viaggi, meno ore.</p>
       </div>
     </section>
 
-    <section class="step" data-scene="3">
+    <!-- Story Act II — gli estremi -->
+    <section class="step" data-scene="3" data-focus="peak">
       <div class="step-content">
-        <h2>I due picchi</h2>
-        <p><span class="chip good">↑ 89</span> Settimana del <strong>14 febbraio 2022</strong>: lo score più alto di sempre. Coricamenti prima delle dieci, sveglie dopo le sette.</p>
-        <p><span class="chip poor">↓ 51</span> Settimana del <strong>15 settembre 2025</strong>: tre giorni prima dell'Ironman, con la nutrizione da rinegoziare. Quattro ore e mezza di sonno medio.</p>
+        <h2>Il picco — Febbraio 2022</h2>
+        <p><span class="chip good">↑ 89</span> Lo score più alto di sempre. Settimana del <strong>14 febbraio 2022</strong>: coricamenti prima delle dieci, sveglie dopo le sette, sette ore e cinquantaquattro minuti di sonno medio.</p>
+        <p>Era il pre-Unno. Niente wattmetro, niente Padova ancora, niente Liegi. Solo Bergamo Alta e una candela sul comodino.</p>
       </div>
     </section>
 
+    <section class="step" data-scene="3" data-focus="trough">
+      <div class="step-content">
+        <h2>Il crollo — Settembre 2025</h2>
+        <p><span class="chip poor">↓ 51</span> La settimana del <strong>15 settembre 2025</strong>. Tre giorni prima dell'Ironman, con la valigia aperta e la nutrizione da rinegoziare.</p>
+        <p><em>Quattro ore e quarantaquattro minuti</em> di sonno medio. La frequenza al risveglio non scendeva mai. Il corpo sapeva già che il giorno dopo avrebbe forato a 55 km/h.</p>
+      </div>
+    </section>
+
+    <!-- Story Act III — gli eventi -->
     <section class="step" data-scene="4">
       <div class="step-content">
         <h2>Venti eventi-cardine</h2>
-        <p>I cerchietti dorati sopra la nuvola sono i <strong>venti monumenti</strong> del triennio: gare, infortuni, viaggi. Dal Mortirolo del giugno 2024 alla Liegi-Bastogne-Liège con Luca, dalla Malaga sotto le 2h40 al Varanasi 451.</p>
-        <p>Il sonno della settimana-evento è in media <em>solo un punto</em> sotto la media generale — il corpo regge, è la testa che si carica.</p>
+        <p>I cerchietti dorati sopra la nuvola sono i <strong>venti monumenti</strong> del triennio. Gare, infortuni, viaggi.</p>
+        <p>Il sonno della settimana-evento è in media <em>solo un punto</em> sotto la media generale. Il corpo regge — è la testa che si carica.</p>
       </div>
     </section>
 
+    <section class="step" data-scene="4" data-focus="ev-mortirolo">
+      <div class="step-content">
+        <h2><span class="chip">🏔️ giugno 2024</span></h2>
+        <p>La <strong>diga del Mortirolo</strong>: 472 km, 10.815 metri di dislivello, Training Load 1.871 — il numero più alto di sempre.</p>
+        <p>Il sonno di quella settimana? <em>Sorprendentemente regolare</em>. Le gambe distrutte dormono meglio di una testa ansiosa.</p>
+      </div>
+    </section>
+
+    <section class="step" data-scene="4" data-focus="ev-malaga">
+      <div class="step-content">
+        <h2><span class="chip">🥘 dicembre 2024</span></h2>
+        <p><strong>Malaga Marathon</strong>, sotto le 2h40 per la prima volta. <em>2:39:57, 113° assoluto</em>.</p>
+        <p>Score di settimana: 76. Quello del giorno-gara? Probabilmente trenta. Il pianto sotto il sole andaluso si paga in cortisolo.</p>
+      </div>
+    </section>
+
+    <section class="step" data-scene="4" data-focus="ev-liegi">
+      <div class="step-content">
+        <h2><span class="chip">🇧🇪 aprile 2025</span></h2>
+        <p>La <strong>Liegi-Bastogne-Liège</strong>, monumento del 1892, 253 km e 4.231 metri. Con mio fratello <strong>Luca</strong>, sette anni dopo il primo tentativo finito col vomito al km 200.</p>
+        <p>La sera prima: agitazione. La sera dopo: sonno spaccato dalle dodici ore in macchina di rientro. La settimana è tutta sotto la media.</p>
+      </div>
+    </section>
+
+    <section class="step" data-scene="4" data-focus="ev-clavicola">
+      <div class="step-content">
+        <h2><span class="chip injury">🩻 fine aprile 2025</span></h2>
+        <p>La caduta. <strong>Clavicola rotta</strong>, una linea sotto la pelle. Tre tracolle a fianco del letto.</p>
+        <p>Per due settimane il sonno crolla — 5 ore, 5 ore e mezza, nessun fianco comodo. Poi il corpo trova la sua nuova posizione di equilibrio.</p>
+      </div>
+    </section>
+
+    <section class="step" data-scene="4" data-focus="ev-ironman">
+      <div class="step-content">
+        <h2><span class="chip poor">🌊 settembre 2025</span></h2>
+        <p>Il giorno-gara dell'<strong>Ironman</strong>. 50 km di flat-tire ride dopo la gomma esplosa a 55 km/h al chilometro 136. La maratona finita a stomaco vuoto.</p>
+        <p>Quella settimana è il <em>punto più basso del sonno di sempre</em>: score 51, 4h 44m di media. La preparazione di un ferro pesa più del ferro stesso.</p>
+      </div>
+    </section>
+
+    <section class="step" data-scene="4" data-focus="ev-varanasi">
+      <div class="step-content">
+        <h2><span class="chip travel">🇮🇳 gennaio 2026</span></h2>
+        <p><strong>Varanasi 451</strong>: una corsa lungo il fiume sacro con la cena in 3AC del giorno prima ancora nello stomaco.</p>
+        <p>La settimana indiana è da score 70, ma con dormite spostate di sei fusi orari. Il jet lag è una valuta che si paga sempre, prima o dopo.</p>
+      </div>
+    </section>
+
+    <section class="step" data-scene="4" data-focus="ev-roma">
+      <div class="step-content">
+        <h2><span class="chip">❤️‍🔥 marzo 2026</span></h2>
+        <p>La <strong>Maratona di Roma</strong> con Martinucci e Marti — <em>not the freshest</em>, scrive Michele su Strava. Ora carbonara, scrive sotto.</p>
+        <p>Lo score della settimana? 73. La compagnia compensa quello che la freschezza tradisce.</p>
+      </div>
+    </section>
+
+    <!-- Story Act IV — le altre dimensioni -->
     <section class="step" data-scene="5">
       <div class="step-content">
         <h2>Quante ore, davvero</h2>
         <p>Cambiamo asse: dalla qualità (score) alla quantità (ore). Le linee tratteggiate sono <strong>7h</strong> (consigliata) e <strong>8h</strong> (ideale).</p>
         <p>Il 2021 era sopra le sette. Il 2026 è sotto le sei e mezza. <em>Più Unno, meno ore</em>.</p>
+        <div class="stat-bar"><span><span class="v">2021</span> 7h 24m</span><span><span class="v">2026</span> 6h 18m</span><span><span class="v">−1h 06m</span> in 5 anni</span></div>
       </div>
     </section>
 
     <section class="step" data-scene="6">
       <div class="step-content">
-        <h2>La finestra del sonno si stringe</h2>
-        <p>La <strong>linea lavanda</strong> è l'ora in cui si va a letto, l'<strong>ambra</strong> è la sveglia. Lo spazio fra le due è il sonno.</p>
-        <p>Nel 2021 mi coricavo verso le 23:15 e mi alzavo alle 7:00. Nel 2026 vado a letto alle 22:00 e mi alzo alle 04:50. <em>La finestra si è anticipata di oltre un'ora e mezza</em>.</p>
+        <h2>La finestra del sonno</h2>
+        <p>La <strong>linea lavanda</strong> è l'ora del coricamento, l'<strong>ambra</strong> è la sveglia. Lo spazio fra le due è il sonno.</p>
+        <p>Negli anni <em>la finestra si stringe e si anticipa</em>: nel 2021 a letto verso le 23:15 e sveglia alle 7:00. Nel 2026 a letto alle 22:00 e sveglia alle 04:50.</p>
+        <p>Un'ora e mezza di anticipo in cinque anni. <em>Le sei del mattino</em>, per un Unno con i polpacci pelosi, è l'inizio della giornata.</p>
       </div>
     </section>
 
@@ -371,7 +510,7 @@
       <div class="step-content">
         <h2>L'orologio circadiano</h2>
         <p>Stesa intorno a un quadrante di ventiquattro ore, ecco la <strong>rosa dei venti del riposo</strong>. I petali lavanda sono i coricamenti, gli ambra le sveglie.</p>
-        <p>Le ore preferite di un Unno: a letto fra le <strong>22:00 e le 23:00</strong>, sveglio fra le <strong>5:00 e le 6:00</strong>.</p>
+        <p>Le ore preferite di un Unno: <strong>22:00–23:00</strong> a letto, <strong>5:00–6:00</strong> sveglio. Il resto è statisticamente trascurabile.</p>
       </div>
     </section>
 
@@ -379,14 +518,15 @@
       <div class="step-content">
         <h2>Più alleni, peggio dormi?</h2>
         <p>Ogni cerchio è una settimana: x = <strong>Training Load</strong>, y = <strong>score</strong>, dimensione = sortite.</p>
-        <p>Correlazione lievemente <em>negativa</em>: r = ‑0,18. Sopra i <strong>1.500 di TL</strong>, lo score scende mediamente di quattro punti rispetto alle settimane sotto i 1.000. Il corpo paga la stanchezza nelle ore di sonno.</p>
+        <p>Correlazione lievemente <em>negativa</em>: <strong>r = ‑0,18</strong>. Sopra i <strong>1.500 di TL</strong>, lo score scende mediamente di quattro punti rispetto alle settimane sotto i 1.000.</p>
+        <p>Il corpo paga la stanchezza nelle ore in cui dorme, non in quelle in cui corre.</p>
       </div>
     </section>
 
     <section class="step" data-scene="9">
       <div class="step-content">
         <h2>Cinque anni in dodici colonne</h2>
-        <p>Una mappa di calore: ogni cella è la media mensile dello score, ogni riga un anno.</p>
+        <p>Una mappa di calore: ogni cella è la media mensile dello score, ogni riga un anno. Il <em>verde menta</em> è "Good", il <em>ruggine</em> è "Poor".</p>
         <p>Si leggono <em>settembre 2025</em> (Ironman gomma a terra), <em>maggio 2025</em> (clavicola), e l'<em>estate 2022</em> — quando esisteva qualcosa che assomigliava a un sonno regolare.</p>
       </div>
     </section>
@@ -437,26 +577,26 @@
   } catch (e) { console.error('fetch fail', e); return; }
 
   const EVENTS = [
-    { date: '2023-06-04', label: 'I trecentonove di giugno', sub: '309 km × 2.300 m', emoji: '🚴', cat: 'milestone' },
-    { date: '2023-08-03', label: 'Prima OpenWaterSwim', sub: '1.300 m al lago', emoji: '🌊', cat: 'milestone' },
-    { date: '2024-05-15', label: 'Primo wattmetro', sub: 'i kJ smettono di essere zero', emoji: '🔋', cat: 'milestone' },
-    { date: '2024-06-08', label: 'Mortirolo TL 1.871', sub: '472 km, 10.815 m', emoji: '💥', cat: 'race' },
-    { date: '2024-08-09', label: 'Doppia da centottanta', sub: '177+180 km in 24 h', emoji: '⛰️', cat: 'race' },
-    { date: '2024-12-15', label: 'Malaga Marathon 2:39:57', sub: '113° assoluto', emoji: '🥘', cat: 'race' },
-    { date: '2025-02-02', label: 'Hong Kong 21', sub: 'mezza ai grattacieli', emoji: '🇭🇰', cat: 'travel' },
-    { date: '2025-03-02', label: 'Bologna Marathon', sub: '2h41 06s — Ironman test', emoji: '🍝', cat: 'race' },
-    { date: '2025-04-06', label: 'Milano Wizzair Marathon', sub: 'no bananas at feed zones', emoji: '✈️', cat: 'race' },
-    { date: '2025-04-26', label: 'Liegi-Bastogne-Liège', sub: '253 km con Luca, deal closed', emoji: '🇧🇪', cat: 'race' },
-    { date: '2025-04-29', label: 'Clavicola rotta', sub: 'una linea sotto la pelle', emoji: '🩻', cat: 'injury' },
-    { date: '2025-06-06', label: '34 bpm prima del bisturi', sub: 'sanità italiana annulla', emoji: '🫀', cat: 'injury' },
-    { date: '2025-07-05', label: 'Cordoba — wedding andaluso', sub: '21 km a 28°C', emoji: '☀️', cat: 'travel' },
-    { date: '2025-08-12', label: 'Vaso di Sonny — Casto', sub: '188 km gravel', emoji: '🏺', cat: 'race' },
-    { date: '2025-09-20', label: 'IRONMAN Italy', sub: 'gomma a 55 km/h, 50 km flat-tire', emoji: '🌊', cat: 'race' },
-    { date: '2025-10-26', label: 'Maratona del Portone', sub: '42,2 km — si apre un portone', emoji: '🚪', cat: 'race' },
-    { date: '2025-11-30', label: 'Firenze Marathon — PR', sub: 'A riveder le stelle', emoji: '🔥', cat: 'race' },
-    { date: '2026-01-06', label: 'Varanasi 451', sub: 'most touching run of life', emoji: '🇮🇳', cat: 'travel' },
-    { date: '2026-03-22', label: 'Maratona di Roma', sub: 'Martinucci e Marti powered', emoji: '❤️‍🔥', cat: 'race' },
-    { date: '2026-04-12', label: 'Montecampione 1800', sub: '132 km, 3.154 m, deadly version', emoji: '🏴‍☠️', cat: 'race' },
+    { id: 'ev-300',     date: '2023-06-04', label: 'I trecentonove di giugno', sub: '309 km × 2.300 m', emoji: '🚴', cat: 'milestone' },
+    { id: 'ev-swim1',   date: '2023-08-03', label: 'Prima OpenWaterSwim', sub: '1.300 m al lago', emoji: '🌊', cat: 'milestone' },
+    { id: 'ev-watt',    date: '2024-05-15', label: 'Primo wattmetro', sub: 'i kJ smettono di essere zero', emoji: '🔋', cat: 'milestone' },
+    { id: 'ev-mortirolo', date: '2024-06-08', label: 'Mortirolo TL 1.871', sub: '472 km, 10.815 m', emoji: '💥', cat: 'race' },
+    { id: 'ev-doppia',  date: '2024-08-09', label: 'Doppia da centottanta', sub: '177+180 km in 24 h', emoji: '⛰️', cat: 'race' },
+    { id: 'ev-malaga',  date: '2024-12-15', label: 'Malaga Marathon 2:39:57', sub: '113° assoluto', emoji: '🥘', cat: 'race' },
+    { id: 'ev-hk',      date: '2025-02-02', label: 'Hong Kong 21', sub: 'mezza ai grattacieli', emoji: '🇭🇰', cat: 'travel' },
+    { id: 'ev-bologna', date: '2025-03-02', label: 'Bologna Marathon', sub: '2h41 06s — Ironman test', emoji: '🍝', cat: 'race' },
+    { id: 'ev-milano',  date: '2025-04-06', label: 'Milano Wizzair Marathon', sub: 'no bananas at feed zones', emoji: '✈️', cat: 'race' },
+    { id: 'ev-liegi',   date: '2025-04-26', label: 'Liegi-Bastogne-Liège', sub: '253 km con Luca, deal closed', emoji: '🇧🇪', cat: 'race' },
+    { id: 'ev-clavicola', date: '2025-04-29', label: 'Clavicola rotta', sub: 'una linea sotto la pelle', emoji: '🩻', cat: 'injury' },
+    { id: 'ev-bisturi', date: '2025-06-06', label: '34 bpm prima del bisturi', sub: 'sanità italiana annulla', emoji: '🫀', cat: 'injury' },
+    { id: 'ev-cordoba', date: '2025-07-05', label: 'Cordoba — wedding andaluso', sub: '21 km a 28°C', emoji: '☀️', cat: 'travel' },
+    { id: 'ev-vaso',    date: '2025-08-12', label: 'Vaso di Sonny — Casto', sub: '188 km gravel', emoji: '🏺', cat: 'race' },
+    { id: 'ev-ironman', date: '2025-09-20', label: 'IRONMAN Italy', sub: 'gomma a 55 km/h, 50 km flat-tire', emoji: '🌊', cat: 'race' },
+    { id: 'ev-portone', date: '2025-10-26', label: 'Maratona del Portone', sub: '42,2 km — si apre un portone', emoji: '🚪', cat: 'race' },
+    { id: 'ev-firenze', date: '2025-11-30', label: 'Firenze Marathon — PR', sub: 'A riveder le stelle', emoji: '🔥', cat: 'race' },
+    { id: 'ev-varanasi',date: '2026-01-06', label: 'Varanasi 451', sub: 'most touching run of life', emoji: '🇮🇳', cat: 'travel' },
+    { id: 'ev-roma',    date: '2026-03-22', label: 'Maratona di Roma', sub: 'Martinucci e Marti powered', emoji: '❤️‍🔥', cat: 'race' },
+    { id: 'ev-monte',   date: '2026-04-12', label: 'Montecampione 1800', sub: '132 km, 3.154 m, deadly version', emoji: '🏴‍☠️', cat: 'race' },
   ];
   function findWeekForDate(targetISO) {
     const t = new Date(targetISO).getTime();
@@ -491,155 +631,136 @@
   }
 
   const svg = document.getElementById('canvas');
+  const stage = document.getElementById('stage');
   const W = 1000, H = 700;
   const PAD = { l: 56, r: 36, t: 60, b: 70 };
   const innerW = W - PAD.l - PAD.r, innerH = H - PAD.t - PAD.b;
   const yearStarts = {};
   data.forEach((d, i) => { if (!yearStarts[d.year]) yearStarts[d.year] = i; });
 
-  // Score scale
   const score_ymin = 40, score_ymax = 95;
   const xs_score = i => PAD.l + (i / (data.length - 1)) * innerW;
   const ys_score = v => PAD.t + ((score_ymax - v) / (score_ymax - score_ymin)) * innerH;
-  // Duration scale
   const ys_dur = v => PAD.t + ((9.5 - v) / (9.5 - 4)) * innerH;
-  // Window scale (minutes since 6pm, 180=9pm, 900=9am)
   const ys_win = v => PAD.t + ((v - 180) / (900 - 180)) * innerH;
   function bedFrom6pm(t) { if (t === null) return null; return (t - 18*60 + 24*60) % (24*60); }
 
-  // ===== Build SVG content (all scenes pre-rendered, hidden by class) =====
-  const scoreScene = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-  scoreScene.setAttribute('id', 'scene-score');
-  scoreScene.setAttribute('class', 'scene');
+  // ===== Build SVG =====
+  function el(tag, attrs = {}, parent) {
+    const e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function gScene(id) {
+    const g = el('g', { id, class: 'scene hidden' });
+    svg.appendChild(g);
+    return g;
+  }
 
-  const yearAxis = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-  yearAxis.setAttribute('id', 'year-axis');
-  yearAxis.setAttribute('class', 'scene');
-
-  const durScene = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-  durScene.setAttribute('id', 'scene-duration');
-  durScene.setAttribute('class', 'scene hidden');
-
-  const winScene = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-  winScene.setAttribute('id', 'scene-window');
-  winScene.setAttribute('class', 'scene hidden');
-
-  const polarScene = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-  polarScene.setAttribute('id', 'scene-polar');
-  polarScene.setAttribute('class', 'scene hidden');
-
-  const scatterScene = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-  scatterScene.setAttribute('id', 'scene-scatter');
-  scatterScene.setAttribute('class', 'scene hidden');
-
-  const heatScene = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-  heatScene.setAttribute('id', 'scene-heatmap');
-  heatScene.setAttribute('class', 'scene hidden');
-
-  // Year ticks (always)
-  let yearAxisHTML = '';
-  Object.entries(yearStarts).forEach(([y, i]) => {
-    const x = xs_score(i);
-    yearAxisHTML += `<line x1="${x}" y1="${PAD.t+innerH}" x2="${x}" y2="${PAD.t+innerH+5}" stroke="rgba(184,196,228,0.32)"/>`;
-    yearAxisHTML += `<text x="${x}" y="${PAD.t+innerH+24}" class="axis-label" text-anchor="middle">${y}</text>`;
-  });
-  yearAxis.innerHTML = yearAxisHTML;
-
-  // SCORE scene (default visible)
-  let scoreHTML = '';
-  // bands
-  scoreHTML += `<rect x="${PAD.l}" y="${ys_score(95)}" width="${innerW}" height="${ys_score(80)-ys_score(95)}" fill="var(--good)" opacity="0.06"/>`;
-  scoreHTML += `<rect x="${PAD.l}" y="${ys_score(80)}" width="${innerW}" height="${ys_score(60)-ys_score(80)}" fill="var(--fair)" opacity="0.04"/>`;
-  scoreHTML += `<rect x="${PAD.l}" y="${ys_score(60)}" width="${innerW}" height="${ys_score(40)-ys_score(60)}" fill="var(--poor)" opacity="0.06"/>`;
-  // y grid
+  // === SCORE scene ===
+  const scoreScene = el('g', { id: 'scene-score', class: 'scene' });
+  svg.appendChild(scoreScene);
+  // Bands
+  el('rect', { x: PAD.l, y: ys_score(95), width: innerW, height: ys_score(80) - ys_score(95), fill: 'var(--good)', opacity: '0.06' }, scoreScene);
+  el('rect', { x: PAD.l, y: ys_score(80), width: innerW, height: ys_score(60) - ys_score(80), fill: 'var(--fair)', opacity: '0.04' }, scoreScene);
+  el('rect', { x: PAD.l, y: ys_score(60), width: innerW, height: ys_score(40) - ys_score(60), fill: 'var(--poor)', opacity: '0.06' }, scoreScene);
+  // Y axis
   [50,60,70,80,90].forEach(v => {
     const y = ys_score(v);
-    scoreHTML += `<line class="grid-line" x1="${PAD.l}" y1="${y}" x2="${PAD.l+innerW}" y2="${y}"/>`;
-    scoreHTML += `<text x="${PAD.l-10}" y="${y+4}" class="axis-label" text-anchor="end" id="y-score-${v}">${v}</text>`;
+    el('line', { class: 'grid-line', x1: PAD.l, y1: y, x2: PAD.l + innerW, y2: y }, scoreScene);
+    const t = el('text', { x: PAD.l - 10, y: y + 4, class: 'axis-label', 'text-anchor': 'end' }, scoreScene);
+    t.textContent = v;
   });
-  // points
-  scoreHTML += `<g id="score-pts">`;
+  // X axis (year ticks)
+  Object.entries(yearStarts).forEach(([y, i]) => {
+    const x = xs_score(i);
+    el('line', { x1: x, y1: PAD.t + innerH, x2: x, y2: PAD.t + innerH + 5, stroke: 'rgba(184,196,228,0.32)' }, scoreScene);
+    const t = el('text', { x, y: PAD.t + innerH + 24, class: 'axis-label', 'text-anchor': 'middle' }, scoreScene);
+    t.textContent = y;
+  });
+  // Score points
+  const scorePts = el('g', { id: 'score-pts' }, scoreScene);
   data.forEach((d, i) => {
     if (d.score === null) return;
     const c = d.score >= 80 ? 'var(--good)' : d.score >= 60 ? 'var(--fair)' : 'var(--poor)';
-    scoreHTML += `<circle cx="${xs_score(i).toFixed(1)}" cy="${ys_score(d.score).toFixed(1)}" r="2.4" fill="${c}" class="data-pt"/>`;
+    el('circle', {
+      cx: xs_score(i).toFixed(1), cy: ys_score(d.score).toFixed(1),
+      r: '2.4', fill: c, class: 'data-pt', 'data-i': i
+    }, scorePts);
   });
-  scoreHTML += `</g>`;
-  // moving avg
+  // Moving avg
   const ma = movAvg(data, 'score', 12);
   let maParts = [];
   ma.forEach((v, i) => {
     if (v === null) return;
-    const op = maParts.length === 0 ? 'M' : 'L';
-    maParts.push(op + xs_score(i).toFixed(1) + ' ' + ys_score(v).toFixed(1));
+    maParts.push((maParts.length === 0 ? 'M' : 'L') + xs_score(i).toFixed(1) + ' ' + ys_score(v).toFixed(1));
   });
-  scoreHTML += `<path id="score-ma" d="${maParts.join(' ')}" stroke="var(--moving)" stroke-width="2.4" fill="none" stroke-linecap="round" opacity="0"/>`;
-  // highlights
-  scoreHTML += `<g id="score-highlights" opacity="0">`;
+  const maLine = el('path', { id: 'score-ma', d: maParts.join(' '), stroke: 'var(--moving)', 'stroke-width': '2.4', fill: 'none', 'stroke-linecap': 'round', opacity: '0' }, scoreScene);
+  // Highlights
+  const highlights = el('g', { id: 'score-highlights', opacity: '0' }, scoreScene);
   const peakIdx = data.findIndex(d => d.score === 89);
   const troughIdx = data.findIndex(d => d.score === 51);
-  if (peakIdx >= 0) {
-    const cx = xs_score(peakIdx), cy = ys_score(89);
-    scoreHTML += `<circle cx="${cx}" cy="${cy}" r="14" fill="none" stroke="var(--good)" stroke-width="2" class="pulse"/>`;
-    scoreHTML += `<circle cx="${cx}" cy="${cy}" r="4" fill="var(--good)"/>`;
-    scoreHTML += `<text x="${cx}" y="${cy-22}" text-anchor="middle" class="annot" fill="var(--good)" font-weight="600">PR · Feb 2022 · 89</text>`;
+  function makeHighlight(idx, score, color, label, anchorY) {
+    const g = el('g', {}, highlights);
+    const cx = xs_score(idx), cy = ys_score(score);
+    el('circle', { cx, cy, r: '14', fill: 'none', stroke: color, 'stroke-width': '2', class: 'pulse' }, g);
+    el('circle', { cx, cy, r: '4', fill: color, class: 'glow', style: `color:${color}` }, g);
+    const txt = el('text', { x: cx, y: anchorY, 'text-anchor': 'middle', class: 'annot', fill: color, 'font-weight': '600' }, g);
+    txt.textContent = label;
+    return { g, cx, cy };
   }
-  if (troughIdx >= 0) {
-    const cx = xs_score(troughIdx), cy = ys_score(51);
-    scoreHTML += `<circle cx="${cx}" cy="${cy}" r="14" fill="none" stroke="var(--poor)" stroke-width="2" class="pulse"/>`;
-    scoreHTML += `<circle cx="${cx}" cy="${cy}" r="4" fill="var(--poor)"/>`;
-    scoreHTML += `<text x="${cx}" y="${cy+30}" text-anchor="middle" class="annot" fill="var(--poor)" font-weight="600">Ironman · Set 2025 · 51</text>`;
-  }
-  scoreHTML += `</g>`;
-  // events
-  scoreHTML += `<g id="score-events" opacity="0">`;
+  let peakMark = null, troughMark = null;
+  if (peakIdx >= 0) peakMark = makeHighlight(peakIdx, 89, 'var(--good)', 'PR · Feb 2022 · 89', ys_score(89) - 22);
+  if (troughIdx >= 0) troughMark = makeHighlight(troughIdx, 51, 'var(--poor)', 'Ironman · Set 2025 · 51', ys_score(51) + 30);
+  // Events
+  const eventsLayer = el('g', { id: 'score-events', opacity: '0' }, scoreScene);
+  const eventNodes = {};
   EVENTS.forEach((ev, k) => {
     if (ev.weekIdx < 0) return;
     const x = xs_score(ev.weekIdx);
     const w = data[ev.weekIdx];
     const y = w.score !== null ? ys_score(w.score) : ys_score(70);
     const evColor = ev.cat === 'race' ? 'var(--moon)' : ev.cat === 'injury' ? 'var(--poor)' : ev.cat === 'milestone' ? 'var(--good)' : 'var(--bedtime)';
-    scoreHTML += `<g class="data-pt-event" data-ev="${k}">`;
-    scoreHTML += `<line x1="${x}" y1="${y - 6}" x2="${x}" y2="${PAD.t - 4}" stroke="${evColor}" stroke-width="0.6" stroke-dasharray="2 2" opacity="0.55"/>`;
-    scoreHTML += `<circle cx="${x}" cy="${PAD.t - 14}" r="9" fill="${evColor}" stroke="var(--bg)" stroke-width="1.5"/>`;
-    scoreHTML += `<text x="${x}" y="${PAD.t - 10}" text-anchor="middle" font-size="11" pointer-events="none">${ev.emoji}</text>`;
-    scoreHTML += `</g>`;
+    const g = el('g', { class: 'data-pt-event', 'data-ev': k, id: ev.id }, eventsLayer);
+    el('line', { x1: x, y1: y - 6, x2: x, y2: PAD.t - 4, stroke: evColor, 'stroke-width': '0.6', 'stroke-dasharray': '2 2', opacity: '0.55' }, g);
+    el('circle', { cx: x, cy: PAD.t - 14, r: '9', fill: evColor, stroke: 'var(--bg)', 'stroke-width': '1.5' }, g);
+    const txt = el('text', { x, y: PAD.t - 10, 'text-anchor': 'middle', 'font-size': '11', 'pointer-events': 'none' }, g);
+    txt.textContent = ev.emoji;
+    // Hover
+    g.addEventListener('mouseenter', e => {
+      showTip(e, `<div class="tt-title">${ev.emoji} ${ev.label}</div><em>${ev.sub}</em><br>${fmtDate(w.startDate)} · score <strong>${w.score || '—'}</strong>`);
+    });
+    g.addEventListener('mouseleave', hideTip);
+    eventNodes[ev.id] = { node: g, x, y };
   });
-  scoreHTML += `</g>`;
-  scoreScene.innerHTML = scoreHTML;
 
-  // DURATION scene
-  let durHTML = '';
+  // === DURATION ===
+  const durScene = gScene('scene-duration');
   [5,6,7,8,9].forEach(v => {
     const y = ys_dur(v);
-    durHTML += `<line class="grid-line" x1="${PAD.l}" y1="${y}" x2="${PAD.l+innerW}" y2="${y}"/>`;
-    durHTML += `<text x="${PAD.l-10}" y="${y+4}" class="axis-label" text-anchor="end">${v} h</text>`;
+    el('line', { class: 'grid-line', x1: PAD.l, y1: y, x2: PAD.l + innerW, y2: y }, durScene);
+    const t = el('text', { x: PAD.l - 10, y: y + 4, class: 'axis-label', 'text-anchor': 'end' }, durScene);
+    t.textContent = v + ' h';
   });
-  // refs 7h 8h
   [7,8].forEach(v => {
     const y = ys_dur(v);
-    durHTML += `<line x1="${PAD.l}" y1="${y}" x2="${PAD.l+innerW}" y2="${y}" stroke="var(--moon)" stroke-width="0.8" stroke-dasharray="4 4" opacity="0.4"/>`;
-    durHTML += `<text x="${PAD.l+8}" y="${y-6}" class="axis-label" fill="var(--moon)" opacity="0.8">${v} h</text>`;
+    el('line', { x1: PAD.l, y1: y, x2: PAD.l + innerW, y2: y, stroke: 'var(--moon)', 'stroke-width': '0.8', 'stroke-dasharray': '4 4', opacity: '0.4' }, durScene);
+    const t = el('text', { x: PAD.l + 8, y: y - 6, class: 'axis-label', fill: 'var(--moon)', opacity: '0.8' }, durScene);
+    t.textContent = v + ' h';
   });
-  durHTML += `<g>`;
   data.forEach((d, i) => {
     if (d.dur === null) return;
     const c = d.dur >= 7 ? 'var(--good)' : d.dur >= 6 ? 'var(--fair)' : 'var(--poor)';
-    durHTML += `<circle cx="${xs_score(i).toFixed(1)}" cy="${ys_dur(d.dur).toFixed(1)}" r="2.2" fill="${c}"/>`;
+    el('circle', { cx: xs_score(i).toFixed(1), cy: ys_dur(d.dur).toFixed(1), r: '2.2', fill: c }, durScene);
   });
-  durHTML += `</g>`;
   const maDur = movAvg(data, 'dur', 12);
   let dmaParts = [];
-  maDur.forEach((v, i) => {
-    if (v === null) return;
-    const op = dmaParts.length === 0 ? 'M' : 'L';
-    dmaParts.push(op + xs_score(i).toFixed(1) + ' ' + ys_dur(v).toFixed(1));
-  });
-  durHTML += `<path d="${dmaParts.join(' ')}" stroke="var(--moving)" stroke-width="2.4" fill="none" stroke-linecap="round" opacity="0.95"/>`;
-  durScene.innerHTML = durHTML;
+  maDur.forEach((v, i) => { if (v === null) return; dmaParts.push((dmaParts.length === 0 ? 'M' : 'L') + xs_score(i).toFixed(1) + ' ' + ys_dur(v).toFixed(1)); });
+  el('path', { d: dmaParts.join(' '), stroke: 'var(--moving)', 'stroke-width': '2.4', fill: 'none', 'stroke-linecap': 'round', opacity: '0.95' }, durScene);
 
-  // WINDOW scene
-  let winHTML = '';
+  // === WINDOW ===
+  const winScene = gScene('scene-window');
   function fmtTimeOfDay(m) {
     const minOfDay = (m + 18*60) % (24*60);
     const h = Math.floor(minOfDay/60), mi = minOfDay%60;
@@ -648,10 +769,10 @@
   }
   [180, 360, 540, 720, 900].forEach(v => {
     const y = ys_win(v);
-    winHTML += `<line class="grid-line" x1="${PAD.l}" y1="${y}" x2="${PAD.l+innerW}" y2="${y}"/>`;
-    winHTML += `<text x="${PAD.l-10}" y="${y+4}" class="axis-label" text-anchor="end">${fmtTimeOfDay(v)}</text>`;
+    el('line', { class: 'grid-line', x1: PAD.l, y1: y, x2: PAD.l + innerW, y2: y }, winScene);
+    const t = el('text', { x: PAD.l - 10, y: y + 4, class: 'axis-label', 'text-anchor': 'end' }, winScene);
+    t.textContent = fmtTimeOfDay(v);
   });
-  // band
   const bedPts = [], wakePts = [];
   data.forEach((d, i) => {
     const bm = bedFrom6pm(d.bed); if (bm !== null) bedPts.push({x: xs_score(i), y: ys_win(bm)});
@@ -660,18 +781,22 @@
   if (bedPts.length && wakePts.length) {
     const top = bedPts.map((p,i)=>(i===0?'M':'L')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
     const bot = wakePts.slice().reverse().map(p => 'L'+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
-    winHTML += `<path d="${top} ${bot} Z" fill="var(--starlight)" opacity="0.07"/>`;
+    el('path', { d: top + ' ' + bot + ' Z', fill: 'var(--starlight)', opacity: '0.07' }, winScene);
   }
-  const bedPath = bedPts.map((p,i)=>(i===0?'M':'L')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
-  winHTML += `<path d="${bedPath}" stroke="var(--bedtime)" stroke-width="2" fill="none" opacity="0.92" stroke-linecap="round"/>`;
-  const wakePath = wakePts.map((p,i)=>(i===0?'M':'L')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
-  winHTML += `<path d="${wakePath}" stroke="var(--waketime)" stroke-width="2" fill="none" opacity="0.92" stroke-linecap="round"/>`;
-  // midnight
-  winHTML += `<line x1="${PAD.l}" y1="${ys_win(360)}" x2="${PAD.l+innerW}" y2="${ys_win(360)}" stroke="var(--moon)" stroke-width="0.6" stroke-dasharray="3 3" opacity="0.4"/>`;
-  winHTML += `<text x="${PAD.l+innerW-10}" y="${ys_win(360)-6}" text-anchor="end" class="annot" fill="var(--moon)">mezzanotte</text>`;
-  winScene.innerHTML = winHTML;
+  el('path', {
+    d: bedPts.map((p,i)=>(i===0?'M':'L')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' '),
+    stroke: 'var(--bedtime)', 'stroke-width': '2', fill: 'none', opacity: '0.92', 'stroke-linecap': 'round'
+  }, winScene);
+  el('path', {
+    d: wakePts.map((p,i)=>(i===0?'M':'L')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' '),
+    stroke: 'var(--waketime)', 'stroke-width': '2', fill: 'none', opacity: '0.92', 'stroke-linecap': 'round'
+  }, winScene);
+  el('line', { x1: PAD.l, y1: ys_win(360), x2: PAD.l + innerW, y2: ys_win(360), stroke: 'var(--moon)', 'stroke-width': '0.6', 'stroke-dasharray': '3 3', opacity: '0.4' }, winScene);
+  const midnightTxt = el('text', { x: PAD.l + innerW - 10, y: ys_win(360) - 6, 'text-anchor': 'end', class: 'annot', fill: 'var(--moon)' }, winScene);
+  midnightTxt.textContent = 'mezzanotte';
 
-  // POLAR scene
+  // === POLAR ===
+  const polarScene = gScene('scene-polar');
   (function() {
     const CX = W/2, CY = H/2 + 10, RMAX = 220;
     const bedDist = new Array(24).fill(0), wakeDist = new Array(24).fill(0);
@@ -685,20 +810,20 @@
       const a = hourToAngle(h) * Math.PI / 180;
       return [CX + Math.cos(a)*r, CY + Math.sin(a)*r];
     }
-    let html = '';
     [0.33, 0.66, 1].forEach(f => {
-      html += `<circle cx="${CX}" cy="${CY}" r="${RMAX*f}" fill="none" stroke="rgba(184,196,228,0.16)" stroke-width="0.5" stroke-dasharray="2 3"/>`;
+      el('circle', { cx: CX, cy: CY, r: RMAX*f, fill: 'none', stroke: 'rgba(184,196,228,0.16)', 'stroke-width': '0.5', 'stroke-dasharray': '2 3' }, polarScene);
     });
     for (let h = 0; h < 24; h += 3) {
       const [x, y] = pol(h, RMAX + 22);
       const lbl = (h < 10 ? '0'+h : h) + ':00';
-      html += `<text x="${x}" y="${y+3}" text-anchor="middle" class="axis-label">${lbl}</text>`;
+      const t = el('text', { x, y: y+3, 'text-anchor': 'middle', class: 'axis-label' }, polarScene);
+      t.textContent = lbl;
       const [tx1, ty1] = pol(h, RMAX);
       const [tx2, ty2] = pol(h, RMAX+8);
-      html += `<line x1="${tx1}" y1="${ty1}" x2="${tx2}" y2="${ty2}" stroke="rgba(184,196,228,0.32)" stroke-width="1"/>`;
+      el('line', { x1: tx1, y1: ty1, x2: tx2, y2: ty2, stroke: 'rgba(184,196,228,0.32)', 'stroke-width': '1' }, polarScene);
     }
     function petal(h, count, color, side) {
-      if (count === 0) return '';
+      if (count === 0) return;
       const r = (count / maxC) * RMAX * 0.85;
       const offset = side === 'b' ? 0.05 : 0.5;
       const a1 = hourToAngle(h+offset) * Math.PI/180;
@@ -707,16 +832,18 @@
       const [x2,y2] = [CX+Math.cos(a1)*r, CY+Math.sin(a1)*r];
       const [x3,y3] = [CX+Math.cos(a2)*r, CY+Math.sin(a2)*r];
       const [x4,y4] = [CX+Math.cos(a2)*4, CY+Math.sin(a2)*4];
-      return `<path d="M ${x1.toFixed(1)} ${y1.toFixed(1)} L ${x2.toFixed(1)} ${y2.toFixed(1)} A ${r.toFixed(1)} ${r.toFixed(1)} 0 0 1 ${x3.toFixed(1)} ${y3.toFixed(1)} L ${x4.toFixed(1)} ${y4.toFixed(1)} A 4 4 0 0 0 ${x1.toFixed(1)} ${y1.toFixed(1)} Z" fill="${color}" opacity="${0.3 + (count/maxC)*0.55}"/>`;
+      const d = `M ${x1.toFixed(1)} ${y1.toFixed(1)} L ${x2.toFixed(1)} ${y2.toFixed(1)} A ${r.toFixed(1)} ${r.toFixed(1)} 0 0 1 ${x3.toFixed(1)} ${y3.toFixed(1)} L ${x4.toFixed(1)} ${y4.toFixed(1)} A 4 4 0 0 0 ${x1.toFixed(1)} ${y1.toFixed(1)} Z`;
+      el('path', { d, fill: color, opacity: 0.3 + (count/maxC)*0.55 }, polarScene);
     }
-    bedDist.forEach((c, h) => html += petal(h, c, 'var(--bedtime)', 'b'));
-    wakeDist.forEach((c, h) => html += petal(h, c, 'var(--waketime)', 'w'));
-    html += `<circle cx="${CX}" cy="${CY}" r="18" fill="var(--bg-2)" stroke="var(--moon)" stroke-width="0.8"/>`;
-    html += `<text x="${CX}" y="${CY+6}" text-anchor="middle" font-size="18">🌙</text>`;
-    polarScene.innerHTML = html;
+    bedDist.forEach((c, h) => petal(h, c, 'var(--bedtime)', 'b'));
+    wakeDist.forEach((c, h) => petal(h, c, 'var(--waketime)', 'w'));
+    el('circle', { cx: CX, cy: CY, r: '18', fill: 'var(--bg-2)', stroke: 'var(--moon)', 'stroke-width': '0.8' }, polarScene);
+    const m = el('text', { x: CX, y: CY+6, 'text-anchor': 'middle', 'font-size': '18' }, polarScene);
+    m.textContent = '🌙';
   })();
 
-  // SCATTER scene
+  // === SCATTER ===
+  const scatterScene = gScene('scene-scatter');
   (function() {
     const sleepByDate = {};
     data.forEach(d => sleepByDate[d.startDate] = d);
@@ -732,49 +859,45 @@
         s = best;
       }
       if (!s || s.score === null) return null;
-      return { tl: l.tl, score: s.score, n: l.n, week: l.week, sleep: s, kj: l.kj, km: l.km };
+      return { tl: l.tl, score: s.score, n: l.n, week: l.week, kj: l.kj, km: l.km };
     }).filter(Boolean);
 
     const xmin = 0, xmax = 2200;
     const xs = v => PAD.l + (v - xmin) / (xmax - xmin) * innerW;
     const ys = v => PAD.t + ((95 - v) / (95 - 40)) * innerH;
-    let html = '';
     [50,60,70,80,90].forEach(v => {
       const y = ys(v);
-      html += `<line class="grid-line" x1="${PAD.l}" y1="${y}" x2="${PAD.l+innerW}" y2="${y}"/>`;
-      html += `<text x="${PAD.l-10}" y="${y+4}" class="axis-label" text-anchor="end">${v}</text>`;
+      el('line', { class: 'grid-line', x1: PAD.l, y1: y, x2: PAD.l+innerW, y2: y }, scatterScene);
+      const t = el('text', { x: PAD.l-10, y: y+4, class: 'axis-label', 'text-anchor': 'end' }, scatterScene);
+      t.textContent = v;
     });
     [0,500,1000,1500,2000].forEach(v => {
       const x = xs(v);
-      html += `<line class="grid-line" x1="${x}" y1="${PAD.t}" x2="${x}" y2="${PAD.t+innerH}"/>`;
-      html += `<text x="${x}" y="${PAD.t+innerH+20}" class="axis-label" text-anchor="middle">TL ${v}</text>`;
+      el('line', { class: 'grid-line', x1: x, y1: PAD.t, x2: x, y2: PAD.t+innerH }, scatterScene);
+      const t = el('text', { x, y: PAD.t+innerH+20, class: 'axis-label', 'text-anchor': 'middle' }, scatterScene);
+      t.textContent = 'TL ' + v;
     });
     const xMean = points.reduce((s,p)=>s+p.tl,0)/points.length;
     const yMean = points.reduce((s,p)=>s+p.score,0)/points.length;
     const num = points.reduce((s,p)=>s+(p.tl-xMean)*(p.score-yMean),0);
     const den = points.reduce((s,p)=>s+(p.tl-xMean)**2,0);
     const slope = num/den, intercept = yMean - slope*xMean;
-    html += `<line x1="${xs(0)}" y1="${ys(intercept)}" x2="${xs(2200)}" y2="${ys(intercept+slope*2200)}" stroke="var(--starlight)" stroke-width="1.5" stroke-dasharray="6 3" opacity="0.7"/>`;
+    el('line', { x1: xs(0), y1: ys(intercept), x2: xs(2200), y2: ys(intercept+slope*2200), stroke: 'var(--starlight)', 'stroke-width': '1.5', 'stroke-dasharray': '6 3', opacity: '0.7' }, scatterScene);
     points.forEach((p, k) => {
       const c = p.score >= 80 ? 'var(--good)' : p.score >= 60 ? 'var(--fair)' : 'var(--poor)';
       const r = Math.min(8, 2.5 + Math.sqrt(p.n));
-      html += `<circle cx="${xs(p.tl).toFixed(1)}" cy="${ys(p.score).toFixed(1)}" r="${r.toFixed(1)}" fill="${c}" opacity="0.7" stroke="var(--bg-2)" stroke-width="0.6" data-k="${k}"/>`;
-    });
-    html += `<text x="${PAD.l+innerW/2}" y="${H-22}" text-anchor="middle" class="axis-label" fill="var(--ink-soft)">Training Load settimanale →</text>`;
-    scatterScene.innerHTML = html;
-    // Tooltip on bubbles
-    setTimeout(() => {
-      scatterScene.querySelectorAll('circle[data-k]').forEach(el => {
-        el.addEventListener('mouseenter', e => {
-          const p = points[+el.getAttribute('data-k')];
-          showTip(e, `<div class="tt-title">${fmtDate(p.week)}</div>TL <strong>${p.tl}</strong> · Score <strong>${p.score}</strong><br>${p.n} sortite · ${p.km} km`);
-        });
-        el.addEventListener('mouseleave', hideTip);
+      const cir = el('circle', { cx: xs(p.tl).toFixed(1), cy: ys(p.score).toFixed(1), r: r.toFixed(1), fill: c, opacity: '0.7', stroke: 'var(--bg-2)', 'stroke-width': '0.6', 'data-k': k }, scatterScene);
+      cir.addEventListener('mouseenter', e => {
+        showTip(e, `<div class="tt-title">${fmtDate(p.week)}</div>TL <strong>${p.tl}</strong> · Score <strong>${p.score}</strong><br>${p.n} sortite · ${p.km} km`);
       });
-    }, 0);
+      cir.addEventListener('mouseleave', hideTip);
+    });
+    const lbl = el('text', { x: PAD.l+innerW/2, y: H-22, 'text-anchor': 'middle', class: 'axis-label', fill: 'var(--ink-soft)' }, scatterScene);
+    lbl.textContent = 'Training Load settimanale →';
   })();
 
-  // HEATMAP scene
+  // === HEATMAP ===
+  const heatScene = gScene('scene-heatmap');
   (function() {
     const grid = {};
     data.forEach(d => {
@@ -796,57 +919,37 @@
       if (s >= 65) return `rgba(244,200,122,${0.35 + (s-65)/15*0.45})`;
       return `rgba(224,128,112,${0.4 + (65-s)/15*0.5})`;
     }
-    let html = '';
     months.forEach((m, i) => {
       const x = HX + (i + 0.5) * cellW;
-      html += `<text x="${x}" y="${HY-12}" class="axis-label" text-anchor="middle">${m}</text>`;
+      const t = el('text', { x, y: HY-12, class: 'axis-label', 'text-anchor': 'middle' }, heatScene);
+      t.textContent = m;
     });
     years.forEach((y, ri) => {
       const yy = years.length - 1 - ri;
       const yrow = years[yy];
       const yPx = HY + ri * cellH;
-      html += `<text x="${HX-10}" y="${yPx + cellH/2 + 4}" class="axis-label" text-anchor="end">${yrow}</text>`;
+      const t = el('text', { x: HX-10, y: yPx + cellH/2 + 4, class: 'axis-label', 'text-anchor': 'end' }, heatScene);
+      t.textContent = yrow;
       for (let m = 0; m < 12; m++) {
         const x = HX + m * cellW;
         const cell = grid[yrow] && grid[yrow][m];
         const score = cell ? cell.sum / cell.n : null;
-        html += `<rect x="${x+2}" y="${yPx+2}" width="${cellW-4}" height="${cellH-4}" rx="4" fill="${colorFor(score)}" stroke="rgba(184,196,228,0.15)" stroke-width="0.5"/>`;
+        el('rect', { x: x+2, y: yPx+2, width: cellW-4, height: cellH-4, rx: '4', fill: colorFor(score), stroke: 'rgba(184,196,228,0.15)', 'stroke-width': '0.5' }, heatScene);
         if (score !== null && cellW > 36) {
-          html += `<text x="${x+cellW/2}" y="${yPx+cellH/2+4}" text-anchor="middle" font-size="13" fill="var(--ink)" opacity="0.9">${Math.round(score)}</text>`;
+          const t = el('text', { x: x+cellW/2, y: yPx+cellH/2+4, 'text-anchor': 'middle', 'font-size': '13', fill: 'var(--ink)', opacity: '0.9' }, heatScene);
+          t.textContent = Math.round(score);
         }
       }
     });
-    heatScene.innerHTML = html;
   })();
-
-  // Append all scenes to SVG
-  svg.appendChild(scoreScene);
-  svg.appendChild(yearAxis);
-  svg.appendChild(durScene);
-  svg.appendChild(winScene);
-  svg.appendChild(polarScene);
-  svg.appendChild(scatterScene);
-  svg.appendChild(heatScene);
-
-  // Score events tooltips
-  document.querySelectorAll('.data-pt-event').forEach(el => {
-    const k = +el.getAttribute('data-ev');
-    const ev = EVENTS[k];
-    el.addEventListener('mouseenter', e => {
-      const w = data[ev.weekIdx];
-      showTip(e, `<div class="tt-title">${ev.emoji} ${ev.label}</div><em>${ev.sub}</em><br>${fmtDate(w.startDate)} · score <strong>${w.score || '—'}</strong>`);
-    });
-    el.addEventListener('mouseleave', hideTip);
-  });
 
   // ===== Scene controller =====
   function show(...ids) {
-    const all = ['scene-score', 'year-axis', 'scene-duration', 'scene-window', 'scene-polar', 'scene-scatter', 'scene-heatmap'];
-    all.forEach(id => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      if (ids.includes(id)) el.classList.remove('hidden');
-      else el.classList.add('hidden');
+    ['scene-score','scene-duration','scene-window','scene-polar','scene-scatter','scene-heatmap'].forEach(id => {
+      const e = document.getElementById(id);
+      if (!e) return;
+      if (ids.includes(id)) e.classList.remove('hidden');
+      else e.classList.add('hidden');
     });
   }
   function setScoreLayers(opts) {
@@ -855,69 +958,128 @@
     document.getElementById('score-events').setAttribute('opacity', opts.events ? '1' : '0');
   }
 
-  let currentScene = -1;
-  function applyScene(s) {
-    if (s === currentScene) return;
-    currentScene = s;
-    if (s === 0) { show('scene-score', 'year-axis'); setScoreLayers({}); return; }
-    if (s === 1) { show('scene-score', 'year-axis'); setScoreLayers({}); return; }
-    if (s === 2) { show('scene-score', 'year-axis'); setScoreLayers({ma:true}); return; }
-    if (s === 3) { show('scene-score', 'year-axis'); setScoreLayers({ma:true, high:true}); return; }
-    if (s === 4) { show('scene-score', 'year-axis'); setScoreLayers({ma:true, high:true, events:true}); return; }
-    if (s === 5) { show('scene-duration', 'year-axis'); return; }
-    if (s === 6) { show('scene-window', 'year-axis'); return; }
-    if (s === 7) { show('scene-polar'); return; }
-    if (s === 8) { show('scene-scatter'); return; }
-    if (s === 9) { show('scene-heatmap'); return; }
+  // ===== Zoom-pan to focus a point =====
+  function focusPoint(cx, cy, scale = 1.8, padX = 0, padY = 0) {
+    // Compute viewBox shift so (cx,cy) becomes center, scaled by `scale`
+    const newW = W / scale, newH = H / scale;
+    const newX = cx - newW/2 + padX;
+    const newY = cy - newH/2 + padY;
+    svg.setAttribute('viewBox', `${newX.toFixed(1)} ${newY.toFixed(1)} ${newW.toFixed(1)} ${newH.toFixed(1)}`);
+  }
+  function resetView() {
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  }
+  // CSS transition for viewBox isn't native — we animate via JS RAF
+  let zoomAnim = null;
+  function animateViewBox(target, dur = 1000) {
+    if (zoomAnim) cancelAnimationFrame(zoomAnim);
+    const cur = svg.getAttribute('viewBox').split(/\s+/).map(parseFloat);
+    const start = performance.now();
+    function step(now) {
+      const t = Math.min(1, (now - start) / dur);
+      const ease = 1 - Math.pow(1 - t, 3);
+      const x = cur[0] + (target[0] - cur[0]) * ease;
+      const y = cur[1] + (target[1] - cur[1]) * ease;
+      const w = cur[2] + (target[2] - cur[2]) * ease;
+      const h = cur[3] + (target[3] - cur[3]) * ease;
+      svg.setAttribute('viewBox', `${x.toFixed(1)} ${y.toFixed(1)} ${w.toFixed(1)} ${h.toFixed(1)}`);
+      if (t < 1) zoomAnim = requestAnimationFrame(step);
+    }
+    zoomAnim = requestAnimationFrame(step);
+  }
+  function zoomTo(cx, cy, scale = 1.8) {
+    const newW = W / scale, newH = H / scale;
+    animateViewBox([cx - newW/2, cy - newH/2, newW, newH], 1100);
+  }
+  function zoomReset() {
+    animateViewBox([0, 0, W, H], 1100);
   }
 
-  // Default scene (always visible immediately)
+  // ===== Apply scene + focus =====
+  let currentScene = -1, currentFocus = null;
+  function applyScene(s, focusId) {
+    if (s !== currentScene) {
+      currentScene = s;
+      if (s === 0 || s === 1) { show('scene-score'); setScoreLayers({}); }
+      else if (s === 2) { show('scene-score'); setScoreLayers({ma:true}); }
+      else if (s === 3) { show('scene-score'); setScoreLayers({ma:true, high:true}); }
+      else if (s === 4) { show('scene-score'); setScoreLayers({ma:true, high:true, events:true}); }
+      else if (s === 5) { show('scene-duration'); }
+      else if (s === 6) { show('scene-window'); }
+      else if (s === 7) { show('scene-polar'); }
+      else if (s === 8) { show('scene-scatter'); }
+      else if (s === 9) { show('scene-heatmap'); }
+    }
+
+    // FOCUS — zoom + highlight
+    if (focusId !== currentFocus) {
+      currentFocus = focusId;
+      // Clear .focused on all events
+      document.querySelectorAll('.data-pt-event.focused').forEach(e => e.classList.remove('focused'));
+      if (!focusId) {
+        zoomReset();
+      } else if (focusId === 'peak' && peakMark) {
+        zoomTo(peakMark.cx, peakMark.cy, 2.2);
+      } else if (focusId === 'trough' && troughMark) {
+        zoomTo(troughMark.cx, troughMark.cy, 2.2);
+      } else if (focusId.startsWith('ev-') && eventNodes[focusId]) {
+        const n = eventNodes[focusId];
+        n.node.classList.add('focused');
+        zoomTo(n.x, n.y, 2.4);
+      }
+    }
+  }
+
+  // Init: show scene 1 immediately (so something visible at start)
   applyScene(1);
 
-  // ===== IntersectionObserver — drive scene by step in viewport =====
+  // ===== Step controller =====
   const steps = document.querySelectorAll('.step');
-  if ('IntersectionObserver' in window) {
-    const stepObs = new IntersectionObserver(entries => {
-      // Pick the step closest to viewport center that's intersecting
-      const vis = entries.filter(e => e.isIntersecting);
-      vis.forEach(e => e.target.classList.add('in'));
-      if (vis.length) {
-        // Take the most-visible step
-        const sorted = vis.sort((a,b) => b.intersectionRatio - a.intersectionRatio);
-        const s = +sorted[0].target.getAttribute('data-scene');
-        applyScene(s);
-      }
-    }, { threshold: [0.25, 0.5, 0.75], rootMargin: '-20% 0px -30% 0px' });
-    steps.forEach(s => stepObs.observe(s));
-  }
-
-  // Scroll-based fallback: pick step whose center is closest to viewport center
+  const scrolly = document.getElementById('scrolly');
   let scrollTick = false;
-  function pickStepOnScroll() {
+  function updateOnScroll() {
     const vH = window.innerHeight;
     const center = vH / 2;
-    let best = null, bestDist = Infinity;
+    let bestStep = null, bestDist = Infinity;
     steps.forEach(s => {
       const r = s.getBoundingClientRect();
       const stepCenter = r.top + r.height / 2;
       const dist = Math.abs(stepCenter - center);
-      if (dist < bestDist && r.top < vH && r.bottom > 0) {
-        bestDist = dist;
-        best = s;
+      if (dist < bestDist && r.top < vH * 0.95 && r.bottom > vH * 0.05) {
+        bestDist = dist; bestStep = s;
       }
     });
-    if (best) {
-      best.classList.add('in');
-      const idx = +best.getAttribute('data-scene');
-      applyScene(idx);
+    if (bestStep) {
+      bestStep.classList.add('in');
+      // Mark surrounding steps in too for smoother continuity
+      const allSteps = [...steps];
+      const idx = allSteps.indexOf(bestStep);
+      if (idx > 0) allSteps[idx-1].classList.add('in');
+      const scene = +bestStep.getAttribute('data-scene');
+      const focus = bestStep.getAttribute('data-focus') || null;
+      applyScene(scene, focus);
+    }
+    // Mobile: toggle .engaged on .scrolly when scrolly is in viewport (so stage shows)
+    const sR = scrolly.getBoundingClientRect();
+    if (sR.top < vH && sR.bottom > 0) {
+      scrolly.classList.add('engaged');
+    } else {
+      scrolly.classList.remove('engaged');
     }
     scrollTick = false;
   }
   window.addEventListener('scroll', () => {
-    if (!scrollTick) { requestAnimationFrame(pickStepOnScroll); scrollTick = true; }
+    if (!scrollTick) { requestAnimationFrame(updateOnScroll); scrollTick = true; }
   }, { passive: true });
-  // Fire once on load
-  setTimeout(pickStepOnScroll, 300);
+  setTimeout(updateOnScroll, 200);
+
+  // IntersectionObserver as supplement
+  if ('IntersectionObserver' in window) {
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+    }, { threshold: 0.1 });
+    steps.forEach(s => obs.observe(s));
+  }
 
   // ===== Best/worst lists =====
   (function() {
@@ -933,7 +1095,7 @@
     }).join('');
   })();
 
-  console.log('sogni-scrolly v3 · ' + data.length + ' weeks · ' + load.length + ' load weeks · ' + EVENTS.length + ' events');
+  console.log('sogni-scrolly v4 · ' + data.length + ' weeks · ' + load.length + ' load weeks · ' + EVENTS.length + ' events · ' + steps.length + ' steps');
 })();
 </script>
 
