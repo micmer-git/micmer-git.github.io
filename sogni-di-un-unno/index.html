@@ -35,40 +35,20 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* ====== Background — drifting starfield ====== */
+  /* ===== Stars ===== */
   .stars { position: fixed; inset: 0; pointer-events: none; z-index: -2; overflow: hidden; }
-  .stars-layer {
-    position: absolute; inset: -50%;
-    will-change: transform;
-  }
+  .stars-layer { position: absolute; inset: -50%; will-change: transform; }
   .stars-layer.l1 {
     background-image:
       radial-gradient(1px 1px at 12% 23%, rgba(255,255,255,0.7) 0%, transparent 100%),
-      radial-gradient(1px 1px at 28% 67%, rgba(255,255,255,0.5) 0%, transparent 100%),
       radial-gradient(1.5px 1.5px at 47% 12%, rgba(168,196,255,0.6) 0%, transparent 100%),
       radial-gradient(2px 2px at 65% 88%, rgba(255,255,255,0.85) 0%, transparent 100%),
       radial-gradient(1px 1px at 82% 35%, rgba(168,196,255,0.5) 0%, transparent 100%),
-      radial-gradient(1px 1px at 91% 71%, rgba(255,255,255,0.45) 0%, transparent 100%),
       radial-gradient(2px 2px at 38% 92%, rgba(244,233,184,0.6) 0%, transparent 100%),
-      radial-gradient(1px 1px at 7% 82%, rgba(255,255,255,0.5) 0%, transparent 100%),
-      radial-gradient(1px 1px at 56% 44%, rgba(168,196,255,0.55) 0%, transparent 100%),
       radial-gradient(1px 1px at 73% 18%, rgba(255,255,255,0.5) 0%, transparent 100%);
     animation: twinkle 5s ease-in-out infinite alternate;
   }
-  .stars-layer.l2 {
-    background-image:
-      radial-gradient(1px 1px at 22% 53%, rgba(255,255,255,0.4) 0%, transparent 100%),
-      radial-gradient(1px 1px at 41% 39%, rgba(255,255,255,0.6) 0%, transparent 100%),
-      radial-gradient(1.5px 1.5px at 78% 61%, rgba(244,233,184,0.5) 0%, transparent 100%),
-      radial-gradient(1px 1px at 14% 7%, rgba(168,196,255,0.5) 0%, transparent 100%),
-      radial-gradient(1px 1px at 88% 14%, rgba(255,255,255,0.5) 0%, transparent 100%),
-      radial-gradient(1px 1px at 31% 81%, rgba(255,255,255,0.5) 0%, transparent 100%),
-      radial-gradient(2px 2px at 68% 52%, rgba(255,255,255,0.7) 0%, transparent 100%);
-    animation: twinkle 8s ease-in-out infinite alternate-reverse;
-    opacity: 0.7;
-  }
   @keyframes twinkle { 0% { opacity: 0.45; } 100% { opacity: 1; } }
-
   body::before {
     content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1;
     background-image:
@@ -76,7 +56,7 @@
       radial-gradient(ellipse at 82% 78%, rgba(184,156,240,0.08) 0%, transparent 60%);
   }
 
-  /* ====== HERO ====== */
+  /* ===== HERO ===== */
   .hero {
     min-height: 100vh; min-height: 100svh;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -92,10 +72,7 @@
     -webkit-text-fill-color: transparent;
     animation: shimmer 9s ease-in-out infinite;
   }
-  @keyframes shimmer {
-    0%,100% { filter: brightness(1); }
-    50% { filter: brightness(1.18); }
-  }
+  @keyframes shimmer { 0%,100% { filter: brightness(1); } 50% { filter: brightness(1.18); } }
   .hero .accent {
     display: block; font-family: 'Cinzel', serif; font-weight: 600;
     font-size: clamp(0.62rem, 1.5vw, 0.78rem);
@@ -123,56 +100,57 @@
     50% { transform: translate(-50%, 8px); opacity: 1; }
   }
 
-  /* ====== SCROLLY STAGE ====== */
+  /* ===== SCROLLY — two-column desktop, stacked mobile ===== */
   .scrolly {
     position: relative;
-    max-width: 1200px; margin: 0 auto;
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 30px;
     padding: 0 24px;
   }
+  .stage-col {
+    position: relative;
+  }
   .stage {
-    position: sticky; top: 0;
-    width: 100%; height: 100vh; height: 100svh;
-    display: flex; align-items: center; justify-content: center;
-    pointer-events: none;
-    z-index: 1;
+    position: sticky;
+    top: 0;
+    height: 100vh; height: 100svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .stage svg {
-    width: 100%; height: 100%;
-    pointer-events: auto;
+    width: 100%;
+    height: 100%;
+    max-height: 90vh;
   }
   .narrative {
     position: relative;
-    z-index: 2;
-    max-width: 540px;
-    margin: 0 auto;
-    pointer-events: none;
   }
   .step {
-    min-height: 90vh;
+    min-height: 80vh;
     display: flex; flex-direction: column; justify-content: center;
-    padding: 20vh 0;
-    pointer-events: none;
+    padding: 10vh 0;
   }
   .step-content {
-    background: rgba(7, 9, 26, 0.7);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    padding: 22px 26px;
-    border-radius: 14px;
-    border: 1px solid rgba(184,196,228,0.12);
-    pointer-events: auto;
-    max-width: 100%;
+    padding: 4px 0;
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
   }
+  .step.in .step-content { opacity: 1; transform: translateY(0); }
+
   .step h2 {
     font-family: 'Cinzel', serif; font-weight: 600;
-    font-size: clamp(1.4rem, 3.2vw, 1.85rem);
-    letter-spacing: 0.04em; color: var(--moon);
-    margin-bottom: 12px; line-height: 1.2;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    letter-spacing: 0.03em; color: var(--moon);
+    margin-bottom: 14px; line-height: 1.18;
   }
   .step .num {
     font-family: 'Cinzel', serif; font-weight: 900;
-    font-size: clamp(2.6rem, 8vw, 4.2rem);
-    color: var(--moon); line-height: 1; letter-spacing: 0.02em;
+    font-size: clamp(3.6rem, 10vw, 6rem);
+    line-height: 1; letter-spacing: 0.02em;
     background: linear-gradient(180deg, var(--moon) 0%, var(--fair) 100%);
     -webkit-background-clip: text; background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -181,13 +159,13 @@
   .step .num-sub {
     font-family: 'IBM Plex Mono', monospace; font-size: 0.74rem;
     text-transform: uppercase; letter-spacing: 0.16em;
-    color: var(--ink-faint); margin-bottom: 14px;
+    color: var(--ink-faint); margin-bottom: 18px;
   }
   .step p {
     color: var(--ink-soft);
-    font-size: clamp(1rem, 2vw, 1.08rem);
-    line-height: 1.6;
-    margin-bottom: 12px;
+    font-size: clamp(1.02rem, 2vw, 1.12rem);
+    line-height: 1.65;
+    margin-bottom: 14px;
   }
   .step p:last-child { margin-bottom: 0; }
   .step strong { color: var(--ink); font-weight: 500; }
@@ -196,31 +174,15 @@
     display: inline-block; padding: 3px 10px; border-radius: 99px;
     font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
     letter-spacing: 0.08em; font-weight: 600;
-    background: rgba(244,233,184,0.12); color: var(--moon);
+    background: rgba(244,233,184,0.14); color: var(--moon);
     margin-right: 4px; vertical-align: middle;
   }
-  .chip.poor { background: rgba(224,128,112,0.14); color: var(--poor); }
-  .chip.fair { background: rgba(244,200,122,0.12); color: var(--fair); }
-  .chip.good { background: rgba(127,219,182,0.12); color: var(--good); }
+  .chip.poor { background: rgba(224,128,112,0.18); color: var(--poor); }
+  .chip.good { background: rgba(127,219,182,0.16); color: var(--good); }
 
-  /* fade-in on visibility */
-  .step .step-content {
-    opacity: 0; transform: translateY(40px);
-    transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);
-  }
-  .step.in .step-content {
-    opacity: 1; transform: translateY(0);
-  }
-
-  /* ====== Final standalone sections (after sticky) ====== */
-  .epilogue {
-    max-width: 720px; margin: 60px auto 0;
-    padding: 0 24px;
-  }
-  .crit-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 22px;
-    margin: 30px 0;
-  }
+  /* ===== Epilogue ===== */
+  .epilogue { max-width: 800px; margin: 60px auto 0; padding: 0 24px; }
+  .crit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin: 30px 0; }
   .crit h3 {
     font-family: 'Cinzel', serif; font-size: 0.85rem;
     letter-spacing: 0.2em; text-transform: uppercase;
@@ -242,8 +204,7 @@
   .crit .date { color: var(--muted); font-size: 0.7rem; display: block; margin-top: 2px; }
 
   .closing {
-    margin: 90px auto;
-    text-align: center;
+    margin: 90px auto; text-align: center;
     max-width: 620px; padding: 0 24px;
   }
   .closing h2 {
@@ -253,10 +214,8 @@
   }
   .closing p {
     font-style: italic; color: var(--ink-soft);
-    font-size: clamp(1.02rem, 2.2vw, 1.12rem);
-    line-height: 1.6;
+    font-size: clamp(1.02rem, 2.2vw, 1.12rem); line-height: 1.6;
   }
-
   .colophon {
     font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
     text-align: center; color: var(--muted);
@@ -266,7 +225,7 @@
   .colophon a { color: var(--starlight); text-decoration: none; border-bottom: 1px dotted var(--muted); transition: all 0.2s; }
   .colophon a:hover { color: var(--moon); border-bottom-color: var(--moon); }
 
-  /* ====== Tooltip (still available for hover detail) ====== */
+  /* ===== Tooltip ===== */
   #tooltip {
     position: fixed; pointer-events: none; z-index: 1000;
     background: rgba(12, 16, 39, 0.96); border: 1px solid var(--starlight);
@@ -274,65 +233,51 @@
     font-family: 'IBM Plex Mono', monospace; font-size: 0.74rem;
     line-height: 1.55; opacity: 0; transition: opacity 0.18s;
     box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-    max-width: 260px; backdrop-filter: blur(8px);
+    max-width: 260px;
   }
   #tooltip.on { opacity: 1; }
   #tooltip .tt-title { font-weight: 600; color: var(--moon); margin-bottom: 5px; letter-spacing: 0.04em; }
 
-  /* ====== SVG primitives ====== */
-  .axis-label {
-    font-family: 'IBM Plex Mono', monospace;
-    fill: var(--ink-faint);
-    font-size: 11px;
-    letter-spacing: 0.06em;
-  }
+  /* ===== SVG primitives ===== */
+  .axis-label { font-family: 'IBM Plex Mono', monospace; fill: var(--ink-faint); font-size: 11px; letter-spacing: 0.06em; }
   .grid-line { stroke: rgba(184,196,228,0.12); stroke-width: 0.6; stroke-dasharray: 1 3; }
-  .ref-line { stroke: var(--moon); stroke-width: 0.8; stroke-dasharray: 4 4; opacity: 0.35; }
-  .annot {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 10px; fill: var(--ink-soft);
-  }
+  .annot { font-family: 'IBM Plex Mono', monospace; font-size: 11px; fill: var(--ink-soft); }
   .pulse {
-    transform-origin: center;
-    transform-box: fill-box;
+    transform-origin: center; transform-box: fill-box;
     animation: pulse 2.4s ease-in-out infinite;
   }
   @keyframes pulse {
     0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.4); opacity: 0.6; }
+    50% { transform: scale(1.4); opacity: 0.55; }
   }
 
-  /* Scene helpers — show/hide via active scene class on stage */
-  .scene { opacity: 0; transition: opacity 0.8s ease; }
-  .scene.show { opacity: 1; }
+  /* Scenes — visible by default; transitions handle smooth swap */
+  .scene { opacity: 1; transition: opacity 0.7s ease; }
+  .scene.hidden { opacity: 0; pointer-events: none; }
+  .data-pt { transition: cy 0.9s cubic-bezier(0.16,1,0.3,1), opacity 0.7s; }
 
-  .data-pt { transition: r 0.5s cubic-bezier(0.16,1,0.3,1), opacity 0.5s; }
-  .data-pt-event {
-    cursor: pointer; transition: transform 0.2s, opacity 0.6s;
-    transform-origin: center;
-    transform-box: fill-box;
-  }
+  .data-pt-event { cursor: pointer; transition: transform 0.2s; transform-origin: center; transform-box: fill-box; }
   .data-pt-event:hover { transform: scale(1.5); }
 
-  /* ====== Mobile ====== */
-  @media (max-width: 720px) {
-    body { font-size: 17px; }
-    .hero { padding: 40px 20px 30px; }
-    .hero p.lede { margin-top: 22px; }
-    .scrolly { padding: 0 16px; }
-    .narrative { max-width: 100%; }
-    .step { min-height: 90vh; padding: 18vh 0; }
-    .step-content { padding: 18px 20px; border-radius: 12px; }
+  /* ===== Mobile ===== */
+  @media (max-width: 900px) {
+    .scrolly {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .stage-col { order: 0; }
+    .narrative { order: 1; }
+    .stage {
+      height: 60vh; height: 60svh;
+      top: 60px;  /* leave a bit of breathing room from top */
+    }
+    .step { min-height: 60vh; padding: 6vh 0; }
+    .step .num { font-size: clamp(3rem, 14vw, 5rem); }
     .crit-grid { grid-template-columns: 1fr; gap: 14px; }
-    .stage { height: 80vh; height: 80svh; }
   }
 
-  /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      transition-duration: 0.01ms !important;
-    }
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   }
 </style>
 </head>
@@ -340,10 +285,9 @@
 
 <div class="stars">
   <div class="stars-layer l1"></div>
-  <div class="stars-layer l2"></div>
 </div>
 
-<!-- ====== HERO ====== -->
+<!-- ===== HERO ===== -->
 <section class="hero">
   <span class="accent">cinque anni di sonno · 260 settimane · 20 eventi</span>
   <h1>Sogni di un Unno</h1>
@@ -354,14 +298,17 @@
   <span class="scroll-hint">scorri ↓</span>
 </section>
 
-<!-- ====== SCROLLY STAGE ====== -->
+<!-- ===== SCROLLY ===== -->
 <div class="scrolly">
-  <!-- Sticky stage (single canvas, evolves through scenes) -->
-  <div class="stage" id="stage">
-    <svg id="canvas" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid meet"></svg>
+
+  <!-- LEFT: sticky stage with single SVG that morphs through scenes -->
+  <div class="stage-col">
+    <div class="stage" id="stage">
+      <svg id="canvas" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid meet"></svg>
+    </div>
   </div>
 
-  <!-- Narrative steps that drive scenes -->
+  <!-- RIGHT: narrative steps that drive scenes -->
   <div class="narrative">
 
     <section class="step" data-scene="0">
@@ -383,22 +330,23 @@
     <section class="step" data-scene="2">
       <div class="step-content">
         <h2>Il battito di fondo</h2>
-        <p>La linea dorata è la media mobile a 12 settimane — il <em>battito di fondo</em> della capacità di dormire. Si nota una flessione lenta: dal 2021 al 2026, il pavimento si abbassa di <strong>circa cinque punti</strong>. Più allenamenti, più viaggi, meno ore.</p>
+        <p>La linea dorata è la media mobile a 12 settimane — il <em>battito di fondo</em> della capacità di dormire.</p>
+        <p>Si nota una flessione lenta: dal 2021 al 2026, il pavimento si abbassa di <strong>circa cinque punti</strong>. Più allenamenti, più viaggi, meno ore.</p>
       </div>
     </section>
 
     <section class="step" data-scene="3">
       <div class="step-content">
         <h2>I due picchi</h2>
-        <p><span class="chip good">↑ 89</span> Settimana del <strong>14 febbraio 2022</strong>: lo score più alto di sempre. Coricamenti prima delle dieci, sveglie dopo le sette. Era il pre-Unno: niente wattmetro, niente Padova ancora.</p>
-        <p><span class="chip poor">↓ 51</span> Settimana del <strong>15 settembre 2025</strong>: tre giorni prima dell'Ironman, con la valigia aperta e la nutrizione da rinegoziare. Quattro ore e mezza di sonno medio.</p>
+        <p><span class="chip good">↑ 89</span> Settimana del <strong>14 febbraio 2022</strong>: lo score più alto di sempre. Coricamenti prima delle dieci, sveglie dopo le sette.</p>
+        <p><span class="chip poor">↓ 51</span> Settimana del <strong>15 settembre 2025</strong>: tre giorni prima dell'Ironman, con la nutrizione da rinegoziare. Quattro ore e mezza di sonno medio.</p>
       </div>
     </section>
 
     <section class="step" data-scene="4">
       <div class="step-content">
         <h2>Venti eventi-cardine</h2>
-        <p>I cerchietti dorati che ora compaiono sopra la nuvola sono i <strong>venti monumenti</strong> del triennio: gare, infortuni, viaggi. Dal Mortirolo del giugno 2024 alla Liegi-Bastogne-Liège con Luca, dalla Malaga sotto le 2h40 al Varanasi 451.</p>
+        <p>I cerchietti dorati sopra la nuvola sono i <strong>venti monumenti</strong> del triennio: gare, infortuni, viaggi. Dal Mortirolo del giugno 2024 alla Liegi-Bastogne-Liège con Luca, dalla Malaga sotto le 2h40 al Varanasi 451.</p>
         <p>Il sonno della settimana-evento è in media <em>solo un punto</em> sotto la media generale — il corpo regge, è la testa che si carica.</p>
       </div>
     </section>
@@ -414,15 +362,15 @@
     <section class="step" data-scene="6">
       <div class="step-content">
         <h2>La finestra del sonno si stringe</h2>
-        <p>La <strong>banda lavanda</strong> è l'ora in cui si va a letto, l'<strong>ambra</strong> è la sveglia. Lo spazio fra le due è il sonno.</p>
-        <p>Nel 2021 mi coricavo verso le 23:15 e mi alzavo alle 7:00. Nel 2026 vado a letto alle 22:00 e mi alzo alle 04:50. <em>La finestra si è anticipata di oltre un'ora e mezza in cinque anni</em>.</p>
+        <p>La <strong>linea lavanda</strong> è l'ora in cui si va a letto, l'<strong>ambra</strong> è la sveglia. Lo spazio fra le due è il sonno.</p>
+        <p>Nel 2021 mi coricavo verso le 23:15 e mi alzavo alle 7:00. Nel 2026 vado a letto alle 22:00 e mi alzo alle 04:50. <em>La finestra si è anticipata di oltre un'ora e mezza</em>.</p>
       </div>
     </section>
 
     <section class="step" data-scene="7">
       <div class="step-content">
         <h2>L'orologio circadiano</h2>
-        <p>Stesa intorno a un quadrante di ventiquattro ore, ecco la <strong>rosa dei venti del riposo</strong>. I petali lavanda sono i coricamenti, gli ambra le sveglie. La densità del colore racconta dove cadono la maggioranza delle 260 settimane.</p>
+        <p>Stesa intorno a un quadrante di ventiquattro ore, ecco la <strong>rosa dei venti del riposo</strong>. I petali lavanda sono i coricamenti, gli ambra le sveglie.</p>
         <p>Le ore preferite di un Unno: a letto fra le <strong>22:00 e le 23:00</strong>, sveglio fra le <strong>5:00 e le 6:00</strong>.</p>
       </div>
     </section>
@@ -430,23 +378,23 @@
     <section class="step" data-scene="8">
       <div class="step-content">
         <h2>Più alleni, peggio dormi?</h2>
-        <p>Ogni cerchio è una settimana, x = <strong>Training Load</strong> totale, y = <strong>score di sonno</strong>. La dimensione è il numero di sortite.</p>
-        <p>La regressione è leggermente <em>negativa</em>: r = ‑0,18. Sopra i <strong>1.500 di TL</strong>, lo score scende mediamente di quattro punti rispetto alle settimane sotto i 1.000. Il corpo paga la stanchezza, ma più nelle ore in cui dorme che in quelle in cui corre.</p>
+        <p>Ogni cerchio è una settimana: x = <strong>Training Load</strong>, y = <strong>score</strong>, dimensione = sortite.</p>
+        <p>Correlazione lievemente <em>negativa</em>: r = ‑0,18. Sopra i <strong>1.500 di TL</strong>, lo score scende mediamente di quattro punti rispetto alle settimane sotto i 1.000. Il corpo paga la stanchezza nelle ore di sonno.</p>
       </div>
     </section>
 
     <section class="step" data-scene="9">
       <div class="step-content">
         <h2>Cinque anni in dodici colonne</h2>
-        <p>Una mappa di calore: ogni cella è la media mensile dello score, ogni riga un anno. Il <em>verde menta</em> è "Good", il <em>ruggine</em> è "Poor".</p>
-        <p>Si leggono settembre 2025 (Ironman gomma a terra), maggio 2025 (clavicola), e l'estate 2022 — quando esisteva qualcosa che assomigliava a un sonno regolare.</p>
+        <p>Una mappa di calore: ogni cella è la media mensile dello score, ogni riga un anno.</p>
+        <p>Si leggono <em>settembre 2025</em> (Ironman gomma a terra), <em>maggio 2025</em> (clavicola), e l'<em>estate 2022</em> — quando esisteva qualcosa che assomigliava a un sonno regolare.</p>
       </div>
     </section>
 
   </div>
 </div>
 
-<!-- ====== EPILOGUE — critical days + closing ====== -->
+<!-- ===== EPILOGUE ===== -->
 <section class="epilogue">
   <div class="crit-grid">
     <div class="crit best">
@@ -479,21 +427,15 @@
 <div id="tooltip"></div>
 
 <script>
-// ===========================================================
-// SCROLLYTELLING ENGINE
-// ===========================================================
 (async function() {
-
-  // ---- Load data ----
   let data = [], load = [];
   try {
     [data, load] = await Promise.all([
       fetch('data.json').then(r => r.json()),
       fetch('load.json').then(r => r.json())
     ]);
-  } catch (e) { console.error('fetch failed', e); return; }
+  } catch (e) { console.error('fetch fail', e); return; }
 
-  // ---- 20 events ----
   const EVENTS = [
     { date: '2023-06-04', label: 'I trecentonove di giugno', sub: '309 km × 2.300 m', emoji: '🚴', cat: 'milestone' },
     { date: '2023-08-03', label: 'Prima OpenWaterSwim', sub: '1.300 m al lago', emoji: '🌊', cat: 'milestone' },
@@ -516,7 +458,6 @@
     { date: '2026-03-22', label: 'Maratona di Roma', sub: 'Martinucci e Marti powered', emoji: '❤️‍🔥', cat: 'race' },
     { date: '2026-04-12', label: 'Montecampione 1800', sub: '132 km, 3.154 m, deadly version', emoji: '🏴‍☠️', cat: 'race' },
   ];
-
   function findWeekForDate(targetISO) {
     const t = new Date(targetISO).getTime();
     let best = -1, bestDiff = Infinity;
@@ -528,256 +469,210 @@
   }
   EVENTS.forEach(ev => { ev.weekIdx = findWeekForDate(ev.date); });
 
-  // ---- Helpers ----
   const tooltip = document.getElementById('tooltip');
   function showTip(e, html) {
     tooltip.innerHTML = html;
     tooltip.classList.add('on');
-    const x = (e.clientX || e.touches?.[0]?.clientX || 0) + 14;
-    const y = (e.clientY || e.touches?.[0]?.clientY || 0) + 14;
+    const x = (e.clientX || 0) + 14;
+    const y = (e.clientY || 0) + 14;
     tooltip.style.left = Math.min(x, window.innerWidth - 280) + 'px';
     tooltip.style.top = Math.min(y, window.innerHeight - 100) + 'px';
   }
   function hideTip() { tooltip.classList.remove('on'); }
-  function fmtDate(d) {
-    const dt = new Date(d);
-    return dt.toLocaleDateString('it-IT', {day:'numeric',month:'short',year:'numeric'});
-  }
+  function fmtDate(d) { return new Date(d).toLocaleDateString('it-IT', {day:'numeric',month:'short',year:'numeric'}); }
   function movAvg(arr, key, w) {
     const out = arr.map(() => null);
     for (let i = 0; i < arr.length; i++) {
       const lo = Math.max(0, i - w + 1);
       const slice = arr.slice(lo, i + 1).filter(x => x[key] !== null && !isNaN(x[key]));
-      if (slice.length >= Math.min(w * 0.5, 4)) {
-        out[i] = slice.reduce((s, x) => s + x[key], 0) / slice.length;
-      }
+      if (slice.length >= Math.min(w * 0.5, 4)) out[i] = slice.reduce((s, x) => s + x[key], 0) / slice.length;
     }
     return out;
   }
 
-  // ---- Stage geometry (responsive) ----
-  // Use a single SVG with an inner viewBox of 1000×700.
-  // Charts are drawn into named scene <g> groups, shown/hidden via .show class.
   const svg = document.getElementById('canvas');
   const W = 1000, H = 700;
-  const PAD = { l: 56, r: 36, t: 60, b: 60 };
-  const innerW = W - PAD.l - PAD.r;
-  const innerH = H - PAD.t - PAD.b;
-
-  // Year ticks for x-axis
+  const PAD = { l: 56, r: 36, t: 60, b: 70 };
+  const innerW = W - PAD.l - PAD.r, innerH = H - PAD.t - PAD.b;
   const yearStarts = {};
   data.forEach((d, i) => { if (!yearStarts[d.year]) yearStarts[d.year] = i; });
 
-  // ===== Build all scenes ahead of time =====
-  let svgInner = '';
-
-  // Permanent axis layer (always visible from scene 1+)
-  svgInner += `<g id="axis" class="scene">`;
-  // Y axis (will be repurposed per scene; default = score 40-95)
-  // We'll redraw axis labels per scene via DOM manipulation when scene changes.
-  svgInner += `<g id="yAxis"></g>`;
-  svgInner += `<g id="xAxis"></g>`;
-  svgInner += `</g>`;
-
-  // === SCENE 1-4: Score timeline group ===
-  svgInner += `<g id="scene-score" class="scene">`;
-  // Quality bands (initially faint)
-  svgInner += `<rect id="band-good" x="${PAD.l}" y="${PAD.t}" width="${innerW}" height="0" fill="var(--good)" opacity="0.05"/>`;
-  svgInner += `<rect id="band-fair" x="${PAD.l}" y="${PAD.t}" width="${innerW}" height="0" fill="var(--fair)" opacity="0.04"/>`;
-  svgInner += `<rect id="band-poor" x="${PAD.l}" y="${PAD.t}" width="${innerW}" height="0" fill="var(--poor)" opacity="0.06"/>`;
-  // Score points (will be revealed in waves)
-  svgInner += `<g id="score-pts"></g>`;
-  // Moving avg line (drawn in scene 2+)
-  svgInner += `<path id="score-ma" d="" stroke="var(--moving)" stroke-width="2.4" fill="none" opacity="0" stroke-linecap="round"/>`;
-  // Peak/trough highlights
-  svgInner += `<g id="score-highlights" opacity="0"></g>`;
-  // Event markers (scene 4)
-  svgInner += `<g id="score-events" opacity="0"></g>`;
-  svgInner += `</g>`;
-
-  // === SCENE 5: Duration ===
-  svgInner += `<g id="scene-duration" class="scene">`;
-  svgInner += `<g id="duration-pts"></g>`;
-  svgInner += `<path id="duration-ma" stroke="var(--moving)" stroke-width="2.4" fill="none" opacity="0" stroke-linecap="round"/>`;
-  svgInner += `<line id="dur-ref-7" stroke="var(--moon)" stroke-width="0.8" stroke-dasharray="4 4" opacity="0"/>`;
-  svgInner += `<line id="dur-ref-8" stroke="var(--moon)" stroke-width="0.8" stroke-dasharray="4 4" opacity="0"/>`;
-  svgInner += `<text id="dur-ref-7-label" font-size="11" fill="var(--moon)" opacity="0">7 h consigliata</text>`;
-  svgInner += `<text id="dur-ref-8-label" font-size="11" fill="var(--moon)" opacity="0">8 h ideale</text>`;
-  svgInner += `</g>`;
-
-  // === SCENE 6: Sleep window (bedtime + waketime band) ===
-  svgInner += `<g id="scene-window" class="scene">`;
-  svgInner += `<path id="window-band" fill="var(--starlight)" opacity="0"/>`;
-  svgInner += `<path id="bed-line" stroke="var(--bedtime)" stroke-width="2" fill="none" opacity="0" stroke-linecap="round"/>`;
-  svgInner += `<path id="wake-line" stroke="var(--waketime)" stroke-width="2" fill="none" opacity="0" stroke-linecap="round"/>`;
-  svgInner += `<line id="midnight-line" stroke="var(--moon)" stroke-width="0.6" stroke-dasharray="3 3" opacity="0"/>`;
-  svgInner += `<text id="midnight-label" font-size="11" fill="var(--moon)" opacity="0">mezzanotte</text>`;
-  svgInner += `</g>`;
-
-  // === SCENE 7: Polar 24h clock ===
-  svgInner += `<g id="scene-polar" class="scene"></g>`;
-
-  // === SCENE 8: Scatter TL × Score ===
-  svgInner += `<g id="scene-scatter" class="scene"></g>`;
-
-  // === SCENE 9: Heatmap ===
-  svgInner += `<g id="scene-heatmap" class="scene"></g>`;
-
-  svg.innerHTML = svgInner;
-
-  // ===== Compute coordinates for SCORE chart =====
+  // Score scale
   const score_ymin = 40, score_ymax = 95;
   const xs_score = i => PAD.l + (i / (data.length - 1)) * innerW;
   const ys_score = v => PAD.t + ((score_ymax - v) / (score_ymax - score_ymin)) * innerH;
+  // Duration scale
+  const ys_dur = v => PAD.t + ((9.5 - v) / (9.5 - 4)) * innerH;
+  // Window scale (minutes since 6pm, 180=9pm, 900=9am)
+  const ys_win = v => PAD.t + ((v - 180) / (900 - 180)) * innerH;
+  function bedFrom6pm(t) { if (t === null) return null; return (t - 18*60 + 24*60) % (24*60); }
 
-  // Quality band sizes
-  document.getElementById('band-good').setAttribute('y', ys_score(95));
-  document.getElementById('band-good').setAttribute('height', ys_score(80) - ys_score(95));
-  document.getElementById('band-fair').setAttribute('y', ys_score(80));
-  document.getElementById('band-fair').setAttribute('height', ys_score(60) - ys_score(80));
-  document.getElementById('band-poor').setAttribute('y', ys_score(60));
-  document.getElementById('band-poor').setAttribute('height', ys_score(40) - ys_score(60));
+  // ===== Build SVG content (all scenes pre-rendered, hidden by class) =====
+  const scoreScene = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  scoreScene.setAttribute('id', 'scene-score');
+  scoreScene.setAttribute('class', 'scene');
 
-  // Score points
-  const scorePtsLayer = document.getElementById('score-pts');
+  const yearAxis = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  yearAxis.setAttribute('id', 'year-axis');
+  yearAxis.setAttribute('class', 'scene');
+
+  const durScene = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  durScene.setAttribute('id', 'scene-duration');
+  durScene.setAttribute('class', 'scene hidden');
+
+  const winScene = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  winScene.setAttribute('id', 'scene-window');
+  winScene.setAttribute('class', 'scene hidden');
+
+  const polarScene = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  polarScene.setAttribute('id', 'scene-polar');
+  polarScene.setAttribute('class', 'scene hidden');
+
+  const scatterScene = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  scatterScene.setAttribute('id', 'scene-scatter');
+  scatterScene.setAttribute('class', 'scene hidden');
+
+  const heatScene = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  heatScene.setAttribute('id', 'scene-heatmap');
+  heatScene.setAttribute('class', 'scene hidden');
+
+  // Year ticks (always)
+  let yearAxisHTML = '';
+  Object.entries(yearStarts).forEach(([y, i]) => {
+    const x = xs_score(i);
+    yearAxisHTML += `<line x1="${x}" y1="${PAD.t+innerH}" x2="${x}" y2="${PAD.t+innerH+5}" stroke="rgba(184,196,228,0.32)"/>`;
+    yearAxisHTML += `<text x="${x}" y="${PAD.t+innerH+24}" class="axis-label" text-anchor="middle">${y}</text>`;
+  });
+  yearAxis.innerHTML = yearAxisHTML;
+
+  // SCORE scene (default visible)
+  let scoreHTML = '';
+  // bands
+  scoreHTML += `<rect x="${PAD.l}" y="${ys_score(95)}" width="${innerW}" height="${ys_score(80)-ys_score(95)}" fill="var(--good)" opacity="0.06"/>`;
+  scoreHTML += `<rect x="${PAD.l}" y="${ys_score(80)}" width="${innerW}" height="${ys_score(60)-ys_score(80)}" fill="var(--fair)" opacity="0.04"/>`;
+  scoreHTML += `<rect x="${PAD.l}" y="${ys_score(60)}" width="${innerW}" height="${ys_score(40)-ys_score(60)}" fill="var(--poor)" opacity="0.06"/>`;
+  // y grid
+  [50,60,70,80,90].forEach(v => {
+    const y = ys_score(v);
+    scoreHTML += `<line class="grid-line" x1="${PAD.l}" y1="${y}" x2="${PAD.l+innerW}" y2="${y}"/>`;
+    scoreHTML += `<text x="${PAD.l-10}" y="${y+4}" class="axis-label" text-anchor="end" id="y-score-${v}">${v}</text>`;
+  });
+  // points
+  scoreHTML += `<g id="score-pts">`;
   data.forEach((d, i) => {
     if (d.score === null) return;
     const c = d.score >= 80 ? 'var(--good)' : d.score >= 60 ? 'var(--fair)' : 'var(--poor)';
-    const cir = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    cir.setAttribute('cx', xs_score(i).toFixed(1));
-    cir.setAttribute('cy', ys_score(d.score).toFixed(1));
-    cir.setAttribute('r', '0');
-    cir.setAttribute('fill', c);
-    cir.setAttribute('class', 'data-pt');
-    cir.setAttribute('data-i', i);
-    scorePtsLayer.appendChild(cir);
+    scoreHTML += `<circle cx="${xs_score(i).toFixed(1)}" cy="${ys_score(d.score).toFixed(1)}" r="2.4" fill="${c}" class="data-pt"/>`;
   });
-
-  // Moving avg path
-  const ma_score = movAvg(data, 'score', 12);
+  scoreHTML += `</g>`;
+  // moving avg
+  const ma = movAvg(data, 'score', 12);
   let maParts = [];
-  ma_score.forEach((v, i) => {
+  ma.forEach((v, i) => {
     if (v === null) return;
     const op = maParts.length === 0 ? 'M' : 'L';
     maParts.push(op + xs_score(i).toFixed(1) + ' ' + ys_score(v).toFixed(1));
   });
-  document.getElementById('score-ma').setAttribute('d', maParts.join(' '));
-
-  // Highlights (peak 89 Feb 2022, trough 51 Sep 2025)
+  scoreHTML += `<path id="score-ma" d="${maParts.join(' ')}" stroke="var(--moving)" stroke-width="2.4" fill="none" stroke-linecap="round" opacity="0"/>`;
+  // highlights
+  scoreHTML += `<g id="score-highlights" opacity="0">`;
   const peakIdx = data.findIndex(d => d.score === 89);
   const troughIdx = data.findIndex(d => d.score === 51);
-  const hi = document.getElementById('score-highlights');
-  function ringMark(cx, cy, color, label) {
-    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    g.innerHTML = `
-      <circle cx="${cx}" cy="${cy}" r="14" fill="none" stroke="${color}" stroke-width="2" class="pulse"/>
-      <circle cx="${cx}" cy="${cy}" r="4" fill="${color}"/>
-      <text x="${cx}" y="${cy - 22}" text-anchor="middle" class="annot" fill="${color}" font-weight="600">${label}</text>
-    `;
-    return g;
+  if (peakIdx >= 0) {
+    const cx = xs_score(peakIdx), cy = ys_score(89);
+    scoreHTML += `<circle cx="${cx}" cy="${cy}" r="14" fill="none" stroke="var(--good)" stroke-width="2" class="pulse"/>`;
+    scoreHTML += `<circle cx="${cx}" cy="${cy}" r="4" fill="var(--good)"/>`;
+    scoreHTML += `<text x="${cx}" y="${cy-22}" text-anchor="middle" class="annot" fill="var(--good)" font-weight="600">PR · Feb 2022 · 89</text>`;
   }
-  if (peakIdx >= 0) hi.appendChild(ringMark(xs_score(peakIdx), ys_score(89), 'var(--good)', 'PR · Feb 2022 · 89'));
-  if (troughIdx >= 0) hi.appendChild(ringMark(xs_score(troughIdx), ys_score(51), 'var(--poor)', 'Ironman week · Set 2025 · 51'));
-
-  // Event markers above the plot
-  const evLayer = document.getElementById('score-events');
+  if (troughIdx >= 0) {
+    const cx = xs_score(troughIdx), cy = ys_score(51);
+    scoreHTML += `<circle cx="${cx}" cy="${cy}" r="14" fill="none" stroke="var(--poor)" stroke-width="2" class="pulse"/>`;
+    scoreHTML += `<circle cx="${cx}" cy="${cy}" r="4" fill="var(--poor)"/>`;
+    scoreHTML += `<text x="${cx}" y="${cy+30}" text-anchor="middle" class="annot" fill="var(--poor)" font-weight="600">Ironman · Set 2025 · 51</text>`;
+  }
+  scoreHTML += `</g>`;
+  // events
+  scoreHTML += `<g id="score-events" opacity="0">`;
   EVENTS.forEach((ev, k) => {
     if (ev.weekIdx < 0) return;
     const x = xs_score(ev.weekIdx);
     const w = data[ev.weekIdx];
     const y = w.score !== null ? ys_score(w.score) : ys_score(70);
-    const evColor = ev.cat === 'race' ? 'var(--moon)' :
-                    ev.cat === 'injury' ? 'var(--poor)' :
-                    ev.cat === 'milestone' ? 'var(--good)' : 'var(--bedtime)';
-    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    g.setAttribute('class', 'data-pt-event');
-    g.setAttribute('data-ev', k);
-    g.innerHTML = `
-      <line x1="${x}" y1="${y - 6}" x2="${x}" y2="${PAD.t - 4}" stroke="${evColor}" stroke-width="0.6" stroke-dasharray="2 2" opacity="0.55"/>
-      <circle cx="${x}" cy="${PAD.t - 14}" r="9" fill="${evColor}" stroke="var(--bg)" stroke-width="1.5"/>
-      <text x="${x}" y="${PAD.t - 10}" text-anchor="middle" font-size="11" pointer-events="none">${ev.emoji}</text>
-    `;
-    g.addEventListener('mouseenter', e => {
-      const w2 = data[ev.weekIdx];
-      showTip(e, `<div class="tt-title">${ev.emoji} ${ev.label}</div><em>${ev.sub}</em><br>settimana del ${fmtDate(w2.startDate)} · score <strong>${w2.score || '—'}</strong>`);
-    });
-    g.addEventListener('mouseleave', hideTip);
-    g.addEventListener('touchstart', e => {
-      const w2 = data[ev.weekIdx];
-      showTip(e, `<div class="tt-title">${ev.emoji} ${ev.label}</div><em>${ev.sub}</em><br>settimana ${fmtDate(w2.startDate)} · score <strong>${w2.score || '—'}</strong>`);
-    });
-    evLayer.appendChild(g);
+    const evColor = ev.cat === 'race' ? 'var(--moon)' : ev.cat === 'injury' ? 'var(--poor)' : ev.cat === 'milestone' ? 'var(--good)' : 'var(--bedtime)';
+    scoreHTML += `<g class="data-pt-event" data-ev="${k}">`;
+    scoreHTML += `<line x1="${x}" y1="${y - 6}" x2="${x}" y2="${PAD.t - 4}" stroke="${evColor}" stroke-width="0.6" stroke-dasharray="2 2" opacity="0.55"/>`;
+    scoreHTML += `<circle cx="${x}" cy="${PAD.t - 14}" r="9" fill="${evColor}" stroke="var(--bg)" stroke-width="1.5"/>`;
+    scoreHTML += `<text x="${x}" y="${PAD.t - 10}" text-anchor="middle" font-size="11" pointer-events="none">${ev.emoji}</text>`;
+    scoreHTML += `</g>`;
   });
+  scoreHTML += `</g>`;
+  scoreScene.innerHTML = scoreHTML;
 
-  // ===== DURATION (scene 5) =====
-  const dur_ymin = 4, dur_ymax = 9.5;
-  const ys_dur = v => PAD.t + ((dur_ymax - v) / (dur_ymax - dur_ymin)) * innerH;
-  const durLayer = document.getElementById('duration-pts');
+  // DURATION scene
+  let durHTML = '';
+  [5,6,7,8,9].forEach(v => {
+    const y = ys_dur(v);
+    durHTML += `<line class="grid-line" x1="${PAD.l}" y1="${y}" x2="${PAD.l+innerW}" y2="${y}"/>`;
+    durHTML += `<text x="${PAD.l-10}" y="${y+4}" class="axis-label" text-anchor="end">${v} h</text>`;
+  });
+  // refs 7h 8h
+  [7,8].forEach(v => {
+    const y = ys_dur(v);
+    durHTML += `<line x1="${PAD.l}" y1="${y}" x2="${PAD.l+innerW}" y2="${y}" stroke="var(--moon)" stroke-width="0.8" stroke-dasharray="4 4" opacity="0.4"/>`;
+    durHTML += `<text x="${PAD.l+8}" y="${y-6}" class="axis-label" fill="var(--moon)" opacity="0.8">${v} h</text>`;
+  });
+  durHTML += `<g>`;
   data.forEach((d, i) => {
     if (d.dur === null) return;
     const c = d.dur >= 7 ? 'var(--good)' : d.dur >= 6 ? 'var(--fair)' : 'var(--poor)';
-    const cir = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    cir.setAttribute('cx', xs_score(i).toFixed(1));
-    cir.setAttribute('cy', ys_dur(d.dur).toFixed(1));
-    cir.setAttribute('r', '0');
-    cir.setAttribute('fill', c);
-    cir.setAttribute('class', 'data-pt');
-    cir.setAttribute('data-i', i);
-    cir.setAttribute('data-type', 'dur');
-    durLayer.appendChild(cir);
+    durHTML += `<circle cx="${xs_score(i).toFixed(1)}" cy="${ys_dur(d.dur).toFixed(1)}" r="2.2" fill="${c}"/>`;
   });
-  const ma_dur = movAvg(data, 'dur', 12);
-  let durMaParts = [];
-  ma_dur.forEach((v, i) => {
+  durHTML += `</g>`;
+  const maDur = movAvg(data, 'dur', 12);
+  let dmaParts = [];
+  maDur.forEach((v, i) => {
     if (v === null) return;
-    const op = durMaParts.length === 0 ? 'M' : 'L';
-    durMaParts.push(op + xs_score(i).toFixed(1) + ' ' + ys_dur(v).toFixed(1));
+    const op = dmaParts.length === 0 ? 'M' : 'L';
+    dmaParts.push(op + xs_score(i).toFixed(1) + ' ' + ys_dur(v).toFixed(1));
   });
-  document.getElementById('duration-ma').setAttribute('d', durMaParts.join(' '));
-  document.getElementById('dur-ref-7').setAttribute('x1', PAD.l);
-  document.getElementById('dur-ref-7').setAttribute('x2', PAD.l + innerW);
-  document.getElementById('dur-ref-7').setAttribute('y1', ys_dur(7));
-  document.getElementById('dur-ref-7').setAttribute('y2', ys_dur(7));
-  document.getElementById('dur-ref-7-label').setAttribute('x', PAD.l + 8);
-  document.getElementById('dur-ref-7-label').setAttribute('y', ys_dur(7) - 6);
-  document.getElementById('dur-ref-8').setAttribute('x1', PAD.l);
-  document.getElementById('dur-ref-8').setAttribute('x2', PAD.l + innerW);
-  document.getElementById('dur-ref-8').setAttribute('y1', ys_dur(8));
-  document.getElementById('dur-ref-8').setAttribute('y2', ys_dur(8));
-  document.getElementById('dur-ref-8-label').setAttribute('x', PAD.l + 8);
-  document.getElementById('dur-ref-8-label').setAttribute('y', ys_dur(8) - 6);
+  durHTML += `<path d="${dmaParts.join(' ')}" stroke="var(--moving)" stroke-width="2.4" fill="none" stroke-linecap="round" opacity="0.95"/>`;
+  durScene.innerHTML = durHTML;
 
-  // ===== WINDOW (scene 6) =====
-  function bedFrom6pm(t) {
-    if (t === null) return null;
-    return (t - 18*60 + 24*60) % (24*60);
+  // WINDOW scene
+  let winHTML = '';
+  function fmtTimeOfDay(m) {
+    const minOfDay = (m + 18*60) % (24*60);
+    const h = Math.floor(minOfDay/60), mi = minOfDay%60;
+    const ampm = h<12?'AM':'PM', h12 = h%12||12;
+    return h12 + ':' + String(mi).padStart(2,'0') + ' ' + ampm;
   }
-  const win_ymin = 180, win_ymax = 900;
-  const ys_win = v => PAD.t + ((v - win_ymin) / (win_ymax - win_ymin)) * innerH;
+  [180, 360, 540, 720, 900].forEach(v => {
+    const y = ys_win(v);
+    winHTML += `<line class="grid-line" x1="${PAD.l}" y1="${y}" x2="${PAD.l+innerW}" y2="${y}"/>`;
+    winHTML += `<text x="${PAD.l-10}" y="${y+4}" class="axis-label" text-anchor="end">${fmtTimeOfDay(v)}</text>`;
+  });
+  // band
   const bedPts = [], wakePts = [];
   data.forEach((d, i) => {
-    const bm = bedFrom6pm(d.bed); if (bm !== null) bedPts.push({x: xs_score(i), y: ys_win(bm), i});
-    const wm = bedFrom6pm(d.wake); if (wm !== null) wakePts.push({x: xs_score(i), y: ys_win(wm), i});
+    const bm = bedFrom6pm(d.bed); if (bm !== null) bedPts.push({x: xs_score(i), y: ys_win(bm)});
+    const wm = bedFrom6pm(d.wake); if (wm !== null) wakePts.push({x: xs_score(i), y: ys_win(wm)});
   });
+  if (bedPts.length && wakePts.length) {
+    const top = bedPts.map((p,i)=>(i===0?'M':'L')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
+    const bot = wakePts.slice().reverse().map(p => 'L'+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
+    winHTML += `<path d="${top} ${bot} Z" fill="var(--starlight)" opacity="0.07"/>`;
+  }
   const bedPath = bedPts.map((p,i)=>(i===0?'M':'L')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
+  winHTML += `<path d="${bedPath}" stroke="var(--bedtime)" stroke-width="2" fill="none" opacity="0.92" stroke-linecap="round"/>`;
   const wakePath = wakePts.map((p,i)=>(i===0?'M':'L')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
-  document.getElementById('bed-line').setAttribute('d', bedPath);
-  document.getElementById('wake-line').setAttribute('d', wakePath);
-  // Band
-  const bandTop = bedPts.map((p,i)=>(i===0?'M':'L')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
-  const bandBot = wakePts.slice().reverse().map(p => 'L'+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
-  document.getElementById('window-band').setAttribute('d', bandTop + ' ' + bandBot + ' Z');
-  document.getElementById('midnight-line').setAttribute('x1', PAD.l);
-  document.getElementById('midnight-line').setAttribute('x2', PAD.l + innerW);
-  document.getElementById('midnight-line').setAttribute('y1', ys_win(360));
-  document.getElementById('midnight-line').setAttribute('y2', ys_win(360));
-  document.getElementById('midnight-label').setAttribute('x', PAD.l + innerW - 10);
-  document.getElementById('midnight-label').setAttribute('y', ys_win(360) - 6);
-  document.getElementById('midnight-label').setAttribute('text-anchor', 'end');
+  winHTML += `<path d="${wakePath}" stroke="var(--waketime)" stroke-width="2" fill="none" opacity="0.92" stroke-linecap="round"/>`;
+  // midnight
+  winHTML += `<line x1="${PAD.l}" y1="${ys_win(360)}" x2="${PAD.l+innerW}" y2="${ys_win(360)}" stroke="var(--moon)" stroke-width="0.6" stroke-dasharray="3 3" opacity="0.4"/>`;
+  winHTML += `<text x="${PAD.l+innerW-10}" y="${ys_win(360)-6}" text-anchor="end" class="annot" fill="var(--moon)">mezzanotte</text>`;
+  winScene.innerHTML = winHTML;
 
-  // ===== POLAR (scene 7) =====
-  (function buildPolar() {
-    const layer = document.getElementById('scene-polar');
+  // POLAR scene
+  (function() {
     const CX = W/2, CY = H/2 + 10, RMAX = 220;
     const bedDist = new Array(24).fill(0), wakeDist = new Array(24).fill(0);
     data.forEach(d => {
@@ -802,7 +697,6 @@
       const [tx2, ty2] = pol(h, RMAX+8);
       html += `<line x1="${tx1}" y1="${ty1}" x2="${tx2}" y2="${ty2}" stroke="rgba(184,196,228,0.32)" stroke-width="1"/>`;
     }
-    // Petals
     function petal(h, count, color, side) {
       if (count === 0) return '';
       const r = (count / maxC) * RMAX * 0.85;
@@ -819,12 +713,11 @@
     wakeDist.forEach((c, h) => html += petal(h, c, 'var(--waketime)', 'w'));
     html += `<circle cx="${CX}" cy="${CY}" r="18" fill="var(--bg-2)" stroke="var(--moon)" stroke-width="0.8"/>`;
     html += `<text x="${CX}" y="${CY+6}" text-anchor="middle" font-size="18">🌙</text>`;
-    layer.innerHTML = html;
+    polarScene.innerHTML = html;
   })();
 
-  // ===== SCATTER TL × Score (scene 8) =====
-  (function buildScatter() {
-    const layer = document.getElementById('scene-scatter');
+  // SCATTER scene
+  (function() {
     const sleepByDate = {};
     data.forEach(d => sleepByDate[d.startDate] = d);
     const points = load.map(l => {
@@ -844,46 +737,45 @@
 
     const xmin = 0, xmax = 2200;
     const xs = v => PAD.l + (v - xmin) / (xmax - xmin) * innerW;
-    const ys_s = v => PAD.t + ((95 - v) / (95 - 40)) * innerH;
+    const ys = v => PAD.t + ((95 - v) / (95 - 40)) * innerH;
     let html = '';
     [50,60,70,80,90].forEach(v => {
-      const y = ys_s(v);
+      const y = ys(v);
       html += `<line class="grid-line" x1="${PAD.l}" y1="${y}" x2="${PAD.l+innerW}" y2="${y}"/>`;
-      html += `<text x="${PAD.l-8}" y="${y+3}" class="axis-label" text-anchor="end">${v}</text>`;
+      html += `<text x="${PAD.l-10}" y="${y+4}" class="axis-label" text-anchor="end">${v}</text>`;
     });
     [0,500,1000,1500,2000].forEach(v => {
       const x = xs(v);
       html += `<line class="grid-line" x1="${x}" y1="${PAD.t}" x2="${x}" y2="${PAD.t+innerH}"/>`;
-      html += `<text x="${x}" y="${PAD.t+innerH+18}" class="axis-label" text-anchor="middle">TL ${v}</text>`;
+      html += `<text x="${x}" y="${PAD.t+innerH+20}" class="axis-label" text-anchor="middle">TL ${v}</text>`;
     });
-    // Regression
     const xMean = points.reduce((s,p)=>s+p.tl,0)/points.length;
     const yMean = points.reduce((s,p)=>s+p.score,0)/points.length;
     const num = points.reduce((s,p)=>s+(p.tl-xMean)*(p.score-yMean),0);
     const den = points.reduce((s,p)=>s+(p.tl-xMean)**2,0);
     const slope = num/den, intercept = yMean - slope*xMean;
-    html += `<line x1="${xs(0)}" y1="${ys_s(intercept)}" x2="${xs(2200)}" y2="${ys_s(intercept+slope*2200)}" stroke="var(--starlight)" stroke-width="1.5" stroke-dasharray="6 3" opacity="0.7"/>`;
+    html += `<line x1="${xs(0)}" y1="${ys(intercept)}" x2="${xs(2200)}" y2="${ys(intercept+slope*2200)}" stroke="var(--starlight)" stroke-width="1.5" stroke-dasharray="6 3" opacity="0.7"/>`;
     points.forEach((p, k) => {
       const c = p.score >= 80 ? 'var(--good)' : p.score >= 60 ? 'var(--fair)' : 'var(--poor)';
       const r = Math.min(8, 2.5 + Math.sqrt(p.n));
-      html += `<circle cx="${xs(p.tl).toFixed(1)}" cy="${ys_s(p.score).toFixed(1)}" r="${r.toFixed(1)}" fill="${c}" opacity="0.7" stroke="var(--bg-2)" stroke-width="0.6" data-k="${k}"/>`;
+      html += `<circle cx="${xs(p.tl).toFixed(1)}" cy="${ys(p.score).toFixed(1)}" r="${r.toFixed(1)}" fill="${c}" opacity="0.7" stroke="var(--bg-2)" stroke-width="0.6" data-k="${k}"/>`;
     });
-    html += `<text x="${PAD.l+innerW/2}" y="${H-16}" text-anchor="middle" class="axis-label" fill="var(--ink-soft)">Training Load settimanale →</text>`;
-    layer.innerHTML = html;
-
-    // Tooltip on circles
-    layer.querySelectorAll('circle[data-k]').forEach(el => {
-      el.addEventListener('mouseenter', e => {
-        const p = points[+el.getAttribute('data-k')];
-        showTip(e, `<div class="tt-title">${fmtDate(p.week)}</div>TL <strong>${p.tl}</strong> · Score <strong>${p.score}</strong><br>${p.n} sortite · ${p.km} km · ${p.kj} kJ`);
+    html += `<text x="${PAD.l+innerW/2}" y="${H-22}" text-anchor="middle" class="axis-label" fill="var(--ink-soft)">Training Load settimanale →</text>`;
+    scatterScene.innerHTML = html;
+    // Tooltip on bubbles
+    setTimeout(() => {
+      scatterScene.querySelectorAll('circle[data-k]').forEach(el => {
+        el.addEventListener('mouseenter', e => {
+          const p = points[+el.getAttribute('data-k')];
+          showTip(e, `<div class="tt-title">${fmtDate(p.week)}</div>TL <strong>${p.tl}</strong> · Score <strong>${p.score}</strong><br>${p.n} sortite · ${p.km} km`);
+        });
+        el.addEventListener('mouseleave', hideTip);
       });
-      el.addEventListener('mouseleave', hideTip);
-    });
+    }, 0);
   })();
 
-  // ===== HEATMAP (scene 9) =====
-  (function buildHeatmap() {
-    const layer = document.getElementById('scene-heatmap');
+  // HEATMAP scene
+  (function() {
     const grid = {};
     data.forEach(d => {
       if (d.score === null) return;
@@ -896,7 +788,7 @@
     });
     const years = Object.keys(grid).map(Number).sort();
     const months = ['G','F','M','A','M','G','L','A','S','O','N','D'];
-    const HX = 60, HY = 100, HW = innerW - 50, HH = 380;
+    const HX = 70, HY = 100, HW = innerW - 50, HH = 460;
     const cellW = HW / 12, cellH = HH / years.length;
     function colorFor(s) {
       if (s == null) return 'rgba(184,196,228,0.05)';
@@ -918,178 +810,116 @@
         const x = HX + m * cellW;
         const cell = grid[yrow] && grid[yrow][m];
         const score = cell ? cell.sum / cell.n : null;
-        html += `<rect x="${x+2}" y="${yPx+2}" width="${cellW-4}" height="${cellH-4}" rx="4" fill="${colorFor(score)}" stroke="rgba(184,196,228,0.15)" stroke-width="0.5" data-y="${yrow}" data-m="${m}" data-s="${score!=null?score.toFixed(1):'—'}"/>`;
+        html += `<rect x="${x+2}" y="${yPx+2}" width="${cellW-4}" height="${cellH-4}" rx="4" fill="${colorFor(score)}" stroke="rgba(184,196,228,0.15)" stroke-width="0.5"/>`;
         if (score !== null && cellW > 36) {
           html += `<text x="${x+cellW/2}" y="${yPx+cellH/2+4}" text-anchor="middle" font-size="13" fill="var(--ink)" opacity="0.9">${Math.round(score)}</text>`;
         }
       }
     });
-    layer.innerHTML = html;
-    layer.querySelectorAll('rect[data-y]').forEach(el => {
-      el.addEventListener('mouseenter', e => {
-        const y = el.getAttribute('data-y'), m = +el.getAttribute('data-m');
-        const s = el.getAttribute('data-s');
-        const monthNames = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
-        showTip(e, `<div class="tt-title">${monthNames[m]} ${y}</div>Score medio: <strong>${s}</strong>`);
-      });
-      el.addEventListener('mouseleave', hideTip);
-    });
+    heatScene.innerHTML = html;
   })();
 
-  // ===== Y-AXIS labels per scene =====
-  function setAxisForScore() {
-    const ax = document.getElementById('yAxis');
-    let html = '';
-    [50, 60, 70, 80, 90].forEach(v => {
-      const y = ys_score(v);
-      html += `<line class="grid-line" x1="${PAD.l}" y1="${y}" x2="${PAD.l+innerW}" y2="${y}"/>`;
-      html += `<text x="${PAD.l-10}" y="${y+4}" class="axis-label" text-anchor="end">${v}</text>`;
+  // Append all scenes to SVG
+  svg.appendChild(scoreScene);
+  svg.appendChild(yearAxis);
+  svg.appendChild(durScene);
+  svg.appendChild(winScene);
+  svg.appendChild(polarScene);
+  svg.appendChild(scatterScene);
+  svg.appendChild(heatScene);
+
+  // Score events tooltips
+  document.querySelectorAll('.data-pt-event').forEach(el => {
+    const k = +el.getAttribute('data-ev');
+    const ev = EVENTS[k];
+    el.addEventListener('mouseenter', e => {
+      const w = data[ev.weekIdx];
+      showTip(e, `<div class="tt-title">${ev.emoji} ${ev.label}</div><em>${ev.sub}</em><br>${fmtDate(w.startDate)} · score <strong>${w.score || '—'}</strong>`);
     });
-    ax.innerHTML = html;
-    const xa = document.getElementById('xAxis');
-    let xh = '';
-    Object.entries(yearStarts).forEach(([y, i]) => {
-      const x = xs_score(i);
-      xh += `<line x1="${x}" y1="${PAD.t+innerH}" x2="${x}" y2="${PAD.t+innerH+5}" stroke="rgba(184,196,228,0.32)"/>`;
-      xh += `<text x="${x}" y="${PAD.t+innerH+22}" class="axis-label" text-anchor="middle">${y}</text>`;
+    el.addEventListener('mouseleave', hideTip);
+  });
+
+  // ===== Scene controller =====
+  function show(...ids) {
+    const all = ['scene-score', 'year-axis', 'scene-duration', 'scene-window', 'scene-polar', 'scene-scatter', 'scene-heatmap'];
+    all.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (ids.includes(id)) el.classList.remove('hidden');
+      else el.classList.add('hidden');
     });
-    xa.innerHTML = xh;
   }
-  function setAxisForDuration() {
-    const ax = document.getElementById('yAxis');
-    let html = '';
-    [5, 6, 7, 8, 9].forEach(v => {
-      const y = ys_dur(v);
-      html += `<line class="grid-line" x1="${PAD.l}" y1="${y}" x2="${PAD.l+innerW}" y2="${y}"/>`;
-      html += `<text x="${PAD.l-10}" y="${y+4}" class="axis-label" text-anchor="end">${v} h</text>`;
-    });
-    ax.innerHTML = html;
-  }
-  function setAxisForWindow() {
-    const ax = document.getElementById('yAxis');
-    function fmtTimeOfDay(m) {
-      const minOfDay = (m + 18*60) % (24*60);
-      const h = Math.floor(minOfDay/60), mi = minOfDay%60;
-      const ampm = h<12?'AM':'PM', h12 = h%12||12;
-      return h12 + ':' + String(mi).padStart(2,'0') + ' ' + ampm;
-    }
-    let html = '';
-    [180, 360, 540, 720, 900].forEach(v => {
-      const y = ys_win(v);
-      html += `<line class="grid-line" x1="${PAD.l}" y1="${y}" x2="${PAD.l+innerW}" y2="${y}"/>`;
-      html += `<text x="${PAD.l-10}" y="${y+4}" class="axis-label" text-anchor="end">${fmtTimeOfDay(v)}</text>`;
-    });
-    ax.innerHTML = html;
-  }
-  function clearAxis() {
-    document.getElementById('yAxis').innerHTML = '';
-    document.getElementById('xAxis').innerHTML = '';
+  function setScoreLayers(opts) {
+    document.getElementById('score-ma').setAttribute('opacity', opts.ma ? '0.95' : '0');
+    document.getElementById('score-highlights').setAttribute('opacity', opts.high ? '1' : '0');
+    document.getElementById('score-events').setAttribute('opacity', opts.events ? '1' : '0');
   }
 
-  // ===== SCENE TRANSITIONS =====
   let currentScene = -1;
-  function showScene(idx) {
-    if (idx === currentScene) return;
-    currentScene = idx;
-    // Hide all scene groups
-    ['scene-score','scene-duration','scene-window','scene-polar','scene-scatter','scene-heatmap'].forEach(id => {
-      document.getElementById(id).classList.remove('show');
-    });
-
-    // SCENE 0 — empty / hero number
-    if (idx === 0) {
-      clearAxis();
-      return;
-    }
-
-    // SCENES 1-4 — score timeline progressively builds
-    if (idx >= 1 && idx <= 4) {
-      document.getElementById('scene-score').classList.add('show');
-      setAxisForScore();
-      // Always show all dots
-      const pts = document.querySelectorAll('#score-pts circle');
-      pts.forEach((c, k) => {
-        c.setAttribute('r', '2.4');
-      });
-      // Scene 2+ : moving avg
-      document.getElementById('score-ma').setAttribute('opacity', idx >= 2 ? '0.95' : '0');
-      // Scene 3 : highlights
-      document.getElementById('score-highlights').setAttribute('opacity', idx >= 3 ? '1' : '0');
-      // Scene 4 : event markers
-      document.getElementById('score-events').setAttribute('opacity', idx >= 4 ? '1' : '0');
-      return;
-    }
-
-    // SCENE 5 — Duration
-    if (idx === 5) {
-      document.getElementById('scene-duration').classList.add('show');
-      setAxisForDuration();
-      document.querySelectorAll('#duration-pts circle').forEach(c => c.setAttribute('r','2'));
-      document.getElementById('duration-ma').setAttribute('opacity','0.95');
-      document.getElementById('dur-ref-7').setAttribute('opacity','0.5');
-      document.getElementById('dur-ref-7-label').setAttribute('opacity','0.7');
-      document.getElementById('dur-ref-8').setAttribute('opacity','0.5');
-      document.getElementById('dur-ref-8-label').setAttribute('opacity','0.7');
-      return;
-    }
-
-    // SCENE 6 — Window
-    if (idx === 6) {
-      document.getElementById('scene-window').classList.add('show');
-      setAxisForWindow();
-      document.getElementById('window-band').setAttribute('opacity','0.07');
-      document.getElementById('bed-line').setAttribute('opacity','0.92');
-      document.getElementById('wake-line').setAttribute('opacity','0.92');
-      document.getElementById('midnight-line').setAttribute('opacity','0.4');
-      document.getElementById('midnight-label').setAttribute('opacity','0.7');
-      return;
-    }
-
-    // SCENE 7 — Polar
-    if (idx === 7) {
-      document.getElementById('scene-polar').classList.add('show');
-      clearAxis();
-      return;
-    }
-
-    // SCENE 8 — Scatter
-    if (idx === 8) {
-      document.getElementById('scene-scatter').classList.add('show');
-      clearAxis();
-      return;
-    }
-
-    // SCENE 9 — Heatmap
-    if (idx === 9) {
-      document.getElementById('scene-heatmap').classList.add('show');
-      clearAxis();
-      return;
-    }
+  function applyScene(s) {
+    if (s === currentScene) return;
+    currentScene = s;
+    if (s === 0) { show('scene-score', 'year-axis'); setScoreLayers({}); return; }
+    if (s === 1) { show('scene-score', 'year-axis'); setScoreLayers({}); return; }
+    if (s === 2) { show('scene-score', 'year-axis'); setScoreLayers({ma:true}); return; }
+    if (s === 3) { show('scene-score', 'year-axis'); setScoreLayers({ma:true, high:true}); return; }
+    if (s === 4) { show('scene-score', 'year-axis'); setScoreLayers({ma:true, high:true, events:true}); return; }
+    if (s === 5) { show('scene-duration', 'year-axis'); return; }
+    if (s === 6) { show('scene-window', 'year-axis'); return; }
+    if (s === 7) { show('scene-polar'); return; }
+    if (s === 8) { show('scene-scatter'); return; }
+    if (s === 9) { show('scene-heatmap'); return; }
   }
 
-  // ===== Drive scene by IntersectionObserver on .step elements =====
+  // Default scene (always visible immediately)
+  applyScene(1);
+
+  // ===== IntersectionObserver — drive scene by step in viewport =====
   const steps = document.querySelectorAll('.step');
-  // Mark step in (for fade-in of its content)
-  const stepObs = new IntersectionObserver((entries) => {
-    entries.forEach(en => {
-      const idx = +en.target.getAttribute('data-scene');
-      if (en.isIntersecting) {
-        en.target.classList.add('in');
-        showScene(idx);
+  if ('IntersectionObserver' in window) {
+    const stepObs = new IntersectionObserver(entries => {
+      // Pick the step closest to viewport center that's intersecting
+      const vis = entries.filter(e => e.isIntersecting);
+      vis.forEach(e => e.target.classList.add('in'));
+      if (vis.length) {
+        // Take the most-visible step
+        const sorted = vis.sort((a,b) => b.intersectionRatio - a.intersectionRatio);
+        const s = +sorted[0].target.getAttribute('data-scene');
+        applyScene(s);
+      }
+    }, { threshold: [0.25, 0.5, 0.75], rootMargin: '-20% 0px -30% 0px' });
+    steps.forEach(s => stepObs.observe(s));
+  }
+
+  // Scroll-based fallback: pick step whose center is closest to viewport center
+  let scrollTick = false;
+  function pickStepOnScroll() {
+    const vH = window.innerHeight;
+    const center = vH / 2;
+    let best = null, bestDist = Infinity;
+    steps.forEach(s => {
+      const r = s.getBoundingClientRect();
+      const stepCenter = r.top + r.height / 2;
+      const dist = Math.abs(stepCenter - center);
+      if (dist < bestDist && r.top < vH && r.bottom > 0) {
+        bestDist = dist;
+        best = s;
       }
     });
-  }, { threshold: 0.4, rootMargin: '-10% 0px -30% 0px' });
-  steps.forEach(s => stepObs.observe(s));
-
-  // Safety net: if no IO ever fires, force show all + last scene at 4s
-  setTimeout(() => {
-    if (currentScene < 0) {
-      steps.forEach(s => s.classList.add('in'));
-      showScene(9);
+    if (best) {
+      best.classList.add('in');
+      const idx = +best.getAttribute('data-scene');
+      applyScene(idx);
     }
-  }, 4000);
+    scrollTick = false;
+  }
+  window.addEventListener('scroll', () => {
+    if (!scrollTick) { requestAnimationFrame(pickStepOnScroll); scrollTick = true; }
+  }, { passive: true });
+  // Fire once on load
+  setTimeout(pickStepOnScroll, 300);
 
-  // ===== EPILOGUE — best/worst lists =====
+  // ===== Best/worst lists =====
   (function() {
     const scored = data.filter(d => d.score !== null);
     const top = [...scored].sort((a,b) => b.score - a.score).slice(0, 5);
@@ -1103,20 +933,7 @@
     }).join('');
   })();
 
-  // ===== Subtle parallax stars =====
-  let lastY = 0, ticking = false;
-  function updateParallax() {
-    const y = window.scrollY;
-    document.querySelectorAll('.stars-layer').forEach((el, i) => {
-      el.style.transform = `translateY(${y * (i+1) * -0.025}px)`;
-    });
-    ticking = false;
-  }
-  window.addEventListener('scroll', () => {
-    if (!ticking) { requestAnimationFrame(updateParallax); ticking = true; }
-  }, { passive: true });
-
-  console.log('sogni-scrolly · ' + data.length + ' weeks · ' + load.length + ' load weeks · ' + EVENTS.length + ' events');
+  console.log('sogni-scrolly v3 · ' + data.length + ' weeks · ' + load.length + ' load weeks · ' + EVENTS.length + ' events');
 })();
 </script>
 
