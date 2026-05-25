@@ -4,106 +4,68 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Il Signore dei kJ — Settimanale · Michele Merelli</title>
-<meta name="description" content="104 short stories settimanali — un romanzo di 2 anni atletici di Michele Merelli.">
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #faf6ed; --paper: #fffdf6; --ink: #2a2317;
-    --gold: #b8860b; --gold-soft: rgba(184,134,11,0.12);
-    --rule: #d4c8a8; --muted: #6b5f48; --accent: #8b2e1f;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body { background: var(--bg); color: var(--ink); font-family: 'EB Garamond', Georgia, serif; font-size: 19px; line-height: 1.7; max-width: 720px; margin: 0 auto; padding: 60px 28px 100px; }
-  body::before { content: ""; position: fixed; inset: 0; background-image: radial-gradient(circle at 25% 30%, rgba(184,134,11,0.04) 0, transparent 40%), radial-gradient(circle at 75% 70%, rgba(139,46,31,0.03) 0, transparent 35%); pointer-events: none; z-index: -1; }
-  h1.cover { font-family: 'Cinzel', serif; font-size: 2.4rem; font-weight: 700; letter-spacing: 0.04em; text-align: center; line-height: 1.1; margin-bottom: 8px; }
-  h1.cover .accent { display: block; font-size: 0.45em; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
-  .cover-sub { text-align: center; color: var(--muted); font-style: italic; max-width: 540px; margin: 18px auto 30px; font-size: 1.05rem; }
-  .cover-stats { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin: 30px 0 20px; }
-  .cover-stat { text-align: center; }
-  .cover-stat .num { font-family: 'Cinzel', serif; font-size: 1.5rem; color: var(--gold); font-weight: 700; }
-  .cover-stat .label { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-top: 4px; }
-  .ornament { text-align: center; color: var(--gold); margin: 30px 0; font-size: 1.4rem; letter-spacing: 1em; }
-  .reading-note { background: var(--paper); border: 1px dashed var(--rule); padding: 14px 20px; margin: 28px auto; max-width: 520px; font-size: 0.92rem; color: var(--muted); font-style: italic; text-align: center; border-radius: 4px; }
-  .reading-note strong { color: var(--accent); font-style: normal; font-family: 'IBM Plex Mono', monospace; font-size: 0.85em; letter-spacing: 0.1em; text-transform: uppercase; }
-  .week-grid { display: grid; grid-template-columns: repeat(13, 1fr); gap: 4px; max-width: 540px; margin: 30px auto; }
-  .week-grid .dot { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; background: var(--paper); border: 1px solid var(--rule); border-radius: 4px; text-decoration: none; transition: all 0.25s ease; }
-  .week-grid .dot:hover { transform: translateY(-2px); border-color: var(--gold); background: var(--gold-soft); }
-  .story { margin: 60px 0; padding-bottom: 40px; border-bottom: 1px dashed var(--rule); scroll-margin-top: 30px; }
-  .story:last-child { border-bottom: none; }
-  .story-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
-  .week-num { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); }
-  .week-mood { font-size: 1.4rem; }
-  h2.story-title { font-family: 'Cinzel', serif; font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; line-height: 1.2; }
-  .story-subtitle { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: var(--muted); margin-bottom: 18px; letter-spacing: 0.06em; }
-  .story-body { font-size: 1.02rem; }
-  .story-body p { margin-bottom: 12px; }
-  .story-body p:first-child::first-letter { font-family: 'Cinzel', serif; font-size: 2.6rem; float: left; line-height: 0.92; padding: 6px 8px 0 0; color: var(--gold); }
-  .stat-strip { margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--rule); font-family: 'IBM Plex Mono', monospace; font-size: 0.74rem; color: var(--muted); letter-spacing: 0.04em; }
-  a.strava-inline { color: var(--accent); text-decoration: none; background-image: linear-gradient(transparent 60%, var(--gold-soft) 60%); padding: 0 1px; transition: all 0.25s ease; }
-  a.strava-inline:hover { color: var(--gold); background-image: linear-gradient(transparent 0%, var(--gold-soft) 100%); }
-  a.strava-inline .strava-mark { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 0.7em; color: var(--gold); margin-left: 2px; opacity: 0.6; transition: all 0.2s ease; }
-  a.strava-inline:hover .strava-mark { opacity: 1; transform: translate(2px, -2px); }
-  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
-  .reveal.in { opacity: 1; transform: translateY(0); }
-  .quarter { margin: 50px 0 30px; }
-  .quarter-toggle { background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; }
-  .quarter-toggle[open] { box-shadow: 0 2px 12px rgba(184,134,11,0.08); }
-  .quarter-summary { padding: 26px 28px; cursor: pointer; list-style: none; position: relative; }
-  .quarter-summary::-webkit-details-marker { display: none; }
-  .quarter-meta { display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; margin-bottom: 8px; }
-  .quarter-tag { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); }
-  .quarter-period { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--muted); letter-spacing: 0.06em; }
-  h3.quarter-title { font-family: 'Cinzel', serif; font-size: 1.7rem; font-weight: 700; line-height: 1.15; margin: 4px 0 14px; color: var(--accent); }
-  .quarter-abstract { font-size: 1rem; color: #3a3220; line-height: 1.65; }
-  .quarter-abstract p { margin-bottom: 10px; }
-  .quarter-toggle-hint { display: block; margin-top: 18px; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--gold); letter-spacing: 0.06em; opacity: 0.7; transition: opacity 0.2s; }
-  .quarter-toggle:hover .quarter-toggle-hint { opacity: 1; }
-  .quarter-toggle[open] .quarter-toggle-hint::before { content: '▴ '; }
-  .quarter-stories { padding: 6px 28px 30px; border-top: 1px dashed var(--rule); margin-top: 12px; }
-  .quarter-stories .story { margin: 50px 0; padding-bottom: 36px; }
-  .end-marker { text-align: center; margin: 60px 0; font-family: 'Cinzel', serif; color: var(--gold); font-size: 1.2rem; letter-spacing: 0.2em; }
-  .colophon { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; text-align: center; color: var(--muted); margin-top: 80px; letter-spacing: 0.1em; }
-  .colophon a { color: var(--gold); }
-  @media (max-width: 600px) { body { font-size: 17px; padding: 30px 18px 60px; } h1.cover { font-size: 1.8rem; } .week-grid { grid-template-columns: repeat(8, 1fr); } }
-</style>
-</head>
+:root{--bg:#faf6ed;--paper:#fffdf6;--ink:#2a2317;--gold:#b8860b;--gold-soft:rgba(184,134,11,0.12);--rule:#d4c8a8;--muted:#6b5f48;--accent:#8b2e1f}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'EB Garamond',Georgia,serif;font-size:19px;line-height:1.7;max-width:720px;margin:0 auto;padding:60px 28px 100px}
+body::before{content:"";position:fixed;inset:0;background-image:radial-gradient(circle at 25% 30%,rgba(184,134,11,0.04) 0,transparent 40%),radial-gradient(circle at 75% 70%,rgba(139,46,31,0.03) 0,transparent 35%);pointer-events:none;z-index:-1}
+h1.cover{font-family:'Cinzel',serif;font-size:2.4rem;font-weight:700;letter-spacing:0.04em;text-align:center;line-height:1.1;margin-bottom:8px}
+h1.cover .accent{display:block;font-size:0.45em;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.cover-sub{text-align:center;color:var(--muted);font-style:italic;max-width:540px;margin:18px auto 30px;font-size:1.05rem}
+.cover-stats{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin:30px 0 20px}
+.cover-stat{text-align:center}.cover-stat .num{font-family:'Cinzel',serif;font-size:1.5rem;color:var(--gold);font-weight:700}
+.cover-stat .label{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-top:4px}
+.ornament{text-align:center;color:var(--gold);margin:30px 0;font-size:1.4rem;letter-spacing:1em}
+.reading-note{background:var(--paper);border:1px dashed var(--rule);padding:14px 20px;margin:28px auto;max-width:520px;font-size:0.92rem;color:var(--muted);font-style:italic;text-align:center;border-radius:4px}
+.reading-note strong{color:var(--accent);font-style:normal;font-family:'IBM Plex Mono',monospace;font-size:0.85em;letter-spacing:0.1em;text-transform:uppercase}
+.week-grid{display:grid;grid-template-columns:repeat(13,1fr);gap:4px;max-width:540px;margin:30px auto}
+.week-grid .dot{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:0.8rem;background:var(--paper);border:1px solid var(--rule);border-radius:4px;text-decoration:none;transition:all 0.25s ease}
+.week-grid .dot:hover{transform:translateY(-2px);border-color:var(--gold);background:var(--gold-soft)}
+.story{margin:60px 0;padding-bottom:40px;border-bottom:1px dashed var(--rule);scroll-margin-top:30px}.story:last-child{border-bottom:none}
+.story-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.week-num{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold)}.week-mood{font-size:1.4rem}
+h2.story-title{font-family:'Cinzel',serif;font-size:1.5rem;font-weight:700;margin-bottom:4px;line-height:1.2}
+.story-subtitle{font-family:'IBM Plex Mono',monospace;font-size:0.78rem;color:var(--muted);margin-bottom:18px;letter-spacing:0.06em}
+.story-body{font-size:1.02rem}.story-body p{margin-bottom:12px}
+.story-body p:first-child::first-letter{font-family:'Cinzel',serif;font-size:2.6rem;float:left;line-height:0.92;padding:6px 8px 0 0;color:var(--gold)}
+.stat-strip{margin-top:18px;padding-top:12px;border-top:1px solid var(--rule);font-family:'IBM Plex Mono',monospace;font-size:0.74rem;color:var(--muted);letter-spacing:0.04em}
+a.strava-inline{color:var(--accent);text-decoration:none;background-image:linear-gradient(transparent 60%,var(--gold-soft) 60%);padding:0 1px;transition:all 0.25s ease}
+a.strava-inline:hover{color:var(--gold);background-image:linear-gradient(transparent 0%,var(--gold-soft) 100%)}
+a.strava-inline .strava-mark{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:0.7em;color:var(--gold);margin-left:2px;opacity:0.6;transition:all 0.2s ease}
+a.strava-inline:hover .strava-mark{opacity:1;transform:translate(2px,-2px)}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.7s cubic-bezier(0.16,1,0.3,1),transform 0.7s cubic-bezier(0.16,1,0.3,1)}.reveal.in{opacity:1;transform:translateY(0)}
+.end-marker{text-align:center;margin:60px 0;font-family:'Cinzel',serif;color:var(--gold);font-size:1.2rem;letter-spacing:0.2em}
+.colophon{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;text-align:center;color:var(--muted);margin-top:80px;letter-spacing:0.1em}.colophon a{color:var(--gold)}
+@media (max-width:600px){body{font-size:17px;padding:30px 18px 60px}h1.cover{font-size:1.8rem}.week-grid{grid-template-columns:repeat(8,1fr)}}
+</style></head>
 <body>
-<h1 class="cover">
-  <span class="accent">104 short stories di 2 anni</span>
-  Il Signore dei kJ
-  <span class="accent" style="margin-top: 8px;">— Settimanale —</span>
-</h1>
+<h1 class="cover"><span class="accent">105 short stories di 3 anni</span>Il Signore dei kJ<span class="accent" style="margin-top:8px;">— Settimanale —</span></h1>
 <p class="cover-sub">Un romanzo a frammenti su Michele Merelli, settimana per settimana. Ogni capitolo è una scena, non un riassunto.</p>
 <div class="cover-stats">
-  <div class="cover-stat"><div class="num">104</div><div class="label">Capitoli</div></div>
-  <div class="cover-stat"><div class="num">868</div><div class="label">Sortite</div></div>
-  <div class="cover-stat"><div class="num">30,784</div><div class="label">km</div></div>
-  <div class="cover-stat"><div class="num">615,065</div><div class="label">m saliti</div></div>
-  <div class="cover-stat"><div class="num">629,040</div><div class="label">kJ forgiati</div></div>
+  <div class="cover-stat"><div class="num">105</div><div class="label">Capitoli</div></div>
+  <div class="cover-stat"><div class="num">900</div><div class="label">Sortite</div></div>
+  <div class="cover-stat"><div class="num">32,433</div><div class="label">km</div></div>
+  <div class="cover-stat"><div class="num">648,151</div><div class="label">m saliti</div></div>
+  <div class="cover-stat"><div class="num">680,397</div><div class="label">kJ forgiati</div></div>
   <div class="cover-stat"><div class="num">6</div><div class="label">Anelli (1/100k kJ)</div></div>
 </div>
-<div class="reading-note">
-  <strong>Come si legge</strong><br>
-  L'ordine in pagina è il più recente in alto. Il romanzo va letto <em>dal basso verso l'alto</em>: il Capitolo 1 è in fondo, il presente in cima.
-</div>
+<div class="reading-note"><strong>Come si legge</strong><br>L'ordine in pagina è il più recente in alto. Il romanzo va letto <em>dal basso verso l'alto</em>: il Capitolo 1 è in fondo, il presente in cima.</div>
 <div class="ornament">⚜ · ⚜ · ⚜</div>
-<nav class="week-grid" aria-label="104 settimane"><a class="dot" href="#week-104" title="Cap. 104 — Beati gli ultimi">🐴</a><a class="dot" href="#week-103" title="Cap. 103 — Lovere e Marti">💖</a><a class="dot" href="#week-102" title="Cap. 102 — Da Milano al San Marco">🦁</a><a class="dot" href="#week-101" title="Cap. 101 — Montecampione 1800">🏴‍☠️</a><a class="dot" href="#week-100" title="Cap. 100 — Prima che il gallo canti">🐓</a><a class="dot" href="#week-99" title="Cap. 99 — Mangiato troppo, pedalato poco">🧁</a><a class="dot" href="#week-98" title="Cap. 98 — La Maratona di Roma">❤️‍🔥</a><a class="dot" href="#week-97" title="Cap. 97 — Formiche e formicai">🐜</a><a class="dot" href="#week-96" title="Cap. 96 — Ganda Marti">🕊️</a><a class="dot" href="#week-95" title="Cap. 95 — La fibra ai Colli">🧵</a><a class="dot" href="#week-94" title="Cap. 94 — Bunny di Carnevale">🐝</a><a class="dot" href="#week-93" title="Cap. 93 — Il primo lungo dell'anno">🐺</a><a class="dot" href="#week-92" title="Cap. 92 — La mezza di Martina">🫶</a><a class="dot" href="#week-91" title="Cap. 91 — Porco cane">🐕</a><a class="dot" href="#week-90" title="Cap. 90 — Mille calorie sui rulli">⛰️</a><a class="dot" href="#week-89" title="Cap. 89 — Penitenza al Valcava">🌫️</a><a class="dot" href="#week-88" title="Cap. 88 — Varanasi 451">🔥</a><a class="dot" href="#week-87" title="Cap. 87 — Capodanno tra Delhi e Sanpelle">🌪️</a><a class="dot" href="#week-86" title="Cap. 86 — Vigilia in Zambla">❄️</a><a class="dot" href="#week-85" title="Cap. 85 — Carbo-pregnant">🌫️</a><a class="dot" href="#week-84" title="Cap. 84 — Dicembre in pianura">🌫️</a><a class="dot" href="#week-83" title="Cap. 83 — Recupero a Villa di Serio">🌫️</a><a class="dot" href="#week-82" title="Cap. 82 — A riveder le stelle">🔥</a><a class="dot" href="#week-81" title="Cap. 81 — La prima neve di Ramera">❄️</a><a class="dot" href="#week-80" title="Cap. 80 — Togliere ragnatele">🍂</a><a class="dot" href="#week-79" title="Cap. 79 — Tre volte la Ganda di novembre">⛰️</a><a class="dot" href="#week-78" title="Cap. 78 — Trentuno dal trentuno">🍂</a><a class="dot" href="#week-77" title="Cap. 77 — Maratona del Portone">🚪</a><a class="dot" href="#week-76" title="Cap. 76 — Atene, dopo">🌫️</a><a class="dot" href="#week-75" title="Cap. 75 — Lombardia 2025">🌧️</a><a class="dot" href="#week-74" title="Cap. 74 — Inizia il Farno">🍂</a><a class="dot" href="#week-73" title="Cap. 73 — Bucharest senza fretta">🌸</a><a class="dot" href="#week-72" title="Cap. 72 — Ironman, gomma a terra">🌊</a><a class="dot" href="#week-71" title="Cap. 71 — Focaccia barese">🍂</a><a class="dot" href="#week-70" title="Cap. 70 — Clown Weekend">🤡</a><a class="dot" href="#week-69" title="Cap. 69 — Gavia da casa">☀️</a><a class="dot" href="#week-68" title="Cap. 68 — Crocedomini delle gambe">🔥</a><a class="dot" href="#week-67" title="Cap. 67 — Il vaso di Sonny">⛰️</a><a class="dot" href="#week-66" title="Cap. 66 — Passabocche e altri bocconi">🤡</a><a class="dot" href="#week-65" title="Cap. 65 — Non fare l'avaro">💱</a><a class="dot" href="#week-64" title="Cap. 64 — Piove sul bagnato, c'è lo strudel">⛈️</a><a class="dot" href="#week-63" title="Cap. 63 — Maratona dopo le Piramidi">🔥</a><a class="dot" href="#week-62" title="Cap. 62 — Rinascere con 6,50 euro">🐦‍🔥</a><a class="dot" href="#week-61" title="Cap. 61 — Cordoba a 28 gradi">☀️</a><a class="dot" href="#week-60" title="Cap. 60 — Esattamente due mesi dopo">🌸</a><a class="dot" href="#week-59" title="Cap. 59 — La torta della Pesenti">🥧</a><a class="dot" href="#week-58" title="Cap. 58 — Solo per il casoncello">🌫️</a><a class="dot" href="#week-57" title="Cap. 57 — 34 battiti prima del bisturi">🫀</a><a class="dot" href="#week-56" title="Cap. 56 — Aspettando Godot">⛰️</a><a class="dot" href="#week-55" title="Cap. 55 — Colli a merenda, sotto la pioggia">🌧️</a><a class="dot" href="#week-54" title="Cap. 54 — Ritorno a Cespedosio">⛰️</a><a class="dot" href="#week-53" title="Cap. 53 — Due ore affini, niente tracolla">🩹</a><a class="dot" href="#week-52" title="Cap. 52 — Una linea sotto la pelle">❤️‍🩹</a><a class="dot" href="#week-51" title="Cap. 51 — Liegi, sette anni dopo">🇧🇪</a><a class="dot" href="#week-50" title="Cap. 50 — Pasqua con Thomas Rossi">🕊️</a><a class="dot" href="#week-49" title="Cap. 49 — Buy the dip">📉</a><a class="dot" href="#week-48" title="Cap. 48 — Niente banane in Wizzair">✈️</a><a class="dot" href="#week-47" title="Cap. 47 — Esplosione Swatt Club">✈️</a><a class="dot" href="#week-46" title="Cap. 46 — Nove anni di We Run">🌂</a><a class="dot" href="#week-45" title="Cap. 45 — Il muro al chilometro 29">⛑️</a><a class="dot" href="#week-44" title="Cap. 44 — Pizzoccheri senza Sorsi">🧀</a><a class="dot" href="#week-43" title="Cap. 43 — Da Bergamo a Bologna, due giorni">🍝</a><a class="dot" href="#week-42" title="Cap. 42 — Tutti i gusti più uno">🤡</a><a class="dot" href="#week-41" title="Cap. 41 — La Nausea, i ghiaccioli">🌫️</a><a class="dot" href="#week-40" title="Cap. 40 — Tre Michele a Hong Kong">🌃</a><a class="dot" href="#week-39" title="Cap. 39 — Hong Kong, ventuno">🇭🇰</a><a class="dot" href="#week-38" title="Cap. 38 — Quattro ore di sonno">🪓</a><a class="dot" href="#week-37" title="Cap. 37 — Aghi di pino in gennaio">🔥</a><a class="dot" href="#week-36" title="Cap. 36 — Addio Audi, ciao Lizzola">⛷️</a><a class="dot" href="#week-35" title="Cap. 35 — Boom Boom Boom">🎆</a><a class="dot" href="#week-34" title="Cap. 34 — Octane Blue di Natale">🎄</a><a class="dot" href="#week-33" title="Cap. 33 — T meno centoventisei">❄️</a><a class="dot" href="#week-32" title="Cap. 32 — Malaga, centotredici">🥘</a><a class="dot" href="#week-31" title="Cap. 31 — Smerigliando il dicembre">🌫️</a><a class="dot" href="#week-30" title="Cap. 30 — Le pelli, finalmente">❄️</a><a class="dot" href="#week-29" title="Cap. 29 — Il primo rullo della stagione">🌫️</a><a class="dot" href="#week-28" title="Cap. 28 — Cinquemila e mezzo di novembre">⛰️</a><a class="dot" href="#week-27" title="Cap. 27 — Quarantadue di prova">🏃</a><a class="dot" href="#week-26" title="Cap. 26 — Centododici di novembre">🍂</a><a class="dot" href="#week-25" title="Cap. 25 — Trenta dal trenta">🎂</a><a class="dot" href="#week-24" title="Cap. 24 — Cinquemila metri a pezzi piccoli">🍂</a><a class="dot" href="#week-23" title="Cap. 23 — Due salite e una mezza">⛰️</a><a class="dot" href="#week-22" title="Cap. 22 — Il mese delle scarpe">🍂</a><a class="dot" href="#week-21" title="Cap. 21 — L'ultima domenica grossa">🍂</a><a class="dot" href="#week-20" title="Cap. 20 — Una corsa con dentro un verticale">⛰️</a><a class="dot" href="#week-19" title="Cap. 19 — Le scarpe più della bici">🍂</a><a class="dot" href="#week-18" title="Cap. 18 — Settembre rientra in casa">🌫️</a><a class="dot" href="#week-17" title="Cap. 17 — Sci a fine agosto">❄️</a><a class="dot" href="#week-16" title="Cap. 16 — Cinquecentodiciotto in cinque">🌞</a><a class="dot" href="#week-15" title="Cap. 15 — Centosessantaquattro in pianura">☀️</a><a class="dot" href="#week-14" title="Cap. 14 — Doppia da centottanta">⛰️</a><a class="dot" href="#week-13" title="Cap. 13 — L'acqua e il ferro">🌊</a><a class="dot" href="#week-12" title="Cap. 12 — Quattromila in un sabato">🇫🇷</a><a class="dot" href="#week-11" title="Cap. 11 — Settimana muta">🤐</a><a class="dot" href="#week-10" title="Cap. 10 — Una pianura, finalmente">🌾</a><a class="dot" href="#week-9" title="Cap. 9 — Quasi tredicimila in salita">⛰️</a><a class="dot" href="#week-8" title="Cap. 8 — Diecimila chilojoule a fine giugno">☀️</a><a class="dot" href="#week-7" title="Cap. 7 — Quattromila senza watt">🌅</a><a class="dot" href="#week-6" title="Cap. 6 — Settimana di sole bici">🚴</a><a class="dot" href="#week-5" title="Cap. 5 — Diciassettemila al Mortirolo">💥</a><a class="dot" href="#week-4" title="Cap. 4 — Centosessantanove a giugno">🔥</a><a class="dot" href="#week-3" title="Cap. 3 — Il misuratore non perdona">📈</a><a class="dot" href="#week-2" title="Cap. 2 — Il primo wattmetro">🔋</a><a class="dot" href="#week-1" title="Cap. 1 — La settimana prima del Giro">⛰️</a></nav>
+<nav class="week-grid" aria-label="105 settimane"><a class="dot" href="#week-105" title="Cap. 105 — Duecento chilometri nuovi">🗺️</a><a class="dot" href="#week-104" title="Cap. 104 — Beati gli ultimi">🐴</a><a class="dot" href="#week-103" title="Cap. 103 — Lovere e Marti">💖</a><a class="dot" href="#week-102" title="Cap. 102 — Da Milano al San Marco">🦁</a><a class="dot" href="#week-101" title="Cap. 101 — Montecampione 1800">🏴‍☠️</a><a class="dot" href="#week-100" title="Cap. 100 — Prima che il gallo canti">🐓</a><a class="dot" href="#week-99" title="Cap. 99 — Mangiato troppo, pedalato poco">🧁</a><a class="dot" href="#week-98" title="Cap. 98 — La Maratona di Roma">❤️‍🔥</a><a class="dot" href="#week-97" title="Cap. 97 — Formiche e formicai">🐜</a><a class="dot" href="#week-96" title="Cap. 96 — Ganda Marti">🕊️</a><a class="dot" href="#week-95" title="Cap. 95 — La fibra ai Colli">🧵</a><a class="dot" href="#week-94" title="Cap. 94 — Bunny di Carnevale">🐝</a><a class="dot" href="#week-93" title="Cap. 93 — Il primo lungo dell'anno">🐺</a><a class="dot" href="#week-92" title="Cap. 92 — La mezza di Martina">🫶</a><a class="dot" href="#week-91" title="Cap. 91 — Porco cane">🐕</a><a class="dot" href="#week-90" title="Cap. 90 — Mille calorie sui rulli">⛰️</a><a class="dot" href="#week-89" title="Cap. 89 — Penitenza al Valcava">🌫️</a><a class="dot" href="#week-88" title="Cap. 88 — Varanasi 451">🔥</a><a class="dot" href="#week-87" title="Cap. 87 — Capodanno tra Delhi e Sanpelle">🌪️</a><a class="dot" href="#week-86" title="Cap. 86 — Vigilia in Zambla">❄️</a><a class="dot" href="#week-85" title="Cap. 85 — Carbo-pregnant">🌫️</a><a class="dot" href="#week-84" title="Cap. 84 — Dicembre in pianura">🌫️</a><a class="dot" href="#week-83" title="Cap. 83 — Recupero a Villa di Serio">🌫️</a><a class="dot" href="#week-82" title="Cap. 82 — A riveder le stelle">🔥</a><a class="dot" href="#week-81" title="Cap. 81 — La prima neve di Ramera">❄️</a><a class="dot" href="#week-80" title="Cap. 80 — Togliere ragnatele">🍂</a><a class="dot" href="#week-79" title="Cap. 79 — Tre volte la Ganda di novembre">⛰️</a><a class="dot" href="#week-78" title="Cap. 78 — Trentuno dal trentuno">🍂</a><a class="dot" href="#week-77" title="Cap. 77 — Maratona del Portone">🚪</a><a class="dot" href="#week-76" title="Cap. 76 — Atene, dopo">🌫️</a><a class="dot" href="#week-75" title="Cap. 75 — Lombardia 2025">🌧️</a><a class="dot" href="#week-74" title="Cap. 74 — Inizia il Farno">🍂</a><a class="dot" href="#week-73" title="Cap. 73 — Bucharest senza fretta">🌸</a><a class="dot" href="#week-72" title="Cap. 72 — Ironman, gomma a terra">🌊</a><a class="dot" href="#week-71" title="Cap. 71 — Focaccia barese">🍂</a><a class="dot" href="#week-70" title="Cap. 70 — Clown Weekend">🤡</a><a class="dot" href="#week-69" title="Cap. 69 — Gavia da casa">☀️</a><a class="dot" href="#week-68" title="Cap. 68 — Crocedomini delle gambe">🔥</a><a class="dot" href="#week-67" title="Cap. 67 — Il vaso di Sonny">⛰️</a><a class="dot" href="#week-66" title="Cap. 66 — Passabocche e altri bocconi">🤡</a><a class="dot" href="#week-65" title="Cap. 65 — Non fare l'avaro">💱</a><a class="dot" href="#week-64" title="Cap. 64 — Piove sul bagnato, c'è lo strudel">⛈️</a><a class="dot" href="#week-63" title="Cap. 63 — Maratona dopo le Piramidi">🔥</a><a class="dot" href="#week-62" title="Cap. 62 — Rinascere con 6,50 euro">🐦‍🔥</a><a class="dot" href="#week-61" title="Cap. 61 — Cordoba a 28 gradi">☀️</a><a class="dot" href="#week-60" title="Cap. 60 — Esattamente due mesi dopo">🌸</a><a class="dot" href="#week-59" title="Cap. 59 — La torta della Pesenti">🥧</a><a class="dot" href="#week-58" title="Cap. 58 — Solo per il casoncello">🌫️</a><a class="dot" href="#week-57" title="Cap. 57 — 34 battiti prima del bisturi">🫀</a><a class="dot" href="#week-56" title="Cap. 56 — Aspettando Godot">⛰️</a><a class="dot" href="#week-55" title="Cap. 55 — Colli a merenda, sotto la pioggia">🌧️</a><a class="dot" href="#week-54" title="Cap. 54 — Ritorno a Cespedosio">⛰️</a><a class="dot" href="#week-53" title="Cap. 53 — Due ore affini, niente tracolla">🩹</a><a class="dot" href="#week-52" title="Cap. 52 — Una linea sotto la pelle">❤️‍🩹</a><a class="dot" href="#week-51" title="Cap. 51 — Liegi, sette anni dopo">🇧🇪</a><a class="dot" href="#week-50" title="Cap. 50 — Pasqua con Thomas Rossi">🕊️</a><a class="dot" href="#week-49" title="Cap. 49 — Buy the dip">📉</a><a class="dot" href="#week-48" title="Cap. 48 — Niente banane in Wizzair">✈️</a><a class="dot" href="#week-47" title="Cap. 47 — Esplosione Swatt Club">✈️</a><a class="dot" href="#week-46" title="Cap. 46 — Nove anni di We Run">🌂</a><a class="dot" href="#week-45" title="Cap. 45 — Il muro al chilometro 29">⛑️</a><a class="dot" href="#week-44" title="Cap. 44 — Pizzoccheri senza Sorsi">🧀</a><a class="dot" href="#week-43" title="Cap. 43 — Da Bergamo a Bologna, due giorni">🍝</a><a class="dot" href="#week-42" title="Cap. 42 — Tutti i gusti più uno">🤡</a><a class="dot" href="#week-41" title="Cap. 41 — La Nausea, i ghiaccioli">🌫️</a><a class="dot" href="#week-40" title="Cap. 40 — Tre Michele a Hong Kong">🌃</a><a class="dot" href="#week-39" title="Cap. 39 — Hong Kong, ventuno">🇭🇰</a><a class="dot" href="#week-38" title="Cap. 38 — Quattro ore di sonno">🪓</a><a class="dot" href="#week-37" title="Cap. 37 — Aghi di pino in gennaio">🔥</a><a class="dot" href="#week-36" title="Cap. 36 — Addio Audi, ciao Lizzola">⛷️</a><a class="dot" href="#week-35" title="Cap. 35 — Boom Boom Boom">🎆</a><a class="dot" href="#week-34" title="Cap. 34 — Octane Blue di Natale">🎄</a><a class="dot" href="#week-33" title="Cap. 33 — T meno centoventisei">❄️</a><a class="dot" href="#week-32" title="Cap. 32 — Malaga, centotredici">🥘</a><a class="dot" href="#week-31" title="Cap. 31 — Smerigliando il dicembre">🌫️</a><a class="dot" href="#week-30" title="Cap. 30 — Le pelli, finalmente">❄️</a><a class="dot" href="#week-29" title="Cap. 29 — Il primo rullo della stagione">🌫️</a><a class="dot" href="#week-28" title="Cap. 28 — Cinquemila e mezzo di novembre">⛰️</a><a class="dot" href="#week-27" title="Cap. 27 — Quarantadue di prova">🏃</a><a class="dot" href="#week-26" title="Cap. 26 — Centododici di novembre">🍂</a><a class="dot" href="#week-25" title="Cap. 25 — Trenta dal trenta">🎂</a><a class="dot" href="#week-24" title="Cap. 24 — Cinquemila metri a pezzi piccoli">🍂</a><a class="dot" href="#week-23" title="Cap. 23 — Due salite e una mezza">⛰️</a><a class="dot" href="#week-22" title="Cap. 22 — Il mese delle scarpe">🍂</a><a class="dot" href="#week-21" title="Cap. 21 — L'ultima domenica grossa">🍂</a><a class="dot" href="#week-20" title="Cap. 20 — Una corsa con dentro un verticale">⛰️</a><a class="dot" href="#week-19" title="Cap. 19 — Le scarpe più della bici">🍂</a><a class="dot" href="#week-18" title="Cap. 18 — Settembre rientra in casa">🌫️</a><a class="dot" href="#week-17" title="Cap. 17 — Sci a fine agosto">❄️</a><a class="dot" href="#week-16" title="Cap. 16 — Cinquecentodiciotto in cinque">🌞</a><a class="dot" href="#week-15" title="Cap. 15 — Centosessantaquattro in pianura">☀️</a><a class="dot" href="#week-14" title="Cap. 14 — Doppia da centottanta">⛰️</a><a class="dot" href="#week-13" title="Cap. 13 — L'acqua e il ferro">🌊</a><a class="dot" href="#week-12" title="Cap. 12 — Quattromila in un sabato">🇫🇷</a><a class="dot" href="#week-11" title="Cap. 11 — Settimana muta">🤐</a><a class="dot" href="#week-10" title="Cap. 10 — Una pianura, finalmente">🌾</a><a class="dot" href="#week-9" title="Cap. 9 — Quasi tredicimila in salita">⛰️</a><a class="dot" href="#week-8" title="Cap. 8 — Diecimila chilojoule a fine giugno">☀️</a><a class="dot" href="#week-7" title="Cap. 7 — Quattromila senza watt">🌅</a><a class="dot" href="#week-6" title="Cap. 6 — Settimana di sole bici">🚴</a><a class="dot" href="#week-5" title="Cap. 5 — Diciassettemila al Mortirolo">💥</a><a class="dot" href="#week-4" title="Cap. 4 — Centosessantanove a giugno">🔥</a><a class="dot" href="#week-3" title="Cap. 3 — Il misuratore non perdona">📈</a><a class="dot" href="#week-2" title="Cap. 2 — Il primo wattmetro">🔋</a><a class="dot" href="#week-1" title="Cap. 1 — La settimana prima del Giro">⛰️</a></nav>
 <div class="ornament">·</div>
 
-    <section class="quarter reveal" id="quarter-8">
-      <details class="quarter-toggle" open>
-        <summary class="quarter-summary">
-          <div class="quarter-meta">
-            <span class="quarter-tag">Trimestre 8 · W92–W104</span>
-            <span class="quarter-period">febbraio–aprile 2026</span>
-          </div>
-          <h3 class="quarter-title">Verso il ferro, di nuovo</h3>
-          <div class="quarter-abstract"><p>Febbraio si apre con una promessa fatta a un'altra: alla mezza di Bergamo Michele fa il lepre per Martina Tognin a 4'30" al chilometro, "La mezza di Martina". Il 14 si ritrova le gambe a metà strada — "resurrected somehow" — e la settimana dopo è "Bunny di Carnevale", 101 chilometri sui Colli ritrovati, "missed this so much". Marzo è un crescendo: la fibra ottica arriva ai Colli ("La fibra ai Colli", 106 chilometri e 2.213 metri di pura progressione), "Ganda Marti" è una preghiera scritta in salita, le formiche del gravel popolano la domenica delle cento. Il 22 marzo arriva la corsa che il trimestre aspettava — "La Maratona di Roma", 42,8 chilometri, 1.002 metri, "Martinucci e Marti powered". A fine mese, dopo un terzo posto, Michele si lascia un giudizio addosso: "mangiato troppo pedalato poco". Aprile si fa monumentale. "Prima che il gallo canti" il 3, 139 chilometri e 2.760 metri; "Montecampione 1800" il 12 sfonda la barriera con 3.154 metri di dislivello in una giornata, training load 452; il 18 "Da Milano al San Marco" parte da okgiorgio e finisce a 2.000 metri. La settimana del 26 inaugura un "New F" con Marti — due tracce parallele lungo lo stesso lago — e l'ultima taglia il volume per una cena. Tredici settimane verso il ferro, e questa volta il cavallo è davvero alla porta.</p></div>
-          <span class="quarter-toggle-hint">▾ 13 capitoli — clic per aprire/chiudere</span>
-        </summary>
-        <div class="quarter-stories">
-          
+    <article class="story reveal" id="week-105" data-week="105">
+      <header class="story-head">
+        <span class="week-num">Capitolo 105 · settimana 105</span>
+        <span class="week-mood">🗺️</span>
+      </header>
+      <h2 class="story-title">Duecento chilometri nuovi</h2>
+      <p class="story-subtitle">18–24 maggio 2026</p>
+      <div class="story-body"><p>La settimana di Michele è una preparazione travestita da giro: nove uscite, 462,2 km, 8.978 metri verticali, 14.859 kJ, 1.626 di Training Load. Martedì il <a class="strava-inline" href="https://www.strava.com/activities/18570192638" target="_blank" rel="noopener">🍳(Tour de Padel Zambla)<span class="strava-mark">↗</span></a> è un dispetto meccanico — 68,8 km e 1.555 metri con un solo rapporto, 'Only 53 ⚙️ allowed', come se Zambla andasse domata col 53 e basta. Mercoledì <a class="strava-inline" href="https://www.strava.com/activities/18583566342" target="_blank" rel="noopener">❣️(Ganda to Work)<span class="strava-mark">↗</span></a> è la pendolarità che Michele si è inventato: 80 km e 1.442 metri per arrivare in ufficio, 'Full with new starts / Empty at the end'. In mezzo due nuoti e tre corse, il filo Ironman che continua a tessersi. Domenica 24 maggio è la <a class="strava-inline" href="https://www.strava.com/activities/18633408496" target="_blank" rel="noopener">9️⃣(Nove Colli 2026)<span class="strava-mark">↗</span></a>: 197 km, 3.796 metri, 5.321 kJ, 650 di TL, 'brutal, nice, hilly', e in coda la riga che vale: '200.65 new kilometers — From Wandrer'. Duecento chilometri mai pedalati prima, contati uno per uno da un'app che tiene la mappa.</p></div>
+      <div class="stat-strip">9 att · 462,2 km · 8.978 m · 14.859 kJ · TL 1626</div>
+    </article>
+
     <article class="story reveal" id="week-104" data-week="104">
       <header class="story-head">
         <span class="week-num">Capitolo 104 · settimana 104</span>
@@ -246,23 +208,7 @@
       <div class="story-body"><p>Otto uscite, 208,7 km, 4.243 metri di dislivello: la settimana di Michele si chiude la domenica al fianco di un'altra. A <a class="strava-inline" href="https://www.strava.com/activities/17326499370" target="_blank" rel="noopener">⏲️(Paced Bergamo 21)<span class="strava-mark">↗</span></a>, i 21,4 km di Bergamo, fa il lepre per Martina Tognin alla sua prima mezza, e Tognin chiude seconda. Centoventi punti di carico per 1.366 kJ, ma il numero che conta è quel 2°. Il giorno prima, sabato, l'ironia di <a class="strava-inline" href="https://www.strava.com/activities/17314163110" target="_blank" rel="noopener">❄️(Milano Cortina 2026)<span class="strava-mark">↗</span></a>: 60,4 km in bici descritti come "Olympic Games Ceremony Pre Race 🤡", 1.061 metri buttati su per ridere delle Olimpiadi in arrivo. Lunedì, intanto, <a class="strava-inline" href="https://www.strava.com/activities/17270382511" target="_blank" rel="noopener">🐏(Pegla's Back)<span class="strava-mark">↗</span></a> aveva regalato 0,44 km nuovi a Wandrer su 15,2 km e 495 metri. Una settimana di scaldamuscoli e di pacing, dove correre per qualcun altro vale più che correre da soli.</p></div>
       <div class="stat-strip">8 attività · 208,7 km · 4.243 m · 11,5 h · 5.064 kJ</div>
     </article>
-        </div>
-      </details>
-    </section>
 
-    <section class="quarter reveal" id="quarter-7">
-      <details class="quarter-toggle">
-        <summary class="quarter-summary">
-          <div class="quarter-meta">
-            <span class="quarter-tag">Trimestre 7 · W79–W91</span>
-            <span class="quarter-period">novembre 2025–gennaio 2026</span>
-          </div>
-          <h3 class="quarter-title">Il fuoco di Varanasi</h3>
-          <div class="quarter-abstract"><p>Novembre torna pesante. "Tre volte la Ganda di novembre" è il primo segnale, "Bad" la nota di rientro: ruggine nelle gambe e fiato corto, ma anche il preludio alla settimana che taglia. Fine novembre Michele firma "A riveder le stelle", la maratona di Firenze con la frase di Dante in dote, e il dicembre che segue si fa di rulli e pianure — zero kJ in tutte le bici del mese, "Carbo-pregnant. But grateful", la "Vigilia in Zambla" a 1.423 metri di freddo che taglia. Capodanno cambia continente. Il 30 e il 31 dicembre Michele è a Delhi, "Impossible Delhi"; il 1° gennaio è in Nepal: due settimane di viaggio sub-continentale diventano "Capodanno tra Delhi e Sanpelle". Il 6 gennaio arriva la corsa che resta — "Varanasi 451", 10,1 chilometri lungo il fiume — e una descrizione di tre righe che vale per dieci: "One of the most weird, unique, touching run and day of my life. Didn't even start the watch on the way out". Il rientro è "Penitenza al Valcava": due settimane di astinenza, 1.381 metri verticali, PM2.5 nei polmoni e "food poisoning" di passaggio. Tredici settimane in cui il corpo di Michele attraversa l'India in punta di scarpe e torna in Italia con la gola piena di cenere. Ora bisogna ripulire, e in fretta: la primavera chiama già a Roma.</p></div>
-          <span class="quarter-toggle-hint">▾ 13 capitoli — clic per aprire/chiudere</span>
-        </summary>
-        <div class="quarter-stories">
-          
     <article class="story reveal" id="week-91" data-week="91">
       <header class="story-head">
         <span class="week-num">Capitolo 91 · settimana 91</span>
@@ -405,23 +351,7 @@
       <div class="story-body"><p>Michele torna in sella e lo annota subito: "Bad". I <a class="strava-inline" href="https://www.strava.com/activities/16383160328" target="_blank" rel="noopener">42 km di domenica<span class="strava-mark">↗</span></a> sanno di ruggine, le gambe non rispondono, il fiato è corto. Ma è solo il preludio. Sabato infila i <a class="strava-inline" href="https://www.strava.com/activities/16390715774" target="_blank" rel="noopener">37 km di Selvino Downtown<span class="strava-mark">↗</span></a> con scarpe nuove e un'idea abortita per strada — "fight for brioche", scrive, e basta quello a salvargli la mattina. La domenica chiude il cerchio: <a class="strava-inline" href="https://www.strava.com/activities/16401610546" target="_blank" rel="noopener">55,7 km e 2.004 metri sulla Ganda con Palak<span class="strava-mark">↗</span></a>, la terza volta in un mese. "Three times the Ganda in November should be enough", commenta esausto. Sette uscite, 216 km, 6.594 metri di dislivello: una settimana che pesa 8.744 kJ e che dice una cosa sola — il corpo è tornato, anche se brontola.</p></div>
       <div class="stat-strip">7 attività · 216 km · 6.594 m · 12,9 h · 8.744 kJ</div>
     </article>
-        </div>
-      </details>
-    </section>
 
-    <section class="quarter reveal" id="quarter-6">
-      <details class="quarter-toggle">
-        <summary class="quarter-summary">
-          <div class="quarter-meta">
-            <span class="quarter-tag">Trimestre 6 · W66–W78</span>
-            <span class="quarter-period">agosto–ottobre 2025</span>
-          </div>
-          <h3 class="quarter-title">Il vaso di Sonny</h3>
-          <div class="quarter-abstract"><p>Agosto si apre con una settimana che Michele nemmeno conta più — "Passabocche e altri bocconi", 126 chilometri e 2.702 metri di un "grabbed what I could again". Sette giorni dopo, dall'hotel dei suoi cugini a Casto, esce con un souvenir che battezzerà la stagione: la foto autografata di Sonny Colbrelli alla Roubaix, "Il vaso di Sonny", e 188 chilometri attorno al Vittoriale. Crocedomini delle gambe, Gavia da casa, "Clown Weekend" autocertificato: Michele si firma da solo le emoji a clown perché tecnicamente sta preparando un Ironman, tecnicamente quindi sei ore di bici al posto del nuoto sono una scelta discutibile. Settembre arriva alla resa dei conti. Al chilometro 136, scendendo a 55 all'ora, la gomma esplode: cinquanta chilometri di "flat tire ride, no mechanical solutions", l'Ironman portato in fondo senza piombo nelle ruote — "Ironman, gomma a terra". La settimana dopo Bucharest, mezza maratona da turista. Ottobre è morbido e si chiude col "Maratona del Portone" — 42,2 chilometri e 642 metri corsi il giorno in cui si apre un portone — e con i 31 chilometri del compleanno scritti come algebra. Tredici settimane fra il vaso di Colbrelli e la chiave del portone, oltre 1.300 chilometri totali. La pista interiore, dopo il ferro raggiunto, si volta verso le scarpe.</p></div>
-          <span class="quarter-toggle-hint">▾ 13 capitoli — clic per aprire/chiudere</span>
-        </summary>
-        <div class="quarter-stories">
-          
     <article class="story reveal" id="week-78" data-week="78">
       <header class="story-head">
         <span class="week-num">Capitolo 78 · settimana 78</span>
@@ -564,23 +494,7 @@
       <div class="story-body"><p>Michele scrive lui stesso che dei kJ in bici quest'anno non si fida più: "Grabbed what I could again". Eppure i <a class="strava-inline" href="https://www.strava.com/activities/15396067624" target="_blank" rel="noopener">126,4 km e 2.702 m della Passabocche<span class="strava-mark">↗</span></a> di sabato restano lì, 3.588 kJ stampati nel diario, la cifra più onesta della settimana. Il giorno prima il <a class="strava-inline" href="https://www.strava.com/activities/15385587678" target="_blank" rel="noopener">low carb active recovery di Zambla<span class="strava-mark">↗</span></a> è già una presa in giro — 57,9 km, 1.405 m, e l'auto-diagnosi a clown. Domenica chiude con i <a class="strava-inline" href="https://www.strava.com/activities/15406254667" target="_blank" rel="noopener">28 km della Pasta ai Martilli<span class="strava-mark">↗</span></a>, 1.814 kJ in scioltezza, l'ultimo schiaffo di una settimana che mette assieme cinque corse, quattro uscite in bici e una nuotata. Venti ore tonde, 383 chilometri, 7.336 metri di dislivello: il volume c'è, la fiducia nei watt no. Bergamo d'agosto, e Michele continua a prendersi quello che riesce.</p></div>
       <div class="stat-strip">10 attività · 383 km · 7.336 m · 20 h · 11.376 kJ</div>
     </article>
-        </div>
-      </details>
-    </section>
 
-    <section class="quarter reveal" id="quarter-5">
-      <details class="quarter-toggle">
-        <summary class="quarter-summary">
-          <div class="quarter-meta">
-            <span class="quarter-tag">Trimestre 5 · W53–W65</span>
-            <span class="quarter-period">maggio–luglio 2025</span>
-          </div>
-          <h3 class="quarter-title">La clavicola e il casoncello</h3>
-          <div class="quarter-abstract"><p>Maggio comincia col cuore stretto. La clavicola è una linea sottile sotto la pelle e Michele si chiude in cantina: sei VirtualRide come sei rosari laici. Domenica 18 maggio è già di nuovo a Cespedosio, 88 chilometri e 2.044 metri, e scrive "Finally back to my idea of cycling". Il 6 giugno arriva l'aneddoto migliore della stagione: in pre check-in per l'operazione la frequenza scende a 34 battiti, il giorno dopo a 33 — "34 battiti prima del bisturi" — e la sanità italiana annulla l'intervento. Da lì il trimestre si svuota e si riempie a sprazzi. La domenica successiva è "Solo per il casoncello", 36 chilometri di Selvino a 132 di battito medio, una dichiarazione di vita lenta. Il 22 giugno c'è la torta della Pesenti con Federico Fagiani, il 29 Michele rimette le ruote nella geografia grossa con Manghen e Rolle, 157,6 chilometri e 3.895 metri di dislivello, 433 di Training Load: "exactly 2 months from injury". Luglio si apre con la mezza di Cordoba a 28 gradi e il matrimonio andaluso, prosegue fra le Piramidi padane e i Piani di Artavaggio fatti con 6,50 € di carburante. Tredici settimane di un corpo che impara una nuova partitura, fra paura e leggerezza. Il ferro, però, sta ricomparendo all'orizzonte.</p></div>
-          <span class="quarter-toggle-hint">▾ 13 capitoli — clic per aprire/chiudere</span>
-        </summary>
-        <div class="quarter-stories">
-          
     <article class="story reveal" id="week-65" data-week="65">
       <header class="story-head">
         <span class="week-num">Capitolo 65 · settimana 65</span>
@@ -723,23 +637,7 @@
       <div class="story-body"><p>La clavicola è ancora una linea sottile sotto la pelle, e Michele lo sa: per questo le 9 attività della settimana stanno quasi tutte dentro casa, sei VirtualRide come sei rosari laici. Mercoledì arriva la prima volta senza tracolla, <a class="strava-inline" href="https://www.strava.com/activities/14402481976" target="_blank" rel="noopener">i 60,4 km a 210W del 7 maggio<span class="strava-mark">↗</span></a>, la spalla che reimpara a stare al suo posto sul manubrio. Il giorno dopo si allunga, <a class="strava-inline" href="https://www.strava.com/activities/14412761273" target="_blank" rel="noopener">due torte e due ore<span class="strava-mark">↗</span></a>, 75,1 km che sanno di pasticceria casalinga. Sabato il rituale si raddoppia: <a class="strava-inline" href="https://www.strava.com/activities/14435290348" target="_blank" rel="noopener">76 km "affini" tra Stripe e Giro<span class="strava-mark">↗</span></a>, il portatile aperto di lato, gli affetti virtuali che pedalano insieme. Fuori, due Hike brevi a ricordargli che esiste anche l'erba. 416 km totali, 7.702 kJ, ma quasi nessun metro di dislivello: la convalescenza ha la geometria piatta del rullo.</p></div>
       <div class="stat-strip">9 attività · 416 km · 1.300 m · 15 h · 7.702 kJ</div>
     </article>
-        </div>
-      </details>
-    </section>
 
-    <section class="quarter reveal" id="quarter-4">
-      <details class="quarter-toggle">
-        <summary class="quarter-summary">
-          <div class="quarter-meta">
-            <span class="quarter-tag">Trimestre 4 · W40–W52</span>
-            <span class="quarter-period">febbraio–aprile 2025</span>
-          </div>
-          <h3 class="quarter-title">Liegi, sette anni dopo</h3>
-          <div class="quarter-abstract"><p>Hong Kong apre il trimestre come una cartolina vibrante: Victoria Peak il 3 febbraio, "Tre Michele a Hong Kong", il porto sotto e una dedica a un'amica. Il rientro è una stoccata letteraria — "La Nausea, i ghiaccioli", titolo da Sartre per spiegare il jet lag. Carnevale è fra i ghiaccioli e i cento chilometri della Coglia con la formula del gelataio padano "tutti i gusti più uno". A inizio marzo Michele attacca il test che lascia il segno: 234 chilometri da Bergamo a Bologna, 5.688 kJ in pianura padana — la prova generale ironman, un weekend di pizzoccheri e sciogligamba a seguire. Il 6 aprile la Milano Marathon, l'8 "Buy the dip" pedalato "the day after". Pasqua è con Thomas Rossi, e tutto il trimestre marcia verso il Belgio. La Doyenne arriva il 26 aprile: "Liegi, sette anni dopo", 253 chilometri e 4.231 metri di dislivello, gli strappi che Liegi conserva dal 1892 e Luca Merelli accanto. Il lunedì successivo dodici ore di macchina di rientro. Martedì 29 una caduta interrompe tutto: "Una linea sotto la pelle", la clavicola rotta, il triathlon archiviato per ora. Tredici settimane che salgono come una scala, fino al gradino che si stacca. Ora il calendario chiede pazienza, e il corpo dovrà imparare un'altra lingua.</p></div>
-          <span class="quarter-toggle-hint">▾ 13 capitoli — clic per aprire/chiudere</span>
-        </summary>
-        <div class="quarter-stories">
-          
     <article class="story reveal" id="week-52" data-week="52">
       <header class="story-head">
         <span class="week-num">Capitolo 52 · settimana 52</span>
@@ -882,23 +780,7 @@
       <div class="story-body"><p>Lunedì 3 Michele è già a Victoria Peak: <a class="strava-inline" href="https://www.strava.com/activities/13533780980" target="_blank" rel="noopener">🚡(The Peak Hong Kong), 18,1 km e 438 metri<span class="strava-mark">↗</span></a> saliti sopra il porto, e la dedica la firma con un nome — 'a massive, unique, unforgettable piece of life in the personal collection 🧩 Alice Cortinovis'. Mercoledì 5 attraversa il confine, <a class="strava-inline" href="https://www.strava.com/activities/13541434039" target="_blank" rel="noopener">🇨🇳(Shenzhen Rationale)<span class="strava-mark">↗</span></a>, e giovedì è di nuovo a Hong Kong per <a class="strava-inline" href="https://www.strava.com/activities/13555370969" target="_blank" rel="noopener">la Midnight Runners HK Half, 21,1 km piatti<span class="strava-mark">↗</span></a>: 'this run has 3 different michele in it', scrive. Sabato 8 si chiude in albergo e si forza fuori per <a class="strava-inline" href="https://www.strava.com/activities/13568089022" target="_blank" rel="noopener">♾️(Groundness Marathon), 42,3 km nella notte<span class="strava-mark">↗</span></a> — 'tonight it was not about the mileage, not about showing off — I had to force myself to run long enough to get bored again, to disconnect'. Domenica atterra in Italia e già di sera infila <a class="strava-inline" href="https://www.strava.com/activities/13584443687" target="_blank" rel="noopener">♓(Midnight in Orezzo)<span class="strava-mark">↗</span></a>. Sette corse, niente bici. Una settimana per smontarsi e ricominciare a piedi.</p></div>
       <div class="stat-strip">7 attività · 135,9 km · 1.040 m · 9,9 h · 8.440 kJ</div>
     </article>
-        </div>
-      </details>
-    </section>
 
-    <section class="quarter reveal" id="quarter-3">
-      <details class="quarter-toggle">
-        <summary class="quarter-summary">
-          <div class="quarter-meta">
-            <span class="quarter-tag">Trimestre 3 · W27–W39</span>
-            <span class="quarter-period">novembre 2024–gennaio 2025</span>
-          </div>
-          <h3 class="quarter-title">T meno centoventisei</h3>
-          <div class="quarter-abstract"><p>L'inverno entra dalla porta laterale. La settimana del 4 novembre Michele firma "Quarantadue di prova", una maratona corsa come fosse un sabato qualunque, 42,2 chilometri di Morning Run, una prova generale travestita da uscita. Tre settimane dopo monta sui rulli per la prima volta e poco dopo tira giù gli sci con le pelli, come un velcro che fa stagione. Il 15 dicembre arriva il numero che il trimestre porta in fronte: a Malaga Michele attraversa il traguardo della Marathon in 2 ore 39 minuti e 57 secondi, 113° assoluto, 3'47" al chilometro. "Malaga, centotredici" è il titolo che resta. Cinque giorni dopo, chiuso in cantina, nella descrizione della VirtualRide compare la prima traccia di Belgio: "Thinking about the Liege :) / T - 126 days!". "T meno centoventisei": la Doyenne è già un conto alla rovescia. Santo Stefano battezza la bici nuova con "Octane Blue di Natale", Capodanno è una piccola teologia di fuochi su Bergamo Alta, gennaio si fa di Aghi di Pino e di quattro ore di sonno che chiudono la settimana del check-in per Hong Kong. Tredici settimane che cucinano due appuntamenti — Liegi in primavera, le Classiche dell'inverno olimpico interiore — mentre la valigia parte verso est.</p></div>
-          <span class="quarter-toggle-hint">▾ 13 capitoli — clic per aprire/chiudere</span>
-        </summary>
-        <div class="quarter-stories">
-          
     <article class="story reveal" id="week-39" data-week="39">
       <header class="story-head">
         <span class="week-num">Capitolo 39 · settimana 39</span>
@@ -1041,23 +923,7 @@
       <div class="story-body"><p>Domenica 10 novembre Michele si infila le scarpe e fa quarantadue chilometri come se fosse un sabato qualunque: i 42,2 km della Morning Run con 205 metri di dislivello e 281 di Training Load, la maratona prima della maratona. Il giorno prima ha già pedalato 130,1 km e 2.548 metri di Bergamasca a inizio inverno, 3.719 kJ versati nelle Orobie del weekend lungo. Cinque settimane lo separano da Malaga, e quella domenica serve a vedere se le gambe arrivano in fondo senza spaccarsi. Arrivano. Il diario di settimana segna 1.222 di TL, 313 km totali, quindici ore e mezza in giro. Michele non scrive una riga, non c'è bisogno: il numero quarantadue si scrive da solo. Cinque settimane prima del traguardo, le gambe sapevano già la strada.</p></div>
       <div class="stat-strip">9 attività · 313,1 km · 4.274 m · 15,6 h · 3.719 kJ</div>
     </article>
-        </div>
-      </details>
-    </section>
 
-    <section class="quarter reveal" id="quarter-2">
-      <details class="quarter-toggle">
-        <summary class="quarter-summary">
-          <div class="quarter-meta">
-            <span class="quarter-tag">Trimestre 2 · W14–W26</span>
-            <span class="quarter-period">agosto–ottobre 2024</span>
-          </div>
-          <h3 class="quarter-title">Le scarpe e il compleanno</h3>
-          <div class="quarter-abstract"><p>Agosto è doppia gambata e spalla intera. La quattordicesima settimana porta 492 chilometri e oltre 11.000 metri di dislivello: "Doppia da centottanta" sono i due chiodi messi sullo stesso asse, 177 km il venerdì e altrettanti il sabato, due monoliti consecutivi. Le settimane successive scivolano fra pianure rare e cinquecento chilometri di sola bici, poi a fine agosto il volume si fa lieve, una scia di sci alpinismo a stagione storta e il power meter che tace per l'intero blocco. Settembre cambia respiro e Michele rientra in casa con due VirtualRide consecutive sui rulli — la cantina riapre prima del previsto. Da quel momento le scarpe prendono il sopravvento sulla bici. Ottobre è "Il mese delle scarpe": cinque corse in una settimana sola, il dislivello più basso da metà giugno, e un graduale spostamento del peso dalle gambe del ciclista a quelle del podista. Il sabato del compleanno arriva "Trenta dal trenta": 31,8 chilometri di skyrace nel giorno dei trentun anni, una geometria che diventa rituale. Tredici settimane di transizione, dalla doppia agostana al primo lungo da maratona, mentre il calendario indica già — sotto la pelle — un appuntamento spagnolo.</p></div>
-          <span class="quarter-toggle-hint">▾ 13 capitoli — clic per aprire/chiudere</span>
-        </summary>
-        <div class="quarter-stories">
-          
     <article class="story reveal" id="week-26" data-week="26">
       <header class="story-head">
         <span class="week-num">Capitolo 26 · settimana 26</span>
@@ -1200,23 +1066,7 @@
       <div class="story-body"><p>Michele apre agosto con la spalla intera e un volume che pesa: 492,8 km e 11.055 metri in sette uscite, 22 ore in movimento, 10.895 kJ. Il week-end è due chiodi nello stesso asse. Venerdì 9 agosto sono i 177 km e 4.000 metri della prima lunga, 5.407 kJ e 596 di Training Load, salite di Bergamo a tornanti, l'estate ancora ferma sopra le valli. Il giorno dopo, sabato, ci ribatte sopra: 180,4 km e 2.812 metri, 4.282 kJ, 496 di TL. Due lunghissime in fila, come due fratelli che dormono nello stesso letto. La clavicola destra è ancora una clavicola, niente di più — la linea sotto la pelle sarebbe arrivata nove mesi più tardi. Quella settimana, intanto, regge tutto.</p></div>
       <div class="stat-strip">7 attività · 492,8 km · 11.055 m · 22 h · 10.895 kJ</div>
     </article>
-        </div>
-      </details>
-    </section>
 
-    <section class="quarter reveal" id="quarter-1">
-      <details class="quarter-toggle">
-        <summary class="quarter-summary">
-          <div class="quarter-meta">
-            <span class="quarter-tag">Trimestre 1 · W1–W13</span>
-            <span class="quarter-period">maggio–luglio 2024</span>
-          </div>
-          <h3 class="quarter-title">Il battesimo del wattmetro</h3>
-          <div class="quarter-abstract"><p>Trent'anni, una primavera che gli cresce sotto le ruote, e un misuratore che compare in casa il 15 maggio: Michele apre il trimestre con cinquantatré chilometri di pianura il giorno in cui il Giro parte da Venaria, e da lì in poi i kilojoule diventano l'unità di tutto. "Il primo wattmetro" inaugura una contabilità che non perdona — ogni colonna di numeri è un peso da reggere o un debito da saldare. La quinta settimana è quella che resterà nelle gambe per mesi: "Diciassettemila al Mortirolo", 472 chilometri in sette uscite, 10.815 metri di dislivello, 1.871 di Training Load — il numero più alto che Michele rileggerà nei mesi a venire come si rilegge una vecchia fattura. Giugno alterna sabati da quattromila metri e settimane in cui il wattmetro tace, quasi che lo strumento chiedesse riposo dopo la diga del Mortirolo. Luglio si distende verso una pianura ritrovata, finché il 3 agosto un nuovo elemento entra nei file: "L'acqua e il ferro", la prima OpenWaterSwim al lago, 1.300 metri come una promessa per ciò che sarà. Tredici settimane, oltre quattromila chilometri, una stagione iniziata in pianura e finita con il piede dentro un altro elemento. L'estate è ancora in piedi, ma il triathlon ha già messo il primo chiodo.</p></div>
-          <span class="quarter-toggle-hint">▾ 13 capitoli — clic per aprire/chiudere</span>
-        </summary>
-        <div class="quarter-stories">
-          
     <article class="story reveal" id="week-13" data-week="13">
       <header class="story-head">
         <span class="week-num">Capitolo 13 · settimana 13</span>
@@ -1359,22 +1209,7 @@
       <div class="story-body"><p>Michele ha 30 anni e una primavera che gli sta crescendo sotto le ruote. Lunedì 6 maggio firma 53,5 km da casa, 596 metri di pianura piena, il modo di scaldare la settimana che precede il Giro d'Italia in partenza da Venaria Reale. Sabato Bergamo si sveglia con i 2.012 metri dei 59,6 km mattutini, salite corte e ripide come sa fare la provincia, mura venete del Cinquecento sopra la testa e gambe che cominciano a parlare. Domenica 12 maggio è il giorno grosso: 137,9 km e 3.214 metri, quattro ore e mezza di rotazione lenta sulle valli, 266 di Training Load, zero kJ perché il misuratore ancora non c'è. Otto attività, 402 km, 9.025 metri di dislivello, 18 ore in movimento. Niente fratelli citati, niente Federico, niente Thomas: solo lui, il manubrio e il calendario. La clavicola è ancora intera e nessuno la pensa.</p></div>
       <div class="stat-strip">8 attività · 402 km · 9.025 m · 18 h · 0 kJ · TL 811</div>
     </article>
-        </div>
-      </details>
-    </section>
 <div class="end-marker">— Inizio della saga —</div>
-<div class="colophon">
-  104 short stories · generato 2026-04-30 · dati: <a href="https://intervals.icu" target="_blank">intervals.icu</a>
-</div>
-<script>
-(function() {
-  const io = new IntersectionObserver((entries) => {
-    for (const e of entries) {
-      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
-    }
-  }, { rootMargin: '0px 0px -40px 0px', threshold: 0.05 });
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-})();
-</script>
-</body>
-</html>
+<div class="colophon">105 short stories · generato 2026-05-25 · dati: <a href="https://intervals.icu" target="_blank">intervals.icu</a></div>
+<script>(function(){const io=new IntersectionObserver((entries)=>{for(const e of entries){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}},{rootMargin:'0px 0px -40px 0px',threshold:0.05});document.querySelectorAll('.reveal').forEach(el=>io.observe(el));})();</script>
+</body></html>
