@@ -7,7 +7,7 @@ const contentPath = path.join('C:/Users/micme/Desktop/micmer/openclaw/tmp/interv
 const outPath = path.join(__dirname, 'index.html');
 const data = JSON.parse(fs.readFileSync(contentPath, 'utf8'));
 
-const fmt = n => n.toLocaleString('it-IT');
+const fmt = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 
 const navDots = data.months.map(m => `<a class="dot" href="#m-${m.id}" title="${m.period} — ${m.title}">${m.mood}</a>`).reverse().join('');
 
@@ -29,7 +29,7 @@ const html = `<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${data.title} — ${data.author}</title>
-<meta name="description" content="${data.subtitle}: 25 capitoli mensili dal maggio 2024 al maggio 2026 — un romanzo in numeri di Michele Merelli.">
+<meta name="description" content="${data.subtitle}: ${data.stats.months} capitoli mensili dall'aprile 2023 al giugno 2026 — un romanzo in numeri di Michele Merelli.">
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -115,7 +115,7 @@ const html = `<!DOCTYPE html>
   ${data.title}
   <span class="runes">ᚺᚢᚾ · ᛗᛁᚲᚺᛖᛚᛖ · ᚹᛟᛚᚠ</span>
 </h1>
-<p class="cover-sub">Un romanzo in numeri di ${data.author}, mese per mese.<br>Ventiquattro lune di gambe, di tribù, di metri verticali.</p>
+<p class="cover-sub">Un romanzo in numeri di ${data.author}, mese per mese.<br>${data.stats.months} lune di gambe, di tribù, di metri verticali.</p>
 
 <div class="cover-stats">
   <div class="cover-stat"><div class="num">${data.stats.months}</div><div class="label">Lune</div></div>
@@ -151,7 +151,7 @@ ${monthSections}
 
 <div class="colophon">
   Composto a Bergamo Alta · ${data.author}<br>
-  Ventiquattro lune dal maggio 2024 al maggio 2026<br>
+  ${data.stats.months} lune dall'aprile 2023 al giugno 2026<br>
   <a href="../signore-dei-kj-weekly.html">↗ Settimanale (104 capitoli)</a> ·
   <a href="../signore-dei-kj.html">↗ Annuali</a> ·
   <a href="../">↗ Indice</a>
