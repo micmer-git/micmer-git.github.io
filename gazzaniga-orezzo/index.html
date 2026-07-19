@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Gazzaniga → Orezzo — eleven years on one climb</title>
+<meta name="description" content="Every time Michele Merelli has ridden up the Gazzaniga–Orezzo climb, 2016–2026 — 440 ascents, one hill, told in data: the ghost race, the seasons, the record.">
+<meta name="author" content="micmer — Michele Merelli">
+<meta name="theme-color" content="#6AAF49">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🚵%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf8f3; --surface:#ffffff; --surface-2:#f6f4ec;
+  --ink:#14150f; --ink-2:#5c5f52; --ink-3:#8f9382;
+  --rule:#e4e1d6; --rule-soft:#efece3;
+  --accent:#6AAF49;                 /* green — recent / brand */
+  --blue:#2a78d6; --orange:#eb6834; --pink:#db2777; --gold:#b8860b;
+  --era1:#2a78d6; --era2:#eb6834; --era3:#6AAF49;   /* early / peak / recent */
+  --serif:"Instrument Serif",Georgia,serif;
+  --sans:"Inter",system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box}
+html{overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-weight:400;
+  line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;max-width:100vw}
+.tnum{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+em{font-style:italic}
+a{color:var(--accent);text-decoration:none}
+
+/* hero */
+.hero{max-width:1100px;margin:0 auto;padding:64px 26px 0}
+.eyebrow{font-size:.68rem;text-transform:uppercase;letter-spacing:.18em;color:var(--ink-3);font-weight:600}
+.hero h1{font-family:var(--serif);font-weight:400;font-size:clamp(2.5rem,8.6vw,6.2rem);line-height:.95;
+  letter-spacing:-.02em;margin:16px 0 0}
+.hero h1 em{color:var(--accent)}
+.hero h1 .ar{color:var(--ink-3);font-style:normal}
+.lede{margin-top:20px;font-size:clamp(1.02rem,2.6vw,1.28rem);color:var(--ink-2);max-width:44ch;line-height:1.5}
+.lede b{color:var(--ink);font-weight:600}
+.place{display:flex;align-items:center;gap:10px;margin-top:18px;font-size:.72rem;text-transform:uppercase;
+  letter-spacing:.15em;color:var(--ink-2);font-weight:500;flex-wrap:wrap}
+.place .rb{display:inline-flex;border-radius:999px;overflow:hidden;box-shadow:0 0 0 1px rgba(20,21,15,.08)}
+.place .rb i{width:14px;height:7px;display:block}
+
+/* scale toggle */
+.scale{display:inline-flex;border:1px solid var(--rule);border-radius:999px;padding:3px;background:var(--surface);margin-top:26px}
+.scale button{background:none;border:0;color:var(--ink-2);padding:8px 16px;border-radius:999px;cursor:pointer;
+  font-family:var(--sans);font-size:.78rem;font-weight:500}
+.scale button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+
+/* stat row */
+.stats-row{max-width:1100px;margin:44px auto 0;padding:0 26px}
+.stats-in{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.stat-box{padding:22px 20px 20px;border-right:1px solid var(--rule-soft)}
+.stat-box:last-child{border-right:0}
+.stat-box .num{font-family:var(--serif);font-size:clamp(2rem,5vw,2.7rem);line-height:1;letter-spacing:-.01em}
+.stat-box .num small{font-size:.5em;color:var(--ink-3)}
+.stat-box .label{font-size:.64rem;text-transform:uppercase;letter-spacing:.13em;color:var(--ink-3);margin-top:9px;font-weight:500}
+@media(max-width:720px){.stats-in{grid-template-columns:1fr 1fr}
+  .stat-box:nth-child(2){border-right:0}.stat-box:nth-child(-n+2){border-bottom:1px solid var(--rule-soft)}}
+
+/* layout */
+.container{max-width:1100px;margin:0 auto;padding:0 26px 90px}
+.section{padding:66px 0 0}
+.section h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.7rem,4.4vw,2.1rem);letter-spacing:-.01em;
+  margin:0;display:flex;align-items:baseline;gap:14px}
+.section h2::before{content:attr(data-n);font-family:var(--sans);font-size:.66rem;font-weight:600;
+  letter-spacing:.14em;color:var(--ink-3);transform:translateY(-4px)}
+.section .desc{color:var(--ink-2);font-size:.92rem;margin:12px 0 24px;max-width:74ch;line-height:1.65}
+.section .desc b{color:var(--ink);font-weight:600}
+.card{background:var(--surface);border:1px solid var(--rule-soft);border-radius:16px;padding:20px 18px 14px;margin-bottom:16px}
+.cap{font-size:.78rem;color:var(--ink-3);margin:12px 2px 2px;line-height:1.55}
+.cap b{color:var(--ink-2)}
+.legend{display:flex;flex-wrap:wrap;gap:14px 18px;margin:14px 2px 2px;font-size:.76rem;color:var(--ink-2)}
+.legend .it{display:inline-flex;align-items:center;gap:7px}
+.legend .sw{width:12px;height:12px;border-radius:3px;flex:none}.legend .sw.dot{border-radius:50%}
+.legend .sw.ln{width:16px;height:0;border-top:2px solid;border-radius:0}
+
+/* chart svg */
+.chartbox{position:relative;width:100%}
+svg text{fill:var(--ink-3);font:12px var(--sans)}
+svg text.lbl{fill:var(--ink-2);font-weight:500}
+svg text.val{fill:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+svg .grid{stroke:var(--rule-soft);stroke-width:1}
+svg .axis{stroke:var(--rule);stroke-width:1}
+
+/* ghost */
+#ghostMap{height:460px;border-radius:14px;margin-bottom:14px;z-index:0}
+@media(max-width:640px){#ghostMap{height:340px}}
+.ghost-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.ghost-controls button{background:var(--surface);border:1px solid var(--rule);color:var(--ink-2);
+  padding:8px 15px;border-radius:999px;cursor:pointer;font-family:var(--sans);font-size:.78rem;font-weight:500}
+.ghost-controls button:hover{color:var(--ink)}
+.ghost-controls button.active{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.ghost-controls input[type=range]{flex:1;min-width:140px;accent-color:var(--accent)}
+.ghost-controls select{background:var(--surface);border:1px solid var(--rule);color:var(--ink);
+  padding:7px 10px;border-radius:8px;font-family:var(--sans);font-size:.78rem}
+#ghostTime{font-family:var(--serif);font-size:1.4rem;min-width:66px}
+.leaflet-container{background:var(--bg)!important;font-family:var(--sans)!important}
+
+/* diary */
+.diary{margin-top:8px;border-left:2px solid var(--rule)}
+.dy{position:relative;padding:6px 0 30px 30px}
+.dy::before{content:"";position:absolute;left:-7px;top:11px;width:11px;height:11px;border-radius:50%;
+  background:var(--bg);border:2px solid var(--ink-3)}
+.dy.era1::before{border-color:var(--era1)}.dy.era2::before{border-color:var(--era2)}.dy.era3::before{border-color:var(--era3)}
+.dy.peak::before{background:var(--orange);border-color:var(--orange);box-shadow:0 0 0 4px #fbe6da}
+.dy .yr{font-family:var(--serif);font-size:1.7rem;line-height:1;display:flex;align-items:baseline;gap:12px}
+.dy .st{font-size:.72rem;color:var(--ink-3);font-weight:500;text-transform:uppercase;letter-spacing:.1em;font-variant-numeric:tabular-nums}
+.dy .tx{color:var(--ink-2);font-size:.95rem;margin-top:8px;max-width:64ch;line-height:1.66}
+.dy .tx b{color:var(--ink);font-weight:600}
+.nlband{display:inline-block;font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;font-weight:600;
+  color:#b45309;background:#fef3c7;border:1px solid #fcd34d;padding:2px 8px;border-radius:999px;vertical-align:middle}
+
+/* table */
+details.data{margin-top:8px;background:var(--surface);border:1px solid var(--rule-soft);border-radius:14px;overflow:hidden}
+details.data>summary{cursor:pointer;padding:16px 18px;font-weight:500;font-size:.9rem;list-style:none;display:flex;align-items:center;gap:9px}
+details.data>summary::-webkit-details-marker{display:none}
+details.data .chev{transition:transform .2s;color:var(--ink-3)}
+details.data[open] .chev{transform:rotate(90deg)}
+.tblscroll{max-height:440px;overflow:auto;border-top:1px solid var(--rule-soft)}
+table{border-collapse:collapse;width:100%;font-size:.83rem;font-variant-numeric:tabular-nums}
+th,td{text-align:right;padding:9px 13px;white-space:nowrap;border-bottom:1px solid var(--rule-soft)}
+th:first-child,td:first-child{text-align:left}
+thead th{position:sticky;top:0;background:var(--surface);color:var(--ink-3);font-weight:600;font-size:.62rem;
+  text-transform:uppercase;letter-spacing:.1em}
+tbody tr:hover{background:#faf9f5}
+td.pr{color:var(--orange);font-weight:600}
+
+.tip{position:fixed;z-index:60;pointer-events:none;opacity:0;transition:opacity .1s;background:var(--ink);
+  color:var(--bg);padding:8px 11px;border-radius:9px;font-size:.76rem;line-height:1.45;
+  box-shadow:0 8px 26px rgba(20,21,15,.22);max-width:230px;font-variant-numeric:tabular-nums}
+.tip b{color:#fff;font-weight:600}
+footer{max-width:1100px;margin:40px auto 0;padding:34px 26px 70px;border-top:1px solid var(--rule);
+  color:var(--ink-3);font-size:.8rem;line-height:1.7}
+footer b{color:var(--ink-2)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="eyebrow">Gazzaniga · Val Seriana · Bergamo</div>
+  <h1>Gazzaniga <span class="ar">→</span> <em>Orezzo</em></h1>
+  <p class="lede">One climb, ridden <b id="lede-n">440</b> times over <b>eleven seasons</b>. The story of a hill that became a habit — told in data.</p>
+  <div class="place">
+    <span class="rb"><i style="background:#e4002b"></i><i style="background:#ff8c00"></i><i style="background:#ffcf00"></i><i style="background:#22b14c"></i><i style="background:#00a3e0"></i><i style="background:#7b2fbe"></i></span>
+    <span>Cat&nbsp;3 · 4.24&nbsp;km · 275&nbsp;m · 6.5%</span>
+  </div>
+  <div class="scale" role="group" aria-label="Distance basis for times">
+    <button id="sc-full" aria-pressed="true">Full climb · 4.24 km</button>
+    <button id="sc-raw"  aria-pressed="false">As recorded · 3.36 km</button>
+  </div>
+</header>
+
+<div class="stats-row"><div class="stats-in" id="stats"></div></div>
+
+<div class="container">
+
+  <!-- 01 ASCENT -->
+  <section class="section" id="s-journey">
+    <h2 data-n="01">Every ascent, on one line</h2>
+    <p class="desc">Each dot is one ride up the hill; lower means faster. The line traces the <b>fastest time of each year</b> — a decade of fitness climbing toward the <b>2022</b> record, then the long, happy plateau of simply keeping at it. The pale band marks the two years <b>lived in the Netherlands</b> (Sep 2016 – Jun 2018), when the only ascents were summer trips home.</p>
+    <div class="card"><div class="chartbox" id="c-journey" style="min-height:360px"></div>
+      <div class="legend" id="lg-journey"></div>
+      <p class="cap">Hover any point for its date and time.</p></div>
+  </section>
+
+  <!-- 02 GHOST RACE -->
+  <section class="section" id="s-ghost">
+    <h2 data-n="02">The ghost race</h2>
+    <p class="desc">Four ascents set off together up the real GPS track of the climb, each running at its own recorded pace. Watch the <b>record</b> ride away from a <b>typical</b> day, the <b>most recent</b> effort, and the <b>very first</b> one from 2016. Press play.</p>
+    <div class="card">
+      <div id="ghostMap"></div>
+      <div class="ghost-controls">
+        <button id="ghostPlay">▶ Play</button>
+        <button id="ghostReset">↺</button>
+        <input type="range" id="ghostSlider" min="0" max="1000" value="0" aria-label="Scrub the race">
+        <span id="ghostTime" class="tnum">0:00</span>
+        <select id="ghostSpeed" aria-label="Playback speed">
+          <option value="6">6×</option><option value="12" selected>12×</option><option value="24">24×</option><option value="60">60×</option>
+        </select>
+      </div>
+      <div class="legend" id="lg-ghost"></div>
+      <p class="cap">Positions assume each rider held their average pace up the <b id="route-dist">3.7 km</b> track — <b id="route-turns">12</b> tornanti, <b id="route-gain">252 m</b> of climbing.</p>
+    </div>
+    <div class="card"><div class="chartbox" id="c-elev" style="min-height:150px"></div>
+      <p class="cap">Elevation profile of the climb, base to summit, with the hairpins marked.</p></div>
+  </section>
+
+  <!-- 03 CALENDAR -->
+  <section class="section" id="s-cal">
+    <h2 data-n="03">A decade, day by day</h2>
+    <p class="desc">Every ascent placed on the calendar: years as rows, January to December left to right, colour by speed (<b>darker is faster</b>). Read down any month to see the same weeks light up, year after year.</p>
+    <div class="card"><div class="chartbox" id="c-cal" style="min-height:260px"></div>
+      <div class="legend" id="lg-cal"></div>
+      <p class="cap">The dense block under May–August is the season; the winter thinning is ice and rest.</p></div>
+  </section>
+
+  <!-- 04 SEASONALITY -->
+  <section class="section" id="s-season">
+    <h2 data-n="04">The shape of a year</h2>
+    <p class="desc">The hill is ridden in every month, but the legs are quickest when it is warm. Bars count the ascents; the line is the <b>median time</b> per month. Below, each month's own <b>distribution</b> of times — the summer months are both busier and faster.</p>
+    <div class="card"><div class="chartbox" id="c-season" style="min-height:300px"></div>
+      <div class="legend" id="lg-season"></div></div>
+    <div class="card"><h3 style="font-size:.66rem;text-transform:uppercase;letter-spacing:.14em;color:var(--ink-3);font-weight:600;margin:2px 0 6px">Time distribution by month</h3>
+      <div class="chartbox" id="c-monthdist" style="min-height:260px"></div>
+      <p class="cap">Each panel is one month; the ridge is where that month's times fall. Dashed line = all-time median.</p></div>
+  </section>
+
+  <!-- 05 CONTOUR -->
+  <section class="section" id="s-contour">
+    <h2 data-n="05">Effort, contoured by era</h2>
+    <p class="desc">Every ascent placed by <b>heart rate</b> against <b>speed</b>, then drawn as density contours — one translucent layer per era. The fittest years (<b>2020–22</b>) pool to the <b>lower-right</b>: more speed for fewer beats. Faster for the same effort is the whole story of getting fit.</p>
+    <div class="card"><div class="chartbox" id="c-contour" style="min-height:360px"></div>
+      <div class="legend" id="lg-contour"></div>
+      <p class="cap">Contour lines enclose where each era's ascents concentrate. Only efforts with recorded heart rate.</p></div>
+  </section>
+
+  <!-- 06 RECORDS -->
+  <section class="section" id="s-pr">
+    <h2 data-n="06">The record, chipped down</h2>
+    <p class="desc">Best-time-ever, stepping lower each time it fell. Six years of small gains, then the <b>2022</b> barrier that still stands.</p>
+    <div class="card"><div class="chartbox" id="c-prog" style="min-height:240px"></div></div>
+  </section>
+
+  <!-- 07 DIARY -->
+  <section class="section" id="s-diary">
+    <h2 data-n="07">The diary</h2>
+    <p class="desc">Eleven seasons, each with its numbers and its story. <span style="color:var(--ink-3)">(Every line is editable in the <code>DIARY</code> object near the top of <code>index.html</code>.)</span></p>
+    <div class="diary" id="diary"></div>
+  </section>
+
+  <!-- 08 TABLE -->
+  <section class="section" id="s-table">
+    <h2 data-n="08">All 440 ascents</h2>
+    <p class="desc">The complete record, most recent first.</p>
+    <details class="data">
+      <summary><span class="chev">▸</span> Open the full table</summary>
+      <div class="tblscroll"><table id="tbl">
+        <thead><tr><th>Date</th><th>Time</th><th>Speed</th><th>HR</th><th>Power</th><th>VAM</th></tr></thead>
+        <tbody></tbody></table></div>
+    </details>
+  </section>
+</div>
+
+<footer>
+  <p><b>How the times are figured.</b> Ascents were recorded by Michele Merelli on the Strava segment <em>“Gazzaniga-Orezzo cimitero”</em> (3.36 km, 282 m). The full <em>Gazzaniga → Orezzo</em> climb is 4.24 km — about 26% longer. With <b>“Full climb”</b> selected, each time is scaled by <b>×1.262</b> (the distance ratio, at constant average speed); <b>“As recorded”</b> shows the untouched 3.36 km times. Speed, heart rate, power and VAM are always as recorded. The route, elevation and tornanti come from a 2022 GPS ride of the climb.</p>
+  <p style="margin-top:14px">440 ascents · Feb 2016 – Jul 2026 · <span id="built"></span> · Built for the love of the hill.</p>
+</footer>
+
+<div class="tip" id="tip" role="status" aria-live="off"></div>
+
+<script src="_data.js"></script>
+<script>
+/* ================= CONFIG (edit per climb) ================= */
+const SEG={recDist:3.36,fullDist:4.24,fullGain:275,name:"Gazzaniga → Orezzo"};
+const SCALE=SEG.fullDist/SEG.recDist;
+const NL={from:[2016,9],to:[2018,6],label:"Netherlands"};   // lived abroad → only home visits climbed
+const PEAK=2022;
+const ERA_BOUNDS=[2019,2022];
+/* -------- EDIT ME: the diary, one entry per season -------- */
+const DIARY={
+ 2016:"Where it started. Sixteen trips up in the first months — learning the gradient, the hairpins, what the legs had. Then, in September, I moved to the <b>Netherlands</b>; the hill stayed behind.",
+ 2017:"A year mostly away. The only ascents were <b>summer visits home</b> — June and August, a handful of climbs squeezed between flights. The flatlands don't make for good hill legs.",
+ 2018:"Still abroad until June. One lonely ascent all year, in the autumn after coming back — the hill patiently waiting where I'd left it.",
+ 2019:"Home for good, and rebuilding. Fourteen climbs across the year, the fitness creeping back by autumn — the fastest of them a 14:01 in December.",
+ 2020:"The lockdown climb. When the world shrank to a few kilometres, this hill became my whole horizon — <b>fifty-four ascents</b>, more than any year before. Some days flat-out, many just to breathe.",
+ 2021:"Sharpening. The fast days started stacking up — a first genuine 11:13 in May — and for the first time the record felt like it was within reach.",
+ 2022:"Everything clicked. On <b>12 July</b> I rode a <b>10:44</b> at 18.8 km/h and 356 W — the record that still stands, and the fastest I may ever be here. Seventy-four ascents in a single golden season.",
+ 2023:"A volume year. Sixty-five times up, whatever the legs were saying — the habit now more valuable than any single time.",
+ 2024:"The busiest season yet: <b>seventy-eight ascents</b>. Not chasing the clock so much as chasing the ritual — showing up, over and over.",
+ 2025:"Steady miles, steady hill. Nothing left to prove, everything still to enjoy — a quieter forty-seven climbs.",
+ 2026:"Still climbing, and this page begins here. Thirty-nine ascents by mid-July and counting — on to the next hundred thousand metres of vertical."
+};
+/* ========================================================== */
+
+const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const R=RAW.map(r=>{const[y,mo,d,secs,hr,power,vam,speed]=r;
+  return{y,mo,d,secs,hr:hr||null,power:power||null,vam,speed,t:new Date(y,mo-1,d),doy:doyf(y,mo,d)};});
+function doyf(y,mo,d){return Math.round((new Date(y,mo-1,d)-new Date(y,0,0))/864e5);}
+let SCALED=true;
+const sec=r=>SCALED?r.secs*SCALE:r.secs;
+const fmt=s=>{s=Math.round(s);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");};
+const YEARS=[...new Set(R.map(r=>r.y))].sort((a,b)=>a-b);
+const eraOf=y=>y<=ERA_BOUNDS[0]?0:y<=ERA_BOUNDS[1]?1:2;
+const yy=s=>"’"+String(s).slice(2);
+const ERAS=[{n:`${YEARS[0]}–${yy(ERA_BOUNDS[0])} · early`,c:"var(--era1)",hex:"#2a78d6"},
+            {n:`${ERA_BOUNDS[0]+1}–${yy(ERA_BOUNDS[1])} · peak`,c:"var(--era2)",hex:"#eb6834"},
+            {n:`${ERA_BOUNDS[1]+1}–${yy(YEARS[YEARS.length-1])} · recent`,c:"var(--era3)",hex:"#6AAF49"}];
+function inNL(r){const a=NL.from,b=NL.to;
+  return (r.y>a[0]||(r.y===a[0]&&r.mo>=a[1])) && (r.y<b[0]||(r.y===b[0]&&r.mo<=b[1]));}
+
+/* svg + tooltip */
+const NS="http://www.w3.org/2000/svg";
+function svg(w,h){const s=document.createElementNS(NS,"svg");s.setAttribute("viewBox",`0 0 ${w} ${h}`);s.setAttribute("width","100%");s.setAttribute("height",h);s.style.display="block";s.style.overflow="visible";return s;}
+function E(p,t,a,x){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(x!=null)e.textContent=x;p.appendChild(e);return e;}
+function clr(e){e.innerHTML="";}
+const tip=document.getElementById("tip");
+function showTip(h,x,y){tip.innerHTML=h;tip.style.opacity="1";const p=14,w=tip.offsetWidth,ht=tip.offsetHeight;
+  let L=x+p,T=y-ht-p;if(L+w>innerWidth-8)L=x-w-p;if(T<8)T=y+p;tip.style.left=L+"px";tip.style.top=T+"px";}
+function hideTip(){tip.style.opacity="0";}
+function bind(host){host.addEventListener("pointerleave",hideTip);
+  host.addEventListener("pointermove",e=>{const m=e.target.closest("[data-tip]");if(!m){hideTip();return;}showTip(m.getAttribute("data-tip"),e.clientX,e.clientY);});
+  host.addEventListener("pointerdown",e=>{const m=e.target.closest("[data-tip]");if(m)showTip(m.getAttribute("data-tip"),e.clientX,e.clientY);});}
+
+/* ---------- stats ---------- */
+function stats(){
+  const secs=R.map(sec),pr=Math.min(...secs);
+  const days=new Set(R.map(r=>r.y+"-"+r.mo+"-"+r.d)).size;
+  const everest=(R.length*SEG.fullGain/8849);
+  const box=document.getElementById("stats");clr(box);
+  [[R.length,"Ascents"],
+   [everest.toFixed(1)+"<small>×</small>","Everests climbed"],
+   [days,"Days on the hill"],
+   [(typeof ROUTE_META!=="undefined"?ROUTE_META.turns:12),"Tornanti"]
+  ].forEach(([v,l])=>{const d=document.createElement("div");d.className="stat-box";
+    d.innerHTML=`<div class="num tnum">${v}</div><div class="label">${l}</div>`;box.appendChild(d);});
+  document.getElementById("lede-n").textContent=R.length;
+  if(typeof ROUTE_META!=="undefined"){
+    document.getElementById("route-dist").textContent=ROUTE_META.dist_km+" km";
+    document.getElementById("route-turns").textContent=ROUTE_META.turns;
+    document.getElementById("route-gain").textContent=ROUTE_META.gain_m+" m";}
+}
+
+/* ---------- 01 journey ---------- */
+function journey(){
+  const host=document.getElementById("c-journey");clr(host);
+  const W=host.clientWidth||820,H=Math.max(340,Math.min(430,W*.5)),m={l:48,r:14,t:16,b:30};
+  const s=svg(W,H);host.appendChild(s);
+  const secs=R.map(sec),t0=new Date(YEARS[0],0,1),t1=new Date(YEARS[YEARS.length-1],11,31);
+  const yMin=Math.min(...secs)-15,yMax=Math.max(...secs)+15;
+  const X=t=>m.l+((t-t0)/(t1-t0))*(W-m.l-m.r),Y=v=>m.t+((v-yMin)/(yMax-yMin))*(H-m.t-m.b);
+  // NL band
+  const nlx0=X(new Date(NL.from[0],NL.from[1]-1,1)),nlx1=X(new Date(NL.to[0],NL.to[1]-1,28));
+  E(s,"rect",{x:nlx0,y:m.t,width:nlx1-nlx0,height:H-m.t-m.b,fill:"#f4a52022","stroke":"none"});
+  E(s,"text",{x:(nlx0+nlx1)/2,y:m.t+13,"text-anchor":"middle","font-size":10.5,fill:"#b45309"},"lived in the Netherlands");
+  const step=yMax-yMin>600?180:120;
+  for(let v=Math.ceil(yMin/step)*step;v<yMax;v+=step){E(s,"line",{class:"grid",x1:m.l,y1:Y(v),x2:W-m.r,y2:Y(v)});
+    E(s,"text",{x:m.l-8,y:Y(v)+4,"text-anchor":"end"},fmt(v));}
+  YEARS.forEach(y=>E(s,"text",{x:X(new Date(y,6,1)),y:H-8,"text-anchor":"middle"},yy(y)));
+  R.forEach((r,i)=>E(s,"circle",{cx:X(r.t),cy:Y(secs[i]),r:3.3,fill:ERAS[eraOf(r.y)].c,"fill-opacity":.5,
+    "data-tip":`<b>${fmt(secs[i])}</b> · ${r.t.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}<br>${r.speed} km/h${r.hr?` · ${r.hr} bpm`:''}`}));
+  const fp=YEARS.map(y=>{const rr=R.filter(r=>r.y===y),ss=rr.map(sec),mn=Math.min(...ss);return{r:rr[ss.indexOf(mn)],v:mn};});
+  E(s,"path",{d:"M"+fp.map(p=>X(p.r.t)+","+Y(p.v)).join(" L"),fill:"none",stroke:"var(--ink)","stroke-width":1.8,"stroke-opacity":.5,"stroke-linejoin":"round"});
+  fp.forEach(p=>E(s,"circle",{cx:X(p.r.t),cy:Y(p.v),r:3.6,fill:"var(--ink)",stroke:"var(--surface)","stroke-width":2}));
+  const pr=Math.min(...secs),prR=R[secs.indexOf(pr)];
+  E(s,"circle",{cx:X(prR.t),cy:Y(pr),r:7,fill:"none",stroke:"var(--orange)","stroke-width":2.5});
+  E(s,"text",{x:X(prR.t),y:Y(pr)-13,"text-anchor":"middle",class:"val",fill:"var(--orange)"},"record "+fmt(pr));
+  bind(s);
+  document.getElementById("lg-journey").innerHTML=
+    ERAS.map(e=>`<span class="it"><span class="sw dot" style="background:${e.c}"></span>${e.n}</span>`).join("")
+    +`<span class="it"><span class="sw ln" style="border-color:var(--ink)"></span>fastest each year</span>`;
+}
+
+/* ---------- 02 ghost race ---------- */
+let gmap=null,gline=null,gmarkers=[],gRacers=[],gDists=[],gMax=0,gT=0,gPlaying=false,gAnim=null;
+function cumDist(pts){const d=[0];for(let i=1;i<pts.length;i++){
+  const dx=(pts[i][0]-pts[i-1][0])*111320,dy=(pts[i][1]-pts[i-1][1])*111320*Math.cos(pts[i][0]*Math.PI/180);
+  d.push(d[d.length-1]+Math.hypot(dx,dy));}return d;}
+function interp(pts,dists,frac){const tg=frac*dists[dists.length-1];let i=0;
+  while(i<dists.length-1&&dists[i+1]<tg)i++;if(i>=pts.length-1)return pts[pts.length-1];
+  const s=(tg-dists[i])/((dists[i+1]-dists[i])||1);return[pts[i][0]+(pts[i+1][0]-pts[i][0])*s,pts[i][1]+(pts[i+1][1]-pts[i][1])*s];}
+function pickRacers(){
+  const withT=R.map(r=>({r,v:sec(r)}));
+  const pr=withT.reduce((a,b)=>b.v<a.v?b:a);
+  const sorted=[...withT].sort((a,b)=>a.v-b.v),med=sorted[Math.floor(sorted.length/2)];
+  const latest=withT.reduce((a,b)=>b.r.t>a.r.t?b:a);
+  const first=withT.reduce((a,b)=>b.r.t<a.r.t?b:a);
+  return[{lab:"Record",c:"#eb6834",...pr},{lab:"Typical",c:"#2a78d6",...med},
+         {lab:"Latest",c:"#6AAF49",...latest},{lab:"First ever",c:"#7b2fbe",...first}];
+}
+function initGhost(){
+  if(gmap||typeof ROUTE==="undefined")return;
+  const ll=ROUTE.map(p=>[p[0],p[1]]);gDists=cumDist(ROUTE);
+  gmap=L.map("ghostMap",{zoomControl:true,scrollWheelZoom:false}).fitBounds(ll,{padding:[24,24]});
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{attribution:'&copy; CARTO · OSM',maxZoom:18}).addTo(gmap);
+  gline=L.polyline(ll,{color:"#8f9382",weight:3,opacity:.55}).addTo(gmap);
+  L.marker(ll[0],{icon:L.divIcon({html:"<div style='background:#14150f;color:#fff;padding:2px 7px;border-radius:5px;font-size:10.5px;font-weight:600;white-space:nowrap'>Gazzaniga</div>",iconSize:[0,0],iconAnchor:[-6,8]})}).addTo(gmap);
+  L.marker(ll[ll.length-1],{icon:L.divIcon({html:"<div style='background:#6AAF49;color:#fff;padding:2px 7px;border-radius:5px;font-size:10.5px;font-weight:600;white-space:nowrap'>Orezzo</div>",iconSize:[0,0],iconAnchor:[-6,8]})}).addTo(gmap);
+}
+function buildGhost(){
+  gmarkers.forEach(m=>m.remove());gRacers=pickRacers();gMax=Math.max(...gRacers.map(x=>x.v));
+  const ll0=[ROUTE[0][0],ROUTE[0][1]];
+  gmarkers=gRacers.map(x=>{const m=L.circleMarker(ll0,{radius:6,color:"#fff",weight:2,fillColor:x.c,fillOpacity:1});
+    m.bindTooltip(`${x.lab} · ${fmt(x.v)}`,{direction:"top"});m.addTo(gmap);return m;});
+  document.getElementById("lg-ghost").innerHTML=gRacers.map(x=>
+    `<span class="it"><span class="sw dot" style="background:${x.c}"></span>${x.lab} — ${fmt(x.v)} · ${x.r.t.toLocaleDateString('en-GB',{month:'short',year:'numeric'})}</span>`).join("");
+}
+function ghostAt(t){gT=Math.min(t,gMax);document.getElementById("ghostSlider").value=gMax?Math.round(gT/gMax*1000):0;
+  document.getElementById("ghostTime").textContent=fmt(gT);
+  gRacers.forEach((x,i)=>{const f=Math.min(1,gT/x.v);const p=interp(ROUTE,gDists,f);gmarkers[i].setLatLng(p);});}
+function ghostAnimate(){if(!gPlaying)return;const sp=+document.getElementById("ghostSpeed").value;
+  gT+=sp*0.05;if(gT>=gMax){gT=gMax;gPlaying=false;document.getElementById("ghostPlay").classList.remove("active");document.getElementById("ghostPlay").textContent="▶ Play";}
+  ghostAt(gT);gAnim=requestAnimationFrame(ghostAnimate);}
+function renderGhost(){initGhost();if(!gmap)return;setTimeout(()=>gmap.invalidateSize(),60);buildGhost();ghostAt(0);}
+document.getElementById("ghostPlay").addEventListener("click",function(){gPlaying=!gPlaying;
+  this.classList.toggle("active",gPlaying);this.textContent=gPlaying?"❚❚ Pause":"▶ Play";
+  if(gPlaying){if(gT>=gMax)gT=0;ghostAnimate();}else if(gAnim)cancelAnimationFrame(gAnim);});
+document.getElementById("ghostReset").addEventListener("click",()=>{gPlaying=false;
+  document.getElementById("ghostPlay").classList.remove("active");document.getElementById("ghostPlay").textContent="▶ Play";
+  if(gAnim)cancelAnimationFrame(gAnim);ghostAt(0);});
+document.getElementById("ghostSlider").addEventListener("input",e=>{gPlaying=false;
+  document.getElementById("ghostPlay").textContent="▶ Play";document.getElementById("ghostPlay").classList.remove("active");
+  if(gAnim)cancelAnimationFrame(gAnim);ghostAt(+e.target.value/1000*gMax);});
+
+function elevProfile(){
+  const host=document.getElementById("c-elev");clr(host);if(typeof ROUTE==="undefined")return;
+  const W=host.clientWidth||820,H=160,m={l:40,r:12,t:14,b:24};const s=svg(W,H);host.appendChild(s);
+  const dd=cumDist(ROUTE),tot=dd[dd.length-1],el=ROUTE.map(p=>p[2]);
+  const lo=Math.min(...el),hi=Math.max(...el);
+  const X=d=>m.l+(d/tot)*(W-m.l-m.r),Y=e=>m.t+((hi-e)/(hi-lo))*(H-m.t-m.b);
+  let d="M"+X(0)+","+(H-m.b);ROUTE.forEach((p,i)=>d+=" L"+X(dd[i])+","+Y(p[2]));d+=" L"+X(tot)+","+(H-m.b)+" Z";
+  const g=E(s,"linearGradient",{id:"eg",x1:0,y1:0,x2:0,y2:1});E(g,"stop",{offset:0,"stop-color":"#6AAF49","stop-opacity":.28});E(g,"stop",{offset:1,"stop-color":"#6AAF49","stop-opacity":0});
+  E(s,"path",{d,fill:"url(#eg)"});
+  E(s,"path",{d:"M"+ROUTE.map((p,i)=>X(dd[i])+","+Y(p[2])).join(" L"),fill:"none",stroke:"#6AAF49","stroke-width":2});
+  for(let e=Math.ceil(lo/50)*50;e<hi;e+=50){E(s,"line",{class:"grid",x1:m.l,y1:Y(e),x2:W-m.r,y2:Y(e)});E(s,"text",{x:m.l-6,y:Y(e)+4,"text-anchor":"end","font-size":10},e);}
+  for(let k=0;k<=Math.floor(tot/500)*500;k+=500){E(s,"text",{x:X(k),y:H-8,"text-anchor":"middle","font-size":10},(k/1000).toFixed(1)+"k");}
+  E(s,"text",{x:m.l,y:Y(lo)-4,"font-size":10,fill:"var(--ink-3)"},lo+" m");
+  E(s,"text",{x:W-m.r,y:Y(hi)+12,"text-anchor":"end",class:"val"},hi+" m");
+}
+
+/* ---------- 03 calendar ---------- */
+function seqCol(t){const c=["#e8eef8","#bcd3f0","#7fb0e6","#3f8bdc","#1f5fa8","#0d366b"];return c[Math.max(0,Math.min(5,Math.floor(t*6)))];}
+function calendar(){
+  const host=document.getElementById("c-cal");clr(host);
+  const W=host.clientWidth||820,m={l:34,r:8,t:20,b:8},rows=YEARS.length,rh=Math.max(15,Math.min(24,(W*.30)/rows)),H=m.t+m.b+rows*rh;
+  const s=svg(W,H);host.appendChild(s);
+  const X=doy=>m.l+(doy/366)*(W-m.l-m.r),secs=R.map(sec),lo=Math.min(...secs),hi=Math.max(...secs);
+  let cum=0;const md=[31,28,31,30,31,30,31,31,30,31,30,31];
+  for(let i=0;i<12;i++){const x=X(cum);E(s,"line",{class:"grid",x1:x,y1:m.t-4,x2:x,y2:H-m.b});E(s,"text",{x:x+3,y:m.t-8,"font-size":10},MON[i][0]);cum+=md[i];}
+  YEARS.forEach((y,ri)=>{const yc=m.t+ri*rh;E(s,"text",{x:m.l-7,y:yc+rh/2+4,"text-anchor":"end","font-size":10.5},yy(y));
+    R.filter(r=>r.y===y).forEach(r=>{const i=R.indexOf(r),t=1-(secs[i]-lo)/(hi-lo);
+      E(s,"rect",{x:X(r.doy)-2.4,y:yc+2,width:4.8,height:rh-4,rx:1.3,fill:seqCol(t),
+        "data-tip":`<b>${fmt(secs[i])}</b> · ${r.t.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}<br>${r.speed} km/h`});});});
+  bind(s);
+  document.getElementById("lg-cal").innerHTML=`<span class="it">slower <span class="sw" style="background:#e8eef8"></span><span class="sw" style="background:#7fb0e6"></span><span class="sw" style="background:#1f5fa8"></span><span class="sw" style="background:#0d366b"></span> faster</span>`;
+}
+
+/* ---------- 04 seasonality ---------- */
+function season(){
+  const host=document.getElementById("c-season");clr(host);
+  const W=host.clientWidth||820,H=Math.max(280,Math.min(330,W*.42)),m={l:40,r:46,t:16,b:32};
+  const s=svg(W,H);host.appendChild(s);
+  const by=MON.map((_,i)=>R.filter(r=>r.mo===i+1)),counts=by.map(a=>a.length),maxC=Math.max(...counts);
+  const meds=by.map(a=>{if(!a.length)return null;const ss=a.map(sec).sort((x,y)=>x-y);return ss[Math.floor(ss.length/2)];});
+  const mv=meds.filter(Boolean),tLo=Math.min(...mv)-20,tHi=Math.max(...mv)+20,bw=(W-m.l-m.r)/12;
+  const YC=v=>H-m.b-(v/maxC)*(H-m.t-m.b),YT=v=>m.t+((v-tLo)/(tHi-tLo))*(H-m.t-m.b);
+  for(let c=0;c<=maxC;c+=Math.ceil(maxC/4)){E(s,"line",{class:"grid",x1:m.l,y1:YC(c),x2:W-m.r,y2:YC(c)});E(s,"text",{x:m.l-8,y:YC(c)+4,"text-anchor":"end"},c);}
+  by.forEach((a,i)=>{const cx=m.l+i*bw+bw/2,bh=H-m.b-YC(counts[i]);
+    E(s,"rect",{x:cx-Math.min(11,bw/2-2),y:YC(counts[i]),width:Math.min(22,bw-4),height:Math.max(0,bh),rx:4,fill:"#cfe0f4",
+      "data-tip":`<b>${MON[i]}</b><br>${counts[i]} ascents · median ${meds[i]?fmt(meds[i]):'—'}`});
+    E(s,"text",{x:cx,y:H-10,"text-anchor":"middle","font-size":10.5},MON[i][0]);});
+  const line=[];by.forEach((a,i)=>{if(meds[i]!=null)line.push([m.l+i*bw+bw/2,YT(meds[i])]);});
+  E(s,"path",{d:"M"+line.map(p=>p[0]+","+p[1]).join(" L"),fill:"none",stroke:"var(--orange)","stroke-width":2});
+  by.forEach((a,i)=>{if(meds[i]==null)return;E(s,"circle",{cx:m.l+i*bw+bw/2,cy:YT(meds[i]),r:3.6,fill:"var(--orange)",stroke:"var(--surface)","stroke-width":2,"data-tip":`<b>${MON[i]}</b> median<br>${fmt(meds[i])}`});});
+  [tLo+20,(tLo+tHi)/2,tHi-20].forEach(v=>E(s,"text",{x:W-m.r+8,y:YT(v)+4,fill:"var(--orange)"},fmt(v)));
+  bind(s);
+  document.getElementById("lg-season").innerHTML=`<span class="it"><span class="sw" style="background:#cfe0f4"></span>ascents (left)</span><span class="it"><span class="sw dot" style="background:var(--orange)"></span>median time (right)</span>`;
+}
+function monthDist(){
+  const host=document.getElementById("c-monthdist");clr(host);
+  const W=host.clientWidth||820,cols=W<560?3:(W<820?4:6),rows=Math.ceil(12/cols);
+  const cw=W/cols,ch=88,H=rows*ch+10;const s=svg(W,H);host.appendChild(s);
+  const allSecs=R.map(sec).sort((a,b)=>a-b),gMed=allSecs[Math.floor(allSecs.length/2)];
+  const lo=Math.min(...allSecs),hi=Math.max(...allSecs);
+  MON.forEach((mn,i)=>{const cx=(i%cols)*cw,cy=Math.floor(i/cols)*ch;
+    const pad={l:8,r:8,t:20,b:16},pw=cw-pad.l-pad.r,ph=ch-pad.t-pad.b;
+    const vals=R.filter(r=>r.mo===i+1).map(sec);
+    E(s,"text",{x:cx+pad.l,y:cy+13,class:"lbl","font-size":11},mn+" · "+vals.length);
+    // density (KDE) ridge
+    const nb=22,dens=Array(nb).fill(0),bw2=(hi-lo)/nb;
+    vals.forEach(v=>{const c=(v-lo)/(hi-lo)*(nb-1);const b=Math.round(c);for(let k=-2;k<=2;k++){const j=b+k;if(j>=0&&j<nb)dens[j]+=Math.exp(-k*k/2);}});
+    const mx=Math.max(...dens,1e-9);
+    const X=v=>cx+pad.l+((v-lo)/(hi-lo))*pw,Yb=cy+pad.t+ph;
+    let d="M"+X(lo)+","+Yb;for(let j=0;j<nb;j++){const vv=lo+(j+.5)*bw2;d+=" L"+X(vv)+","+(Yb-dens[j]/mx*ph);}d+=" L"+X(hi)+","+Yb+" Z";
+    E(s,"path",{d,fill:vals.length?"#6AAF4933":"#eee","stroke":vals.length?"#6AAF49":"#ddd","stroke-width":1.2});
+    E(s,"line",{x1:X(gMed),y1:cy+pad.t,x2:X(gMed),y2:Yb,stroke:"var(--ink-3)","stroke-width":1,"stroke-dasharray":"2 2"});
+    if(vals.length){const mmed=[...vals].sort((a,b)=>a-b)[Math.floor(vals.length/2)];
+      E(s,"circle",{cx:X(mmed),cy:Yb,r:2.6,fill:"var(--orange)","data-tip":`<b>${mn}</b> median ${fmt(mmed)}`});}
+  });
+  bind(s);
+}
+
+/* ---------- 05 contour by era (marching squares KDE) ---------- */
+function contour(){
+  const host=document.getElementById("c-contour");clr(host);
+  const W=host.clientWidth||820,H=Math.max(340,Math.min(420,W*.52)),m={l:44,r:14,t:14,b:34};
+  const s=svg(W,H);host.appendChild(s);
+  const D=R.filter(r=>r.hr);
+  const xLo=Math.floor(Math.min(...D.map(r=>r.speed))-.5),xHi=Math.ceil(Math.max(...D.map(r=>r.speed))+.5);
+  const yLo=Math.floor((Math.min(...D.map(r=>r.hr))-6)/10)*10,yHi=Math.ceil((Math.max(...D.map(r=>r.hr))+6)/10)*10;
+  const X=v=>m.l+((v-xLo)/(xHi-xLo))*(W-m.l-m.r),Y=v=>m.t+((yHi-v)/(yHi-yLo))*(H-m.t-m.b);
+  for(let hr=yLo;hr<=yHi;hr+=20){E(s,"line",{class:"grid",x1:m.l,y1:Y(hr),x2:W-m.r,y2:Y(hr)});E(s,"text",{x:m.l-8,y:Y(hr)+4,"text-anchor":"end"},hr);}
+  for(let v=xLo;v<=xHi;v+=2){E(s,"text",{x:X(v),y:H-10,"text-anchor":"middle"},v);}
+  E(s,"text",{x:m.l-8,y:m.t+2,"text-anchor":"end","font-size":10.5,fill:"var(--ink-3)"},"bpm");
+  E(s,"text",{x:W-m.r,y:H-10,"text-anchor":"end","font-size":10.5,fill:"var(--ink-3)"},"km/h →");
+  // grid KDE per era
+  const GX=52,GY=40;
+  function grid(rows){const g=Array.from({length:GY},()=>Array(GX).fill(0));
+    rows.forEach(r=>{const gx=(r.speed-xLo)/(xHi-xLo)*(GX-1),gy=(yHi-r.hr)/(yHi-yLo)*(GY-1);
+      for(let y=0;y<GY;y++)for(let x=0;x<GX;x++){const dx=(x-gx)/2.2,dy=(y-gy)/2.2;g[y][x]+=Math.exp(-(dx*dx+dy*dy)/2);}});return g;}
+  function iso(g,level){const segs=[];const px=(gx)=>m.l+gx/(GX-1)*(W-m.l-m.r),py=(gy)=>m.t+gy/(GY-1)*(H-m.t-m.b);
+    const P=(x1,y1,x2,y2,v1,v2)=>{const t=(level-v1)/((v2-v1)||1);return[x1+(x2-x1)*t,y1+(y2-y1)*t];};
+    for(let y=0;y<GY-1;y++)for(let x=0;x<GX-1;x++){
+      const a=g[y][x],b=g[y][x+1],c=g[y+1][x+1],d=g[y+1][x];
+      let id=(a>level?8:0)|(b>level?4:0)|(c>level?2:0)|(d>level?1:0);if(id===0||id===15)continue;
+      const T=P(px(x),py(y),px(x+1),py(y),a,b),Rr=P(px(x+1),py(y),px(x+1),py(y+1),b,c),
+            B=P(px(x+1),py(y+1),px(x),py(y+1),c,d),Lf=P(px(x),py(y),px(x),py(y+1),a,d);
+      const push=(p,q)=>segs.push([p,q]);
+      switch(id){case 1:case 14:push(Lf,B);break;case 2:case 13:push(B,Rr);break;case 3:case 12:push(Lf,Rr);break;
+        case 4:case 11:push(T,Rr);break;case 5:push(Lf,T);push(B,Rr);break;case 6:case 9:push(T,B);break;
+        case 7:case 8:push(Lf,T);break;case 10:push(T,Rr);push(Lf,B);break;}
+    }return segs;}
+  ERAS.forEach((e,ei)=>{const rows=D.filter(r=>eraOf(r.y)===ei);if(rows.length<4)return;
+    const g=grid(rows);const mx=Math.max(...g.flat());
+    [0.28,0.55,0.82].forEach((lv,li)=>{const segs=iso(g,lv*mx);
+      let d="";segs.forEach(([p,q])=>d+=`M${p[0].toFixed(1)},${p[1].toFixed(1)}L${q[0].toFixed(1)},${q[1].toFixed(1)}`);
+      E(s,"path",{d,fill:"none",stroke:e.hex,"stroke-width":li===2?1.9:1.3,"stroke-opacity":.28+li*.22,"stroke-linecap":"round"});});
+  });
+  document.getElementById("lg-contour").innerHTML=ERAS.map(e=>`<span class="it"><span class="sw" style="background:${e.hex};opacity:.7"></span>${e.n}</span>`).join("");
+}
+
+/* ---------- 06 progression ---------- */
+function progression(){
+  const host=document.getElementById("c-prog");clr(host);
+  const W=host.clientWidth||820,H=Math.max(220,Math.min(270,W*.3)),m={l:48,r:16,t:20,b:28};
+  const s=svg(W,H);host.appendChild(s);
+  const chron=[...R].sort((a,b)=>a.t-b.t);let best=Infinity;const pts=[];
+  chron.forEach(r=>{const v=sec(r);if(v<best){best=v;pts.push({t:r.t,v});}});
+  const t0=chron[0].t,t1=chron[chron.length-1].t,vLo=Math.min(...pts.map(p=>p.v))-15,vHi=Math.max(...pts.map(p=>p.v))+15;
+  const X=t=>m.l+((t-t0)/(t1-t0))*(W-m.l-m.r),Y=v=>m.t+((v-vLo)/(vHi-vLo))*(H-m.t-m.b);
+  for(let v=Math.ceil(vLo/60)*60;v<vHi;v+=60){E(s,"line",{class:"grid",x1:m.l,y1:Y(v),x2:W-m.r,y2:Y(v)});E(s,"text",{x:m.l-8,y:Y(v)+4,"text-anchor":"end"},fmt(v));}
+  YEARS.forEach(y=>E(s,"text",{x:X(new Date(y,6,1)),y:H-8,"text-anchor":"middle"},yy(y)));
+  let d="M"+X(pts[0].t)+","+Y(pts[0].v);for(let i=1;i<pts.length;i++)d+=" H"+X(pts[i].t)+" V"+Y(pts[i].v);d+=" H"+X(t1);
+  E(s,"path",{d,fill:"none",stroke:"var(--accent)","stroke-width":2.4,"stroke-linejoin":"round"});
+  pts.forEach(p=>E(s,"circle",{cx:X(p.t),cy:Y(p.v),r:4,fill:"var(--accent)",stroke:"var(--surface)","stroke-width":2,
+    "data-tip":`<b>New best ${fmt(p.v)}</b><br>${p.t.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}`}));
+  const last=pts[pts.length-1];E(s,"text",{x:X(last.t)+2,y:Y(last.v)-10,class:"val",fill:"var(--orange)"},"record "+fmt(last.v));
+  bind(s);
+}
+
+/* ---------- 07 diary ---------- */
+function diary(){
+  const box=document.getElementById("diary");clr(box);
+  YEARS.forEach(y=>{const rr=R.filter(r=>r.y===y),ss=rr.map(sec),best=Math.min(...ss);
+    const nl=rr.some(inNL),peak=y===PEAK;
+    const d=document.createElement("div");d.className="dy era"+(eraOf(y)+1)+(peak?" peak":"");
+    d.innerHTML=`<div class="yr tnum">${y}${nl?' <span class="nlband">in NL</span>':''}</div>`+
+      `<div class="st">${rr.length} ascent${rr.length!=1?'s':''} · best ${fmt(best)}</div>`+
+      `<div class="tx">${DIARY[y]||""}</div>`;box.appendChild(d);});
+}
+function table(){
+  const tb=document.querySelector("#tbl tbody");clr(tb);const rows=[...R].sort((a,b)=>b.t-a.t),pr=Math.min(...R.map(sec));
+  rows.forEach(r=>{const v=sec(r),tr=document.createElement("tr");
+    tr.innerHTML=`<td>${r.t.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</td>`+
+      `<td class="${v===pr?'pr':''}">${fmt(v)}</td><td>${r.speed}</td><td>${r.hr??'—'}</td><td>${r.power??'—'}</td><td>${r.vam}</td>`;
+    tb.appendChild(tr);});
+}
+
+/* ---------- orchestrate ---------- */
+function renderCharts(){stats();journey();elevProfile();calendar();season();monthDist();contour();progression();diary();table();}
+function renderAll(){renderCharts();renderGhost();}
+let rt;addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(()=>{renderCharts();if(gmap)gmap.invalidateSize();},200);});
+function setScale(full){SCALED=full;document.getElementById("sc-full").setAttribute("aria-pressed",full);
+  document.getElementById("sc-raw").setAttribute("aria-pressed",!full);renderCharts();buildGhost();ghostAt(gT);}
+document.getElementById("sc-full").onclick=()=>setScale(true);
+document.getElementById("sc-raw").onclick=()=>setScale(false);
+document.getElementById("built").textContent=R.length+" ascents";
+renderAll();
+</script>
+</body>
+</html>
