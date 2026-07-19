@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Gazzaniga → Orezzo — eleven years on one climb</title>
-<meta name="description" content="Every time Michele Merelli has ridden up the Gazzaniga–Orezzo climb, 2016–2026 — 440 ascents, one hill, told in data: the ghost race, the seasons, the record.">
+<title>Gazzaniga → Orezzo — undici anni su una salita</title>
+<meta name="description" content="Ogni volta che Michele Merelli è salito da Gazzaniga a Orezzo, 2016–2026 — 434 salite, una collina, raccontate coi dati: la gara dei fantasmi, le stagioni, il record.">
 <meta name="author" content="micmer — Michele Merelli">
 <meta name="theme-color" content="#6AAF49">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🚵%3C/text%3E%3C/svg%3E">
@@ -54,14 +54,42 @@ a{color:var(--accent);text-decoration:none}
 
 /* stat row */
 .stats-row{max-width:1100px;margin:44px auto 0;padding:0 26px}
-.stats-in{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
-.stat-box{padding:22px 20px 20px;border-right:1px solid var(--rule-soft)}
-.stat-box:last-child{border-right:0}
-.stat-box .num{font-family:var(--serif);font-size:clamp(2rem,5vw,2.7rem);line-height:1;letter-spacing:-.01em}
+.stats-in{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.stat-box{padding:22px 20px 20px;border-right:1px solid var(--rule-soft);border-bottom:1px solid var(--rule-soft);transition:background .18s}
+.stat-box:hover{background:var(--surface-2)}
+.stat-box:nth-child(3n){border-right:0}
+.stat-box:nth-child(n+4){border-bottom:0}
+.stat-box .num{font-family:var(--serif);font-size:clamp(1.9rem,4.6vw,2.6rem);line-height:1;letter-spacing:-.01em}
 .stat-box .num small{font-size:.5em;color:var(--ink-3)}
 .stat-box .label{font-size:.64rem;text-transform:uppercase;letter-spacing:.13em;color:var(--ink-3);margin-top:9px;font-weight:500}
 @media(max-width:720px){.stats-in{grid-template-columns:1fr 1fr}
-  .stat-box:nth-child(2){border-right:0}.stat-box:nth-child(-n+2){border-bottom:1px solid var(--rule-soft)}}
+  .stat-box:nth-child(3n){border-right:1px solid var(--rule-soft)}
+  .stat-box:nth-child(2n){border-right:0}
+  .stat-box:nth-child(n+4){border-bottom:1px solid var(--rule-soft)}
+  .stat-box:nth-child(n+5){border-bottom:0}}
+
+/* curiosità / insights */
+.insights{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.insight{padding:20px 18px;border-right:1px solid var(--rule-soft);border-bottom:1px solid var(--rule-soft);transition:background .18s}
+.insight:hover{background:var(--surface-2)}
+.insight:nth-child(3n){border-right:0}
+.insight:nth-child(n+4){border-bottom:0}
+.insight .val{font-family:var(--serif);font-size:1.9rem;line-height:1;letter-spacing:-.01em}
+.insight .lbl{font-size:.74rem;color:var(--ink-2);margin-top:8px;font-weight:500}
+.insight .sub{font-size:.68rem;color:var(--ink-3);margin-top:3px}
+@media(max-width:640px){.insights{grid-template-columns:1fr 1fr}
+  .insight:nth-child(3n){border-right:1px solid var(--rule-soft)}
+  .insight:nth-child(2n){border-right:0}
+  .insight:nth-child(n+4){border-bottom:1px solid var(--rule-soft)}
+  .insight:nth-child(n+5){border-bottom:0}}
+
+/* interactivity */
+svg [data-tip]{cursor:pointer}
+#c-cal rect.cal-day{transition:opacity .12s}
+#c-cal rect.cal-day:hover{stroke:var(--ink);stroke-width:1.4}
+.card{transition:box-shadow .2s,border-color .2s}
+.dy::before{transition:transform .18s}
+.dy:hover::before{transform:scale(1.35)}
 
 /* layout */
 .container{max-width:1100px;margin:0 auto;padding:0 26px 90px}
@@ -149,14 +177,14 @@ footer b{color:var(--ink-2)}
 <header class="hero">
   <div class="eyebrow">Gazzaniga · Val Seriana · Bergamo</div>
   <h1>Gazzaniga <span class="ar">→</span> <em>Orezzo</em></h1>
-  <p class="lede">One climb, ridden <b id="lede-n">440</b> times over <b>eleven seasons</b>. The story of a hill that became a habit — told in data.</p>
+  <p class="lede">Una salita, affrontata <b id="lede-n">440</b> volte in <b>undici stagioni</b>. La storia di una collina diventata abitudine — raccontata coi dati.</p>
   <div class="place">
     <span class="rb"><i style="background:#e4002b"></i><i style="background:#ff8c00"></i><i style="background:#ffcf00"></i><i style="background:#22b14c"></i><i style="background:#00a3e0"></i><i style="background:#7b2fbe"></i></span>
-    <span>Cat&nbsp;3 · 4.24&nbsp;km · 275&nbsp;m · 6.5%</span>
+    <span>Cat&nbsp;3 · 4,24&nbsp;km · 275&nbsp;m · 6,5%</span>
   </div>
-  <div class="scale" role="group" aria-label="Distance basis for times">
-    <button id="sc-full" aria-pressed="true">Full climb · 4.24 km</button>
-    <button id="sc-raw"  aria-pressed="false">As recorded · 3.36 km</button>
+  <div class="scale" role="group" aria-label="Distanza di riferimento per i tempi">
+    <button id="sc-full" aria-pressed="true">Salita intera · 4,24 km</button>
+    <button id="sc-raw"  aria-pressed="false">Come registrato · 3,36 km</button>
   </div>
 </header>
 
@@ -166,21 +194,21 @@ footer b{color:var(--ink-2)}
 
   <!-- 01 ASCENT -->
   <section class="section" id="s-journey">
-    <h2 data-n="01">Every ascent, on one line</h2>
-    <p class="desc">Each dot is one ride up the hill; lower means faster. The line traces the <b>fastest time of each year</b> — a decade of fitness climbing toward the <b>2022</b> record, then the long, happy plateau of simply keeping at it. The pale band marks the two years <b>lived in the Netherlands</b> (Sep 2016 – Jun 2018), when the only ascents were summer trips home.</p>
+    <h2 data-n="01">Ogni salita, su una riga</h2>
+    <p class="desc">Ogni punto è una salita; più in basso significa più veloce. La linea unisce il <b>tempo più veloce di ogni anno</b> — un decennio di forma che sale verso il record del <b>2022</b>, poi il lungo, felice altopiano del semplice esserci. La fascia chiara segna i due anni <b>vissuti in Olanda</b> (set 2016 – giu 2018), quando le uniche salite erano le visite estive a casa.</p>
     <div class="card"><div class="chartbox" id="c-journey" style="min-height:360px"></div>
       <div class="legend" id="lg-journey"></div>
-      <p class="cap">Hover any point for its date and time.</p></div>
+      <p class="cap">Passa sopra un punto per data e tempo.</p></div>
   </section>
 
   <!-- 02 GHOST RACE -->
   <section class="section" id="s-ghost">
-    <h2 data-n="02">The ghost race</h2>
-    <p class="desc">Four ascents set off together up the real GPS track of the climb, each running at its own recorded pace. Watch the <b>record</b> ride away from a <b>typical</b> day, the <b>most recent</b> effort, and the <b>very first</b> one from 2016. Press play.</p>
+    <h2 data-n="02">La gara dei fantasmi</h2>
+    <p class="desc">Quattro salite partono insieme lungo la traccia GPS reale della salita, ognuna al proprio passo registrato. Guarda il <b>record</b> staccare una giornata <b>tipica</b>, l'<b>ultima</b> salita e la <b>primissima</b> del 2016. Premi avvia.</p>
     <div class="card">
       <div id="ghostMap"></div>
       <div class="ghost-controls">
-        <button id="ghostPlay">▶ Play</button>
+        <button id="ghostPlay">▶ Avvia</button>
         <button id="ghostReset">↺</button>
         <input type="range" id="ghostSlider" min="0" max="1000" value="0" aria-label="Scrub the race">
         <span id="ghostTime" class="tnum">0:00</span>
@@ -189,71 +217,76 @@ footer b{color:var(--ink-2)}
         </select>
       </div>
       <div class="legend" id="lg-ghost"></div>
-      <p class="cap">Positions assume each rider held their average pace up the <b id="route-dist">3.7 km</b> track — <b id="route-turns">12</b> tornanti, <b id="route-gain">252 m</b> of climbing.</p>
+      <p class="cap">Le posizioni assumono che ognuno tenga il proprio passo medio lungo la traccia di <b id="route-dist">4,25 km</b> — <b id="route-turns">16</b> tornanti, <b id="route-gain">282 m</b> di dislivello.</p>
     </div>
-    <div class="card"><div class="chartbox" id="c-elev" style="min-height:150px"></div>
-      <p class="cap">Elevation profile of the climb, base to summit, with the hairpins marked.</p></div>
   </section>
 
   <!-- 03 CALENDAR -->
   <section class="section" id="s-cal">
-    <h2 data-n="03">A decade, day by day</h2>
-    <p class="desc">Every ascent placed on the calendar: years as rows, January to December left to right, colour by speed (<b>darker is faster</b>). Read down any month to see the same weeks light up, year after year.</p>
+    <h2 data-n="03">Un decennio, giorno per giorno</h2>
+    <p class="desc">Ogni salita al suo posto nel calendario: gli anni in riga, le settimane da sinistra a destra, colore per velocità (<b>più scuro è più veloce</b>). Il numero a destra è il totale dell'anno; le barre in basso il totale per mese. Leggi in verticale per vedere le stesse settimane accendersi, anno dopo anno.</p>
     <div class="card"><div class="chartbox" id="c-cal" style="min-height:260px"></div>
       <div class="legend" id="lg-cal"></div>
-      <p class="cap">The dense block under May–August is the season; the winter thinning is ice and rest.</p></div>
+      <p class="cap">Il blocco fitto sotto maggio–agosto è la stagione; il diradarsi invernale è ghiaccio e riposo.</p></div>
   </section>
 
   <!-- 04 SEASONALITY -->
   <section class="section" id="s-season">
-    <h2 data-n="04">The shape of a year</h2>
-    <p class="desc">The hill is ridden in every month, but the legs are quickest when it is warm. Bars count the ascents; the line is the <b>median time</b> per month. Below, each month's own <b>distribution</b> of times — the summer months are both busier and faster.</p>
+    <h2 data-n="04">La forma di un anno</h2>
+    <p class="desc">La salita si affronta in ogni mese, ma le gambe sono più veloci quando fa caldo. Le barre contano le salite; la linea è il <b>tempo mediano</b> del mese. Sotto, la <b>distribuzione</b> dei tempi mese per mese — i mesi estivi sono insieme più affollati e più veloci.</p>
     <div class="card"><div class="chartbox" id="c-season" style="min-height:300px"></div>
       <div class="legend" id="lg-season"></div></div>
-    <div class="card"><h3 style="font-size:.66rem;text-transform:uppercase;letter-spacing:.14em;color:var(--ink-3);font-weight:600;margin:2px 0 6px">Time distribution by month</h3>
+    <div class="card"><h3 style="font-size:.66rem;text-transform:uppercase;letter-spacing:.14em;color:var(--ink-3);font-weight:600;margin:2px 0 6px">Distribuzione dei tempi per mese</h3>
       <div class="chartbox" id="c-monthdist" style="min-height:260px"></div>
-      <p class="cap">Each panel is one month; the ridge is where that month's times fall. Dashed line = all-time median.</p></div>
+      <p class="cap">Ogni riquadro è un mese; la cresta mostra dove cadono i suoi tempi. Linea tratteggiata = mediana di sempre.</p></div>
   </section>
 
   <!-- 05 CONTOUR -->
   <section class="section" id="s-contour">
-    <h2 data-n="05">Effort, contoured by era</h2>
-    <p class="desc">Every ascent placed by <b>heart rate</b> against <b>speed</b>, then drawn as density contours — one translucent layer per era. The fittest years (<b>2020–22</b>) pool to the <b>lower-right</b>: more speed for fewer beats. Faster for the same effort is the whole story of getting fit.</p>
+    <h2 data-n="05">L'impegno, a curve di livello per epoca</h2>
+    <p class="desc">Ogni salita collocata per <b>frequenza cardiaca</b> contro <b>velocità</b> — i punti veri più le curve di densità, uno strato traslucido per epoca. Gli anni migliori (<b>2020–22</b>) si raccolgono in <b>basso a destra</b>: più velocità con meno battiti. Più veloci a parità di sforzo è tutta la storia del diventare in forma.</p>
     <div class="card"><div class="chartbox" id="c-contour" style="min-height:360px"></div>
       <div class="legend" id="lg-contour"></div>
-      <p class="cap">Contour lines enclose where each era's ascents concentrate. Only efforts with recorded heart rate.</p></div>
+      <p class="cap">Ogni punto è una salita; le curve racchiudono dove si concentra ogni epoca. Solo salite con frequenza cardiaca registrata.</p></div>
+  </section>
+
+  <!-- 06 CURIOSITÀ -->
+  <section class="section" id="s-find">
+    <h2 data-n="06">Curiosità</h2>
+    <p class="desc">Piccoli numeri che raccontano il ritmo: settimane di fuoco, mesi record, la pausa più lunga e i mesi in cui i tempi sono più costanti o più capricciosi.</p>
+    <div class="insights" id="findings"></div>
   </section>
 
   <!-- 06 RECORDS -->
   <section class="section" id="s-pr">
-    <h2 data-n="06">The record, chipped down</h2>
-    <p class="desc">Best-time-ever, stepping lower each time it fell. Six years of small gains, then the <b>2022</b> barrier that still stands.</p>
+    <h2 data-n="07">Il record, limato colpo su colpo</h2>
+    <p class="desc">Il miglior tempo di sempre, che scende a gradini ogni volta che è caduto. Sei anni di piccoli guadagni, poi la barriera del <b>2022</b> che resiste ancora.</p>
     <div class="card"><div class="chartbox" id="c-prog" style="min-height:240px"></div></div>
   </section>
 
   <!-- 07 DIARY -->
   <section class="section" id="s-diary">
-    <h2 data-n="07">The diary</h2>
-    <p class="desc">Eleven seasons, each with its numbers and its story. <span style="color:var(--ink-3)">(Every line is editable in the <code>DIARY</code> object near the top of <code>index.html</code>.)</span></p>
+    <h2 data-n="08">Il diario</h2>
+    <p class="desc">Undici stagioni, ognuna coi suoi numeri e la sua storia. <span style="color:var(--ink-3)">(Ogni riga è modificabile nell'oggetto <code>DIARY</code> in cima a <code>index.html</code>.)</span></p>
     <div class="diary" id="diary"></div>
   </section>
 
   <!-- 08 TABLE -->
   <section class="section" id="s-table">
-    <h2 data-n="08">All 440 ascents</h2>
-    <p class="desc">The complete record, most recent first.</p>
+    <h2 data-n="09">Tutte le <span id="tot-h">434</span> salite</h2>
+    <p class="desc">Il registro completo, dalla più recente.</p>
     <details class="data">
-      <summary><span class="chev">▸</span> Open the full table</summary>
+      <summary><span class="chev">▸</span> Apri la tabella completa</summary>
       <div class="tblscroll"><table id="tbl">
-        <thead><tr><th>Date</th><th>Time</th><th>Speed</th><th>HR</th><th>Power</th><th>VAM</th></tr></thead>
+        <thead><tr><th>Data</th><th>Tempo</th><th>Vel.</th><th>FC</th><th>Watt</th><th>VAM</th></tr></thead>
         <tbody></tbody></table></div>
     </details>
   </section>
 </div>
 
 <footer>
-  <p><b>How the times are figured.</b> Ascents were recorded by Michele Merelli on the Strava segment <em>“Gazzaniga-Orezzo cimitero”</em> (3.36 km, 282 m). The full <em>Gazzaniga → Orezzo</em> climb is 4.24 km — about 26% longer. With <b>“Full climb”</b> selected, each time is scaled by <b>×1.262</b> (the distance ratio, at constant average speed); <b>“As recorded”</b> shows the untouched 3.36 km times. Speed, heart rate, power and VAM are always as recorded. The route, elevation and tornanti come from a 2022 GPS ride of the climb.</p>
-  <p style="margin-top:14px">440 ascents · Feb 2016 – Jul 2026 · <span id="built"></span> · Built for the love of the hill.</p>
+  <p><b>Come sono calcolati i tempi.</b> Le salite sono state registrate da Michele Merelli sul segmento Strava <em>«Gazzaniga-Orezzo cimitero»</em> (3,36 km, 282 m). La salita intera <em>Gazzaniga → Orezzo</em> è di 4,24 km — circa il 26% più lunga. Con <b>«Salita intera»</b> selezionato, ogni tempo è moltiplicato per <b>×1,262</b> (il rapporto tra le distanze, a velocità media costante); <b>«Come registrato»</b> mostra i tempi originali sui 3,36 km. Velocità, frequenza cardiaca, potenza e VAM sono sempre come registrati. Traccia, dislivello e tornanti provengono dalla traccia GPS della salita intera.</p>
+  <p style="margin-top:14px"><span id="tot-f">434</span> salite · feb 2016 – lug 2026 · <span id="built"></span> · Fatto per amore della salita.</p>
 </footer>
 
 <div class="tip" id="tip" role="status" aria-live="off"></div>
@@ -268,22 +301,25 @@ const PEAK=2022;
 const ERA_BOUNDS=[2019,2022];
 /* -------- EDIT ME: the diary, one entry per season -------- */
 const DIARY={
- 2016:"Where it started. Sixteen trips up in the first months — learning the gradient, the hairpins, what the legs had. Then, in September, I moved to the <b>Netherlands</b>; the hill stayed behind.",
- 2017:"A year mostly away. The only ascents were <b>summer visits home</b> — June and August, a handful of climbs squeezed between flights. The flatlands don't make for good hill legs.",
- 2018:"Still abroad until June. One lonely ascent all year, in the autumn after coming back — the hill patiently waiting where I'd left it.",
- 2019:"Home for good, and rebuilding. Fourteen climbs across the year, the fitness creeping back by autumn — the fastest of them a 14:01 in December.",
- 2020:"The lockdown climb. When the world shrank to a few kilometres, this hill became my whole horizon — <b>fifty-four ascents</b>, more than any year before. Some days flat-out, many just to breathe.",
- 2021:"Sharpening. The fast days started stacking up — a first genuine 11:13 in May — and for the first time the record felt like it was within reach.",
- 2022:"Everything clicked. On <b>12 July</b> I rode a <b>10:44</b> at 18.8 km/h and 356 W — the record that still stands, and the fastest I may ever be here. Seventy-four ascents in a single golden season.",
- 2023:"A volume year. Sixty-five times up, whatever the legs were saying — the habit now more valuable than any single time.",
- 2024:"The busiest season yet: <b>seventy-eight ascents</b>. Not chasing the clock so much as chasing the ritual — showing up, over and over.",
- 2025:"Steady miles, steady hill. Nothing left to prove, everything still to enjoy — a quieter forty-seven climbs.",
- 2026:"Still climbing, and this page begins here. Thirty-nine ascents by mid-July and counting — on to the next hundred thousand metres of vertical."
+ 2016:"Dove tutto comincia. Sedici salite nei primi mesi — imparare la pendenza, i tornanti, cosa avevano le gambe. Poi, a settembre, l'<b>Olanda</b>: la salita resta qui ad aspettare.",
+ 2017:"Un anno quasi tutto lontano. Le uniche salite sono le <b>visite estive a casa</b> — giugno e agosto, una manciata di volte su, rubate tra un volo e l'altro. La pianura non fa gambe da collina.",
+ 2018:"Ancora all'estero fino a giugno. Una sola salita in tutto l'anno, in autunno dopo il ritorno — la collina paziente, dove l'avevo lasciata.",
+ 2019:"A casa per restare, e a ricostruire. Quattordici salite nell'anno, la forma che torna verso l'autunno — la più veloce un 14:01 a dicembre.",
+ 2020:"La salita del lockdown. Quando il mondo si è ristretto a pochi chilometri, questa collina è diventata tutto il mio orizzonte — <b>cinquantuno salite</b>, più di ogni anno prima. Certi giorni a tutta, molti solo per respirare.",
+ 2021:"Si affila la lama. I giorni veloci cominciano ad accumularsi — un primo, vero 11:13 a maggio — e per la prima volta il record sembra a portata di mano.",
+ 2022:"Tutto va al suo posto. Il <b>12 luglio</b> un <b>10:44</b> a 18,8 km/h e 356 W — il record che resiste ancora, e forse il più veloce che sarò mai quassù. Settantatré salite in una sola stagione d'oro.",
+ 2023:"Un anno di volume. Sessantacinque volte su, qualunque cosa dicessero le gambe — l'abitudine ormai vale più di ogni singolo tempo.",
+ 2024:"La stagione più fitta di sempre: <b>settantotto salite</b>. Non tanto a caccia del cronometro quanto del rito — esserci, ancora e ancora.",
+ 2025:"Chilometri tranquilli, collina tranquilla. Niente più da dimostrare, tutto ancora da godere — quarantasette salite più quiete.",
+ 2026:"Ancora in salita, e questa pagina comincia qui. Trentanove salite a metà luglio, e si continua — verso i prossimi centomila metri di dislivello."
 };
 /* ========================================================== */
 
 const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-const R=RAW.map(r=>{const[y,mo,d,secs,hr,power,vam,speed]=r;
+const MON_IT=["Gen","Feb","Mar","Apr","Mag","Giu","Lug","Ago","Set","Ott","Nov","Dic"];
+const nd=v=>String(v).replace(".",",");                 // italian decimal comma
+const itDate=(t,o={day:'numeric',month:'short',year:'numeric'})=>t.toLocaleDateString('it-IT',o);
+const R=RAW.filter(r=>r[3]<=1440).map(r=>{const[y,mo,d,secs,hr,power,vam,speed]=r;   // drop >24:00 (not real ride attempts)
   return{y,mo,d,secs,hr:hr||null,power:power||null,vam,speed,t:new Date(y,mo-1,d),doy:doyf(y,mo,d)};});
 function doyf(y,mo,d){return Math.round((new Date(y,mo-1,d)-new Date(y,0,0))/864e5);}
 let SCALED=true;
@@ -292,9 +328,9 @@ const fmt=s=>{s=Math.round(s);return Math.floor(s/60)+":"+String(s%60).padStart(
 const YEARS=[...new Set(R.map(r=>r.y))].sort((a,b)=>a-b);
 const eraOf=y=>y<=ERA_BOUNDS[0]?0:y<=ERA_BOUNDS[1]?1:2;
 const yy=s=>"’"+String(s).slice(2);
-const ERAS=[{n:`${YEARS[0]}–${yy(ERA_BOUNDS[0])} · early`,c:"var(--era1)",hex:"#2a78d6"},
-            {n:`${ERA_BOUNDS[0]+1}–${yy(ERA_BOUNDS[1])} · peak`,c:"var(--era2)",hex:"#eb6834"},
-            {n:`${ERA_BOUNDS[1]+1}–${yy(YEARS[YEARS.length-1])} · recent`,c:"var(--era3)",hex:"#6AAF49"}];
+const ERAS=[{n:`${YEARS[0]}–${yy(ERA_BOUNDS[0])} · inizio`,c:"var(--era1)",hex:"#2a78d6"},
+            {n:`${ERA_BOUNDS[0]+1}–${yy(ERA_BOUNDS[1])} · picco`,c:"var(--era2)",hex:"#eb6834"},
+            {n:`${ERA_BOUNDS[1]+1}–${yy(YEARS[YEARS.length-1])} · recenti`,c:"var(--era3)",hex:"#6AAF49"}];
 function inNL(r){const a=NL.from,b=NL.to;
   return (r.y>a[0]||(r.y===a[0]&&r.mo>=a[1])) && (r.y<b[0]||(r.y===b[0]&&r.mo<=b[1]));}
 
@@ -313,21 +349,59 @@ function bind(host){host.addEventListener("pointerleave",hideTip);
 
 /* ---------- stats ---------- */
 function stats(){
-  const secs=R.map(sec),pr=Math.min(...secs);
+  const secs=R.map(sec);
   const days=new Set(R.map(r=>r.y+"-"+r.mo+"-"+r.d)).size;
   const everest=(R.length*SEG.fullGain/8849);
+  const hours=secs.reduce((a,b)=>a+b,0)/3600;
+  const km=R.length*(SCALED?SEG.fullDist:SEG.recDist);
   const box=document.getElementById("stats");clr(box);
-  [[R.length,"Ascents"],
-   [everest.toFixed(1)+"<small>×</small>","Everests climbed"],
-   [days,"Days on the hill"],
-   [(typeof ROUTE_META!=="undefined"?ROUTE_META.turns:12),"Tornanti"]
+  [[R.length,"Salite"],
+   [nd(everest.toFixed(1))+'<small>×</small>',"Everest scalati"],
+   [days,"Giorni in salita"],
+   [(typeof ROUTE_META!=="undefined"?ROUTE_META.turns:16),"Tornanti"],
+   [Math.round(hours)+'<small> h</small>',"Ore in salita"],
+   [Math.round(km).toLocaleString('it-IT')+'<small> km</small>',"Km percorsi"]
   ].forEach(([v,l])=>{const d=document.createElement("div");d.className="stat-box";
     d.innerHTML=`<div class="num tnum">${v}</div><div class="label">${l}</div>`;box.appendChild(d);});
   document.getElementById("lede-n").textContent=R.length;
   if(typeof ROUTE_META!=="undefined"){
-    document.getElementById("route-dist").textContent=ROUTE_META.dist_km+" km";
+    document.getElementById("route-dist").textContent=nd(ROUTE_META.dist_km)+" km";
     document.getElementById("route-turns").textContent=ROUTE_META.turns;
     document.getElementById("route-gain").textContent=ROUTE_META.gain_m+" m";}
+}
+
+/* ---------- curiosità / findings ---------- */
+function findings(){
+  const box=document.getElementById("findings");if(!box)return;clr(box);
+  // per-week (Monday-origin)
+  const wkOrigin=new Date(2016,0,4),wk={};
+  R.forEach(r=>{const k=Math.floor((r.t-wkOrigin)/(7*864e5));(wk[k]=wk[k]||[]).push(r);});
+  let bw=null;for(const k in wk)if(!bw||wk[k].length>wk[bw].length)bw=k;
+  const wkDate=wk[bw].map(r=>r.t).sort((a,b)=>a-b)[0];
+  // per-month
+  const mo={};R.forEach(r=>{const k=r.y+"-"+r.mo;(mo[k]=mo[k]||[]).push(r);});
+  let bm=null;for(const k in mo)if(!bm||mo[k].length>mo[bm].length)bm=k;
+  const [my,mm]=bm.split("-");
+  // busiest single day
+  const day={};R.forEach(r=>{const k=r.y+"-"+r.mo+"-"+r.d;day[k]=(day[k]||0)+1;});
+  let maxDay=0,maxK=null;for(const k in day)if(day[k]>maxDay){maxDay=day[k];maxK=k;}
+  const [dy,dmo,dd]=maxK.split("-").map(Number);
+  // longest gap between ascents
+  const srt=[...R].sort((a,b)=>a.t-b.t);let gap=0,gapEnd=null,gapStart=null;
+  for(let i=1;i<srt.length;i++){const g=(srt[i].t-srt[i-1].t)/864e5;if(g>gap){gap=g;gapEnd=srt[i].t;gapStart=srt[i-1].t;}}
+  // month regularity: coefficient of variation of times (months with >=8 efforts)
+  const cvs=MON.map((_,i)=>{const v=R.filter(r=>r.mo===i+1).map(sec);if(v.length<8)return null;
+    const mn=v.reduce((a,b)=>a+b)/v.length,sd=Math.sqrt(v.reduce((a,b)=>a+(b-mn)**2,0)/v.length);return{i,cv:sd/mn};}).filter(Boolean);
+  const reg=cvs.reduce((a,b)=>b.cv<a.cv?b:a),vary=cvs.reduce((a,b)=>b.cv>a.cv?b:a);
+  const items=[
+    [wk[bw].length,"salite in una settimana","settimana del "+itDate(wkDate)],
+    [mo[bm].length,"salite in un mese",MON_IT[+mm-1]+" "+my],
+    [maxDay,"salite in un solo giorno",itDate(new Date(dy,dmo-1,dd))],
+    [Math.round(gap),"giorni di pausa più lunga",itDate(gapStart)+" → "+itDate(gapEnd)],
+    [MON_IT[reg.i],"il mese più regolare","tempi più costanti anno su anno"],
+    [MON_IT[vary.i],"il mese più altalenante","tempi più variabili"]
+  ];
+  box.innerHTML=items.map(([v,l,s])=>`<div class="insight"><div class="val tnum">${v}</div><div class="lbl">${l}</div><div class="sub">${s}</div></div>`).join("");
 }
 
 /* ---------- 01 journey ---------- */
@@ -341,13 +415,13 @@ function journey(){
   // NL band
   const nlx0=X(new Date(NL.from[0],NL.from[1]-1,1)),nlx1=X(new Date(NL.to[0],NL.to[1]-1,28));
   E(s,"rect",{x:nlx0,y:m.t,width:nlx1-nlx0,height:H-m.t-m.b,fill:"#f4a52022","stroke":"none"});
-  E(s,"text",{x:(nlx0+nlx1)/2,y:m.t+13,"text-anchor":"middle","font-size":10.5,fill:"#b45309"},"lived in the Netherlands");
+  E(s,"text",{x:(nlx0+nlx1)/2,y:m.t+13,"text-anchor":"middle","font-size":10.5,fill:"#b45309"},"vissuto in Olanda");
   const step=yMax-yMin>600?180:120;
   for(let v=Math.ceil(yMin/step)*step;v<yMax;v+=step){E(s,"line",{class:"grid",x1:m.l,y1:Y(v),x2:W-m.r,y2:Y(v)});
     E(s,"text",{x:m.l-8,y:Y(v)+4,"text-anchor":"end"},fmt(v));}
   YEARS.forEach(y=>E(s,"text",{x:X(new Date(y,6,1)),y:H-8,"text-anchor":"middle"},yy(y)));
   R.forEach((r,i)=>E(s,"circle",{cx:X(r.t),cy:Y(secs[i]),r:3.3,fill:ERAS[eraOf(r.y)].c,"fill-opacity":.5,
-    "data-tip":`<b>${fmt(secs[i])}</b> · ${r.t.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}<br>${r.speed} km/h${r.hr?` · ${r.hr} bpm`:''}`}));
+    "data-tip":`<b>${fmt(secs[i])}</b> · ${itDate(r.t)}<br>${nd(r.speed)} km/h${r.hr?` · ${r.hr} bpm`:''}`}));
   const fp=YEARS.map(y=>{const rr=R.filter(r=>r.y===y),ss=rr.map(sec),mn=Math.min(...ss);return{r:rr[ss.indexOf(mn)],v:mn};});
   E(s,"path",{d:"M"+fp.map(p=>X(p.r.t)+","+Y(p.v)).join(" L"),fill:"none",stroke:"var(--ink)","stroke-width":1.8,"stroke-opacity":.5,"stroke-linejoin":"round"});
   fp.forEach(p=>E(s,"circle",{cx:X(p.r.t),cy:Y(p.v),r:3.6,fill:"var(--ink)",stroke:"var(--surface)","stroke-width":2}));
@@ -357,7 +431,7 @@ function journey(){
   bind(s);
   document.getElementById("lg-journey").innerHTML=
     ERAS.map(e=>`<span class="it"><span class="sw dot" style="background:${e.c}"></span>${e.n}</span>`).join("")
-    +`<span class="it"><span class="sw ln" style="border-color:var(--ink)"></span>fastest each year</span>`;
+    +`<span class="it"><span class="sw ln" style="border-color:var(--ink)"></span>più veloce ogni anno</span>`;
 }
 
 /* ---------- 02 ghost race ---------- */
@@ -374,8 +448,8 @@ function pickRacers(){
   const sorted=[...withT].sort((a,b)=>a.v-b.v),med=sorted[Math.floor(sorted.length/2)];
   const latest=withT.reduce((a,b)=>b.r.t>a.r.t?b:a);
   const first=withT.reduce((a,b)=>b.r.t<a.r.t?b:a);
-  return[{lab:"Record",c:"#eb6834",...pr},{lab:"Typical",c:"#2a78d6",...med},
-         {lab:"Latest",c:"#6AAF49",...latest},{lab:"First ever",c:"#7b2fbe",...first}];
+  return[{lab:"Record",c:"#eb6834",...pr},{lab:"Tipica",c:"#2a78d6",...med},
+         {lab:"Ultima",c:"#6AAF49",...latest},{lab:"La prima",c:"#7b2fbe",...first}];
 }
 function initGhost(){
   if(gmap||typeof ROUTE==="undefined")return;
@@ -392,56 +466,66 @@ function buildGhost(){
   gmarkers=gRacers.map(x=>{const m=L.circleMarker(ll0,{radius:6,color:"#fff",weight:2,fillColor:x.c,fillOpacity:1});
     m.bindTooltip(`${x.lab} · ${fmt(x.v)}`,{direction:"top"});m.addTo(gmap);return m;});
   document.getElementById("lg-ghost").innerHTML=gRacers.map(x=>
-    `<span class="it"><span class="sw dot" style="background:${x.c}"></span>${x.lab} — ${fmt(x.v)} · ${x.r.t.toLocaleDateString('en-GB',{month:'short',year:'numeric'})}</span>`).join("");
+    `<span class="it"><span class="sw dot" style="background:${x.c}"></span>${x.lab} — ${fmt(x.v)} · ${itDate(x.r.t,{month:'short',year:'numeric'})}</span>`).join("");
 }
 function ghostAt(t){gT=Math.min(t,gMax);document.getElementById("ghostSlider").value=gMax?Math.round(gT/gMax*1000):0;
   document.getElementById("ghostTime").textContent=fmt(gT);
   gRacers.forEach((x,i)=>{const f=Math.min(1,gT/x.v);const p=interp(ROUTE,gDists,f);gmarkers[i].setLatLng(p);});}
 function ghostAnimate(){if(!gPlaying)return;const sp=+document.getElementById("ghostSpeed").value;
-  gT+=sp*0.05;if(gT>=gMax){gT=gMax;gPlaying=false;document.getElementById("ghostPlay").classList.remove("active");document.getElementById("ghostPlay").textContent="▶ Play";}
+  gT+=sp*0.05;if(gT>=gMax){gT=gMax;gPlaying=false;document.getElementById("ghostPlay").classList.remove("active");document.getElementById("ghostPlay").textContent="▶ Avvia";}
   ghostAt(gT);gAnim=requestAnimationFrame(ghostAnimate);}
 function renderGhost(){initGhost();if(!gmap)return;setTimeout(()=>gmap.invalidateSize(),60);buildGhost();ghostAt(0);}
 document.getElementById("ghostPlay").addEventListener("click",function(){gPlaying=!gPlaying;
-  this.classList.toggle("active",gPlaying);this.textContent=gPlaying?"❚❚ Pause":"▶ Play";
+  this.classList.toggle("active",gPlaying);this.textContent=gPlaying?"❚❚ Pausa":"▶ Avvia";
   if(gPlaying){if(gT>=gMax)gT=0;ghostAnimate();}else if(gAnim)cancelAnimationFrame(gAnim);});
 document.getElementById("ghostReset").addEventListener("click",()=>{gPlaying=false;
-  document.getElementById("ghostPlay").classList.remove("active");document.getElementById("ghostPlay").textContent="▶ Play";
+  document.getElementById("ghostPlay").classList.remove("active");document.getElementById("ghostPlay").textContent="▶ Avvia";
   if(gAnim)cancelAnimationFrame(gAnim);ghostAt(0);});
 document.getElementById("ghostSlider").addEventListener("input",e=>{gPlaying=false;
-  document.getElementById("ghostPlay").textContent="▶ Play";document.getElementById("ghostPlay").classList.remove("active");
+  document.getElementById("ghostPlay").textContent="▶ Avvia";document.getElementById("ghostPlay").classList.remove("active");
   if(gAnim)cancelAnimationFrame(gAnim);ghostAt(+e.target.value/1000*gMax);});
 
-function elevProfile(){
-  const host=document.getElementById("c-elev");clr(host);if(typeof ROUTE==="undefined")return;
-  const W=host.clientWidth||820,H=160,m={l:40,r:12,t:14,b:24};const s=svg(W,H);host.appendChild(s);
-  const dd=cumDist(ROUTE),tot=dd[dd.length-1],el=ROUTE.map(p=>p[2]);
-  const lo=Math.min(...el),hi=Math.max(...el);
-  const X=d=>m.l+(d/tot)*(W-m.l-m.r),Y=e=>m.t+((hi-e)/(hi-lo))*(H-m.t-m.b);
-  let d="M"+X(0)+","+(H-m.b);ROUTE.forEach((p,i)=>d+=" L"+X(dd[i])+","+Y(p[2]));d+=" L"+X(tot)+","+(H-m.b)+" Z";
-  const g=E(s,"linearGradient",{id:"eg",x1:0,y1:0,x2:0,y2:1});E(g,"stop",{offset:0,"stop-color":"#6AAF49","stop-opacity":.28});E(g,"stop",{offset:1,"stop-color":"#6AAF49","stop-opacity":0});
-  E(s,"path",{d,fill:"url(#eg)"});
-  E(s,"path",{d:"M"+ROUTE.map((p,i)=>X(dd[i])+","+Y(p[2])).join(" L"),fill:"none",stroke:"#6AAF49","stroke-width":2});
-  for(let e=Math.ceil(lo/50)*50;e<hi;e+=50){E(s,"line",{class:"grid",x1:m.l,y1:Y(e),x2:W-m.r,y2:Y(e)});E(s,"text",{x:m.l-6,y:Y(e)+4,"text-anchor":"end","font-size":10},e);}
-  for(let k=0;k<=Math.floor(tot/500)*500;k+=500){E(s,"text",{x:X(k),y:H-8,"text-anchor":"middle","font-size":10},(k/1000).toFixed(1)+"k");}
-  E(s,"text",{x:m.l,y:Y(lo)-4,"font-size":10,fill:"var(--ink-3)"},lo+" m");
-  E(s,"text",{x:W-m.r,y:Y(hi)+12,"text-anchor":"end",class:"val"},hi+" m");
-}
 
-/* ---------- 03 calendar ---------- */
-function seqCol(t){const c=["#e8eef8","#bcd3f0","#7fb0e6","#3f8bdc","#1f5fa8","#0d366b"];return c[Math.max(0,Math.min(5,Math.floor(t*6)))];}
+/* ---------- 03 calendar (GitHub-style, per-year + per-month counts) ---------- */
+const GH=["#d8ead0","#aed49b","#7cbb63","#4f9e3f","#2f7d2a"];   // faster = darker green
+function seqCol(t){return GH[Math.max(0,Math.min(4,Math.floor(t*5)))];}
 function calendar(){
   const host=document.getElementById("c-cal");clr(host);
-  const W=host.clientWidth||820,m={l:34,r:8,t:20,b:8},rows=YEARS.length,rh=Math.max(15,Math.min(24,(W*.30)/rows)),H=m.t+m.b+rows*rh;
+  const W=host.clientWidth||820, cols=53, labW=28, cntW=40, gap=2;
+  let cell=Math.floor((W-labW-cntW-(cols-1)*gap)/cols); cell=Math.max(5,Math.min(14,cell));
+  const step=cell+gap, blockH=7*step, yGap=12, top=16, botH=76;
+  const H=top+YEARS.length*(blockH+yGap)+botH;
   const s=svg(W,H);host.appendChild(s);
-  const X=doy=>m.l+(doy/366)*(W-m.l-m.r),secs=R.map(sec),lo=Math.min(...secs),hi=Math.max(...secs);
-  let cum=0;const md=[31,28,31,30,31,30,31,31,30,31,30,31];
-  for(let i=0;i<12;i++){const x=X(cum);E(s,"line",{class:"grid",x1:x,y1:m.t-4,x2:x,y2:H-m.b});E(s,"text",{x:x+3,y:m.t-8,"font-size":10},MON[i][0]);cum+=md[i];}
-  YEARS.forEach((y,ri)=>{const yc=m.t+ri*rh;E(s,"text",{x:m.l-7,y:yc+rh/2+4,"text-anchor":"end","font-size":10.5},yy(y));
-    R.filter(r=>r.y===y).forEach(r=>{const i=R.indexOf(r),t=1-(secs[i]-lo)/(hi-lo);
-      E(s,"rect",{x:X(r.doy)-2.4,y:yc+2,width:4.8,height:rh-4,rx:1.3,fill:seqCol(t),
-        "data-tip":`<b>${fmt(secs[i])}</b> · ${r.t.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}<br>${r.speed} km/h`});});});
+  const secs=R.map(sec),lo=Math.min(...secs),hi=Math.max(...secs);
+  const pos=(yr,doy)=>{const j=new Date(yr,0,1).getDay(),idx=doy-1;return[Math.floor((idx+j)/7),(idx+j)%7];};
+  const monthTot=Array(12).fill(0);
+  YEARS.forEach((yr,ri)=>{
+    const y0=top+ri*(blockH+yGap);
+    E(s,"text",{x:labW-7,y:y0+blockH/2+3,"text-anchor":"end","font-size":10.5,fill:"var(--ink-3)"},yy(yr));
+    const dim=((yr%4===0&&yr%100!==0)||yr%400===0)?366:365;
+    for(let doy=1;doy<=dim;doy++){const[c,rw]=pos(yr,doy);
+      E(s,"rect",{x:labW+c*step,y:y0+rw*step,width:cell,height:cell,rx:2,fill:"var(--rule-soft)"});}
+    const rr=R.filter(r=>r.y===yr);
+    rr.forEach(r=>{const i=R.indexOf(r),t=1-(secs[i]-lo)/(hi-lo),[c,rw]=pos(yr,r.doy);monthTot[r.mo-1]++;
+      E(s,"rect",{x:labW+c*step,y:y0+rw*step,width:cell,height:cell,rx:2,fill:seqCol(t),class:"cal-day",
+        "data-tip":`<b>${fmt(secs[i])}</b> · ${itDate(r.t)}<br>${nd(r.speed)} km/h`});});
+    E(s,"text",{x:labW+cols*step+6,y:y0+blockH/2+3,"font-size":11,class:"val"},rr.length);
+  });
+  // month letters along the top (2021 layout as reference)
+  const md=[31,28,31,30,31,30,31,31,30,31,30,31],j21=new Date(2021,0,1).getDay();let cum=0;
+  for(let i=0;i<12;i++){const col=Math.floor((cum+j21)/7);E(s,"text",{x:labW+col*step,y:top-4,"font-size":9.5,fill:"var(--ink-3)"},MON_IT[i][0]);cum+=md[i];}
+  // per-month totals strip (11-year sum)
+  const by=top+YEARS.length*(blockH+yGap)+20,stripW=W-labW-cntW,bw=stripW/12,maxM=Math.max(...monthTot);
+  E(s,"text",{x:labW-7,y:by+18,"text-anchor":"end","font-size":9,fill:"var(--ink-3)"},"mese");
+  monthTot.forEach((n,i)=>{const cx=labW+i*bw+bw/2,bh=(n/maxM)*30;
+    E(s,"rect",{x:cx-Math.min(11,bw/2-2),y:by+30-bh,width:Math.min(22,bw-3),height:bh,rx:3,fill:"#aed49b",
+      "data-tip":`<b>${MON_IT[i]}</b><br>${n} salite in 11 anni`});
+    E(s,"text",{x:cx,y:by+30-bh-3,"text-anchor":"middle","font-size":9,class:"val"},n);
+    E(s,"text",{x:cx,y:by+44,"text-anchor":"middle","font-size":9.5,fill:"var(--ink-3)"},MON_IT[i][0]);});
   bind(s);
-  document.getElementById("lg-cal").innerHTML=`<span class="it">slower <span class="sw" style="background:#e8eef8"></span><span class="sw" style="background:#7fb0e6"></span><span class="sw" style="background:#1f5fa8"></span><span class="sw" style="background:#0d366b"></span> faster</span>`;
+  document.getElementById("lg-cal").innerHTML=
+    `<span class="it">più lenta ${GH.map(c=>`<span class="sw" style="background:${c}"></span>`).join("")} più veloce</span>`+
+    `<span class="it">numero a destra = salite nell'anno · barre in basso = totale per mese</span>`;
 }
 
 /* ---------- 04 seasonality ---------- */
@@ -456,14 +540,14 @@ function season(){
   for(let c=0;c<=maxC;c+=Math.ceil(maxC/4)){E(s,"line",{class:"grid",x1:m.l,y1:YC(c),x2:W-m.r,y2:YC(c)});E(s,"text",{x:m.l-8,y:YC(c)+4,"text-anchor":"end"},c);}
   by.forEach((a,i)=>{const cx=m.l+i*bw+bw/2,bh=H-m.b-YC(counts[i]);
     E(s,"rect",{x:cx-Math.min(11,bw/2-2),y:YC(counts[i]),width:Math.min(22,bw-4),height:Math.max(0,bh),rx:4,fill:"#cfe0f4",
-      "data-tip":`<b>${MON[i]}</b><br>${counts[i]} ascents · median ${meds[i]?fmt(meds[i]):'—'}`});
-    E(s,"text",{x:cx,y:H-10,"text-anchor":"middle","font-size":10.5},MON[i][0]);});
+      "data-tip":`<b>${MON_IT[i]}</b><br>${counts[i]} salite · mediana ${meds[i]?fmt(meds[i]):'—'}`});
+    E(s,"text",{x:cx,y:H-10,"text-anchor":"middle","font-size":10.5},MON_IT[i][0]);});
   const line=[];by.forEach((a,i)=>{if(meds[i]!=null)line.push([m.l+i*bw+bw/2,YT(meds[i])]);});
   E(s,"path",{d:"M"+line.map(p=>p[0]+","+p[1]).join(" L"),fill:"none",stroke:"var(--orange)","stroke-width":2});
-  by.forEach((a,i)=>{if(meds[i]==null)return;E(s,"circle",{cx:m.l+i*bw+bw/2,cy:YT(meds[i]),r:3.6,fill:"var(--orange)",stroke:"var(--surface)","stroke-width":2,"data-tip":`<b>${MON[i]}</b> median<br>${fmt(meds[i])}`});});
+  by.forEach((a,i)=>{if(meds[i]==null)return;E(s,"circle",{cx:m.l+i*bw+bw/2,cy:YT(meds[i]),r:3.6,fill:"var(--orange)",stroke:"var(--surface)","stroke-width":2,"data-tip":`<b>${MON_IT[i]}</b> mediana<br>${fmt(meds[i])}`});});
   [tLo+20,(tLo+tHi)/2,tHi-20].forEach(v=>E(s,"text",{x:W-m.r+8,y:YT(v)+4,fill:"var(--orange)"},fmt(v)));
   bind(s);
-  document.getElementById("lg-season").innerHTML=`<span class="it"><span class="sw" style="background:#cfe0f4"></span>ascents (left)</span><span class="it"><span class="sw dot" style="background:var(--orange)"></span>median time (right)</span>`;
+  document.getElementById("lg-season").innerHTML=`<span class="it"><span class="sw" style="background:#cfe0f4"></span>salite (sx)</span><span class="it"><span class="sw dot" style="background:var(--orange)"></span>tempo mediano (dx)</span>`;
 }
 function monthDist(){
   const host=document.getElementById("c-monthdist");clr(host);
@@ -471,7 +555,7 @@ function monthDist(){
   const cw=W/cols,ch=88,H=rows*ch+10;const s=svg(W,H);host.appendChild(s);
   const allSecs=R.map(sec).sort((a,b)=>a-b),gMed=allSecs[Math.floor(allSecs.length/2)];
   const lo=Math.min(...allSecs),hi=Math.max(...allSecs);
-  MON.forEach((mn,i)=>{const cx=(i%cols)*cw,cy=Math.floor(i/cols)*ch;
+  MON_IT.forEach((mn,i)=>{const cx=(i%cols)*cw,cy=Math.floor(i/cols)*ch;
     const pad={l:8,r:8,t:20,b:16},pw=cw-pad.l-pad.r,ph=ch-pad.t-pad.b;
     const vals=R.filter(r=>r.mo===i+1).map(sec);
     E(s,"text",{x:cx+pad.l,y:cy+13,class:"lbl","font-size":11},mn+" · "+vals.length);
@@ -484,7 +568,7 @@ function monthDist(){
     E(s,"path",{d,fill:vals.length?"#6AAF4933":"#eee","stroke":vals.length?"#6AAF49":"#ddd","stroke-width":1.2});
     E(s,"line",{x1:X(gMed),y1:cy+pad.t,x2:X(gMed),y2:Yb,stroke:"var(--ink-3)","stroke-width":1,"stroke-dasharray":"2 2"});
     if(vals.length){const mmed=[...vals].sort((a,b)=>a-b)[Math.floor(vals.length/2)];
-      E(s,"circle",{cx:X(mmed),cy:Yb,r:2.6,fill:"var(--orange)","data-tip":`<b>${mn}</b> median ${fmt(mmed)}`});}
+      E(s,"circle",{cx:X(mmed),cy:Yb,r:2.6,fill:"var(--orange)","data-tip":`<b>${mn}</b> mediana ${fmt(mmed)}`});}
   });
   bind(s);
 }
@@ -502,6 +586,9 @@ function contour(){
   for(let v=xLo;v<=xHi;v+=2){E(s,"text",{x:X(v),y:H-10,"text-anchor":"middle"},v);}
   E(s,"text",{x:m.l-8,y:m.t+2,"text-anchor":"end","font-size":10.5,fill:"var(--ink-3)"},"bpm");
   E(s,"text",{x:W-m.r,y:H-10,"text-anchor":"end","font-size":10.5,fill:"var(--ink-3)"},"km/h →");
+  // scatter points under the contours
+  D.forEach(r=>E(s,"circle",{cx:X(r.speed),cy:Y(r.hr),r:2.3,fill:ERAS[eraOf(r.y)].hex,"fill-opacity":.32,
+    "data-tip":`<b>${nd(r.speed)} km/h · ${r.hr} bpm</b><br>${fmt(sec(r))} · ${itDate(r.t,{month:'short',year:'numeric'})}`}));
   // grid KDE per era
   const GX=52,GY=40;
   function grid(rows){const g=Array.from({length:GY},()=>Array(GX).fill(0));
@@ -525,6 +612,7 @@ function contour(){
       let d="";segs.forEach(([p,q])=>d+=`M${p[0].toFixed(1)},${p[1].toFixed(1)}L${q[0].toFixed(1)},${q[1].toFixed(1)}`);
       E(s,"path",{d,fill:"none",stroke:e.hex,"stroke-width":li===2?1.9:1.3,"stroke-opacity":.28+li*.22,"stroke-linecap":"round"});});
   });
+  bind(s);
   document.getElementById("lg-contour").innerHTML=ERAS.map(e=>`<span class="it"><span class="sw" style="background:${e.hex};opacity:.7"></span>${e.n}</span>`).join("");
 }
 
@@ -542,7 +630,7 @@ function progression(){
   let d="M"+X(pts[0].t)+","+Y(pts[0].v);for(let i=1;i<pts.length;i++)d+=" H"+X(pts[i].t)+" V"+Y(pts[i].v);d+=" H"+X(t1);
   E(s,"path",{d,fill:"none",stroke:"var(--accent)","stroke-width":2.4,"stroke-linejoin":"round"});
   pts.forEach(p=>E(s,"circle",{cx:X(p.t),cy:Y(p.v),r:4,fill:"var(--accent)",stroke:"var(--surface)","stroke-width":2,
-    "data-tip":`<b>New best ${fmt(p.v)}</b><br>${p.t.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}`}));
+    "data-tip":`<b>Nuovo record ${fmt(p.v)}</b><br>${itDate(p.t)}`}));
   const last=pts[pts.length-1];E(s,"text",{x:X(last.t)+2,y:Y(last.v)-10,class:"val",fill:"var(--orange)"},"record "+fmt(last.v));
   bind(s);
 }
@@ -554,26 +642,27 @@ function diary(){
     const nl=rr.some(inNL),peak=y===PEAK;
     const d=document.createElement("div");d.className="dy era"+(eraOf(y)+1)+(peak?" peak":"");
     d.innerHTML=`<div class="yr tnum">${y}${nl?' <span class="nlband">in NL</span>':''}</div>`+
-      `<div class="st">${rr.length} ascent${rr.length!=1?'s':''} · best ${fmt(best)}</div>`+
+      `<div class="st">${rr.length} salit${rr.length!=1?'e':'a'} · migliore ${fmt(best)}</div>`+
       `<div class="tx">${DIARY[y]||""}</div>`;box.appendChild(d);});
 }
 function table(){
   const tb=document.querySelector("#tbl tbody");clr(tb);const rows=[...R].sort((a,b)=>b.t-a.t),pr=Math.min(...R.map(sec));
   rows.forEach(r=>{const v=sec(r),tr=document.createElement("tr");
-    tr.innerHTML=`<td>${r.t.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</td>`+
+    tr.innerHTML=`<td>${itDate(r.t,{day:'2-digit',month:'short',year:'numeric'})}</td>`+
       `<td class="${v===pr?'pr':''}">${fmt(v)}</td><td>${r.speed}</td><td>${r.hr??'—'}</td><td>${r.power??'—'}</td><td>${r.vam}</td>`;
     tb.appendChild(tr);});
 }
 
 /* ---------- orchestrate ---------- */
-function renderCharts(){stats();journey();elevProfile();calendar();season();monthDist();contour();progression();diary();table();}
+function renderCharts(){stats();findings();journey();calendar();season();monthDist();contour();progression();diary();table();}
 function renderAll(){renderCharts();renderGhost();}
 let rt;addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(()=>{renderCharts();if(gmap)gmap.invalidateSize();},200);});
 function setScale(full){SCALED=full;document.getElementById("sc-full").setAttribute("aria-pressed",full);
   document.getElementById("sc-raw").setAttribute("aria-pressed",!full);renderCharts();buildGhost();ghostAt(gT);}
 document.getElementById("sc-full").onclick=()=>setScale(true);
 document.getElementById("sc-raw").onclick=()=>setScale(false);
-document.getElementById("built").textContent=R.length+" ascents";
+document.getElementById("built").textContent="dati al lug 2026";
+["tot-h","tot-f"].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=R.length;});
 renderAll();
 </script>
 </body>
