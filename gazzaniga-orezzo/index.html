@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Gazzaniga → Orezzo — undici anni su una salita</title>
-<meta name="description" content="Ogni volta che Michele Merelli è salito da Gazzaniga a Orezzo, 2016–2026 — 434 salite, una collina, raccontate coi dati: la gara dei fantasmi, le stagioni, il record.">
+<meta name="description" content="Ogni volta che Michele Merelli è salito da Gazzaniga a Orezzo, 2016–2026 — oltre 400 salite, una collina, raccontate coi dati: la gara dei fantasmi, le stagioni, il record.">
 <meta name="author" content="micmer — Michele Merelli">
 <meta name="theme-color" content="#6AAF49">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🚵%3C/text%3E%3C/svg%3E">
@@ -47,10 +47,11 @@ a{color:var(--accent);text-decoration:none}
 .place .rb i{width:14px;height:7px;display:block}
 
 /* scale toggle */
-.scale{display:inline-flex;border:1px solid var(--rule);border-radius:999px;padding:3px;background:var(--surface);margin-top:26px}
-.scale button{background:none;border:0;color:var(--ink-2);padding:8px 16px;border-radius:999px;cursor:pointer;
-  font-family:var(--sans);font-size:.78rem;font-weight:500}
-.scale button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.adj-note{margin-top:24px;font-size:.8rem;color:var(--ink-3);letter-spacing:.01em}
+.adj-note b{color:var(--ink-2);font-weight:600}
+.legend .era-tog{cursor:pointer;user-select:none;transition:opacity .15s}
+.legend .era-tog:hover{color:var(--ink)}
+.legend .era-tog:focus-visible,.legend .era-reset:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
 
 /* stat row */
 .stats-row{max-width:1100px;margin:44px auto 0;padding:0 26px}
@@ -180,12 +181,9 @@ footer b{color:var(--ink-2)}
   <p class="lede">Una salita, affrontata <b id="lede-n">440</b> volte in <b>undici stagioni</b>. La storia di una collina diventata abitudine — raccontata coi dati.</p>
   <div class="place">
     <span class="rb"><i style="background:#e4002b"></i><i style="background:#ff8c00"></i><i style="background:#ffcf00"></i><i style="background:#22b14c"></i><i style="background:#00a3e0"></i><i style="background:#7b2fbe"></i></span>
-    <span>Cat&nbsp;3 · 4,24&nbsp;km · 275&nbsp;m · 6,5%</span>
+    <span>Cat&nbsp;3 · 4,24&nbsp;km · 282&nbsp;m · 6,6%</span>
   </div>
-  <div class="scale" role="group" aria-label="Distanza di riferimento per i tempi">
-    <button id="sc-full" aria-pressed="true">Salita intera · 4,24 km</button>
-    <button id="sc-raw"  aria-pressed="false">Come registrato · 3,36 km</button>
-  </div>
+  <p class="adj-note">Tutti i tempi sono <b>adattati alla salita intera</b> — 4,24 km, a velocità media costante.</p>
 </header>
 
 <div class="stats-row"><div class="stats-in" id="stats"></div></div>
@@ -285,7 +283,7 @@ footer b{color:var(--ink-2)}
 </div>
 
 <footer>
-  <p><b>Come sono calcolati i tempi.</b> Le salite sono state registrate da Michele Merelli sul segmento Strava <em>«Gazzaniga-Orezzo cimitero»</em> (3,36 km, 282 m). La salita intera <em>Gazzaniga → Orezzo</em> è di 4,24 km — circa il 26% più lunga. Con <b>«Salita intera»</b> selezionato, ogni tempo è moltiplicato per <b>×1,262</b> (il rapporto tra le distanze, a velocità media costante); <b>«Come registrato»</b> mostra i tempi originali sui 3,36 km. Velocità, frequenza cardiaca, potenza e VAM sono sempre come registrati. Traccia, dislivello e tornanti provengono dalla traccia GPS della salita intera.</p>
+  <p><b>Come sono calcolati i tempi.</b> Le salite sono state registrate da Michele Merelli sul segmento Strava <em>«Gazzaniga-Orezzo cimitero»</em> (3,36 km). I tempi mostrati sono <b>adattati alla salita intera</b> <em>Gazzaniga → Orezzo</em> (4,24 km, 282 m, circa il 26% più lunga): ogni tempo è moltiplicato per <b>×1,262</b>, il rapporto tra le distanze a velocità media costante. Velocità, frequenza cardiaca, potenza e VAM sono come registrati. Sono escluse le salite oltre <b>24:00</b> (ritmo da camminata) e i doppioni. Traccia, dislivello e tornanti dalla traccia GPS della salita intera.</p>
   <p style="margin-top:14px"><span id="tot-f">434</span> salite · feb 2016 – lug 2026 · <span id="built"></span> · Fatto per amore della salita.</p>
 </footer>
 
@@ -294,23 +292,23 @@ footer b{color:var(--ink-2)}
 <script src="_data.js"></script>
 <script>
 /* ================= CONFIG (edit per climb) ================= */
-const SEG={recDist:3.36,fullDist:4.24,fullGain:275,name:"Gazzaniga → Orezzo"};
+const SEG={recDist:3.36,fullDist:4.24,fullGain:282,name:"Gazzaniga → Orezzo"};
 const SCALE=SEG.fullDist/SEG.recDist;
 const NL={from:[2016,9],to:[2018,6],label:"Netherlands"};   // lived abroad → only home visits climbed
 const PEAK=2022;
 const ERA_BOUNDS=[2019,2022];
 /* -------- EDIT ME: the diary, one entry per season -------- */
 const DIARY={
- 2016:"Dove tutto comincia. Sedici salite nei primi mesi — imparare la pendenza, i tornanti, cosa avevano le gambe. Poi, a settembre, l'<b>Olanda</b>: la salita resta qui ad aspettare.",
+ 2016:"Dove tutto comincia. Le prime salite nei primi mesi dell'anno — imparare la pendenza, i tornanti, cosa avevano le gambe. Poi, a settembre, l'<b>Olanda</b>: la salita resta qui ad aspettare.",
  2017:"Un anno quasi tutto lontano. Le uniche salite sono le <b>visite estive a casa</b> — giugno e agosto, una manciata di volte su, rubate tra un volo e l'altro. La pianura non fa gambe da collina.",
  2018:"Ancora all'estero fino a giugno. Una sola salita in tutto l'anno, in autunno dopo il ritorno — la collina paziente, dove l'avevo lasciata.",
  2019:"A casa per restare, e a ricostruire. Quattordici salite nell'anno, la forma che torna verso l'autunno — la più veloce un 14:01 a dicembre.",
- 2020:"La salita del lockdown. Quando il mondo si è ristretto a pochi chilometri, questa collina è diventata tutto il mio orizzonte — <b>cinquantuno salite</b>, più di ogni anno prima. Certi giorni a tutta, molti solo per respirare.",
+ 2020:"La salita del lockdown. Quando il mondo si è ristretto a pochi chilometri, questa collina è diventata tutto il mio orizzonte — decine di salite in un anno, certe a tutta, molte solo per respirare.",
  2021:"Si affila la lama. I giorni veloci cominciano ad accumularsi — un primo, vero 11:13 a maggio — e per la prima volta il record sembra a portata di mano.",
- 2022:"Tutto va al suo posto. Il <b>12 luglio</b> un <b>10:44</b> a 18,8 km/h e 356 W — il record che resiste ancora, e forse il più veloce che sarò mai quassù. Settantatré salite in una sola stagione d'oro.",
+ 2022:"Tutto va al suo posto. Il <b>12 luglio</b> un <b>10:44</b> a 18,8 km/h e 356 W — il record che resiste ancora, e forse il più veloce che sarò mai quassù. Oltre settanta salite in una sola stagione d'oro.",
  2023:"Un anno di volume. Sessantacinque volte su, qualunque cosa dicessero le gambe — l'abitudine ormai vale più di ogni singolo tempo.",
  2024:"La stagione più fitta di sempre: <b>settantotto salite</b>. Non tanto a caccia del cronometro quanto del rito — esserci, ancora e ancora.",
- 2025:"Chilometri tranquilli, collina tranquilla. Niente più da dimostrare, tutto ancora da godere — quarantasette salite più quiete.",
+ 2025:"Chilometri tranquilli, collina tranquilla. Niente più da dimostrare, tutto ancora da godere — una quarantina di salite più quiete.",
  2026:"Ancora in salita, e questa pagina comincia qui. Trentanove salite a metà luglio, e si continua — verso i prossimi centomila metri di dislivello."
 };
 /* ========================================================== */
@@ -319,10 +317,11 @@ const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","De
 const MON_IT=["Gen","Feb","Mar","Apr","Mag","Giu","Lug","Ago","Set","Ott","Nov","Dic"];
 const nd=v=>String(v).replace(".",",");                 // italian decimal comma
 const itDate=(t,o={day:'numeric',month:'short',year:'numeric'})=>t.toLocaleDateString('it-IT',o);
-const R=RAW.filter(r=>r[3]<=1440).map(r=>{const[y,mo,d,secs,hr,power,vam,speed]=r;   // drop >24:00 (not real ride attempts)
+const R=RAW.filter(r=>r[3]<=1141).map(r=>{const[y,mo,d,secs,hr,power,vam,speed]=r;   // drop raw>19:01 (adjusted>24:00 — not real attempts)
   return{y,mo,d,secs,hr:hr||null,power:power||null,vam,speed,t:new Date(y,mo-1,d),doy:doyf(y,mo,d)};});
 function doyf(y,mo,d){return Math.round((new Date(y,mo-1,d)-new Date(y,0,0))/864e5);}
-let SCALED=true;
+let SCALED=true;                 // always adjusted to the full climb
+let eraFilter=null;              // null = tutte; 0/1/2 = filter timeline to one era
 const sec=r=>SCALED?r.secs*SCALE:r.secs;
 const fmt=s=>{s=Math.round(s);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");};
 const YEARS=[...new Set(R.map(r=>r.y))].sort((a,b)=>a-b);
@@ -420,8 +419,9 @@ function journey(){
   for(let v=Math.ceil(yMin/step)*step;v<yMax;v+=step){E(s,"line",{class:"grid",x1:m.l,y1:Y(v),x2:W-m.r,y2:Y(v)});
     E(s,"text",{x:m.l-8,y:Y(v)+4,"text-anchor":"end"},fmt(v));}
   YEARS.forEach(y=>E(s,"text",{x:X(new Date(y,6,1)),y:H-8,"text-anchor":"middle"},yy(y)));
-  R.forEach((r,i)=>E(s,"circle",{cx:X(r.t),cy:Y(secs[i]),r:3.3,fill:ERAS[eraOf(r.y)].c,"fill-opacity":.5,
-    "data-tip":`<b>${fmt(secs[i])}</b> · ${itDate(r.t)}<br>${nd(r.speed)} km/h${r.hr?` · ${r.hr} bpm`:''}`}));
+  R.forEach((r,i)=>{if(eraFilter!=null&&eraOf(r.y)!==eraFilter)return;
+    E(s,"circle",{cx:X(r.t),cy:Y(secs[i]),r:3.3,fill:ERAS[eraOf(r.y)].c,"fill-opacity":.5,
+    "data-tip":`<b>${fmt(secs[i])}</b> · ${itDate(r.t)}<br>${nd(r.speed)} km/h${r.hr?` · ${r.hr} bpm`:''}`});});
   const fp=YEARS.map(y=>{const rr=R.filter(r=>r.y===y),ss=rr.map(sec),mn=Math.min(...ss);return{r:rr[ss.indexOf(mn)],v:mn};});
   E(s,"path",{d:"M"+fp.map(p=>X(p.r.t)+","+Y(p.v)).join(" L"),fill:"none",stroke:"var(--ink)","stroke-width":1.8,"stroke-opacity":.5,"stroke-linejoin":"round"});
   fp.forEach(p=>E(s,"circle",{cx:X(p.r.t),cy:Y(p.v),r:3.6,fill:"var(--ink)",stroke:"var(--surface)","stroke-width":2}));
@@ -430,8 +430,9 @@ function journey(){
   E(s,"text",{x:X(prR.t),y:Y(pr)-13,"text-anchor":"middle",class:"val",fill:"var(--orange)"},"record "+fmt(pr));
   bind(s);
   document.getElementById("lg-journey").innerHTML=
-    ERAS.map(e=>`<span class="it"><span class="sw dot" style="background:${e.c}"></span>${e.n}</span>`).join("")
-    +`<span class="it"><span class="sw ln" style="border-color:var(--ink)"></span>più veloce ogni anno</span>`;
+    ERAS.map((e,i)=>`<span class="it era-tog" data-era="${i}" role="button" tabindex="0" aria-pressed="${eraFilter===i}" style="opacity:${eraFilter!=null&&eraFilter!==i?.32:1}"><span class="sw dot" style="background:${e.c}"></span>${e.n}</span>`).join("")
+    +`<span class="it"><span class="sw ln" style="border-color:var(--ink)"></span>più veloce ogni anno</span>`
+    +(eraFilter!=null?`<span class="it era-reset" role="button" tabindex="0" style="color:var(--accent);cursor:pointer">↺ mostra tutte</span>`:`<span class="it" style="color:var(--ink-3)">tocca un'epoca per filtrare</span>`);
 }
 
 /* ---------- 02 ghost race ---------- */
@@ -657,12 +658,16 @@ function table(){
 function renderCharts(){stats();findings();journey();calendar();season();monthDist();contour();progression();diary();table();}
 function renderAll(){renderCharts();renderGhost();}
 let rt;addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(()=>{renderCharts();if(gmap)gmap.invalidateSize();},200);});
-function setScale(full){SCALED=full;document.getElementById("sc-full").setAttribute("aria-pressed",full);
-  document.getElementById("sc-raw").setAttribute("aria-pressed",!full);renderCharts();buildGhost();ghostAt(gT);}
-document.getElementById("sc-full").onclick=()=>setScale(true);
-document.getElementById("sc-raw").onclick=()=>setScale(false);
 document.getElementById("built").textContent="dati al lug 2026";
 ["tot-h","tot-f"].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=R.length;});
+// timeline era filter (click / keyboard)
+(function(){const lg=document.getElementById("lg-journey");
+  const act=t=>{const er=t&&t.closest&&t.closest("[data-era]");
+    if(er){const i=+er.dataset.era;eraFilter=(eraFilter===i?null:i);journey();return;}
+    if(t&&t.closest&&t.closest(".era-reset")){eraFilter=null;journey();}};
+  lg.addEventListener("click",e=>act(e.target));
+  lg.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();act(e.target);}});
+})();
 renderAll();
 </script>
 </body>
