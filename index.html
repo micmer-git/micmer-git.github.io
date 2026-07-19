@@ -224,7 +224,8 @@
         CloudRain,
         Gamepad2,
         Search,
-        Snowflake
+        Snowflake,
+        Bike
       } from 'lucide-react';
 
       // --- Data Content ---
@@ -607,6 +608,15 @@
                 icon: <Trophy size={32} />,
                 url: 'https://leagueofstrava.lovable.app/',
                 color: 'bg-io-red',
+                textColor: 'text-white',
+                border: 'border-brand-dark'
+            },
+            {
+                name: 'Ciclopodistica Orezzo',
+                action: 'VIEW RESULTS',
+                icon: <Bike size={32} />,
+                url: 'https://ciclopodistica.pages.dev/#storico',
+                color: 'bg-io-green',
                 textColor: 'text-white',
                 border: 'border-brand-dark'
             },
@@ -1159,7 +1169,7 @@
                             </div>
                         </div>
                         <div className="mt-4 inline-block px-3 py-1 border-2 border-brand-dark bg-white text-brand-dark font-pixel text-lg shadow-sm group-hover:shadow-none transition-shadow">
-                          OPEN ->
+                          OPEN →
                         </div>
                     </div>
                 </Card>
@@ -1181,7 +1191,7 @@
                         <h3 className="font-pixel text-4xl mb-1 leading-none">DONE LIST</h3>
                         <p className="font-bold font-mono text-sm opacity-70 mb-4">A Burkeman-inspired log of completed milestones</p>
                         <div className="inline-block px-3 py-1 border-2 border-brand-dark bg-io-yellow text-brand-dark font-pixel text-lg shadow-sm group-hover:shadow-none transition-shadow">
-                          VIEW PAGE ->
+                          VIEW PAGE →
                         </div>
                     </div>
                 </Card>
