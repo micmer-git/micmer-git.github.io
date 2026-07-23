@@ -366,6 +366,10 @@ footer b{color:var(--ink-2)}
   <section class="section" id="s-rhythm">
     <h2 data-n="06">Il ritmo di undici anni</h2>
     <p class="desc" id="d-rhythm"></p>
+    <div class="card"><h3 class="sub">Forma e voglia, undici anni a confronto</h3>
+      <div class="chartbox" id="c-fm" style="min-height:270px"></div>
+      <div class="legend" id="lg-fm"></div>
+      <p class="cap" id="cap-fm"></p></div>
     <div class="card"><h3 class="sub">Il contachilometri — dislivello accumulato</h3>
       <div class="chartbox" id="c-cum" style="min-height:250px"></div>
       <div class="legend" id="lg-cum"></div>
@@ -1179,6 +1183,76 @@ function efficiency(){
     .concat([`<span class="it" style="color:var(--ink-3)">più in alto = stessa salita, meno battiti</span>`]));
 }
 
+/* ---------- 06b forma & motivazione stimate nel tempo ---------- */
+function formaMot(){
+  const host=document.getElementById("c-fm");if(!host)return;clr(host);
+  const eff=R;
+  if(eff.length<8){host.innerHTML='<p class="cap">Poche salite per stimare la forma.</p>';legendHTML("lg-fm",[]);txt("cap-fm","");return;}
+  const dOf=dt=>Math.round(dt/864e5), day=r=>dOf(r.t);
+  // per-sport speed percentile — "quanto va veloce, rispetto a sé stesso"
+  const rk={};
+  for(const sp of ["bike","run"]){const a=asc(ALL[sp].map(r=>r.speed));
+    rk[sp]=v=>{let lo=0,hi=a.length;while(lo<hi){const m=(lo+hi)>>1;if(a[m]<=v)lo=m+1;else hi=m;}return a.length?100*lo/a.length:50;};}
+  const d0=day(eff[0]),dN=day(eff[eff.length-1]),span=Math.max(1,dN-d0);
+  // FORMA — EWMA sui percentili, τ=45 giorni (il passato conta, ma sbiadisce)
+  let f=null,pt=null;const F=[];
+  eff.forEach(r=>{const p=rk[r.sport](r.speed);
+    if(f==null)f=p;else{const a=1-Math.exp(-(day(r)-pt)/45);f+=a*(p-f);}pt=day(r);F.push({d:day(r),v:f});});
+  // VOGLIA — EWMA giornaliera del numero di salite, τ=30 → salite/mese
+  const aM=1-Math.exp(-1/30),cnt=new Array(span+1).fill(0);
+  eff.forEach(r=>{cnt[day(r)-d0]++;});
+  let mv=0;const M=[];for(let i=0;i<=span;i++){mv+=aM*(cnt[i]-mv);M.push({d:d0+i,v:mv*30});}
+  const maxM=Math.max(1,...M.map(p=>p.v));
+  // layout
+  const W=host.clientWidth||820,H=Math.max(250,Math.min(300,W*.34)),mg={l:40,r:46,t:22,b:28};
+  const s=svg(W,H);host.appendChild(s);
+  const X=d=>mg.l+((d-d0)/span)*(W-mg.l-mg.r),
+        Yf=v=>H-mg.b-(v/100)*(H-mg.t-mg.b),
+        Ym=v=>H-mg.b-(v/maxM)*(H-mg.t-mg.b);
+  // fascia Olanda (saltata per la sola corsa, che parte nel 2020)
+  if(!only("run")){const bA=Math.max(mg.l,X(dOf(new Date(NL.from[0],NL.from[1]-1,1)))),
+                         bB=Math.min(W-mg.r,X(dOf(new Date(NL.to[0],NL.to[1]-1,28))));
+    if(bB>bA){E(s,"rect",{x:bA,y:mg.t,width:bB-bA,height:H-mg.t-mg.b,fill:"var(--rule-soft)"});
+      E(s,"text",{x:(bA+bB)/2,y:mg.t+12,"text-anchor":"middle","font-size":9.5,fill:"var(--ink-3)"},"Olanda");}}
+  // griglia + asse sinistro (forma)
+  for(let v=0;v<=100;v+=25){E(s,"line",{class:"grid",x1:mg.l,y1:Yf(v),x2:W-mg.r,y2:Yf(v)});
+    E(s,"text",{x:mg.l-6,y:Yf(v)+4,"text-anchor":"end","font-size":9.5,fill:"var(--blue)"},v);}
+  E(s,"text",{x:mg.l-6,y:mg.t-8,"text-anchor":"end","font-size":9,fill:"var(--blue)"},"forma");
+  // asse destro (voglia)
+  const mtick=Math.max(2,Math.ceil(maxM/4));
+  for(let v=0;v<=maxM;v+=mtick)E(s,"text",{x:W-mg.r+6,y:Ym(v)+4,"text-anchor":"start","font-size":9.5,fill:"var(--gold)"},v);
+  E(s,"text",{x:W-mg.r+6,y:mg.t-8,"text-anchor":"start","font-size":9,fill:"var(--gold)"},"salite/mese");
+  YEARS.forEach(y=>{const d=dOf(new Date(y,0,1));if(d<d0-25||d>dN+5)return;E(s,"text",{x:X(Math.max(d0,d)),y:H-8,"text-anchor":"middle","font-size":10},yy(y));});
+  // linee (voglia campionata ogni 5 giorni, forma su ogni salita)
+  const pathd=(pts,Y,step)=>{let out="";for(let i=0;i<pts.length;i+=step)out+=(out?"L":"M")+X(pts[i].d).toFixed(1)+","+Y(pts[i].v).toFixed(1);const L=pts[pts.length-1];return out+"L"+X(L.d).toFixed(1)+","+Y(L.v).toFixed(1);};
+  E(s,"path",{d:pathd(M,Ym,5),fill:"none",stroke:"var(--gold)","stroke-width":2,"stroke-linejoin":"round","stroke-opacity":.92});
+  E(s,"path",{d:pathd(F,Yf,1),fill:"none",stroke:"var(--blue)","stroke-width":2.4,"stroke-linejoin":"round"});
+  // punti annuali con tooltip (campionati a metà anno)
+  const near=(pts,d)=>pts.reduce((a,b)=>Math.abs(b.d-d)<Math.abs(a.d-d)?b:a);
+  YEARS.forEach(y=>{const d=dOf(new Date(y,6,1));if(d<d0||d>dN)return;const fv=near(F,d).v,vv=near(M,d).v;
+    E(s,"circle",{cx:X(d),cy:Yf(fv),r:3,fill:"var(--blue)",stroke:"var(--surface)","stroke-width":1.5,
+      "data-tip":`<b>${y}</b><br>forma ${Math.round(fv)}/100<br><span style="opacity:.7">voglia ${nd(vv.toFixed(1))} salite/mese</span>`});});
+  // picchi
+  const pf=F.reduce((a,b)=>b.v>a.v?b:a),pm=M.reduce((a,b)=>b.v>a.v?b:a);
+  E(s,"circle",{cx:X(pf.d),cy:Yf(pf.v),r:3.6,fill:"var(--blue)"});
+  E(s,"text",{x:X(pf.d),y:Yf(pf.v)-9,"text-anchor":"middle","font-size":10,"font-weight":600,fill:"var(--blue)"},"forma al top");
+  E(s,"circle",{cx:X(pm.d),cy:Ym(pm.v),r:3.6,fill:"var(--gold)"});
+  E(s,"text",{x:X(pm.d),y:Ym(pm.v)-9,"text-anchor":"middle","font-size":10,"font-weight":600,fill:"var(--gold)"},"~"+Math.round(pm.v)+"/mese");
+  bind(s);
+  legendHTML("lg-fm",[swLn("var(--blue)","Forma — quanto va veloce"),swLn("var(--gold)","Voglia — quanto spesso sale"),
+    `<span class="it" style="color:var(--ink-3)">stime dai dati, non misure</span>`]);
+  // correlazione forma×voglia (giorno per giorno, forma riportata avanti)
+  let j=0,cur=null;const xs=[],ys=[];
+  for(let i=0;i<=span;i++){const dd=d0+i;while(j<F.length&&F[j].d<=dd){cur=F[j].v;j++;}if(cur!=null){xs.push(cur);ys.push(M[i].v);}}
+  const mean=z=>z.reduce((a,b)=>a+b,0)/z.length,mX=mean(xs),mY=mean(ys);
+  let sxy=0,sx=0,sy=0;for(let i=0;i<xs.length;i++){const dx=xs[i]-mX,dy=ys[i]-mY;sxy+=dx*dy;sx+=dx*dx;sy+=dy*dy;}
+  const corr=sxy/Math.sqrt(sx*sy||1),pmDate=new Date(pm.d*864e5);
+  txt("cap-fm",`Due stime, una per giorno, ricavate solo dai numeri. La <b style="color:var(--blue)">forma</b> è quanto sale veloce rispetto a sé stesso — media mobile dei percentili di velocità (τ 45&nbsp;giorni); la <b style="color:var(--gold)">voglia</b> è quanto spesso si presenta, in salite al mese (τ 30). `+
+    `${only("run")?"":"Fino a metà 2018 la voglia striscia sullo zero — sono gli <b>anni in Olanda</b>; poi esplode "}`+
+    `${only("run")?"Cresce ":""}fino a un picco di <b>~${Math.round(pm.v)} salite in un mese</b> (${itDate(pmDate,{month:'long',year:'numeric'})}). `+
+    `Le due cose ${corr>.15?"tendono a salire insieme":corr<-.15?"spesso vanno in direzioni opposte":"corrono abbastanza indipendenti"} — <b>r ${nd(corr.toFixed(2))}</b>.`);
+}
+
 /* ---------- 09b how often he went near the PR ---------- */
 function offPB(){
   const host=document.getElementById("c-offpb");if(!host)return;clr(host);
@@ -1316,7 +1390,7 @@ function table(){
 
 /* ---------- orchestrate ---------- */
 function renderCharts(){stats();findings();journey();vsStats();vsStrip();vsMonth();vsYear();
-  matrix();yearDist();season();monthDist();cumulative();rolling();dow();
+  matrix();yearDist();season();monthDist();formaMot();cumulative();rolling();dow();
   contour();efficiency();progression();offPB();diary();table();}
 function renderAll(){renderCharts();renderGhost();}
 function setSport(sp){
