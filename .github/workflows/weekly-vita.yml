@@ -27,17 +27,28 @@ jobs:
           python-version: "3.12"
 
       # Needs the repo secret INTERVALS_API_KEY (Intervals.icu ▸ Settings ▸ Developer).
-      # Non-fatal: without new efforts, or without the key, /vita still gets rebuilt.
-      - name: Sync Gazzaniga → Orezzo from Intervals.icu
+      # Each tracker is independent: one failing must not stop the others, and /vita
+      # gets rebuilt either way so the hub always matches whatever is on disk.
+      - name: Sync all trackers from Intervals.icu
         continue-on-error: true
         env:
           INTERVALS_API_KEY: ${{ secrets.INTERVALS_API_KEY }}
         run: |
           if [ -z "$INTERVALS_API_KEY" ]; then
-            echo "::warning::INTERVALS_API_KEY is not set — skipping the climb sync."
+            echo "::warning::INTERVALS_API_KEY is not set — skipping every sync."
             exit 0
           fi
-          python tools/sync_intervals.py --config tools/gazzaniga-orezzo.json
+          rc=0
+          echo "::group::Gazzaniga → Orezzo"
+          python tools/sync_intervals.py --config tools/gazzaniga-orezzo.json || rc=1
+          echo "::endgroup::"
+          echo "::group::Sogni di un Unno"
+          python tools/sync_sogni.py || rc=1
+          echo "::endgroup::"
+          echo "::group::Diario di un Unno"
+          python tools/sync_diario.py || rc=1
+          echo "::endgroup::"
+          exit $rc
 
       - name: Rebuild /vita
         run: python tools/build_vita.py
@@ -46,7 +57,7 @@ jobs:
         run: |
           git config user.name  "vita-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A gazzaniga-orezzo vita
+          git add -A gazzaniga-orezzo sogni-di-un-unno diario-di-un-unno vita
           if git diff --cached --quiet; then
             echo "nothing changed this week"
           else

@@ -39,6 +39,8 @@ is copied to `_data.js.bak` first.
 """
 import argparse
 import base64
+import csv
+import io
 import json
 import math
 import os
@@ -78,12 +80,35 @@ def get_api_key(explicit=None):
              "tools/.intervals_key (Intervals.icu ▸ Settings ▸ Developer).")
 
 
+def api_text(path, key, quiet=False):
+    """GET {BASE}/{path} with Intervals.icu basic auth. Returns the raw body or None."""
+    creds = base64.b64encode(f"API_KEY:{key}".encode()).decode()
+    req = Request(f"{BASE}/{path}", headers={
+        "Authorization": f"Basic {creds}",
+        # Cloudflare fronts intervals.icu and answers the default python-urllib
+        # agent with "error code: 1010" (banned browser signature) before the
+        # request reaches the API. Any ordinary UA gets through.
+        "User-Agent": "micmer-vita-sync/1.0 (+https://micmer-git.github.io/vita/)",
+    })
+    try:
+        with urlopen(req, timeout=60) as r:
+            return r.read().decode("utf-8")
+    except (HTTPError, URLError) as e:
+        if not quiet:
+            print(f"    ! {e} on /{path}", file=sys.stderr)
+        return None
+
+
 def api(path, key, quiet=False):
     """GET {BASE}/{path} with Intervals.icu basic auth. Returns parsed JSON or None."""
     creds = base64.b64encode(f"API_KEY:{key}".encode()).decode()
     req = Request(f"{BASE}/{path}", headers={
         "Authorization": f"Basic {creds}",
         "Accept": "application/json",
+        # Cloudflare sits in front of intervals.icu and answers the default
+        # python-urllib agent with "error code: 1010" (banned browser signature)
+        # before the request ever reaches the API. Any ordinary UA gets through.
+        "User-Agent": "micmer-vita-sync/1.0 (+https://micmer-git.github.io/vita/)",
     })
     try:
         with urlopen(req, timeout=45) as r:
@@ -219,61 +244,101 @@ def effort_from_segment(effort):
 # ------------------------------------------------------------- geofence path
 
 def fetch_streams(act_id, key):
-    data = api(f"activity/{act_id}/streams.json"
-               "?types=time,latlng,altitude,heartrate,watts", key, quiet=True)
-    if not data:
+    """Columns of the activity's stream table.
+
+    CSV, not JSON: the JSON `latlng` stream returns a flat array of *latitudes*
+    only — the longitudes are dropped. streams.csv emits proper lat and lng columns.
+    """
+    text = api_text(f"activity/{act_id}/streams.csv"
+                    "?types=time,latlng,altitude,heartrate,watts", key)
+    if not text:
         return None
-    # Intervals returns either {type: {data: [...]}} or [{type:..., data:[...]}]
-    out = {}
-    if isinstance(data, dict):
-        for k, v in data.items():
-            out[k] = v.get("data") if isinstance(v, dict) else v
-    elif isinstance(data, list):
-        for s in data:
-            if isinstance(s, dict) and "type" in s:
-                out[s["type"]] = s.get("data")
-    return out or None
-
-
-def nearest_pass(latlng, point, radius, start_at=0):
-    """Index of the closest fix to `point` within `radius` m, searching from start_at."""
-    best_i, best_d = None, radius
-    for i in range(start_at, len(latlng)):
-        p = latlng[i]
-        if not p or len(p) < 2 or p[0] is None:
+    rows = list(csv.reader(io.StringIO(text.lstrip("﻿"))))
+    if len(rows) < 3:
+        return None
+    head = [h.strip() for h in rows[0]]
+    out = {h: [] for h in head}
+    for r in rows[1:]:
+        if len(r) != len(head):
             continue
-        d = haversine(p, point)
-        if d < best_d:
-            best_d, best_i = d, i
-        elif best_i is not None and d > radius * 3:
-            break  # left the neighbourhood after a hit — that pass is over
-    return best_i
+        for h, v in zip(head, r):
+            try:
+                out[h].append(float(v))
+            except ValueError:
+                out[h].append(None)
+    return out
 
 
-def effort_from_streams(act_id, key, target, radius):
-    """(secs, hr, watts) timed between the segment's start and end coordinates."""
+def passes(lat, lng, point, radius):
+    """Index of the closest fix in each *distinct* visit to `point`.
+
+    A ride can touch the segment start several times (repeats, or descending
+    through it before climbing), so this returns one index per visit rather than
+    the single global best.
+    """
+    out, inside, best_d, best_i = [], False, None, None
+    for i in range(len(lat)):
+        if lat[i] is None or lng[i] is None:
+            continue
+        d = haversine((lat[i], lng[i]), point)
+        if d <= radius:
+            if not inside or d < best_d:
+                best_d, best_i = d, i
+            inside = True
+        elif inside:
+            out.append(best_i)
+            inside, best_d, best_i = False, None, None
+    if inside:
+        out.append(best_i)
+    return out
+
+
+def efforts_from_streams(act_id, key, target, radius):
+    """Every clean passage of the segment in one activity: [(secs, hr, watts), ...].
+
+    A candidate start/end pair only counts if the elapsed time is plausible *and*
+    the altitude actually gained matches the segment — that is what rejects the
+    descent-then-climb pairing, which would otherwise time the whole loop.
+    """
     st = fetch_streams(act_id, key)
-    if not st or not st.get("latlng"):
-        return None
-    ll = st["latlng"]
-    tm = st.get("time") or list(range(len(ll)))
-    i0 = nearest_pass(ll, target["start"], radius)
-    if i0 is None:
-        return None
-    i1 = nearest_pass(ll, target["end"], radius, start_at=i0 + 1)
-    if i1 is None or i1 <= i0:
-        return None
-    secs = int(round(tm[i1] - tm[i0]))
-    if secs <= 0:
-        return None
+    if not st or "lat" not in st or "lng" not in st:
+        return []
+    lat, lng = st["lat"], st["lng"]
+    tm = st.get("time") or list(range(len(lat)))
+    alt = st.get("altitude") or []
+    lo, hi = target.get("secs_range", [0, 10 ** 6])
+    want_gain = target["gain_m"]
 
-    def mean(series):
+    cands = []
+    for i0 in passes(lat, lng, target["start"], radius):
+        for i1 in passes(lat, lng, target["end"], radius):
+            if i1 <= i0:
+                continue
+            secs = tm[i1] - tm[i0]
+            if not (lo <= secs <= hi):
+                continue
+            if alt and alt[i0] is not None and alt[i1] is not None:
+                if abs((alt[i1] - alt[i0]) - want_gain) > 0.3 * want_gain:
+                    continue
+            cands.append((i0, i1, int(round(secs))))
+
+    # shortest first, then keep only non-overlapping passages (a repeat is real,
+    # a longer pair spanning the same climb is the same effort measured sloppily)
+    cands.sort(key=lambda c: c[2])
+    kept = []
+    for i0, i1, secs in cands:
+        if all(i1 <= k0 or i0 >= k1 for k0, k1, _ in kept):
+            kept.append((i0, i1, secs))
+    kept.sort()
+
+    def mean(series, i0, i1):
         if not series:
             return 0
         vals = [v for v in series[i0:i1 + 1] if isinstance(v, (int, float))]
         return int(round(sum(vals) / len(vals))) if vals else 0
 
-    return secs, mean(st.get("heartrate")), mean(st.get("watts"))
+    return [(secs, mean(st.get("heartrate"), i0, i1), mean(st.get("watts"), i0, i1))
+            for i0, i1, secs in kept]
 
 
 # ------------------------------------------------------------- row assembly
@@ -321,31 +386,29 @@ def sync_target(text, target, activities, key, args):
             continue
         d = datetime.strptime(ad, "%Y-%m-%d").date()
 
-        got, how = None, ""
+        got, how = [], ""
         efforts = fetch_segment_efforts(aid, key, probe=args.probe)
         if efforts:
             for e in efforts:
                 if match_segment(e, target):
-                    got = effort_from_segment(e)
+                    one = effort_from_segment(e)
+                    if one:
+                        got.append(one)
                     how = "segment"
-                    break
-        if got is None and not args.no_geofence:
-            got = effort_from_streams(aid, key, target, args.radius)
+        if not got and not args.no_geofence:
+            got = efforts_from_streams(aid, key, target, args.radius)
             how = "gps"
-        if got is None:
+        if not got:
             continue
 
-        secs, hr, watts = got
-        lo, hi = target.get("secs_range", [0, 10 ** 6])
-        if not (lo <= secs <= hi):
-            print(f"    · {ad} {aid}: {secs}s outside {lo}–{hi}s, ignored ({how})")
-            continue
-        row = build_row(d, secs, hr, watts, target)
-        if is_duplicate(row, rows + new):
-            continue
-        new.append(row)
-        print(f"    + {ad}  {secs // 60}:{secs % 60:02d}  hr={hr or '—'}  "
-              f"w={watts or '—'}  [{how}]")
+        for secs, hr, watts in got:
+            row = build_row(d, secs, hr, watts, target)
+            if is_duplicate(row, rows + new):
+                print(f"    = {ad}  {secs // 60}:{secs % 60:02d}  già presente")
+                continue
+            new.append(row)
+            print(f"    + {ad}  {secs // 60}:{secs % 60:02d}  hr={hr or '—'}  "
+                  f"w={watts or '—'}  [{how}]")
 
     if not new:
         print("    no new efforts")
