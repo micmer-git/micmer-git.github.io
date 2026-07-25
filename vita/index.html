@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vita — Michele Merelli</title>
+<meta name="description" content="Il quadro di comando: ogni tracker di Michele Merelli in un posto solo — la salita di Orezzo, il diario di allenamento, le notti.">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://micmer-git.github.io/vita/">
+<meta property="og:title" content="Vita — Michele Merelli">
+<meta property="og:description" content="Ogni tracker in un posto solo: la salita, la cronaca, le notti.">
+<link rel="icon" type="image/png" href="../favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;600&family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#17150f; --paper:#211d16; --paper-2:#2a2519;
+    --ink:#ece3cd; --ink-soft:#c6b997; --muted:#8a7d62;
+    --gold:#c89a3f; --rule:rgba(200,154,63,.22);
+    --grid:rgba(236,227,205,.10);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:'EB Garamond',Georgia,serif; font-size:19px; line-height:1.65;
+    max-width:940px; margin:0 auto; padding:56px 24px 100px;
+    -webkit-text-size-adjust:100%;
+  }
+  body::before{
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:-1;
+    background-image:
+      radial-gradient(ellipse at 14% 16%,rgba(200,154,63,.09) 0,transparent 46%),
+      radial-gradient(ellipse at 86% 80%,rgba(57,135,229,.06) 0,transparent 46%);
+  }
+  a{color:inherit}
+  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+
+  /* ---------- hero ---------- */
+  header{text-align:center; margin-bottom:12px}
+  .eyebrow{font-family:'IBM Plex Mono',monospace; font-size:.68rem; letter-spacing:.24em;
+    text-transform:uppercase; color:var(--gold)}
+  h1{font-family:'Cinzel',serif; font-size:clamp(3rem,13vw,5.2rem); font-weight:700;
+    letter-spacing:.06em; line-height:1; margin:14px 0 6px}
+  .sub{color:var(--ink-soft); font-style:italic; max-width:34em; margin:14px auto 0}
+  .ornament{text-align:center; color:var(--gold); margin:34px 0 10px;
+    font-size:1.1rem; letter-spacing:1.1em; opacity:.65}
+
+  /* ---------- top numbers ---------- */
+  .totals{display:flex; gap:34px; justify-content:center; flex-wrap:wrap; margin:26px 0 6px}
+  .total{text-align:center}
+  .total .n{font-family:'Cinzel',serif; font-size:1.75rem; font-weight:700; color:var(--gold);
+    font-variant-numeric:tabular-nums}
+  .total .l{font-family:'IBM Plex Mono',monospace; font-size:.62rem; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--muted); margin-top:3px}
+
+  /* ---------- cards ---------- */
+  .cards{display:grid; gap:22px; margin:44px 0 0}
+  .card{
+    position:relative; overflow:hidden;
+    background:var(--paper); border:1px solid var(--rule); border-radius:8px;
+    padding:26px 26px 18px; transition:border-color .18s,transform .18s,background .18s;
+  }
+  .card::before{content:""; position:absolute; inset:0 auto 0 0; width:3px; background:var(--a)}
+  .card:hover,.card:focus-within{border-color:var(--a); background:var(--paper-2); transform:translateY(-2px)}
+  @media(prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
+  .card-head{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap}
+  .card .kicker{font-family:'IBM Plex Mono',monospace; font-size:.64rem; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--a)}
+  .card h2{font-family:'Cinzel',serif; font-size:1.65rem; font-weight:700; letter-spacing:.02em;
+    margin:6px 0 0; width:100%}
+  /* stretched link: the whole card is clickable, but the markup stays valid —
+     the chart and its <details> sit on a higher layer and keep their own pointer */
+  .card h2 a{text-decoration:none; color:inherit}
+  .card h2 a::after{content:""; position:absolute; inset:0; z-index:1}
+  .card h2 a:focus-visible{outline:2px solid var(--a); outline-offset:4px; border-radius:3px}
+  .card figure,.card .figbox{position:relative; z-index:2}
+  .card .blurb{color:var(--ink-soft); margin:8px 0 18px; max-width:46em}
+  /* auto-fit rather than flex-wrap: the three stats stay on an even grid instead of
+     leaving one orphan on a second line when the labels get long */
+  .card .row{display:grid; grid-template-columns:repeat(auto-fit,minmax(104px,1fr));
+    gap:14px 24px; margin-bottom:16px}
+  .card .row .n{font-family:'Cinzel',serif; font-size:1.35rem; color:var(--ink);
+    font-variant-numeric:tabular-nums}
+  .card .row .l{font-family:'IBM Plex Mono',monospace; font-size:.6rem; letter-spacing:.13em;
+    text-transform:uppercase; color:var(--muted); margin-top:2px}
+  .card figure{margin:0}
+  .card figcaption{font-family:'IBM Plex Mono',monospace; font-size:.6rem; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--muted); margin-bottom:6px}
+  /* no fixed height: let the viewBox drive it, or the SVG letterboxes inside the card */
+  .plot{width:100%; height:auto; display:block; touch-action:pan-y}
+  .card-foot{display:flex; justify-content:space-between; align-items:center; gap:14px;
+    border-top:1px solid var(--rule); margin-top:14px; padding-top:11px; flex-wrap:wrap}
+  .stamp{font-family:'IBM Plex Mono',monospace; font-size:.62rem; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--muted)}
+  .go{font-family:'IBM Plex Mono',monospace; font-size:.68rem; letter-spacing:.13em;
+    text-transform:uppercase; color:var(--a); font-weight:600}
+
+  /* ---------- changelog ---------- */
+  section.log{margin-top:58px}
+  h3{font-family:'Cinzel',serif; font-size:1.15rem; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--gold); text-align:center; font-weight:600}
+  .log-sub{text-align:center; color:var(--muted); font-size:.9rem; font-style:italic; margin-top:4px}
+  ol.entries{list-style:none; margin:26px 0 0; border-top:1px solid var(--rule)}
+  ol.entries li{display:grid; grid-template-columns:6.5rem 1fr; gap:16px;
+    padding:12px 2px; border-bottom:1px solid var(--rule)}
+  ol.entries time{font-family:'IBM Plex Mono',monospace; font-size:.7rem; letter-spacing:.06em;
+    color:var(--muted); padding-top:.35em}
+  .what{color:var(--ink-soft); font-size:.95rem}
+  .chips{margin-top:5px; display:flex; gap:7px; flex-wrap:wrap}
+  .chip{font-family:'IBM Plex Mono',monospace; font-size:.58rem; letter-spacing:.1em;
+    text-transform:uppercase; padding:2px 8px; border-radius:999px;
+    border:1px solid currentColor; opacity:.92}
+
+  /* ---------- also / footer ---------- */
+  .also{margin-top:46px; text-align:center}
+  .also a{display:inline-block; margin:6px 7px; padding:7px 15px; border-radius:999px;
+    border:1px solid var(--rule); color:var(--ink-soft); text-decoration:none; font-size:.86rem;
+    transition:border-color .18s,color .18s}
+  .also a:hover{border-color:var(--gold); color:var(--ink)}
+  footer{margin-top:52px; text-align:center; color:var(--muted); font-size:.78rem;
+    border-top:1px solid var(--rule); padding-top:20px}
+
+  /* ---------- tooltip ---------- */
+  .tip{position:fixed; z-index:9; pointer-events:none; opacity:0; transition:opacity .12s;
+    background:#0e0d09; border:1px solid var(--rule); border-radius:5px; padding:6px 10px;
+    font-family:'IBM Plex Mono',monospace; font-size:.68rem; color:var(--ink);
+    white-space:nowrap; box-shadow:0 6px 18px rgba(0,0,0,.45)}
+  .tip.on{opacity:1}
+  .tip .v{color:var(--gold); font-weight:600}
+
+  table.fallback{width:100%; border-collapse:collapse; margin-top:10px; font-size:.8rem}
+  table.fallback th,table.fallback td{text-align:left; padding:3px 8px 3px 0;
+    border-bottom:1px solid var(--rule); font-variant-numeric:tabular-nums}
+  details.data{margin-top:12px}
+  details.data[open] summary{color:var(--ink-soft); margin-bottom:4px}
+  details.data summary{font-family:'IBM Plex Mono',monospace; font-size:.6rem; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--muted); cursor:pointer}
+
+  @media(max-width:560px){
+    body{font-size:17px; padding:40px 16px 80px}
+    .totals{gap:22px}
+    ol.entries li{grid-template-columns:1fr; gap:4px}
+    ol.entries time{padding-top:0}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">micmer · quadro di comando</div>
+  <h1>Vita</h1>
+  <p class="sub">Tutto quello che misuro, in un posto solo. Ogni riquadro legge i
+  dati della sua pagina: se là cambia qualcosa, qui si vede.</p>
+</header>
+
+<div class="totals">
+  <div class="total"><div class="n">607</div><div class="l">ascensioni</div></div>
+  <div class="total"><div class="n">48.496</div><div class="l">km percorsi</div></div>
+  <div class="total"><div class="n">260</div><div class="l">settimane di sonno</div></div>
+</div>
+
+<div class="ornament">✦ ✦ ✦</div>
+
+<main class="cards" id="cards"></main>
+
+<section class="log">
+  <h3>Cronaca</h3>
+  <p class="log-sub">Cosa è cambiato, e dove.</p>
+  <ol class="entries" id="entries"></ol>
+</section>
+
+<nav class="also">
+  <a href="../signore-dei-kj.html">Il Signore dei kJ</a>
+  <a href="../signore-dei-kj-weekly.html">…settimanale</a>
+  <a href="../viaggi/">Viaggi</a>
+  <a href="../league-of-strava/">League of Strava</a>
+  <a href="../">Profilo</a>
+</nav>
+
+<footer>
+  Generato il 25 luglio 2026 da <span class="mono">tools/build_vita.py</span>,
+  leggendo i dati pubblicati di ogni tracker.
+</footer>
+
+<div class="tip" id="tip" role="status" aria-live="polite"></div>
+
+<script>
+const VITA = {"trackers":[{"key":"gazzaniga","href":"../gazzaniga-orezzo/","eyebrow":"la salita","title":"Gazzaniga → Orezzo","blurb":"Una sola salita, undici anni, ogni singola ripetizione — in bici e di corsa — raccontata in dati.","accent":"#d95926","stats":[{"v":"607","l":"ascensioni"},{"v":"19,4","l":"volte l'Everest"},{"v":"13:33","l":"record in bici"}],"chart":{"kind":"bars","unit":"ascensioni","caption":"Ascensioni al mese, ultimi tre anni","points":[{"label":"ago 23","v":4},{"label":"set 23","v":5},{"label":"ott 23","v":10},{"label":"nov 23","v":11},{"label":"dic 23","v":16},{"label":"gen 24","v":8},{"label":"feb 24","v":8},{"label":"mar 24","v":9},{"label":"apr 24","v":10},{"label":"mag 24","v":25},{"label":"giu 24","v":9},{"label":"lug 24","v":11},{"label":"ago 24","v":9},{"label":"set 24","v":12},{"label":"ott 24","v":2},{"label":"nov 24","v":0},{"label":"dic 24","v":6},{"label":"gen 25","v":10},{"label":"feb 25","v":7},{"label":"mar 25","v":14},{"label":"apr 25","v":8},{"label":"mag 25","v":7},{"label":"giu 25","v":14},{"label":"lug 25","v":0},{"label":"ago 25","v":0},{"label":"set 25","v":0},{"label":"ott 25","v":12},{"label":"nov 25","v":5},{"label":"dic 25","v":6},{"label":"gen 26","v":5},{"label":"feb 26","v":9},{"label":"mar 26","v":9},{"label":"apr 26","v":12},{"label":"mag 26","v":15},{"label":"giu 26","v":14},{"label":"lug 26","v":9}]},"last":"2026-07-18"},{"key":"diario","href":"../diario-di-un-unno/","eyebrow":"la cronaca","title":"Diario di un Unno","blurb":"39 capitoli mensili: ogni luna di allenamento scritta come un romanzo in numeri.","accent":"#199e70","stats":[{"v":"39","l":"lune"},{"v":"48.496","l":"km"},{"v":"963.218","l":"m saliti"}],"chart":{"kind":"bars","unit":"km","caption":"Chilometri per capitolo mensile","points":[{"label":"Aprile 2023","v":754},{"label":"Maggio 2023","v":1590},{"label":"Giugno 2023","v":1938},{"label":"Luglio 2023","v":972},{"label":"Agosto 2023","v":990},{"label":"Settembre 2023","v":947},{"label":"Ottobre 2023","v":928},{"label":"Novembre 2023","v":846},{"label":"Dicembre 2023","v":1246},{"label":"Gennaio 2024","v":885},{"label":"Febbraio 2024","v":881},{"label":"Marzo 2024","v":1011},{"label":"Aprile 2024","v":758},{"label":"Maggio 2024","v":1621},{"label":"Giugno 2024","v":1923},{"label":"Luglio 2024","v":1573},{"label":"Agosto 2024","v":1767},{"label":"Settembre 2024","v":1053},{"label":"Ottobre 2024","v":990},{"label":"Novembre 2024","v":1051},{"label":"Dicembre 2024","v":794},{"label":"Gennaio 2025","v":1242},{"label":"Febbraio 2025","v":727},{"label":"Marzo 2025","v":1616},{"label":"Aprile 2025","v":1634},{"label":"Maggio 2025","v":1594},{"label":"Giugno 2025","v":1296},{"label":"Luglio 2025","v":1439},{"label":"Agosto 2025","v":2080},{"label":"Settembre 2025","v":1353},{"label":"Ottobre 2025","v":1040},{"label":"Novembre 2025","v":775},{"label":"Dicembre 2025","v":906},{"label":"Gennaio 2026","v":644},{"label":"Febbraio 2026","v":1162},{"label":"Marzo 2026","v":1274},{"label":"Aprile 2026","v":1631},{"label":"Maggio 2026","v":1970},{"label":"Giugno 2026","v":1595}]},"last":"2026-06-24"},{"key":"sogni","href":"../sogni-di-un-unno/","eyebrow":"le notti","title":"Sogni di un Unno","blurb":"260 settimane di sonno dal 2021 a oggi — quando vado a letto, quanto dormo, e cosa ne è del carico.","accent":"#3987e5","stats":[{"v":"260","l":"settimane"},{"v":"6,2 h","l":"media, ultimo anno"},{"v":"6","l":"anni tracciati"}],"chart":{"kind":"line","unit":"h","caption":"Ore di sonno per settimana, ultime due stagioni","points":[{"label":"May 7-13, 2024","v":6.12},{"label":"May 14-20, 2024","v":6.18},{"label":"May 21-27, 2024","v":5.5},{"label":"May 28 - Jun 3, 2024","v":6.3},{"label":"Jun 4-10, 2024","v":5.8},{"label":"Jun 11-17, 2024","v":5.37},{"label":"Jun 18-24, 2024","v":5.53},{"label":"Jun 25 - Jul 1, 2024","v":5.37},{"label":"Jul 2-8, 2024","v":6.7},{"label":"Jul 9-15, 2024","v":6.23},{"label":"Jul 16-22, 2024","v":6.03},{"label":"Jul 23-29, 2024","v":6.32},{"label":"Jul 30 - Aug 5, 2024","v":5.85},{"label":"Aug 6-12, 2024","v":5.98},{"label":"Aug 13-19, 2024","v":6.28},{"label":"Aug 20-26, 2024","v":6.35},{"label":"Aug 27 - Sep 2, 2024","v":5.93},{"label":"Sep 3-9, 2024","v":6.12},{"label":"Sep 10-16, 2024","v":6.68},{"label":"Sep 17-23, 2024","v":5.9},{"label":"Sep 24-30, 2024","v":6.23},{"label":"Oct 1-7, 2024","v":4.82},{"label":"Oct 8-14, 2024","v":4.45},{"label":"Oct 15-21, 2024","v":5.8},{"label":"Oct 22-28, 2024","v":6.58},{"label":"Oct 29 - Nov 4, 2024","v":5.85},{"label":"Nov 5-11, 2024","v":6.38},{"label":"Nov 12-18, 2024","v":5.87},{"label":"Nov 19-25, 2024","v":5.98},{"label":"Nov 26 - Dec 2, 2024","v":6.62},{"label":"Dec 3-9, 2024","v":6.93},{"label":"Dec 10-16, 2024","v":6.23},{"label":"Dec 17-23, 2024","v":6.1},{"label":"Dec 24-30, 2024","v":6.52},{"label":"Dec 31, 2024 - Jan 6, 2025","v":7},{"label":"Jan 7-13, 2025","v":7.13},{"label":"Jan 14-20, 2025","v":6.83},{"label":"Jan 21-27, 2025","v":5.98},{"label":"Jan 28 - Feb 3, 2025","v":5.67},{"label":"Feb 4-10, 2025","v":5.6},{"label":"Feb 11-17, 2025","v":7.48},{"label":"Feb 18-24, 2025","v":7.33},{"label":"Feb 25 - Mar 3, 2025","v":6.88},{"label":"Mar 4-10, 2025","v":7},{"label":"Mar 11-17, 2025","v":7.27},{"label":"Mar 18-24, 2025","v":7.27},{"label":"Mar 25-31, 2025","v":6.5},{"label":"Apr 1-7, 2025","v":6.07},{"label":"Apr 8-14, 2025","v":6.18},{"label":"Apr 15-21, 2025","v":6.33},{"label":"Apr 22-28, 2025","v":6},{"label":"Apr 29 - May 5, 2025","v":5.67},{"label":"May 6-12, 2025","v":5},{"label":"May 13-19, 2025","v":6.33},{"label":"May 20-26, 2025","v":5.98},{"label":"May 27 - Jun 2, 2025","v":5.23},{"label":"Jun 3-9, 2025","v":6.17},{"label":"Jun 10-16, 2025","v":5.22},{"label":"Jun 17-23, 2025","v":5.55},{"label":"Jun 24-30, 2025","v":4.9},{"label":"Jul 1-7, 2025","v":5.72},{"label":"Jul 8-14, 2025","v":4.78},{"label":"Jul 15-21, 2025","v":5.88},{"label":"Jul 22-28, 2025","v":5.73},{"label":"Jul 29 - Aug 4, 2025","v":6.03},{"label":"Aug 5-11, 2025","v":5.92},{"label":"Aug 12-18, 2025","v":5.57},{"label":"Aug 19-25, 2025","v":6.05},{"label":"Aug 26 - Sep 1, 2025","v":6.2},{"label":"Sep 2-8, 2025","v":5.93},{"label":"Sep 9-15, 2025","v":6.32},{"label":"Sep 16-22, 2025","v":4.92},{"label":"Sep 23-29, 2025","v":5.88},{"label":"Sep 30 - Oct 6, 2025","v":7.42},{"label":"Oct 7-13, 2025","v":6.65},{"label":"Oct 14-20, 2025","v":7.3},{"label":"Oct 21-27, 2025","v":7.03},{"label":"Oct 28 - Nov 3, 2025","v":6.55},{"label":"Nov 4-10, 2025","v":7.1},{"label":"Nov 11-17, 2025","v":5.98},{"label":"Nov 18-24, 2025","v":6.43},{"label":"Nov 25 - Dec 1, 2025","v":5.93},{"label":"Dec 2-8, 2025","v":6.52},{"label":"Dec 9-15, 2025","v":5.03},{"label":"Dec 16-22, 2025","v":6.1},{"label":"Dec 23-29, 2025","v":5.38},{"label":"Dec 30, 2025 - Jan 5, 2026","v":7.03},{"label":"Jan 6-12","v":6.98},{"label":"Jan 13-19","v":7.4},{"label":"Jan 20-26","v":7.08},{"label":"Jan 27 - Feb 2","v":6.62},{"label":"Feb 3-9","v":6.53},{"label":"Feb 10-16","v":6.2},{"label":"Feb 17-23","v":6.27},{"label":"Feb 24 - Mar 2","v":6.57},{"label":"Mar 3-9","v":6.78},{"label":"Mar 10-16","v":6.77},{"label":"Mar 17-23","v":6.28},{"label":"Mar 24-30","v":6.7},{"label":"Mar 31 - Apr 6","v":6.92},{"label":"Apr 7-13","v":7.18},{"label":"Apr 14-20","v":6.17},{"label":"Apr 21-27","v":5.85},{"label":"Apr 28 - May 4","v":6.7}]},"last":"2026-05-05"}],"log":[{"date":"2026-07-23","text":"gazzaniga-orezzo/esplora: add \"Forma e voglia\" chart in section 06","who":[{"key":"gazzaniga","label":"Gazzaniga → Orezzo"}]},{"date":"2026-07-23","text":"gazzaniga-orezzo: remove forma.html","who":[{"key":"gazzaniga","label":"Gazzaniga → Orezzo"}]},{"date":"2026-07-23","text":"gazzaniga-orezzo: add forma.html — I/O-style Forma & Motivazione page","who":[{"key":"gazzaniga","label":"Gazzaniga → Orezzo"}]},{"date":"2026-07-20","text":"Gazzaniga-Orezzo: rebuild as a full-screen animated story","who":[{"key":"gazzaniga","label":"Gazzaniga → Orezzo"}]},{"date":"2026-07-20","text":"Gazzaniga-Orezzo: shrink the year grid, add six new insight charts","who":[{"key":"gazzaniga","label":"Gazzaniga → Orezzo"}]},{"date":"2026-06-24","text":"Diario di un Unno: refresh intervals.icu data + verify story vs data + fix links","who":[{"key":"diario","label":"Diario di un Unno"}]},{"date":"2026-05-05","text":"sogni v4: 18 narrative steps + per-event zoom + mobile fixed full-bleed","who":[{"key":"sogni","label":"Sogni di un Unno"}]},{"date":"2026-05-05","text":"sogni: fix SyntaxError 'Unexpected number' — broken backslash-escaped quote in Bologna Marathon event sub-text","who":[{"key":"sogni","label":"Sogni di un Unno"}]},{"date":"2026-05-05","text":"sogni v3: canonical 2-col scrollytelling — chart visible by default","who":[{"key":"sogni","label":"Sogni di un Unno"}]},{"date":"2026-05-05","text":"sogni: scrollytelling redesign — sticky stage + scene transitions","who":[{"key":"sogni","label":"Sogni di un Unno"}]},{"date":"2026-05-04","text":"diario expand 2023 monthly + new sogni-di-un-unno page (4 sleep charts)","who":[{"key":"diario","label":"Diario di un Unno"}]},{"date":"2026-05-04","text":"sogni mobile: top-level safety nets + scroll listener + fixed px heights","who":[{"key":"sogni","label":"Sogni di un Unno"}]},{"date":"2026-05-02","text":"diario-di-un-unno: enrich narration with verified Strava descriptions","who":[{"key":"diario","label":"Diario di un Unno"}]},{"date":"2026-05-02","text":"feat: Diario di un Unno — 25 monthly chapters May 2024 → May 2026","who":[{"key":"diario","label":"Diario di un Unno"}]}]};
+const NS = "http://www.w3.org/2000/svg";
+const el = (t, a = {}) => { const e = document.createElementNS(NS, t);
+  for (const k in a) e.setAttribute(k, a[k]); return e; };
+const tip = document.getElementById("tip");
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function showTip(html, x, y) {
+  tip.innerHTML = html; tip.classList.add("on");
+  const r = tip.getBoundingClientRect();
+  tip.style.left = Math.min(Math.max(8, x - r.width / 2), innerWidth - r.width - 8) + "px";
+  tip.style.top = Math.max(8, y - r.height - 12) + "px";
+}
+const hideTip = () => tip.classList.remove("on");
+
+/* One measure, one series per plot — the card title names it, so no legend.
+   Bars for counts, a line for a continuous weekly measure. */
+function plot(box, chart, accent) {
+  const pts = chart.points;
+  if (!pts.length) return;
+  const W = 600, H = 110, PAD_B = 14, PAD_T = 10;
+  const max = Math.max(...pts.map(p => p.v)) || 1;
+  const min = chart.kind === "line" ? Math.min(...pts.map(p => p.v)) : 0;
+  const span = (max - min) || 1;
+  const num = v => String(Math.round(v * 10) / 10).replace(".", ",");
+  /* a line chart is not zero-based, so the rule at the foot is the minimum, not zero —
+     say the range out loud rather than let the baseline imply one */
+  const caption = chart.caption + (chart.kind === "line"
+    ? ` · scala ${num(min)}–${num(max)} ${chart.unit}` : "");
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, width: "100%",
+    class: "plot", role: "img",
+    "aria-label": caption + " — " + pts.length + " valori, da " +
+      pts[0].label + " a " + pts[pts.length - 1].label });
+  const x = i => (i / Math.max(1, pts.length - 1)) * (W - 8) + 4;
+  const y = v => PAD_T + (1 - (v - min) / span) * (H - PAD_T - PAD_B);
+
+  svg.appendChild(el("line", { x1: 0, y1: H - PAD_B, x2: W, y2: H - PAD_B,
+    stroke: "var(--grid)", "stroke-width": 1 }));
+
+  if (chart.kind === "bars") {
+    const gap = 2, bw = Math.max(1.5, (W - 8) / pts.length - gap);
+    pts.forEach((p, i) => {
+      const h = Math.max(p.v > 0 ? 2 : 0, ((p.v - min) / span) * (H - PAD_T - PAD_B));
+      if (!h) return;
+      svg.appendChild(el("rect", { x: 4 + i * ((W - 8) / pts.length), y: H - PAD_B - h,
+        width: bw, height: h, rx: Math.min(2, bw / 2), fill: accent }));
+    });
+  } else {
+    const d = pts.map((p, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(p.v).toFixed(1)).join(" ");
+    svg.appendChild(el("path", { d, fill: "none", stroke: accent, "stroke-width": 2,
+      "stroke-linejoin": "round", "stroke-linecap": "round" }));
+  }
+
+  /* hover layer: a marker that snaps to the nearest point */
+  const dot = el("circle", { r: 4, fill: accent, stroke: "var(--paper)",
+    "stroke-width": 2, opacity: 0 });
+  svg.appendChild(dot);
+  const hit = el("rect", { x: 0, y: 0, width: W, height: H, fill: "transparent" });
+  svg.appendChild(hit);
+
+  const move = ev => {
+    const r = svg.getBoundingClientRect();
+    const i = Math.max(0, Math.min(pts.length - 1,
+      Math.round(((ev.clientX - r.left) / r.width * W - 4) / ((W - 8) / Math.max(1, pts.length - 1)))));
+    const p = pts[i];
+    const cx = chart.kind === "bars"
+      ? 4 + i * ((W - 8) / pts.length) + ((W - 8) / pts.length - 2) / 2 : x(i);
+    dot.setAttribute("cx", cx); dot.setAttribute("cy", y(p.v));
+    dot.setAttribute("opacity", 1);
+    showTip(`${p.label} · <span class="v">${String(p.v).replace(".", ",")}</span> ${chart.unit}`,
+      r.left + cx / W * r.width, r.top + y(p.v) / H * r.height);
+  };
+  hit.addEventListener("pointermove", move);
+  hit.addEventListener("pointerdown", move);
+  hit.addEventListener("pointerleave", () => { dot.setAttribute("opacity", 0); hideTip(); });
+
+  const fig = document.createElement("figure");
+  const cap = document.createElement("figcaption");
+  cap.textContent = caption;
+  fig.appendChild(cap); fig.appendChild(svg);
+
+  /* non-visual fallback */
+  const det = document.createElement("details");
+  det.className = "data";
+  det.innerHTML = `<summary>dati</summary><table class="fallback"><tbody>` +
+    pts.map(p => `<tr><th scope="row">${p.label}</th><td>${String(p.v).replace(".", ",")} ${chart.unit}</td></tr>`).join("") +
+    `</tbody></table>`;
+  fig.appendChild(det);
+  box.appendChild(fig);
+}
+
+const dateIt = s => {
+  const M = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dic"];
+  const [y, m, d] = s.split("-");
+  return `${+d} ${M[+m - 1]} ${y}`;
+};
+
+const cards = document.getElementById("cards");
+VITA.trackers.forEach(t => {
+  const art = document.createElement("article");
+  art.className = "card"; art.style.setProperty("--a", t.accent);
+  art.innerHTML =
+    `<div class="card-head"><span class="kicker">${t.eyebrow}</span>
+       <h2><a href="${t.href}">${t.title}</a></h2></div>
+     <p class="blurb">${t.blurb}</p>
+     <div class="row">${t.stats.map(s =>
+        `<div><div class="n">${s.v}</div><div class="l">${s.l}</div></div>`).join("")}</div>
+     <div class="figbox"></div>
+     <div class="card-foot"><span class="stamp">aggiornato ${dateIt(t.last)}</span>
+     <span class="go">apri →</span></div>`;
+  cards.appendChild(art);
+  plot(art.querySelector(".figbox"), t.chart, t.accent);
+});
+
+const entries = document.getElementById("entries");
+VITA.log.forEach(e => {
+  const li = document.createElement("li");
+  li.innerHTML = `<time datetime="${e.date}">${dateIt(e.date)}</time>
+    <div><div class="what">${e.text}</div>
+    <div class="chips">${e.who.map(w =>
+      `<span class="chip" style="color:${VITA.trackers.find(t => t.key === w.key)?.accent || "var(--muted)"}">${w.label}</span>`
+    ).join("")}</div></div>`;
+  entries.appendChild(li);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+name: Weekly tracker sync
+
+# Monday morning: pull whatever landed on Intervals.icu during the week into the
+# climb data, then rebuild /vita so the hub reflects it. Also runnable by hand.
+on:
+  schedule:
+    - cron: "0 5 * * 1"        # 05:00 UTC Monday = 07:00 Europe/Rome in summer
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: weekly-vita
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0        # build_vita.py reads git log for the changelog
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Needs the repo secret INTERVALS_API_KEY (Intervals.icu ▸ Settings ▸ Developer).
+      # Non-fatal: without new efforts, or without the key, /vita still gets rebuilt.
+      - name: Sync Gazzaniga → Orezzo from Intervals.icu
+        continue-on-error: true
+        env:
+          INTERVALS_API_KEY: ${{ secrets.INTERVALS_API_KEY }}
+        run: |
+          if [ -z "$INTERVALS_API_KEY" ]; then
+            echo "::warning::INTERVALS_API_KEY is not set — skipping the climb sync."
+            exit 0
+          fi
+          python tools/sync_intervals.py --config tools/gazzaniga-orezzo.json
+
+      - name: Rebuild /vita
+        run: python tools/build_vita.py
+
+      - name: Commit if anything moved
+        run: |
+          git config user.name  "vita-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A gazzaniga-orezzo vita
+          if git diff --cached --quiet; then
+            echo "nothing changed this week"
+          else
+            git commit -m "weekly: sync intervals.icu + rebuild /vita"
+            git push
+          fi

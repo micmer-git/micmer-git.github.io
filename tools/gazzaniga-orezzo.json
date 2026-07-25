@@ -1,0 +1,43 @@
+{
+  "_comment": [
+    "Config for sync_intervals.py — Gazzaniga → Orezzo.",
+    "Two Strava segments are tracked: the 3.36 km bike segment (RAW) and the",
+    "4.29 km run segment (RUN). dist_km/gain_m are the SEGMENT's own numbers, not",
+    "the full 4.25 km climb the page presents — index.html rescales RAW by 4.24/3.36.",
+    "Both were reverse-engineered from the existing rows (vam*secs/3600 and",
+    "speed*secs/3600 are constant across all 407 / 200 efforts) and cross-checked",
+    "against ROUTE in _data.js.",
+    "segment_id: fill in the Strava segment ids once known — they make matching exact",
+    "and let --no-geofence work. Until then matching falls back to segment_name, then",
+    "to GPS timing between start/end."
+  ],
+  "athlete_id": "i302515",
+  "data_file": "../gazzaniga-orezzo/_data.js",
+  "mirrors": ["C:/Users/Alessandro Merelli/micmer/gazzaniga-orezzo/_data.js"],
+  "targets": [
+    {
+      "array": "RAW",
+      "layout": "bike",
+      "sport": "Ride",
+      "segment_id": null,
+      "segment_name": "orezzo",
+      "dist_km": 3.362,
+      "gain_m": 235.3,
+      "start": [45.797455, 9.834315],
+      "end": [45.805418, 9.825689],
+      "secs_range": [560, 1500]
+    },
+    {
+      "array": "RUN",
+      "layout": "run",
+      "sport": "Run",
+      "segment_id": null,
+      "segment_name": "orezzo",
+      "dist_km": 4.29,
+      "gain_m": 284,
+      "start": [45.797175, 9.834797],
+      "end": [45.805377, 9.822751],
+      "secs_range": [1100, 2600]
+    }
+  ]
+}

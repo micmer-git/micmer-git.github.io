@@ -1,2 +1,7 @@
 node_modules/
 dist/
+
+# sync_intervals.py backups, and the local Intervals.icu key
+*.bak
+tools/.intervals_key
+__pycache__/
