@@ -289,11 +289,12 @@ function initMap(){
   map=L.map("map",{scrollWheelZoom:false,attributionControl:true});
   L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
     {attribution:"© OpenStreetMap © CARTO",subdomains:"abcd",maxZoom:19}).addTo(map);
+  const cnv=L.canvas?L.canvas({padding:.3}):undefined;
   const all=[];
   runners.forEach(r=>{
     const pts=r.trk.map(p=>[p[1],p[2]]);
     all.push(...pts);
-    L.polyline(pts,{color:"#8f9382",weight:1.1,opacity:.16,interactive:false}).addTo(map);
+    L.polyline(pts,{color:"#8f9382",weight:1,opacity:.10,interactive:false,renderer:cnv}).addTo(map);
   });
   if(all.length)map.fitBounds(L.latLngBounds(all),{padding:[18,18]});
   L.circleMarker(CFG.home,{radius:7,color:"#14150f",weight:2,fillColor:"#faf8f3",fillOpacity:1})
@@ -301,9 +302,24 @@ function initMap(){
   L.circleMarker(CFG.work,{radius:7,color:"#14150f",weight:2,fillColor:"#e8b23a",fillOpacity:1})
     .addTo(map).bindTooltip("Kilometro Rosso",{permanent:false});
   runners.forEach(r=>{
+    r.trail=L.polyline([],{color:"#e0932f",weight:2.4,opacity:0,interactive:false,
+      lineCap:"round",renderer:cnv}).addTo(map);
     r.marker=L.circleMarker([r.trk[0][1],r.trk[0][2]],
-      {radius:0,color:"#fff",weight:1.2,fillColor:"#e0932f",fillOpacity:.92}).addTo(map);
+      {radius:0,color:"#fff",weight:1.2,fillColor:"#e0932f",fillOpacity:.92,renderer:cnv}).addTo(map);
   });
+}
+
+/* comet tail: the GPS path built over the last FADE_S virtual seconds, draining away behind */
+const FADE_S=3600, FADE_OUT=2700;
+function trailAt(r,vt,head){
+  const trk=r.trk,lo=vt-FADE_S,pts=[];
+  for(let i=0;i<trk.length;i++){
+    const t=trk[i][0];
+    if(t>vt)break;
+    if(t>=lo)pts.push([trk[i][1],trk[i][2]]);
+  }
+  if(head)pts.push([head.lat,head.lng]);
+  return pts;
 }
 
 /* position on a track at virtual time t (linear interp between fixes) */
@@ -329,12 +345,20 @@ function renderFrame(){
   let road=0,office=0,home=0;
   runners.forEach(r=>{
     if(!r.marker)return;
-    if(vt<r.t0){r.marker.setRadius(0);return;}
-    if(vt>r.t1+600){r.marker.setRadius(0);home++;return;}
+    const evening=vt>13*3600,col=evening?"#3b5bb5":"#e0932f";
+    if(vt<r.t0){r.marker.setRadius(0);if(r.trail)r.trail.setStyle({opacity:0});return;}
+    if(vt>r.t1+FADE_OUT){r.marker.setRadius(0);home++;
+      if(r.trail)r.trail.setStyle({opacity:0});return;}
     const p=posAt(r,vt);
     r.marker.setLatLng([p.lat,p.lng]);
     const atWork=near(p.lat,p.lng,CFG.work,600);
     const done=vt>r.t1;
+    if(r.trail){ // the GPS path built behind the dot, draining away
+      const tp=trailAt(r,vt,done?null:p);
+      r.trail.setLatLngs(tp);
+      const fade=done?Math.max(0,1-(vt-r.t1)/FADE_OUT):1;
+      r.trail.setStyle({opacity:(tp.length>1?.5:0)*fade,color:col});
+    }
     if(done){ // end pulse then park
       home++;r.marker.setRadius(Math.max(0,5-(vt-r.t1)/600*5));
       r.marker.setStyle({fillColor:"#3b5bb5",fillOpacity:.5});
@@ -345,8 +369,7 @@ function renderFrame(){
       road++;
       const justStarted=vt-r.t0<420;
       r.marker.setRadius(justStarted?6.5:4.2);
-      const evening=vt>13*3600;
-      r.marker.setStyle({fillColor:evening?"#3b5bb5":"#e0932f",fillOpacity:.92});
+      r.marker.setStyle({fillColor:col,fillOpacity:.92});
     }
   });
   document.getElementById("live-road").textContent=road;
