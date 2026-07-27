@@ -97,6 +97,7 @@ tr:hover td{background:var(--rule-soft)}
 .pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.7rem;font-weight:600}
 .pill.aw{background:#f6e3c4;color:#8a5a10}
 .pill.rt{background:#dfe5f7;color:#314c9e}
+.pill.es{background:#eceada;color:#6d6f60}
 footer{margin-top:80px;font-size:.8rem;color:var(--ink-3);line-height:1.7}
 </style>
 </head>
@@ -204,6 +205,8 @@ footer{margin-top:80px;font-size:.8rem;color:var(--ink-3);line-height:1.7}
 
 <footer>
   <p><b>Metodo.</b> Un giorno conta se il GPS di quel giorno parte (o finisce) a casa <i>e</i> passa dal Kilometro Rosso.
+  Il 2022 manca su Intervals.icu: quei giorni sono ricostruiti dall'archivio Strava con una regola conservativa
+  (feriale, partenza al mattino, 40–110 km, almeno 8 ore fermo a metà giro) e contano nei totali ma non nei grafici GPS.
   I tempi sono «in movimento» (le pause non contano). Assunzioni per l'auto rimasta ferma:
   <span id="foot-assum"></span> Prezzi benzina: media mensile nazionale (MASE, prezzi settimanali pesati).
   Dati: Garmin via Intervals.icu.</p>
@@ -231,17 +234,20 @@ const mLabel=k=>MESI[+k.slice(5,7)-1]+" ’"+k.slice(2,4);
 const itDate=d=>new Date(d).toLocaleDateString("it-IT",{day:"numeric",month:"short",year:"numeric"});
 
 /* ---------- model ---------- */
+/* est days (2022, from the Strava archive, no GPS) count as full round trips */
+const nLegs=d=>d.est?2:Object.keys(d.legs).length;
 const TW=DAYS.filter(d=>d.legs.tw).map(d=>({d,l:d.legs.tw}));
 const TH=DAYS.filter(d=>d.legs.th).map(d=>({d,l:d.legs.th}));
-const LEGS=DAYS.reduce((a,d)=>a+Object.keys(d.legs).length,0);
+const LEGS=DAYS.reduce((a,d)=>a+nLegs(d),0);
 const CAR_KM=LEGS*CFG.carKm;
 const CO2=CAR_KM*CFG.co2KgPerKm;
 const LITRI=CAR_KM*CFG.lPer100Km/100;
 const priceOf=ym=>PREZZI[ym]!=null?PREZZI[ym]:CFG.priceLast;
-const euroOf=d=>Object.keys(d.legs).length*CFG.carKm*CFG.lPer100Km/100*priceOf(d.d.slice(0,7));
+const euroOf=d=>nLegs(d)*CFG.carKm*CFG.lPer100Km/100*priceOf(d.d.slice(0,7));
 const EURO=DAYS.reduce((a,d)=>a+euroOf(d),0);
-const H_CAR=DAYS.reduce((a,d)=>a+(Object.keys(d.legs).length===2?CFG.carHRoundTrip:CFG.carHRoundTrip/2),0);
-const H_BIKE=DAYS.reduce((a,d)=>a+Object.values(d.legs).reduce((x,l)=>x+l.moving,0),0)/3600;
+const H_CAR=DAYS.reduce((a,d)=>a+(nLegs(d)===2?CFG.carHRoundTrip:CFG.carHRoundTrip/2),0);
+const H_BIKE=DAYS.reduce((a,d)=>a+(d.est?d.mov:Object.values(d.legs).reduce((x,l)=>x+l.moving,0)),0)/3600;
+const NEST=DAYS.filter(d=>d.est).length;
 const KM_BIKE=DAYS.reduce((a,d)=>a+d.km,0);
 const GAIN=DAYS.reduce((a,d)=>a+d.gain,0);
 const KCAL=DAYS.reduce((a,d)=>a+d.cal,0);
@@ -529,7 +535,7 @@ function co2Chart(){
   const W=host.clientWidth||480,H=Math.min(300,W*.62),m={l:40,r:12,t:14,b:34};
   host.setAttribute("viewBox",`0 0 ${W} ${H}`);
   if(!DAYS.length)return;
-  let acc=0;const pts=DAYS.map(d=>{acc+=Object.keys(d.legs).length*CFG.carKm*CFG.co2KgPerKm;
+  let acc=0;const pts=DAYS.map(d=>{acc+=nLegs(d)*CFG.carKm*CFG.co2KgPerKm;
     return{t:new Date(d.d).getTime(),v:acc};});
   const t0=pts[0].t,t1=pts[pts.length-1].t,vmax=acc*1.06;
   const X=t=>m.l+(t-t0)/Math.max(1,t1-t0)*(W-m.l-m.r),Y=v=>H-m.b-v/vmax*(H-m.t-m.b);
@@ -571,10 +577,12 @@ function co2Chart(){
 
 /* ---------- 06 · table ---------- */
 document.getElementById("note-tab").textContent=
-  "Tutti i "+DAYS.length+" giorni, dal più recente. «Andata» e «ritorno» sono tempi in movimento.";
+  "Tutti i "+DAYS.length+" giorni, dal più recente. «Andata» e «ritorno» sono tempi in movimento."+
+  (NEST?" I giorni 2022 vengono dall'archivio Strava: contano nei totali, ma senza GPS niente tempi per tratta.":"");
 document.getElementById("tbody").innerHTML=[...DAYS].reverse().map(d=>{
   const tw=d.legs.tw,th=d.legs.th;
-  const legs=(tw?'<span class="pill aw">andata</span> ':'')+(th?'<span class="pill rt">ritorno</span>':'');
+  const legs=d.est?'<span class="pill es">2022 · senza GPS</span>':
+    (tw?'<span class="pill aw">andata</span> ':'')+(th?'<span class="pill rt">ritorno</span>':'');
   return `<tr><td class="tnum">${itDate(d.d)}</td><td>${(d.name||"").replace(/</g,"&lt;")}</td>
   <td>${legs}</td><td class="tnum">${tw?mins(tw.moving)+" · "+itDec(tw.dist/1000,1)+" km":"—"}</td>
   <td class="tnum">${th?mins(th.moving)+" · "+itDec(th.dist/1000,1)+" km":"—"}</td>

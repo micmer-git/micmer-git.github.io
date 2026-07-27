@@ -275,16 +275,19 @@ const clock=s=>{s=Math.round(s);const h=Math.floor(s/3600),m=Math.floor(s%3600/6
 const med=a=>{const s=[...a].sort((x,y)=>x-y);return s.length?s[Math.floor(s.length/2)]:0;};
 
 /* ---- derived model (everything computed, nothing hardcoded) ---- */
+/* est days (2022, from the Strava archive, no GPS) count as full round trips */
+const nLegs=d=>d.est?2:Object.keys(d.legs).length;
 const TW=DAYS.filter(d=>d.legs.tw).map(d=>({d,l:d.legs.tw}));
 const TH=DAYS.filter(d=>d.legs.th).map(d=>({d,l:d.legs.th}));
-const LEGS=DAYS.reduce((a,d)=>a+Object.keys(d.legs).length,0);
+const LEGS=DAYS.reduce((a,d)=>a+nLegs(d),0);
 const CAR_KM=LEGS*CFG.carKm;
 const CO2=CAR_KM*CFG.co2KgPerKm;
 const LITRI=CAR_KM*CFG.lPer100Km/100;
 const priceOf=ym=>PREZZI[ym]!=null?PREZZI[ym]:CFG.priceLast;
-const EURO=DAYS.reduce((a,d)=>a+Object.keys(d.legs).length*CFG.carKm*CFG.lPer100Km/100*priceOf(d.d.slice(0,7)),0);
-const H_CAR=DAYS.reduce((a,d)=>a+(Object.keys(d.legs).length===2?CFG.carHRoundTrip:CFG.carHRoundTrip/2),0);
-const H_BIKE=DAYS.reduce((a,d)=>a+Object.values(d.legs).reduce((x,l)=>x+l.moving,0),0)/3600;
+const EURO=DAYS.reduce((a,d)=>a+nLegs(d)*CFG.carKm*CFG.lPer100Km/100*priceOf(d.d.slice(0,7)),0);
+const H_CAR=DAYS.reduce((a,d)=>a+(nLegs(d)===2?CFG.carHRoundTrip:CFG.carHRoundTrip/2),0);
+const H_BIKE=DAYS.reduce((a,d)=>a+(d.est?d.mov:Object.values(d.legs).reduce((x,l)=>x+l.moving,0)),0)/3600;
+const NEST=DAYS.filter(d=>d.est).length;
 const KCAL=DAYS.reduce((a,d)=>a+d.cal,0);
 const PIZZE=KCAL/CFG.pizzaKcal;
 const Y0=DAYS.length?+DAYS[0].d.slice(0,4):0, Y1=DAYS.length?+DAYS[DAYS.length-1].d.slice(0,4):0;
@@ -296,7 +299,7 @@ const MESI=["gen","feb","mar","apr","mag","giu","lug","ago","set","ott","nov","d
 /* per-month counts and € */
 const byMonth={};
 DAYS.forEach(d=>{const k=d.d.slice(0,7);(byMonth[k]=byMonth[k]||{n:0,eu:0});byMonth[k].n++;
-  byMonth[k].eu+=Object.keys(d.legs).length*CFG.carKm*CFG.lPer100Km/100*priceOf(k);});
+  byMonth[k].eu+=nLegs(d)*CFG.carKm*CFG.lPer100Km/100*priceOf(k);});
 const MONTHS=Object.keys(byMonth).sort();
 const bestMonth=MONTHS.length?MONTHS.reduce((a,b)=>byMonth[a].n>=byMonth[b].n?a:b):null;
 const mLabel=k=>MESI[+k.slice(5,7)-1]+" ’"+k.slice(2,4);
@@ -305,7 +308,8 @@ const mLabel=k=>MESI[+k.slice(5,7)-1]+" ’"+k.slice(2,4);
 document.getElementById("cov-ey").textContent=
   "Orezzo → Kilometro Rosso · "+(Y0===Y1?Y0:Y0+"–"+Y1);
 document.getElementById("n-days-fine").textContent=
-  DAYS.length?"Dalla prima timbratura ("+new Date(DAYS[0].d).toLocaleDateString("it-IT",{day:"numeric",month:"long",year:"numeric"})+") all'ultima ("+new Date(DAYS[DAYS.length-1].d).toLocaleDateString("it-IT",{day:"numeric",month:"long",year:"numeric"})+").":"";
+  DAYS.length?"Dalla prima timbratura ("+new Date(DAYS[0].d).toLocaleDateString("it-IT",{day:"numeric",month:"long",year:"numeric"})+") all'ultima ("+new Date(DAYS[DAYS.length-1].d).toLocaleDateString("it-IT",{day:"numeric",month:"long",year:"numeric"})+")."+
+  (NEST?" I "+NEST+" giorni del 2022 arrivano dall'archivio Strava, senza GPS.":""):"";
 document.getElementById("route-fine").textContent=
   "In auto sarebbero "+itDec(CFG.carKm,1)+" km di statale. La versione lunga è arrivata a "+itNum(MAXKM)+" km prima di entrare in ufficio.";
 document.getElementById("dep-fine").textContent=
