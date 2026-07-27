@@ -71,6 +71,15 @@ button{font-family:inherit}
 .viz svg{display:block;width:100%;height:auto;overflow:visible}
 svg text{font-family:var(--sans)}
 
+/* parallel-day canvas slide */
+.pd{width:100%;display:flex;flex-direction:column;align-items:center}
+.pd canvas{width:min(86vw,44vh,440px);height:min(86vw,44vh,440px)}
+.pd-clock{font-family:var(--serif);font-size:clamp(2rem,9vw,2.9rem);line-height:1;margin-top:2px}
+.pd-live{font-size:.74rem;color:var(--ink-2);margin:5px 0 6px;min-height:1em}
+.gifbtn{display:inline-block;margin-top:14px;font-size:.78rem;font-weight:600;padding:9px 16px;
+  border-radius:999px;border:1px solid var(--rule);color:var(--ink-2);text-decoration:none;background:#fff}
+.gifbtn:hover{color:var(--ink)}
+
 /* stat pair cards */
 .recs{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:8px;width:100%}
 .rec{flex:1;min-width:130px;max-width:220px;padding:22px 18px;border-radius:18px;
@@ -179,6 +188,21 @@ svg text{font-family:var(--sans)}
       <h2 class="mid stg stg2">In sella alle<br><em style="font-style:italic;color:var(--dawn)" class="tnum" id="n-dep">—</em></h2>
       <div class="viz stg stg3" id="viz-dep" role="img" aria-label="Distribuzione degli orari di partenza: quasi tutte le andate partono prima delle sette"></div>
       <p class="fine stg stg4" id="dep-fine"></p>
+    </div>
+    <button class="cont" data-next aria-label="Continua"><span>continua</span><span class="ch">↓</span></button>
+  </section>
+
+  <!-- 3b · parallel day -->
+  <section class="slide sl-cream" id="smap" data-pal="light" aria-label="La giornata in parallelo: tutte le giornate animate insieme sulla stessa mappa">
+    <div class="wrap">
+      <div class="ey stg stg1">Tutte le giornate, sovrapposte</div>
+      <div class="pd stg stg2">
+        <div class="pd-clock tnum" id="pd-clock">–:–</div>
+        <div class="pd-live" id="pd-live">&nbsp;</div>
+        <canvas id="pd-cv" aria-hidden="true"></canvas>
+      </div>
+      <p class="fine stg stg3" id="pd-fine"></p>
+      <a class="gifbtn stg stg4" href="bike-to-work.gif" download>scarica la GIF quadrata ↓</a>
     </div>
     <button class="cont" data-next aria-label="Continua"><span>continua</span><span class="ch">↓</span></button>
   </section>
@@ -386,8 +410,107 @@ function drawEuro(host){
   });
 }
 
+/* ---- parallel-day canvas animation (slide smap) ---- */
+const RUNNERS=[];let PT0=1e12,PT1=0;
+DAYS.forEach(d=>(d.acts||[]).forEach(id=>{
+  const trk=(typeof TRACKS!=="undefined")?TRACKS[id]:null;
+  if(!trk||trk.length<4)return;
+  RUNNERS.push({trk,t0:trk[0][0],t1:trk[trk.length-1][0]});
+  PT0=Math.min(PT0,trk[0][0]);PT1=Math.max(PT1,trk[trk.length-1][0]);
+}));
+PT0-=600;PT1+=900;
+document.getElementById("pd-fine").textContent=RUNNERS.length?
+  RUNNERS.length+" giornate GPS in un solo giorno · l'orologio rallenta dove succede qualcosa: l'andata all'alba, mezzogiorno, il ritorno.":"";
+/* virtual seconds per real second — lingers on morning, midday, evening */
+function pdRate(vt){
+  const h=vt/3600,P=[[4.5,1300],[8.3,1300],[9.3,6500],[11.3,6500],[12.0,2000],
+    [13.3,2000],[14.0,5500],[15.2,5500],[16.0,1250],[20.4,1250]];
+  for(let i=0;i<P.length-1;i++){const[a,va]=P[i],[b,vb]=P[i+1];
+    if(h>=a&&h<=b){let f=b>a?(h-a)/(b-a):0;f=f*f*(3-2*f);return va+(vb-va)*f;}}
+  return 1300;
+}
+let pdGen=0;
+function pdStart(){
+  const cv=document.getElementById("pd-cv"),ckEl=document.getElementById("pd-clock"),
+        lvEl=document.getElementById("pd-live"),slide=document.getElementById("smap");
+  if(!RUNNERS.length)return;
+  const ctx=cv.getContext?cv.getContext("2d"):null;
+  const gen=++pdGen;
+  /* geometry: square, metres-true */
+  let la0=90,la1=-90,lo0=180,lo1=-180;
+  RUNNERS.forEach(r=>r.trk.forEach(p=>{if(p[1]<la0)la0=p[1];if(p[1]>la1)la1=p[1];
+    if(p[2]<lo0)lo0=p[2];if(p[2]>lo1)lo1=p[2];}));
+  const K=Math.cos((la0+la1)/2*Math.PI/180);
+  const css=cv.getBoundingClientRect().width||360,dpr=window.devicePixelRatio||1,S=Math.round(css*dpr);
+  const PAD=18*dpr,box=S-2*PAD,sc=Math.min(box/((lo1-lo0)*K),box/(la1-la0));
+  const ox=PAD+(box-(lo1-lo0)*K*sc)/2,oy=PAD+(box-(la1-la0)*sc)/2;
+  const X=(lat,lng)=>[ox+(lng-lo0)*K*sc,oy+(la1-lat)*sc];
+  const nearW=(lat,lng)=>{const dy=(lat-CFG.work[0])*111320,dx=(lng-CFG.work[1])*111320*K;
+    return dy*dy+dx*dx<=600*600;};
+  function posAt(r,t){const trk=r.trk;
+    if(t<=trk[0][0])return[trk[0][1],trk[0][2],false];
+    const n=trk.length-1;if(t>=trk[n][0])return[trk[n][1],trk[n][2],false];
+    let lo=0,hi=n;while(hi-lo>1){const m=(lo+hi)>>1;if(trk[m][0]<=t)lo=m;else hi=m;}
+    const a=trk[lo],b=trk[lo+1],g=b[0]-a[0],f=g>0?(t-a[0])/g:0;
+    return[a[1]+(b[1]-a[1])*f,a[2]+(b[2]-a[2])*f,g<240];}
+  if(!ctx){ckEl.textContent=clock(PT1);lvEl.textContent=RUNNERS.length+" giornate sovrapposte";return;}
+  cv.width=cv.height=S;
+  /* ghost routes, drawn once */
+  const ghost=document.createElement("canvas");ghost.width=ghost.height=S;
+  const gx=ghost.getContext("2d");
+  if(gx){gx.strokeStyle="#dedbce";gx.lineWidth=1*dpr;
+    RUNNERS.forEach(r=>{gx.beginPath();r.trk.forEach((p,i)=>{const[x,y]=X(p[1],p[2]);
+      i?gx.lineTo(x,y):gx.moveTo(x,y);});gx.stroke();});
+    [[CFG.home,"#faf8f3","casa"],[CFG.work,"#e8b23a","Kilometro Rosso"]].forEach(([pt,fill,lab])=>{
+      const[x,y]=X(pt[0],pt[1]);gx.beginPath();gx.arc(x,y,5*dpr,0,7);gx.fillStyle=fill;gx.fill();
+      gx.lineWidth=2*dpr;gx.strokeStyle="#14150f";gx.stroke();
+      gx.fillStyle="#5c5f52";gx.font=(11*dpr)+"px Inter,sans-serif";gx.fillText(lab,x+9*dpr,y+4*dpr);});}
+  const FADE=3600;
+  function render(vt){
+    ctx.clearRect(0,0,S,S);ctx.drawImage(ghost,0,0);
+    let road=0,office=0;
+    const evening=vt>13*3600,col=evening?"#3b5bb5":"#e0932f";
+    RUNNERS.forEach(r=>{
+      if(vt<r.t0||vt>r.t1+1800)return;
+      const[lat,lng,moving]=posAt(r,vt),[x,y]=X(lat,lng);
+      const done=vt>r.t1,fade=done?Math.max(0,1-(vt-r.t1)/1800):1;
+      /* trail in 3 alpha bands */
+      const win=[];for(let i=0;i<r.trk.length;i++){const t=r.trk[i][0];
+        if(t>vt)break;if(t>=vt-FADE)win.push(X(r.trk[i][1],r.trk[i][2]));}
+      if(!done)win.push([x,y]);
+      const n=win.length;
+      if(n>1){ctx.lineWidth=1.8*dpr;ctx.lineCap="round";ctx.strokeStyle=col;
+        const bands=[[0,.33,.10],[.33,.66,.26],[.66,1,.5]];
+        bands.forEach(([f0,f1,al])=>{const i0=Math.floor(f0*(n-1)),i1=Math.floor(f1*(n-1));
+          if(i1<=i0)return;ctx.globalAlpha=al*fade;ctx.beginPath();
+          for(let i=i0;i<=i1;i++){i===i0?ctx.moveTo(win[i][0],win[i][1]):ctx.lineTo(win[i][0],win[i][1]);}
+          ctx.stroke();});
+        ctx.globalAlpha=1;}
+      if(done)return;
+      if(nearW(lat,lng)&&!moving){office++;
+        ctx.fillStyle="#8f9382";ctx.beginPath();ctx.arc(x,y,2.3*dpr,0,7);ctx.fill();}
+      else{road++;
+        ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(x,y,4.4*dpr,0,7);ctx.fill();
+        ctx.fillStyle=col;ctx.beginPath();ctx.arc(x,y,3.3*dpr,0,7);ctx.fill();}
+    });
+    ckEl.textContent=clock(vt);
+    lvEl.textContent="in strada "+road+" · in ufficio "+office;
+  }
+  if(reduce||!raf){render(PT1-1);ckEl.textContent=clock(PT1);
+    lvEl.textContent=RUNNERS.length+" giornate sovrapposte";return;}
+  let vt=PT0,last=nowMs(),hold=0;
+  (function step(){
+    if(gen!==pdGen||!slide.classList.contains("in"))return;
+    const t=nowMs(),dt=Math.min(.1,(t-last)/1000);last=t;
+    if(hold>0){hold-=dt;if(hold<=0)vt=PT0;}
+    else{vt+=pdRate(vt)*dt;if(vt>=PT1){vt=PT1;hold=1.8;}}
+    render(vt);raf(step);
+  })();
+}
+
 /* ---- reveal orchestration ---- */
 const REVEAL={
+  smap:pdStart,
   s1:()=>countTo(document.getElementById("n-days"),DAYS.length),
   s2:()=>{countTo(document.getElementById("r-km"),MKM,{dec:0});
           countTo(document.getElementById("r-up"),MUP);},
