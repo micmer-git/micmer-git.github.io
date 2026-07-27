@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5">
+<title>Bike to Work — casa → Kilometro Rosso</title>
+<meta name="description" content="Tutti i giorni in cui il tragitto casa–lavoro è stato fatto in bici: CO₂ evitata, benzina non comprata, ore d'auto restituite, pizze guadagnate.">
+<meta name="author" content="micmer — Michele Merelli">
+<meta name="theme-color" content="#131017">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🚲%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf8f3; --ink:#14150f; --ink-2:#5c5f52; --ink-3:#8f9382; --rule:#e4e1d6;
+  --dawn:#e0932f; --dusk:#3b5bb5; --green:#6AAF49; --gold:#e8b23a;
+  --serif:"Instrument Serif",Georgia,serif; --sans:"Inter",system-ui,-apple-system,sans-serif;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--sans);background:#131017;color:var(--ink);-webkit-font-smoothing:antialiased;
+  overscroll-behavior-y:none}
+.tnum{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
+
+/* ===== story scaffold ===== */
+.story{height:100dvh;overflow-y:scroll;scroll-snap-type:y mandatory;scroll-behavior:smooth;
+  scrollbar-width:none;-ms-overflow-style:none}
+.story::-webkit-scrollbar{display:none}
+.slide{height:100dvh;scroll-snap-align:start;scroll-snap-stop:always;position:relative;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
+  padding:calc(64px + env(safe-area-inset-top)) 26px calc(74px + env(safe-area-inset-bottom));
+  overflow:hidden}
+.wrap{width:100%;max-width:600px;display:flex;flex-direction:column;align-items:center;gap:0}
+
+/* slide palettes — night cover, cream body, dawn & dusk accents */
+.sl-night{background:radial-gradient(120% 90% at 50% 118%,#3a2a17 0%,#221a14 34%,#131017 72%);color:#faf8f3}
+.sl-night .ey{color:#b3a893}.sl-night .sub{color:#d6cfc0}.sl-night .fine{color:#8d8578}
+.sl-cream{background:var(--bg);color:var(--ink)}
+.sl-cream .ey{color:var(--ink-3)}.sl-cream .sub{color:var(--ink-2)}.sl-cream .fine{color:var(--ink-3)}
+.sl-dawn{background:linear-gradient(165deg,#fdf3e4,#f8e3c4);color:#432c0b}
+.sl-dawn .ey{color:#a06715}.sl-dawn .sub{color:#5f420f}.sl-dawn .fine{color:#a07b3e}
+.sl-green{background:linear-gradient(160deg,#eef5e9,#dfeed4);color:#1c3311}
+.sl-green .ey{color:#4d7238}.sl-green .sub{color:#2f4a22}.sl-green .fine{color:#5f7d4c}
+.sl-dusk{background:linear-gradient(170deg,#1a2038,#232f56);color:#f0f1f8}
+.sl-dusk .ey{color:#9aa5cf}.sl-dusk .sub{color:#ccd3ec}.sl-dusk .fine{color:#8991b8}
+
+/* type */
+.ey{font-size:.72rem;text-transform:uppercase;letter-spacing:.2em;font-weight:600;margin-bottom:22px}
+.big{font-family:var(--serif);font-weight:400;line-height:.9;letter-spacing:-.02em;
+  font-size:clamp(4.4rem,26vw,10rem)}
+.mid{font-family:var(--serif);font-weight:400;line-height:.98;letter-spacing:-.015em;
+  font-size:clamp(2.4rem,10vw,4.2rem)}
+.h{font-family:var(--serif);font-weight:400;line-height:1;letter-spacing:-.01em;
+  font-size:clamp(2rem,8vw,3.2rem)}
+.sub{font-size:clamp(1.02rem,4.4vw,1.28rem);line-height:1.5;max-width:26ch;margin:18px auto 0}
+.sub b{font-weight:600}
+.fine{font-size:.82rem;line-height:1.5;margin-top:16px;max-width:32ch}
+.unit{font-size:.42em;opacity:.55}
+
+/* staged reveal */
+.stg{opacity:0;transform:translateY(22px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.in .stg{opacity:1;transform:none}
+.in .stg1{transition-delay:.05s}.in .stg2{transition-delay:.16s}.in .stg3{transition-delay:.28s}
+.in .stg4{transition-delay:.42s}.in .stg5{transition-delay:.56s}
+
+.viz{width:100%;margin:26px 0 0}
+.viz svg{display:block;width:100%;height:auto;overflow:visible}
+svg text{font-family:var(--sans)}
+
+/* stat pair cards */
+.recs{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:8px;width:100%}
+.rec{flex:1;min-width:130px;max-width:220px;padding:22px 18px;border-radius:18px;
+  background:rgba(127,127,110,.10);border:1px solid rgba(127,127,110,.18)}
+.sl-night .rec,.sl-dusk .rec{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12)}
+.rec .ic{font-size:1.5rem}
+.rec .t{font-family:var(--serif);font-size:clamp(2.2rem,11vw,3.2rem);line-height:1;margin-top:8px}
+.rec .l{font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;margin-top:10px;opacity:.7;font-weight:600}
+.rec .dt{font-size:.8rem;margin-top:6px;opacity:.55}
+
+/* pizza grid */
+.pizzas{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:360px;margin:22px auto 0}
+.pz{font-size:1.25rem;line-height:1;opacity:.12;transform:scale(.6);
+  transition:opacity .45s var(--ease),transform .45s var(--ease)}
+.pz.on{opacity:1;transform:none}
+
+/* progress rail */
+.rail{position:fixed;top:calc(10px + env(safe-area-inset-top));left:12px;right:12px;z-index:40;
+  display:flex;gap:5px;pointer-events:none}
+.rail i{flex:1;height:3px;border-radius:3px;background:rgba(140,140,120,.28);overflow:hidden}
+.rail i b{display:block;height:100%;width:0;border-radius:3px;background:currentColor;
+  transition:width .4s var(--ease)}
+.rail.on-dark{color:#faf8f3}.rail.on-light{color:#14150f}
+.rail i b.done{width:100%}.rail i b.cur{width:100%}
+
+.brand{position:fixed;top:calc(22px + env(safe-area-inset-top));left:16px;z-index:41;
+  font-family:var(--serif);font-size:1.15rem;mix-blend-mode:difference;color:#fff;text-decoration:none}
+.skip{position:fixed;top:calc(20px + env(safe-area-inset-top));right:16px;z-index:41;
+  font-size:.72rem;font-weight:600;letter-spacing:.04em;padding:8px 12px;border-radius:999px;
+  text-decoration:none;background:rgba(127,127,110,.18);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);mix-blend-mode:difference;color:#fff}
+
+.cont{position:absolute;left:0;right:0;bottom:calc(24px + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;align-items:center;gap:4px;border:0;background:none;color:inherit;
+  cursor:pointer;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;opacity:.62}
+.cont:hover{opacity:1}
+.cont .ch{font-size:1.3rem;line-height:1;animation:bob 1.8s var(--ease) infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+
+.cta{display:inline-flex;align-items:center;gap:9px;margin-top:8px;padding:15px 26px;border-radius:999px;
+  background:#faf8f3;color:#14150f;text-decoration:none;font-weight:600;font-size:1rem;
+  box-shadow:0 8px 30px rgba(0,0,0,.28);transition:transform .18s var(--ease)}
+.cta:hover{transform:translateY(-2px)}
+.cta.ghost{background:transparent;color:inherit;box-shadow:none;border:1px solid currentColor;opacity:.8;
+  font-weight:500;font-size:.9rem;padding:12px 22px;cursor:pointer}
+.acts{display:flex;flex-direction:column;gap:12px;align-items:center;margin-top:26px}
+.tap-hint{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;opacity:.5;margin-top:30px}
+
+@media (prefers-reduced-motion:reduce){
+  .story{scroll-behavior:auto}
+  .stg{opacity:1!important;transform:none!important;transition:none!important}
+  .pz{opacity:1;transform:none;transition:none}
+  .cont .ch{animation:none}
+  .rail i b{transition:none}
+}
+</style>
+</head>
+<body>
+
+<a class="brand" href="#s0" aria-label="micmer — inizio">micmer</a>
+<a class="skip" href="esplora.html">esplora i dati →</a>
+<div class="rail on-dark" id="rail" aria-hidden="true"></div>
+
+<main class="story" id="story" tabindex="-1">
+
+  <!-- 0 · cover -->
+  <section class="slide sl-night" id="s0" data-pal="dark" aria-roledescription="schermata" aria-label="Copertina">
+    <div class="wrap">
+      <div class="ey stg stg1" id="cov-ey">Orezzo → Kilometro Rosso</div>
+      <h1 class="big stg stg2" style="font-size:clamp(2.7rem,14vw,6.4rem)">Al lavoro<br><em style="font-style:italic;color:var(--gold)">in bici</em></h1>
+      <p class="sub stg stg3" id="cov-sub">Si parte in discesa, al buio. Si torna in salita, la sera. Ogni numero di questa storia è una giornata vera.</p>
+      <div class="tap-hint stg stg4">scorri, o tocca per continuare</div>
+    </div>
+    <button class="cont stg stg5" data-next aria-label="Continua alla schermata successiva"><span>inizia</span><span class="ch">↓</span></button>
+  </section>
+
+  <!-- 1 · the number -->
+  <section class="slide sl-cream" id="s1" data-pal="light" aria-label="Quante volte al lavoro in bici">
+    <div class="wrap">
+      <div class="ey stg stg1" id="n-days-ey">Timbrature su due ruote</div>
+      <div class="big stg stg2 tnum" id="n-days">0</div>
+      <p class="sub stg stg3" id="n-days-sub">giorni di ufficio raggiunti <b>pedalando</b> invece che al volante.</p>
+      <p class="fine stg stg4" id="n-days-fine"></p>
+    </div>
+    <button class="cont" data-next aria-label="Continua"><span>continua</span><span class="ch">↓</span></button>
+  </section>
+
+  <!-- 2 · the route -->
+  <section class="slide sl-dawn" id="s2" data-pal="light" aria-label="La rotta: chilometri dell'andata e salita del ritorno">
+    <div class="wrap">
+      <div class="ey stg stg1">Il tragitto tipo</div>
+      <div class="recs stg stg2">
+        <div class="rec"><div class="ic">📏</div><div class="t tnum" id="r-km">0</div><div class="l">km all'andata</div><div class="dt">mediana · quasi tutta discesa</div></div>
+        <div class="rec"><div class="ic">⛰️</div><div class="t tnum" id="r-up">0</div><div class="l">m di salita al ritorno</div><div class="dt">mediana · casa è a quota 700</div></div>
+      </div>
+      <p class="sub stg stg3" id="route-sub">All'andata si plana verso la pianura. Il ritorno è la <b>vera tassa</b>: si paga in dislivello.</p>
+      <p class="fine stg stg4" id="route-fine"></p>
+    </div>
+    <button class="cont" data-next aria-label="Continua"><span>continua</span><span class="ch">↓</span></button>
+  </section>
+
+  <!-- 3 · departures -->
+  <section class="slide sl-cream" id="s3" data-pal="light" aria-label="Le partenze prima dell'alba">
+    <div class="wrap">
+      <div class="ey stg stg1">La sveglia</div>
+      <h2 class="mid stg stg2">In sella alle<br><em style="font-style:italic;color:var(--dawn)" class="tnum" id="n-dep">—</em></h2>
+      <div class="viz stg stg3" id="viz-dep" role="img" aria-label="Distribuzione degli orari di partenza: quasi tutte le andate partono prima delle sette"></div>
+      <p class="fine stg stg4" id="dep-fine"></p>
+    </div>
+    <button class="cont" data-next aria-label="Continua"><span>continua</span><span class="ch">↓</span></button>
+  </section>
+
+  <!-- 4 · consistency -->
+  <section class="slide sl-cream" id="s4" data-pal="light" aria-label="La costanza, mese per mese">
+    <div class="wrap">
+      <div class="ey stg stg1">La costanza</div>
+      <h2 class="h stg stg2">Non una volta.<br>Un'<em style="font-style:italic;color:var(--dawn)">abitudine</em>.</h2>
+      <div class="viz stg stg3" id="viz-cons" role="img" aria-label="Giorni di bike-to-work per mese"></div>
+      <p class="fine stg stg4" id="cons-fine"></p>
+    </div>
+    <button class="cont" data-next aria-label="Continua"><span>continua</span><span class="ch">↓</span></button>
+  </section>
+
+  <!-- 5 · CO2 -->
+  <section class="slide sl-green" id="s5" data-pal="light" aria-label="CO2 evitata">
+    <div class="wrap">
+      <div class="ey stg stg1">L'auto rimasta in garage</div>
+      <div class="mid stg stg2 tnum"><span id="n-co2">0</span><span class="unit"> kg CO₂</span></div>
+      <p class="sub stg stg3" id="co2-sub">mai usciti da un tubo di scappamento: <b class="tnum" id="n-carkm">0</b> km d'auto rimasti sulla carta.</p>
+      <p class="fine stg stg4" id="co2-fine"></p>
+    </div>
+    <button class="cont" data-next aria-label="Continua"><span>continua</span><span class="ch">↓</span></button>
+  </section>
+
+  <!-- 6 · fuel money -->
+  <section class="slide sl-cream" id="s6" data-pal="light" aria-label="Benzina non comprata">
+    <div class="wrap">
+      <div class="ey stg stg1">Dal benzinaio, mai visto</div>
+      <div class="recs stg stg2">
+        <div class="rec"><div class="ic">⛽</div><div class="t tnum" id="n-litri">0</div><div class="l">litri di benzina</div><div class="dt">mai pompati</div></div>
+        <div class="rec"><div class="ic">💶</div><div class="t tnum" id="n-euro">0</div><div class="l">euro risparmiati</div><div class="dt">ai prezzi del mese</div></div>
+      </div>
+      <div class="viz stg stg3" id="viz-euro" role="img" aria-label="Euro di benzina risparmiati per mese"></div>
+      <p class="fine stg stg4" id="euro-fine"></p>
+    </div>
+    <button class="cont" data-next aria-label="Continua"><span>continua</span><span class="ch">↓</span></button>
+  </section>
+
+  <!-- 7 · time -->
+  <section class="slide sl-dusk" id="s7" data-pal="dark" aria-label="Il tempo: ore d'auto evitate">
+    <div class="wrap">
+      <div class="ey stg stg1">Il conto del tempo</div>
+      <div class="recs stg stg2">
+        <div class="rec"><div class="ic">🚗</div><div class="t tnum" id="n-hcar">0</div><div class="l">ore d'auto evitate</div><div class="dt">2 h a giornata</div></div>
+        <div class="rec"><div class="ic">🚴</div><div class="t tnum" id="n-hbike">0</div><div class="l">ore pedalate</div><div class="dt">misurate dal GPS</div></div>
+      </div>
+      <p class="sub stg stg3" id="time-sub"></p>
+    </div>
+    <button class="cont" data-next aria-label="Continua"><span>continua</span><span class="ch">↓</span></button>
+  </section>
+
+  <!-- 8 · pizzas -->
+  <section class="slide sl-dawn" id="s8" data-pal="light" aria-label="Pizze guadagnate">
+    <div class="wrap">
+      <div class="ey stg stg1">Il premio, in valuta seria</div>
+      <div class="big stg stg2 tnum" id="n-pizze" style="font-size:clamp(4rem,22vw,8.5rem)">0</div>
+      <p class="sub stg stg3">pizze intere bruciate pedalando verso la scrivania.</p>
+      <div class="pizzas stg stg4" id="pizzas" aria-hidden="true"></div>
+      <p class="fine stg stg5" id="pz-fine"></p>
+    </div>
+    <button class="cont" data-next aria-label="Continua"><span>continua</span><span class="ch">↓</span></button>
+  </section>
+
+  <!-- 9 · closing -->
+  <section class="slide sl-night" id="s9" data-pal="dark" aria-label="Fine — esplora i dati">
+    <div class="wrap">
+      <div class="ey stg stg1">E domattina si ritimbra</div>
+      <h2 class="mid stg stg2">La sveglia è <em style="font-style:italic;color:var(--gold)">presto</em>.</h2>
+      <p class="sub stg stg3" id="close-sub">Ogni numero di questa storia esce dal GPS. C'è anche una mappa dove tutte le mattine partono <b>insieme</b>.</p>
+      <div class="acts stg stg4">
+        <a class="cta" href="esplora.html">Guarda tutte le partenze <span aria-hidden="true">→</span></a>
+        <button class="cta ghost" data-top>↑ Rivedi la storia</button>
+      </div>
+      <p class="fine stg stg5">Fatto pedalando · micmer</p>
+    </div>
+  </section>
+
+</main>
+
+<script src="_data.js"></script>
+<script>
+"use strict";
+const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
+const raf=window.requestAnimationFrame?window.requestAnimationFrame.bind(window):null;
+const nowMs=()=>(window.performance&&performance.now)?performance.now():0;
+const NS="http://www.w3.org/2000/svg";
+const E=(p,t,a,x)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(x!=null)e.textContent=x;p.appendChild(e);return e;};
+const svg=(w,h)=>{const s=document.createElementNS(NS,"svg");s.setAttribute("viewBox",`0 0 ${w} ${h}`);s.setAttribute("width","100%");return s;};
+const itNum=v=>Math.round(v).toLocaleString("it-IT");
+const itDec=(v,d)=>v.toFixed(d).replace(".",",");
+const clock=s=>{s=Math.round(s);const h=Math.floor(s/3600),m=Math.floor(s%3600/60);return h+":"+String(m).padStart(2,"0");};
+const med=a=>{const s=[...a].sort((x,y)=>x-y);return s.length?s[Math.floor(s.length/2)]:0;};
+
+/* ---- derived model (everything computed, nothing hardcoded) ---- */
+const TW=DAYS.filter(d=>d.legs.tw).map(d=>({d,l:d.legs.tw}));
+const TH=DAYS.filter(d=>d.legs.th).map(d=>({d,l:d.legs.th}));
+const LEGS=DAYS.reduce((a,d)=>a+Object.keys(d.legs).length,0);
+const CAR_KM=LEGS*CFG.carKm;
+const CO2=CAR_KM*CFG.co2KgPerKm;
+const LITRI=CAR_KM*CFG.lPer100Km/100;
+const priceOf=ym=>PREZZI[ym]!=null?PREZZI[ym]:CFG.priceLast;
+const EURO=DAYS.reduce((a,d)=>a+Object.keys(d.legs).length*CFG.carKm*CFG.lPer100Km/100*priceOf(d.d.slice(0,7)),0);
+const H_CAR=DAYS.reduce((a,d)=>a+(Object.keys(d.legs).length===2?CFG.carHRoundTrip:CFG.carHRoundTrip/2),0);
+const H_BIKE=DAYS.reduce((a,d)=>a+Object.values(d.legs).reduce((x,l)=>x+l.moving,0),0)/3600;
+const KCAL=DAYS.reduce((a,d)=>a+d.cal,0);
+const PIZZE=KCAL/CFG.pizzaKcal;
+const Y0=DAYS.length?+DAYS[0].d.slice(0,4):0, Y1=DAYS.length?+DAYS[DAYS.length-1].d.slice(0,4):0;
+const MKM=med(TW.map(x=>x.l.dist))/1000, MUP=med(TH.map(x=>x.l.ascent));
+const MAXKM=TW.length?Math.max(...TW.map(x=>x.l.dist))/1000:0;
+const DEP=TW.map(x=>x.l.c0);
+const MDEP=med(DEP);
+const MESI=["gen","feb","mar","apr","mag","giu","lug","ago","set","ott","nov","dic"];
+/* per-month counts and € */
+const byMonth={};
+DAYS.forEach(d=>{const k=d.d.slice(0,7);(byMonth[k]=byMonth[k]||{n:0,eu:0});byMonth[k].n++;
+  byMonth[k].eu+=Object.keys(d.legs).length*CFG.carKm*CFG.lPer100Km/100*priceOf(k);});
+const MONTHS=Object.keys(byMonth).sort();
+const bestMonth=MONTHS.length?MONTHS.reduce((a,b)=>byMonth[a].n>=byMonth[b].n?a:b):null;
+const mLabel=k=>MESI[+k.slice(5,7)-1]+" ’"+k.slice(2,4);
+
+/* ---- captions ---- */
+document.getElementById("cov-ey").textContent=
+  "Orezzo → Kilometro Rosso · "+(Y0===Y1?Y0:Y0+"–"+Y1);
+document.getElementById("n-days-fine").textContent=
+  DAYS.length?"Dalla prima timbratura ("+new Date(DAYS[0].d).toLocaleDateString("it-IT",{day:"numeric",month:"long",year:"numeric"})+") all'ultima ("+new Date(DAYS[DAYS.length-1].d).toLocaleDateString("it-IT",{day:"numeric",month:"long",year:"numeric"})+").":"";
+document.getElementById("route-fine").textContent=
+  "In auto sarebbero "+itDec(CFG.carKm,1)+" km di statale. La versione lunga è arrivata a "+itNum(MAXKM)+" km prima di entrare in ufficio.";
+document.getElementById("dep-fine").textContent=
+  "Partenza mediana dell'andata. La più mattiniera: "+clock(DEP.length?Math.min(...DEP):0)+".";
+document.getElementById("cons-fine").textContent=
+  bestMonth?"Giorni al lavoro in bici, mese per mese · il record è "+mLabel(bestMonth)+" con "+byMonth[bestMonth].n+" timbrature":"";
+document.getElementById("co2-fine").textContent=
+  "Auto media del parco italiano: "+itNum(CFG.co2KgPerKm*1000)+" g CO₂/km · andata e ritorno = "+itDec(CFG.carKm*2,1)+" km evitati a giornata piena.";
+document.getElementById("euro-fine").textContent=
+  "Consumo assunto "+itDec(CFG.lPer100Km,1)+" L/100 km · prezzo medio mensile della benzina (fonte MASE), mese per mese.";
+document.getElementById("time-sub").innerHTML=
+  "Il patto era: ogni giornata d'ufficio in auto vale <b>2 ore</b> di traffico. Pedalarci ne è costate "+itNum(H_BIKE)+" — ma erano le ore <b>migliori</b> della giornata.";
+document.getElementById("pz-fine").textContent=
+  itNum(KCAL)+" kcal bruciate nei tragitti · una margherita abbondante = "+CFG.pizzaKcal+" kcal.";
+
+/* ---- animation helpers ---- */
+function animate(dur,step,done){
+  if(reduce||!raf){step(1);done&&done();return;}
+  const t0=nowMs();
+  (function tick(){const p=Math.min(1,(nowMs()-t0)/dur);step(1-Math.pow(1-p,3));
+    if(p<1)raf(tick);else done&&done();})();
+}
+function countTo(el,to,{dec=0,asClock=false}={}){
+  animate(1150,e=>{const v=to*e;el.textContent=asClock?clock(v):(dec?itDec(v,dec):itNum(v));});
+}
+
+/* ---- charts ---- */
+function drawDep(host){
+  host.innerHTML="";const W=host.clientWidth||520,H=120,m={l:14,r:14,t:26,b:26};
+  const s=svg(W,H);host.appendChild(s);
+  const lo=4*3600,hi=10*3600;
+  const X=v=>m.l+(Math.min(hi,Math.max(lo,v))-lo)/(hi-lo)*(W-m.l-m.r);
+  for(let h=4;h<=10;h++){const x=X(h*3600);
+    E(s,"line",{x1:x,y1:H-m.b,x2:x,y2:H-m.b+5,stroke:"currentColor","stroke-opacity":.35});
+    E(s,"text",{x,y:H-6,"text-anchor":"middle","font-size":9.5,fill:"currentColor","fill-opacity":.55},h+":00");}
+  E(s,"line",{x1:m.l,y1:H-m.b,x2:W-m.r,y2:H-m.b,stroke:"currentColor","stroke-opacity":.25});
+  DEP.forEach((v,i)=>{const c=E(s,"circle",{cx:X(v),cy:H-m.b-14-(i%5)*9,r:0,fill:"#e0932f","fill-opacity":.75});
+    animate(900,e=>c.setAttribute("r",3.4*Math.min(1,e*1.5)));});
+  const mx=X(MDEP);
+  const ln=E(s,"line",{x1:mx,y1:H-m.b,x2:mx,y2:H-m.b,stroke:"#432c0b","stroke-width":1.6,"stroke-dasharray":"3 3"});
+  animate(1100,e=>ln.setAttribute("y1",H-m.b-(H-m.t-m.b)*e));
+}
+function drawCons(host){
+  host.innerHTML="";const W=host.clientWidth||520,H=Math.min(220,W*.46),m={l:10,r:10,t:16,b:30};
+  const s=svg(W,H);host.appendChild(s);
+  if(!MONTHS.length)return;
+  const mx=Math.max(...MONTHS.map(k=>byMonth[k].n));
+  const bw=(W-m.l-m.r)/MONTHS.length,barW=Math.max(3,Math.min(26,bw-4));
+  MONTHS.forEach((k,i)=>{const cx=m.l+i*bw+bw/2,h=byMonth[k].n/mx*(H-m.t-m.b);
+    const hot=k===bestMonth;
+    const r=E(s,"rect",{x:cx-barW/2,y:H-m.b,width:barW,height:0,rx:Math.min(5,barW/2),
+      fill:hot?"#e0932f":"currentColor","fill-opacity":hot?1:.25});
+    animate(1000,e=>{r.setAttribute("height",h*e);r.setAttribute("y",H-m.b-h*e);});
+    if(hot){const v=E(s,"text",{x:cx,y:0,"text-anchor":"middle","font-size":13,"font-weight":600,fill:"#b06f14"});
+      animate(1000,e=>{v.setAttribute("y",H-m.b-h*e-8);v.textContent=Math.round(byMonth[k].n*e);});}
+    const step=Math.ceil(MONTHS.length/(W<430?5:9));
+    if(i%step===0)E(s,"text",{x:cx,y:H-10,"text-anchor":"middle","font-size":9,fill:"currentColor","fill-opacity":.5},mLabel(k));
+  });
+}
+function drawEuro(host){
+  host.innerHTML="";const W=host.clientWidth||520,H=Math.min(190,W*.4),m={l:34,r:8,t:14,b:28};
+  const s=svg(W,H);host.appendChild(s);
+  if(!MONTHS.length)return;
+  const mx=Math.max(...MONTHS.map(k=>byMonth[k].eu));
+  for(let v=20;v<mx;v+=20){const y=H-m.b-v/mx*(H-m.t-m.b);
+    E(s,"line",{x1:m.l,y1:y,x2:W-m.r,y2:y,stroke:"currentColor","stroke-opacity":.09});
+    E(s,"text",{x:m.l-5,y:y+3.5,"text-anchor":"end","font-size":9,fill:"currentColor","fill-opacity":.5},v+"€");}
+  const bw=(W-m.l-m.r)/MONTHS.length,barW=Math.max(3,Math.min(24,bw-4));
+  MONTHS.forEach((k,i)=>{const cx=m.l+i*bw+bw/2,h=byMonth[k].eu/mx*(H-m.t-m.b);
+    const r=E(s,"rect",{x:cx-barW/2,y:H-m.b,width:barW,height:0,rx:Math.min(5,barW/2),fill:"#e8b23a"});
+    animate(1000,e=>{r.setAttribute("height",h*e);r.setAttribute("y",H-m.b-h*e);});
+    const step=Math.ceil(MONTHS.length/(W<430?5:9));
+    if(i%step===0)E(s,"text",{x:cx,y:H-9,"text-anchor":"middle","font-size":9,fill:"currentColor","fill-opacity":.5},mLabel(k));
+  });
+}
+
+/* ---- reveal orchestration ---- */
+const REVEAL={
+  s1:()=>countTo(document.getElementById("n-days"),DAYS.length),
+  s2:()=>{countTo(document.getElementById("r-km"),MKM,{dec:0});
+          countTo(document.getElementById("r-up"),MUP);},
+  s3:()=>{countTo(document.getElementById("n-dep"),MDEP,{asClock:true});
+          drawDep(document.getElementById("viz-dep"));},
+  s4:()=>drawCons(document.getElementById("viz-cons")),
+  s5:()=>{countTo(document.getElementById("n-co2"),CO2);
+          countTo(document.getElementById("n-carkm"),CAR_KM);},
+  s6:()=>{countTo(document.getElementById("n-litri"),LITRI);
+          countTo(document.getElementById("n-euro"),EURO);
+          drawEuro(document.getElementById("viz-euro"));},
+  s7:()=>{countTo(document.getElementById("n-hcar"),H_CAR);
+          countTo(document.getElementById("n-hbike"),H_BIKE);},
+  s8:()=>{countTo(document.getElementById("n-pizze"),PIZZE);
+          const box=document.getElementById("pizzas");box.innerHTML="";
+          const n=Math.min(80,Math.round(PIZZE));
+          for(let i=0;i<n;i++){const p=document.createElement("i");p.className="pz";p.textContent="🍕";box.appendChild(p);}
+          [...box.children].forEach((p,i)=>{const on=()=>p.classList.add("on");
+            if(reduce||!raf)on();else setTimeout(on,100+i*26);});},
+};
+const slides=[...document.querySelectorAll(".slide")];
+const rail=document.getElementById("rail");
+slides.forEach(()=>{const i=document.createElement("i");i.innerHTML="<b></b>";rail.appendChild(i);});
+const bars=[...rail.querySelectorAll("b")];
+let current=-1;
+function setCurrent(idx){
+  if(idx===current)return;current=idx;
+  bars.forEach((b,i)=>{b.className=i<idx?"done":i===idx?"cur":"";});
+  const dark=slides[idx].dataset.pal==="dark";
+  rail.className="rail "+(dark?"on-dark":"on-light");
+  document.querySelector('meta[name=theme-color]').setAttribute("content",dark?"#131017":"#faf8f3");
+}
+const io=new IntersectionObserver(es=>{
+  es.forEach(en=>{const i=slides.indexOf(en.target);
+    if(en.isIntersecting&&en.intersectionRatio>=.55){
+      setCurrent(i);en.target.classList.add("in");
+      if(REVEAL[en.target.id])REVEAL[en.target.id]();
+    }else if(!en.isIntersecting){en.target.classList.remove("in");}
+  });
+},{threshold:[0,.55,1]});
+slides.forEach(s=>io.observe(s));
+
+/* ---- navigation ---- */
+const go=i=>{i=Math.max(0,Math.min(slides.length-1,i));slides[i].scrollIntoView({behavior:reduce?"auto":"smooth"});};
+document.querySelectorAll("[data-next]").forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();go(current+1);}));
+document.querySelectorAll("[data-top]").forEach(b=>b.addEventListener("click",()=>go(0)));
+slides.forEach(sl=>sl.addEventListener("click",e=>{
+  if(e.target.closest("a,button"))return;
+  if(window.getSelection&&String(window.getSelection()))return;
+  if(current<slides.length-1)go(current+1);}));
+addEventListener("keydown",e=>{
+  if(["ArrowDown","ArrowRight"," ","PageDown"].includes(e.key)){e.preventDefault();go(current+1);}
+  else if(["ArrowUp","ArrowLeft","PageUp"].includes(e.key)){e.preventDefault();go(current-1);}
+  else if(e.key==="Home"){e.preventDefault();go(0);}
+  else if(e.key==="End"){e.preventDefault();go(slides.length-1);}
+});
+let rt;addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(()=>{
+  const s=slides[current];if(s&&REVEAL[s.id])REVEAL[s.id]();},220);});
+
+setCurrent(0);slides[0].classList.add("in");
+</script>
+</body>
+</html>

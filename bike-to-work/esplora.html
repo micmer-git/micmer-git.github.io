@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Bike to Work — esplora i dati</title>
+<meta name="description" content="Tutti i tragitti casa–Kilometro Rosso in bici: la giornata in parallelo sulla mappa, i tempi, la costanza, i risparmi.">
+<meta name="author" content="micmer — Michele Merelli">
+<meta name="theme-color" content="#faf8f3">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🚲%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{
+  --bg:#faf8f3; --ink:#14150f; --ink-2:#5c5f52; --ink-3:#8f9382; --rule:#e4e1d6; --rule-soft:#efece3;
+  --dawn:#e0932f; --dusk:#3b5bb5; --green:#6AAF49; --gold:#e8b23a;
+  --serif:"Instrument Serif",Georgia,serif; --sans:"Inter",system-ui,-apple-system,sans-serif;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--sans);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.tnum{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+a{color:inherit}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
+
+.shell{max-width:1060px;margin:0 auto;padding:0 22px 90px}
+header.hero{padding:64px 0 10px}
+.crumb{font-size:.8rem;color:var(--ink-3)}
+.crumb a{color:var(--ink-2);text-decoration:none;border-bottom:1px solid var(--rule)}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(2.6rem,7vw,4.6rem);line-height:.96;
+  letter-spacing:-.02em;margin:18px 0 10px}
+h1 em{font-style:italic;color:var(--dawn)}
+.lede{max-width:56ch;color:var(--ink-2);line-height:1.6;font-size:1.02rem}
+
+/* stat tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:34px 0 8px}
+.tile{border:1px solid var(--rule);border-radius:16px;padding:16px 14px;background:#fff9;transition:transform .18s var(--ease)}
+.tile:hover{transform:translateY(-2px)}
+.tile .v{font-family:var(--serif);font-size:clamp(1.7rem,4vw,2.3rem);line-height:1}
+.tile .l{font-size:.68rem;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-3);margin-top:8px;font-weight:600}
+
+/* sections */
+section.blk{margin-top:74px}
+.n{font-size:.72rem;letter-spacing:.18em;color:var(--ink-3);font-weight:600}
+h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.9rem,5vw,2.8rem);line-height:1.02;
+  letter-spacing:-.015em;margin:8px 0 8px}
+.note{max-width:60ch;color:var(--ink-2);line-height:1.6;font-size:.95rem;margin:0 0 20px}
+.caption{font-size:.8rem;color:var(--ink-3);margin-top:10px;line-height:1.5}
+.card{border:1px solid var(--rule);border-radius:18px;background:#fff;padding:18px;overflow:hidden}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.grid2{grid-template-columns:1fr}}
+svg{display:block;width:100%;height:auto}
+svg text{font-family:var(--sans)}
+
+/* jump nav */
+nav.jump{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 88%,transparent);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule-soft);
+  margin:26px -22px 0;padding:0 22px}
+nav.jump ul{list-style:none;display:flex;gap:4px;margin:0;padding:10px 0;overflow-x:auto;scrollbar-width:none}
+nav.jump ul::-webkit-scrollbar{display:none}
+nav.jump a{font-size:.78rem;font-weight:500;color:var(--ink-2);text-decoration:none;
+  padding:7px 12px;border-radius:999px;white-space:nowrap}
+nav.jump a.on{background:var(--ink);color:var(--bg)}
+
+/* map + player */
+#map{height:min(64vh,560px);border-radius:14px;background:#e8e6df;z-index:1}
+.player{display:flex;align-items:center;gap:14px;margin-top:14px;flex-wrap:wrap}
+.pbtn{width:52px;height:52px;border-radius:50%;border:0;background:var(--ink);color:var(--bg);
+  font-size:1.15rem;cursor:pointer;flex:0 0 auto;transition:transform .15s var(--ease)}
+.pbtn:hover{transform:scale(1.06)}
+.pclock{font-family:var(--serif);font-size:clamp(1.9rem,6vw,2.7rem);line-height:1;min-width:3.4ch}
+.pbar{flex:1;min-width:180px;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;
+  background:var(--rule);outline-offset:4px}
+.pbar::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;
+  background:var(--dawn);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.pbar::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--dawn);cursor:pointer;
+  border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.pspeed{border:1px solid var(--rule);background:#fff;border-radius:999px;padding:9px 14px;font-size:.8rem;
+  font-weight:600;cursor:pointer}
+.plive{display:flex;gap:18px;margin-top:12px;flex-wrap:wrap}
+.plive .st{font-size:.82rem;color:var(--ink-2)}
+.plive .st b{font-family:var(--serif);font-size:1.25rem;font-weight:400}
+.dot-dawn{color:var(--dawn)}.dot-dusk{color:var(--dusk)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.78rem;color:var(--ink-2);margin-top:10px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+
+/* table */
+.tblwrap{overflow-x:auto;border:1px solid var(--rule);border-radius:14px}
+table{border-collapse:collapse;width:100%;font-size:.82rem;min-width:640px}
+th{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);text-align:left;
+  padding:10px 12px;border-bottom:1px solid var(--rule);position:sticky;top:0;background:#fff}
+td{padding:8px 12px;border-bottom:1px solid var(--rule-soft)}
+tr:hover td{background:var(--rule-soft)}
+.pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.7rem;font-weight:600}
+.pill.aw{background:#f6e3c4;color:#8a5a10}
+.pill.rt{background:#dfe5f7;color:#314c9e}
+footer{margin-top:80px;font-size:.8rem;color:var(--ink-3);line-height:1.7}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<header class="hero">
+  <div class="crumb"><a href="index.html">← la storia</a> · <a href="../vita/">vita</a></div>
+  <h1>Al lavoro <em>in bici</em>, tutti i dati</h1>
+  <p class="lede" id="lede">Ogni tragitto casa → Kilometro Rosso riconosciuto dal GPS: partenze, tempi, costanza,
+  e quello che l'auto non ha consumato.</p>
+  <div class="tiles" id="tiles"></div>
+</header>
+
+<nav class="jump" aria-label="Sezioni"><ul id="jumps">
+  <li><a href="#giornata">La giornata</a></li>
+  <li><a href="#tempi">Tempi</a></li>
+  <li><a href="#costanza">Costanza</a></li>
+  <li><a href="#risparmi">Risparmi</a></li>
+  <li><a href="#curiosita">Curiosità</a></li>
+  <li><a href="#tabella">Tabella</a></li>
+</ul></nav>
+
+<section class="blk" id="giornata">
+  <div class="n">01</div>
+  <h2>La giornata in parallelo</h2>
+  <p class="note">Tutte le mattine sovrapposte in <b>un solo giorno</b>: ogni pallino è un giorno di bike-to-work
+  che corre sul suo orario reale. Premi play — le partenze si accendono una dopo l'altra, i pallini si ammucchiano
+  in ufficio, e la sera ripartono verso casa.</p>
+  <div class="card">
+    <div id="map" role="img" aria-label="Mappa con tutti i tragitti casa–lavoro; l'animazione mostra ogni giorno muoversi secondo il proprio orario"></div>
+    <div class="player">
+      <button class="pbtn" id="play" aria-label="Avvia o ferma l'animazione">▶</button>
+      <div class="pclock tnum" id="pclock">–:–</div>
+      <input class="pbar" id="pbar" type="range" min="0" max="1000" value="0" aria-label="Ora del giorno virtuale">
+      <button class="pspeed" id="pspeed" aria-label="Velocità dell'animazione">1×</button>
+    </div>
+    <div class="plive">
+      <div class="st">in strada <b class="tnum dot-dawn" id="live-road">0</b></div>
+      <div class="st">in ufficio <b class="tnum" id="live-office">0</b></div>
+      <div class="st">già a casa <b class="tnum dot-dusk" id="live-home">0</b></div>
+    </div>
+    <div class="legend">
+      <span><i style="background:var(--dawn)"></i>andata</span>
+      <span><i style="background:var(--dusk)"></i>ritorno</span>
+      <span><i style="background:var(--ink-3)"></i>fermo (ufficio)</span>
+    </div>
+  </div>
+  <p class="caption" id="cap-giornata"></p>
+</section>
+
+<section class="blk" id="tempi">
+  <div class="n">02</div>
+  <h2>Quanto ci vuole</h2>
+  <p class="note" id="note-tempi"></p>
+  <div class="grid2">
+    <div class="card"><svg id="c-scatter" role="img" aria-label="Distanza contro tempo in movimento per ogni tragitto: andate e ritorni"></svg>
+      <p class="caption">Ogni punto è un tragitto · distanza contro tempo in movimento · <span class="dot-dawn">●</span> andata <span class="dot-dusk">●</span> ritorno</p></div>
+    <div class="card"><svg id="c-hist" role="img" aria-label="Distribuzione dei tempi dell'andata"></svg>
+      <p class="caption" id="cap-hist">Tempi dell'andata, in classi da 10 minuti</p></div>
+  </div>
+</section>
+
+<section class="blk" id="costanza">
+  <div class="n">03</div>
+  <h2>La costanza</h2>
+  <p class="note" id="note-cons"></p>
+  <div class="grid2">
+    <div class="card"><svg id="c-matrix" role="img" aria-label="Giorni di bike-to-work per mese e anno"></svg>
+      <p class="caption">Timbrature in bici per mese · più scuro = più giorni</p></div>
+    <div class="card"><svg id="c-dow" role="img" aria-label="Giorni per giorno della settimana"></svg>
+      <p class="caption" id="cap-dow">Su quali giorni della settimana cade il bike-to-work</p></div>
+  </div>
+</section>
+
+<section class="blk" id="risparmi">
+  <div class="n">04</div>
+  <h2>Il conto del garage</h2>
+  <p class="note" id="note-risp"></p>
+  <div class="grid2">
+    <div class="card"><svg id="c-euro" role="img" aria-label="Euro di benzina risparmiati per mese, col prezzo del mese"></svg>
+      <p class="caption" id="cap-euro"></p></div>
+    <div class="card"><svg id="c-co2" role="img" aria-label="CO2 evitata cumulata nel tempo"></svg>
+      <p class="caption" id="cap-co2"></p></div>
+  </div>
+</section>
+
+<section class="blk" id="curiosita">
+  <div class="n">05</div>
+  <h2>Curiosità</h2>
+  <div class="tiles" id="curio"></div>
+</section>
+
+<section class="blk" id="tabella">
+  <div class="n">06</div>
+  <h2>Tutte le timbrature</h2>
+  <p class="note" id="note-tab"></p>
+  <div class="tblwrap">
+  <table>
+    <thead><tr><th>Data</th><th>Giro</th><th>Legs</th><th>Andata</th><th>Ritorno</th><th>Km</th><th>D+</th><th>Kcal</th></tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  </div>
+</section>
+
+<footer>
+  <p><b>Metodo.</b> Un giorno conta se il GPS di quel giorno parte (o finisce) a casa <i>e</i> passa dal Kilometro Rosso.
+  I tempi sono «in movimento» (le pause non contano). Assunzioni per l'auto rimasta ferma:
+  <span id="foot-assum"></span> Prezzi benzina: media mensile nazionale (MASE, prezzi settimanali pesati).
+  Dati: Garmin via Intervals.icu.</p>
+  <p><a href="index.html">← la storia</a> · <a href="../vita/">tutti i tracker</a></p>
+</footer>
+
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="_data.js"></script>
+<script>
+"use strict";
+const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
+const raf=window.requestAnimationFrame?window.requestAnimationFrame.bind(window):null;
+const NS="http://www.w3.org/2000/svg";
+const E=(p,t,a,x)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(x!=null)e.textContent=x;p.appendChild(e);return e;};
+const itNum=v=>Math.round(v).toLocaleString("it-IT");
+const itDec=(v,d)=>v.toFixed(d).replace(".",",");
+const clock=s=>{s=Math.round(s);const h=Math.floor(s/3600),m=Math.floor(s%3600/60);return h+":"+String(m).padStart(2,"0");};
+const mins=s=>{s=Math.round(s/60);return s>=60?Math.floor(s/60)+"h"+String(s%60).padStart(2,"0"):s+" min";};
+const med=a=>{const s=[...a].sort((x,y)=>x-y);return s.length?s[Math.floor(s.length/2)]:0;};
+const MESI=["gen","feb","mar","apr","mag","giu","lug","ago","set","ott","nov","dic"];
+const DOWN=["lun","mar","mer","gio","ven","sab","dom"];
+const mLabel=k=>MESI[+k.slice(5,7)-1]+" ’"+k.slice(2,4);
+const itDate=d=>new Date(d).toLocaleDateString("it-IT",{day:"numeric",month:"short",year:"numeric"});
+
+/* ---------- model ---------- */
+const TW=DAYS.filter(d=>d.legs.tw).map(d=>({d,l:d.legs.tw}));
+const TH=DAYS.filter(d=>d.legs.th).map(d=>({d,l:d.legs.th}));
+const LEGS=DAYS.reduce((a,d)=>a+Object.keys(d.legs).length,0);
+const CAR_KM=LEGS*CFG.carKm;
+const CO2=CAR_KM*CFG.co2KgPerKm;
+const LITRI=CAR_KM*CFG.lPer100Km/100;
+const priceOf=ym=>PREZZI[ym]!=null?PREZZI[ym]:CFG.priceLast;
+const euroOf=d=>Object.keys(d.legs).length*CFG.carKm*CFG.lPer100Km/100*priceOf(d.d.slice(0,7));
+const EURO=DAYS.reduce((a,d)=>a+euroOf(d),0);
+const H_CAR=DAYS.reduce((a,d)=>a+(Object.keys(d.legs).length===2?CFG.carHRoundTrip:CFG.carHRoundTrip/2),0);
+const H_BIKE=DAYS.reduce((a,d)=>a+Object.values(d.legs).reduce((x,l)=>x+l.moving,0),0)/3600;
+const KM_BIKE=DAYS.reduce((a,d)=>a+d.km,0);
+const GAIN=DAYS.reduce((a,d)=>a+d.gain,0);
+const KCAL=DAYS.reduce((a,d)=>a+d.cal,0);
+const PIZZE=KCAL/CFG.pizzaKcal;
+const byMonth={};
+DAYS.forEach(d=>{const k=d.d.slice(0,7);(byMonth[k]=byMonth[k]||{n:0,eu:0});byMonth[k].n++;byMonth[k].eu+=euroOf(d);});
+const MONTHS=Object.keys(byMonth).sort();
+const bestMonth=MONTHS.length?MONTHS.reduce((a,b)=>byMonth[a].n>=byMonth[b].n?a:b):null;
+
+/* ---------- hero ---------- */
+document.getElementById("lede").innerHTML=
+  "Ogni tragitto casa → Kilometro Rosso riconosciuto dal GPS, da "+itDate(DAYS[0].d)+" a "+itDate(DAYS[DAYS.length-1].d)+
+  ": partenze, tempi, costanza, e quello che l'auto non ha consumato.";
+const tiles=[
+  [itNum(DAYS.length),"giorni in bici"],
+  [itNum(KM_BIKE)+" km","pedalati per lavoro"],
+  [itNum(GAIN)+" m","dislivello totale"],
+  [itNum(CO2)+" kg","CO₂ evitata"],
+  [itNum(LITRI)+" L","benzina non comprata"],
+  [itNum(EURO)+" €","risparmiati"],
+  [itNum(H_CAR)+" h","d'auto evitate"],
+  [itDec(PIZZE,0),"pizze guadagnate 🍕"],
+];
+document.getElementById("tiles").innerHTML=
+  tiles.map(t=>`<div class="tile"><div class="v tnum">${t[0]}</div><div class="l">${t[1]}</div></div>`).join("");
+
+/* ---------- 01 · parallel day map ---------- */
+const runners=[];   // {trk, kind:[t->'aw'|'rt'|..], pts, t0,t1, marker, state}
+let T_MIN=1e12,T_MAX=0;
+DAYS.forEach(d=>d.acts.forEach(id=>{
+  const trk=TRACKS[id];
+  if(!trk||trk.length<4)return;
+  const t0=trk[0][0],t1=trk[trk.length-1][0];
+  T_MIN=Math.min(T_MIN,t0);T_MAX=Math.max(T_MAX,t1);
+  runners.push({trk,t0,t1,day:d});
+}));
+T_MIN=Math.max(0,T_MIN-600);T_MAX=Math.min(24*3600,T_MAX+900);
+document.getElementById("cap-giornata").textContent=
+  runners.length+" tracce GPS sovrapposte · l'orologio corre da "+clock(T_MIN)+" a "+clock(T_MAX)+
+  " · un secondo reale = mezz'ora virtuale (o un'ora, a 2×).";
+
+let map=null;
+function initMap(){
+  if(map||typeof L==="undefined")return;
+  map=L.map("map",{scrollWheelZoom:false,attributionControl:true});
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+    {attribution:"© OpenStreetMap © CARTO",subdomains:"abcd",maxZoom:19}).addTo(map);
+  const all=[];
+  runners.forEach(r=>{
+    const pts=r.trk.map(p=>[p[1],p[2]]);
+    all.push(...pts);
+    L.polyline(pts,{color:"#8f9382",weight:1.1,opacity:.16,interactive:false}).addTo(map);
+  });
+  if(all.length)map.fitBounds(L.latLngBounds(all),{padding:[18,18]});
+  L.circleMarker(CFG.home,{radius:7,color:"#14150f",weight:2,fillColor:"#faf8f3",fillOpacity:1})
+    .addTo(map).bindTooltip("casa",{permanent:false});
+  L.circleMarker(CFG.work,{radius:7,color:"#14150f",weight:2,fillColor:"#e8b23a",fillOpacity:1})
+    .addTo(map).bindTooltip("Kilometro Rosso",{permanent:false});
+  runners.forEach(r=>{
+    r.marker=L.circleMarker([r.trk[0][1],r.trk[0][2]],
+      {radius:0,color:"#fff",weight:1.2,fillColor:"#e0932f",fillOpacity:.92}).addTo(map);
+  });
+}
+
+/* position on a track at virtual time t (linear interp between fixes) */
+function posAt(r,t){
+  const trk=r.trk;
+  let lo=0,hi=trk.length-1;
+  if(t<=trk[0][0])return{lat:trk[0][1],lng:trk[0][2],moving:false,i:0};
+  if(t>=trk[hi][0])return{lat:trk[hi][1],lng:trk[hi][2],moving:false,i:hi};
+  while(hi-lo>1){const m=(lo+hi)>>1;if(trk[m][0]<=t)lo=m;else hi=m;}
+  const a=trk[lo],b=trk[hi],gap=b[0]-a[0];
+  const f=gap>0?(t-a[0])/gap:0;
+  return{lat:a[1]+(b[1]-a[1])*f,lng:a[2]+(b[2]-a[2])*f,moving:gap<240,i:lo};
+}
+const near=(la,ln,pt,r)=>{const dy=(la-pt[0])*111320,dx=(ln-pt[1])*111320*Math.cos(pt[0]*Math.PI/180);
+  return dy*dy+dx*dx<=r*r;};
+
+let vt=0,playing=false,speed=1,lastReal=0;
+const pbar=document.getElementById("pbar"),pclock=document.getElementById("pclock");
+const playBtn=document.getElementById("play");
+function renderFrame(){
+  pclock.textContent=clock(vt);
+  pbar.value=Math.round((vt-T_MIN)/(T_MAX-T_MIN)*1000);
+  let road=0,office=0,home=0;
+  runners.forEach(r=>{
+    if(!r.marker)return;
+    if(vt<r.t0){r.marker.setRadius(0);return;}
+    if(vt>r.t1+600){r.marker.setRadius(0);home++;return;}
+    const p=posAt(r,vt);
+    r.marker.setLatLng([p.lat,p.lng]);
+    const atWork=near(p.lat,p.lng,CFG.work,600);
+    const done=vt>r.t1;
+    if(done){ // end pulse then park
+      home++;r.marker.setRadius(Math.max(0,5-(vt-r.t1)/600*5));
+      r.marker.setStyle({fillColor:"#3b5bb5",fillOpacity:.5});
+    }else if(atWork&&!p.moving){
+      office++;r.marker.setRadius(2.6);
+      r.marker.setStyle({fillColor:"#8f9382",fillOpacity:.7});
+    }else{
+      road++;
+      const justStarted=vt-r.t0<420;
+      r.marker.setRadius(justStarted?6.5:4.2);
+      const evening=vt>13*3600;
+      r.marker.setStyle({fillColor:evening?"#3b5bb5":"#e0932f",fillOpacity:.92});
+    }
+  });
+  document.getElementById("live-road").textContent=road;
+  document.getElementById("live-office").textContent=office;
+  document.getElementById("live-home").textContent=home;
+}
+function tick(now){
+  if(!playing)return;
+  const dt=(now-lastReal)/1000;lastReal=now;
+  vt+=dt*1800*speed;           // 1 s real = 30 virtual minutes at 1×
+  if(vt>=T_MAX){vt=T_MAX;playing=false;playBtn.textContent="↺";}
+  renderFrame();
+  if(playing&&raf)raf(tick);
+}
+playBtn.addEventListener("click",()=>{
+  initMap();
+  if(playing){playing=false;playBtn.textContent="▶";return;}
+  if(vt>=T_MAX||vt===0)vt=T_MIN;
+  playing=true;playBtn.textContent="⏸";
+  if(reduce||!raf){ // reduced motion: jump straight to the end state
+    vt=T_MAX;playing=false;playBtn.textContent="↺";renderFrame();return;}
+  lastReal=performance.now();raf(tick);
+});
+pbar.addEventListener("input",()=>{
+  initMap();
+  vt=T_MIN+(+pbar.value/1000)*(T_MAX-T_MIN);
+  playing=false;playBtn.textContent="▶";renderFrame();
+});
+document.getElementById("pspeed").addEventListener("click",e=>{
+  speed=speed===1?2:1;e.target.textContent=speed+"×";
+});
+/* init the map lazily when the section approaches */
+new IntersectionObserver((es,io)=>{es.forEach(en=>{if(en.isIntersecting){initMap();
+  vt=T_MIN;renderFrame();io.disconnect();}});},{rootMargin:"300px"})
+  .observe(document.getElementById("map"));
+
+/* ---------- 02 · times ---------- */
+const PRW=TW.length?TW.reduce((a,x)=>x.l.moving<a.l.moving?x:a):null;
+document.getElementById("note-tempi").innerHTML=TW.length?
+  "L'andata tipica: <b>"+mins(med(TW.map(x=>x.l.moving)))+"</b> in movimento per "+
+  itDec(med(TW.map(x=>x.l.dist))/1000,1).replace(",0","")+" km. Il ritorno: <b>"+
+  (TH.length?mins(med(TH.map(x=>x.l.moving))):"—")+"</b>. La più rapida di sempre: <b>"+
+  mins(PRW.l.moving)+"</b> ("+itDate(PRW.d.d)+"). Poi ci sono le andate «lunghe» — deviazioni in quota prima dell'ufficio, fino a "+
+  itNum(Math.max(...TW.map(x=>x.l.dist))/1000)+" km.":"";
+function scatter(){
+  const host=document.getElementById("c-scatter");host.innerHTML="";
+  const W=host.clientWidth||480,H=Math.min(300,W*.68),m={l:44,r:12,t:12,b:34};
+  host.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  const pts=[...TW.map(x=>({km:x.l.dist/1000,mn:x.l.moving/60,c:"#e0932f"})),
+             ...TH.map(x=>({km:x.l.dist/1000,mn:x.l.moving/60,c:"#3b5bb5"}))];
+  if(!pts.length)return;
+  const xmax=Math.max(...pts.map(p=>p.km))*1.06,ymax=Math.max(...pts.map(p=>p.mn))*1.08;
+  const X=v=>m.l+v/xmax*(W-m.l-m.r),Y=v=>H-m.b-v/ymax*(H-m.t-m.b);
+  for(let v=30;v<ymax;v+=30){E(host,"line",{x1:m.l,y1:Y(v),x2:W-m.r,y2:Y(v),stroke:"#e4e1d6"});
+    E(host,"text",{x:m.l-6,y:Y(v)+3.5,"text-anchor":"end","font-size":9,fill:"#8f9382"},v+"′");}
+  for(let v=20;v<xmax;v+=20){E(host,"text",{x:X(v),y:H-12,"text-anchor":"middle","font-size":9,fill:"#8f9382"},v+" km");}
+  pts.forEach(p=>E(host,"circle",{cx:X(p.km),cy:Y(p.mn),r:3.2,fill:p.c,"fill-opacity":.62}));
+}
+function hist(){
+  const host=document.getElementById("c-hist");host.innerHTML="";
+  const W=host.clientWidth||480,H=Math.min(300,W*.68),m={l:10,r:10,t:24,b:34};
+  host.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  if(!TW.length)return;
+  const v=TW.map(x=>x.l.moving/60),bin=10;
+  const lo=Math.floor(Math.min(...v)/bin)*bin,hi=Math.ceil(Math.max(...v)/bin)*bin;
+  const bins=[];for(let b=lo;b<hi;b+=bin)bins.push({b,n:v.filter(x=>x>=b&&x<b+bin).length});
+  const mx=Math.max(...bins.map(b=>b.n));
+  const bw=(W-m.l-m.r)/bins.length,barW=Math.min(46,bw-6);
+  const mediana=med(v);
+  bins.forEach((b,i)=>{const cx=m.l+i*bw+bw/2,h=b.n/mx*(H-m.t-m.b);
+    const hot=mediana>=b.b&&mediana<b.b+bin;
+    E(host,"rect",{x:cx-barW/2,y:H-m.b-h,width:barW,height:h,rx:5,
+      fill:hot?"#e0932f":"#14150f","fill-opacity":hot?1:.16});
+    if(b.n)E(host,"text",{x:cx,y:H-m.b-h-6,"text-anchor":"middle","font-size":10,fill:hot?"#b06f14":"#8f9382","font-weight":hot?600:400},b.n);
+    E(host,"text",{x:cx,y:H-12,"text-anchor":"middle","font-size":9,fill:"#8f9382"},b.b+"–"+(b.b+bin)+"′");});
+  document.getElementById("cap-hist").textContent=
+    "Tempi dell'andata in classi da 10 minuti · la classe con la mediana ("+mins(mediana*60)+") è evidenziata.";
+}
+
+/* ---------- 03 · consistency ---------- */
+const dow=[0,0,0,0,0,0,0];DAYS.forEach(d=>dow[d.wd]++);
+const streakM=(()=>{let s=0,best=0,prev=null;MONTHS.forEach(k=>{
+  const [y,mo]=k.split("-").map(Number);
+  if(prev&&(y*12+mo)-(prev[0]*12+prev[1])===1)s++;else s=1;
+  best=Math.max(best,s);prev=[y,mo];});return best;})();
+document.getElementById("note-cons").innerHTML=
+  "Il bike-to-work non è (ancora) quotidiano — è un rito che torna: <b>"+MONTHS.length+
+  " mesi</b> con almeno una timbratura, e una striscia di <b>"+streakM+" mesi consecutivi</b>. Il mese d'oro: <b>"+
+  (bestMonth?mLabel(bestMonth)+"</b> con "+byMonth[bestMonth].n+" giorni.":"—</b>");
+function matrix(){
+  const host=document.getElementById("c-matrix");host.innerHTML="";
+  const years=[...new Set(DAYS.map(d=>+d.d.slice(0,4)))].sort();
+  const W=host.clientWidth||480,cell=Math.min(30,(W-70)/12),H=years.length*(cell+6)+40;
+  host.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  const mx=Math.max(...MONTHS.map(k=>byMonth[k].n));
+  years.forEach((y,r)=>{
+    E(host,"text",{x:0,y:r*(cell+6)+cell/2+14,"font-size":10,fill:"#5c5f52","font-weight":600},y);
+    for(let mo=1;mo<=12;mo++){
+      const k=y+"-"+String(mo).padStart(2,"0"),n=(byMonth[k]||{}).n||0;
+      const x=40+(mo-1)*(cell+2),yy=r*(cell+6)+10;
+      E(host,"rect",{x,y:yy,width:cell,height:cell,rx:5,
+        fill:n?"#e0932f":"#14150f","fill-opacity":n?.25+.75*(n/mx):.05});
+      if(n)E(host,"text",{x:x+cell/2,y:yy+cell/2+3.5,"text-anchor":"middle","font-size":9.5,
+        fill:n/mx>.55?"#fff":"#8a5a10","font-weight":600},n);
+    }});
+  for(let mo=0;mo<12;mo++)E(host,"text",{x:40+mo*(cell+2)+cell/2,y:H-8,"text-anchor":"middle",
+    "font-size":8.5,fill:"#8f9382"},MESI[mo][0].toUpperCase());
+}
+function dowChart(){
+  const host=document.getElementById("c-dow");host.innerHTML="";
+  const W=host.clientWidth||480,H=Math.min(300,W*.62),m={l:10,r:10,t:24,b:30};
+  host.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  const mx=Math.max(...dow),top=dow.indexOf(mx);
+  const bw=(W-m.l-m.r)/7,barW=Math.min(44,bw-8);
+  DOWN.forEach((dn,i)=>{const cx=m.l+i*bw+bw/2,h=mx?dow[i]/mx*(H-m.t-m.b):0;
+    E(host,"rect",{x:cx-barW/2,y:H-m.b-h,width:barW,height:h,rx:5,
+      fill:i===top?"#e0932f":"#14150f","fill-opacity":i===top?1:.16});
+    if(dow[i])E(host,"text",{x:cx,y:H-m.b-h-6,"text-anchor":"middle","font-size":10,
+      fill:i===top?"#b06f14":"#8f9382","font-weight":i===top?600:400},dow[i]);
+    E(host,"text",{x:cx,y:H-10,"text-anchor":"middle","font-size":10,fill:"#8f9382"},dn);});
+  document.getElementById("cap-dow").textContent=
+    "Il giorno preferito è il "+["lunedì","martedì","mercoledì","giovedì","venerdì","sabato","domenica"][top]+
+    " ("+mx+" volte).";
+}
+
+/* ---------- 04 · savings ---------- */
+document.getElementById("note-risp").innerHTML=
+  "Ogni giornata piena lascia in garage "+itDec(CFG.carKm*2,1)+" km d'auto. In totale: <b>"+itNum(CAR_KM)+
+  " km</b> mai guidati = <b>"+itNum(CO2)+" kg di CO₂</b>, <b>"+itNum(LITRI)+" litri</b> di benzina, <b>"+
+  itNum(EURO)+" €</b> — e <b>"+itNum(H_CAR)+" ore</b> di coda restituite (2 h per giornata, come da patto).";
+function euroChart(){
+  const host=document.getElementById("c-euro");host.innerHTML="";
+  const W=host.clientWidth||480,H=Math.min(300,W*.62),m={l:38,r:40,t:16,b:34};
+  host.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  if(!MONTHS.length)return;
+  const mx=Math.max(...MONTHS.map(k=>byMonth[k].eu));
+  const bw=(W-m.l-m.r)/MONTHS.length,barW=Math.max(3,Math.min(26,bw-4));
+  for(let v=20;v<mx;v+=20){const y=H-m.b-v/mx*(H-m.t-m.b);
+    E(host,"line",{x1:m.l,y1:y,x2:W-m.r,y2:y,stroke:"#e4e1d6"});
+    E(host,"text",{x:m.l-5,y:y+3.5,"text-anchor":"end","font-size":9,fill:"#8f9382"},v+"€");}
+  MONTHS.forEach((k,i)=>{const cx=m.l+i*bw+bw/2,h=byMonth[k].eu/mx*(H-m.t-m.b);
+    E(host,"rect",{x:cx-barW/2,y:H-m.b-h,width:barW,height:h,rx:Math.min(5,barW/2),fill:"#e8b23a"});
+    const step=Math.ceil(MONTHS.length/(W<430?5:8));
+    if(i%step===0)E(host,"text",{x:cx,y:H-12,"text-anchor":"middle","font-size":9,fill:"#8f9382"},mLabel(k));});
+  /* price line on the right axis */
+  const prices=MONTHS.map(k=>priceOf(k));
+  const plo=Math.min(...prices)*.98,phi=Math.max(...prices)*1.02;
+  const PY=v=>H-m.b-(v-plo)/(phi-plo)*(H-m.t-m.b);
+  const dpath=MONTHS.map((k,i)=>(i?"L":"M")+(m.l+i*bw+bw/2).toFixed(1)+","+PY(priceOf(k)).toFixed(1)).join("");
+  E(host,"path",{d:dpath,fill:"none",stroke:"#3b5bb5","stroke-width":1.8,"stroke-opacity":.75});
+  [plo+0.001,phi-0.001].forEach(v=>E(host,"text",{x:W-m.r+4,y:PY(v)+3.5,"font-size":9,fill:"#3b5bb5"},itDec(v,2)+"€/L"));
+  document.getElementById("cap-euro").textContent=
+    "Barre: euro risparmiati nel mese · linea blu: prezzo medio nazionale della benzina in quel mese.";
+}
+function co2Chart(){
+  const host=document.getElementById("c-co2");host.innerHTML="";
+  const W=host.clientWidth||480,H=Math.min(300,W*.62),m={l:40,r:12,t:14,b:34};
+  host.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  if(!DAYS.length)return;
+  let acc=0;const pts=DAYS.map(d=>{acc+=Object.keys(d.legs).length*CFG.carKm*CFG.co2KgPerKm;
+    return{t:new Date(d.d).getTime(),v:acc};});
+  const t0=pts[0].t,t1=pts[pts.length-1].t,vmax=acc*1.06;
+  const X=t=>m.l+(t-t0)/Math.max(1,t1-t0)*(W-m.l-m.r),Y=v=>H-m.b-v/vmax*(H-m.t-m.b);
+  for(let v=100;v<vmax;v+=100){E(host,"line",{x1:m.l,y1:Y(v),x2:W-m.r,y2:Y(v),stroke:"#e4e1d6"});
+    E(host,"text",{x:m.l-5,y:Y(v)+3.5,"text-anchor":"end","font-size":9,fill:"#8f9382"},v);}
+  let dth="M"+X(pts[0].t).toFixed(1)+","+Y(0).toFixed(1);
+  pts.forEach(p=>dth+="L"+X(p.t).toFixed(1)+","+Y(p.v).toFixed(1));
+  E(host,"path",{d:dth+"L"+X(t1).toFixed(1)+","+Y(0).toFixed(1)+"Z",fill:"#6AAF49","fill-opacity":.16});
+  E(host,"path",{d:dth,fill:"none",stroke:"#6AAF49","stroke-width":2.2});
+  const yrs=[...new Set(DAYS.map(d=>d.d.slice(0,4)))];
+  yrs.forEach(y=>{const t=new Date(y+"-07-01").getTime();if(t>t0&&t<t1)
+    E(host,"text",{x:X(t),y:H-12,"text-anchor":"middle","font-size":9,fill:"#8f9382"},y);});
+  document.getElementById("cap-co2").textContent=
+    "CO₂ evitata, cumulata giorno dopo giorno — in kg. Un albero adulto ne assorbe ~25 kg l'anno: fin qui "+
+    itDec(CO2/25,1)+" «anni-albero».";
+}
+
+/* ---------- 05 · curiosities ---------- */
+(function(){
+  const c=[];
+  if(TW.length){
+    const early=TW.reduce((a,x)=>x.l.c0<a.l.c0?x:a);
+    c.push([clock(early.l.c0),"la partenza più mattiniera",itDate(early.d.d)]);
+    const long=TW.reduce((a,x)=>x.l.dist>a.l.dist?x:a);
+    c.push([itNum(long.l.dist/1000)+" km","l'andata più lunga",(long.d.name||"")+" · "+itDate(long.d.d)]);
+    const fast=TW.reduce((a,x)=>x.l.moving<a.l.moving?x:a);
+    c.push([mins(fast.l.moving),"l'andata più veloce",itDate(fast.d.d)]);
+  }
+  c.push([itDec(GAIN/8849,1)+"×","Everest scalati per lavoro",itNum(GAIN)+" m totali"]);
+  const solo=DAYS.filter(d=>Object.keys(d.legs).length===1).length;
+  if(solo)c.push([solo,"giorni «a metà»","solo andata o solo ritorno in bici"]);
+  const dwellDays=DAYS.filter(d=>d.dwell);
+  if(dwellDays.length){const dm=med(dwellDays.map(d=>d.dwell));
+    c.push([mins(dm).replace("h","h "),"la giornata in ufficio tipica","misurata dal GPS fermo"]);}
+  c.push([itNum(KCAL),"kcal bruciate",itDec(PIZZE,0)+" margherite da "+CFG.pizzaKcal+" kcal"]);
+  document.getElementById("curio").innerHTML=
+    c.map(t=>`<div class="tile"><div class="v tnum">${t[0]}</div><div class="l">${t[1]}</div><div class="caption">${t[2]}</div></div>`).join("");
+})();
+
+/* ---------- 06 · table ---------- */
+document.getElementById("note-tab").textContent=
+  "Tutti i "+DAYS.length+" giorni, dal più recente. «Andata» e «ritorno» sono tempi in movimento.";
+document.getElementById("tbody").innerHTML=[...DAYS].reverse().map(d=>{
+  const tw=d.legs.tw,th=d.legs.th;
+  const legs=(tw?'<span class="pill aw">andata</span> ':'')+(th?'<span class="pill rt">ritorno</span>':'');
+  return `<tr><td class="tnum">${itDate(d.d)}</td><td>${(d.name||"").replace(/</g,"&lt;")}</td>
+  <td>${legs}</td><td class="tnum">${tw?mins(tw.moving)+" · "+itDec(tw.dist/1000,1)+" km":"—"}</td>
+  <td class="tnum">${th?mins(th.moving)+" · "+itDec(th.dist/1000,1)+" km":"—"}</td>
+  <td class="tnum">${itDec(d.km,0)}</td><td class="tnum">${itNum(d.gain)}</td><td class="tnum">${itNum(d.cal)}</td></tr>`;
+}).join("");
+
+/* ---------- footer assumptions ---------- */
+document.getElementById("foot-assum").textContent=
+  itDec(CFG.carKm,1)+" km a tratta (percorso stradale reale), "+itDec(CFG.lPer100Km,1)+
+  " L/100 km, "+itNum(CFG.co2KgPerKm*1000)+" g CO₂/km (parco circolante italiano), 2 ore per giornata d'ufficio in auto.";
+
+/* ---------- draw & scroll-spy ---------- */
+function renderCharts(){scatter();hist();matrix();dowChart();euroChart();co2Chart();}
+renderCharts();
+let rt;addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(renderCharts,220);});
+const links=[...document.querySelectorAll("nav.jump a")];
+const secs=links.map(a=>document.querySelector(a.getAttribute("href")));
+new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){
+  links.forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+en.target.id));}});},
+  {rootMargin:"-30% 0px -60% 0px"}).observe&&secs.forEach(s=>{
+    new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){
+      links.forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+en.target.id));}});},
+      {rootMargin:"-30% 0px -60% 0px"}).observe(s);});
+</script>
+</body>
+</html>
