@@ -268,7 +268,40 @@ svg text{font-family:var(--sans)}
     <button class="cont" data-next aria-label="Continua"><span>continua</span><span class="ch">↓</span></button>
   </section>
 
-  <!-- 9 · closing -->
+  <!-- 9 · la forma: il modello di Alan Couzens -->
+  <section class="slide sl-dusk" id="sfit" data-pal="dark" aria-label="Quanta forma fisica ha comprato il tragitto">
+    <div class="wrap">
+      <div class="ey stg stg1">E il corpo, intanto?</div>
+      <p class="sub stg stg2" id="fit-lead">Alan Couzens tiene una regola spannometrica per il motore aerobico:
+        <b>mezzo punto di VO₂max ogni 100 ore</b> di lavoro. Il tragitto per l'ufficio, da solo, ne ha messe
+        <b class="tnum" id="n-fith">0</b>.</p>
+      <div class="recs stg stg3">
+        <div class="rec"><div class="ic">🫁</div><div class="t tnum" id="n-fitv">0</div><div class="l">ml/kg/min comprati</div><div class="dt">solo andando al lavoro</div></div>
+        <div class="rec"><div class="ic">🧭</div><div class="t tnum" id="n-fitp">0</div><div class="l">% verso un VO₂max di 50</div><div class="dt">partendo da 40, da fermo</div></div>
+        <div class="rec"><div class="ic">⏳</div><div class="t tnum" id="n-fitm">0</div><div class="l">% della dose anti-età</div><div class="dt">servono 100 h l'anno</div></div>
+      </div>
+      <p class="fine stg stg4" id="fit-fine"></p>
+    </div>
+    <button class="cont" data-next aria-label="Continua"><span>continua</span><span class="ch">↓</span></button>
+  </section>
+
+  <!-- 10 · 50 at 50 -->
+  <section class="slide sl-dawn" id="s50" data-pal="light" aria-label="I tre bersagli 50-at-50 di Couzens">
+    <div class="wrap">
+      <div class="ey stg stg1">Il suo bersaglio per i cinquant'anni</div>
+      <h2 class="mid stg stg2">Tre volte <em style="font-style:italic;color:var(--dawn)">cinquanta</em>.</h2>
+      <div class="recs stg stg3">
+        <div class="rec"><div class="ic">🫀</div><div class="t tnum" id="n-vo2">0</div><div class="l">VO₂max</div><div class="dt">bersaglio &gt; 50</div></div>
+        <div class="rec"><div class="ic">💤</div><div class="t tnum" id="n-rhr">0</div><div class="l">battiti a riposo</div><div class="dt">bersaglio &lt; 50</div></div>
+        <div class="rec"><div class="ic">📶</div><div class="t tnum" id="n-hrv">0</div><div class="l">ms di HRV</div><div class="dt">bersaglio &gt; 50</div></div>
+      </div>
+      <p class="sub stg stg4" id="fit50-sub"></p>
+      <p class="fine stg stg5" id="fit50-fine"></p>
+    </div>
+    <button class="cont" data-next aria-label="Continua"><span>continua</span><span class="ch">↓</span></button>
+  </section>
+
+  <!-- 11 · closing -->
   <section class="slide sl-night" id="s9" data-pal="dark" aria-label="Fine — esplora i dati">
     <div class="wrap">
       <div class="ey stg stg1">E domattina si ritimbra</div>
@@ -328,6 +361,22 @@ const MONTHS=Object.keys(byMonth).sort();
 const bestMonth=MONTHS.length?MONTHS.reduce((a,b)=>byMonth[a].n>=byMonth[b].n?a:b):null;
 const mLabel=k=>MESI[+k.slice(5,7)-1]+" ’"+k.slice(2,4);
 
+/* ---- forma aerobica, modello Couzens (tutto derivato da FIT + H_BIKE) ---- */
+const VO2_BOUGHT=H_BIKE*FIT.rate;                                  /* ml/kg/min comprati pedalando al lavoro */
+const H_TO_TARGET=(FIT.target-FIT.baseline)/FIT.rate;              /* ore per andare da fermo a VO2max 50 */
+const PCT_TARGET=H_BIKE/H_TO_TARGET*100;
+/* dose di mantenimento: media degli anni civili completi, il primo e l'ultimo
+   sono tronconi e falserebbero la media */
+const hoursByYear={};
+DAYS.forEach(d=>{const y=d.d.slice(0,4);
+  hoursByYear[y]=(hoursByYear[y]||0)+(d.est?d.mov:Object.values(d.legs).reduce((x,l)=>x+l.moving,0))/3600;});
+const FULLY=Object.keys(hoursByYear).sort().slice(1,-1);
+const H_PER_YEAR=FULLY.length?FULLY.reduce((a,y)=>a+hoursByYear[y],0)/FULLY.length:0;
+const PCT_MAINT=H_PER_YEAR/FIT.maintPerYear*100;
+const VO2_PRED=FIT.baseline+FIT.archiveHours*FIT.rate;             /* controprova del modello */
+const YRS50=FIT.target-FIT.age;
+const PROJ50=FIT.vo2max-YRS50/10*FIT.declinePerDecade+YRS50*H_PER_YEAR*FIT.rate;
+
 /* ---- captions ---- */
 document.getElementById("cov-ey").textContent=
   "Orezzo → Kilometro Rosso · "+(Y0===Y1?Y0:Y0+"–"+Y1);
@@ -348,6 +397,17 @@ document.getElementById("time-sub").innerHTML=
   "Il patto era: ogni giornata d'ufficio in auto vale <b>2 ore</b> di traffico. Pedalarci ne è costate "+itNum(H_BIKE)+" — ma erano le ore <b>migliori</b> della giornata.";
 document.getElementById("pz-fine").textContent=
   itNum(KCAL)+" kcal bruciate nei tragitti · una margherita abbondante = "+CFG.pizzaKcal+" kcal.";
+document.getElementById("fit-fine").textContent=
+  "Media di "+itNum(H_PER_YEAR)+" ore l'anno sugli anni pieni ("+FULLY.join(", ")+"): il solo tragitto copre il "+
+  itNum(PCT_MAINT)+"% della dose che, secondo Couzens, annulla il calo di "+FIT.declinePerDecade+
+  " ml/kg/min per decennio fra i 30 e i 40 anni.";
+document.getElementById("fit50-sub").innerHTML=
+  "Couzens li mette a bersaglio per i <b>cinquant'anni</b>. Sono arrivati con "+YRS50+" anni di anticipo — "+
+  "e di questo passo, col solo tragitto, a cinquant'anni il modello ne dà ancora <b>"+itNum(PROJ50)+"</b>.";
+document.getElementById("fit50-fine").textContent=
+  "Controprova: "+itNum(FIT.archiveHours)+" ore in archivio dal "+FIT.archiveFrom+" predicono un VO₂max di "+
+  itNum(VO2_PRED)+", l'orologio ne misura "+FIT.vo2max+". La regola della bustina sbaglia di "+
+  Math.abs(Math.round(FIT.vo2max-VO2_PRED))+" punti — e resta una stima da polso, che si gonfia quando l'allenamento è intenso.";
 
 /* ---- animation helpers ---- */
 function animate(dur,step,done){
@@ -500,7 +560,7 @@ function pdStart(){
     lvEl.textContent=RUNNERS.length+" giornate sovrapposte";return;}
   let vt=PT0,last=nowMs(),hold=0;
   (function step(){
-    if(gen!==pdGen||!slide.classList.contains("in"))return;
+    if(gen!==pdGen||!slide.classList.contains("vis"))return;
     const t=nowMs(),dt=Math.min(.1,(t-last)/1000);last=t;
     if(hold>0){hold-=dt;if(hold<=0)vt=PT0;}
     else{vt+=pdRate(vt)*dt;if(vt>=PT1){vt=PT1;hold=1.8;}}
@@ -530,6 +590,13 @@ const REVEAL={
           for(let i=0;i<n;i++){const p=document.createElement("i");p.className="pz";p.textContent="🍕";box.appendChild(p);}
           [...box.children].forEach((p,i)=>{const on=()=>p.classList.add("on");
             if(reduce||!raf)on();else setTimeout(on,100+i*26);});},
+  sfit:()=>{countTo(document.getElementById("n-fith"),H_BIKE);
+            countTo(document.getElementById("n-fitv"),VO2_BOUGHT,{dec:2});
+            countTo(document.getElementById("n-fitp"),PCT_TARGET);
+            countTo(document.getElementById("n-fitm"),PCT_MAINT);},
+  s50:()=>{countTo(document.getElementById("n-vo2"),FIT.vo2max);
+           countTo(document.getElementById("n-rhr"),FIT.restingHR);
+           countTo(document.getElementById("n-hrv"),FIT.hrv);},
 };
 const slides=[...document.querySelectorAll(".slide")];
 const rail=document.getElementById("rail");
@@ -543,12 +610,23 @@ function setCurrent(idx){
   rail.className="rail "+(dark?"on-dark":"on-light");
   document.querySelector('meta[name=theme-color]').setAttribute("content",dark?"#131017":"#faf8f3");
 }
+/* Una slide si rivela UNA volta sola. Prima `.in` veniva tolto all'uscita e
+   rimesso al rientro, e con lui ripartiva il REVEAL: bastava uno scroll di
+   rimbalzo, o un dito appoggiato vicino alla soglia del 55%, per far ripartire
+   da zero i conteggi e i grafici. Ora chi torna indietro ritrova i numeri fermi
+   dove li aveva lasciati.
+   `vis` resta invece legato alla visibilita reale, perche la mappa in parallelo
+   e un ciclo continuo: va sospeso quando esce dallo schermo e ripreso al
+   rientro, altrimenti macina batteria fuori campo. */
+const revealed=new Set();
+const LOOPING=new Set(["smap"]);          /* animazioni cicliche: riprendono */
 const io=new IntersectionObserver(es=>{
   es.forEach(en=>{const i=slides.indexOf(en.target);
-    if(en.isIntersecting&&en.intersectionRatio>=.55){
-      setCurrent(i);en.target.classList.add("in");
-      if(REVEAL[en.target.id])REVEAL[en.target.id]();
-    }else if(!en.isIntersecting){en.target.classList.remove("in");}
+    if(!(en.isIntersecting&&en.intersectionRatio>=.55)){en.target.classList.remove("vis");return;}
+    setCurrent(i);en.target.classList.add("in");en.target.classList.add("vis");
+    if(revealed.has(en.target.id)&&!LOOPING.has(en.target.id))return;
+    revealed.add(en.target.id);
+    if(REVEAL[en.target.id])REVEAL[en.target.id]();
   });
 },{threshold:[0,.55,1]});
 slides.forEach(s=>io.observe(s));
