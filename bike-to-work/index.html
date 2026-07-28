@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bike to work — 261 ore per andare in ufficio</title>
+<meta name="description" content="Ogni tratta casa-ufficio in bici e di corsa dal 2019 al 2026, ricostruita dagli stream GPS di intervals.icu, misurata contro il modello di Alan Couzens e i suoi obiettivi 50-at-50.">
+<meta property="og:title" content="Bike to work — 261 ore per andare in ufficio">
+<meta property="og:description" content="136 tratte, 6.957 km, 89.625 m di dislivello. Quanta della forma fisica serve per un VO2max 50 e coperta solo andando al lavoro?">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#f9f9f7; --surface:#fcfcfb; --surface-2:#f2f1ec;
+  --ink:#0b0b0b; --ink-2:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --rule:rgba(11,11,11,.10);
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --good:#0ca30c;
+  --rest:#dedcd3;
+}
+@media (prefers-color-scheme: dark){
+  :root:where(:not([data-theme=light])){
+    color-scheme: dark;
+    --bg:#0d0d0d; --surface:#1a1a19; --surface-2:#232322;
+    --ink:#fff; --ink-2:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --axis:#383835; --rule:rgba(255,255,255,.10);
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --good:#0ca30c;
+    --rest:#33332f;
+  }
+}
+:root[data-theme=dark]{
+  color-scheme: dark;
+  --bg:#0d0d0d; --surface:#1a1a19; --surface-2:#232322;
+  --ink:#fff; --ink-2:#c3c2b7; --muted:#898781;
+  --grid:#2c2c2a; --axis:#383835; --rule:rgba(255,255,255,.10);
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --good:#0ca30c;
+  --rest:#33332f;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.55;
+  max-width:860px;margin:0 auto;padding:38px 20px 90px}
+h1{font-size:2.15rem;line-height:1.08;letter-spacing:-.02em;font-weight:800}
+h2{font-size:1.12rem;font-weight:700;letter-spacing:-.01em;margin:0 0 4px}
+h3{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+p{color:var(--ink-2)}
+a{color:var(--s1)}
+.kicker{font-size:.74rem;text-transform:uppercase;letter-spacing:.16em;color:var(--muted);font-weight:600}
+.lede{margin-top:12px;font-size:1.05rem;max-width:62ch}
+section{margin-top:44px}
+.sec-head{border-top:1px solid var(--rule);padding-top:14px;margin-bottom:16px}
+.sec-head p{font-size:.92rem;max-width:66ch;margin-top:4px}
+
+/* hero */
+.hero{margin-top:26px;background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:24px 22px}
+.hero .fig{font-size:4.4rem;line-height:.92;font-weight:800;letter-spacing:-.04em;color:var(--s1)}
+.hero .fig small{font-size:.28em;font-weight:700;letter-spacing:.04em;color:var(--ink-2);margin-left:6px}
+.hero .cap{color:var(--ink-2);font-size:.95rem;margin-top:8px;max-width:52ch}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(122px,1fr));gap:1px;
+  background:var(--rule);border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-top:18px}
+.tile{background:var(--surface);padding:13px 14px}
+.tile .v{font-size:1.45rem;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.tile .k{font-size:.7rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-top:2px}
+
+/* charts */
+figure{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:16px 14px 12px;margin-top:12px}
+figcaption{font-size:.8rem;color:var(--muted);margin-top:8px;padding:0 4px}
+svg{width:100%;height:auto;display:block;overflow:visible}
+.grid{stroke:var(--grid);stroke-width:1}
+.ax{fill:var(--muted);font-size:11px;text-anchor:middle;font-variant-numeric:tabular-nums}
+.ax.r{text-anchor:end}
+.dl{fill:var(--ink-2);font-size:11px;font-weight:700;text-anchor:middle;font-variant-numeric:tabular-nums}
+.mk{stroke:var(--surface);stroke-width:2}
+.mk.comm{fill:var(--s1)}
+.mk.rest{fill:var(--rest)}
+.mk:hover{filter:brightness(1.12)}
+.line{fill:none;stroke:var(--s1);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.area{fill:var(--s1);opacity:.13}
+.multi{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.multi figure{margin-top:0}
+.pt{margin:0 0 6px 4px}
+.note{font-size:.8rem;color:var(--muted);margin-top:8px}
+.ax.yr{font-size:10px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.78rem;color:var(--ink-2);padding:0 4px;margin-top:10px}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block;margin-right:6px;vertical-align:-1px}
+
+/* meters */
+.meter{height:9px;background:var(--surface-2);border-radius:5px;overflow:hidden;margin-top:7px}
+.meter i{display:block;height:100%;width:var(--w);border-radius:5px;background:var(--s1)}
+.meter i.good{background:var(--good)}
+.meter i.s2{background:var(--s2)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:12px}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:15px 16px}
+.card .v{font-size:1.9rem;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.card .k{font-size:.72rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted)}
+.card .sub{font-size:.82rem;color:var(--ink-2);margin-top:8px}
+.badge{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--good);border:1px solid currentColor;border-radius:99px;padding:1px 7px;margin-left:7px;vertical-align:2px}
+
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:.86rem;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--rule)}
+th{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
+td.n,th.n{text-align:right}
+details{margin-top:12px;background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:4px 14px 6px}
+summary{cursor:pointer;font-size:.85rem;font-weight:600;padding:10px 0;color:var(--ink-2)}
+.scroll{max-height:380px;overflow:auto;margin-bottom:10px}
+
+/* story card */
+.story-wrap{display:flex;justify-content:center;margin-top:14px}
+.story{width:min(330px,88vw);aspect-ratio:9/16;border-radius:20px;padding:26px 22px;
+  background:linear-gradient(160deg,#12213a 0%,#1a1a19 58%,#2b1509 100%);
+  color:#fff;display:flex;flex-direction:column;justify-content:space-between;
+  box-shadow:0 18px 40px rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.09)}
+.story .top{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;opacity:.62}
+.story .big{font-size:3.5rem;font-weight:800;line-height:.9;letter-spacing:-.04em}
+.story .big span{display:block;font-size:.24em;font-weight:600;letter-spacing:.1em;opacity:.7;margin-top:9px;text-transform:uppercase}
+.story .rows{display:flex;flex-direction:column;gap:9px;font-size:.82rem}
+.story .row{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid rgba(255,255,255,.13);padding-bottom:7px}
+.story .row b{font-variant-numeric:tabular-nums;font-weight:700}
+.story .foot{font-size:.66rem;opacity:.55;letter-spacing:.06em}
+
+.tip{position:fixed;z-index:40;pointer-events:none;background:var(--ink);color:var(--bg);
+  font-size:.76rem;padding:6px 9px;border-radius:7px;opacity:0;transition:opacity .12s;max-width:220px;line-height:1.35}
+.tip b{display:block;font-size:.68rem;opacity:.75;font-weight:600}
+.foot{margin-top:52px;border-top:1px solid var(--rule);padding-top:16px;font-size:.78rem;color:var(--muted)}
+.foot a{color:var(--muted)}
+
+/* reveal: fires ONCE per element, never re-armed on touch/scroll */
+.reveal{opacity:0;transform:translateY(10px)}
+.reveal.in{opacity:1;transform:none;transition:opacity .5s ease,transform .5s ease}
+.reveal-line{stroke-dasharray:var(--len);stroke-dashoffset:var(--len)}
+.reveal-line.in{stroke-dashoffset:0;transition:stroke-dashoffset 1.15s ease-out}
+.meter i{width:0}
+.meter.in i{width:var(--w);transition:width .9s cubic-bezier(.22,.8,.3,1)}
+@media (prefers-reduced-motion: reduce){
+  .reveal,.reveal.in{opacity:1;transform:none;transition:none}
+  .reveal-line{stroke-dasharray:none;stroke-dashoffset:0;transition:none}
+  .meter i{width:var(--w);transition:none}
+}
+@media (max-width:620px){
+  .multi{grid-template-columns:1fr}
+  body{padding:26px 15px 70px;font-size:15px}
+  h1{font-size:1.7rem}
+  .hero .fig{font-size:3.2rem}
+}
+</style>
+</head>
+<body>
+
+<p class="kicker">Michele Merelli · dati intervals.icu · aggiornato 2026-07-28</p>
+<h1>261 ore per andare<br>in ufficio</h1>
+<p class="lede">Ogni tratta casa&ndash;lavoro fatta in bici o di corsa dal 2019 a oggi, ritrovata negli stream GPS
+e poi misurata contro il modello di <a href="https://www.alancouzens.com/blog/healthy_aging.html" target="_blank" rel="noopener">Alan Couzens</a>:
+quanta della forma fisica che serve per un VO<sub>2</sub>max di 50 &egrave; coperta <em>solo</em> dal tragitto per l'ufficio?</p>
+
+<div class="hero reveal">
+  <div class="fig">261<small>ore</small></div>
+  <div class="cap">136 tratte casa&ndash;ufficio, 6.957 km, 89.625 m di dislivello,
+  51.070 kJ spinti nei pedali. Media per tratta: 51.2 km, 115 minuti, 659 m di salita.</div>
+  <div class="tiles">
+    <div class="tile"><div class="v">136</div><div class="k">tratte</div></div>
+    <div class="tile"><div class="v">6.957</div><div class="k">km</div></div>
+    <div class="tile"><div class="v">89.625</div><div class="k">m saliti</div></div>
+    <div class="tile"><div class="v">14.564</div><div class="k">TSS</div></div>
+    <div class="tile"><div class="v">8</div><div class="k">a piedi</div></div>
+  </div>
+</div>
+
+<section>
+  <div class="sec-head">
+    <h3>Metodo</h3>
+    <h2>Come si trova un commute che nessuno ha mai etichettato</h2>
+    <p>Nessuna attivit&agrave; ha il flag <code>commute</code>. Sono stati scaricati gli stream di latitudine
+    di tutte le uscite outdoor e raggruppati i punti di inizio e fine. Ne escono tre luoghi netti:
+    <b>casa</b> a 45.806, <b>Bergamo citt&agrave;</b> a 45.687, e un terzo punto strettissimo &mdash;
+    <b>45.6594&ndash;45.6605</b>, una finestra di 150 metri su cui 99 uscite invertono la marcia.
+    Quello &egrave; l'ufficio. Un commute &egrave; una tratta punto-a-punto casa&harr;ufficio, oppure un anello
+    da casa la cui latitudine minima cade dentro quella finestra. I nomi che avevi gi&agrave; messo
+    &mdash; <em>Bike 2 Work</em>, <em>Run to work</em>, <em>Ganda to Work</em> &mdash; confermano la classificazione.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h3>Storia</h3>
+    <h2>Sette anni, una quota stabile attorno al 10%</h2>
+    <p>Il commute non &egrave; mai stato il grosso del volume: vale un decimo dell'allenamento totale,
+    con lo stacco netto nel 2023 quando l'ufficio si sposta a sud di Bergamo.</p>
+  </div>
+  <div class="multi">
+    <figure class="reveal">
+      <h3 class="pt">Ore di commute</h3>
+      <svg viewBox="0 0 505 170" role="img" aria-label="Ore di commute per anno"><line class="grid" x1="32" y1="150.0" x2="505" y2="150.0"></line><text class="ax r" x="27" y="154.0">0</text><line class="grid" x1="32" y1="119.6" x2="505" y2="119.6"></line><text class="ax r" x="27" y="123.6">20</text><line class="grid" x1="32" y1="89.3" x2="505" y2="89.3"></line><text class="ax r" x="27" y="93.3">40</text><line class="grid" x1="32" y1="58.9" x2="505" y2="58.9"></line><text class="ax r" x="27" y="62.9">60</text><text class="ax yr" x="57.0" y="166">16</text><text class="ax yr" x="104.0" y="166">17</text><text class="ax yr" x="151.0" y="166">18</text><rect class="mk comm" x="181" y="136.5" width="34" height="13.5" rx="4" data-t="2019|9 ore · 9 tratte"></rect><text class="dl" x="198.0" y="130.5">9</text><text class="ax yr" x="198.0" y="166">19</text><rect class="mk comm" x="228" y="148.9" width="34" height="1.1" rx="4" data-t="2020|1 ore · 1 tratte"></rect><text class="dl" x="245.0" y="142.9">1</text><text class="ax yr" x="245.0" y="166">20</text><rect class="mk comm" x="275" y="142.1" width="34" height="7.9" rx="4" data-t="2021|5 ore · 4 tratte"></rect><text class="dl" x="292.0" y="136.1">5</text><text class="ax yr" x="292.0" y="166">21</text><rect class="mk comm" x="322" y="62.5" width="34" height="87.5" rx="4" data-t="2023|58 ore · 30 tratte"></rect><text class="dl" x="339.0" y="56.5">58</text><text class="ax yr" x="339.0" y="166">23</text><rect class="mk comm" x="369" y="35.2" width="34" height="114.8" rx="4" data-t="2024|76 ore · 42 tratte"></rect><text class="dl" x="386.0" y="29.2">76</text><text class="ax yr" x="386.0" y="166">24</text><rect class="mk comm" x="416" y="34.0" width="34" height="116.0" rx="4" data-t="2025|76 ore · 36 tratte"></rect><text class="dl" x="433.0" y="28.0">76</text><text class="ax yr" x="433.0" y="166">25</text><rect class="mk comm" x="463" y="94.1" width="34" height="55.9" rx="4" data-t="2026|37 ore · 14 tratte"></rect><text class="dl" x="480.0" y="88.1">37</text><text class="ax yr" x="480.0" y="166">26</text></svg>
+      <figcaption>Ore all'anno spese ad andare al lavoro.</figcaption>
+    </figure>
+    <figure class="reveal">
+      <h3 class="pt">Quota sul volume totale</h3>
+      <svg viewBox="0 0 505 170" role="img" aria-label="Quota del volume totale coperta dal commute, per anno"><line class="grid" x1="32" y1="150.0" x2="505" y2="150.0"></line><text class="ax r" x="27" y="154.0">0</text><line class="grid" x1="32" y1="101.7" x2="505" y2="101.7"></line><text class="ax r" x="27" y="105.7">5</text><line class="grid" x1="32" y1="53.3" x2="505" y2="53.3"></line><text class="ax r" x="27" y="57.3">10</text><text class="ax yr" x="57.0" y="166">16</text><text class="ax yr" x="104.0" y="166">17</text><text class="ax yr" x="151.0" y="166">18</text><rect class="mk comm" x="181" y="72.7" width="34" height="77.3" rx="4" data-t="2019|8 % del volume · 9 tratte"></rect><text class="dl" x="198.0" y="66.7">8</text><text class="ax yr" x="198.0" y="166">19</text><rect class="mk comm" x="228" y="149.0" width="34" height="1.0" rx="4" data-t="2020|0 % del volume · 1 tratte"></rect><text class="dl" x="245.0" y="143.0">0</text><text class="ax yr" x="245.0" y="166">20</text><rect class="mk comm" x="275" y="137.4" width="34" height="12.6" rx="4" data-t="2021|1 % del volume · 4 tratte"></rect><text class="dl" x="292.0" y="131.4">1</text><text class="ax yr" x="292.0" y="166">21</text><rect class="mk comm" x="322" y="34.0" width="34" height="116.0" rx="4" data-t="2023|12 % del volume · 30 tratte"></rect><text class="dl" x="339.0" y="28.0">12</text><text class="ax yr" x="339.0" y="166">23</text><rect class="mk comm" x="369" y="44.6" width="34" height="105.4" rx="4" data-t="2024|11 % del volume · 42 tratte"></rect><text class="dl" x="386.0" y="38.6">11</text><text class="ax yr" x="386.0" y="166">24</text><rect class="mk comm" x="416" y="62.0" width="34" height="88.0" rx="4" data-t="2025|9 % del volume · 36 tratte"></rect><text class="dl" x="433.0" y="56.0">9</text><text class="ax yr" x="433.0" y="166">25</text><rect class="mk comm" x="463" y="79.4" width="34" height="70.6" rx="4" data-t="2026|7 % del volume · 14 tratte"></rect><text class="dl" x="480.0" y="73.4">7</text><text class="ax yr" x="480.0" y="166">26</text></svg>
+      <figcaption>Percento delle ore di allenamento dell'anno.</figcaption>
+    </figure>
+  </div>
+  <p class="note">2022 &egrave; assente dall'archivio intervals.icu; 2026 &egrave; parziale (fino al 28 luglio).</p>
+  <figure class="reveal">
+    <svg viewBox="0 0 640 190" role="img" aria-label="Ore di commute cumulate nel tempo"><line class="grid" x1="38" y1="158.0" x2="640" y2="158.0"></line><text class="ax r" x="32" y="162.0">0</text><line class="grid" x1="38" y1="132.7" x2="640" y2="132.7"></line><text class="ax r" x="32" y="136.7">50</text><line class="grid" x1="38" y1="107.5" x2="640" y2="107.5"></line><text class="ax r" x="32" y="111.5">100</text><line class="grid" x1="38" y1="82.2" x2="640" y2="82.2"></line><text class="ax r" x="32" y="86.2">150</text><line class="grid" x1="38" y1="56.9" x2="640" y2="56.9"></line><text class="ax r" x="32" y="60.9">200</text><line class="grid" x1="38" y1="31.7" x2="640" y2="31.7"></line><text class="ax r" x="32" y="35.7">250</text><text class="ax" x="89.4" y="174">2020</text><text class="ax" x="171.5" y="174">2021</text><text class="ax" x="253.5" y="174">2022</text><text class="ax" x="335.4" y="174">2023</text><text class="ax" x="417.4" y="174">2024</text><text class="ax" x="499.6" y="174">2025</text><text class="ax" x="581.5" y="174">2026</text><polygon class="area" points="44.0,158 44.0,157.7 44.0,156.9 50.3,156.4 50.5,156.1 51.4,155.8 51.4,155.3 54.6,154.9 54.6,154.4 74.1,153.5 118.1,153.1 204.1,151.6 204.3,151.3 235.3,150.8 235.5,150.5 358.1,149.4 359.2,148.4 359.7,147.6 361.3,146.2 364.0,145.3 365.5,144.1 367.1,143.0 368.0,142.2 368.9,141.3 369.1,140.1 371.1,138.8 373.4,137.7 373.8,136.8 377.0,135.6 378.1,134.8 381.7,133.9 383.3,133.0 389.6,132.2 392.2,131.6 392.5,130.8 395.4,129.9 397.9,128.9 400.6,128.0 405.3,127.0 406.4,126.0 407.1,125.1 408.0,124.1 408.9,123.1 413.6,122.5 414.7,121.4 419.0,120.5 419.6,119.6 420.5,118.7 422.1,117.9 423.7,117.0 425.3,116.1 427.3,115.3 427.5,114.4 428.4,113.6 428.8,112.7 430.6,111.9 431.5,111.4 431.5,111.1 432.4,110.2 433.6,109.4 434.7,108.5 435.1,107.6 444.1,106.8 445.7,105.8 446.6,104.6 447.3,103.6 448.2,102.7 450.4,101.4 453.5,100.0 454.0,99.1 454.2,98.1 455.1,97.0 456.7,95.5 461.4,94.6 462.3,93.6 463.9,92.7 464.5,91.8 471.3,90.9 471.7,90.0 472.4,89.0 473.3,88.1 474.4,87.2 475.5,86.3 478.7,85.4 481.8,84.6 482.3,84.0 489.7,83.2 510.8,82.8 513.7,82.3 514.8,81.7 515.5,81.1 516.4,80.5 518.0,79.9 518.7,79.2 519.6,77.7 520.0,75.9 520.5,74.5 521.1,73.0 538.9,71.6 542.0,70.4 543.1,69.1 543.8,68.0 544.7,66.9 546.3,65.6 546.7,64.2 547.8,62.8 553.0,61.9 554.4,60.7 554.6,59.3 555.7,57.9 556.2,57.0 558.8,56.1 559.3,55.1 560.4,54.1 560.9,53.2 563.6,52.2 564.0,51.0 565.1,49.7 565.6,48.6 566.0,47.6 566.7,46.4 567.2,45.2 570.7,44.6 593.4,43.6 599.0,43.1 601.3,41.7 604.9,40.2 606.0,38.7 607.6,37.2 608.0,35.8 612.7,34.2 615.9,32.5 617.4,31.0 619.0,29.2 623.3,28.3 625.3,27.3 628.0,26.0 628.0,158"></polygon><polyline class="line reveal-line" points="44.0,157.7 44.0,156.9 50.3,156.4 50.5,156.1 51.4,155.8 51.4,155.3 54.6,154.9 54.6,154.4 74.1,153.5 118.1,153.1 204.1,151.6 204.3,151.3 235.3,150.8 235.5,150.5 358.1,149.4 359.2,148.4 359.7,147.6 361.3,146.2 364.0,145.3 365.5,144.1 367.1,143.0 368.0,142.2 368.9,141.3 369.1,140.1 371.1,138.8 373.4,137.7 373.8,136.8 377.0,135.6 378.1,134.8 381.7,133.9 383.3,133.0 389.6,132.2 392.2,131.6 392.5,130.8 395.4,129.9 397.9,128.9 400.6,128.0 405.3,127.0 406.4,126.0 407.1,125.1 408.0,124.1 408.9,123.1 413.6,122.5 414.7,121.4 419.0,120.5 419.6,119.6 420.5,118.7 422.1,117.9 423.7,117.0 425.3,116.1 427.3,115.3 427.5,114.4 428.4,113.6 428.8,112.7 430.6,111.9 431.5,111.4 431.5,111.1 432.4,110.2 433.6,109.4 434.7,108.5 435.1,107.6 444.1,106.8 445.7,105.8 446.6,104.6 447.3,103.6 448.2,102.7 450.4,101.4 453.5,100.0 454.0,99.1 454.2,98.1 455.1,97.0 456.7,95.5 461.4,94.6 462.3,93.6 463.9,92.7 464.5,91.8 471.3,90.9 471.7,90.0 472.4,89.0 473.3,88.1 474.4,87.2 475.5,86.3 478.7,85.4 481.8,84.6 482.3,84.0 489.7,83.2 510.8,82.8 513.7,82.3 514.8,81.7 515.5,81.1 516.4,80.5 518.0,79.9 518.7,79.2 519.6,77.7 520.0,75.9 520.5,74.5 521.1,73.0 538.9,71.6 542.0,70.4 543.1,69.1 543.8,68.0 544.7,66.9 546.3,65.6 546.7,64.2 547.8,62.8 553.0,61.9 554.4,60.7 554.6,59.3 555.7,57.9 556.2,57.0 558.8,56.1 559.3,55.1 560.4,54.1 560.9,53.2 563.6,52.2 564.0,51.0 565.1,49.7 565.6,48.6 566.0,47.6 566.7,46.4 567.2,45.2 570.7,44.6 593.4,43.6 599.0,43.1 601.3,41.7 604.9,40.2 606.0,38.7 607.6,37.2 608.0,35.8 612.7,34.2 615.9,32.5 617.4,31.0 619.0,29.2 623.3,28.3 625.3,27.3 628.0,26.0"></polyline></svg>
+    <figcaption>Ore di commute cumulate. La pendenza si impenna dal 2023 e non si &egrave; pi&ugrave; appiattita.</figcaption>
+  </figure>
+  <figure class="reveal">
+    <svg viewBox="0 0 640 170" role="img" aria-label="Orario di partenza dei commute"><line class="grid" x1="38" y1="90.1" x2="640" y2="90.1"></line><text class="ax r" x="32" y="94.1">30</text><line class="grid" x1="38" y1="106.8" x2="640" y2="106.8"></line><text class="ax r" x="32" y="110.8">20</text><line class="grid" x1="38" y1="123.4" x2="640" y2="123.4"></line><text class="ax r" x="32" y="127.4">10</text><line class="grid" x1="38" y1="140.0" x2="640" y2="140.0"></line><text class="ax r" x="32" y="144.0">0</text><rect class="mk comm" x="44.0" y="138.3" width="28.7" height="1.7" rx="4" data-t="ore 4:00|1 partenze"></rect><text class="ax" x="58.4" y="156">4</text><rect class="mk comm" x="78.7" y="103.4" width="28.7" height="36.6" rx="4" data-t="ore 5:00|22 partenze"></rect><rect class="mk comm" x="113.4" y="22.0" width="28.7" height="118.0" rx="4" data-t="ore 6:00|71 partenze"></rect><text class="ax" x="127.8" y="156">6</text><rect class="mk comm" x="148.1" y="106.8" width="28.7" height="33.2" rx="4" data-t="ore 7:00|20 partenze"></rect><text class="ax" x="197.2" y="156">8</text><rect class="mk comm" x="252.2" y="138.3" width="28.7" height="1.7" rx="4" data-t="ore 10:00|1 partenze"></rect><text class="ax" x="266.6" y="156">10</text><rect class="mk comm" x="321.6" y="138.3" width="28.7" height="1.7" rx="4" data-t="ore 12:00|1 partenze"></rect><text class="ax" x="336.0" y="156">12</text><text class="ax" x="405.4" y="156">14</text><rect class="mk comm" x="460.5" y="128.4" width="28.7" height="11.6" rx="4" data-t="ore 16:00|7 partenze"></rect><text class="ax" x="474.8" y="156">16</text><rect class="mk comm" x="495.2" y="125.0" width="28.7" height="15.0" rx="4" data-t="ore 17:00|9 partenze"></rect><rect class="mk comm" x="529.9" y="138.3" width="28.7" height="1.7" rx="4" data-t="ore 18:00|1 partenze"></rect><text class="ax" x="544.2" y="156">18</text><rect class="mk comm" x="564.6" y="135.0" width="28.7" height="5.0" rx="4" data-t="ore 19:00|3 partenze"></rect><text class="ax" x="613.6" y="156">20</text></svg>
+    <figcaption>Ora di partenza. Il picco &egrave; alle 6 del mattino: il commute &egrave; quasi sempre l'andata, con il rientro fatto altrimenti.</figcaption>
+  </figure>
+  <details>
+    <summary>Tabella per anno</summary>
+    <table><thead><tr><th>anno</th><th class="n">ore totali</th><th class="n">ore commute</th><th class="n">quota</th><th class="n">tratte</th><th class="n">km</th></tr></thead>
+    <tbody><tr><td>2016</td><td class="n">101</td><td class="n">0.0</td><td class="n">0.0%</td><td class="n">0</td><td class="n">0</td></tr><tr><td>2017</td><td class="n">92</td><td class="n">0.0</td><td class="n">0.0%</td><td class="n">0</td><td class="n">0</td></tr><tr><td>2018</td><td class="n">93</td><td class="n">0.0</td><td class="n">0.0%</td><td class="n">0</td><td class="n">0</td></tr><tr><td>2019</td><td class="n">111</td><td class="n">8.9</td><td class="n">8.0%</td><td class="n">9</td><td class="n">214</td></tr><tr><td>2020</td><td class="n">526</td><td class="n">0.7</td><td class="n">0.1%</td><td class="n">1</td><td class="n">24</td></tr><tr><td>2021</td><td class="n">392</td><td class="n">5.2</td><td class="n">1.3%</td><td class="n">4</td><td class="n">140</td></tr><tr><td>2023</td><td class="n">482</td><td class="n">57.6</td><td class="n">12.0%</td><td class="n">30</td><td class="n">1.569</td></tr><tr><td>2024</td><td class="n">692</td><td class="n">75.6</td><td class="n">10.9%</td><td class="n">42</td><td class="n">2.084</td></tr><tr><td>2025</td><td class="n">840</td><td class="n">76.4</td><td class="n">9.1%</td><td class="n">36</td><td class="n">1.961</td></tr><tr><td>2026</td><td class="n">507</td><td class="n">36.8</td><td class="n">7.3%</td><td class="n">14</td><td class="n">964</td></tr></tbody></table>
+  </details>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h3>Il modello</h3>
+    <h2>Couzens: mezzo punto di VO<sub>2</sub>max ogni 100 ore</h2>
+    <p>La regola spannometrica di Couzens &egrave; <b>+0,5 ml/kg/min ogni 100 ore</b> di lavoro aerobico,
+    e <b>100 ore all'anno</b> come dose che a 30&ndash;40 anni annulla il calo fisiologico di 5 ml/kg/min per decennio.
+    Due domande diverse, due risposte diverse.</p>
+  </div>
+
+  <div class="cards">
+    <div class="card reveal">
+      <div class="k">Costruzione</div>
+      <div class="v">13%</div>
+      <div class="meter"><i class="comm" style="--w:13.1%"></i></div>
+      <div class="sub">della strada da un VO<sub>2</sub>max sedentario (40) fino a 50.
+      Servono 2.000 ore: il commute ne ha messe 261, cio&egrave; <b>+1,31 ml/kg/min</b>.</div>
+    </div>
+    <div class="card reveal">
+      <div class="k">Mantenimento &middot; 2024&ndash;25</div>
+      <div class="v">76%</div>
+      <div class="meter"><i class="comm" style="--w:76.0%"></i></div>
+      <div class="sub">della dose annua da 100 ore che tiene il VO<sub>2</sub>max piatto per sempre.
+      Andare al lavoro in bici copre da solo tre quarti dell'antidoto all'invecchiamento aerobico.</div>
+    </div>
+    <div class="card reveal">
+      <div class="k">Controprova</div>
+      <div class="v">59</div>
+      <div class="meter"><i class="s2" style="--w:95.0%"></i></div>
+      <div class="sub">il VO<sub>2</sub>max che il modello predice da 3.836 ore totali in archivio.
+      Garmin ne misura <b>62</b>: la regola della bustina sbaglia di tre punti.</div>
+    </div>
+  </div>
+
+  <details>
+    <summary>Le tre ipotesi di partenza</summary>
+    <table><thead><tr><th>baseline</th><th class="n">ore per arrivare a 50</th><th class="n">coperte dal commute</th><th class="n">coperte da tutto</th></tr></thead>
+    <tbody>
+      <tr><td>VO2max 35</td><td class="n">3.000</td><td class="n">8.7%</td><td class="n">128%</td></tr><tr><td>VO2max 40</td><td class="n">2.000</td><td class="n">13.1%</td><td class="n">192%</td></tr><tr><td>VO2max 45</td><td class="n">1.000</td><td class="n">26.1%</td><td class="n">384%</td></tr>
+    </tbody></table>
+  </details>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h3>50 at 50</h3>
+    <h2>I tre bersagli di Couzens, con diciannove anni di anticipo</h2>
+    <p>Couzens propone tre soglie da centrare a cinquant'anni: VO<sub>2</sub>max sopra 50,
+    frequenza a riposo sotto 50, HRV sopra 50. A 31 anni sono gi&agrave; tutte e tre dietro le spalle.</p>
+  </div>
+  <div class="cards">
+    <div class="card reveal"><div class="k">VO<sub>2</sub>max <span class="badge">superato</span></div>
+      <div class="v">62</div><div class="meter"><i class="good" style="--w:100.0%"></i></div>
+      <div class="sub">bersaglio &gt; 50 &middot; margine +12</div></div>
+    <div class="card reveal"><div class="k">FC a riposo <span class="badge">superato</span></div>
+      <div class="v">35</div><div class="meter"><i class="good" style="--w:100.0%"></i></div>
+      <div class="sub">bersaglio &lt; 50 &middot; margine &minus;15 bpm</div></div>
+    <div class="card reveal"><div class="k">HRV <span class="badge">superato</span></div>
+      <div class="v">92</div><div class="meter"><i class="good" style="--w:100.0%"></i></div>
+      <div class="sub">bersaglio &gt; 50 ms &middot; margine +42 ms</div></div>
+  </div>
+  <p class="sub" style="font-size:.84rem;color:var(--muted);margin-top:12px">
+    Proiezione al 2045: con il solo commute (64 h/anno, il passo 2026) il modello d&agrave;
+    &minus;9,5 di calo contro +6,1 di stimolo,
+    cio&egrave; circa <b>59 a cinquant'anni</b>. Il 62 di oggi resta comunque una stima da orologio, e
+    <a href="https://x.com/Alan_Couzens/status/1721903401897001153/photo/1" target="_blank" rel="noopener">Couzens stesso avverte</a>
+    che si gonfia quando l'allenamento &egrave; intenso.</p>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h3>A piedi</h3>
+    <h2>Le volte in cui il commute si &egrave; fatto correndo</h2>
+    <p>8 tratte, 11.5 ore, 152 km.</p>
+  </div>
+  <figure style="padding:4px 6px 6px">
+    <table><thead><tr><th>data</th><th>g</th><th class="n">km</th><th class="n">durata</th><th>attivit&agrave;</th></tr></thead>
+    <tbody><tr><td>2019-10-25</td><td>ven</td><td class="n">21.0</td><td class="n">105′</td><td>Afternoon Run</td></tr><tr><td>2023-07-26</td><td>mer</td><td class="n">23.0</td><td class="n">106′</td><td>Afternoon Run</td></tr><tr><td>2024-01-15</td><td>lun</td><td class="n">23.0</td><td class="n">99′</td><td>Morning Run</td></tr><tr><td>2024-10-16</td><td>mer</td><td class="n">14.5</td><td class="n">65′</td><td>Morning Run</td></tr><tr><td>2025-02-20</td><td>gio</td><td class="n">10.0</td><td class="n">43′</td><td>✌🏼(Bricketto)</td></tr><tr><td>2025-03-27</td><td>gio</td><td class="n">18.0</td><td class="n">80′</td><td>🛐(Praying Legs)</td></tr><tr><td>2025-10-24</td><td>ven</td><td class="n">26.0</td><td class="n">116′</td><td>💼 (Run to work)</td></tr><tr><td>2025-11-14</td><td>ven</td><td class="n">17.0</td><td class="n">75′</td><td>🦋(Risotto zucca e farfalle)</td></tr></tbody></table>
+  </figure>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h3>Story</h3>
+    <h2>La versione da schermo verticale</h2>
+    <p>Anteprima 9:16 pronta da screenshottare.</p>
+  </div>
+  <div class="story-wrap"><div class="story reveal">
+    <div class="top">bike to work &middot; 2019&ndash;2026</div>
+    <div class="big">261<span>ore per andare in ufficio</span></div>
+    <div class="rows">
+      <div class="row"><span>tratte</span><b>136</b></div>
+      <div class="row"><span>chilometri</span><b>6.957</b></div>
+      <div class="row"><span>dislivello</span><b>89.625 m</b></div>
+      <div class="row"><span>VO<sub>2</sub>max verso 50</span><b>13%</b></div>
+      <div class="row"><span>dose annua anti-et&agrave;</span><b>76%</b></div>
+    </div>
+    <div class="foot">intervals.icu &times; modello Couzens</div>
+  </div></div>
+</section>
+
+<section>
+  <div class="sec-head"><h3>Dati</h3><h2>Tutte le tratte</h2></div>
+  <details>
+    <summary>Apri le 136 tratte</summary>
+    <div class="scroll"><table><thead><tr><th>data</th><th>sport</th><th class="n">km</th><th class="n">min</th><th class="n">m D+</th><th class="n">TSS</th></tr></thead>
+    <tbody><tr><td>2026-07-27</td><td>Ride</td><td class="n">70.0</td><td class="n">152</td><td class="n">1077</td><td class="n">198</td></tr><tr><td>2026-07-15</td><td>Ride</td><td class="n">54.2</td><td class="n">124</td><td class="n">986</td><td class="n">147</td></tr><tr><td>2026-07-06</td><td>Ride</td><td class="n">55.7</td><td class="n">109</td><td class="n">543</td><td class="n">129</td></tr><tr><td>2026-06-17</td><td>Ride</td><td class="n">88.6</td><td class="n">206</td><td class="n">1773</td><td class="n">271</td></tr><tr><td>2026-06-10</td><td>Ride</td><td class="n">74.7</td><td class="n">178</td><td class="n">1220</td><td class="n">132</td></tr><tr><td>2026-06-03</td><td>Ride</td><td class="n">87.0</td><td class="n">206</td><td class="n">1601</td><td class="n">151</td></tr><tr><td>2026-05-20</td><td>Ride</td><td class="n">80.0</td><td class="n">186</td><td class="n">1442</td><td class="n">230</td></tr><tr><td>2026-04-29</td><td>Ride</td><td class="n">72.6</td><td class="n">167</td><td class="n">1195</td><td class="n">144</td></tr><tr><td>2026-04-27</td><td>Ride</td><td class="n">77.3</td><td class="n">180</td><td class="n">1485</td><td class="n">249</td></tr><tr><td>2026-04-20</td><td>Ride</td><td class="n">77.2</td><td class="n">179</td><td class="n">1487</td><td class="n">270</td></tr><tr><td>2026-04-15</td><td>Ride</td><td class="n">72.3</td><td class="n">176</td><td class="n">1364</td><td class="n">225</td></tr><tr><td>2026-03-30</td><td>Ride</td><td class="n">72.0</td><td class="n">172</td><td class="n">1350</td><td class="n">221</td></tr><tr><td>2026-03-20</td><td>Ride</td><td class="n">28.0</td><td class="n">51</td><td class="n">44</td><td class="n">51</td></tr><tr><td>2026-02-23</td><td>Ride</td><td class="n">54.7</td><td class="n">120</td><td class="n">541</td><td class="n">113</td></tr><tr><td>2025-11-14</td><td>Run</td><td class="n">17.0</td><td class="n">75</td><td class="n">204</td><td class="n">82</td></tr><tr><td>2025-10-29</td><td>Ride</td><td class="n">65.0</td><td class="n">146</td><td class="n">832</td><td class="n">184</td></tr><tr><td>2025-10-27</td><td>Ride</td><td class="n">65.7</td><td class="n">141</td><td class="n">812</td><td class="n">158</td></tr><tr><td>2025-10-24</td><td>Run</td><td class="n">26.0</td><td class="n">116</td><td class="n">219</td><td class="n">109</td></tr><tr><td>2025-10-22</td><td>Ride</td><td class="n">61.4</td><td class="n">131</td><td class="n">683</td><td class="n">103</td></tr><tr><td>2025-10-20</td><td>Ride</td><td class="n">67.3</td><td class="n">154</td><td class="n">863</td><td class="n">107</td></tr><tr><td>2025-10-15</td><td>Ride</td><td class="n">66.0</td><td class="n">144</td><td class="n">807</td><td class="n">124</td></tr><tr><td>2025-10-13</td><td>Ride</td><td class="n">57.5</td><td class="n">119</td><td class="n">567</td><td class="n">100</td></tr><tr><td>2025-10-01</td><td>Ride</td><td class="n">51.1</td><td class="n">106</td><td class="n">425</td><td class="n">100</td></tr><tr><td>2025-09-29</td><td>Ride</td><td class="n">57.6</td><td class="n">119</td><td class="n">554</td><td class="n">127</td></tr><tr><td>2025-09-24</td><td>Ride</td><td class="n">57.1</td><td class="n">121</td><td class="n">552</td><td class="n">113</td></tr><tr><td>2025-09-22</td><td>Ride</td><td class="n">45.3</td><td class="n">104</td><td class="n">586</td><td class="n">73</td></tr><tr><td>2025-09-10</td><td>Ride</td><td class="n">51.8</td><td class="n">109</td><td class="n">501</td><td class="n">92</td></tr><tr><td>2025-09-08</td><td>Ride</td><td class="n">72.4</td><td class="n">167</td><td class="n">1046</td><td class="n">142</td></tr><tr><td>2025-09-03</td><td>Ride</td><td class="n">72.6</td><td class="n">167</td><td class="n">1051</td><td class="n">132</td></tr><tr><td>2025-09-02</td><td>Ride</td><td class="n">60.9</td><td class="n">140</td><td class="n">823</td><td class="n">114</td></tr><tr><td>2025-08-27</td><td>Ride</td><td class="n">51.7</td><td class="n">110</td><td class="n">459</td><td class="n">101</td></tr><tr><td>2025-08-04</td><td>Ride</td><td class="n">68.2</td><td class="n">160</td><td class="n">1081</td><td class="n">112</td></tr><tr><td>2025-07-30</td><td>Ride</td><td class="n">72.8</td><td class="n">165</td><td class="n">1112</td><td class="n">147</td></tr><tr><td>2025-07-28</td><td>Ride</td><td class="n">68.5</td><td class="n">158</td><td class="n">1100</td><td class="n">130</td></tr><tr><td>2025-07-21</td><td>Ride</td><td class="n">60.3</td><td class="n">126</td><td class="n">702</td><td class="n">96</td></tr><tr><td>2025-07-17</td><td>Ride</td><td class="n">61.4</td><td class="n">139</td><td class="n">914</td><td class="n">107</td></tr><tr><td>2025-07-14</td><td>Ride</td><td class="n">65.1</td><td class="n">148</td><td class="n">1012</td><td class="n">126</td></tr><tr><td>2025-07-09</td><td>Ride</td><td class="n">63.9</td><td class="n">140</td><td class="n">777</td><td class="n">113</td></tr><tr><td>2025-06-25</td><td>Ride</td><td class="n">74.2</td><td class="n">170</td><td class="n">1221</td><td class="n">134</td></tr><tr><td>2025-04-07</td><td>Ride</td><td class="n">71.9</td><td class="n">172</td><td class="n">1373</td><td class="n">222</td></tr><tr><td>2025-04-04</td><td>Ride</td><td class="n">76.5</td><td class="n">172</td><td class="n">1125</td><td class="n">383</td></tr><tr><td>2025-04-02</td><td>Ride</td><td class="n">94.0</td><td class="n">218</td><td class="n">1646</td><td class="n">299</td></tr><tr><td>2025-03-31</td><td>Ride</td><td class="n">70.9</td><td class="n">176</td><td class="n">1350</td><td class="n">227</td></tr><tr><td>2025-03-27</td><td>Run</td><td class="n">18.0</td><td class="n">80</td><td class="n">64</td><td class="n">86</td></tr><tr><td>2025-03-24</td><td>Ride</td><td class="n">27.8</td><td class="n">71</td><td class="n">485</td><td class="n">58</td></tr><tr><td>2025-03-17</td><td>Ride</td><td class="n">27.8</td><td class="n">69</td><td class="n">488</td><td class="n">34</td></tr><tr><td>2025-03-13</td><td>Ride</td><td class="n">27.8</td><td class="n">70</td><td class="n">492</td><td class="n">54</td></tr><tr><td>2025-03-10</td><td>Ride</td><td class="n">27.8</td><td class="n">71</td><td class="n">489</td><td class="n">59</td></tr><tr><td>2025-03-05</td><td>Ride</td><td class="n">27.8</td><td class="n">68</td><td class="n">496</td><td class="n">66</td></tr><tr><td>2025-02-20</td><td>Run</td><td class="n">10.0</td><td class="n">43</td><td class="n">51</td><td class="n">49</td></tr><tr><td>2024-11-18</td><td>Ride</td><td class="n">36.5</td><td class="n">97</td><td class="n">910</td><td class="n">64</td></tr><tr><td>2024-10-16</td><td>Run</td><td class="n">14.5</td><td class="n">65</td><td class="n">63</td><td class="n">64</td></tr><tr><td>2024-10-14</td><td>Ride</td><td class="n">35.2</td><td class="n">96</td><td class="n">904</td><td class="n">71</td></tr><tr><td>2024-09-30</td><td>Ride</td><td class="n">53.7</td><td class="n">112</td><td class="n">551</td><td class="n">58</td></tr><tr><td>2024-09-16</td><td>Ride</td><td class="n">53.5</td><td class="n">105</td><td class="n">554</td><td class="n">107</td></tr><tr><td>2024-09-11</td><td>Ride</td><td class="n">53.7</td><td class="n">110</td><td class="n">535</td><td class="n">84</td></tr><tr><td>2024-09-06</td><td>Ride</td><td class="n">53.5</td><td class="n">109</td><td class="n">509</td><td class="n">82</td></tr><tr><td>2024-09-02</td><td>Ride</td><td class="n">53.5</td><td class="n">108</td><td class="n">541</td><td class="n">88</td></tr><tr><td>2024-08-30</td><td>Ride</td><td class="n">53.4</td><td class="n">107</td><td class="n">532</td><td class="n">92</td></tr><tr><td>2024-08-28</td><td>Ride</td><td class="n">53.7</td><td class="n">108</td><td class="n">524</td><td class="n">117</td></tr><tr><td>2024-07-29</td><td>Ride</td><td class="n">54.7</td><td class="n">112</td><td class="n">510</td><td class="n">67</td></tr><tr><td>2024-07-26</td><td>Ride</td><td class="n">53.6</td><td class="n">109</td><td class="n">517</td><td class="n">80</td></tr><tr><td>2024-07-19</td><td>Ride</td><td class="n">54.3</td><td class="n">112</td><td class="n">550</td><td class="n">79</td></tr><tr><td>2024-07-15</td><td>Ride</td><td class="n">56.4</td><td class="n">113</td><td class="n">527</td><td class="n">86</td></tr><tr><td>2024-06-24</td><td>Ride</td><td class="n">62.9</td><td class="n">175</td><td class="n">1109</td><td class="n">96</td></tr><tr><td>2024-06-17</td><td>Ride</td><td class="n">58.8</td><td class="n">127</td><td class="n">938</td><td class="n">97</td></tr><tr><td>2024-06-13</td><td>Ride</td><td class="n">58.1</td><td class="n">120</td><td class="n">587</td><td class="n">146</td></tr><tr><td>2024-06-12</td><td>Ride</td><td class="n">54.6</td><td class="n">115</td><td class="n">562</td><td class="n">119</td></tr><tr><td>2024-06-10</td><td>Ride</td><td class="n">70.4</td><td class="n">161</td><td class="n">1305</td><td class="n">243</td></tr><tr><td>2024-05-27</td><td>Ride</td><td class="n">68.3</td><td class="n">152</td><td class="n">1084</td><td class="n">198</td></tr><tr><td>2024-05-17</td><td>Ride</td><td class="n">54.2</td><td class="n">113</td><td class="n">600</td><td class="n">71</td></tr><tr><td>2024-05-13</td><td>Ride</td><td class="n">54.1</td><td class="n">116</td><td class="n">591</td><td class="n">73</td></tr><tr><td>2024-05-10</td><td>Ride</td><td class="n">62.5</td><td class="n">139</td><td class="n">982</td><td class="n">91</td></tr><tr><td>2024-05-06</td><td>Ride</td><td class="n">53.5</td><td class="n">121</td><td class="n">596</td><td class="n">92</td></tr><tr><td>2024-04-29</td><td>Ride</td><td class="n">48.6</td><td class="n">99</td><td class="n">395</td><td class="n">73</td></tr><tr><td>2024-03-20</td><td>Ride</td><td class="n">49.9</td><td class="n">102</td><td class="n">384</td><td class="n">61</td></tr><tr><td>2024-03-18</td><td>Ride</td><td class="n">47.9</td><td class="n">103</td><td class="n">413</td><td class="n">74</td></tr><tr><td>2024-03-13</td><td>Ride</td><td class="n">48.7</td><td class="n">99</td><td class="n">432</td><td class="n">69</td></tr><tr><td>2024-03-08</td><td>Ride</td><td class="n">48.7</td><td class="n">102</td><td class="n">433</td><td class="n">82</td></tr><tr><td>2024-03-04</td><td>Ride</td><td class="n">24.0</td><td class="n">57</td><td class="n">373</td><td class="n">41</td></tr><tr><td>2024-03-04</td><td>Ride</td><td class="n">24.3</td><td class="n">46</td><td class="n">64</td><td class="n">28</td></tr><tr><td>2024-02-29</td><td>Ride</td><td class="n">50.0</td><td class="n">98</td><td class="n">426</td><td class="n">80</td></tr><tr><td>2024-02-21</td><td>Ride</td><td class="n">47.9</td><td class="n">98</td><td class="n">407</td><td class="n">56</td></tr><tr><td>2024-02-19</td><td>Ride</td><td class="n">49.7</td><td class="n">101</td><td class="n">427</td><td class="n">86</td></tr><tr><td>2024-02-15</td><td>Ride</td><td class="n">48.6</td><td class="n">101</td><td class="n">409</td><td class="n">80</td></tr><tr><td>2024-02-14</td><td>Ride</td><td class="n">48.8</td><td class="n">103</td><td class="n">394</td><td class="n">69</td></tr><tr><td>2024-02-05</td><td>Ride</td><td class="n">48.7</td><td class="n">99</td><td class="n">390</td><td class="n">74</td></tr><tr><td>2024-01-29</td><td>Ride</td><td class="n">49.7</td><td class="n">105</td><td class="n">421</td><td class="n">70</td></tr><tr><td>2024-01-22</td><td>Ride</td><td class="n">48.7</td><td class="n">104</td><td class="n">403</td><td class="n">68</td></tr><tr><td>2024-01-15</td><td>Run</td><td class="n">23.0</td><td class="n">99</td><td class="n">34</td><td class="n">166</td></tr><tr><td>2024-01-11</td><td>Ride</td><td class="n">49.8</td><td class="n">111</td><td class="n">458</td><td class="n">79</td></tr><tr><td>2024-01-08</td><td>Ride</td><td class="n">49.8</td><td class="n">106</td><td class="n">406</td><td class="n">56</td></tr><tr><td>2023-12-20</td><td>Ride</td><td class="n">56.7</td><td class="n">127</td><td class="n">531</td><td class="n">99</td></tr><tr><td>2023-12-15</td><td>Ride</td><td class="n">35.7</td><td class="n">78</td><td class="n">293</td><td class="n">41</td></tr><tr><td>2023-11-24</td><td>Ride</td><td class="n">52.4</td><td class="n">119</td><td class="n">557</td><td class="n">83</td></tr><tr><td>2023-11-20</td><td>Ride</td><td class="n">52.0</td><td class="n">113</td><td class="n">517</td><td class="n">75</td></tr><tr><td>2023-11-16</td><td>Ride</td><td class="n">54.2</td><td class="n">113</td><td class="n">536</td><td class="n">95</td></tr><tr><td>2023-11-13</td><td>Ride</td><td class="n">54.1</td><td class="n">115</td><td class="n">520</td><td class="n">94</td></tr><tr><td>2023-11-08</td><td>Ride</td><td class="n">54.6</td><td class="n">117</td><td class="n">537</td><td class="n">98</td></tr><tr><td>2023-10-18</td><td>Ride</td><td class="n">50.8</td><td class="n">108</td><td class="n">462</td><td class="n">85</td></tr><tr><td>2023-10-06</td><td>Ride</td><td class="n">56.8</td><td class="n">121</td><td class="n">541</td><td class="n">90</td></tr><tr><td>2023-09-25</td><td>Ride</td><td class="n">51.1</td><td class="n">107</td><td class="n">388</td><td class="n">79</td></tr><tr><td>2023-09-12</td><td>Ride</td><td class="n">37.5</td><td class="n">99</td><td class="n">918</td><td class="n">69</td></tr><tr><td>2023-09-11</td><td>Ride</td><td class="n">31.2</td><td class="n">61</td><td class="n">163</td><td class="n">43</td></tr><tr><td>2023-08-30</td><td>Ride</td><td class="n">50.4</td><td class="n">103</td><td class="n">401</td><td class="n">72</td></tr><tr><td>2023-08-02</td><td>Ride</td><td class="n">52.9</td><td class="n">103</td><td class="n">406</td><td class="n">75</td></tr><tr><td>2023-07-26</td><td>Run</td><td class="n">23.0</td><td class="n">106</td><td class="n">187</td><td class="n">100</td></tr><tr><td>2023-07-10</td><td>Ride</td><td class="n">50.8</td><td class="n">101</td><td class="n">445</td><td class="n">79</td></tr><tr><td>2023-07-05</td><td>Ride</td><td class="n">59.3</td><td class="n">141</td><td class="n">936</td><td class="n">96</td></tr><tr><td>2023-06-21</td><td>Ride</td><td class="n">44.5</td><td class="n">99</td><td class="n">585</td><td class="n">62</td></tr><tr><td>2023-06-19</td><td>Ride</td><td class="n">65.2</td><td class="n">140</td><td class="n">1050</td><td class="n">206</td></tr><tr><td>2023-06-09</td><td>Ride</td><td class="n">59.8</td><td class="n">144</td><td class="n">1007</td><td class="n">81</td></tr><tr><td>2023-05-31</td><td>Ride</td><td class="n">63.1</td><td class="n">147</td><td class="n">1210</td><td class="n">224</td></tr><tr><td>2023-05-30</td><td>Ride</td><td class="n">52.0</td><td class="n">108</td><td class="n">448</td><td class="n">68</td></tr><tr><td>2023-05-26</td><td>Ride</td><td class="n">48.8</td><td class="n">98</td><td class="n">343</td><td class="n">63</td></tr><tr><td>2023-05-22</td><td>Ride</td><td class="n">60.6</td><td class="n">128</td><td class="n">939</td><td class="n">210</td></tr><tr><td>2023-05-15</td><td>Ride</td><td class="n">62.7</td><td class="n">140</td><td class="n">922</td><td class="n">71</td></tr><tr><td>2023-05-08</td><td>Ride</td><td class="n">48.6</td><td class="n">104</td><td class="n">449</td><td class="n">73</td></tr><tr><td>2023-04-26</td><td>Ride</td><td class="n">74.8</td><td class="n">172</td><td class="n">1391</td><td class="n">243</td></tr><tr><td>2023-04-19</td><td>Ride</td><td class="n">50.4</td><td class="n">100</td><td class="n">441</td><td class="n">136</td></tr><tr><td>2023-04-17</td><td>Ride</td><td class="n">54.8</td><td class="n">111</td><td class="n">546</td><td class="n">124</td></tr><tr><td>2023-04-12</td><td>Ride</td><td class="n">60.5</td><td class="n">134</td><td class="n">924</td><td class="n">191</td></tr><tr><td>2021-10-13</td><td>Ride</td><td class="n">23.9</td><td class="n">38</td><td class="n">22</td><td class="n">19</td></tr><tr><td>2021-10-12</td><td>Ride</td><td class="n">24.9</td><td class="n">56</td><td class="n">478</td><td class="n">44</td></tr><tr><td>2021-05-27</td><td>Ride</td><td class="n">23.9</td><td class="n">40</td><td class="n">25</td><td class="n">22</td></tr><tr><td>2021-05-26</td><td>Ride</td><td class="n">66.9</td><td class="n">176</td><td class="n">1903</td><td class="n">167</td></tr><tr><td>2020-05-08</td><td>Ride</td><td class="n">23.5</td><td class="n">44</td><td class="n">85</td><td class="n">24</td></tr><tr><td>2019-10-25</td><td>Run</td><td class="n">21.0</td><td class="n">105</td><td class="n">160</td><td class="n">178</td></tr><tr><td>2019-07-30</td><td>Ride</td><td class="n">21.0</td><td class="n">44</td><td class="n">24</td><td class="n">32</td></tr><tr><td>2019-07-30</td><td>Ride</td><td class="n">24.5</td><td class="n">62</td><td class="n">435</td><td class="n">104</td></tr><tr><td>2019-07-16</td><td>Ride</td><td class="n">22.7</td><td class="n">41</td><td class="n">29</td><td class="n">38</td></tr><tr><td>2019-07-16</td><td>Ride</td><td class="n">24.3</td><td class="n">58</td><td class="n">447</td><td class="n">106</td></tr><tr><td>2019-07-12</td><td>Ride</td><td class="n">22.4</td><td class="n">38</td><td class="n">35</td><td class="n">34</td></tr><tr><td>2019-07-11</td><td>Ride</td><td class="n">23.9</td><td class="n">57</td><td class="n">488</td><td class="n">0</td></tr><tr><td>2019-06-13</td><td>Ride</td><td class="n">22.8</td><td class="n">38</td><td class="n">78</td><td class="n">0</td></tr><tr><td>2019-06-13</td><td>Ride</td><td class="n">31.9</td><td class="n">92</td><td class="n">1003</td><td class="n">0</td></tr></tbody></table></div>
+  </details>
+</section>
+
+<div class="foot">
+  Fonti del modello:
+  <a href="https://www.alancouzens.com/blog/healthy_aging.html" target="_blank" rel="noopener">Healthy Aging</a> &middot;
+  <a href="https://alancouzens.com/blog/VO2Scores.html" target="_blank" rel="noopener">VO2 Scores</a> &middot;
+  <a href="https://simplifaster.com/articles/how-trainable-is-vo2-max/" target="_blank" rel="noopener">How trainable is VO2max</a> &middot;
+  <a href="https://x.com/Alan_Couzens" target="_blank" rel="noopener">@Alan_Couzens</a><br>
+  Dati grezzi: intervals.icu, atleta i302515 &mdash; 3.836 ore in archivio dal 2016, 2022 mancante.<br>
+  <a href="../">&larr; indice</a> &middot; <a href="../diario-di-un-unno/">Diario di un Unno</a> &middot; <a href="https://ciclopodistica.pages.dev/">Gazzaniga&ndash;Orezzo</a>
+</div>
+
+<div class="tip" id="tip"></div>
+
+<script>
+(function(){
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // line-draw needs its own length before it can be animated
+  document.querySelectorAll('.reveal-line').forEach(function(el){
+    try { el.style.setProperty('--len', el.getTotalLength()); } catch(e) {}
+  });
+
+  // Reveal each element exactly once, then stop observing it. Nothing here
+  // listens to scroll, touch or resize, so an animation can never re-run.
+  var targets = document.querySelectorAll('.reveal,.reveal-line,.meter');
+  if (reduce || !('IntersectionObserver' in window)) {
+    targets.forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (!e.isIntersecting) return;
+        e.target.classList.add('in');
+        io.unobserve(e.target);          // one-shot: never re-armed
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+    targets.forEach(function(el){ io.observe(el); });
+  }
+
+  // tooltips
+  var tip = document.getElementById('tip');
+  function show(e, txt){
+    var p = txt.split('|');
+    tip.innerHTML = '<b>' + p[0] + '</b>' + (p[1] || '');
+    tip.style.opacity = 1;
+    var x = e.clientX + 14, y = e.clientY - 10;
+    if (x + 230 > innerWidth) x = e.clientX - 230;
+    tip.style.left = x + 'px'; tip.style.top = y + 'px';
+  }
+  document.querySelectorAll('svg .mk').forEach(function(m){
+    var t = m.getAttribute('data-t'); if (!t) return;
+    m.addEventListener('mousemove', function(e){ show(e, t); });
+    m.addEventListener('mouseleave', function(){ tip.style.opacity = 0; });
+    m.addEventListener('touchstart', function(e){ show(e.touches[0], t); }, {passive:true});
+  });
+  document.addEventListener('touchend', function(){ tip.style.opacity = 0; }, {passive:true});
+})();
+</script>
+</body>
+</html>
