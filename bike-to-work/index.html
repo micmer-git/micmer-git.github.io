@@ -279,7 +279,23 @@ svg text{font-family:var(--sans)}
     <button class="cont" data-next aria-label="Continua"><span>continua</span><span class="ch">↓</span></button>
   </section>
 
-  <!-- 10 · closing -->
+  <!-- 10 · colpo di scena: le corse -->
+  <section class="slide sl-night" id="srun" data-pal="dark" aria-label="Colpo di scena: al lavoro anche di corsa">
+    <div class="wrap">
+      <div class="ey stg stg1">Colpo di scena</div>
+      <h2 class="h stg stg2">Aspetta…<br><em style="font-style:italic;color:var(--gold)">non solo bici</em>.</h2>
+      <div class="pd stg stg3">
+        <div class="pd-clock tnum" id="rn-clock">–:–</div>
+        <div class="pd-live" id="rn-live" style="color:#b3a893">&nbsp;</div>
+        <canvas id="rn-cv" aria-hidden="true"></canvas>
+      </div>
+      <p class="sub stg stg4" id="rn-sub"></p>
+      <p class="fine stg stg5" id="rn-fine"></p>
+    </div>
+    <button class="cont" data-next aria-label="Continua"><span>continua</span><span class="ch">↓</span></button>
+  </section>
+
+  <!-- 11 · closing -->
   <section class="slide sl-night" id="s9" data-pal="dark" aria-label="Fine — esplora i dati">
     <div class="wrap">
       <div class="ey stg stg1">E domattina si ritimbra</div>
@@ -506,8 +522,121 @@ function pdStart(){
   })();
 }
 
+/* ---- colpo di scena: le corse al lavoro (slide srun) ---- */
+const RUNDAYS=(typeof RUNS!=="undefined")?RUNS:[];
+const RUNNERS_R=[];let RT0=1e12,RT1=0;
+RUNDAYS.forEach(d=>d.acts.forEach(id=>{const trk=TRACKS[id];
+  if(!trk||trk.length<4)return;
+  RUNNERS_R.push({trk,t0:trk[0][0],t1:trk[trk.length-1][0]});
+  RT0=Math.min(RT0,trk[0][0]);RT1=Math.max(RT1,trk[trk.length-1][0]);}));
+if(!RUNNERS_R.length){const el=document.getElementById("srun");if(el)el.remove();}
+else{
+  const rl=RUNDAYS.flatMap(d=>Object.values(d.legs));
+  const hmm=s=>Math.floor(s/3600)+"h"+String(Math.round(s%3600/60)).padStart(2,"0");
+  document.getElementById("rn-sub").innerHTML=
+    "Qualche giorno la bici è rimasta in garage e in ufficio ci si è andati <b>di corsa</b>: "+
+    RUNDAYS.length+(RUNDAYS.length===1?" giornata":" giornate")+", "+
+    itDec(med(rl.map(l=>l.dist))/1000,1)+" km a piedi per tratta, "+hmm(med(rl.map(l=>l.moving)))+" di corsa.";
+  document.getElementById("rn-fine").textContent=
+    "Prima il nastro si riavvolge, poi le corse ripartono in verde. Le bici restano sotto, in trasparenza.";
+}
+let rnGen=0;
+function rnStart(){
+  const cv=document.getElementById("rn-cv"),ck=document.getElementById("rn-clock"),
+        lv=document.getElementById("rn-live"),slide=document.getElementById("srun");
+  if(!RUNNERS_R.length||!cv)return;
+  const ctx=cv.getContext?cv.getContext("2d"):null;
+  const gen=++rnGen;
+  const ALL=RUNNERS.concat(RUNNERS_R);
+  let la0=90,la1=-90,lo0=180,lo1=-180;
+  ALL.forEach(r=>r.trk.forEach(p=>{if(p[1]<la0)la0=p[1];if(p[1]>la1)la1=p[1];
+    if(p[2]<lo0)lo0=p[2];if(p[2]>lo1)lo1=p[2];}));
+  const K=Math.cos((la0+la1)/2*Math.PI/180);
+  const css=cv.getBoundingClientRect().width||360,dpr=window.devicePixelRatio||1,S=Math.round(css*dpr);
+  const PAD=18*dpr,box=S-2*PAD,sc=Math.min(box/((lo1-lo0)*K),box/(la1-la0));
+  const ox=PAD+(box-(lo1-lo0)*K*sc)/2,oy=PAD+(box-(la1-la0)*sc)/2;
+  const X=(lat,lng)=>[ox+(lng-lo0)*K*sc,oy+(la1-lat)*sc];
+  const nearW=(lat,lng)=>{const dy=(lat-CFG.work[0])*111320,dx=(lng-CFG.work[1])*111320*K;
+    return dy*dy+dx*dx<=600*600;};
+  function posAt(r,t){const trk=r.trk;
+    if(t<=trk[0][0])return[trk[0][1],trk[0][2],false];
+    const n=trk.length-1;if(t>=trk[n][0])return[trk[n][1],trk[n][2],false];
+    let lo=0,hi=n;while(hi-lo>1){const m=(lo+hi)>>1;if(trk[m][0]<=t)lo=m;else hi=m;}
+    const a=trk[lo],b=trk[lo+1],g=b[0]-a[0],f=g>0?(t-a[0])/g:0;
+    return[a[1]+(b[1]-a[1])*f,a[2]+(b[2]-a[2])*f,g<240];}
+  if(!ctx){ck.textContent=clock(RT1);lv.textContent=RUNNERS_R.length+" corse al lavoro";return;}
+  cv.width=cv.height=S;
+  /* ghosts: bikes barely-there, runs brighter green, both light-on-dark */
+  const ghost=document.createElement("canvas");ghost.width=ghost.height=S;
+  const gx=ghost.getContext("2d");
+  if(gx){gx.lineWidth=1*dpr;
+    gx.strokeStyle="rgba(250,248,243,.07)";
+    RUNNERS.forEach(r=>{gx.beginPath();r.trk.forEach((p,i)=>{const[x,y]=X(p[1],p[2]);
+      i?gx.lineTo(x,y):gx.moveTo(x,y);});gx.stroke();});
+    gx.strokeStyle="rgba(130,200,100,.32)";
+    RUNNERS_R.forEach(r=>{gx.beginPath();r.trk.forEach((p,i)=>{const[x,y]=X(p[1],p[2]);
+      i?gx.lineTo(x,y):gx.moveTo(x,y);});gx.stroke();});
+    [[CFG.home,"#faf8f3","casa"],[CFG.work,"#e8b23a","Kilometro Rosso"]].forEach(([pt,fill,lab])=>{
+      const[x,y]=X(pt[0],pt[1]);gx.beginPath();gx.arc(x,y,5*dpr,0,7);gx.fillStyle=fill;gx.fill();
+      gx.lineWidth=2*dpr;gx.strokeStyle="#14150f";gx.stroke();
+      gx.fillStyle="#b3a893";gx.font=(11*dpr)+"px Inter,sans-serif";gx.fillText(lab,x+9*dpr,y+4*dpr);});}
+  const FADE=3600;
+  function render(vt,set,runMode){
+    ctx.clearRect(0,0,S,S);ctx.drawImage(ghost,0,0);
+    let road=0,office=0;
+    const evening=vt>13*3600;
+    set.forEach(r=>{
+      if(vt<r.t0||vt>r.t1+1800)return;
+      const col=runMode?"#7ac55a":(evening?"#7d95e0":"#e0932f");
+      const[lat,lng,moving]=posAt(r,vt),[x,y]=X(lat,lng);
+      const done=vt>r.t1,fade=done?Math.max(0,1-(vt-r.t1)/1800):1;
+      const win=[];for(let i=0;i<r.trk.length;i++){const t=r.trk[i][0];
+        if(t>vt)break;if(t>=vt-FADE)win.push(X(r.trk[i][1],r.trk[i][2]));}
+      if(!done)win.push([x,y]);
+      const n=win.length;
+      if(n>1){ctx.lineWidth=1.8*dpr;ctx.lineCap="round";ctx.strokeStyle=col;
+        const bands=[[0,.33,.10],[.33,.66,.26],[.66,1,.5]];
+        bands.forEach(([f0,f1,al])=>{const i0=Math.floor(f0*(n-1)),i1=Math.floor(f1*(n-1));
+          if(i1<=i0)return;ctx.globalAlpha=al*fade;ctx.beginPath();
+          for(let i=i0;i<=i1;i++){i===i0?ctx.moveTo(win[i][0],win[i][1]):ctx.lineTo(win[i][0],win[i][1]);}
+          ctx.stroke();});
+        ctx.globalAlpha=1;}
+      if(done)return;
+      if(nearW(lat,lng)&&!moving){office++;
+        ctx.fillStyle="#8f9382";ctx.beginPath();ctx.arc(x,y,2.3*dpr,0,7);ctx.fill();}
+      else{road++;
+        ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(x,y,4.4*dpr,0,7);ctx.fill();
+        ctx.fillStyle=col;ctx.beginPath();ctx.arc(x,y,3.3*dpr,0,7);ctx.fill();}
+    });
+    ck.textContent=clock(vt);
+    if(runMode)lv.textContent="di corsa "+road+" · in ufficio "+office;
+  }
+  const R0=Math.max(0,RT0-600),R1=RT1+900;
+  if(reduce||!raf){render(R1-1,RUNNERS_R,true);ck.textContent=clock(RT1);
+    lv.textContent=RUNNERS_R.length+" corse al lavoro";return;}
+  /* phase 1: the whole bike day rewinds ⏪ — phase 2: the runs come out */
+  let mode="rew",rp=0,vt=R0,last=nowMs(),hold=0;
+  (function step(){
+    if(gen!==rnGen||!slide.classList.contains("vis"))return;
+    const t=nowMs(),dt=Math.min(.1,(t-last)/1000);last=t;
+    if(mode==="rew"){
+      rp+=dt/2.2;const e=Math.min(1,rp),ease=e*e;
+      const back=PT1-(PT1-R0)*ease;
+      render(back,RUNNERS,false);
+      lv.textContent="⏪ si riavvolge il nastro…";
+      if(e>=1){mode="run";vt=R0;}
+    }else{
+      if(hold>0){hold-=dt;if(hold<=0){mode="rew";rp=0;}}
+      else{vt+=pdRate(vt)*dt;if(vt>=R1){vt=R1;hold=1.8;}}
+      render(vt,RUNNERS_R,true);
+    }
+    raf(step);
+  })();
+}
+
 /* ---- reveal orchestration ---- */
 const REVEAL={
+  srun:rnStart,
   smap:pdStart,
   s1:()=>countTo(document.getElementById("n-days"),DAYS.length),
   s2:()=>countTo(document.getElementById("r-km"),MKM,{dec:0}),
@@ -547,7 +676,7 @@ function setCurrent(idx){
    e un ciclo continuo: va sospeso quando esce dallo schermo e ripreso al
    rientro, altrimenti macina batteria fuori campo. */
 const revealed=new Set();
-const LOOPING=new Set(["smap"]);          /* animazioni cicliche: riprendono */
+const LOOPING=new Set(["smap","srun"]);   /* animazioni cicliche: riprendono */
 const io=new IntersectionObserver(es=>{
   es.forEach(en=>{const i=slides.indexOf(en.target);
     if(!(en.isIntersecting&&en.intersectionRatio>=.55)){en.target.classList.remove("vis");return;}

@@ -272,6 +272,7 @@ const tiles=[
   [itNum(H_CAR)+" h","d'auto evitate"],
   [itDec(PIZZE,0),"pizze guadagnate 🍕"],
 ];
+if(typeof RUNS!=="undefined"&&RUNS.length)tiles.push([itNum(RUNS.length),"volte di corsa 🏃"]);
 document.getElementById("tiles").innerHTML=
   tiles.map(t=>`<div class="tile"><div class="v tnum">${t[0]}</div><div class="l">${t[1]}</div></div>`).join("");
 
@@ -285,9 +286,18 @@ DAYS.forEach(d=>d.acts.forEach(id=>{
   T_MIN=Math.min(T_MIN,t0);T_MAX=Math.max(T_MAX,t1);
   runners.push({trk,t0,t1,day:d});
 }));
+const RUNDAYS=(typeof RUNS!=="undefined")?RUNS:[];
+RUNDAYS.forEach(d=>d.acts.forEach(id=>{
+  const trk=TRACKS[id];
+  if(!trk||trk.length<4)return;
+  const t0=trk[0][0],t1=trk[trk.length-1][0];
+  T_MIN=Math.min(T_MIN,t0);T_MAX=Math.max(T_MAX,t1);
+  runners.push({trk,t0,t1,day:d,run:true});
+}));
 T_MIN=Math.max(0,T_MIN-600);T_MAX=Math.min(24*3600,T_MAX+900);
 document.getElementById("cap-giornata").textContent=
-  runners.length+" tracce GPS sovrapposte · l'orologio corre da "+clock(T_MIN)+" a "+clock(T_MAX)+
+  runners.length+" tracce GPS sovrapposte"+(RUNDAYS.length?" (in verde le "+RUNDAYS.length+" corse al lavoro)":"")+
+  " · l'orologio corre da "+clock(T_MIN)+" a "+clock(T_MAX)+
   " · un secondo reale = mezz'ora virtuale (o un'ora, a 2×).";
 
 let map=null;
@@ -301,7 +311,8 @@ function initMap(){
   runners.forEach(r=>{
     const pts=r.trk.map(p=>[p[1],p[2]]);
     all.push(...pts);
-    L.polyline(pts,{color:"#8f9382",weight:1,opacity:.10,interactive:false,renderer:cnv}).addTo(map);
+    L.polyline(pts,{color:r.run?"#5f9e47":"#8f9382",weight:1,opacity:r.run?.28:.10,
+      interactive:false,renderer:cnv}).addTo(map);
   });
   if(all.length)map.fitBounds(L.latLngBounds(all),{padding:[18,18]});
   L.circleMarker(CFG.home,{radius:7,color:"#14150f",weight:2,fillColor:"#faf8f3",fillOpacity:1})
@@ -352,7 +363,7 @@ function renderFrame(){
   let road=0,office=0,home=0;
   runners.forEach(r=>{
     if(!r.marker)return;
-    const evening=vt>13*3600,col=evening?"#3b5bb5":"#e0932f";
+    const evening=vt>13*3600,col=r.run?"#5f9e47":(evening?"#3b5bb5":"#e0932f");
     if(vt<r.t0){r.marker.setRadius(0);if(r.trail)r.trail.setStyle({opacity:0});return;}
     if(vt>r.t1+FADE_OUT){r.marker.setRadius(0);home++;
       if(r.trail)r.trail.setStyle({opacity:0});return;}
@@ -368,7 +379,7 @@ function renderFrame(){
     }
     if(done){ // end pulse then park
       home++;r.marker.setRadius(Math.max(0,5-(vt-r.t1)/600*5));
-      r.marker.setStyle({fillColor:"#3b5bb5",fillOpacity:.5});
+      r.marker.setStyle({fillColor:r.run?"#5f9e47":"#3b5bb5",fillOpacity:.5});
     }else if(atWork&&!p.moving){
       office++;r.marker.setRadius(2.6);
       r.marker.setStyle({fillColor:"#8f9382",fillOpacity:.7});
