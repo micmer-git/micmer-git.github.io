@@ -183,8 +183,14 @@ svg .grid{stroke:var(--rule-soft);stroke-width:1}
 svg .axis{stroke:var(--rule);stroke-width:1}
 
 /* ghost */
-#ghostMap{height:460px;border-radius:14px;margin-bottom:14px;z-index:0}
-@media(max-width:640px){#ghostMap{height:330px}}
+.ghost-stage{position:relative;border-radius:14px;margin-bottom:14px;background:var(--surface-2);overflow:hidden}
+#ghostCv{display:block;width:100%;height:460px}
+.ghost-hud{position:absolute;left:16px;top:14px;pointer-events:none}
+.gh-clock{font-family:var(--serif);font-size:2.4rem;line-height:1}
+.gh-live{font-size:.76rem;color:var(--ink-2);margin-top:3px;min-height:1.1em}
+.gh-tail{font-size:.76rem;color:var(--ink-2)}
+.gh-tail label{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+@media(max-width:640px){#ghostCv{height:330px}.gh-clock{font-size:1.9rem}}
 .ghost-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
 .ghost-controls button{background:var(--surface);border:1px solid var(--rule);color:var(--ink-2);
   padding:0 15px;min-height:40px;border-radius:999px;cursor:pointer;font-family:var(--sans);font-size:.78rem;font-weight:500}
@@ -318,18 +324,27 @@ footer b{color:var(--ink-2)}
     <h2 data-n="03">La gara dei fantasmi</h2>
     <p class="desc" id="d-ghost"></p>
     <div class="card">
-      <div id="ghostMap"></div>
+      <div class="ghost-stage">
+        <canvas id="ghostCv" aria-label="Tutte le salite animate insieme sulla traccia GPS reale"></canvas>
+        <div class="ghost-hud">
+          <div class="gh-clock tnum" id="ghostTime">0:00</div>
+          <div class="gh-live" id="ghostLive">&nbsp;</div>
+        </div>
+      </div>
       <div class="ghost-controls">
         <button id="ghostPlay">▶ Avvia</button>
         <button id="ghostReset">↺</button>
         <input type="range" id="ghostSlider" min="0" max="1000" value="0" aria-label="Scorri la gara">
-        <span id="ghostTime" class="tnum">0:00</span>
         <select id="ghostSpeed" aria-label="Velocità di riproduzione">
           <option value="6">6×</option><option value="12" selected>12×</option><option value="24">24×</option><option value="60">60×</option>
         </select>
+        <span class="gh-tail"><label><input type="checkbox" id="ghostTrail" checked> scie</label></span>
       </div>
       <div class="legend" id="lg-ghost"></div>
-      <p class="cap">Le posizioni assumono che ognuno tenga il proprio passo medio lungo la traccia di <b id="route-dist">4,25 km</b> — <b id="route-turns">16</b> tornanti, <b id="route-gain">282 m</b> di dislivello.</p>
+      <p class="cap" id="cap-ghost">Ogni puntino è una salita vera: la <b>sua</b> traccia GPS, ritagliata sulla salita
+      e rigiocata al passo con cui è stata fatta davvero &mdash; niente passo medio lungo un percorso finto.
+      Partono tutte insieme lungo <b id="route-dist">4,25 km</b>, <b id="route-turns">16</b> tornanti,
+      <b id="route-gain">282 m</b> di dislivello. <span id="cap-ghost-src"></span></p>
     </div>
   </section>
 
@@ -445,6 +460,7 @@ footer b{color:var(--ink-2)}
 <div class="tip" id="tip" role="status" aria-live="off"></div>
 
 <script src="_data.js"></script>
+<script src="_tracks.js"></script>
 <script>
 /* ================= CONFIG (edit per climb) ================= */
 const SEG={recDist:3.36,fullDist:4.24,fullGain:282,name:"Gazzaniga → Orezzo"};
@@ -565,9 +581,9 @@ const COPY={
   run:"Ogni punto è una salita di corsa; più in basso significa più veloce. La storia è più corta — comincia a <b>gennaio 2020</b> — ma ha la stessa forma: una salita rapida verso il record di <b>febbraio 2021</b>, poi anni di costanza."
  },
  ghost:{
-  both:"Il duello che non è mai successo davvero: il <b>record in bici</b> e il <b>record di corsa</b> partono insieme, insieme alle rispettive giornate <b>tipiche</b>. Stessa traccia GPS, ognuno al proprio passo. Premi avvia.",
-  bike:"Quattro salite in bici partono insieme lungo la traccia GPS reale, ognuna al proprio passo registrato. Guarda il <b>record</b> staccare una giornata <b>tipica</b>, l'<b>ultima</b> salita e la <b>primissima</b> del 2016. Premi avvia.",
-  run:"Quattro salite di corsa partono insieme lungo la traccia GPS reale, ognuna al proprio passo registrato. Il <b>record</b>, una giornata <b>tipica</b>, l'<b>ultima</b> e la <b>prima</b> del 2020. Premi avvia."
+  both:"La gara che non è mai successa: <b>tutte</b> le salite registrate partono insieme, bici contro corsa, ognuna sulla propria traccia GPS e al passo con cui è stata davvero fatta. Guarda il gruppo sgranarsi sui tornanti. Premi avvia.",
+  bike:"<b>Tutte</b> le salite in bici partono insieme, ognuna sulla propria traccia GPS e al passo con cui è stata davvero fatta. Undici anni di gambe nello stesso istante: il record se ne va, il resto del gruppo si allunga sui tornanti. Premi avvia.",
+  run:"<b>Tutte</b> le salite di corsa partono insieme, ognuna sulla propria traccia GPS e al passo con cui è stata davvero fatta. Premi avvia e guarda quanto è larga la forbice fra la migliore e la peggiore."
  },
  cal:{
   both:"Undici anni in una griglia sola: gli anni in riga, i mesi in colonna. Passa da <b>quante salite</b> a <b>tempo mediano</b> per vedere due storie diverse — <em>quando</em> saliva e <em>quanto andava forte</em>. <b>Verde = bici</b>, <b>arancio = corsa</b>; i mesi con tutt'e due sono divisi in diagonale.",
@@ -820,60 +836,225 @@ function vsYear(){
 }
 
 /* ---------- 03 ghost race ---------- */
-let gmap=null,gline=null,gmarkers=[],gRacers=[],gDists=[],gMax=0,gT=0,gPlaying=false,gAnim=null;
-function cumDist(pts){const d=[0];for(let i=1;i<pts.length;i++){
-  const dx=(pts[i][0]-pts[i-1][0])*111320,dy=(pts[i][1]-pts[i-1][1])*111320*Math.cos(pts[i][0]*Math.PI/180);
-  d.push(d[d.length-1]+Math.hypot(dx,dy));}return d;}
-function interp(pts,dists,frac){const tg=frac*dists[dists.length-1];let i=0;
-  while(i<dists.length-1&&dists[i+1]<tg)i++;if(i>=pts.length-1)return pts[pts.length-1];
-  const s=(tg-dists[i])/((dists[i+1]-dists[i])||1);return[pts[i][0]+(pts[i+1][0]-pts[i][0])*s,pts[i][1]+(pts[i+1][1]-pts[i][1])*s];}
-function pickRacers(){
-  const pick=rows=>{const w=rows.map(r=>({r,v:sec(r)}));
-    const sorted=[...w].sort((a,b)=>a.v-b.v);
-    return{pr:sorted[0],med:sorted[Math.floor(sorted.length/2)],
-           last:w.reduce((a,b)=>b.r.t>a.r.t?b:a),first:w.reduce((a,b)=>b.r.t<a.r.t?b:a)};};
-  if(isBoth()&&HAS_RUN){
-    const b=pick(ALL.bike),r=pick(ALL.run);
-    return[{lab:"🚴 Record bici",c:"#2f7d2a",...b.pr},{lab:"🚴 Bici tipica",c:"#6AAF49",...b.med},
-           {lab:"🏃 Record corsa",c:"#c2410c",...r.pr},{lab:"🏃 Corsa tipica",c:"#eb6834",...r.med}];}
-  const p=pick(R),ico=only("run")?"🏃 ":"";
-  return[{lab:ico+"Record",c:"#eb6834",...p.pr},{lab:ico+"Tipica",c:"#2a78d6",...p.med},
-         {lab:ico+"Ultima",c:"#6AAF49",...p.last},{lab:ico+"La prima",c:"#7b2fbe",...p.first}];
+/* ---------- 03 ghost race — ogni salita sulla sua traccia GPS reale ----------
+   Prima erano quattro pallini che scorrevano lungo ROUTE a passo costante. Ora
+   corrono tutte le salite registrate, ognuna sulla propria traccia ritagliata
+   sul segmento (TRACKS, da tools/build_go_tracks.py), al passo con cui e' stata
+   fatta. Canvas e non Leaflet: seicento marker DOM non reggono l'animazione. */
+const GH_HAS=typeof TRACKS!=="undefined"&&TRACKS&&TRACKS.efforts&&TRACKS.efforts.length>0;
+let gEfforts=[],gT=0,gMax=0,gPlaying=false,gAnim=null,gLastTS=0,gProj=null,gRouteXY=null;
+
+function ghDecode(p){
+  const o=TRACKS.meta.origin,q=TRACKS.meta.quant,out=[];
+  let a=0,b=0;
+  for(let i=0;i<p.length;i+=2){a+=p[i];b+=p[i+1];out.push([o[0]+a*q,o[1]+b*q]);}
+  return out;
 }
-function initGhost(){
-  if(gmap||typeof ROUTE==="undefined")return;
-  const ll=ROUTE.map(p=>[p[0],p[1]]);gDists=cumDist(ROUTE);
-  gmap=L.map("ghostMap",{zoomControl:true,scrollWheelZoom:false}).fitBounds(ll,{padding:[24,24]});
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{attribution:'&copy; CARTO · OSM',maxZoom:18}).addTo(gmap);
-  gline=L.polyline(ll,{color:"#8f9382",weight:3,opacity:.55}).addTo(gmap);
-  L.marker(ll[0],{icon:L.divIcon({html:"<div style='background:#14150f;color:#fff;padding:2px 7px;border-radius:5px;font-size:10.5px;font-weight:600;white-space:nowrap'>Gazzaniga</div>",iconSize:[0,0],iconAnchor:[-6,8]})}).addTo(gmap);
-  L.marker(ll[ll.length-1],{icon:L.divIcon({html:"<div style='background:#6AAF49;color:#fff;padding:2px 7px;border-radius:5px;font-size:10.5px;font-weight:600;white-space:nowrap'>Orezzo</div>",iconSize:[0,0],iconAnchor:[-6,8]})}).addTo(gmap);
+// decodifica una volta sola: 500 tracce da 60 punti sono ~30k coppie
+const GH_ALL=GH_HAS?TRACKS.efforts.map(e=>({d:e.d,h:e.h,s:e.s,sport:e.t,name:e.n,pts:ghDecode(e.p)})):[];
+
+/* Il cronometro della gara e' quello dell'archivio, non quello misurato qui.
+   I due non coincidono: le ancore in gazzaniga-orezzo.json sono ricostruite a
+   mano (segment_id ancora da riempire) e cadono qualche decina di metri dentro
+   i segmenti Strava veri, quindi il tempo letto sul GPS risulta piu corto —
+   mediana -13 s sulla corsa. In bici lo scarto e' molto piu grande, -42 s,
+   perche il numero pubblicato non e' una misura ma il segmento da 3,36 km
+   riscalato x1,262 alla salita intera, e la parte in piu si fa piu in fretta di
+   quanto la proporzione supponga. Per non avere due verita nella stessa pagina,
+   la corsa dei fantasmi adotta il tempo pubblicato dove esiste; la traccia e il
+   modo di distribuire lo sforzo restano quelli veri del GPS. */
+const GH_MATCHED=(function(){
+  if(!GH_HAS)return 0;
+  const idx={bike:{},run:{}};
+  const dk=t=>t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");
+  ["bike","run"].forEach(k=>ALL[k].forEach(r=>{(idx[k][dk(r.t)]=idx[k][dk(r.t)]||[]).push(sec(r));}));
+  let n=0;
+  GH_ALL.forEach(e=>{
+    const cand=idx[e.sport][e.d];
+    if(!cand||!cand.length)return;
+    let best=cand[0];
+    cand.forEach(v=>{if(Math.abs(v-e.s)<Math.abs(best-e.s))best=v;});
+    e.s=Math.round(best);e.src="archivio";n++;
+  });
+  return n;
+})();
+
+function ghostSelection(){
+  let rows=GH_ALL;
+  if(only("bike"))rows=rows.filter(e=>e.sport==="bike");
+  else if(only("run"))rows=rows.filter(e=>e.sport==="run");
+  return rows;
 }
-function buildGhost(){
-  gmarkers.forEach(m=>m.remove());gRacers=pickRacers();gMax=Math.max(...gRacers.map(x=>x.v));
-  const ll0=[ROUTE[0][0],ROUTE[0][1]];
-  gmarkers=gRacers.map(x=>{const m=L.circleMarker(ll0,{radius:6,color:"#fff",weight:2,fillColor:x.c,fillOpacity:1});
-    m.bindTooltip(`${x.lab} · ${fmt(x.v)}`,{direction:"top"});m.addTo(gmap);return m;});
-  legendHTML("lg-ghost",gRacers.map(x=>
-    `<span class="it"><span class="sw dot" style="background:${x.c}"></span>${x.lab} — ${fmt(x.v)} · ${itDate(x.r.t,{month:'short',year:'numeric'})}</span>`));
+// proiezione equirettangolare: alle nostre latitudini basta correggere la
+// longitudine per cos(lat), l'errore su 4 km e' sotto il pixel
+function ghostFit(cv,rows){
+  const pad=26,W=cv.width,H=cv.height;
+  let laMin=90,laMax=-90,loMin=180,loMax=-180;
+  const scan=pts=>pts.forEach(p=>{
+    if(p[0]<laMin)laMin=p[0];if(p[0]>laMax)laMax=p[0];
+    if(p[1]<loMin)loMin=p[1];if(p[1]>loMax)loMax=p[1];});
+  rows.forEach(e=>scan(e.pts));
+  const kx=Math.cos((laMin+laMax)/2*Math.PI/180);
+  const w=(loMax-loMin)*kx||1e-6,h=(laMax-laMin)||1e-6;
+  const sc=Math.min((W-2*pad)/w,(H-2*pad)/h);
+  const ox=(W-w*sc)/2,oy=(H-h*sc)/2;
+  return(la,lo)=>[ox+(lo-loMin)*kx*sc,H-oy-(la-laMin)*sc];
 }
-function ghostAt(t){gT=Math.min(t,gMax);document.getElementById("ghostSlider").value=gMax?Math.round(gT/gMax*1000):0;
-  document.getElementById("ghostTime").textContent=fmt(gT);
-  gRacers.forEach((x,i)=>{const f=Math.min(1,gT/x.v);const p=interp(ROUTE,gDists,f);gmarkers[i].setLatLng(p);});}
-function ghostAnimate(){if(!gPlaying)return;const sp=+document.getElementById("ghostSpeed").value;
-  gT+=sp*0.05;if(gT>=gMax){gT=gMax;gPlaying=false;document.getElementById("ghostPlay").classList.remove("active");document.getElementById("ghostPlay").textContent="▶ Avvia";}
-  ghostAt(gT);gAnim=requestAnimationFrame(ghostAnimate);}
-function renderGhost(){txt("d-ghost",copyFor("ghost"));initGhost();if(!gmap)return;
-  setTimeout(()=>gmap.invalidateSize(),60);buildGhost();ghostAt(0);}
-document.getElementById("ghostPlay").addEventListener("click",function(){gPlaying=!gPlaying;
-  this.classList.toggle("active",gPlaying);this.textContent=gPlaying?"❚❚ Pausa":"▶ Avvia";
-  if(gPlaying){if(gT>=gMax)gT=0;ghostAnimate();}else if(gAnim)cancelAnimationFrame(gAnim);});
-document.getElementById("ghostReset").addEventListener("click",()=>{gPlaying=false;
-  document.getElementById("ghostPlay").classList.remove("active");document.getElementById("ghostPlay").textContent="▶ Avvia";
-  if(gAnim)cancelAnimationFrame(gAnim);ghostAt(0);});
-document.getElementById("ghostSlider").addEventListener("input",e=>{gPlaying=false;
-  document.getElementById("ghostPlay").textContent="▶ Avvia";document.getElementById("ghostPlay").classList.remove("active");
-  if(gAnim)cancelAnimationFrame(gAnim);ghostAt(+e.target.value/1000*gMax);});
+function ghostResize(){
+  const cv=document.getElementById("ghostCv");
+  if(!cv)return null;
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  const r=cv.getBoundingClientRect();
+  cv.width=Math.max(1,Math.round(r.width*dpr));
+  cv.height=Math.max(1,Math.round(r.height*dpr));
+  const ctx=cv.getContext("2d");
+  ctx.setTransform(1,0,0,1,0,0);
+  const rows=gEfforts.length?gEfforts:GH_ALL;
+  gProj=ghostFit(cv,rows);
+  // la spina dorsale e' una traccia vera del gruppo (la mediana per durata), non
+  // ROUTE: ROUTE copre la salita intera e sborderebbe dal tratto in gara
+  if(rows.length){
+    const mid=[...rows].sort((a,b)=>a.s-b.s)[Math.floor(rows.length/2)];
+    gRouteXY=mid.pts.map(p=>gProj(p[0],p[1]));
+  }else gRouteXY=null;
+  return ctx;
+}
+function ghostPosAt(e,t){
+  const f=Math.max(0,Math.min(1,t/e.s)),n=e.pts.length-1,x=f*n,i=Math.floor(x),g=x-i;
+  const a=e.pts[i],b=e.pts[Math.min(i+1,n)];
+  return gProj(a[0]+(b[0]-a[0])*g,a[1]+(b[1]-a[1])*g);
+}
+function ghostDraw(){
+  const cv=document.getElementById("ghostCv");
+  if(!cv||!gProj)return;
+  const ctx=cv.getContext("2d"),dpr=cv.width/cv.getBoundingClientRect().width;
+  ctx.clearRect(0,0,cv.width,cv.height);
+  if(gRouteXY&&gRouteXY.length){
+    ctx.beginPath();gRouteXY.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));
+    ctx.strokeStyle="rgba(143,147,130,.40)";ctx.lineWidth=5*dpr;ctx.lineJoin="round";ctx.lineCap="round";ctx.stroke();
+    const a=gRouteXY[0],z=gRouteXY[gRouteXY.length-1];
+    ctx.font=(11*dpr)+"px "+getComputedStyle(document.body).fontFamily;
+    ctx.fillStyle="#8f9382";
+    ctx.textAlign="center";ctx.textBaseline="top";
+    ctx.fillText("Gazzaniga",a[0],a[1]+9*dpr);
+    ctx.textBaseline="bottom";
+    ctx.fillText("Orezzo",z[0],z[1]-9*dpr);
+    [[a,"#8f9382"],[z,"#14150f"]].forEach(([p,c])=>{
+      ctx.beginPath();ctx.arc(p[0],p[1],3.4*dpr,0,6.2832);ctx.fillStyle=c;ctx.fill();});
+  }
+  const trail=document.getElementById("ghostTrail");
+  const wantTrail=!trail||trail.checked;
+  const COL={bike:SPORTS.bike.hex,run:SPORTS.run.hex};
+  if(wantTrail){
+    // la scia e' un tratto della traccia gia percorso, non una linea dritta
+    ctx.lineWidth=1.6*dpr;ctx.lineCap="round";
+    gEfforts.forEach(e=>{
+      if(gT<=0)return;
+      const back=Math.max(0,gT-28);
+      const p0=ghostPosAt(e,back),p1=ghostPosAt(e,Math.min(gT,e.s));
+      const mid=ghostPosAt(e,(back+Math.min(gT,e.s))/2);
+      ctx.beginPath();ctx.moveTo(p0[0],p0[1]);ctx.quadraticCurveTo(mid[0],mid[1],p1[0],p1[1]);
+      ctx.strokeStyle=(e.sport==="bike"?"rgba(106,175,73,":"rgba(235,104,52,")+(gT>=e.s?.12:.3)+")";
+      ctx.stroke();
+    });
+  }
+  let done=0;
+  gEfforts.forEach(e=>{
+    const fin=gT>=e.s;if(fin)done++;
+    const p=ghostPosAt(e,Math.min(gT,e.s));
+    ctx.beginPath();ctx.arc(p[0],p[1],(fin?2.1:3.1)*dpr,0,6.2832);
+    ctx.fillStyle=COL[e.sport]||"#14150f";ctx.globalAlpha=fin?.28:.92;ctx.fill();
+    ctx.globalAlpha=1;
+  });
+  // il migliore in testa, cerchiato
+  if(gEfforts.length){
+    const lead=gEfforts.reduce((a,b)=>(Math.min(gT,b.s)/b.s>Math.min(gT,a.s)/a.s?b:a));
+    const p=ghostPosAt(lead,Math.min(gT,lead.s));
+    ctx.beginPath();ctx.arc(p[0],p[1],6*dpr,0,6.2832);
+    ctx.strokeStyle="#14150f";ctx.lineWidth=1.8*dpr;ctx.stroke();
+  }
+  const live=document.getElementById("ghostLive");
+  if(live)live.textContent=gEfforts.length
+    ? (done>=gEfforts.length?"tutte arrivate":done+" arrivate su "+gEfforts.length)
+    : "";
+}
+function ghostAt(t){
+  gT=Math.max(0,Math.min(t,gMax));
+  const sl=document.getElementById("ghostSlider");
+  if(sl)sl.value=gMax?Math.round(gT/gMax*1000):0;
+  const tm=document.getElementById("ghostTime");
+  if(tm)tm.textContent=fmt(gT);
+  ghostDraw();
+}
+function ghostBtn(on){
+  const b=document.getElementById("ghostPlay");if(!b)return;
+  b.classList.toggle("active",on);b.textContent=on?"❚❚ Pausa":"▶ Avvia";
+}
+function ghostStart(){
+  if(gPlaying||!gMax)return;
+  gPlaying=true;gLastTS=0;ghostBtn(true);
+  gAnim=requestAnimationFrame(ghostAnimate);
+}
+function ghostStop(){
+  gPlaying=false;gLastTS=0;
+  if(gAnim){cancelAnimationFrame(gAnim);gAnim=null;}
+  ghostBtn(false);
+}
+// a orologio, non a frame: uno schermo a 120 Hz non deve correre il doppio
+function ghostAnimate(ts){
+  if(!gPlaying)return;
+  if(!gLastTS)gLastTS=ts;
+  const dt=Math.min((ts-gLastTS)/1000,.25);gLastTS=ts;
+  gT+=(+document.getElementById("ghostSpeed").value)*dt;
+  if(gT>=gMax){ghostAt(gMax);ghostStop();return;}
+  ghostAt(gT);
+  gAnim=requestAnimationFrame(ghostAnimate);
+}
+function renderGhost(){
+  txt("d-ghost",copyFor("ghost"));
+  if(!GH_HAS){
+    const cap=document.getElementById("cap-ghost");
+    if(cap)cap.textContent="Tracce GPS non disponibili.";
+    return;
+  }
+  ghostStop();
+  gEfforts=ghostSelection();
+  gMax=gEfforts.length?Math.max(...gEfforts.map(e=>e.s)):0;
+  ghostResize();
+  const nb=gEfforts.filter(e=>e.sport==="bike").length,nr=gEfforts.length-nb;
+  const best=k=>{const r=gEfforts.filter(e=>e.sport===k);return r.length?Math.min(...r.map(e=>e.s)):null;};
+  const items=[];
+  if(nb)items.push(`<span class="it"><span class="sw dot" style="background:${SPORTS.bike.hex}"></span>${SPORTS.bike.ico} ${nb} salite in bici — record ${fmt(best("bike"))}</span>`);
+  if(nr)items.push(`<span class="it"><span class="sw dot" style="background:${SPORTS.run.hex}"></span>${SPORTS.run.ico} ${nr} di corsa — record ${fmt(best("run"))}</span>`);
+  legendHTML("lg-ghost",items);
+  const nGps=gEfforts.filter(e=>e.src!=="archivio").length;
+  // il 2022 non esiste nell'archivio intervals.icu, quindi le salite di
+  // quell'anno — record in bici compreso — non hanno traccia e non corrono
+  const noGpsYear=(typeof R!=="undefined"&&R)?R.some(r=>r.y===2022):false;
+  txt("cap-ghost-src","Il cronometro è quello dell'archivio; la traccia e la distribuzione dello sforzo "
+    +"vengono dal GPS."+(nGps?" "+nGps+(nGps===1?" salita non ha":" salite non hanno")
+    +" un riscontro nell'archivio e corrono col tempo letto sul GPS.":"")
+    +(noGpsYear?" Il 2022 manca dall'archivio GPS di intervals.icu: quelle salite non "
+      +"sono in gara, record in bici incluso.":""));
+  ghostAt(0);
+}
+document.getElementById("ghostPlay").addEventListener("click",()=>{
+  if(gPlaying){ghostStop();return;}
+  if(gT>=gMax)gT=0;
+  ghostStart();
+});
+document.getElementById("ghostReset").addEventListener("click",()=>{ghostStop();ghostAt(0);});
+(function(){
+  const sl=document.getElementById("ghostSlider");
+  let resume=false;
+  sl.addEventListener("pointerdown",()=>{resume=gPlaying;if(gPlaying)ghostStop();});
+  sl.addEventListener("input",e=>ghostAt(+e.target.value/1000*gMax));
+  sl.addEventListener("change",()=>{if(resume&&gT<gMax)ghostStart();resume=false;});
+  const tr=document.getElementById("ghostTrail");
+  if(tr)tr.addEventListener("change",ghostDraw);
+  let rt=null;
+  window.addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(()=>{ghostResize();ghostDraw();},180);});
+})();
 
 /* ---------- 04 year × month matrix (replaces the day-level grid: 11×12, not 11×365) ---------- */
 const GH=["#d8ead0","#aed49b","#7cbb63","#4f9e3f","#2f7d2a"];        // bike ramp
@@ -1426,7 +1607,7 @@ document.getElementById("matMetric").addEventListener("click",e=>{
   lg.addEventListener("click",e=>act(e.target));
   lg.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();act(e.target);}});
 })();
-let rt;addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(()=>{renderCharts();if(gmap)gmap.invalidateSize();},200);});
+let rt;addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(renderCharts,200);});
 document.getElementById("built").textContent="dati al lug 2026";
 if(!HAS_RUN){document.getElementById("s-vs").style.display="none";
   document.querySelector('#sportSeg button[data-sport="both"]').style.display="none";SPORT="bike";}
