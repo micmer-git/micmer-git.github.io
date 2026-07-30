@@ -1,8 +1,9 @@
 # tools/
 
-Six scripts. The four sync/build ones need nothing beyond the Python standard
-library; `build_top20_gif.py` is the single exception and wants Pillow. Every one
-takes `--dry-run` and backs up what it overwrites to `*.bak`.
+Eight scripts. The sync/build ones need nothing beyond the Python standard
+library; the three that make images (`build_top20_gif.py`, `build_top20_reel.py`,
+`basemap.py`) want Pillow. Every one takes `--dry-run` and backs up what it
+overwrites to `*.bak`.
 
 ```
 python tools/sync_intervals.py --config tools/gazzaniga-orezzo.json   # new efforts -> _data.js
@@ -12,6 +13,7 @@ python tools/build_vita.py                                            # rebuild 
 python tools/build_top20.py                                           # rebuild /top-20 data from Intervals
 python tools/build_top20_gif.py                                       # the twenty square cards
 python tools/build_top20_reel.py                                      # the one reel, on a real map
+python tools/gifweigh.py <file.gif>                                   # dove sono i byte
 node   tools/check_top20_page.cjs                                     # smoke-test /top-20 without a browser
 ```
 
@@ -193,12 +195,20 @@ the four accent colours onto the same olive grey.
 
 ## basemap.py + build_top20_reel.py
 
-`top-20-reel.gif` is the one to post: twenty days in sequence, each path drawing
-on a real map, with the camera pulling back to an orthographic globe between one
-day and the next. The globe keeps a dot for everywhere already visited, so it is
-also the progress bar. 486 frames, 39 s, 4,9 MB at the defaults (520 px, 72
-colours — the point where the file drops under five megabytes with no visible
-difference from 560 and 96).
+`top-20-reel.gif` is the one to post: twenty days in sequence, each day opening on
+a full-screen narration card that fades in and away, then the path drawing on a
+real map, with the camera pulling back to an orthographic globe between one day
+and the next. The globe keeps a dot for everywhere already visited, so it is also
+the progress bar. **1.016 frames, 3'26", 5,0 MB** at the defaults (400 px, 44
+colours).
+
+**The length does not come from the frames.** The first cut ran the twenty days in
+42 seconds and was unreadable — a caption had a second and a half on screen. Five
+times the frames would have been twenty-four megabytes, so the slowness comes from
+the two things GIF gives away: **holding a frame is free**, and a full-screen page
+of type costs one 5 kB frame however long it sits there. Hence the narration cards
+between the days, the long pauses on finished routes, and `--card` to make the
+reading slower without adding a byte.
 
 `basemap.py` supplies the map: CARTO Positron **no-labels** tiles stitched to a
 bounding box and recoloured to the site's cream, plus the globe from Natural
@@ -224,13 +234,19 @@ will recur:
   measurable; it is kept because it is correct and costs one palette slot.
 - *A smooth downscale is fine for the flight frames.* Nearest is better and
   invisible at that speed, but it bought only 2 %.
+- *Only the count of camera moves matters.* Half-right: what matters is how many
+  frames contain **the basemap at a scale it was not at in the previous frame**.
+  A globe frame and a text card cost 5 kB; one of those costs 40. That measurement
+  is why the gradual part of every flight is the globe growing from a dot and
+  rotating, while the map itself enters over three frames — and why the pull-out
+  and the dissolve to paper were merged into one move instead of two.
 - What actually mattered: **the camera must hold still while a path draws**
   (5,8 MB → 2,2 MB on a three-story test), and **cross-dissolving a street map
   into a globe is unaffordable** — scaling the map back onto the cream page
-  instead took that test to 1,2 MB. A frame-by-frame walk of the GIF's blocks
-  says the remaining cost is 88 frames over 20 kB carrying 70 % of the file, with
-  a median frame of 3,7 kB: those 88 are the ones where the whole picture changes,
-  and there is no way to have a flight without them.
+  instead took that test to 1,2 MB. `gifweigh.py` walks the GIF's blocks and
+  prints what every frame cost, which is how each of these was settled. Use it
+  rather than reasoning: the current reel is a 2,9 kB median with 101 frames over
+  10 kB carrying 45 % of the file.
 
 One more trap, this one visual: median-cut spends the palette on whatever covers
 the most pixels, which is the basemap, so a two-pixel-wide track gets merged into
@@ -239,6 +255,13 @@ and so did its dot on the globe. `fixed_palette()` reserves the four accents, th
 inks and the paper before median-cut is allowed to spend the rest. For the same
 reason the reel writes sports as words and strips emoji from the data bar: a
 twenty-pixel emoji at 72 colours is a dark smudge.
+
+## gifweigh.py
+
+Prints the encoded size of every frame in a GIF, by walking the block structure.
+Exists because guessing what makes an animation heavy has a poor record here —
+see the list above. `--runs` groups consecutive frames so a cut's phases show up
+as blocks.
 
 ## check_top20_page.cjs
 

@@ -8,22 +8,32 @@ real map, and between one day and the next the camera pulls back to an
 orthographic globe, rotates, and dives into the next place. The globe keeps the
 dots of everywhere already visited, so it doubles as the progress bar.
 
+Dura 3'26" e pesa 5,0 MB: 1.016 frame a 400 px. La lentezza non viene dai frame
+— cinque volte i frame sarebbero ventiquattro megabyte — ma dalle **pause**, che
+in GIF non costano niente, e dalle cartoline di testo, che costano un frame da
+5 kB per quanto a lungo restino su schermo.
+
     python build_top20_reel.py                    # tutto il reel
     python build_top20_reel.py --only 1,17,18     # solo alcune storie (numerate da 1)
     python build_top20_reel.py --probe 17         # un provino PNG a sei riquadri
-    python build_top20_reel.py --size 560 --ms 90   # piu grande, oltre 5 MB
+    python build_top20_reel.py --card 3500        # cartoline piu lente, stesso peso
 
 Reads `top-20/_data.js` — the same data as the page and the contact sheet, so the
 three cannot disagree. Basemap tiles and the globe come from tools/basemap.py, and
 carry its attribution; do not remove the credit line from the corner.
 
-Two things worth knowing before changing it:
+Three things worth knowing before changing it:
 
 * **One caption per leg, not five.** The page gives every day five beats. Twenty
   days times five beats is a hundred sentences, and a sentence needs two seconds
   to read: that reel would run three and a half minutes. The reel shows each
   leg's `line` instead, which is why the multi-day stories (the clavicle's four
   legs, Bologna's two) carry the most text — the text follows the camera moves.
+* **Solo i frame che contengono la basemap a una scala nuova costano.** Un frame
+  di globo e una cartolina di testo stanno a 5 kB, un frame di mappa a scala nuova
+  a 40. Per questo il tratto graduale dello zoom lo fa il globo, che cresce da un
+  puntino e ruota, mentre la mappa entra negli ultimi tre frame. Misurare prima di
+  cambiare: `python gifweigh.py <file>`.
 * **Tracks are drawn at mosaic resolution and downscaled.** Pillow does not
   antialias lines, and an aliased track over a photographic basemap looks like a
   mistake. Drawing into the full-resolution crop and resizing at the end is what
@@ -169,7 +179,7 @@ def prepare(stories, px, style, margin=1.62):
 # ------------------------------------------------------------------ disegno
 
 def map_frame(story, li, p, zoomf, S, fonts, cap_alpha=1.0, chrome=True,
-              total=20, follow=None):
+              total=20, follow=None, caption=None):
     """One map frame: the leg `li` of `story` drawn to fraction `p`, at zoom `zoomf`."""
     legs = story["legs"]
     act = legs[li]
@@ -226,7 +236,7 @@ def map_frame(story, li, p, zoomf, S, fonts, cap_alpha=1.0, chrome=True,
     frame = Image.alpha_composite(crop, lay).resize((S, S), Image.LANCZOS)
     place_labels(frame, act, box, to_px, S, fonts, ac)
     if chrome:
-        chrome_over(frame, story, li, S, fonts, cap_alpha, total)
+        chrome_over(frame, story, li, S, fonts, cap_alpha, total, caption)
     return frame.convert("RGB")
 
 
@@ -283,7 +293,7 @@ def scrim(im, box, radius, alpha=214):
     im.alpha_composite(lay)
 
 
-def chrome_over(frame, story, li, S, fonts, cap_alpha, total):
+def chrome_over(frame, story, li, S, fonts, cap_alpha, total, caption=None):
     f_kick, f_title, f_cap, f_stat, f_leg, f_emo, f_emos, f_big, f_sub = fonts[:9]
     st = story["st"]
     ac = AC.get(st["accent"], AC["stone"])
@@ -314,8 +324,11 @@ def chrome_over(frame, story, li, S, fonts, cap_alpha, total):
         dr.rounded_rectangle([bx + k * (tw + gap), pad, bx + k * (tw + gap) + tw - 1,
                               pad + int(S * 0.010)], 2, fill=c)
 
-    # didascalia + statistiche in basso
-    line = story["legs"][li]["leg"].get("line") or ""
+    # didascalia + statistiche in basso. La riga del PRIMO tratto l'ha già detta la
+    # scheda a schermo pieno un attimo prima, quindi qui resta vuota: ripeterla
+    # faceva leggere due volte la stessa frase e sembrava un errore di montaggio.
+    # Dal secondo tratto in poi invece serve, ed è l'unico posto dove appare.
+    line = caption if caption is not None else (story["legs"][li]["leg"].get("line") or "")
     cl = wrap(dr, line, f_cap, f_emo, S - 2 * pad)[:2]
     lg = story["legs"][li]["leg"]
     if len(story["legs"]) > 1:
@@ -384,13 +397,72 @@ def globe_frame(S, lat, lon, dots, fonts, upto, radius=0.86, title=None, sub=Non
     return out
 
 
+def ticks(im, n, total, S, ac, fonts):
+    dr = ImageDraw.Draw(im)
+    pad = int(S * 0.050)
+    tw, gap = int(S * 0.013), int(S * 0.0065)
+    bx = S - pad - (total * (tw + gap) - gap)
+    for k in range(total):
+        dr.rounded_rectangle([bx + k * (tw + gap), pad, bx + k * (tw + gap) + tw - 1,
+                              pad + int(S * 0.010)], 2, fill=ac if k < n else RULE)
+
+
+def text_card(S, fonts, alpha, lines, ac=None, n=None, total=20, credit_too=False):
+    """A full-screen page of centred text, faded in by `alpha`.
+
+    These carry the narration between one day and the next, and they are the
+    cheapest frames in the reel: flat paper plus a block of type, so a two-and-a-
+    half second pause on one costs a single frame's worth of bytes. That is what
+    pays for the whole thing being slow enough to read — holding a frame is free,
+    adding frames is not.
+
+    `lines` is a list of (text, kind) with kind in {kicker, big, body, small}.
+    """
+    f_kick, f_title, f_cap, f_stat, f_leg, f_emo, f_emos, f_big, f_sub = fonts[:9]
+    SPEC = {"kicker": (f_kick, INK3, 0.052, 0.028),
+            "big": (f_big, INK, 0.098, 0.030),
+            "body": (f_sub, INK2, 0.050, 0.020),
+            "small": (f_stat, INK3, 0.040, 0.014)}
+    im = Image.new("RGB", (S, S), BG)
+    lay = Image.new("RGBA", (S, S), BG + (0,))
+    dr = ImageDraw.Draw(lay)
+    pad = int(S * 0.11)
+
+    laid, h = [], 0
+    for text, kind in lines:
+        f, col, lh, gap = SPEC[kind]
+        ws = wrap(dr, text, f, f_emo, S - 2 * pad) if text else [""]
+        laid.append((ws, f, col, int(S * lh), int(S * gap)))
+        h += len(ws) * int(S * lh) + int(S * gap)
+    y = (S - h) // 2
+    for ws, f, col, lh, gap in laid:
+        for w in ws:
+            tw = text_w(dr, w, f, f_emo)
+            draw_text(dr, ((S - tw) // 2, y), w, f, f_emo, col)
+            y += lh
+        y += gap
+
+    a = max(0.0, min(1.0, alpha))
+    out = Image.blend(im, Image.alpha_composite(im.convert("RGBA"), lay).convert("RGB"), a)
+    if n is not None:
+        ticks(out, n, total, S, ac or INK3, fonts)
+    if credit_too:
+        credit(out, S, f_leg)
+    return out
+
+
+def to_paper(im, t, S):
+    """The map dissolving into the page, so a card can take over from it."""
+    return Image.blend(im, Image.new("RGB", (S, S), BG), max(0.0, min(1.0, t)))
+
+
 def on_paper(im, k, S):
     """The frame, scaled by k, centred on the page.
 
     Resampled with NEAREST rather than LANCZOS on purpose. A smooth downscale
     invents intermediate tones that are in no other frame, and these are the
     frames the file can least afford; nearest reuses colours the palette already
-    has. At two frames per flight, moving fast, the aliasing is not visible.
+    has.
     """
     k = max(0.02, k)
     w = max(1, int(round(S * k)))
@@ -415,6 +487,20 @@ eye reads one continuous move out and back in rather than a cut.
 # ------------------------------------------------------------------ montaggio
 
 def build(stories, S, fonts, args):
+    """The cut.
+
+    The first version ran the twenty days in 42 seconds and it was unreadable: a
+    caption had a second and a half on screen and every camera move was two
+    frames. Five times slower is what was asked for, and five times the frames is
+    twenty-four megabytes, so the length comes from the two things that are free
+    or nearly free instead — **holding** a frame costs nothing at all, and a
+    full-screen page of type costs one cheap frame however long it sits there.
+    So each day now opens on a narration card that fades in, holds, and fades out,
+    and the flights got the frames they needed to actually feel like a zoom.
+
+    What still costs real bytes is any frame where the whole picture changes, so
+    the drawing itself keeps a locked camera. See tools/README.md.
+    """
     frames, durs = [], []
     total = len(stories)
     dots = [(s["clat"], s["clon"], AC.get(s["st"]["accent"], AC["stone"])) for s in stories]
@@ -423,91 +509,121 @@ def build(stories, S, fonts, args):
         frames.append(im.convert("RGB"))
         durs.append(ms or args.ms)
 
-    # --- apertura
+    def fade_card(lines, ac=None, n=None, hold=None, out=True):
+        """Type fading up on the page, holding long enough to be read, fading away."""
+        for k in range(args.fade):
+            add(text_card(S, fonts, (k + 1) / float(args.fade), lines, ac, n, total))
+        durs[-1] = hold or args.card
+        if out:
+            for k in range(args.fade - 1):
+                add(text_card(S, fonts, 1.0 - (k + 1) / float(args.fade), lines, ac, n, total))
+
+    # --- apertura: prima il testo, poi il mondo
     if not args.only:
-        km = sum(s["st"]["km"] for s in stories)
-        for k in range(10):
-            t = k / 9.0
-            g = globe_frame(S, 46, 9, dots, fonts, upto=int(t * (total - 1)),
-                            radius=lerp(0.62, 0.86, ease(t)),
-                            title="Venti giorni\nsu 2.923",
-                            sub="Undici anni di GPS, dal 2015 a oggi.\nOgni traccia è quella vera.")
-            add(g, args.ms if k < 9 else 1100)
+        fade_card([("micmer · archivio 2015 – 2026", "kicker"),
+                   ("Venti giorni", "big"),
+                   ("su 2.923", "big"),
+                   ("Undici anni di GPS. Ogni traccia è quella vera.", "body")],
+                  hold=args.card + 900)
+        fade_card([("98.830 chilometri. 1.843.198 metri di dislivello.", "body"),
+                   ("4.928 ore in movimento.", "body"),
+                   ("Venti giorni raccontati, uno alla volta.", "body")])
+        for k in range(9):
+            t = k / 8.0
+            add(globe_frame(S, 46, 9, dots, fonts, upto=int(t * (total - 1)),
+                            radius=lerp(0.30, 0.86, ease(t))),
+                args.ms if k < 8 else 1400)
 
     prev_map = None
     for si, story in enumerate(stories):
         st = story["st"]
-        first = story["legs"][0]
-
-        # --- volo: indietro sulla pagina, globo che ruota, dentro alla mappa nuova
+        ac = AC.get(st["accent"], AC["stone"])
         target = map_frame(story, 0, 0.0, 1.0, S, fonts, cap_alpha=0.0, total=total)
         plat, plon = (stories[si - 1]["clat"], stories[si - 1]["clon"]) if si else (46, 9)
         hop = math.hypot((story["clat"] - plat) * 111, (story["clon"] - plon) * 78)
         far = hop > 400
-        n_out, n_rot, n_in = (2, 5, 2) if far else (2, 2, 2)
-        SMALL = 0.46
 
+        # --- uscita: la mappa si allontana E si scioglie nella carta, un movimento
+        # solo. Erano due (cinque frame di zoom out piu cinque di dissolvenza) e
+        # costavano 220 kB per storia: un frame che contiene la basemap a una scala
+        # nuova e' l'unica cosa cara di tutto il reel — il globo e le cartoline
+        # stanno a 5 kB, questi a 45.
         if prev_map is not None:
-            for k in range(n_out):
-                t = (k + 1) / float(n_out)
-                add(on_paper(prev_map, lerp(1.0, SMALL, ease(t)), S))
+            for k in range(args.zout):
+                t = (k + 1) / float(args.zout)
+                add(to_paper(on_paper(prev_map, lerp(1.0, 0.40, ease(t)), S),
+                             ease(t), S))
+
+        # --- la scheda: chi è questo giorno
+        fade_card([("%02d · %s" % (si + 1, st["kicker"].upper()), "kicker"),
+                   (st["title"], "big"),
+                   (story["legs"][0]["leg"].get("line") or "", "body")],
+                  ac=ac, n=si + 1)
+
+        # --- il volo. Il tratto graduale lo fa il GLOBO, che cresce da un puntino
+        # e ruota fino al posto nuovo: sono i frame piu economici del reel, quindi
+        # qui il tempo si puo' spendere. La mappa entra negli ultimi quattro frame,
+        # ed e' la parte che si paga.
+        SMALL = 0.38
+        n_rot = args.rot if far else max(6, args.rot // 2)
         for k in range(n_rot):
             t = k / max(1.0, n_rot - 1.0)
             add(globe_frame(S, lerp(plat, story["clat"], ease(t)),
                             lerp(plon, story["clon"], ease(t)), dots, fonts,
                             upto=si if t > .45 else max(0, si - 1),
-                            radius=lerp(SMALL, 0.86, ease(min(1, t * 1.6)))))
-        for k in range(n_in):
-            t = (k + 1) / float(n_in)
+                            radius=lerp(0.26, 0.90, ease(min(1, t * 1.25)))))
+        for k in range(args.zin):
+            t = (k + 1) / float(args.zin)
             add(on_paper(target, lerp(SMALL, 1.0, ease(t)), S))
 
-        # --- i tratti
-        #
-        # La camera sta FERMA mentre la traccia si disegna, e lo zoom arriva alla
-        # fine del tratto, sull'arrivo. La prima versione zoomava dentro e fuori
-        # durante tutto il disegno: si vedeva bene ma in GIF costava 50 kB per
-        # frame — nessun frame somigliava al precedente, quindi ogni frame era
-        # intero. A camera ferma cambiano solo la traccia, il puntino e la
-        # didascalia, e il formato può scrivere solo quel rettangolo. Il grande
-        # zoom out/in ce l'hanno già le transizioni sul globo.
+        # --- i tratti, a camera ferma
         for li, l in enumerate(story["legs"]):
-            n = args.draw if len(story["legs"]) == 1 else max(8, int(args.draw * 0.74))
+            n = args.draw if len(story["legs"]) == 1 else max(12, int(args.draw * 0.72))
             for k in range(n):
                 p = (k + 1) / float(n)
-                ca = min(1.0, (k + 1) / 3.0)
+                ca = min(1.0, (k + 1) / 4.0)
+                last = (k == n - 1)
                 add(map_frame(story, li, p, 1.0, S, fonts, cap_alpha=ca, total=total,
-                              follow=0.0))
-            last_leg = (li == len(story["legs"]) - 1)
-            if last_leg and args.zoom > 1.01:
-                for k in range(args.punch):
-                    t = (k + 1) / float(args.punch)
-                    add(map_frame(story, li, 1.0, lerp(1.0, args.zoom, ease(t)), S,
-                                  fonts, total=total, follow=ease(t)),
-                        args.hold if k == args.punch - 1 else None)
+                              follow=0.0,
+                              caption="" if li == 0 else None),
+                    (args.hold if li == len(story["legs"]) - 1 else args.hold_leg)
+                    if last else None)
             prev_map = frames[-1]
 
     # --- finale
     if not args.only:
-        # Il finale gira verso l'Atlantico: centrato sull'Europa, Boston sta dietro
+        for k in range(args.zout):
+            t = (k + 1) / float(args.zout)
+            add(to_paper(on_paper(prev_map, lerp(1.0, 0.40, ease(t)), S),
+                         ease(t), S))
+        # Il globo gira verso l'Atlantico: centrato sull'Europa, Boston sta dietro
         # l'orizzonte e il giorno piu lontano dei venti non si vedrebbe. Nessun punto
         # "corrente": qui contano tutti uguali, e l'alone grosso sull'ultimo sembrava
         # una macchia grigia sull'Italia.
-        for k in range(10):
-            t = k / 9.0
+        for k in range(12):
+            t = k / 11.0
             add(globe_frame(S, 42, lerp(8, -34, ease(t)), dots, fonts, upto=total - 1,
-                            current=False, radius=lerp(0.86, 0.82, ease(t)),
-                            title="98.830 km",
-                            sub="1.843.198 metri di dislivello.\n4.928 ore in movimento.\n2.923 attività. Venti raccontate."),
-                args.ms if k < 7 else 1600)
+                            current=False, radius=lerp(0.86, 0.82, ease(t))),
+                args.ms if k < 11 else 1200)
+        fade_card([("2.923 attività. Venti raccontate.", "body"),
+                   ("98.830 km", "big"),
+                   ("micmer-git.github.io/top-20", "small")],
+                  hold=args.card + 1200, out=False)
     return frames, durs
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--size", type=int, default=520)
-    ap.add_argument("--ms", type=int, default=75)
-    ap.add_argument("--hold", type=int, default=550, help="pausa sull'ultimo frame di una storia")
-    ap.add_argument("--draw", type=int, default=13, help="frame per tratto")
+    ap.add_argument("--size", type=int, default=400)
+    ap.add_argument("--ms", type=int, default=105, help="durata di un frame in movimento")
+    ap.add_argument("--card", type=int, default=2500, help="quanto resta ferma una scheda")
+    ap.add_argument("--fade", type=int, default=5, help="frame di dissolvenza")
+    ap.add_argument("--rot", type=int, default=12, help="frame di rotazione del globo")
+    ap.add_argument("--zin", type=int, default=3, help="frame dello zoom in ingresso")
+    ap.add_argument("--zout", type=int, default=3, help="frame dello zoom in uscita")
+    ap.add_argument("--hold-leg", type=int, default=1000, help="pausa a fine tratto")
+    ap.add_argument("--hold", type=int, default=1900, help="pausa sull'ultimo frame di una storia")
+    ap.add_argument("--draw", type=int, default=20, help="frame per tratto")
     ap.add_argument("--zoom", type=float, default=2.1, help="zoom dell'affondo finale")
     ap.add_argument("--punch", type=int, default=0,
                     help="frame dell'affondo finale su ogni storia. Zero per scelta: "
@@ -519,9 +635,11 @@ def main():
     ap.add_argument("--disposal", type=int, default=1,
                     help="1 = lascia in posa, lascia scrivere al GIF solo il rettangolo "
                          "cambiato; 2 = ridisegna tutto (molto piu grande)")
-    ap.add_argument("--colors", type=int, default=72,
-                    help="72 e 520 px sono il punto in cui il file scende sotto i "
-                         "cinque megabyte senza differenza visibile da 96 e 560")
+    ap.add_argument("--colors", type=int, default=44,
+                    help="400 px e 44 colori sono il punto in cui il reel lento sta "
+                         "sotto i cinque megabyte senza differenza visibile: 14 "
+                         "slot sono riservati (accenti, accenti sbiaditi, "
+                         "inchiostri, carta), gli altri vanno alla mappa")
     ap.add_argument("--px", type=int, default=1500, help="lato del mosaico basemap")
     ap.add_argument("--style", default="light_nolabels")
     ap.add_argument("--only", help="solo queste storie, numerate da 1: 1,17,18")
@@ -602,7 +720,12 @@ def fixed_palette(sample, colors):
     the globe. The four accents, the three inks and the paper are therefore
     reserved before median-cut is allowed to spend the rest.
     """
-    keep = [BG, INK, INK2, INK3, RULE, (255, 255, 255)] + [AC[k] for k in sorted(AC)]
+    # Anche gli accenti SBIADITI vanno riservati: i tratti dei giorni precedenti si
+    # disegnano a blend(ac, .60) e senza slot loro finivano nel grigio piu' vicino —
+    # a Bologna il giro del sabato diventava grigio invece che arancio pallido.
+    keep = ([BG, INK, INK2, INK3, RULE, (255, 255, 255)]
+            + [AC[k] for k in sorted(AC)]
+            + [blend(AC[k], .60) for k in sorted(AC)])
     base = sample.quantize(colors=max(8, colors - len(keep)), method=Image.MEDIANCUT)
     raw = base.getpalette()[: max(8, colors - len(keep)) * 3]
     for c in keep:
