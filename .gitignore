@@ -5,3 +5,8 @@ dist/
 *.bak
 tools/.intervals_key
 __pycache__/
+
+# build_top20.py: cache locale degli stream Intervals (si riscarica da sola)
+tools/.cache_streams/
+# provini dei build (build_top20_gif.py --png)
+tools/.gif_check.png

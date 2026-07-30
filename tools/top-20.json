@@ -1,0 +1,543 @@
+{
+  "_comment": "The 20 stories of /top-20. Each leg is an Intervals.icu activity id; the GPS comes from its stream. `pace` decides how the animation's time is split between the legs — \"km\" (default, sqrt of the distance: right inside one day) or \"chapters\" (equal share: right when the legs are different days). `beat_at` pins each of the five captions to a fraction of the timeline, so a caption about the 17th of May cannot land while the dot is running the 29th of June; omit it for even spacing. build_top20.py resolves both into per-leg t0/dt in _data.js, which is what the page and the GIF read.",
+  "out_data": "../top-20/_data.js",
+  "out_gif": "../top-20/top-20.gif",
+  "points_per_leg": 260,
+  "stories": [
+    {
+      "slug": "milano-sanremo-2016",
+      "year": 2016,
+      "title": "Milano – Sanremo",
+      "kicker": "5 giugno 2016",
+      "icon": "🏁",
+      "accent": "dawn",
+      "legs": [
+        {
+          "id": "i62695126",
+          "sport": "bike",
+          "label": "Milano → Sanremo"
+        }
+      ],
+      "beats": [
+        "Giugno 2016. Sul diario dell'orologio c'è scritto soltanto «Morning Ride».",
+        "Sono 288 chilometri. Il record precedente, nell'archivio, era 192.",
+        "Turchino, Cipressa, Poggio. I nomi sentiti in televisione, presi uno per uno.",
+        "Nove ore e 28 in sella. Nessuna descrizione salvata: non sembrava servisse.",
+        "Da qui in avanti, la parola «lungo» avrebbe voluto dire un'altra cosa."
+      ]
+    },
+    {
+      "slug": "gavia-mortirolo-2016",
+      "year": 2016,
+      "title": "Edolo – Gavia – Mortirolo – Edolo",
+      "kicker": "9 luglio 2016",
+      "icon": "⛰️",
+      "accent": "stone",
+      "legs": [
+        {
+          "id": "i62695131",
+          "sport": "bike",
+          "label": "l'anello"
+        }
+      ],
+      "beats": [
+        "Un mese dopo la Sanremo, la domanda cambia: non più quanto lontano, ma quanto in alto.",
+        "Gavia e Mortirolo nello stesso giro. Le due salite che si citano per spaventare.",
+        "3.227 metri di dislivello in 123 chilometri: più di 26 metri per ogni chilometro.",
+        "Il Mortirolo arriva per ultimo, quando le gambe hanno già dato tutto al Gavia.",
+        "È il giorno in cui il dislivello diventa l'unità di misura preferita."
+      ]
+    },
+    {
+      "slug": "ronde-2017",
+      "year": 2017,
+      "title": "Ronde van Vlaanderen",
+      "kicker": "1 aprile 2017",
+      "icon": "🇧🇪",
+      "accent": "stone",
+      "legs": [
+        {
+          "id": "i62695158",
+          "sport": "bike",
+          "label": "il Giro delle Fiandre"
+        }
+      ],
+      "beats": [
+        "Le Fiandre non hanno montagne. Hanno muri, e i muri sono peggio.",
+        "238 chilometri di pavé, vento laterale e strappi che finiscono prima di respirare.",
+        "Solo 2.009 metri di dislivello: il numero più bugiardo di tutto l'archivio.",
+        "Otto ore e tre quarti. In Belgio si impara che la fatica non ha bisogno dell'altitudine.",
+        "Cinque anni dopo saresti tornato qui a rifarla — «decisamente meglio»."
+      ]
+    },
+    {
+      "slug": "liegi-2018",
+      "year": 2018,
+      "title": "Liège – Bastogne – Headache",
+      "kicker": "21 aprile 2018",
+      "icon": "🧠",
+      "accent": "stone",
+      "legs": [
+        {
+          "id": "i62695260",
+          "sport": "bike",
+          "label": "la Doyenne"
+        }
+      ],
+      "beats": [
+        "Il titolo dice tutto: Liège – Bastogne – Mal di testa.",
+        "204 chilometri e 3.346 metri di dislivello nelle Ardenne, il giorno della Doyenne.",
+        "«An incredible ride, full of bumps and crazy climbs.» — scritto la sera stessa.",
+        "Sette ore e 56. La corsa più antica del calendario, fatta da turista ostinato.",
+        "«Proud to be there.» Sette anni dopo saresti tornato con tuo fratello."
+      ]
+    },
+    {
+      "slug": "milano-half-2019",
+      "year": 2019,
+      "title": "Milan Half Marathon",
+      "kicker": "24 novembre 2019",
+      "icon": "👟",
+      "accent": "dusk",
+      "legs": [
+        {
+          "id": "i62695523",
+          "sport": "run",
+          "label": "la prima mezza"
+        }
+      ],
+      "beats": [
+        "«Buona la prima»: due parole fra parentesi, ed è l'inizio di tutto il resto.",
+        "21 chilometri di Milano piatta, 23 metri di dislivello in totale.",
+        "Un'ora e 39. Nessun obiettivo, nessuna tabella, nessuna aspettativa.",
+        "Fino a quel giorno le gambe servivano soltanto a pedalare.",
+        "Da quel giorno in poi, nell'archivio, sarebbero arrivate quattordici maratone."
+      ]
+    },
+    {
+      "slug": "primo-703-2020",
+      "year": 2020,
+      "title": "Il primo 70.3, fatto in casa",
+      "kicker": "27 settembre 2020",
+      "icon": "🏊",
+      "accent": "green",
+      "legs": [
+        {
+          "id": "i62696125",
+          "sport": "bike",
+          "label": "bici — 90 km"
+        },
+        {
+          "id": "i62696128",
+          "sport": "run",
+          "label": "mezza maratona"
+        }
+      ],
+      "beats": [
+        "Il 2020 aveva cancellato le gare. La distanza, però, non l'aveva cancellata nessuno.",
+        "Marzo: «The Ironman postponement ride». Sei mesi dopo, la gara te la organizzi da solo.",
+        "Nuoto in piscina — l'unico pezzo senza traccia GPS — poi 90 km di bici e 21 di corsa.",
+        "Nessun pettorale, nessun ristoro, nessun cronometro. Quattro ore e 14, dal tuffo all'arrivo.",
+        "Un mezzo Ironman esiste anche se non c'è nessuno a guardarlo."
+      ],
+      "beat_at": [
+        0.0,
+        0.12,
+        0.28,
+        0.62,
+        0.86
+      ]
+    },
+    {
+      "slug": "prima-maratona-2020",
+      "year": 2020,
+      "title": "Maratona in Comune",
+      "kicker": "29 novembre 2020",
+      "icon": "🏅",
+      "accent": "dusk",
+      "legs": [
+        {
+          "id": "i62696232",
+          "sport": "run",
+          "label": "42,195 km"
+        }
+      ],
+      "beats": [
+        "Autunno 2020: si può correre, ma solo dentro il proprio Comune.",
+        "Allora la maratona si fa così — 42 chilometri chiusi dentro i confini di Orezzo.",
+        "469 metri di dislivello: una maratona che in pianura non sarebbe mai stata.",
+        "Tre ore e 33, con Liuk che si aggrega per la mezza. ⚡🥇",
+        "La prima delle quattordici. E l'unica corsa senza mai uscire dal paese."
+      ]
+    },
+    {
+      "slug": "trinita-2021",
+      "year": 2021,
+      "title": "Gavia, Stelvio, Mortirolo",
+      "kicker": "2 giugno 2021",
+      "icon": "🗻",
+      "accent": "stone",
+      "legs": [
+        {
+          "id": "i62696671",
+          "sport": "bike",
+          "label": "la santissima trinità"
+        }
+      ],
+      "beats": [
+        "«La santissima trinità.» Tre parole, tre passi, un giorno solo.",
+        "6.182 metri di dislivello: il giro in bici più duro di tutto l'archivio, undici anni compresi.",
+        "Un Monte Bianco e un quarto, salito partendo dal livello del mare.",
+        "«Pizzoccheri a Bormio col Testa. Mortirolo fatto anche bene.»",
+        "Otto ore e otto. La cosa più vicina a un limite che questi dati conoscano."
+      ]
+    },
+    {
+      "slug": "mdd-2021",
+      "year": 2021,
+      "title": "Maratona dles Dolomites",
+      "kicker": "4 luglio 2021",
+      "icon": "🏔️",
+      "accent": "dawn",
+      "legs": [
+        {
+          "id": "i62696752",
+          "sport": "bike",
+          "label": "il percorso lungo"
+        }
+      ],
+      "beats": [
+        "«La mia rivincita dopo la fisiologica.» Cinque parole, e si capisce tutto.",
+        "Nel 2019 la Maratona era finita con il percorso corto: 55 chilometri.",
+        "Due anni dopo, il lungo: 135 chilometri e 4.217 metri, sette passi dolomitici.",
+        "Cinque ore e mezza. Nessun commento tecnico, nessun dato: solo la parola rivincita.",
+        "Sarebbe tornato altre quattro volte. Ma quella che conta è sempre la seconda."
+      ]
+    },
+    {
+      "slug": "barcelona-703-2021",
+      "year": 2021,
+      "title": "Ironman 70.3 Barcelona",
+      "kicker": "3 ottobre 2021",
+      "icon": "💥",
+      "accent": "dusk",
+      "legs": [
+        {
+          "id": "i62696968",
+          "sport": "swim",
+          "label": "nuoto — mare"
+        },
+        {
+          "id": "i62696973",
+          "sport": "bike",
+          "label": "bici — 90 km"
+        },
+        {
+          "id": "i62696976",
+          "sport": "run",
+          "label": "mezza maratona"
+        }
+      ],
+      "beats": [
+        "Il primo 70.3 col marchio Ironman, poco più di un anno dopo quello inventato in casa.",
+        "«Dosso e caduta nei primi 100 metri, top.» Cento metri di bici su novanta chilometri.",
+        "Il resto della frazione lo fai comunque: 91 chilometri, due ore e 25.",
+        "Poi la mezza maratona. «Dolori ovunque. Non so come l'ho finita.»",
+        "Ma la finisci. Ed è la riga dell'archivio che spiega tutte quelle dopo."
+      ],
+      "beat_at": [
+        0.0,
+        0.1,
+        0.26,
+        0.73,
+        0.92
+      ]
+    },
+    {
+      "slug": "padova-2023",
+      "year": 2023,
+      "title": "Maratona di Padova",
+      "kicker": "23 aprile 2023",
+      "icon": "🎉",
+      "accent": "green",
+      "legs": [
+        {
+          "id": "i62693426",
+          "sport": "run",
+          "label": "42,195 km"
+        }
+      ],
+      "beats": [
+        "Due ore e 45. La prima maratona su strada vera, con il pettorale e il cronometro.",
+        "46 metri di dislivello in tutto: dopo Orezzo, sembra una pista d'atletica.",
+        "«Felice come una pasqua 🗿. Dura come i testoni!»",
+        "Il giorno dopo: «giro riciclo post maratona», 32 chilometri di bici.",
+        "Il recupero, in questo archivio, non è mai stato un giorno di riposo."
+      ]
+    },
+    {
+      "slug": "milano-sanremo-2023",
+      "year": 2023,
+      "title": "Milano – Sanremo, sette anni dopo",
+      "kicker": "4 giugno 2023",
+      "icon": "🎶",
+      "accent": "dawn",
+      "legs": [
+        {
+          "id": "i62693494",
+          "sport": "bike",
+          "label": "309 km"
+        }
+      ],
+      "beats": [
+        "Stessa corsa del 2016. Stessi passi. Venti chilometri in più.",
+        "«Quando una gara è lunga, e la allungano di 15 km.»",
+        "309 chilometri: la cosa più lunga mai registrata in undici anni di archivio.",
+        "«Gambe che giravano bene.» Sette anni prima non c'era nemmeno una descrizione.",
+        "La stessa strada, due volte, con in mezzo tutta la differenza."
+      ]
+    },
+    {
+      "slug": "boston-2024",
+      "year": 2024,
+      "title": "Boston Marathon",
+      "kicker": "15 aprile 2024",
+      "icon": "🦄",
+      "accent": "dusk",
+      "legs": [
+        {
+          "id": "i62694119",
+          "sport": "run",
+          "label": "Hopkinton → Boylston"
+        }
+      ],
+      "beats": [
+        "Boston non si compra: si corre un tempo abbastanza veloce da essere invitati.",
+        "Da Hopkinton a Boylston Street, il percorso più antico del mondo.",
+        "«Definitely not an easy one. Legs got blasted by the Hills.»",
+        "Le colline sono a metà gara, quando la discesa iniziale ha già fatto i danni.",
+        "Due ore e 55, e il primo Major finito. 🦄"
+      ]
+    },
+    {
+      "slug": "iseran-2024",
+      "year": 2024,
+      "title": "Iseran e Moncenisio",
+      "kicker": "27 luglio 2024",
+      "icon": "🇫🇷",
+      "accent": "stone",
+      "legs": [
+        {
+          "id": "i62694301",
+          "sport": "bike",
+          "label": "il giro francese"
+        }
+      ],
+      "beats": [
+        "Il Col de l'Iseran: 2.770 metri, il passo asfaltato più alto delle Alpi.",
+        "Nello stesso giro anche il Moncenisio. 4.176 metri di dislivello in totale.",
+        "«Crazy hard and beautiful day.»",
+        "«Canyon gravel was not the smartest choice» — fatto con la gravel, per scelta.",
+        "Sei ore e 54 sulla bici sbagliata, sui passi giusti."
+      ]
+    },
+    {
+      "slug": "livigno-2024",
+      "year": 2024,
+      "title": "Orezzo – Livigno – Orezzo",
+      "kicker": "9 e 10 agosto 2024",
+      "icon": "🏴‍☠️",
+      "accent": "dawn",
+      "legs": [
+        {
+          "id": "i62694325",
+          "sport": "bike",
+          "label": "giorno 1 — Mortirolo, Foscagno"
+        },
+        {
+          "id": "i62694326",
+          "sport": "bike",
+          "label": "giorno 2 — Aprica, Ganda"
+        }
+      ],
+      "beats": [
+        "Da casa a Livigno in bici. Poi da Livigno a casa in bici. Due giorni, niente auto.",
+        "Giorno uno: Mortirolo e Foscagno, 177 chilometri e 4.000 metri.",
+        "«Bandiera tra Pantani e finitudine del Foscagno.»",
+        "Giorno due: 180 chilometri di ritorno, Aprica e Ganda, «a tour of the greatest pizza places in Lombardy».",
+        "357 chilometri, 6.800 metri, due pizze. L'andata e il ritorno hanno lo stesso peso."
+      ],
+      "pace": "chapters",
+      "beat_at": [
+        0.0,
+        0.12,
+        0.3,
+        0.54,
+        0.8
+      ]
+    },
+    {
+      "slug": "malaga-2024",
+      "year": 2024,
+      "title": "Maratona di Malaga",
+      "kicker": "15 dicembre 2024",
+      "icon": "🥘",
+      "accent": "green",
+      "legs": [
+        {
+          "id": "i62694555",
+          "sport": "run",
+          "label": "42,195 km"
+        }
+      ],
+      "beats": [
+        "«I cried many times.» È la prima riga della descrizione.",
+        "Due ore e 39: il record personale, battuto solo undici mesi dopo, a Firenze.",
+        "«Days worth all the work. Gracias 🇪🇸🦄»",
+        "Il giorno dopo, in piscina: «T − 278 days». Il conto alla rovescia per l'Ironman era già partito.",
+        "Una settimana dopo, sci alpinismo a 3.400 metri sul ghiacciaio di Cervinia."
+      ]
+    },
+    {
+      "slug": "bologna-2025",
+      "year": 2025,
+      "title": "Bergamo – Bologna, e la maratona il giorno dopo",
+      "kicker": "1 e 2 marzo 2025",
+      "icon": "🍝",
+      "accent": "dawn",
+      "legs": [
+        {
+          "id": "i67647879",
+          "sport": "bike",
+          "label": "sabato — 234 km fino a Bologna"
+        },
+        {
+          "id": "i67761997",
+          "sport": "run",
+          "label": "domenica — Bologna Marathon"
+        }
+      ],
+      "beats": [
+        "Alla maratona di Bologna ci si arriva in treno. Oppure in bici.",
+        "Sabato: 234 chilometri da Bergamo a Bologna, sette ore e mezza in sella.",
+        "«The tapering continues.» Detto con l'emoji del clown, la sera prima di una maratona.",
+        "Domenica: 42,7 chilometri in 2h41'06\". Sedicesimo assoluto, il giorno dopo i 234.",
+        "«We run for tagliatelle. Ironman test ✅»"
+      ],
+      "pace": "chapters",
+      "beat_at": [
+        0.0,
+        0.14,
+        0.34,
+        0.52,
+        0.78
+      ]
+    },
+    {
+      "slug": "clavicola-2025",
+      "year": 2025,
+      "title": "La clavicola",
+      "kicker": "29 aprile → 29 giugno 2025",
+      "icon": "❤️‍🩹",
+      "accent": "dusk",
+      "legs": [
+        {
+          "id": "i76257928",
+          "sport": "bike",
+          "label": "29 aprile — 🩻"
+        },
+        {
+          "id": "i77988384",
+          "sport": "bike",
+          "label": "11 maggio — «un passo alla volta»"
+        },
+        {
+          "id": "i78859932",
+          "sport": "run",
+          "label": "17 maggio — Clavicle In Half"
+        },
+        {
+          "id": "i85238516",
+          "sport": "bike",
+          "label": "29 giugno — Manghen e Rolle"
+        }
+      ],
+      "beats": [
+        "29 aprile 2025. L'attività si chiama 🩻, l'emoji della radiografia. «Bene ma non benissimo.»",
+        "Da quel giorno ogni titolo diventa ❤️‍🩹. Rulli, con il tutore: «first time 210W + no sling».",
+        "12 giorni dopo, dieci chilometri di salita vera: «un passo alla volta 🩼».",
+        "18 giorni dopo la frattura, una mezza maratona: «Clavicle In Half. Discomfort is manageable.»",
+        "Operato a giugno — «surgery confirmed tomorrow». Il 29 giugno, Manghen e Rolle: «exactly 2 months from injury 🤕»."
+      ],
+      "pace": "chapters",
+      "beat_at": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        0.88
+      ]
+    },
+    {
+      "slug": "ironman-2025",
+      "year": 2025,
+      "title": "Ironman",
+      "kicker": "20 settembre 2025",
+      "icon": "Ⓜ️",
+      "accent": "green",
+      "legs": [
+        {
+          "id": "i98213662",
+          "sport": "swim",
+          "label": "3,9 km a nuoto"
+        },
+        {
+          "id": "i98213664",
+          "sport": "bike",
+          "label": "178,6 km in bici"
+        },
+        {
+          "id": "i98213667",
+          "sport": "run",
+          "label": "la maratona"
+        }
+      ],
+      "beats": [
+        "Il conto alla rovescia era partito il giorno dopo Malaga, nove mesi prima.",
+        "3,9 km a nuoto: «I hate swimming: confirmed. But the seaside 🥹»",
+        "178 km in bici. «Got a flat while going 55 km/h downhill (km 136). Avoided a crash by sliding.»",
+        "Poi la maratona. «Stomach down at km 15» — e restano ventisette chilometri.",
+        "Dieci ore e 42 dal tuffo all'arrivo. Poco più di tre mesi dopo l'operazione."
+      ],
+      "beat_at": [
+        0.0,
+        0.06,
+        0.24,
+        0.74,
+        0.92
+      ]
+    },
+    {
+      "slug": "dead-2026",
+      "year": 2026,
+      "title": "Dead and Almost Dead",
+      "kicker": "3 maggio 2026",
+      "icon": "☠️",
+      "accent": "stone",
+      "legs": [
+        {
+          "id": "i144972812",
+          "sport": "run",
+          "label": "98,8 km"
+        }
+      ],
+      "beats": [
+        "Il giorno prima: Valzurio Trail, 24 chilometri di gara. «Lovely race.»",
+        "Il giorno dopo: 98,8 chilometri di corsa. Il doppio di una maratona, più un po'.",
+        "«Started with dead legs.» Le gambe erano già finite alla partenza.",
+        "2.109 metri di dislivello, quattro ore e due minuti.",
+        "«Ended up 1 km from home almost dead.» Un chilometro da casa. Un chilometro."
+      ]
+    }
+  ]
+}

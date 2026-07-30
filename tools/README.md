@@ -1,13 +1,17 @@
 # tools/
 
-Four scripts, no dependencies beyond the Python standard library. Every one takes
-`--dry-run` and backs up what it overwrites to `*.bak`.
+Six scripts. The four sync/build ones need nothing beyond the Python standard
+library; `build_top20_gif.py` is the single exception and wants Pillow. Every one
+takes `--dry-run` and backs up what it overwrites to `*.bak`.
 
 ```
 python tools/sync_intervals.py --config tools/gazzaniga-orezzo.json   # new efforts -> _data.js
 python tools/sync_sogni.py                                            # new weeks   -> data.json + load.json
 python tools/sync_diario.py                                           # refresh the monthly chapter numbers
 python tools/build_vita.py                                            # rebuild /vita from all of the above
+python tools/build_top20.py                                           # rebuild /top-20 data from Intervals
+python tools/build_top20_gif.py                                       # rebuild /top-20's shareable GIF
+node   tools/check_top20_page.cjs                                     # smoke-test /top-20 without a browser
 ```
 
 The weekly GitHub Action (`.github/workflows/weekly-vita.yml`) runs all four on
@@ -129,3 +133,67 @@ tracker's name.
 **Adding a tracker:** write a `load_*()` returning the same dict shape, add it to
 the list in `main()` and to `TRACKED` (for the changelog), and give it an accent —
 re-validate the set if you go past three.
+
+---
+
+## build_top20.py
+
+Builds `top-20/_data.js` — the twenty days of `/top-20`, each one animated on its
+real GPS. The twenty stories, their five captions apiece, and their timing all
+live in **`top-20.json`**; this script only resolves them against Intervals.icu.
+Streams are cached under `tools/.cache_streams/` (gitignored), so re-running after
+an editorial change costs no network at all. `--refetch` ignores the cache,
+`--facts` prints the fact sheet and writes nothing.
+
+**Every number in a caption was checked against the fact sheet before being
+written**, and a few were wrong on the first pass — the animation is 9h28 not
+"nove ore e mezza", Malaga was 2h39 not 2h40, and 6.182 m is one Mont Blanc and a
+quarter, not "seven hundred metres above" one. Run `--facts` and re-read the
+captions whenever the ids change.
+
+Two decisions inside are load-bearing:
+
+- **Douglas-Peucker, not even resampling.** Spacing points evenly along the
+  distance starves the hairpins: at 260 points the Maratona dles Dolomites came
+  out 23 % short of its real length and the Mortirolo looked like a gentle arc.
+  Thinning at a 12 m tolerance holds the same route within 2 % on 989 points.
+  The cost is that points are no longer evenly spaced, so anything animating them
+  must walk the polyline **by arc length** — both the page and the GIF do.
+- **The timeline is computed here, not in the two renderers.** Each leg gets a
+  `t0`/`dt` and each story a `beat_at`, written into `_data.js`. `pace` picks the
+  split: `"km"` (sqrt of the distance — right *inside* one day, or the Ironman's
+  3,9 km swim would last seven hundredths of the animation) or `"chapters"`
+  (equal share — right when the legs are *different days*). `beat_at` pins each
+  caption to a fraction of the timeline. Both exist because the first version
+  weighted legs in the page and in the GIF separately, and the clavicle's
+  captions talked about the 17th of May while the dot ran the 29th of June.
+
+**Swapping a story:** edit `top-20.json` — `legs` takes Intervals activity ids —
+then re-run. Anything with no GPS stream is skipped with a warning rather than
+silently dropped: Intervals has **no 2022 at all** and nothing before March 2015,
+so days from those windows can be described but not animated.
+
+## build_top20_gif.py
+
+Rebuilds `top-20/top-20.gif` from the same `_data.js` the page reads, so the two
+cannot drift apart. Needs Pillow. `--story <slug> --png` writes a six-frame
+contact sheet to `tools/.gif_check.png` instead — the fast way to look at one
+story.
+
+Three things it gets right on purpose: the frame **follows the leg, not the
+story** (the clavicle's four legs sit in two valleys eighty kilometres apart, and
+one shared bounding box made every day a thumbnail in a corner); the map is drawn
+into its own image and pasted, because otherwise a distant leg's faint trace runs
+straight through the captions; and text is drawn in runs so emoji can go to Segoe
+UI Emoji with `embedded_color=True` — the captions quote titles like 🩻 and ❤️‍🩹
+where the emoji *is* the title. The GIF palette is quantized (RGB was 3 MB) and
+sampled across **all twenty** stories: taking it from a single frame collapsed
+the four accent colours onto the same olive grey.
+
+## check_top20_page.cjs
+
+There is no browser on this machine, so `/top-20`'s own script is extracted from
+`index.html` and run against a stub DOM with a recording canvas. It drives all
+twenty animations to completion and fails on an exception, a non-finite
+coordinate, a missing caption, or `undefined` reaching the markup. Run it after
+touching the page's script — it catches what a syntax check cannot.

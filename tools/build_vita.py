@@ -435,6 +435,8 @@ TEMPLATE = r"""<!DOCTYPE html>
 </section>
 
 <nav class="also">
+  <a href="../top-20/">Venti giorni su 2.923</a>
+  <a href="../bike-to-work/">Al lavoro in bici</a>
   <a href="../signore-dei-kj.html">Il Signore dei kJ</a>
   <a href="../signore-dei-kj-weekly.html">…settimanale</a>
   <a href="../viaggi/">Viaggi</a>

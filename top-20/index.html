@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5">
+<title>Venti giorni su 2.923 — undici anni di archivio</title>
+<meta name="description" content="Le venti attività che raccontano undici anni: ogni traccia GPS animata, cinque righe di storia mentre il puntino corre. Milano–Sanremo, la santissima trinità, Bologna in bici più la maratona il giorno dopo, la clavicola rotta, l'Ironman.">
+<meta name="author" content="micmer — Michele Merelli">
+<meta name="theme-color" content="#131017">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🗻%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf8f3; --ink:#14150f; --ink-2:#5c5f52; --ink-3:#8f9382; --rule:#e4e1d6;
+  --dawn:#c2761a; --dusk:#3b5bb5; --green:#4d7238; --stone:#8a5a3c; --gold:#e8b23a;
+  --serif:"Instrument Serif",Georgia,serif; --sans:"Inter",system-ui,-apple-system,sans-serif;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--sans);background:#131017;color:var(--ink);
+  -webkit-font-smoothing:antialiased;overscroll-behavior-y:none}
+.tnum{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
+
+/* ===== story scaffold ===== */
+.story{height:100dvh;overflow-y:scroll;scroll-snap-type:y mandatory;scroll-behavior:smooth;
+  scrollbar-width:none;-ms-overflow-style:none}
+.story::-webkit-scrollbar{display:none}
+.slide{height:100dvh;scroll-snap-align:start;scroll-snap-stop:always;position:relative;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
+  padding:calc(58px + env(safe-area-inset-top)) 24px calc(66px + env(safe-area-inset-bottom));
+  overflow:hidden}
+.wrap{width:100%;max-width:620px;display:flex;flex-direction:column;align-items:center}
+
+.sl-night{background:radial-gradient(120% 90% at 50% 118%,#3a2a17 0%,#221a14 34%,#131017 72%);color:#faf8f3}
+.sl-night .ey{color:#b3a893}.sl-night .sub{color:#d6cfc0}.sl-night .fine{color:#8d8578}
+.sl-cream{background:var(--bg);color:var(--ink)}
+.sl-cream .ey{color:var(--ink-3)}.sl-cream .sub{color:var(--ink-2)}.sl-cream .fine{color:var(--ink-3)}
+.sl-dusk{background:linear-gradient(170deg,#1a2038,#232f56);color:#f0f1f8}
+.sl-dusk .ey{color:#9aa5cf}.sl-dusk .sub{color:#ccd3ec}.sl-dusk .fine{color:#8991b8}
+
+/* type */
+.ey{font-size:.7rem;text-transform:uppercase;letter-spacing:.2em;font-weight:600;margin-bottom:20px}
+.big{font-family:var(--serif);font-weight:400;line-height:.9;letter-spacing:-.02em;
+  font-size:clamp(4.2rem,25vw,9.5rem)}
+.mid{font-family:var(--serif);font-weight:400;line-height:.98;letter-spacing:-.015em;
+  font-size:clamp(2.3rem,9.5vw,4rem)}
+.h{font-family:var(--serif);font-weight:400;line-height:1;letter-spacing:-.01em;
+  font-size:clamp(1.9rem,7.5vw,3rem)}
+.sub{font-size:clamp(1rem,4.3vw,1.24rem);line-height:1.5;max-width:27ch;margin:18px auto 0}
+.sub b{font-weight:600}
+.fine{font-size:.8rem;line-height:1.5;margin-top:16px;max-width:34ch}
+.unit{font-size:.42em;opacity:.55}
+
+.stg{opacity:0;transform:translateY(20px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.in .stg{opacity:1;transform:none}
+.in .stg1{transition-delay:.05s}.in .stg2{transition-delay:.16s}.in .stg3{transition-delay:.28s}
+.in .stg4{transition-delay:.42s}.in .stg5{transition-delay:.56s}
+
+/* ===== the twenty ===== */
+.story-slide{padding-top:calc(30px + env(safe-area-inset-top));padding-bottom:calc(50px + env(safe-area-inset-bottom))}
+.card{width:100%;max-width:1180px;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);
+  gap:clamp(18px,3vw,44px);align-items:center;text-align:left}
+.mapcol{min-width:0;position:relative}
+.cv{width:100%;aspect-ratio:4/3;display:block;background:transparent;border-radius:10px}
+.prof{width:100%;height:46px;display:block;margin-top:6px}
+.legname{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;
+  color:var(--ink-3);min-height:1.2em;margin-top:4px;transition:color .4s}
+
+.txtcol{min-width:0;display:flex;flex-direction:column}
+.no{font-family:var(--serif);font-size:clamp(2.6rem,7vw,4.4rem);line-height:.85;
+  color:var(--rule);letter-spacing:-.03em}
+.st-kick{font-size:.72rem;text-transform:uppercase;letter-spacing:.19em;font-weight:600;
+  color:var(--ink-3);margin-top:10px}
+.st-title{font-family:var(--serif);font-size:clamp(1.7rem,4.2vw,2.6rem);line-height:1.02;
+  letter-spacing:-.01em;margin:6px 0 0}
+.stats{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:14px;padding-bottom:16px;
+  border-bottom:1px solid var(--rule)}
+.stat{display:flex;flex-direction:column}
+.stat i{font-style:normal;font-size:.64rem;text-transform:uppercase;letter-spacing:.14em;
+  color:var(--ink-3);font-weight:600}
+.stat b{font-family:var(--serif);font-weight:400;font-size:1.5rem;line-height:1.1}
+
+.beats{list-style:none;margin:16px 0 0;padding:0;counter-reset:b}
+.beats li{counter-increment:b;position:relative;padding:0 0 0 30px;margin:0 0 13px;
+  font-size:clamp(.94rem,1.9vw,1.06rem);line-height:1.42;color:var(--ink-2);
+  opacity:.18;transform:translateY(6px);transition:opacity .6s var(--ease),transform .6s var(--ease),color .6s}
+.beats li::before{content:counter(b);position:absolute;left:0;top:.15em;width:19px;height:19px;
+  border-radius:50%;border:1px solid var(--rule);font-size:.63rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;color:var(--ink-3);
+  transition:background .5s,border-color .5s,color .5s}
+.beats li.on{opacity:1;transform:none;color:var(--ink)}
+.beats li.on::before{background:var(--ac);border-color:var(--ac);color:#fff}
+
+.replay{align-self:flex-start;margin-top:6px;font-size:.72rem;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3);background:none;border:1px solid var(--rule);
+  border-radius:99px;padding:7px 15px;cursor:pointer;transition:color .3s,border-color .3s}
+.replay:hover{color:var(--ink);border-color:var(--ink-3)}
+
+@media (max-width:860px){
+  .card{grid-template-columns:1fr;gap:12px}
+  .mapcol{order:1}.txtcol{order:2}
+  .cv{aspect-ratio:1/1;max-height:40dvh;margin:0 auto}
+  .prof{height:34px}
+  .no{font-size:2.2rem}
+  .stats{gap:4px 16px;padding-bottom:12px;margin-top:10px}
+  .stat b{font-size:1.15rem}
+  .beats li{margin-bottom:9px;font-size:.9rem;padding-left:26px}
+  .beats li::before{width:17px;height:17px;font-size:.58rem}
+}
+
+/* index + chrome */
+.grid20{display:grid;grid-template-columns:repeat(auto-fill,minmax(154px,1fr));gap:8px;
+  width:100%;max-width:760px;margin-top:22px;text-align:left}
+.g20{display:block;padding:9px 11px;border:1px solid var(--rule);border-radius:8px;
+  text-decoration:none;color:inherit;transition:border-color .25s,transform .25s}
+.g20:hover{border-color:var(--ink-3);transform:translateY(-2px)}
+.g20 i{font-style:normal;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.g20 b{display:block;font-family:var(--serif);font-weight:400;font-size:1rem;line-height:1.15;margin-top:2px}
+.links{margin-top:26px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.lnk{font-size:.76rem;font-weight:600;letter-spacing:.06em;padding:9px 16px;border-radius:99px;
+  border:1px solid rgba(250,248,243,.25);color:#d6cfc0;text-decoration:none;transition:color .25s,border-color .25s}
+.lnk:hover{color:#faf8f3;border-color:rgba(250,248,243,.6)}
+.sl-cream .lnk{border-color:var(--rule);color:var(--ink-2)}
+.sl-cream .lnk:hover{color:var(--ink);border-color:var(--ink-3)}
+
+.prog{position:fixed;left:0;top:0;height:2px;background:var(--gold);z-index:40;width:0;
+  transition:width .18s linear}
+.hint{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);
+  z-index:30;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:#8d8578;
+  pointer-events:none;transition:opacity .5s}
+.hint.gone{opacity:0}
+.hint span{display:inline-block;animation:bob 2.1s var(--ease) infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+
+@media (prefers-reduced-motion:reduce){
+  .story{scroll-behavior:auto}
+  .stg{transition:none}
+  .beats li{opacity:1;transform:none;color:var(--ink)}
+  .hint span{animation:none}
+}
+</style>
+</head>
+<body>
+<div class="prog" id="prog"></div>
+<div class="hint" id="hint"><span>scorri ↓</span></div>
+
+<main class="story" id="story">
+
+  <section class="slide sl-night">
+    <div class="wrap">
+      <p class="ey stg stg1">micmer · archivio 2015 – 2026</p>
+      <h1 class="big stg stg2">20</h1>
+      <p class="sub stg stg3">giorni scelti su <b>2.923</b>. Uno per anno non basterebbe: certi anni hanno tre storie e certi altri ne hanno una sola, ma pesa per tutti.</p>
+      <p class="fine stg stg4">Ogni traccia è il GPS vero di quel giorno. Il puntino la ripercorre mentre la storia si scrive di fianco.</p>
+    </div>
+  </section>
+
+  <section class="slide sl-cream">
+    <div class="wrap">
+      <p class="ey stg stg1">quello che c'è dietro</p>
+      <h2 class="mid stg stg2">98.830 <span class="unit">km</span></h2>
+      <p class="sub stg stg3">Due giri e mezzo del mondo, all'equatore. Registrati un'attività alla volta, dal <b>29 marzo 2015</b> a oggi.</p>
+      <p class="fine stg stg4">1.843.198 metri di dislivello — 208 volte l'Everest dal livello del mare. 4.928 ore in movimento: 205 giorni pieni.</p>
+    </div>
+  </section>
+
+  <section class="slide sl-cream">
+    <div class="wrap">
+      <p class="ey stg stg1">come leggere le venti schede</p>
+      <h2 class="h stg stg2">La traccia è vera,<br>la storia sta nei numeri</h2>
+      <p class="sub stg stg3">Le cinque righe di ogni giorno escono dalle descrizioni scritte quel giorno stesso, e dai numeri registrati. Niente è stato aggiunto dopo.</p>
+      <p class="fine stg stg4">Sotto ogni mappa c'è il profilo altimetrico che si riempie insieme al puntino. Le storie di più giorni hanno più tracce: la camera si sposta da una all'altra.</p>
+    </div>
+  </section>
+
+  <!-- le venti schede vengono iniettate qui -->
+
+  <section class="slide sl-night" id="fine">
+    <div class="wrap">
+      <p class="ey stg stg1">venti su 2.923</p>
+      <h2 class="mid stg stg2">Le altre 2.903</h2>
+      <p class="sub stg stg3">sono martedì. Un'ora prima di lavorare, un'ora dopo, la salita di sempre. Sono loro che rendono possibili queste venti.</p>
+      <div class="links stg stg4">
+        <a class="lnk" href="../bike-to-work/">al lavoro in bici →</a>
+        <a class="lnk" href="../gazzaniga-orezzo/">la salita di casa →</a>
+        <a class="lnk" href="../vita/">tutti i tracker →</a>
+        <a class="lnk" href="top-20.gif" download>scarica la GIF ↓</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide sl-cream">
+    <div class="wrap">
+      <p class="ey stg stg1">indice</p>
+      <h2 class="h stg stg2">Le venti</h2>
+      <div class="grid20 stg stg3" id="grid20"></div>
+    </div>
+  </section>
+
+</main>
+
+<script src="_data.js"></script>
+<script>
+(function(){
+"use strict";
+const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const AC = {dawn:"#c2761a", dusk:"#3b5bb5", green:"#4d7238", stone:"#8a5a3c"};
+const SPORT_ICON = {bike:"🚲", run:"👟", swim:"🏊"};
+
+/* ---------- decode: delta ints of 1e-5 deg back to lat/lng ---------- */
+function decode(leg){
+  const pts = [], d = leg.d;
+  let x = 0, y = 0;
+  for (let i = 0; i < d.length; i += 2){
+    x += d[i]; y += d[i+1];
+    pts.push([leg.lat0 + x*QUANT, leg.lng0 + y*QUANT]);
+  }
+  return pts;
+}
+
+/* Equirectangular, with the longitude squeezed by cos(lat): at 45° a degree of
+   longitude is 0.71 of a degree of latitude, and without this every route comes
+   out stretched east-west. Good enough at these scales, and it keeps the shapes
+   recognisable against the real map. */
+function project(pts){
+  const latm = pts.reduce((s,p)=>s+p[0],0)/pts.length;
+  const k = Math.cos(latm*Math.PI/180);
+  return pts.map(p=>[p[1]*k, -p[0]]);       // x east, y down
+}
+
+function bbox(xy){
+  let a=1e9,b=1e9,c=-1e9,e=-1e9;
+  for (const p of xy){ if(p[0]<a)a=p[0]; if(p[1]<b)b=p[1]; if(p[0]>c)c=p[0]; if(p[1]>e)e=p[1]; }
+  const w = Math.max(c-a, 1e-6), h = Math.max(e-b, 1e-6);
+  return {x:a, y:b, w:w, h:h, cx:a+w/2, cy:b+h/2};
+}
+
+const ease = t => t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
+const lerp = (a,b,t) => a+(b-a)*t;
+function fmtH(s){ return Math.floor(s/3600)+"h"+String(Math.floor(s%3600/60)).padStart(2,"0"); }
+function fmtN(n){ return n.toLocaleString("it-IT"); }
+
+/* ---------- one animated story ---------- */
+/* Douglas-Peucker leaves the points unevenly spaced — dense in the hairpins,
+   sparse on the straights. Stepping the dot one point per frame would make it
+   crawl up the Mortirolo and teleport across the Padana, so every leg carries
+   its cumulative length and the dot is placed by arc length instead. */
+function arclen(xy){
+  const cum = new Float64Array(xy.length);
+  for (let i = 1; i < xy.length; i++){
+    cum[i] = cum[i-1] + Math.hypot(xy[i][0]-xy[i-1][0], xy[i][1]-xy[i-1][1]);
+  }
+  return cum;
+}
+
+/* position at fraction p of the leg's length: the index just behind it, plus
+   how far between that point and the next */
+function at(l, p){
+  const total = l.cum[l.cum.length-1];
+  const target = total * Math.min(1, Math.max(0, p));
+  let lo = 0, hi = l.cum.length - 1;
+  while (lo < hi - 1){
+    const mid = (lo + hi) >> 1;
+    if (l.cum[mid] <= target) lo = mid; else hi = mid;
+  }
+  const span = l.cum[hi] - l.cum[lo];
+  const f = span > 0 ? (target - l.cum[lo]) / span : 0;
+  return {i: lo, f: f,
+          x: l.xy[lo][0] + (l.xy[hi][0]-l.xy[lo][0])*f,
+          y: l.xy[lo][1] + (l.xy[hi][1]-l.xy[lo][1])*f};
+}
+
+function Scene(st, cv, prof, legname, beats){
+  // t0/dt e beat_at arrivano già calcolati da tools/build_top20.py: la stessa
+  // linea del tempo la usa anche la GIF, e ricalcolarla qui vorrebbe dire due
+  // versioni dello stesso peso che divergono al primo ritocco.
+  const legs = st.legs.map(l => {
+    const xy = project(decode(l));
+    return {leg:l, xy:xy, bb:bbox(xy), alt:l.alt, cum:arclen(xy), t0:l.t0, dt:l.dt};
+  });
+
+  const ac = AC[st.accent] || AC.stone;
+  let raf = 0, t = 0, running = false, dpr = 1, W = 0, H = 0;
+
+  function size(){
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    const r = cv.getBoundingClientRect();
+    W = Math.max(1, Math.round(r.width)); H = Math.max(1, Math.round(r.height));
+    cv.width = W*dpr; cv.height = H*dpr;
+    const rp = prof.getBoundingClientRect();
+    prof.width = Math.max(1,Math.round(rp.width))*dpr; prof.height = Math.max(1,Math.round(rp.height))*dpr;
+  }
+
+  /* camera: frame the whole leg, dive to 3.2x around the dot in the middle
+     third, come back out before handing over to the next leg */
+  function camera(l, head, p){
+    const pad = 0.10;
+    const wide = Math.max(l.bb.w, l.bb.h) * (1 + pad*2);
+    let f = 0;                                   // 0 = wide, 1 = tight on the dot
+    if (p > .16 && p < .84) f = ease(Math.min(1,(p-.16)/.18)) * ease(Math.min(1,(.84-p)/.18));
+    const zoom = lerp(1, 3.2, f);
+    const span = wide / zoom;
+    return {s: Math.min(W, H) / span,
+            cx: lerp(l.bb.cx, head.x, f),
+            cy: lerp(l.bb.cy, head.y, f)};
+  }
+
+  function drawTrack(g, l, cam, head, alpha, colour, width){
+    g.beginPath();
+    const end = head ? head.i : l.xy.length - 1;
+    for (let i = 0; i <= end; i++){
+      const x = W/2 + (l.xy[i][0]-cam.cx)*cam.s;
+      const y = H/2 + (l.xy[i][1]-cam.cy)*cam.s;
+      i ? g.lineTo(x,y) : g.moveTo(x,y);
+    }
+    if (head) g.lineTo(W/2 + (head.x-cam.cx)*cam.s, H/2 + (head.y-cam.cy)*cam.s);
+    g.globalAlpha = alpha; g.strokeStyle = colour; g.lineWidth = width;
+    g.lineJoin = g.lineCap = "round"; g.stroke(); g.globalAlpha = 1;
+  }
+
+  function frame(){
+    const g = cv.getContext("2d");
+    g.setTransform(dpr,0,0,dpr,0,0);
+    g.clearRect(0,0,W,H);
+
+    let li = legs.length-1;
+    for (let i=0;i<legs.length;i++) if (t >= legs[i].t0 && t < legs[i].t0+legs[i].dt){ li = i; break; }
+    const l = legs[li];
+    const p = Math.min(1, Math.max(0, (t - l.t0)/l.dt));
+    const head = at(l, p);
+    const cam = camera(l, head, p);
+
+    // gli altri tratti restano sotto, sbiaditi: nelle storie di due giorni si
+    // vede l'andata mentre parte il ritorno
+    for (let i=0;i<legs.length;i++){
+      if (i === li) continue;
+      drawTrack(g, legs[i], cam, null, i < li ? .30 : .12, i < li ? ac : "#c9c4b6", 1.4);
+    }
+    drawTrack(g, l, cam, null, .16, "#8f9382", 1.6);          // il tratto intero, pallido
+    drawTrack(g, l, cam, head, .95, ac, 2.6);                  // quello già percorso
+
+    // start marker + dot
+    const s0 = l.xy[0];
+    g.beginPath();
+    g.arc(W/2+(s0[0]-cam.cx)*cam.s, H/2+(s0[1]-cam.cy)*cam.s, 3.2, 0, 7);
+    g.fillStyle = "#faf8f3"; g.fill(); g.lineWidth = 1.4; g.strokeStyle = ac; g.stroke();
+
+    const hx = W/2+(head.x-cam.cx)*cam.s, hy = H/2+(head.y-cam.cy)*cam.s;
+    g.beginPath(); g.arc(hx,hy,10,0,7); g.fillStyle = ac; g.globalAlpha = .16; g.fill();
+    g.globalAlpha = 1;
+    g.beginPath(); g.arc(hx,hy,4.4,0,7); g.fillStyle = ac; g.fill();
+    g.lineWidth = 1.6; g.strokeStyle = "#faf8f3"; g.stroke();
+
+    // profilo altimetrico — l'asse x è la distanza percorsa, non l'indice del
+    // punto: dopo Douglas-Peucker i due non sono più la stessa cosa
+    const q = prof.getContext("2d"), pw = prof.width/dpr, ph = prof.height/dpr;
+    q.setTransform(dpr,0,0,dpr,0,0); q.clearRect(0,0,pw,ph);
+    const A = l.alt, total = l.cum[l.cum.length-1] || 1;
+    let amax = 1;
+    for (const v of A) if (v > amax) amax = v;
+    const xOf = k => l.cum[k]/total*pw;
+    const yOf = v => ph-2 - (v/amax)*(ph-8);
+    q.beginPath(); q.moveTo(0, ph);
+    for (let k=0;k<A.length;k++) q.lineTo(xOf(k), yOf(A[k]));
+    q.lineTo(pw, ph); q.closePath();
+    q.fillStyle = "#e4e1d6"; q.globalAlpha = .8; q.fill(); q.globalAlpha = 1;
+    const hxp = p*pw, hyp = yOf(A[head.i] + (A[Math.min(head.i+1,A.length-1)]-A[head.i])*head.f);
+    q.beginPath(); q.moveTo(0, ph);
+    for (let k=0;k<=head.i;k++) q.lineTo(xOf(k), yOf(A[k]));
+    q.lineTo(hxp, hyp); q.lineTo(hxp, ph); q.closePath();
+    q.fillStyle = ac; q.globalAlpha = .30; q.fill(); q.globalAlpha = 1;
+    q.beginPath();
+    for (let k=0;k<=head.i;k++){ const x=xOf(k), y=yOf(A[k]); k?q.lineTo(x,y):q.moveTo(x,y); }
+    q.lineTo(hxp, hyp);
+    q.strokeStyle = ac; q.lineWidth = 1.4; q.stroke();
+
+    legname.textContent = SPORT_ICON[l.leg.sport] + "  " + l.leg.label;
+
+    // le cinque righe, ognuna al suo momento: vedi beat_at in tools/top-20.json
+    let k = 0;
+    for (let b=0;b<st.beat_at.length;b++) if (t >= st.beat_at[b]) k = b;
+    for (let b=0;b<beats.length;b++) beats[b].classList.toggle("on", b <= k);
+  }
+
+  function tick(){
+    if (!running) return;
+    t += 1/(60*DUR);
+    if (t >= 1){ t = 1; frame(); running = false; return; }
+    frame();
+    raf = requestAnimationFrame(tick);
+  }
+
+  const DUR = 15;   // secondi per storia
+  return {
+    resize(){ size(); frame(); },
+    start(){
+      if (RM){ t = 1; size(); frame(); return; }
+      if (running) return;
+      t = 0; running = true; size(); frame();
+      cancelAnimationFrame(raf); raf = requestAnimationFrame(tick);
+    },
+    stop(){ running = false; cancelAnimationFrame(raf); },
+    replay(){ this.stop(); this.start(); },
+    done(){ return !running && t >= 1; }
+  };
+}
+
+/* ---------- build the twenty slides ---------- */
+const story = document.getElementById("story");
+const fine = document.getElementById("fine");
+const scenes = [];
+
+STORIES.forEach((st, n) => {
+  const sec = document.createElement("section");
+  sec.className = "slide sl-cream story-slide";
+  sec.id = st.slug;
+  const ac = AC[st.accent] || AC.stone;
+  // Per una giornata sola vale il tempo dal via all'arrivo. Per più giorni vale
+  // l'arco del calendario, non il numero di tracce: la clavicola ha quattro legs
+  // ma va dal 29 aprile al 29 giugno, e "4 giorni" direbbe l'opposto.
+  const dates = st.legs.map(l => l.date).sort();
+  const uniq = new Set(dates).size;
+  const span = uniq === 1 ? 1 :
+    Math.round((Date.parse(dates[dates.length-1]) - Date.parse(dates[0])) / 864e5) + 1;
+  const label = uniq === 1 ? "giornata" : (span > 3 ? "arco" : "durata");
+  const when = uniq === 1 ? fmtH(st.elapsed) + " dal via all'arrivo"
+             : span + " giorni" + (span > 3 ? ", " + uniq + " uscite" : "");
+
+  sec.innerHTML =
+    '<div class="card" style="--ac:'+ac+'">'
+    + '<div class="mapcol">'
+    +   '<canvas class="cv"></canvas><canvas class="prof"></canvas>'
+    +   '<p class="legname"></p>'
+    + '</div>'
+    + '<div class="txtcol">'
+    +   '<p class="no stg stg1">'+String(n+1).padStart(2,"0")+'</p>'
+    +   '<p class="st-kick stg stg1">'+st.icon+'  '+st.kicker+'</p>'
+    +   '<h2 class="st-title stg stg2">'+st.title+'</h2>'
+    +   '<div class="stats stg stg3">'
+    +     '<span class="stat"><i>distanza</i><b class="tnum">'+fmtN(Math.round(st.km))+' km</b></span>'
+    +     '<span class="stat"><i>dislivello</i><b class="tnum">'+fmtN(st.gain)+' m</b></span>'
+    +     '<span class="stat"><i>in movimento</i><b class="tnum">'+fmtH(st.secs)+'</b></span>'
+    +     '<span class="stat"><i>'+label+'</i><b class="tnum">'+when+'</b></span>'
+    +   '</div>'
+    +   '<ol class="beats">'+st.beats.map(b=>'<li>'+b+'</li>').join("")+'</ol>'
+    +   '<button class="replay" type="button">rivedi ↻</button>'
+    + '</div></div>';
+  story.insertBefore(sec, fine);
+
+  const sc = Scene(st, sec.querySelector(".cv"), sec.querySelector(".prof"),
+                   sec.querySelector(".legname"),
+                   Array.from(sec.querySelectorAll(".beats li")));
+  sec.querySelector(".replay").addEventListener("click", () => sc.replay());
+  scenes.push({sec:sec, sc:sc});
+
+  const a = document.createElement("a");
+  a.className = "g20"; a.href = "#"+st.slug;
+  a.innerHTML = '<i>'+st.year+'</i><b>'+st.icon+' '+st.title+'</b>';
+  document.getElementById("grid20").appendChild(a);
+});
+
+/* ---------- reveal + play/pause on scroll ---------- */
+const io = new IntersectionObserver(es => {
+  es.forEach(e => {
+    e.target.classList.toggle("in", e.isIntersecting);
+    const s = scenes.find(x => x.sec === e.target);
+    if (!s) return;
+    if (e.isIntersecting) s.sc.start(); else s.sc.stop();
+  });
+}, {threshold: .55});
+document.querySelectorAll(".slide").forEach(s => io.observe(s));
+
+let rt = 0;
+addEventListener("resize", () => {
+  clearTimeout(rt);
+  rt = setTimeout(() => scenes.forEach(s => s.sc.resize()), 140);
+});
+
+const prog = document.getElementById("prog"), hint = document.getElementById("hint");
+story.addEventListener("scroll", () => {
+  const p = story.scrollTop / Math.max(1, story.scrollHeight - story.clientHeight);
+  prog.style.width = (p*100).toFixed(2)+"%";
+  if (story.scrollTop > 40) hint.classList.add("gone");
+}, {passive:true});
+
+addEventListener("keydown", e => {
+  if (e.key !== "ArrowDown" && e.key !== "ArrowUp" && e.key !== " ") return;
+  e.preventDefault();
+  const h = story.clientHeight;
+  const i = Math.round(story.scrollTop / h) + (e.key === "ArrowUp" ? -1 : 1);
+  story.scrollTo({top: Math.max(0, i) * h, behavior: "smooth"});
+});
+})();
+</script>
+</body>
+</html>
