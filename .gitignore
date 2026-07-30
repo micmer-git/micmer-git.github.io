@@ -12,6 +12,9 @@ tools/.cache_streams/
 tools/.gif_check.png
 # basemap.py: tile CartoDB + Natural Earth (si riscaricano da sole)
 tools/.cache_tiles/
-# provini dei build
+# provini dei build — qualunque file col punto davanti dentro tools/ e' uno
+# scarto di verifica (contact sheet, ritaglio, taglio di prova) e si rigenera
 tools/.basemap_demo.png
 tools/.reel_probe.png
+tools/.*.png
+tools/.*.gif

@@ -199,10 +199,39 @@ the four accent colours onto the same olive grey.
 a full-screen narration card that fades in and away, then the path drawing on a
 real map, with the camera pulling back to an orthographic globe between one day
 and the next. The globe keeps a dot for everywhere already visited, so it is also
-the progress bar. Two cuts come out of the same tool: the **full one, 6'21",
-1.216 frames, 5,7 MB** at the defaults (380 px, 40 colours), and a **short one,
-3'21", 3,5 MB** — `--only 1,8,9,13,15,17,18,19,20 --intro --size 420 --colors 44`
+the progress bar. Two cuts come out of the same tool: the **full one, 6'31",
+1.336 frames, 6,0 MB** at the defaults (380 px, 40 colours), and a **short one,
+3'25", 3,6 MB** — `--only 1,8,9,13,15,17,18,19,20 --intro --size 420 --colors 44`
 — which is the one that makes sense on LinkedIn.
+
+**Text is the cheap thing, so text is what moves.** Two places earn their frames
+without touching the basemap, which is the only expensive thing in the file:
+
+- **`story_card()`** — the day's opening page assembles itself instead of cutting
+  in whole: date, then a rule opening from the centre, then the lead a line at a
+  time, then the body, then the numbers **counting up from zero**. `--cardin` (12)
+  buys that; twelve flat pages of type cost about what one map frame costs, and
+  the measured price of the whole device across twenty days was 0,3 MB.
+- **`side_column()`** — the day's line used to sit in the bottom bar. It now
+  stands in a column beside the route and **writes itself at the pace of the dot**
+  (`reveal = p / 0.7`, so the sentence lands just before the track does). Notes
+  arrive under it, below a rule, and stay. The bottom bar keeps only the numbers.
+
+**The column picks its own side, once per leg, from the whole route.**
+`free_column()` scores both halves by how much of the *entire* track falls in
+them and takes the emptier; `leg_column()` calls it once per leg, before drawing.
+Both details are load-bearing. Scoring the drawn-so-far portion would let the
+panel jump sides mid-leg, and pinning it right — which is what it did first —
+put the sentence on top of the thing it was describing on half the days.
+
+**A panel over a map covers something, and one of those somethings matters.** The
+panel is painted after the place names, so on the Gavia day it swallowed *Passo
+dello Stelvio*, which is the one name that day is about. `place_labels()` now
+takes the reserved rect and, in order: flips the name to the other side of its dot
+(the same move it already makes at the frame edge); or, if the dot itself is under
+the column, lifts the name clear above the panel; or, failing both, **drops it**.
+The third branch is the point — a name sliced in half by a panel edge reads as a
+bug, a missing name reads as a map.
 
 **Every block of text holds for at least five seconds.** That single rule sets the
 length: twenty cards plus twenty-five notes is 3'45" of held text before a single

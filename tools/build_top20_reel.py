@@ -228,7 +228,8 @@ def prepare(stories, px, style, margin=1.62):
 # ------------------------------------------------------------------ disegno
 
 def map_frame(story, li, p, zoomf, S, fonts, cap_alpha=1.0, chrome=True,
-              total=20, follow=None, caption=None, note=None, note_alpha=1.0):
+              total=20, follow=None, caption=None, note=None, note_alpha=1.0,
+              side=None):
     """One map frame: the leg `li` of `story` drawn to fraction `p`, at zoom `zoomf`."""
     legs = story["legs"]
     act = legs[li]
@@ -241,10 +242,10 @@ def map_frame(story, li, p, zoomf, S, fonts, cap_alpha=1.0, chrome=True,
     x0, y0 = to_px(la1, lo0)
     x1, y1 = to_px(la0, lo1)
     full_w, full_h = x1 - x0, y1 - y0
-    side = min(full_w, full_h)
+    span = min(full_w, full_h)          # non "side": e' il nome del parametro
     i, h = head_at(act["pts"], act["cum"], p)
     hx, hy = to_px(*h)
-    cw = side / zoomf
+    cw = span / zoomf
     fo = follow if follow is not None else (zoomf - 1) / max(zoomf, 1e-6)
     cx = lerp((x0 + x1) / 2, hx, fo)
     cy = lerp((y0 + y1) / 2, hy, fo)
@@ -311,48 +312,94 @@ def map_frame(story, li, p, zoomf, S, fonts, cap_alpha=1.0, chrome=True,
 
     frame = Image.alpha_composite(crop, lay).resize((S, S), Image.LANCZOS)
     if not race:
-        place_labels(frame, act, box, to_px, S, fonts, ac)
+        place_labels(frame, act, box, to_px, S, fonts, ac,
+                     reserve=side["rect"] if side else None)
     if chrome:
         chrome_over(frame, story, li, S, fonts, cap_alpha, total, caption, race)
-    if note and note_alpha > 0.02:
-        note_panel(frame, S, fonts, note, ac, note_alpha)
+    if side:
+        side_column(frame, S, fonts, ac, side["rect"], side.get("line"),
+                    side.get("reveal", 1.0), note, note_alpha)
     return frame.convert("RGB")
 
 
-def note_panel(frame, S, fonts, text, ac, alpha=1.0):
-    """A note pinned beside the dot: the reason the camera stopped here.
+def free_column(pts_frame, S):
+    """Which side of the frame the text can occupy without sitting on the route.
 
-    Sits on the right, vertically centred, on its own paper panel with a rule in
-    the accent colour. It only ever appears while the camera is zoomed in on the
-    dot, so the pairing reads as "this spot, this sentence".
+    Notes used to be pinned to the right, centred, and on half the days that is
+    exactly where the track is — the sentence landed on top of the thing it was
+    about. Here both halves are scored by how much of the drawn route falls inside
+    them, and the emptier one wins; ties go right, which reads better. Returns the
+    column rect, computed once per leg from the *whole* route so the panel cannot
+    drift from frame to frame while the dot moves.
+    """
+    pad = int(S * 0.045)
+    w = int(S * 0.40)
+    top, bot = int(S * 0.20), int(S * 0.845)      # sotto la testata, sopra la barra
+    cands = [(S - pad - w, "destra"), (pad, "sinistra")]
+    best, best_hits = None, None
+    for x, side in cands:
+        hits = sum(1 for (px, py) in pts_frame
+                   if x - S * .02 < px < x + w + S * .02 and top - S * .02 < py < bot)
+        if best_hits is None or hits < best_hits:
+            best, best_hits = (x, top, w, side), hits
+    return best
+
+
+def side_column(frame, S, fonts, ac, rect, line=None, reveal=1.0,
+                note=None, note_alpha=1.0):
+    """The text column beside the route: the day's line, then any note.
+
+    The line writes itself as the dot advances — `reveal` is the fraction of its
+    words to show — so the sentence and the track finish together and there is
+    something to follow in both halves of the frame at once. The note arrives
+    later, under a rule, and stays.
     """
     f_kick, f_title, f_cap, f_stat, f_leg, f_emo, f_emos, f_big, f_sub = fonts[:9]
     f_ital = fonts[10]
-    dr = ImageDraw.Draw(frame)
-    pad = int(S * 0.048)
-    w = int(S * 0.46)
-    body = f_ital if is_quote(text) else f_cap        # la citazione in corsivo
-    inner = w - int(S * 0.085)
-    lines = wrap(dr, text, body, f_emo, inner)[:6]
-    lab_h = int(S * 0.040)
-    h = lab_h + len(lines) * int(S * 0.048) + int(S * 0.044)
-    x, y = S - pad - w, (S - h) // 2
-    a = max(0.0, min(1.0, alpha))
-    # il pannello si disegna su una copia e poi si fonde: cosi' entra ed esce in
-    # dissolvenza invece di apparire di colpo
+    x, top, w, _side = rect
+    # 0,080 = i 0,050 di rientro a sinistra (filetto d'accento compreso) piu' i
+    # 0,030 a destra dove finisce la riga sopra la nota. Con 0,062 il testo
+    # arrivava oltre il proprio filetto e a un pelo dal bordo del pannello.
+    tx = x + int(S * 0.050)
+    inner = w - int(S * 0.080)
+
     panel = frame.copy()
-    scrim(panel, (x, y, x + w, y + h), int(S * 0.018), 236)
     dr = ImageDraw.Draw(panel)
-    # filetto verticale in accento: tiene insieme il blocco e lo lega alla traccia
-    dr.rectangle([x + int(S * .026), y + int(S * .026),
-                  x + int(S * .026) + max(2, int(S * 0.005)), y + h - int(S * .026)], fill=ac)
-    tx = x + int(S * 0.056)
-    draw_tracked(dr, (tx, y + int(S * 0.024)), "NOTA", f_leg, ac, S * 0.006)
-    ty = y + int(S * 0.024) + lab_h
-    for l in lines:
-        draw_text(dr, (tx, ty), l, body, f_emo, INK)
-        ty += int(S * 0.048)
-    frame.paste(Image.blend(frame.convert("RGB"), panel.convert("RGB"), a).convert("RGBA"))
+    blocks = []
+    if line:
+        words = line.split()
+        shown = " ".join(words[:max(1, int(round(len(words) * max(0.0, min(1.0, reveal)))))])
+        f = f_ital if is_quote(line) else f_cap
+        blocks.append(("line", wrap(dr, shown, f, f_emo, inner), f))
+    if note and note_alpha > 0.02:
+        f = f_ital if is_quote(note) else f_cap
+        blocks.append(("note", wrap(dr, note, f, f_emo, inner)[:6], f))
+    if not blocks:
+        return
+
+    lh = int(S * 0.047)
+    h = int(S * 0.030)
+    for kind, ls, _f in blocks:
+        h += len(ls) * lh + (int(S * 0.046) if kind == "note" else int(S * 0.014))
+    y = top
+
+    scrim(panel, (x, y, x + w, y + h), int(S * 0.016), 234)
+    dr = ImageDraw.Draw(panel)
+    dr.rectangle([x + int(S * .022), y + int(S * .022),
+                  x + int(S * .022) + max(2, int(S * 0.005)), y + h - int(S * .022)], fill=ac)
+    ty = y + int(S * 0.020)
+    for kind, ls, f in blocks:
+        if kind == "note":
+            rule(dr, tx, ty + int(S * 0.010), x + w - int(S * 0.030), RULE)
+            draw_tracked(dr, (tx, ty + int(S * 0.020)), "NOTA", f_leg, ac, S * 0.006)
+            ty += int(S * 0.046)
+        for l in ls:
+            draw_text(dr, (tx, ty), l, f, f_emo, INK if kind == "note" else INK2)
+            ty += lh
+        ty += int(S * 0.014)
+    a = 1.0 if not note else max(0.0, min(1.0, max(note_alpha, 0.35 if line else 0.0)))
+    frame.paste(Image.blend(frame.convert("RGB"), panel.convert("RGB"),
+                            1.0 if line else a).convert("RGBA"))
 
 
 def race_legend(frame, S, fonts, legs, ac):
@@ -377,7 +424,7 @@ def race_legend(frame, S, fonts, legs, ac):
         ty += lh
 
 
-def place_labels(frame, act, box, to_px, S, fonts, ac):
+def place_labels(frame, act, box, to_px, S, fonts, ac, reserve=None):
     """The only place names on the map, drawn after the downscale so they stay crisp.
 
     The basemap is the no-labels build: CARTO's own labels were the most expensive
@@ -385,6 +432,11 @@ def place_labels(frame, act, box, to_px, S, fonts, ac):
     map is named by hand instead — start, finish, and the highest point, which is
     the pass the day was about. `places` in the config carries the names; the
     coordinates come from the track itself.
+
+    `reserve` is the rect the text column will take. The panel is painted after
+    these names and would simply bury them — on the Gavia day it swallowed "Passo
+    dello Stelvio", which is the one word that day is about. So the name flips to
+    the other side of its dot, exactly as it already does at the frame's edge.
     """
     f_leg, f_place = fonts[4], fonts[9]
     pl = act["leg"].get("places") or {}
@@ -413,6 +465,23 @@ def place_labels(frame, act, box, to_px, S, fonts, ac):
         if tx + w > S - int(S * 0.05):                 # non uscire dal bordo destro
             tx = x - int(S * 0.018) - w
         ty = min(max(ty, int(S * 0.02)), S - int(S * 0.06))
+        if reserve:
+            rx, rtop, rw, _ = reserve
+            lh = int(S * 0.032)
+            hit = lambda a, b: a + w > rx and a < rx + rw and b + lh > rtop
+            if hit(tx, ty):
+                # 1. si ribalta dall'altra parte del puntino, come gia' fa al bordo
+                alt = (x - int(S * 0.018) - w) if tx >= x else (x + int(S * 0.018))
+                if not hit(alt, ty) and alt > int(S * 0.01):
+                    tx = alt
+                # 2. se nemmeno il puntino ha spazio — lo Stelvio sta proprio li' —
+                #    il nome sale sopra la colonna, che e' a pochi pixel
+                elif y - lh - int(S * 0.012) > int(S * 0.02) and y < rtop + S * 0.10:
+                    ty = rtop - lh - int(S * 0.004)
+                # 3. altrimenti non si disegna: mezza parola tagliata dal bordo del
+                #    pannello si legge come un errore, un nome mancante no
+                else:
+                    continue
         # alone di carta: il nome deve leggersi anche sopra una città
         for ox in (-2, -1, 0, 1, 2):
             for oy in (-2, -1, 0, 1, 2):
@@ -466,8 +535,9 @@ def chrome_over(frame, story, li, S, fonts, cap_alpha, total, caption=None,
     # scheda a schermo pieno un attimo prima, quindi qui resta vuota: ripeterla
     # faceva leggere due volte la stessa frase e sembrava un errore di montaggio.
     # Dal secondo tratto in poi invece serve, ed è l'unico posto dove appare.
-    line = caption if caption is not None else (story["legs"][li]["leg"].get("line") or "")
-    cl = wrap(dr, line, f_cap, f_emo, S - 2 * pad)[:2]
+    # La riga del giorno non sta piu' qui ma nella colonna di fianco alla traccia,
+    # dove si scrive mentre il puntino avanza. In basso restano solo i numeri.
+    cl = []
     lg = story["legs"][li]["leg"]
     if race:
         stat = "cinque edizioni · tre percorsi · partenza insieme"
@@ -482,7 +552,7 @@ def chrome_over(frame, story, li, S, fonts, cap_alpha, total, caption=None,
     else:
         stat = "%s km   ·   %s m D+   ·   %s" % (thou(st["km"]), thou(st["gain"]),
                                                  hm(st["secs"]))
-    band_h = int(S * 0.048) + len(cl) * int(S * 0.046) + int(S * 0.030)
+    band_h = int(S * 0.048) + int(S * 0.014)
     top = S - pad - band_h
     scrim(frame, (pad - int(S * .022), top - int(S * .020), S - pad + int(S * .022),
                   S - pad + int(S * .016)), int(S * 0.020))
@@ -609,6 +679,112 @@ def text_card(S, fonts, alpha, lines, ac=None, n=None, total=20, credit_too=Fals
     return out
 
 
+def story_card(S, fonts, st, n, total, prog, ac):
+    """The day's opening page: date, the prose, and the numbers — full screen.
+
+    Everything arrives in sequence rather than all at once, and the numbers count
+    up to their value instead of being printed. That is what "animated text" can
+    mean without adding a single expensive frame: these are flat pages of type, so
+    a dozen of them cost what one map frame costs.
+    """
+    f_kick, f_title, f_cap, f_stat, f_leg, f_emo, f_emos, f_big, f_sub = fonts[:9]
+    f_ital, f_num = fonts[10], fonts[11]
+    im = Image.new("RGB", (S, S), BG)
+    lay = Image.new("RGBA", (S, S), BG + (0,))
+    dr = ImageDraw.Draw(lay)
+    pad = int(S * 0.105)
+
+    # ogni elemento ha la sua finestra dentro `prog`: entrano uno dopo l'altro
+    def alpha(a0, a1):
+        return max(0.0, min(1.0, (prog - a0) / max(1e-6, a1 - a0)))
+
+    def ink(col, a):
+        return tuple(int(round(BG[i] + (col[i] - BG[i]) * a)) for i in range(3))
+
+    card = st.get("card") or [["date", st["kicker"]], ["lead", st["title"]]]
+    date = next((t for k, t in card if k == "date"), st["kicker"])
+    lead = next((t for k, t in card if k == "lead"), st["title"])
+    body = next((t for k, t in card if k == "body"), "")
+
+    # --- misure
+    d_txt = "%02d · %s" % (n, date.upper())
+    lead_ls = wrap(dr, lead, f_big, f_emo, S - 2 * pad)
+    body_ls = wrap(dr, body, f_sub, f_emo, S - 2 * pad) if body else []
+    stats = card_stats(st)
+    h = (int(S * 0.048) + int(S * 0.030) + len(lead_ls) * int(S * 0.092)
+         + int(S * 0.026) + len(body_ls) * int(S * 0.048)
+         + int(S * 0.056) + int(S * 0.096))
+    y = (S - h) // 2
+
+    a = alpha(0.00, 0.18)
+    tw = tracked_w(dr, d_txt, f_kick, S * 0.006)
+    draw_tracked(dr, ((S - tw) // 2, y), d_txt, f_kick, ink(INK3, a), S * 0.006)
+    y += int(S * 0.048)
+    # il filetto si apre da centro verso i lati invece di comparire
+    rw = int(S * 0.032 * alpha(0.10, 0.30))
+    if rw:
+        rule(dr, S // 2 - rw, y + int(S * 0.014), S // 2 + rw, ac + (255,))
+    y += int(S * 0.030)
+    for i, l in enumerate(lead_ls):
+        a = alpha(0.16 + i * 0.07, 0.40 + i * 0.07)
+        tw = text_w(dr, l, f_big, f_emo)
+        draw_text(dr, ((S - tw) // 2, y), l, f_big, f_emo, ink(INK, a))
+        y += int(S * 0.092)
+    y += int(S * 0.026)
+    fb = f_ital if is_quote(body) else f_sub
+    for i, l in enumerate(body_ls):
+        a = alpha(0.42 + i * 0.05, 0.62 + i * 0.05)
+        tw = text_w(dr, l, fb, f_emo)
+        draw_text(dr, ((S - tw) // 2, y), l, fb, f_emo, ink(INK2, a))
+        y += int(S * 0.048)
+    y += int(S * 0.056)
+
+    # --- i numeri, che salgono fino al loro valore
+    cu = alpha(0.55, 0.97)
+    if stats:
+        colw = (S - 2 * pad) // len(stats)
+        for i, (label, value, kind) in enumerate(stats):
+            cx = pad + colw * i + colw // 2
+            shown = count_up(value, kind, cu)
+            tw = dr.textlength(shown, font=f_num)
+            dr.text((cx - tw / 2, y), shown, font=f_num, fill=ink(INK, min(1.0, cu * 1.4)))
+            lw = tracked_w(dr, label.upper(), f_leg, S * 0.005)
+            # 0,072 e non 0,058: i numeri sono Georgia a 0,062·S e l'etichetta
+            # finiva dentro le cifre. Sotto la discendente, non addosso.
+            draw_tracked(dr, (cx - lw / 2, y + int(S * 0.072)), label.upper(), f_leg,
+                         ink(INK3, min(1.0, cu * 1.4)), S * 0.005)
+    out = Image.alpha_composite(im.convert("RGBA"), lay).convert("RGB")
+    ticks(out, n, total, S, ac, fonts)
+    return out
+
+
+def card_stats(st):
+    """The three or four numbers that describe the day, for its opening page."""
+    if st.get("mode") == "race":
+        return [("edizioni", len(st["legs"]), "int"),
+                ("percorsi", 3, "int"),
+                ("il più lungo", max(l["km"] for l in st["legs"]), "km")]
+    days = len(set(l["date"] for l in st["legs"]))
+    out = [("chilometri", st["km"], "km"), ("dislivello", st["gain"], "m"),
+           ("in movimento", st["secs"], "hm")]
+    if days > 1:
+        out.append(("giorni" if days < 4 else "uscite", days, "int"))
+    return out
+
+
+def count_up(value, kind, t):
+    """The value at `t` of its way up from zero, formatted as it will end."""
+    t = max(0.0, min(1.0, t))
+    v = value * t
+    if kind == "km":
+        return ("%.0f" % v) if value >= 100 else ("%.1f" % v).replace(".", ",")
+    if kind == "m":
+        return thou(v)
+    if kind == "hm":
+        return hm(v)
+    return "%d" % round(v)
+
+
 def to_paper(im, t, S):
     """The map dissolving into the page, so a card can take over from it."""
     return Image.blend(im, Image.new("RGB", (S, S), BG), max(0.0, min(1.0, t)))
@@ -656,6 +832,30 @@ def note_at(leg, note):
         ti = max(range(len(alt)), key=lambda i: alt[i])
         return leg["cum"][min(ti, len(leg["cum"]) - 1)] / (leg["cum"][-1] or 1.0)
     return max(0.02, min(1.0, float(at)))
+
+
+def leg_column(story, li, S):
+    """Where this leg's text column goes, decided once, from the whole route.
+
+    Projects the leg's points into the frame the drawing will use, then asks
+    free_column() which half the route leaves emptier. Deciding it per leg rather
+    than per frame matters twice: the panel does not jump while the dot moves, and
+    the answer is about the whole track rather than the bit drawn so far.
+    """
+    act = story["legs"][li]
+    img, to_px = act["mos"]
+    la0, la1, lo0, lo1 = act["box"]
+    x0, y0 = to_px(la1, lo0)
+    x1, y1 = to_px(la0, lo1)
+    side = min(x1 - x0, y1 - y0)
+    bx, by = (x0 + x1) / 2 - side / 2, (y0 + y1) / 2 - side / 2
+    K = side / float(S)
+    pts = []
+    for l in (story["legs"] if story["st"].get("mode") == "race" else [act]):
+        for q in l["pts"][::3]:
+            qx, qy = to_px(*q)
+            pts.append(((qx - bx) / K, (qy - by) / K))
+    return free_column(pts, S)
 
 
 # ------------------------------------------------------------------ montaggio
@@ -735,11 +935,13 @@ def build(stories, S, fonts, args):
         # Prima erano kicker + titolo + riga, cioe' tre campi di un database messi
         # in colonna: si leggeva come un elenco, non come un racconto. Ora il testo
         # arriva da `card` nel config, scritto a mano storia per storia.
-        KIND = {"date": "kicker", "lead": "big", "body": "body", "small": "small"}
-        card = st.get("card") or [["date", st["kicker"]], ["lead", st["title"]]]
-        lines = [("%02d · %s" % (si + 1, t.upper()) if k == "date" else t, KIND[k])
-                 for k, t in card]
-        fade_card(lines, ac=ac, n=si + 1)
+        for k in range(args.cardin):
+            add(story_card(S, fonts, st, si + 1, total, (k + 1) / float(args.cardin), ac),
+                args.card if k == args.cardin - 1 else None)
+        for k in range(args.fade - 1):
+            u = 1.0 - (k + 1) / float(args.fade)
+            add(Image.blend(Image.new("RGB", (S, S), BG),
+                            story_card(S, fonts, st, si + 1, total, 1.0, ac), u))
 
         # --- il volo. Il tratto graduale lo fa il GLOBO, che cresce da un puntino
         # e ruota fino al posto nuovo: sono i frame piu economici del reel, quindi
@@ -770,12 +972,21 @@ def build(stories, S, fonts, args):
             notes = sorted(l["leg"].get("notes") or [],
                            key=lambda x: note_at(l, x))
             done_notes = set()
+            # La colonna del testo si decide una volta per tratto, sulla traccia
+            # intera: cosi' non salta da un lato all'altro mentre il puntino va, e
+            # soprattutto non finisce mai sopra la traccia.
+            rect = leg_column(story, li, S)
+            shown_note = [None]
             for k in range(n):
                 p = (k + 1) / float(n)
                 ca = min(1.0, (k + 1) / 4.0)
                 last = (k == n - 1)
+                # il testo si scrive col passo del puntino: finiscono insieme
                 add(map_frame(story, li, p, 1.0, S, fonts, cap_alpha=ca, total=total,
-                              follow=0.0, caption="" if li == 0 else None),
+                              follow=0.0, caption="",
+                              note=shown_note[0],
+                              side={"rect": rect, "line": l["leg"].get("line"),
+                                    "reveal": min(1.0, p / 0.7)}),
                     (args.hold if li == len(story["legs"]) - 1 else args.hold_leg)
                     if last else args.ms)
                 # --- le note.
@@ -798,24 +1009,29 @@ def build(stories, S, fonts, args):
                         for z in range(args.nfade):
                             u = (z + 1) / float(args.nfade)
                             add(map_frame(story, li, max(p, at), 1.0, S, fonts,
-                                          total=total, follow=0.0,
-                                          caption="" if li == 0 else None,
-                                          note=nt["text"], note_alpha=u),
+                                          total=total, follow=0.0, caption="",
+                                          note=nt["text"], note_alpha=u,
+                                          side={"rect": rect,
+                                                "line": l["leg"].get("line"),
+                                                "reveal": 1.0}),
                                 args.note_hold if z == args.nfade - 1 else None)
+                        shown_note[0] = nt["text"]   # la nota resta a terra
                         continue
                     for z in range(args.znote):
                         u = (z + 1) / float(args.znote)
                         add(map_frame(story, li, at, lerp(1.0, args.zoom, ease(u)), S,
-                                      fonts, total=total, follow=ease(u),
-                                      caption="" if li == 0 else None,
-                                      note=nt["text"], note_alpha=min(1.0, u * 1.6)),
+                                      fonts, total=total, follow=ease(u), caption="",
+                                      note=nt["text"], note_alpha=min(1.0, u * 1.6),
+                                      side={"rect": rect, "line": None}),
                             args.note_hold if z == args.znote - 1 else None)
                     for z in range(args.znote):
                         u = (z + 1) / float(args.znote)
                         add(map_frame(story, li, at, lerp(args.zoom, 1.0, ease(u)), S,
                                       fonts, total=total, follow=1.0 - ease(u),
-                                      caption="" if li == 0 else None,
-                                      note=nt["text"], note_alpha=1.0 - ease(u)))
+                                      caption="", note=nt["text"],
+                                      note_alpha=1.0 - ease(u),
+                                      side={"rect": rect, "line": None}))
+                    shown_note[0] = nt["text"]
             prev_map = frames[-1]
 
     # --- finale
@@ -849,6 +1065,8 @@ def main():
                     help="passo dei collegamenti: globo, zoom, dissolvenze, cartoline")
     ap.add_argument("--card", type=int, default=5000, help="quanto resta ferma una scheda")
     ap.add_argument("--fade", type=int, default=6, help="frame di dissolvenza")
+    ap.add_argument("--cardin", type=int, default=12,
+                    help="frame di entrata animata della scheda del giorno")
     ap.add_argument("--rot", type=int, default=5, help="frame di rotazione del globo")
     ap.add_argument("--zin", type=int, default=2, help="frame dello zoom in ingresso")
     ap.add_argument("--zout", type=int, default=2, help="frame dello zoom in uscita")
@@ -895,7 +1113,8 @@ def main():
              font("georgia.ttf", int(S * 0.078)),      # titolo del globo
              font("arial.ttf", int(S * 0.031)),       # sottotitolo del globo
              font("arialbd.ttf", int(S * 0.0245)),    # nomi dei luoghi sulla mappa
-             font("georgiai.ttf", int(S * 0.0345)))   # corsivo, per le citazioni
+             font("georgiai.ttf", int(S * 0.0345)),   # corsivo, per le citazioni
+             font("georgia.ttf", int(S * 0.062)))      # i numeri delle statistiche
 
     pick = allst
     if args.probe:
