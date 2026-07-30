@@ -225,7 +225,11 @@
         Gamepad2,
         Search,
         Snowflake,
-        Bike
+        Bike,
+        Mountain,
+        Moon,
+        Map,
+        BarChart3
       } from 'lucide-react';
 
       // --- Data Content ---
@@ -649,6 +653,57 @@
             }
       ];
 
+      const dataList = [
+            {
+                name: 'Al lavoro in bici',
+                desc: 'Ogni commute tracciato: km, benzina risparmiata, la mappa dei giorni paralleli.',
+                icon: <Bike size={32} />,
+                url: './bike-to-work/',
+                color: 'bg-io-green',
+                textColor: 'text-white'
+            },
+            {
+                name: 'Vita',
+                desc: 'Tutti i tracker personali in un posto solo.',
+                icon: <Activity size={32} />,
+                url: './vita/',
+                color: 'bg-io-blue',
+                textColor: 'text-white'
+            },
+            {
+                name: 'Sogni di un unno',
+                desc: 'Il diario dei sogni, registrato notte per notte.',
+                icon: <Moon size={32} />,
+                url: './sogni-di-un-unno/',
+                color: 'bg-io-yellow',
+                textColor: 'text-brand-dark'
+            },
+            {
+                name: 'Ciclopodistica Orezzo',
+                desc: 'Risultati e storia della corsa di casa, 2016–2026.',
+                icon: <Trophy size={32} />,
+                url: 'https://ciclopodistica.pages.dev/',
+                color: 'bg-io-red',
+                textColor: 'text-white'
+            },
+            {
+                name: 'Gazzaniga – Orezzo',
+                desc: '607 salite in undici anni, raccontate come una storia.',
+                icon: <Mountain size={32} />,
+                url: './gazzaniga-orezzo/',
+                color: 'bg-io-green',
+                textColor: 'text-white'
+            },
+            {
+                name: 'Top-20',
+                desc: 'Le venti giornate che raccontano 2.923 attività, traccia per traccia.',
+                icon: <Map size={32} />,
+                url: './top-20/',
+                color: 'bg-io-blue',
+                textColor: 'text-white'
+            }
+      ];
+
       const categories = {
         "Natura": <Globe size={20} />,
         "Tecnologia": <Zap size={20} />,
@@ -779,6 +834,29 @@
                         <h3 className={`font-pixel text-2xl md:text-3xl ${app.textColor} leading-none truncate`}>{app.name}</h3>
                     </div>
                     <ArrowUpRight size={20} className={app.textColor === 'text-white' ? 'text-white' : 'text-brand-dark'} />
+                </a>
+            ))}
+        </div>
+      );
+
+      const DataContent = () => (
+        <div className="space-y-3 md:space-y-4">
+            {dataList.map((item) => (
+                <a
+                    key={item.name}
+                    href={item.url}
+                    target={item.url.startsWith('http') ? '_blank' : '_self'}
+                    rel="noreferrer"
+                    className={`${item.color} border-[3px] border-brand-dark p-3 md:p-4 flex items-center gap-4 shadow-neo group hover:shadow-neo-hover hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all no-underline`}
+                >
+                    <div className="p-2 bg-white border-2 border-brand-dark shadow-sm text-brand-dark rounded-none flex items-center justify-center">
+                        {React.cloneElement(item.icon, { size: 22 })}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <h3 className={`font-pixel text-2xl md:text-3xl ${item.textColor} leading-none truncate`}>{item.name}</h3>
+                        <p className={`font-mono text-xs md:text-sm ${item.textColor} opacity-80 mt-1 leading-tight`}>{item.desc}</p>
+                    </div>
+                    <ArrowUpRight size={20} className={item.textColor === 'text-white' ? 'text-white' : 'text-brand-dark'} />
                 </a>
             ))}
         </div>
@@ -954,7 +1032,7 @@
         const App = () => {
           const [activeOverlay, setActiveOverlay] = useState(null);
           const [resourceIndex, setResourceIndex] = useState(0);
-          const overlayKeys = ['wiki', 'apps', 'press', 'travels', 'resources'];
+          const overlayKeys = ['wiki', 'apps', 'data', 'press', 'travels', 'resources'];
 
           const closeOverlay = () => setActiveOverlay(null);
 
@@ -1117,6 +1195,23 @@
                     </div>
                 </Card>
 
+                {/* 4b. Dati - Grouped Opener */}
+                  <Card
+                      className="bg-io-blue group min-h-[120px] justify-center cursor-pointer border-4 border-brand-dark"
+                      onClick={() => openOverlay('data')}
+                      noPadding
+                  >
+                    <div className="flex items-center justify-between w-full p-4 md:p-6">
+                        <div className="flex items-center gap-3">
+                            <span className="text-2xl">📊</span>
+                            <h3 className="font-pixel text-3xl md:text-4xl leading-none text-white">DATI</h3>
+                        </div>
+                        <div className="w-10 h-10 bg-black/10 flex items-center justify-center">
+                             <ArrowUpRight size={24} className="text-white" />
+                        </div>
+                    </div>
+                </Card>
+
                 {/* 5. Press Card */}
                   <Card
                       className="bg-white group min-h-[120px] justify-center text-brand-dark cursor-pointer border-4 border-brand-dark"
@@ -1205,6 +1300,10 @@
 
               <Overlay isOpen={activeOverlay === 'apps'} onClose={closeOverlay} title="MICMER APPS" color="bg-io-red">
                   <AppsContent />
+              </Overlay>
+
+              <Overlay isOpen={activeOverlay === 'data'} onClose={closeOverlay} title="DATI" color="bg-io-blue">
+                  <DataContent />
               </Overlay>
 
               <Overlay isOpen={activeOverlay === 'press'} onClose={closeOverlay} title="PRESS" color="bg-white">
