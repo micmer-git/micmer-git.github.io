@@ -199,8 +199,15 @@ the four accent colours onto the same olive grey.
 a full-screen narration card that fades in and away, then the path drawing on a
 real map, with the camera pulling back to an orthographic globe between one day
 and the next. The globe keeps a dot for everywhere already visited, so it is also
-the progress bar. **836 frames, 2'12", 4,7 MB** at the defaults (400 px, 44
-colours).
+the progress bar. Two cuts come out of the same tool: the **full one, 6'21",
+1.216 frames, 5,7 MB** at the defaults (380 px, 40 colours), and a **short one,
+3'21", 3,5 MB** — `--only 1,8,9,13,15,17,18,19,20 --intro --size 420 --colors 44`
+— which is the one that makes sense on LinkedIn.
+
+**Every block of text holds for at least five seconds.** That single rule sets the
+length: twenty cards plus twenty-five notes is 3'45" of held text before a single
+route is drawn. It is affordable because holding a frame is free — but it is why
+the full cut is six minutes, and why the short cut exists.
 
 **The length does not come from the frames.** The first cut ran the twenty days in
 42 seconds and was unreadable — a caption had a second and a half on screen. Five
@@ -220,13 +227,21 @@ Three narrative devices are worth keeping straight:
 - **The cards are prose**, written by hand per story in `card`. They used to be
   kicker + activity title + one line, which is three database fields stacked in a
   column and reads like one.
-- **`notes` stop the camera.** Six moments across the twenty pin a sentence to a
-  point on the route: the reel zooms onto the dot there and holds with the note
-  beside it. They exist only where the data or that day's own description
-  actually places the moment — the flat at km 136 of the Ironman bike, the stomach
-  at km 15 of its marathon, the crash in the first hundred metres at Barcelona,
-  the highest fix of the Stelvio, and the evening ride that simply stops ten
-  kilometres from home. Anywhere else it would be invention.
+- **`notes` annotate the route while it draws.** Twenty-five of them, at least one
+  per day. Without `zoom` the note simply appears in the margin with the camera
+  held still, which changes only the rectangle the text occupies — that is why
+  there can be many. With `zoom` the camera also dives onto the dot, which costs a
+  scale change, so those are the eight moments worth it: the flat at km 136 of the
+  Ironman bike, the stomach at km 15 of its marathon, the crash in the first
+  hundred metres at Barcelona, the highest fix on the Stelvio, and the evening
+  ride that simply stops ten kilometres from home. A note exists only where the
+  data or that day's own description actually places the moment; anywhere else it
+  would be invention.
+- **Typography does the rest.** Pillow has no letterspacing, no rules and no
+  italic switching, so `draw_tracked()`, `rule()` and `is_quote()` supply them: the
+  dates are letterspaced small caps under a short accent rule, the leads are large
+  serif with tight leading, and anything the archive actually said is set in
+  italic, because it is that day's voice and not ours.
 - **`mode: "race"`** draws every leg at once from a common start, each at the pace
   it actually held that year. It exists for the Maratona dles Dolomites, which is
   not a day but five: two short courses, one middle, two long. Giving each the

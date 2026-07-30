@@ -1,5 +1,5 @@
 {
-  "_comment": "The 20 stories of /top-20. Each leg is an Intervals.icu activity id; the GPS comes from its stream. `pace` decides how the animation's time is split between the legs — \"km\" (default, sqrt of the distance: right inside one day) or \"chapters\" (equal share: right when the legs are different days). `beat_at` pins each of the five captions to a fraction of the timeline, so a caption about the 17th of May cannot land while the dot is running the 29th of June; omit it for even spacing. build_top20.py resolves both into per-leg t0/dt in _data.js, which is what the page and the GIF read. Each leg also carries `line` — the single short caption the reel has room for (the five `beats` are the page's; a 20-story GIF cannot hold 100 of them, so the reel shows one line per leg, which is why the multi-day stories get the most text). `frame: \"all\"` frames that leg against every leg of the story instead of itself. `places` on a leg names the map: {from, to} go to the polyline's ends and {top} to the highest GPS fix. Only points the coordinates identify beyond doubt are named — the reel uses a no-labels basemap, so these are the only place names on it and a wrong one would be the most visible mistake on the whole thing. `card` is the full-screen narration that opens each day in the reel — prose, because the activity's own title as a headline reads like a database dump. `notes` on a leg pin a moment to a fraction of its length (or \"top\", its highest fix): the reel zooms onto the dot there and holds with the note beside it, so only moments the data or the day's own description actually place ever get one. `mode: \"race\"` draws every leg at once from a common start.",
+  "_comment": "The 20 stories of /top-20. Each leg is an Intervals.icu activity id; the GPS comes from its stream. `pace` decides how the animation's time is split between the legs — \"km\" (default, sqrt of the distance: right inside one day) or \"chapters\" (equal share: right when the legs are different days). `beat_at` pins each of the five captions to a fraction of the timeline, so a caption about the 17th of May cannot land while the dot is running the 29th of June; omit it for even spacing. build_top20.py resolves both into per-leg t0/dt in _data.js, which is what the page and the GIF read. Each leg also carries `line` — the single short caption the reel has room for (the five `beats` are the page's; a 20-story GIF cannot hold 100 of them, so the reel shows one line per leg, which is why the multi-day stories get the most text). `frame: \"all\"` frames that leg against every leg of the story instead of itself. `places` on a leg names the map: {from, to} go to the polyline's ends and {top} to the highest GPS fix. Only points the coordinates identify beyond doubt are named — the reel uses a no-labels basemap, so these are the only place names on it and a wrong one would be the most visible mistake on the whole thing. `card` is the full-screen narration that opens each day in the reel — prose, because the activity's own title as a headline reads like a database dump. `notes` on a leg pin a moment to a fraction of its length (or \"top\", its highest fix): the note appears in the margin and the drawing pauses on it; with \"zoom\": true the camera also dives onto the dot, which costs a scale change and is kept for the six moments worth it, so only moments the data or the day's own description actually place ever get one. `mode: \"race\"` draws every leg at once from a common start.",
   "out_data": "../top-20/_data.js",
   "out_gif": "../top-20/top-20.gif",
   "points_per_leg": 260,
@@ -20,7 +20,17 @@
           "places": {
             "from": "Milano",
             "to": "Sanremo"
-          }
+          },
+          "notes": [
+            {
+              "at": "top",
+              "text": "Quota massima 738 metri. Tutto il resto è costa."
+            },
+            {
+              "at": 0.97,
+              "text": "Sanremo. Nove ore e 28 dopo Milano."
+            }
+          ]
         }
       ],
       "beats": [
@@ -61,7 +71,14 @@
           "places": {
             "from": "Edolo",
             "top": "Passo Gavia"
-          }
+          },
+          "notes": [
+            {
+              "at": "top",
+              "text": "Il Gavia. Il Mortirolo arriva dopo, quando le gambe hanno già dato tutto.",
+              "zoom": true
+            }
+          ]
         }
       ],
       "beats": [
@@ -102,7 +119,13 @@
           "places": {
             "from": "Anversa",
             "to": "Oudenaarde"
-          }
+          },
+          "notes": [
+            {
+              "at": "top",
+              "text": "Il punto più alto di tutta la corsa: 170 metri."
+            }
+          ]
         }
       ],
       "beats": [
@@ -146,7 +169,8 @@
           "notes": [
             {
               "at": "top",
-              "text": "Il punto più alto è a 560 metri. Il mal di testa arriva comunque."
+              "text": "Il punto più alto è a 560 metri. Il mal di testa arriva comunque.",
+              "zoom": true
             }
           ]
         }
@@ -188,7 +212,13 @@
           "line": "«Buona la prima.» È la prima mezza maratona.",
           "places": {
             "from": "Milano"
-          }
+          },
+          "notes": [
+            {
+              "at": 0.55,
+              "text": "Milano piatta: 23 metri di dislivello in ventun chilometri."
+            }
+          ]
         }
       ],
       "beats": [
@@ -235,7 +265,13 @@
           "id": "i62696128",
           "sport": "run",
           "label": "mezza maratona",
-          "line": "90 km di bici, poi 21 di corsa. Nessun pettorale."
+          "line": "90 km di bici, poi 21 di corsa. Nessun pettorale.",
+          "notes": [
+            {
+              "at": 0.97,
+              "text": "Nessun cronometro all'arrivo. Solo il file GPS."
+            }
+          ]
         }
       ],
       "beats": [
@@ -282,7 +318,13 @@
           "line": "Si può correre solo dentro il Comune. Allora 42 km lì.",
           "places": {
             "from": "Orezzo"
-          }
+          },
+          "notes": [
+            {
+              "at": 0.5,
+              "text": "Quarantadue chilometri senza mai uscire dai confini del paese."
+            }
+          ]
         }
       ],
       "beats": [
@@ -327,7 +369,8 @@
           "notes": [
             {
               "at": "top",
-              "text": "2.854 metri misurati: il punto più alto di undici anni."
+              "text": "2.854 metri misurati: il punto più alto di undici anni.",
+              "zoom": true
             }
           ]
         }
@@ -367,7 +410,13 @@
           "sport": "bike",
           "label": "2019 — corto",
           "frame": "all",
-          "line": "2019: il percorso corto, 55 km. La prima."
+          "line": "2019: il percorso corto, 55 km. La prima.",
+          "notes": [
+            {
+              "at": 0.58,
+              "text": "Qui i due percorsi corti hanno già finito. I lunghi sono ancora in salita."
+            }
+          ]
         },
         {
           "id": "i62696752",
@@ -454,7 +503,8 @@
           "notes": [
             {
               "at": 0.02,
-              "text": "«Dosso e caduta nei primi 100 metri, top.»"
+              "text": "«Dosso e caduta nei primi 100 metri, top.»",
+              "zoom": true
             }
           ]
         },
@@ -509,7 +559,13 @@
           "line": "2h45. La prima maratona su strada.",
           "places": {
             "from": "Padova"
-          }
+          },
+          "notes": [
+            {
+              "at": 0.55,
+              "text": "Quarantasei metri di dislivello in tutta la maratona."
+            }
+          ]
         }
       ],
       "beats": [
@@ -550,7 +606,13 @@
           "places": {
             "from": "Milano",
             "to": "Sanremo"
-          }
+          },
+          "notes": [
+            {
+              "at": 0.97,
+              "text": "309 chilometri. Nessun altro giorno, in undici anni, arriva così lontano."
+            }
+          ]
         }
       ],
       "beats": [
@@ -591,7 +653,13 @@
           "places": {
             "from": "Hopkinton",
             "to": "Boston"
-          }
+          },
+          "notes": [
+            {
+              "at": 0.7,
+              "text": "Le Newton Hills. «Legs got blasted by the Hills.»"
+            }
+          ]
         }
       ],
       "beats": [
@@ -632,7 +700,14 @@
           "places": {
             "from": "Susa",
             "top": "Col de l'Iseran"
-          }
+          },
+          "notes": [
+            {
+              "at": "top",
+              "text": "Col de l'Iseran, 2.767 metri misurati. Fatto con la gravel.",
+              "zoom": true
+            }
+          ]
         }
       ],
       "beats": [
@@ -675,7 +750,13 @@
             "from": "Orezzo",
             "to": "Livigno",
             "top": "Foscagno"
-          }
+          },
+          "notes": [
+            {
+              "at": "top",
+              "text": "Passo di Foscagno, 2.284 metri. Livigno è dietro il valico."
+            }
+          ]
         },
         {
           "id": "i62694326",
@@ -686,7 +767,13 @@
           "places": {
             "from": "Livigno",
             "to": "Orezzo"
-          }
+          },
+          "notes": [
+            {
+              "at": 0.97,
+              "text": "Orezzo, il giorno dopo. 357 chilometri in due giorni, niente auto."
+            }
+          ]
         }
       ],
       "beats": [
@@ -734,7 +821,13 @@
           "line": "«I cried many times.» 2h39, record personale.",
           "places": {
             "from": "Málaga"
-          }
+          },
+          "notes": [
+            {
+              "at": 0.97,
+              "text": "Due ore e 39: record personale, battuto solo undici mesi dopo."
+            }
+          ]
         }
       ],
       "beats": [
@@ -776,7 +869,13 @@
           "places": {
             "from": "Bergamo",
             "to": "Bologna"
-          }
+          },
+          "notes": [
+            {
+              "at": 0.97,
+              "text": "Bologna. Sette ore e mezza dopo Bergamo — e domani si corre."
+            }
+          ]
         },
         {
           "id": "i67761997",
@@ -837,7 +936,8 @@
           "notes": [
             {
               "at": 1.0,
-              "text": "Qui l'attività si ferma. Dieci chilometri da casa."
+              "text": "Qui l'attività si ferma. Dieci chilometri da casa.",
+              "zoom": true
             }
           ]
         },
@@ -867,7 +967,13 @@
           "places": {
             "from": "Valsugana",
             "top": "Passo Manghen"
-          }
+          },
+          "notes": [
+            {
+              "at": "top",
+              "text": "Passo Manghen, 2.044 metri. Due mesi dopo la frattura."
+            }
+          ]
         }
       ],
       "beats": [
@@ -925,7 +1031,8 @@
           "notes": [
             {
               "at": 0.762,
-              "text": "Chilometro 136. «Got a flat while going 55 km/h downhill.»"
+              "text": "Chilometro 136. «Got a flat while going 55 km/h downhill.»",
+              "zoom": true
             }
           ]
         },
@@ -937,7 +1044,8 @@
           "notes": [
             {
               "at": 0.367,
-              "text": "Chilometro 15. «Stomach down.» E ne restano ventisette."
+              "text": "Chilometro 15. «Stomach down.» E ne restano ventisette.",
+              "zoom": true
             }
           ]
         }
@@ -987,13 +1095,25 @@
           "line": "Mezza maratona alle cinque del mattino. «Attempting something stupid.»",
           "places": {
             "from": "Orezzo"
-          }
+          },
+          "notes": [
+            {
+              "at": 0.97,
+              "text": "Le sei e mezza del mattino. La mezza è fatta, la giornata comincia adesso."
+            }
+          ]
         },
         {
           "id": "i156623161",
           "sport": "swim",
           "label": "11:46 — il nuoto",
-          "line": "Due chilometri a nuoto, in pausa pranzo. In piscina: nessuna traccia."
+          "line": "Due chilometri a nuoto, in pausa pranzo. In piscina: nessuna traccia.",
+          "notes": [
+            {
+              "at": 0.97,
+              "text": "Le sei di sera. Il 70.3 è completo."
+            }
+          ]
         },
         {
           "id": "i156710894",

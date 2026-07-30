@@ -8,20 +8,25 @@ real map, and between one day and the next the camera pulls back to an
 orthographic globe, rotates, and dives into the next place. The globe keeps the
 dots of everywhere already visited, so it doubles as the progress bar.
 
-Dura 2'12" e pesa 4,7 MB: 836 frame a 400 px. Il disegno del GPS ha il suo passo
-(`--ms`, 105 ms) e non si tocca: e' la cosa che si guarda. Tutto il resto —
-globo, zoom, dissolvenze, cartoline — corre a `--ms-move` (70 ms), perche' e'
-collegamento e non racconto. Le pause invece non costano niente: in GIF tenere
-fermo un frame e' gratis, e una cartolina di testo costa un frame da 5 kB per
-quanto a lungo resti su schermo.
+**Ogni blocco di testo resta in campo almeno cinque secondi.** Venti cartoline
+piu' venticinque note fanno da sole 3'45" di testo fermo: e' il vincolo che decide
+la durata, non l'animazione. Il taglio lungo dura 6'21" (1.216 frame, 380 px,
+5,7 MB), quello corto — nove giorni, `--only 1,8,9,13,15,17,18,19,20 --intro` —
+dura 3'21" e pesa 3,5 MB, ed e' quello che ha senso su LinkedIn.
+
+Tenere fermo un frame non costa niente, quindi la lentezza e' gratis; aggiungere
+frame no. Di qui i due orologi: `--ms` (105 ms) e' il passo del disegno GPS e non
+si tocca, `--ms-move` (80 ms) e' tutto quello che collega — globo, zoom,
+dissolvenze — perche' e' collegamento e non racconto.
 
 Ogni giorno apre su una cartolina in prosa (`card` nel config, scritta a mano) e
-non sul titolo dell'attivita', che messo in colonna coi suoi campi si leggeva
-come un dump di database. Sei momenti hanno una `note`: la camera scende sul
-puntino e si ferma, con la frase di fianco — ma solo dove i dati o la descrizione
-di quel giorno collocano davvero il momento. E la Maratona dles Dolomites non e'
-un giorno ma cinque: `mode: "race"` le fa partire insieme, ognuna col passo di
-quell'anno.
+non sul titolo dell'attivita', che messo in colonna coi suoi campi si leggeva come
+un dump di database. Poi, mentre la traccia corre, le `note` compaiono in margine:
+senza `zoom` costano il rettangolo del testo e basta, quindi ce ne sono molte; con
+`zoom` la camera scende sul puntino, e quelle sono otto. In entrambi i casi il
+disegno si ferma sulla nota per il tempo di leggerla. E la Maratona dles Dolomites
+non e' un giorno ma cinque: `mode: "race"` le fa partire insieme, ognuna col passo
+di quell'anno.
 
     python build_top20_reel.py                    # tutto il reel
     python build_top20_reel.py --only 1,17,18     # solo alcune storie (numerate da 1)
@@ -84,6 +89,35 @@ RACE_TINTS = [(194, 118, 26), (59, 91, 181), (77, 114, 56), (138, 90, 60), (150,
 def plain(t):
     """Il testo senza emoji, per le righe piccole della barra dei dati."""
     return "".join(c for c in t if not is_emoji(c)).replace("  ", " ").strip(" —·-")
+
+
+# ------------------------------------------------------------------ tipografia
+#
+# Tre cose fanno la differenza fra "testo su un'immagine" e una pagina composta:
+# le maiuscolette spaziate per le etichette, un filetto che separa invece di uno
+# spazio vuoto, e il corsivo per le citazioni. Pillow non ha nulla di tutto
+# questo, quindi sono tre funzioni qui sotto.
+
+def tracked_w(dr, text, fnt, track):
+    return sum(dr.textlength(c, font=fnt) for c in text) + track * max(0, len(text) - 1)
+
+
+def draw_tracked(dr, xy, text, fnt, fill, track):
+    """Maiuscolette spaziate. Senza spaziatura una riga tutta in maiuscolo si
+    legge come un blocco pieno; con due pixel fra le lettere diventa un'etichetta."""
+    x, y = xy
+    for c in text:
+        dr.text((x, y), c, font=fnt, fill=fill)
+        x += dr.textlength(c, font=fnt) + track
+    return x
+
+
+def rule(dr, x0, y, x1, colour, w=1):
+    dr.rectangle([x0, y, x1, y + w - 1], fill=colour)
+
+
+def is_quote(t):
+    return t.lstrip().startswith(("«", '"', "“"))
 
 
 # ------------------------------------------------------------------ geometria
@@ -194,7 +228,7 @@ def prepare(stories, px, style, margin=1.62):
 # ------------------------------------------------------------------ disegno
 
 def map_frame(story, li, p, zoomf, S, fonts, cap_alpha=1.0, chrome=True,
-              total=20, follow=None, caption=None, note=None):
+              total=20, follow=None, caption=None, note=None, note_alpha=1.0):
     """One map frame: the leg `li` of `story` drawn to fraction `p`, at zoom `zoomf`."""
     legs = story["legs"]
     act = legs[li]
@@ -280,12 +314,12 @@ def map_frame(story, li, p, zoomf, S, fonts, cap_alpha=1.0, chrome=True,
         place_labels(frame, act, box, to_px, S, fonts, ac)
     if chrome:
         chrome_over(frame, story, li, S, fonts, cap_alpha, total, caption, race)
-    if note:
-        note_panel(frame, S, fonts, note, ac)
+    if note and note_alpha > 0.02:
+        note_panel(frame, S, fonts, note, ac, note_alpha)
     return frame.convert("RGB")
 
 
-def note_panel(frame, S, fonts, text, ac):
+def note_panel(frame, S, fonts, text, ac, alpha=1.0):
     """A note pinned beside the dot: the reason the camera stopped here.
 
     Sits on the right, vertically centred, on its own paper panel with a rule in
@@ -293,21 +327,32 @@ def note_panel(frame, S, fonts, text, ac):
     dot, so the pairing reads as "this spot, this sentence".
     """
     f_kick, f_title, f_cap, f_stat, f_leg, f_emo, f_emos, f_big, f_sub = fonts[:9]
+    f_ital = fonts[10]
     dr = ImageDraw.Draw(frame)
-    pad = int(S * 0.050)
-    w = int(S * 0.44)
-    lines = wrap(dr, text, f_cap, f_emo, w - int(S * 0.05))[:5]
-    h = len(lines) * int(S * 0.046) + int(S * 0.040)
+    pad = int(S * 0.048)
+    w = int(S * 0.46)
+    body = f_ital if is_quote(text) else f_cap        # la citazione in corsivo
+    inner = w - int(S * 0.085)
+    lines = wrap(dr, text, body, f_emo, inner)[:6]
+    lab_h = int(S * 0.040)
+    h = lab_h + len(lines) * int(S * 0.048) + int(S * 0.044)
     x, y = S - pad - w, (S - h) // 2
-    scrim(frame, (x, y, x + w, y + h), int(S * 0.020), 232)
-    dr = ImageDraw.Draw(frame)
-    dr.rounded_rectangle([x + int(S * .022), y + int(S * .020),
-                          x + int(S * .022) + int(S * 0.004), y + h - int(S * .020)],
-                         2, fill=ac)
-    ty = y + int(S * 0.020)
+    a = max(0.0, min(1.0, alpha))
+    # il pannello si disegna su una copia e poi si fonde: cosi' entra ed esce in
+    # dissolvenza invece di apparire di colpo
+    panel = frame.copy()
+    scrim(panel, (x, y, x + w, y + h), int(S * 0.018), 236)
+    dr = ImageDraw.Draw(panel)
+    # filetto verticale in accento: tiene insieme il blocco e lo lega alla traccia
+    dr.rectangle([x + int(S * .026), y + int(S * .026),
+                  x + int(S * .026) + max(2, int(S * 0.005)), y + h - int(S * .026)], fill=ac)
+    tx = x + int(S * 0.056)
+    draw_tracked(dr, (tx, y + int(S * 0.024)), "NOTA", f_leg, ac, S * 0.006)
+    ty = y + int(S * 0.024) + lab_h
     for l in lines:
-        draw_text(dr, (x + int(S * 0.046), ty), l, f_cap, f_emo, INK)
-        ty += int(S * 0.046)
+        draw_text(dr, (tx, ty), l, body, f_emo, INK)
+        ty += int(S * 0.048)
+    frame.paste(Image.blend(frame.convert("RGB"), panel.convert("RGB"), a).convert("RGBA"))
 
 
 def race_legend(frame, S, fonts, legs, ac):
@@ -516,28 +561,44 @@ def text_card(S, fonts, alpha, lines, ac=None, n=None, total=20, credit_too=Fals
     `lines` is a list of (text, kind) with kind in {kicker, big, body, small}.
     """
     f_kick, f_title, f_cap, f_stat, f_leg, f_emo, f_emos, f_big, f_sub = fonts[:9]
-    SPEC = {"kicker": (f_kick, INK3, 0.052, 0.028),
-            "big": (f_big, INK, 0.098, 0.030),
-            "body": (f_sub, INK2, 0.050, 0.020),
-            "small": (f_stat, INK3, 0.040, 0.014)}
+    f_ital = fonts[10]
+    # ogni riga: font, colore, interlinea, spazio dopo, spaziatura fra lettere
+    SPEC = {"kicker": (f_kick, INK3, 0.048, 0.030, S * 0.006),
+            "big": (f_big, INK, 0.092, 0.026, 0),
+            "body": (f_sub, INK2, 0.050, 0.018, 0),
+            "small": (f_stat, INK3, 0.040, 0.014, S * 0.004)}
     im = Image.new("RGB", (S, S), BG)
     lay = Image.new("RGBA", (S, S), BG + (0,))
     dr = ImageDraw.Draw(lay)
-    pad = int(S * 0.11)
+    pad = int(S * 0.115)
+    RULE_H = int(S * 0.030)                 # aria attorno ai filetti
 
     laid, h = [], 0
     for text, kind in lines:
-        f, col, lh, gap = SPEC[kind]
+        f, col, lh, gap, track = SPEC[kind]
+        # una citazione va in corsivo: e' la voce di quel giorno, non la nostra
+        if kind == "body" and is_quote(text):
+            f = f_ital
         ws = wrap(dr, text, f, f_emo, S - 2 * pad) if text else [""]
-        laid.append((ws, f, col, int(S * lh), int(S * gap)))
+        laid.append((ws, f, col, int(S * lh), int(S * gap), track, kind))
         h += len(ws) * int(S * lh) + int(S * gap)
+        if kind == "kicker":
+            h += RULE_H
     y = (S - h) // 2
-    for ws, f, col, lh, gap in laid:
+    for ws, f, col, lh, gap, track, kind in laid:
         for w in ws:
-            tw = text_w(dr, w, f, f_emo)
-            draw_text(dr, ((S - tw) // 2, y), w, f, f_emo, col)
+            tw = tracked_w(dr, w, f, track) if track else text_w(dr, w, f, f_emo)
+            if track:
+                draw_tracked(dr, ((S - tw) // 2, y), w, f, col, track)
+            else:
+                draw_text(dr, ((S - tw) // 2, y), w, f, f_emo, col)
             y += lh
         y += gap
+        if kind == "kicker":
+            # un filetto corto sotto la data: separa senza aggiungere parole
+            rule(dr, S // 2 - int(S * 0.030), y + RULE_H // 2 - 1,
+                 S // 2 + int(S * 0.030), (ac or INK3) + (255,))
+            y += RULE_H
 
     a = max(0.0, min(1.0, alpha))
     out = Image.blend(im, Image.alpha_composite(im.convert("RGBA"), lay).convert("RGB"), a)
@@ -635,7 +696,7 @@ def build(stories, S, fonts, args):
                 add(text_card(S, fonts, 1.0 - (k + 1) / float(args.fade), lines, ac, n, total))
 
     # --- apertura: prima il testo, poi il mondo
-    if not args.only:
+    if args.intro or not args.only:
         fade_card([("micmer · archivio 2015 – 2026", "kicker"),
                    ("Venti giorni", "big"),
                    ("su 2.923", "big"),
@@ -717,28 +778,48 @@ def build(stories, S, fonts, args):
                               follow=0.0, caption="" if li == 0 else None),
                     (args.hold if li == len(story["legs"]) - 1 else args.hold_leg)
                     if last else args.ms)
-                # --- una nota: la camera scende sul puntino e ci si ferma
+                # --- le note.
+                #
+                # Senza zoom la nota compare a lato con la camera ferma: cambia
+                # solo il rettangolo del testo, quindi costa quanto un frame di
+                # disegno e se ne possono avere molte. Con `zoom` la camera scende
+                # sul puntino, e quello si paga come ogni cambio di scala — sono
+                # otto in tutto il reel, sui momenti che se lo meritano.
+                #
+                # In entrambi i casi il disegno si FERMA sulla nota: cinque secondi
+                # su un frame gia' disegnato non costano niente, e sono il tempo
+                # che serve a leggerla.
                 for ni, nt in enumerate(notes):
                     at = note_at(l, nt)
                     if ni in done_notes or p < at:
                         continue
                     done_notes.add(ni)
+                    if not nt.get("zoom"):
+                        for z in range(args.nfade):
+                            u = (z + 1) / float(args.nfade)
+                            add(map_frame(story, li, max(p, at), 1.0, S, fonts,
+                                          total=total, follow=0.0,
+                                          caption="" if li == 0 else None,
+                                          note=nt["text"], note_alpha=u),
+                                args.note_hold if z == args.nfade - 1 else None)
+                        continue
                     for z in range(args.znote):
                         u = (z + 1) / float(args.znote)
                         add(map_frame(story, li, at, lerp(1.0, args.zoom, ease(u)), S,
                                       fonts, total=total, follow=ease(u),
                                       caption="" if li == 0 else None,
-                                      note=nt["text"] if u > 0.5 else None),
+                                      note=nt["text"], note_alpha=min(1.0, u * 1.6)),
                             args.note_hold if z == args.znote - 1 else None)
                     for z in range(args.znote):
                         u = (z + 1) / float(args.znote)
                         add(map_frame(story, li, at, lerp(args.zoom, 1.0, ease(u)), S,
                                       fonts, total=total, follow=1.0 - ease(u),
-                                      caption="" if li == 0 else None))
+                                      caption="" if li == 0 else None,
+                                      note=nt["text"], note_alpha=1.0 - ease(u)))
             prev_map = frames[-1]
 
     # --- finale
-    if not args.only:
+    if args.intro or not args.only:
         for k in range(args.zout):
             t = (k + 1) / float(args.zout)
             add(to_paper(on_paper(prev_map, lerp(1.0, 0.40, ease(t)), S),
@@ -761,22 +842,23 @@ def build(stories, S, fonts, args):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--size", type=int, default=400)
+    ap.add_argument("--size", type=int, default=380)
     ap.add_argument("--ms", type=int, default=105,
                     help="passo del disegno GPS: e' la cosa che si guarda, non si tocca")
-    ap.add_argument("--ms-move", type=int, default=70,
+    ap.add_argument("--ms-move", type=int, default=80,
                     help="passo dei collegamenti: globo, zoom, dissolvenze, cartoline")
-    ap.add_argument("--card", type=int, default=1000, help="quanto resta ferma una scheda")
-    ap.add_argument("--fade", type=int, default=2, help="frame di dissolvenza")
+    ap.add_argument("--card", type=int, default=5000, help="quanto resta ferma una scheda")
+    ap.add_argument("--fade", type=int, default=6, help="frame di dissolvenza")
     ap.add_argument("--rot", type=int, default=5, help="frame di rotazione del globo")
     ap.add_argument("--zin", type=int, default=2, help="frame dello zoom in ingresso")
     ap.add_argument("--zout", type=int, default=2, help="frame dello zoom in uscita")
     ap.add_argument("--hold-leg", type=int, default=450, help="pausa a fine tratto")
-    ap.add_argument("--hold", type=int, default=800, help="pausa sull'ultimo frame di una storia")
-    ap.add_argument("--draw", type=int, default=20, help="frame per tratto")
+    ap.add_argument("--hold", type=int, default=1600, help="pausa sull'ultimo frame di una storia")
+    ap.add_argument("--draw", type=int, default=24, help="frame per tratto")
     ap.add_argument("--zoom", type=float, default=2.4, help="zoom sulle note")
-    ap.add_argument("--znote", type=int, default=3, help="frame di zoom su una nota")
-    ap.add_argument("--note-hold", type=int, default=2100, help="quanto resta una nota")
+    ap.add_argument("--znote", type=int, default=4, help="frame di zoom su una nota")
+    ap.add_argument("--nfade", type=int, default=4, help="frame di dissolvenza di una nota a lato")
+    ap.add_argument("--note-hold", type=int, default=5000, help="quanto resta una nota")
     ap.add_argument("--punch", type=int, default=0,
                     help="frame dell'affondo finale su ogni storia. Zero per scelta: "
                          "a cinque frame per storia costava piu di sei megabyte, e le "
@@ -787,7 +869,7 @@ def main():
     ap.add_argument("--disposal", type=int, default=1,
                     help="1 = lascia in posa, lascia scrivere al GIF solo il rettangolo "
                          "cambiato; 2 = ridisegna tutto (molto piu grande)")
-    ap.add_argument("--colors", type=int, default=44,
+    ap.add_argument("--colors", type=int, default=40,
                     help="400 px e 44 colori sono il punto in cui il reel lento sta "
                          "sotto i cinque megabyte senza differenza visibile: 14 "
                          "slot sono riservati (accenti, accenti sbiaditi, "
@@ -795,6 +877,8 @@ def main():
     ap.add_argument("--px", type=int, default=1500, help="lato del mosaico basemap")
     ap.add_argument("--style", default="light_nolabels")
     ap.add_argument("--only", help="solo queste storie, numerate da 1: 1,17,18")
+    ap.add_argument("--intro", action="store_true",
+                    help="tieni apertura e finale anche con --only (per il taglio corto)")
     ap.add_argument("--probe", type=int, help="provino a sei riquadri di una storia")
     ap.add_argument("--out", default=OUT)
     args = ap.parse_args()
@@ -810,7 +894,8 @@ def main():
              font("seguiemj.ttf", int(S * 0.022)),     # emoji piccoli
              font("georgia.ttf", int(S * 0.078)),      # titolo del globo
              font("arial.ttf", int(S * 0.031)),       # sottotitolo del globo
-             font("arialbd.ttf", int(S * 0.0245)))     # nomi dei luoghi sulla mappa
+             font("arialbd.ttf", int(S * 0.0245)),    # nomi dei luoghi sulla mappa
+             font("georgiai.ttf", int(S * 0.0345)))   # corsivo, per le citazioni
 
     pick = allst
     if args.probe:
