@@ -233,7 +233,7 @@ def build(cfg, key, refetch=False, tol=None):
                 # `line` e `frame` servono al reel: una riga per tratto e quali
                 # tratti si guardano insieme. La pagina li ignora.
                 "line": lg.get("line", ""), "frame": lg.get("frame", "self"),
-                "places": lg.get("places", {}),
+                "places": lg.get("places", {}), "notes": lg.get("notes", []),
                 "lat0": lat0, "lng0": lng0, "d": d,
                 "alt": [int(round(x - a0)) for x in alts], "alt0": int(round(a0)),
                 "km": round((a.get("distance") or 0) / 1000.0, 2),
@@ -262,17 +262,27 @@ def build(cfg, key, refetch=False, tol=None):
         # su 223) durerebbe sette centesimi di animazione.
         # pace "chapters": tempo uguale per tratto. Serve quando i tratti sono
         # giorni diversi, dove i chilometri non dicono quanto conta il capitolo.
+        # mode "race": i tratti non si susseguono, partono tutti insieme e ognuno
+        # occupa l'intera linea del tempo. Serve alle cinque Maratone dles
+        # Dolomites, che sono lo stesso giorno di cinque anni diversi: messe in fila
+        # sarebbero cinque volte la stessa salita, partite insieme diventano una
+        # gara in cui si vede il corto tornare indietro e il lungo tirare avanti.
         pace = s.get("pace", "km")
-        if pace == "chapters":
-            wts = [1.0] * len(legs)
+        mode = s.get("mode", "solo")
+        if mode == "race":
+            wts = None
+            for l in legs:
+                l["t0"] = 0.0
+                l["dt"] = 1.0
         else:
-            wts = [math.sqrt(max(l["km"], 0.4)) for l in legs]
-        wsum = sum(wts) or 1.0
-        acc = 0.0
-        for l, w in zip(legs, wts):
-            l["t0"] = round(acc, 5)
-            l["dt"] = round(w / wsum, 5)
-            acc += w / wsum
+            wts = ([1.0] * len(legs) if pace == "chapters"
+                   else [math.sqrt(max(l["km"], 0.4)) for l in legs])
+            wsum = sum(wts) or 1.0
+            acc = 0.0
+            for l, w in zip(legs, wts):
+                l["t0"] = round(acc, 5)
+                l["dt"] = round(w / wsum, 5)
+                acc += w / wsum
 
         # e quando ogni riga di storia appartiene a un tratto preciso, le due cose
         # si allineano invece di scorrere l'una sull'altra
@@ -283,10 +293,10 @@ def build(cfg, key, refetch=False, tol=None):
             sys.exit("%s: %d beat_at per %d righe" % (s["slug"], len(beat_at), len(s["beats"])))
 
         stories.append({
-            "pace": pace, "beat_at": beat_at,
+            "pace": pace, "mode": mode, "beat_at": beat_at,
             "slug": s["slug"], "year": s["year"], "title": s["title"],
             "kicker": s["kicker"], "icon": s["icon"], "accent": s["accent"],
-            "beats": s["beats"], "legs": legs,
+            "beats": s["beats"], "card": s.get("card", []), "legs": legs,
             "km": round(tot_km, 1), "gain": int(round(tot_gain)),
             "secs": int(tot_secs), "elapsed": int(round((last_end or 0) - (first_start or 0))),
         })

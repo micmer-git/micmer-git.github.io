@@ -191,7 +191,7 @@ button{font-family:inherit}
         <a class="lnk" href="../vita/">tutti i tracker →</a>
       </div>
       <div class="links stg stg5">
-        <a class="lnk" href="top-20-reel.gif" download>il reel — venti giorni di fila, 3'26″ ↓</a>
+        <a class="lnk" href="top-20-reel.gif" download>il reel — venti giorni di fila, 2'12″ ↓</a>
         <a class="lnk" href="top-20.gif" download>le venti schede quadrate ↓</a>
       </div>
     </div>
@@ -214,6 +214,9 @@ button{font-family:inherit}
 const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const AC = {dawn:"#c2761a", dusk:"#3b5bb5", green:"#4d7238", stone:"#8a5a3c"};
 const SPORT_ICON = {bike:"🚲", run:"👟", swim:"🏊"};
+/* le tinte della gara — le stesse cinque del reel, così le due superfici
+   raccontano la Maratona con gli stessi colori */
+const TINTS = ["#c2761a","#3b5bb5","#4d7238","#8a5a3c","#963c6e"];
 
 /* ---------- decode: delta ints of 1e-5 deg back to lat/lng ---------- */
 function decode(leg){
@@ -279,6 +282,7 @@ function at(l, p){
 }
 
 function Scene(st, cv, prof, legname, beats){
+  const RACE = st.mode === "race";
   // t0/dt e beat_at arrivano già calcolati da tools/build_top20.py: la stessa
   // linea del tempo la usa anche la GIF, e ricalcolarla qui vorrebbe dire due
   // versioni dello stesso peso che divergono al primo ritocco.
@@ -338,14 +342,32 @@ function Scene(st, cv, prof, legname, beats){
     const head = at(l, p);
     const cam = camera(l, head, p);
 
-    // gli altri tratti restano sotto, sbiaditi: nelle storie di due giorni si
-    // vede l'andata mentre parte il ritorno
-    for (let i=0;i<legs.length;i++){
-      if (i === li) continue;
-      drawTrack(g, legs[i], cam, null, i < li ? .30 : .12, i < li ? ac : "#c9c4b6", 1.4);
+    if (RACE){
+      // Cinque edizioni della stessa corsa, partite nello stesso istante e ognuna
+      // col passo che aveva quel luglio: i due percorsi corti finiscono a un terzo
+      // e restano ad aspettare i lunghi. Senza questo ramo la pagina avrebbe
+      // animato solo la prima delle cinque, che con quel titolo sarebbe falso.
+      const tmax = legs.reduce((m,x)=>Math.max(m, x.leg.secs||1), 1);
+      for (let i=0;i<legs.length;i++){
+        const q = legs[i], tint = TINTS[i % TINTS.length];
+        drawTrack(g, q, cam, null, .14, "#8f9382", 1.2);
+        const qp = Math.min(1, t * tmax / (q.leg.secs || 1));
+        const qh = at(q, qp);
+        drawTrack(g, q, cam, qh, .95, tint, 2.2);
+        const qx = W/2+(qh.x-cam.cx)*cam.s, qy = H/2+(qh.y-cam.cy)*cam.s;
+        g.beginPath(); g.arc(qx,qy,3.4,0,7); g.fillStyle = tint; g.fill();
+        g.lineWidth = 1.4; g.strokeStyle = "#faf8f3"; g.stroke();
+      }
+    } else {
+      // gli altri tratti restano sotto, sbiaditi: nelle storie di due giorni si
+      // vede l'andata mentre parte il ritorno
+      for (let i=0;i<legs.length;i++){
+        if (i === li) continue;
+        drawTrack(g, legs[i], cam, null, i < li ? .30 : .12, i < li ? ac : "#c9c4b6", 1.4);
+      }
+      drawTrack(g, l, cam, null, .16, "#8f9382", 1.6);        // il tratto intero, pallido
+      drawTrack(g, l, cam, head, .95, ac, 2.6);                // quello già percorso
     }
-    drawTrack(g, l, cam, null, .16, "#8f9382", 1.6);          // il tratto intero, pallido
-    drawTrack(g, l, cam, head, .95, ac, 2.6);                  // quello già percorso
 
     // start marker + dot
     const s0 = l.xy[0];
@@ -382,7 +404,9 @@ function Scene(st, cv, prof, legname, beats){
     q.lineTo(hxp, hyp);
     q.strokeStyle = ac; q.lineWidth = 1.4; q.stroke();
 
-    legname.textContent = SPORT_ICON[l.leg.sport] + "  " + l.leg.label;
+    legname.textContent = RACE
+      ? "🏔️  cinque edizioni, partite insieme"
+      : SPORT_ICON[l.leg.sport] + "  " + l.leg.label;
 
     // le cinque righe, ognuna al suo momento: vedi beat_at in tools/top-20.json
     let k = 0;

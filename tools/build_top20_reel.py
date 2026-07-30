@@ -8,10 +8,20 @@ real map, and between one day and the next the camera pulls back to an
 orthographic globe, rotates, and dives into the next place. The globe keeps the
 dots of everywhere already visited, so it doubles as the progress bar.
 
-Dura 3'26" e pesa 5,0 MB: 1.016 frame a 400 px. La lentezza non viene dai frame
-— cinque volte i frame sarebbero ventiquattro megabyte — ma dalle **pause**, che
-in GIF non costano niente, e dalle cartoline di testo, che costano un frame da
-5 kB per quanto a lungo restino su schermo.
+Dura 2'12" e pesa 4,7 MB: 836 frame a 400 px. Il disegno del GPS ha il suo passo
+(`--ms`, 105 ms) e non si tocca: e' la cosa che si guarda. Tutto il resto —
+globo, zoom, dissolvenze, cartoline — corre a `--ms-move` (70 ms), perche' e'
+collegamento e non racconto. Le pause invece non costano niente: in GIF tenere
+fermo un frame e' gratis, e una cartolina di testo costa un frame da 5 kB per
+quanto a lungo resti su schermo.
+
+Ogni giorno apre su una cartolina in prosa (`card` nel config, scritta a mano) e
+non sul titolo dell'attivita', che messo in colonna coi suoi campi si leggeva
+come un dump di database. Sei momenti hanno una `note`: la camera scende sul
+puntino e si ferma, con la frase di fianco — ma solo dove i dati o la descrizione
+di quel giorno collocano davvero il momento. E la Maratona dles Dolomites non e'
+un giorno ma cinque: `mode: "race"` le fa partire insieme, ognuna col passo di
+quell'anno.
 
     python build_top20_reel.py                    # tutto il reel
     python build_top20_reel.py --only 1,17,18     # solo alcune storie (numerate da 1)
@@ -64,6 +74,11 @@ OUT = os.path.join(HERE, "..", "top-20", "top-20-reel.gif")
 # Nel reel gli sport si scrivono, non si disegnano: a 96 colori un emoji di venti
 # pixel diventa una macchia scura, e la tavolozza serve alla mappa e agli accenti.
 SPORT = {"bike": "in bici", "run": "di corsa", "swim": "a nuoto"}
+
+# Le tinte della gara: cinque edizioni sulla stessa mappa devono distinguersi fra
+# loro E sulla carta crema. Sono riservate in tavolozza come gli accenti, o la
+# median-cut le fonde in due grigi (e' quello che era successo a Malaga).
+RACE_TINTS = [(194, 118, 26), (59, 91, 181), (77, 114, 56), (138, 90, 60), (150, 60, 110)]
 
 
 def plain(t):
@@ -179,10 +194,11 @@ def prepare(stories, px, style, margin=1.62):
 # ------------------------------------------------------------------ disegno
 
 def map_frame(story, li, p, zoomf, S, fonts, cap_alpha=1.0, chrome=True,
-              total=20, follow=None, caption=None):
+              total=20, follow=None, caption=None, note=None):
     """One map frame: the leg `li` of `story` drawn to fraction `p`, at zoom `zoomf`."""
     legs = story["legs"]
     act = legs[li]
+    race = story["st"].get("mode") == "race"
     img, to_px = act["mos"]
     la0, la1, lo0, lo1 = act["box"]
     ac = AC.get(story["st"]["accent"], AC["stone"])
@@ -212,32 +228,108 @@ def map_frame(story, li, p, zoomf, S, fonts, cap_alpha=1.0, chrome=True,
         if len(pts) > 1:
             dr.line(pts, fill=colour + (a,), width=max(1, int(round(w * K))), joint="curve")
 
-    for j, l in enumerate(legs):                    # i tratti già fatti restano a terra
-        if j == li:
-            continue
-        stroke([off(q) for q in l["pts"]], ac if j < li else INK3, 2.0,
-               150 if j < li else 45)
-    stroke([off(q) for q in act["pts"]], INK3, 1.6, 60)          # il tratto intero
-    done = [off(q) for q in act["pts"][:i + 1]] + [off(h)]
-    stroke(done, ac, 6.5, 55)                                    # alone
-    stroke(done, ac, 2.8, 255)                                   # traccia
+    def dot(px, py, colour, scale=1.0):
+        for rad, a in ((11 * K * scale, 60), (6.0 * K * scale, 130)):
+            dr.ellipse([px - rad, py - rad, px + rad, py + rad], fill=colour + (a,))
+        r = 4.3 * K * scale
+        dr.ellipse([px - r, py - r, px + r, py + r], fill=colour + (255,),
+                   outline=(255, 255, 255, 255), width=max(1, int(round(1.7 * K))))
 
-    sx, sy = off(act["pts"][0])
-    r = 3.4 * K
-    dr.ellipse([sx - r, sy - r, sx + r, sy + r], fill=BG + (255,), outline=ac + (255,),
-               width=max(1, int(round(1.6 * K))))
-    dx, dy = off(h)
-    for rad, a in ((11 * K, 60), (6.0 * K, 130)):
-        dr.ellipse([dx - rad, dy - rad, dx + rad, dy + rad], fill=ac + (a,))
-    r = 4.3 * K
-    dr.ellipse([dx - r, dy - r, dx + r, dy + r], fill=ac + (255,),
-               outline=(255, 255, 255, 255), width=max(1, int(round(1.7 * K))))
+    if race:
+        # Cinque edizioni della stessa corsa, partite nello stesso istante.
+        #
+        # Due cose la rendono leggibile come una gara. La prima: l'orologio e' uno
+        # per tutte. Dando a ognuna la stessa FRAZIONE del proprio percorso
+        # arrivavano tutte insieme, che non e' una gara — qui ognuna avanza col
+        # passo che aveva quell'anno, quindi i due percorsi corti finiscono a un
+        # terzo dell'animazione e restano fermi ad aspettare i lunghi.
+        # La seconda: uno scostamento di un paio di pixel per edizione. Corto,
+        # medio e lungo condividono le prime salite, quindi sulla stessa strada
+        # l'ultima disegnata copriva le altre quattro e si vedevano solo due tracce.
+        tmax = max((l["leg"]["secs"] or 1) for l in legs)
+        for j, l in enumerate(legs):
+            tint = RACE_TINTS[j % len(RACE_TINTS)]
+            ang = 2 * math.pi * j / float(len(legs))
+            ox, oy = math.cos(ang) * 3.2 * K, math.sin(ang) * 3.2 * K
+            shift = lambda q: (off(q)[0] + ox, off(q)[1] + oy)
+            stroke([shift(q) for q in l["pts"]], INK3, 1.2, 38)
+            jp = min(1.0, p * tmax / float(l["leg"]["secs"] or 1))
+            ji, jh = head_at(l["pts"], l["cum"], jp)
+            dn = [shift(q) for q in l["pts"][:ji + 1]] + [shift(jh)]
+            stroke(dn, tint, 2.3, 240)
+            hx2, hy2 = shift(jh)
+            dot(hx2, hy2, tint, 0.72 if jp < 1.0 else 0.55)
+    else:
+        for j, l in enumerate(legs):                # i tratti già fatti restano a terra
+            if j == li:
+                continue
+            stroke([off(q) for q in l["pts"]], ac if j < li else INK3, 2.0,
+                   150 if j < li else 45)
+        stroke([off(q) for q in act["pts"]], INK3, 1.6, 60)      # il tratto intero
+        done = [off(q) for q in act["pts"][:i + 1]] + [off(h)]
+        stroke(done, ac, 6.5, 55)                                # alone
+        stroke(done, ac, 2.8, 255)                               # traccia
+        sx, sy = off(act["pts"][0])
+        r = 3.4 * K
+        dr.ellipse([sx - r, sy - r, sx + r, sy + r], fill=BG + (255,), outline=ac + (255,),
+                   width=max(1, int(round(1.6 * K))))
+        dot(*off(h), ac)
 
     frame = Image.alpha_composite(crop, lay).resize((S, S), Image.LANCZOS)
-    place_labels(frame, act, box, to_px, S, fonts, ac)
+    if not race:
+        place_labels(frame, act, box, to_px, S, fonts, ac)
     if chrome:
-        chrome_over(frame, story, li, S, fonts, cap_alpha, total, caption)
+        chrome_over(frame, story, li, S, fonts, cap_alpha, total, caption, race)
+    if note:
+        note_panel(frame, S, fonts, note, ac)
     return frame.convert("RGB")
+
+
+def note_panel(frame, S, fonts, text, ac):
+    """A note pinned beside the dot: the reason the camera stopped here.
+
+    Sits on the right, vertically centred, on its own paper panel with a rule in
+    the accent colour. It only ever appears while the camera is zoomed in on the
+    dot, so the pairing reads as "this spot, this sentence".
+    """
+    f_kick, f_title, f_cap, f_stat, f_leg, f_emo, f_emos, f_big, f_sub = fonts[:9]
+    dr = ImageDraw.Draw(frame)
+    pad = int(S * 0.050)
+    w = int(S * 0.44)
+    lines = wrap(dr, text, f_cap, f_emo, w - int(S * 0.05))[:5]
+    h = len(lines) * int(S * 0.046) + int(S * 0.040)
+    x, y = S - pad - w, (S - h) // 2
+    scrim(frame, (x, y, x + w, y + h), int(S * 0.020), 232)
+    dr = ImageDraw.Draw(frame)
+    dr.rounded_rectangle([x + int(S * .022), y + int(S * .020),
+                          x + int(S * .022) + int(S * 0.004), y + h - int(S * .020)],
+                         2, fill=ac)
+    ty = y + int(S * 0.020)
+    for l in lines:
+        draw_text(dr, (x + int(S * 0.046), ty), l, f_cap, f_emo, INK)
+        ty += int(S * 0.046)
+
+
+def race_legend(frame, S, fonts, legs, ac):
+    """Which colour is which year — the only way the race reads as a race."""
+    f_kick, f_title, f_cap, f_stat, f_leg = fonts[:5]
+    dr = ImageDraw.Draw(frame)
+    pad = int(S * 0.050)
+    rows = [(RACE_TINTS[j % len(RACE_TINTS)], plain(l["leg"]["label"]))
+            for j, l in enumerate(legs)]
+    lh = int(S * 0.042)
+    w = int(S * 0.30)
+    h = len(rows) * lh + int(S * 0.028)
+    y = int(S * 0.30)
+    scrim(frame, (pad, y, pad + w, y + h), int(S * 0.018), 226)
+    dr = ImageDraw.Draw(frame)
+    ty = y + int(S * 0.014)
+    for tint, label in rows:
+        r = S * 0.008
+        cy = ty + lh * 0.32
+        dr.ellipse([pad + int(S * .026) - r, cy - r, pad + int(S * .026) + r, cy + r], fill=tint)
+        draw_text(dr, (pad + int(S * 0.050), ty), label, f_stat, fonts[6], INK2)
+        ty += lh
 
 
 def place_labels(frame, act, box, to_px, S, fonts, ac):
@@ -293,7 +385,8 @@ def scrim(im, box, radius, alpha=214):
     im.alpha_composite(lay)
 
 
-def chrome_over(frame, story, li, S, fonts, cap_alpha, total, caption=None):
+def chrome_over(frame, story, li, S, fonts, cap_alpha, total, caption=None,
+                race=False):
     f_kick, f_title, f_cap, f_stat, f_leg, f_emo, f_emos, f_big, f_sub = fonts[:9]
     st = story["st"]
     ac = AC.get(st["accent"], AC["stone"])
@@ -331,7 +424,9 @@ def chrome_over(frame, story, li, S, fonts, cap_alpha, total, caption=None):
     line = caption if caption is not None else (story["legs"][li]["leg"].get("line") or "")
     cl = wrap(dr, line, f_cap, f_emo, S - 2 * pad)[:2]
     lg = story["legs"][li]["leg"]
-    if len(story["legs"]) > 1:
+    if race:
+        stat = "cinque edizioni · tre percorsi · partenza insieme"
+    elif len(story["legs"]) > 1:
         # I nomi dei tratti spesso contengono già i chilometri ("sabato — 234 km fino
         # a Bologna"): ripeterli subito dopo faceva "234 km · 234 km".
         lab = plain(lg["label"])
@@ -353,6 +448,8 @@ def chrome_over(frame, story, li, S, fonts, cap_alpha, total, caption=None):
     for k, l in enumerate(cl):
         draw_text(dr, (pad, top + int(S * 0.036) + k * int(S * 0.046)), l, f_cap, f_emo, col)
 
+    if race:
+        race_legend(frame, S, fonts, story["legs"], ac)
     credit(frame, S, f_leg)
 
 
@@ -484,6 +581,22 @@ whole reel. The globe then grows from roughly the size the map shrank to, so the
 eye reads one continuous move out and back in rather than a cut.
 """
 
+def note_at(leg, note):
+    """Where along the leg a note sits: a fraction, or "top" = its highest fix.
+
+    "top" is resolved from the altitude the GPS actually recorded, so the note
+    about the Stelvio lands on the Stelvio and not on a guess.
+    """
+    at = note.get("at")
+    if at == "top":
+        alt = leg["leg"]["alt"]
+        if not alt:
+            return 0.5
+        ti = max(range(len(alt)), key=lambda i: alt[i])
+        return leg["cum"][min(ti, len(leg["cum"]) - 1)] / (leg["cum"][-1] or 1.0)
+    return max(0.02, min(1.0, float(at)))
+
+
 # ------------------------------------------------------------------ montaggio
 
 def build(stories, S, fonts, args):
@@ -506,8 +619,11 @@ def build(stories, S, fonts, args):
     dots = [(s["clat"], s["clon"], AC.get(s["st"]["accent"], AC["stone"])) for s in stories]
 
     def add(im, ms=None):
+        """`args.ms` e' il passo del disegno GPS e non si tocca: e' la cosa che si
+        guarda. Tutto il resto — globo, dissolvenze, zoom, cartoline — va a
+        `args.ms_move`, piu' veloce, perche' e' collegamento e non racconto."""
         frames.append(im.convert("RGB"))
-        durs.append(ms or args.ms)
+        durs.append(ms or args.ms_move)
 
     def fade_card(lines, ac=None, n=None, hold=None, out=True):
         """Type fading up on the page, holding long enough to be read, fading away."""
@@ -524,15 +640,15 @@ def build(stories, S, fonts, args):
                    ("Venti giorni", "big"),
                    ("su 2.923", "big"),
                    ("Undici anni di GPS. Ogni traccia è quella vera.", "body")],
-                  hold=args.card + 900)
+                  hold=args.card + 700)
         fade_card([("98.830 chilometri. 1.843.198 metri di dislivello.", "body"),
                    ("4.928 ore in movimento.", "body"),
                    ("Venti giorni raccontati, uno alla volta.", "body")])
-        for k in range(9):
-            t = k / 8.0
+        for k in range(7):
+            t = k / 6.0
             add(globe_frame(S, 46, 9, dots, fonts, upto=int(t * (total - 1)),
                             radius=lerp(0.30, 0.86, ease(t))),
-                args.ms if k < 8 else 1400)
+                args.ms if k < 6 else 900)
 
     prev_map = None
     for si, story in enumerate(stories):
@@ -554,11 +670,15 @@ def build(stories, S, fonts, args):
                 add(to_paper(on_paper(prev_map, lerp(1.0, 0.40, ease(t)), S),
                              ease(t), S))
 
-        # --- la scheda: chi è questo giorno
-        fade_card([("%02d · %s" % (si + 1, st["kicker"].upper()), "kicker"),
-                   (st["title"], "big"),
-                   (story["legs"][0]["leg"].get("line") or "", "body")],
-                  ac=ac, n=si + 1)
+        # --- la scheda: la narrazione, non il titolo dell'attivita'.
+        # Prima erano kicker + titolo + riga, cioe' tre campi di un database messi
+        # in colonna: si leggeva come un elenco, non come un racconto. Ora il testo
+        # arriva da `card` nel config, scritto a mano storia per storia.
+        KIND = {"date": "kicker", "lead": "big", "body": "body", "small": "small"}
+        card = st.get("card") or [["date", st["kicker"]], ["lead", st["title"]]]
+        lines = [("%02d · %s" % (si + 1, t.upper()) if k == "date" else t, KIND[k])
+                 for k, t in card]
+        fade_card(lines, ac=ac, n=si + 1)
 
         # --- il volo. Il tratto graduale lo fa il GLOBO, che cresce da un puntino
         # e ruota fino al posto nuovo: sono i frame piu economici del reel, quindi
@@ -577,17 +697,44 @@ def build(stories, S, fonts, args):
             add(on_paper(target, lerp(SMALL, 1.0, ease(t)), S))
 
         # --- i tratti, a camera ferma
+        race = st.get("mode") == "race"
         for li, l in enumerate(story["legs"]):
-            n = args.draw if len(story["legs"]) == 1 else max(12, int(args.draw * 0.72))
+            if race and li > 0:
+                break                      # in gara si disegna tutto in un passaggio
+            # la gara si guarda piu' a lungo: e' l'unico momento in cui c'e'
+            # qualcosa da confrontare mentre le tracce corrono
+            n = (int(args.draw * 1.6) if race else
+                 args.draw if len(story["legs"]) == 1 else
+                 max(12, int(args.draw * 0.72)))
+            notes = sorted(l["leg"].get("notes") or [],
+                           key=lambda x: note_at(l, x))
+            done_notes = set()
             for k in range(n):
                 p = (k + 1) / float(n)
                 ca = min(1.0, (k + 1) / 4.0)
                 last = (k == n - 1)
                 add(map_frame(story, li, p, 1.0, S, fonts, cap_alpha=ca, total=total,
-                              follow=0.0,
-                              caption="" if li == 0 else None),
+                              follow=0.0, caption="" if li == 0 else None),
                     (args.hold if li == len(story["legs"]) - 1 else args.hold_leg)
-                    if last else None)
+                    if last else args.ms)
+                # --- una nota: la camera scende sul puntino e ci si ferma
+                for ni, nt in enumerate(notes):
+                    at = note_at(l, nt)
+                    if ni in done_notes or p < at:
+                        continue
+                    done_notes.add(ni)
+                    for z in range(args.znote):
+                        u = (z + 1) / float(args.znote)
+                        add(map_frame(story, li, at, lerp(1.0, args.zoom, ease(u)), S,
+                                      fonts, total=total, follow=ease(u),
+                                      caption="" if li == 0 else None,
+                                      note=nt["text"] if u > 0.5 else None),
+                            args.note_hold if z == args.znote - 1 else None)
+                    for z in range(args.znote):
+                        u = (z + 1) / float(args.znote)
+                        add(map_frame(story, li, at, lerp(args.zoom, 1.0, ease(u)), S,
+                                      fonts, total=total, follow=1.0 - ease(u),
+                                      caption="" if li == 0 else None))
             prev_map = frames[-1]
 
     # --- finale
@@ -600,31 +747,36 @@ def build(stories, S, fonts, args):
         # l'orizzonte e il giorno piu lontano dei venti non si vedrebbe. Nessun punto
         # "corrente": qui contano tutti uguali, e l'alone grosso sull'ultimo sembrava
         # una macchia grigia sull'Italia.
-        for k in range(12):
-            t = k / 11.0
+        for k in range(9):
+            t = k / 8.0
             add(globe_frame(S, 42, lerp(8, -34, ease(t)), dots, fonts, upto=total - 1,
                             current=False, radius=lerp(0.86, 0.82, ease(t))),
-                args.ms if k < 11 else 1200)
+                args.ms if k < 8 else 1000)
         fade_card([("2.923 attività. Venti raccontate.", "body"),
                    ("98.830 km", "big"),
                    ("micmer-git.github.io/top-20", "small")],
-                  hold=args.card + 1200, out=False)
+                  hold=args.card + 1400, out=False)
     return frames, durs
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--size", type=int, default=400)
-    ap.add_argument("--ms", type=int, default=105, help="durata di un frame in movimento")
-    ap.add_argument("--card", type=int, default=2500, help="quanto resta ferma una scheda")
-    ap.add_argument("--fade", type=int, default=5, help="frame di dissolvenza")
-    ap.add_argument("--rot", type=int, default=12, help="frame di rotazione del globo")
-    ap.add_argument("--zin", type=int, default=3, help="frame dello zoom in ingresso")
-    ap.add_argument("--zout", type=int, default=3, help="frame dello zoom in uscita")
-    ap.add_argument("--hold-leg", type=int, default=1000, help="pausa a fine tratto")
-    ap.add_argument("--hold", type=int, default=1900, help="pausa sull'ultimo frame di una storia")
+    ap.add_argument("--ms", type=int, default=105,
+                    help="passo del disegno GPS: e' la cosa che si guarda, non si tocca")
+    ap.add_argument("--ms-move", type=int, default=70,
+                    help="passo dei collegamenti: globo, zoom, dissolvenze, cartoline")
+    ap.add_argument("--card", type=int, default=1000, help="quanto resta ferma una scheda")
+    ap.add_argument("--fade", type=int, default=2, help="frame di dissolvenza")
+    ap.add_argument("--rot", type=int, default=5, help="frame di rotazione del globo")
+    ap.add_argument("--zin", type=int, default=2, help="frame dello zoom in ingresso")
+    ap.add_argument("--zout", type=int, default=2, help="frame dello zoom in uscita")
+    ap.add_argument("--hold-leg", type=int, default=450, help="pausa a fine tratto")
+    ap.add_argument("--hold", type=int, default=800, help="pausa sull'ultimo frame di una storia")
     ap.add_argument("--draw", type=int, default=20, help="frame per tratto")
-    ap.add_argument("--zoom", type=float, default=2.1, help="zoom dell'affondo finale")
+    ap.add_argument("--zoom", type=float, default=2.4, help="zoom sulle note")
+    ap.add_argument("--znote", type=int, default=3, help="frame di zoom su una nota")
+    ap.add_argument("--note-hold", type=int, default=2100, help="quanto resta una nota")
     ap.add_argument("--punch", type=int, default=0,
                     help="frame dell'affondo finale su ogni storia. Zero per scelta: "
                          "a cinque frame per storia costava piu di sei megabyte, e le "
@@ -725,7 +877,8 @@ def fixed_palette(sample, colors):
     # a Bologna il giro del sabato diventava grigio invece che arancio pallido.
     keep = ([BG, INK, INK2, INK3, RULE, (255, 255, 255)]
             + [AC[k] for k in sorted(AC)]
-            + [blend(AC[k], .60) for k in sorted(AC)])
+            + [blend(AC[k], .60) for k in sorted(AC)]
+            + RACE_TINTS)
     base = sample.quantize(colors=max(8, colors - len(keep)), method=Image.MEDIANCUT)
     raw = base.getpalette()[: max(8, colors - len(keep)) * 3]
     for c in keep:

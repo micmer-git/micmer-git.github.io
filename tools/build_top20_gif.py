@@ -259,10 +259,18 @@ def render(st, p, S, fonts, n, legs=None):
 
     # statistiche e la riga di storia
     y = foot_y
-    stat = "%s km   ·   %s m D+   ·   %s" % (
-        format(round(st["km"]), ",").replace(",", "."),
-        format(st["gain"], ",").replace(",", "."),
-        "%dh%02d" % (st["secs"] // 3600, st["secs"] % 3600 // 60))
+    if st.get("mode") == "race":
+        # Sommare i chilometri di cinque edizioni della stessa corsa non vuol dire
+        # niente: sotto il titolo "Maratona dles Dolomites" leggere 485 km fa
+        # pensare a un giro solo che non e' mai esistito.
+        stat = "%d edizioni   ·   3 percorsi   ·   il più lungo %s km" % (
+            len(st["legs"]),
+            format(round(max(l["km"] for l in st["legs"])), ",").replace(",", "."))
+    else:
+        stat = "%s km   ·   %s m D+   ·   %s" % (
+            format(round(st["km"]), ",").replace(",", "."),
+            format(st["gain"], ",").replace(",", "."),
+            "%dh%02d" % (st["secs"] // 3600, st["secs"] % 3600 // 60))
     draw_text(dr, (pad, y), stat, f_stat, f_emos, ac)
     dr.line([(pad, y + int(S * 0.044)), (S - pad, y + int(S * 0.044))], fill=RULE, width=1)
 

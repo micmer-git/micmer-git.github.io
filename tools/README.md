@@ -199,16 +199,40 @@ the four accent colours onto the same olive grey.
 a full-screen narration card that fades in and away, then the path drawing on a
 real map, with the camera pulling back to an orthographic globe between one day
 and the next. The globe keeps a dot for everywhere already visited, so it is also
-the progress bar. **1.016 frames, 3'26", 5,0 MB** at the defaults (400 px, 44
+the progress bar. **836 frames, 2'12", 4,7 MB** at the defaults (400 px, 44
 colours).
 
 **The length does not come from the frames.** The first cut ran the twenty days in
 42 seconds and was unreadable — a caption had a second and a half on screen. Five
-times the frames would have been twenty-four megabytes, so the slowness comes from
+times the frames would have been twenty-four megabytes, so the pacing comes from
 the two things GIF gives away: **holding a frame is free**, and a full-screen page
-of type costs one 5 kB frame however long it sits there. Hence the narration cards
-between the days, the long pauses on finished routes, and `--card` to make the
-reading slower without adding a byte.
+of type costs one 5 kB frame however long it sits there.
+
+**There are two clocks, and only one of them may be touched.** `--ms` (105 ms) is
+the pace of the GPS drawing, which is the thing being watched; `--ms-move` (70 ms)
+is everything that only connects — globe, zooms, dissolves, cards. When the reel
+needed to be half as long without the routes drawing any faster, all of the cut
+came out of the second clock and the holds: 3'26" to 2'12" with the drawing
+untouched.
+
+Three narrative devices are worth keeping straight:
+
+- **The cards are prose**, written by hand per story in `card`. They used to be
+  kicker + activity title + one line, which is three database fields stacked in a
+  column and reads like one.
+- **`notes` stop the camera.** Six moments across the twenty pin a sentence to a
+  point on the route: the reel zooms onto the dot there and holds with the note
+  beside it. They exist only where the data or that day's own description
+  actually places the moment — the flat at km 136 of the Ironman bike, the stomach
+  at km 15 of its marathon, the crash in the first hundred metres at Barcelona,
+  the highest fix of the Stelvio, and the evening ride that simply stops ten
+  kilometres from home. Anywhere else it would be invention.
+- **`mode: "race"`** draws every leg at once from a common start, each at the pace
+  it actually held that year. It exists for the Maratona dles Dolomites, which is
+  not a day but five: two short courses, one middle, two long. Giving each the
+  same *fraction* of its own route made them all finish together, which is not a
+  race; and because short, middle and long share the opening climbs, the last
+  track drawn hid the other four until each got a couple of pixels of offset.
 
 `basemap.py` supplies the map: CARTO Positron **no-labels** tiles stitched to a
 bounding box and recoloured to the site's cream, plus the globe from Natural

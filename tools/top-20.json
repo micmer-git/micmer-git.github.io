@@ -1,5 +1,5 @@
 {
-  "_comment": "The 20 stories of /top-20. Each leg is an Intervals.icu activity id; the GPS comes from its stream. `pace` decides how the animation's time is split between the legs — \"km\" (default, sqrt of the distance: right inside one day) or \"chapters\" (equal share: right when the legs are different days). `beat_at` pins each of the five captions to a fraction of the timeline, so a caption about the 17th of May cannot land while the dot is running the 29th of June; omit it for even spacing. build_top20.py resolves both into per-leg t0/dt in _data.js, which is what the page and the GIF read. Each leg also carries `line` — the single short caption the reel has room for (the five `beats` are the page's; a 20-story GIF cannot hold 100 of them, so the reel shows one line per leg, which is why the multi-day stories get the most text). `frame: \"all\"` frames that leg against every leg of the story instead of itself. `places` on a leg names the map: {from, to} go to the polyline's ends and {top} to the highest GPS fix. Only points the coordinates identify beyond doubt are named — the reel uses a no-labels basemap, so these are the only place names on it and a wrong one would be the most visible mistake on the whole thing.",
+  "_comment": "The 20 stories of /top-20. Each leg is an Intervals.icu activity id; the GPS comes from its stream. `pace` decides how the animation's time is split between the legs — \"km\" (default, sqrt of the distance: right inside one day) or \"chapters\" (equal share: right when the legs are different days). `beat_at` pins each of the five captions to a fraction of the timeline, so a caption about the 17th of May cannot land while the dot is running the 29th of June; omit it for even spacing. build_top20.py resolves both into per-leg t0/dt in _data.js, which is what the page and the GIF read. Each leg also carries `line` — the single short caption the reel has room for (the five `beats` are the page's; a 20-story GIF cannot hold 100 of them, so the reel shows one line per leg, which is why the multi-day stories get the most text). `frame: \"all\"` frames that leg against every leg of the story instead of itself. `places` on a leg names the map: {from, to} go to the polyline's ends and {top} to the highest GPS fix. Only points the coordinates identify beyond doubt are named — the reel uses a no-labels basemap, so these are the only place names on it and a wrong one would be the most visible mistake on the whole thing. `card` is the full-screen narration that opens each day in the reel — prose, because the activity's own title as a headline reads like a database dump. `notes` on a leg pin a moment to a fraction of its length (or \"top\", its highest fix): the reel zooms onto the dot there and holds with the note beside it, so only moments the data or the day's own description actually place ever get one. `mode: \"race\"` draws every leg at once from a common start.",
   "out_data": "../top-20/_data.js",
   "out_gif": "../top-20/top-20.gif",
   "points_per_leg": 260,
@@ -29,6 +29,20 @@
         "Turchino, Cipressa, Poggio. I nomi sentiti in televisione, presi uno per uno.",
         "Nove ore e 28 in sella. Nessuna descrizione salvata: non sembrava servisse.",
         "Da qui in avanti, la parola «lungo» avrebbe voluto dire un'altra cosa."
+      ],
+      "card": [
+        [
+          "date",
+          "giugno 2016"
+        ],
+        [
+          "lead",
+          "La prima volta che 288 chilometri sembrano una buona idea."
+        ],
+        [
+          "body",
+          "Sul diario dell'orologio c'è scritto soltanto «Morning Ride». Il record, prima di quel giorno, era 192."
+        ]
       ]
     },
     {
@@ -56,6 +70,20 @@
         "3.227 metri di dislivello in 123 chilometri: più di 26 metri per ogni chilometro.",
         "Il Mortirolo arriva per ultimo, quando le gambe hanno già dato tutto al Gavia.",
         "È il giorno in cui il dislivello diventa l'unità di misura preferita."
+      ],
+      "card": [
+        [
+          "date",
+          "un mese dopo"
+        ],
+        [
+          "lead",
+          "Non più quanto lontano. Quanto in alto."
+        ],
+        [
+          "body",
+          "Gavia e Mortirolo nello stesso giro: 3.227 metri in 123 chilometri, più di 26 per ogni chilometro."
+        ]
       ]
     },
     {
@@ -83,6 +111,20 @@
         "Solo 2.009 metri di dislivello: il numero più bugiardo di tutto l'archivio.",
         "Otto ore e tre quarti. In Belgio si impara che la fatica non ha bisogno dell'altitudine.",
         "Cinque anni dopo saresti tornato qui a rifarla — «decisamente meglio»."
+      ],
+      "card": [
+        [
+          "date",
+          "aprile 2017"
+        ],
+        [
+          "lead",
+          "Nelle Fiandre non ci sono montagne."
+        ],
+        [
+          "body",
+          "Ci sono i muri, e i muri sono peggio. 238 chilometri di pavé e vento di lato per soli 2.009 metri di dislivello: il numero più bugiardo dell'archivio."
+        ]
       ]
     },
     {
@@ -100,7 +142,13 @@
           "line": "Liège – Bastogne – Mal di testa. 204 km, 3.346 m.",
           "places": {
             "from": "Liège"
-          }
+          },
+          "notes": [
+            {
+              "at": "top",
+              "text": "Il punto più alto è a 560 metri. Il mal di testa arriva comunque."
+            }
+          ]
         }
       ],
       "beats": [
@@ -109,6 +157,20 @@
         "«An incredible ride, full of bumps and crazy climbs.» — scritto la sera stessa.",
         "Sette ore e 56. La corsa più antica del calendario, fatta da turista ostinato.",
         "«Proud to be there.» Sette anni dopo saresti tornato con tuo fratello."
+      ],
+      "card": [
+        [
+          "date",
+          "aprile 2018"
+        ],
+        [
+          "lead",
+          "La chiamano la Doyenne. Lui la chiama Mal di testa."
+        ],
+        [
+          "body",
+          "«An incredible ride, full of bumps and crazy climbs.» Scritto la sera stessa, dopo 204 chilometri di Ardenne."
+        ]
       ]
     },
     {
@@ -135,6 +197,20 @@
         "Un'ora e 39. Nessun obiettivo, nessuna tabella, nessuna aspettativa.",
         "Fino a quel giorno le gambe servivano soltanto a pedalare.",
         "Da quel giorno in poi, nell'archivio, sarebbero arrivate quattordici maratone."
+      ],
+      "card": [
+        [
+          "date",
+          "novembre 2019"
+        ],
+        [
+          "lead",
+          "Fino a qui le gambe servivano solo a pedalare."
+        ],
+        [
+          "body",
+          "Prima mezza maratona, e due parole fra parentesi: «buona la prima». Da lì in poi sarebbero arrivate quattordici maratone."
+        ]
       ]
     },
     {
@@ -175,6 +251,20 @@
         0.28,
         0.62,
         0.86
+      ],
+      "card": [
+        [
+          "date",
+          "settembre 2020"
+        ],
+        [
+          "lead",
+          "Le gare erano tutte cancellate."
+        ],
+        [
+          "body",
+          "Allora il mezzo Ironman te lo organizzi da solo: nuoto, 90 chilometri di bici, 21 di corsa. Nessun pettorale, nessun ristoro, nessuno a guardare."
+        ]
       ]
     },
     {
@@ -201,6 +291,20 @@
         "469 metri di dislivello: una maratona che in pianura non sarebbe mai stata.",
         "Tre ore e 33, con Liuk che si aggrega per la mezza. ⚡🥇",
         "La prima delle quattordici. E l'unica corsa senza mai uscire dal paese."
+      ],
+      "card": [
+        [
+          "date",
+          "novembre 2020"
+        ],
+        [
+          "lead",
+          "Si può correre, ma solo dentro il proprio Comune."
+        ],
+        [
+          "body",
+          "E allora la maratona si fa lì: 42 chilometri chiusi dentro Orezzo, con 469 metri di dislivello che in pianura non ci sarebbero mai stati."
+        ]
       ]
     },
     {
@@ -219,7 +323,13 @@
           "places": {
             "from": "Edolo",
             "top": "Passo dello Stelvio"
-          }
+          },
+          "notes": [
+            {
+              "at": "top",
+              "text": "2.854 metri misurati: il punto più alto di undici anni."
+            }
+          ]
         }
       ],
       "beats": [
@@ -228,33 +338,95 @@
         "Un Monte Bianco e un quarto, salito partendo dal livello del mare.",
         "«Pizzoccheri a Bormio col Testa. Mortirolo fatto anche bene.»",
         "Otto ore e otto. La cosa più vicina a un limite che questi dati conoscano."
+      ],
+      "card": [
+        [
+          "date",
+          "giugno 2021"
+        ],
+        [
+          "lead",
+          "«La santissima trinità.»"
+        ],
+        [
+          "body",
+          "Gavia, Stelvio e Mortirolo in un giorno solo. 6.182 metri: nessun altro giro, in undici anni, ci arriva vicino."
+        ]
       ]
     },
     {
-      "slug": "mdd-2021",
+      "slug": "mdd-race",
       "year": 2021,
       "title": "Maratona dles Dolomites",
-      "kicker": "4 luglio 2021",
+      "kicker": "2019 · 2021 · 2023 · 2024 · 2026",
       "icon": "🏔️",
       "accent": "dawn",
       "legs": [
         {
+          "id": "i62695369",
+          "sport": "bike",
+          "label": "2019 — corto",
+          "frame": "all",
+          "line": "2019: il percorso corto, 55 km. La prima."
+        },
+        {
           "id": "i62696752",
           "sport": "bike",
-          "label": "il percorso lungo",
-          "line": "«La mia rivincita dopo la fisiologica.»",
-          "places": {
-            "from": "Alta Badia",
-            "top": "Passo Giau"
-          }
+          "label": "2021 — lungo",
+          "frame": "all",
+          "line": "2021: il lungo. «La mia rivincita dopo la fisiologica.»"
+        },
+        {
+          "id": "i62693540",
+          "sport": "bike",
+          "label": "2023 — corto",
+          "frame": "all",
+          "line": "2023: «bad feelings and bad luck». Corto, e va bene così."
+        },
+        {
+          "id": "i62694270",
+          "sport": "bike",
+          "label": "2024 — lungo",
+          "frame": "all",
+          "line": "2024: lungo, 4.532 metri di dislivello. 83° assoluto."
+        },
+        {
+          "id": "i162840168",
+          "sport": "bike",
+          "label": "2026 — medio",
+          "frame": "all",
+          "line": "2026: il medio, 104 km. «Medio male, pace.»"
         }
       ],
       "beats": [
-        "«La mia rivincita dopo la fisiologica.» Cinque parole, e si capisce tutto.",
-        "Nel 2019 la Maratona era finita con il percorso corto: 55 chilometri.",
-        "Due anni dopo, il lungo: 135 chilometri e 4.217 metri, sette passi dolomitici.",
-        "Cinque ore e mezza. Nessun commento tecnico, nessun dato: solo la parola rivincita.",
-        "Sarebbe tornato altre quattro volte. Ma quella che conta è sempre la seconda."
+        "La Maratona dles Dolomites non è un giorno: sono sei luglii.",
+        "Cinque edizioni hanno la traccia GPS — del 2022 restano solo i numeri.",
+        "E sono tre percorsi diversi: il corto da 55 km, il medio da 104, il lungo da 136.",
+        "Qui partono nello stesso istante, ognuna col passo che aveva quell'anno.",
+        "Si vede chi torna indietro presto e chi tira avanti fino al Giau."
+      ],
+      "mode": "race",
+      "pace": "chapters",
+      "beat_at": [
+        0.0,
+        0.14,
+        0.32,
+        0.55,
+        0.78
+      ],
+      "card": [
+        [
+          "date",
+          "2019 · 2021 · 2023 · 2024 · 2026"
+        ],
+        [
+          "lead",
+          "La Maratona dles Dolomites, tutte le volte insieme."
+        ],
+        [
+          "body",
+          "Cinque edizioni con la traccia GPS, su tre percorsi diversi. Partono nello stesso istante: si vede chi torna indietro presto e chi tira avanti."
+        ]
       ]
     },
     {
@@ -278,7 +450,13 @@
           "id": "i62696973",
           "sport": "bike",
           "label": "bici — 90 km",
-          "line": "«Caduta nei primi 100 metri, top.» E fa i 91 km."
+          "line": "E i novanta chilometri di bici li fa comunque.",
+          "notes": [
+            {
+              "at": 0.02,
+              "text": "«Dosso e caduta nei primi 100 metri, top.»"
+            }
+          ]
         },
         {
           "id": "i62696976",
@@ -300,6 +478,20 @@
         0.26,
         0.73,
         0.92
+      ],
+      "card": [
+        [
+          "date",
+          "ottobre 2021"
+        ],
+        [
+          "lead",
+          "Il primo Ironman 70.3 con un pettorale vero."
+        ],
+        [
+          "body",
+          "Cento metri dopo il via la bici finisce a terra. Restano novanta chilometri e una mezza maratona."
+        ]
       ]
     },
     {
@@ -326,6 +518,20 @@
         "«Felice come una pasqua 🗿. Dura come i testoni!»",
         "Il giorno dopo: «giro riciclo post maratona», 32 chilometri di bici.",
         "Il recupero, in questo archivio, non è mai stato un giorno di riposo."
+      ],
+      "card": [
+        [
+          "date",
+          "aprile 2023"
+        ],
+        [
+          "lead",
+          "La prima maratona su strada, quella col cronometro."
+        ],
+        [
+          "body",
+          "Due ore e 45, e 46 metri di dislivello in tutto: dopo Orezzo sembra una pista d'atletica."
+        ]
       ]
     },
     {
@@ -353,6 +559,20 @@
         "309 chilometri: la cosa più lunga mai registrata in undici anni di archivio.",
         "«Gambe che giravano bene.» Sette anni prima non c'era nemmeno una descrizione.",
         "La stessa strada, due volte, con in mezzo tutta la differenza."
+      ],
+      "card": [
+        [
+          "date",
+          "giugno 2023"
+        ],
+        [
+          "lead",
+          "Sette anni dopo, la stessa corsa."
+        ],
+        [
+          "body",
+          "«Quando una gara è lunga, e la allungano di 15 km.» 309 chilometri: la cosa più lunga di tutto l'archivio."
+        ]
       ]
     },
     {
@@ -380,6 +600,20 @@
         "«Definitely not an easy one. Legs got blasted by the Hills.»",
         "Le colline sono a metà gara, quando la discesa iniziale ha già fatto i danni.",
         "Due ore e 55, e il primo Major finito. 🦄"
+      ],
+      "card": [
+        [
+          "date",
+          "aprile 2024"
+        ],
+        [
+          "lead",
+          "Boston non si compra: si corre un tempo abbastanza veloce da essere invitati."
+        ],
+        [
+          "body",
+          "Da Hopkinton a Boylston Street. «Legs got blasted by the Hills.» Due ore e 55, e il primo Major."
+        ]
       ]
     },
     {
@@ -407,6 +641,20 @@
         "«Crazy hard and beautiful day.»",
         "«Canyon gravel was not the smartest choice» — fatto con la gravel, per scelta.",
         "Sei ore e 54 sulla bici sbagliata, sui passi giusti."
+      ],
+      "card": [
+        [
+          "date",
+          "luglio 2024"
+        ],
+        [
+          "lead",
+          "Il passo asfaltato più alto delle Alpi, fatto con la bici sbagliata."
+        ],
+        [
+          "body",
+          "Iseran, 2.770 metri, e il Moncenisio nello stesso giro. «Canyon gravel was not the smartest choice.»"
+        ]
       ]
     },
     {
@@ -455,6 +703,20 @@
         0.3,
         0.54,
         0.8
+      ],
+      "card": [
+        [
+          "date",
+          "agosto 2024"
+        ],
+        [
+          "lead",
+          "Da casa a Livigno in bici. E poi da Livigno a casa."
+        ],
+        [
+          "body",
+          "Due giorni, 357 chilometri, niente auto. Il ritorno passa dalle pizzerie migliori della Lombardia."
+        ]
       ]
     },
     {
@@ -481,6 +743,20 @@
         "«Days worth all the work. Gracias 🇪🇸🦄»",
         "Il giorno dopo, in piscina: «T − 278 days». Il conto alla rovescia per l'Ironman era già partito.",
         "Una settimana dopo, sci alpinismo a 3.400 metri sul ghiacciaio di Cervinia."
+      ],
+      "card": [
+        [
+          "date",
+          "dicembre 2024"
+        ],
+        [
+          "lead",
+          "«I cried many times.»"
+        ],
+        [
+          "body",
+          "Due ore e 39: record personale, 113° assoluto. Il giorno dopo è già in piscina, e scrive «T − 278 days»."
+        ]
       ]
     },
     {
@@ -526,6 +802,20 @@
         0.34,
         0.52,
         0.78
+      ],
+      "card": [
+        [
+          "date",
+          "1 e 2 marzo 2025"
+        ],
+        [
+          "lead",
+          "Alla maratona di Bologna ci si arriva in treno."
+        ],
+        [
+          "body",
+          "Oppure in bici, il giorno prima: 234 chilometri da Bergamo. «The tapering continues», detto con l'emoji del clown."
+        ]
       ]
     },
     {
@@ -543,7 +833,13 @@
           "line": "29 aprile 2025: clavicola rotta. «Bene ma non benissimo».",
           "places": {
             "from": "Orezzo"
-          }
+          },
+          "notes": [
+            {
+              "at": 1.0,
+              "text": "Qui l'attività si ferma. Dieci chilometri da casa."
+            }
+          ]
         },
         {
           "id": "i77988384",
@@ -588,6 +884,20 @@
         0.5,
         0.75,
         0.88
+      ],
+      "card": [
+        [
+          "date",
+          "29 aprile 2025, la sera"
+        ],
+        [
+          "lead",
+          "Un giro dopo il lavoro, come mille altri."
+        ],
+        [
+          "body",
+          "Questo però finisce dieci chilometri da casa, e il titolo che gli dà è l'emoji della radiografia. Da lì, per due mesi, ogni attività si chiama «cuore con la benda»."
+        ]
       ]
     },
     {
@@ -611,13 +921,25 @@
           "id": "i98213664",
           "sport": "bike",
           "label": "178,6 km in bici",
-          "line": "178 km in bici. Foratura a 55 all'ora, in discesa."
+          "line": "178 chilometri in bici, e 1.027 metri di dislivello.",
+          "notes": [
+            {
+              "at": 0.762,
+              "text": "Chilometro 136. «Got a flat while going 55 km/h downhill.»"
+            }
+          ]
         },
         {
           "id": "i98213667",
           "sport": "run",
           "label": "la maratona",
-          "line": "«Stomach down at km 15.» Restano 27 chilometri."
+          "line": "Poi la maratona: 42 km dopo un giorno intero di gara.",
+          "notes": [
+            {
+              "at": 0.367,
+              "text": "Chilometro 15. «Stomach down.» E ne restano ventisette."
+            }
+          ]
         }
       ],
       "beats": [
@@ -633,32 +955,73 @@
         0.24,
         0.74,
         0.92
+      ],
+      "card": [
+        [
+          "date",
+          "20 settembre 2025"
+        ],
+        [
+          "lead",
+          "Nove mesi di conto alla rovescia, cominciato il giorno dopo Malaga."
+        ],
+        [
+          "body",
+          "3,9 chilometri a nuoto, 178 in bici, una maratona. Tre mesi e mezzo dopo l'operazione alla clavicola."
+        ]
       ]
     },
     {
-      "slug": "dead-2026",
+      "slug": "ironman703-9to5-2026",
       "year": 2026,
-      "title": "Dead and Almost Dead",
-      "kicker": "3 maggio 2026",
-      "icon": "☠️",
+      "title": "Un 70.3 dentro un giorno di lavoro",
+      "kicker": "12 giugno 2026",
+      "icon": "🔨",
       "accent": "stone",
+      "pace": "chapters",
       "legs": [
         {
-          "id": "i144972812",
+          "id": "i156558815",
           "sport": "run",
-          "label": "98,8 km",
-          "line": "98,8 km di corsa. E un chilometro da casa, a pezzi.",
+          "label": "4:56 — la mezza maratona",
+          "line": "Mezza maratona alle cinque del mattino. «Attempting something stupid.»",
           "places": {
             "from": "Orezzo"
           }
+        },
+        {
+          "id": "i156623161",
+          "sport": "swim",
+          "label": "11:46 — il nuoto",
+          "line": "Due chilometri a nuoto, in pausa pranzo. In piscina: nessuna traccia."
+        },
+        {
+          "id": "i156710894",
+          "sport": "bike",
+          "label": "15:26 — i 92 km di bici",
+          "line": "Nuoto in pausa pranzo, poi 92 km di bici appena chiuso il computer."
         }
       ],
       "beats": [
-        "Il giorno prima: Valzurio Trail, 24 chilometri di gara. «Lovely race.»",
-        "Il giorno dopo: 98,8 chilometri di corsa. Il doppio di una maratona, più un po'.",
-        "«Started with dead legs.» Le gambe erano già finite alla partenza.",
-        "2.109 metri di dislivello, quattro ore e due minuti.",
-        "«Ended up 1 km from home almost dead.» Un chilometro da casa. Un chilometro."
+        "Un Ironman 70.3 è 1,9 km a nuoto, 90 in bici e una mezza maratona.",
+        "Di solito si fa tutto di seguito, in gara, di domenica.",
+        "Questo è un venerdì di lavoro: la mezza alle 4:56 del mattino.",
+        "Il nuoto in pausa pranzo, alle 11:46.",
+        "I 92 chilometri di bici alle 15:26, appena chiuso il computer."
+      ],
+      "card": [
+        [
+          "date",
+          "venerdì 12 giugno 2026"
+        ],
+        [
+          "lead",
+          "Un Ironman 70.3 dentro una giornata di lavoro."
+        ],
+        [
+          "body",
+          "La mezza maratona alle cinque del mattino. Il nuoto in pausa pranzo. I 92 chilometri di bici appena chiuso il computer."
+        ]
       ]
     }
   ]
