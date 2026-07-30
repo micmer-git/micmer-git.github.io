@@ -18,3 +18,9 @@ tools/.basemap_demo.png
 tools/.reel_probe.png
 tools/.*.png
 tools/.*.gif
+
+# Il master video di build_top20_video.py: 147 MB, cioe' sopra il limite duro di
+# 100 MB per file di GitHub, e comunque un pessimo link da scaricare su Pages. Si
+# rigenera con `python tools/build_top20_video.py` e si carica a mano dove serve
+# (LinkedIn accetta fino a 5 GB). Nel repo ci va la GIF, non lui.
+top-20/*.mp4

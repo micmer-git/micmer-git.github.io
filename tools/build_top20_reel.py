@@ -252,6 +252,16 @@ def map_frame(story, li, p, zoomf, S, fonts, cap_alpha=1.0, chrome=True,
     cx = min(max(cx, x0 + cw / 2), x1 - cw / 2) if full_w > cw else (x0 + x1) / 2
     cy = min(max(cy, y0 + cw / 2), y1 - cw / 2) if full_h > cw else (y0 + y1) / 2
     box = (int(cx - cw / 2), int(cy - cw / 2), int(cx + cw / 2), int(cy + cw / 2))
+    # ...e poi dentro il mosaico. Il vincolo sopra tiene la camera dentro il
+    # riquadro del percorso, che NON e' la stessa cosa: il riquadro ha un margine
+    # attorno (`prepare(margin=)`) e su una traccia stretta e lunga puo' sporgere
+    # dal mosaico. Fuori dai bordi `crop()` riempie di NERO, che su carta crema si
+    # vede da un chilometro. Non capitava finche' la camera stava ferma al centro;
+    # con l'inseguimento del video capita a ogni tratto che finisca sul bordo.
+    mw, mh = img.size
+    dx = min(0, mw - box[2]) - min(0, box[0])
+    dy = min(0, mh - box[3]) - min(0, box[1])
+    box = (box[0] + dx, box[1] + dy, box[2] + dx, box[3] + dy)
 
     crop = img.crop(box).convert("RGBA")
     K = crop.size[0] / float(S)                     # da pixel finali a pixel di crop

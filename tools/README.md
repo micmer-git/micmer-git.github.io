@@ -1,9 +1,10 @@
 # tools/
 
-Eight scripts. The sync/build ones need nothing beyond the Python standard
+Nine scripts. The sync/build ones need nothing beyond the Python standard
 library; the three that make images (`build_top20_gif.py`, `build_top20_reel.py`,
-`basemap.py`) want Pillow. Every one takes `--dry-run` and backs up what it
-overwrites to `*.bak`.
+`basemap.py`) want Pillow, and `build_top20_video.py` additionally wants OpenCV,
+which is the only thing here that can write a video. Every one takes `--dry-run`
+and backs up what it overwrites to `*.bak`.
 
 ```
 python tools/sync_intervals.py --config tools/gazzaniga-orezzo.json   # new efforts -> _data.js
@@ -13,6 +14,7 @@ python tools/build_vita.py                                            # rebuild 
 python tools/build_top20.py                                           # rebuild /top-20 data from Intervals
 python tools/build_top20_gif.py                                       # the twenty square cards
 python tools/build_top20_reel.py                                      # the one reel, on a real map
+python tools/build_top20_video.py --gif                               # v3: lo stesso racconto in video (+GIF)
 python tools/gifweigh.py <file.gif>                                   # dove sono i byte
 node   tools/check_top20_page.cjs                                     # smoke-test /top-20 without a browser
 ```
@@ -323,6 +325,71 @@ and so did its dot on the globe. `fixed_palette()` reserves the four accents, th
 inks and the paper before median-cut is allowed to spend the rest. For the same
 reason the reel writes sports as words and strips emoji from the data bar: a
 twenty-pixel emoji at 72 colours is a dark smudge.
+
+## build_top20_video.py
+
+v3: the same twenty days as **video**, which is a different edit rather than the
+same edit in a different container. The GIF montage descends from two facts —
+holding a frame is free, changing the map's scale costs 40 kB — and neither is
+true here, so the camera decisions invert. It is a separate file for that reason;
+the drawing primitives are imported from `build_top20_reel.py`, not duplicated.
+
+What changes, and why each was worth doing:
+
+- **A text's hold is computed from its length** (`read_ms()`), 205 wpm plus a flat
+  700 ms for the eye to find the line after a dissolve. In the GIF every block sat
+  five seconds regardless, because holding cost nothing and distinguishing wasn't
+  worth it; here a pause is thirty real frames a second. Two corrections that
+  mattered more than the rate: **the date is excluded** (you recognise "5 giugno
+  2016", you don't read it) and **the card's build-in is subtracted**, since the
+  text is already legible while it assembles. Counting both is what left the
+  Ironman card sitting 11,6 s. The 8 s ceiling was found the same way — past about
+  27 words a page reads as a frozen video, so the text wants cutting, not holding.
+- **Notes go full screen.** The map dissolves into the comment, the comment is
+  read, and on the way back **the track resumes from exactly where it stopped**.
+  That resumption is the whole trick: without it the day is a set of clips.
+- **The camera follows the dot.** It opens wide, tightens within the first 18 % of
+  the leg, follows, and releases over the last 12 %, so each route reads three
+  times — shape, detail, finished shape.
+
+**A bug this found in the GIF tool.** With a following camera the crop window can
+run past the edge of the basemap mosaic, and Pillow fills out-of-bounds with
+**black**, which on cream paper is unmissable. The existing clamp kept the camera
+inside the *route's* bounding box — not the same thing, because that box carries a
+margin. `map_frame()` now clamps to the mosaic as well.
+
+**The codec question is settled; do not re-open it by guessing.** There is no
+ffmpeg on this machine, so the encoder is whatever OpenCV's bundled one exposes,
+and **everything modern silently fails soft rather than erroring**:
+
+- `avc1` / `H264` / `X264`, and the `CAP_MSMF` backend too, all *open fine* and
+  then produce a ~61 kB/frame intra-only stream, because `openh264-*.dll` is
+  absent. Five times the size of the fallback, with no warning.
+- `VP80` / `VP90` into `.webm` and `av01` also fall back, and measured on the same
+  120 frames come out **larger** than the fallback (1,54 MB vs 1,04 MB).
+- `mp4v` (MPEG-4 Part 2) is therefore the best available, and its text holds up.
+
+The consequence is a **147 MB master for the full cut**, which is over GitHub's
+100 MB per-file limit — `top-20/*.mp4` is gitignored, regenerate it and upload it
+by hand. Real H.264 needs the OpenH264 DLL and would land near 25–35 MB.
+
+**A GIF of this montage is not a conversion of the video file.** Transcoding the
+mp4 would recompress compressed data and, worse, start from a constant 30 fps —
+full price for every second nothing moves. The `Gif` writer intercepts the same
+frames before the encoder and inverts the video's logic: holds collapse back to
+one long-duration frame, motion decimates to `--gif-fps`, identical neighbours
+merge. 17.977 video frames become 3.033 GIF frames over the identical 599 s.
+
+**But the GIF cannot carry the following camera**, and this is the one number to
+remember: on the same story, same montage, locking the camera took the GIF from
+**6,5 MB to 1,4 MB** — 4,6×. Resolution and frame rate barely moved it. A camera
+that follows rewrites the whole basemap every frame, which is exactly what this
+format punishes and exactly why the reel's camera was locked to begin with. So
+the GIF is rendered as its own pass at `--zdraw 1.0`, and the two deliverables are
+deliberately different edits: the video has the zoom, the GIF has everything else
+new. Full cut, measured: **9'59", 3.033 frames, 18,4 MB** at 440 px — heavier than
+the reel's 6,0 MB because the montage is both longer and larger. If it needs to
+fit LinkedIn's ~8 MB, cut days (`--only`), don't compress harder.
 
 ## gifweigh.py
 
