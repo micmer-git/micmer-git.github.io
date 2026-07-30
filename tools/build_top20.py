@@ -230,6 +230,10 @@ def build(cfg, key, refetch=False, tol=None):
             a0 = min(alts) if alts else 0
             legs.append({
                 "sport": lg["sport"], "label": lg["label"],
+                # `line` e `frame` servono al reel: una riga per tratto e quali
+                # tratti si guardano insieme. La pagina li ignora.
+                "line": lg.get("line", ""), "frame": lg.get("frame", "self"),
+                "places": lg.get("places", {}),
                 "lat0": lat0, "lng0": lng0, "d": d,
                 "alt": [int(round(x - a0)) for x in alts], "alt0": int(round(a0)),
                 "km": round((a.get("distance") or 0) / 1000.0, 2),

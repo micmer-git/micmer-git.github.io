@@ -10,7 +10,8 @@ python tools/sync_sogni.py                                            # new week
 python tools/sync_diario.py                                           # refresh the monthly chapter numbers
 python tools/build_vita.py                                            # rebuild /vita from all of the above
 python tools/build_top20.py                                           # rebuild /top-20 data from Intervals
-python tools/build_top20_gif.py                                       # rebuild /top-20's shareable GIF
+python tools/build_top20_gif.py                                       # the twenty square cards
+python tools/build_top20_reel.py                                      # the one reel, on a real map
 node   tools/check_top20_page.cjs                                     # smoke-test /top-20 without a browser
 ```
 
@@ -189,6 +190,55 @@ UI Emoji with `embedded_color=True` — the captions quote titles like 🩻 and 
 where the emoji *is* the title. The GIF palette is quantized (RGB was 3 MB) and
 sampled across **all twenty** stories: taking it from a single frame collapsed
 the four accent colours onto the same olive grey.
+
+## basemap.py + build_top20_reel.py
+
+`top-20-reel.gif` is the one to post: twenty days in sequence, each path drawing
+on a real map, with the camera pulling back to an orthographic globe between one
+day and the next. The globe keeps a dot for everywhere already visited, so it is
+also the progress bar. 486 frames, 39 s, 4,9 MB at the defaults (520 px, 72
+colours — the point where the file drops under five megabytes with no visible
+difference from 560 and 96).
+
+`basemap.py` supplies the map: CARTO Positron **no-labels** tiles stitched to a
+bounding box and recoloured to the site's cream, plus the globe from Natural
+Earth's 110 m land. Tiles cache in `tools/.cache_tiles/` and are fetched once.
+**The credit line in the corner is a licence condition, not decoration** — CARTO
+and OpenStreetMap both require attribution.
+
+Places are named by hand, in `top-20.json` under each leg's `places`
+(`from`/`to`/`top`): the basemap ships without labels, so these are the only place
+names on it. `top` is placed at the highest GPS fix of that leg, which is the pass
+the day was about — Passo Gavia, lo Stelvio, il Col de l'Iseran, il Manghen. Only
+points the coordinates identify beyond doubt are named; a wrongly named pass would
+be the most visible mistake in the whole thing.
+
+**Everything about this file's size was measured, not guessed, and three of the
+four guesses were wrong.** For the record, since the temptation to "improve" it
+will recur:
+
+- *The labels are the expensive part.* No: dropping them saved 4 %.
+- *Write only the pixels that changed.* Already true — 0,3 % of pixels differ
+  between consecutive drawing frames, and Pillow's `optimize` already crops to
+  that rectangle. The explicit transparency pass in `punch_holes` changed nothing
+  measurable; it is kept because it is correct and costs one palette slot.
+- *A smooth downscale is fine for the flight frames.* Nearest is better and
+  invisible at that speed, but it bought only 2 %.
+- What actually mattered: **the camera must hold still while a path draws**
+  (5,8 MB → 2,2 MB on a three-story test), and **cross-dissolving a street map
+  into a globe is unaffordable** — scaling the map back onto the cream page
+  instead took that test to 1,2 MB. A frame-by-frame walk of the GIF's blocks
+  says the remaining cost is 88 frames over 20 kB carrying 70 % of the file, with
+  a median frame of 3,7 kB: those 88 are the ones where the whole picture changes,
+  and there is no way to have a flight without them.
+
+One more trap, this one visual: median-cut spends the palette on whatever covers
+the most pixels, which is the basemap, so a two-pixel-wide track gets merged into
+the nearest grey — the Malaga marathon came out **drawn in grey instead of green**,
+and so did its dot on the globe. `fixed_palette()` reserves the four accents, the
+inks and the paper before median-cut is allowed to spend the rest. For the same
+reason the reel writes sports as words and strips emoji from the data bar: a
+twenty-pixel emoji at 72 colours is a dark smudge.
 
 ## check_top20_page.cjs
 

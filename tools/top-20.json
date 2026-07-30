@@ -1,5 +1,5 @@
 {
-  "_comment": "The 20 stories of /top-20. Each leg is an Intervals.icu activity id; the GPS comes from its stream. `pace` decides how the animation's time is split between the legs — \"km\" (default, sqrt of the distance: right inside one day) or \"chapters\" (equal share: right when the legs are different days). `beat_at` pins each of the five captions to a fraction of the timeline, so a caption about the 17th of May cannot land while the dot is running the 29th of June; omit it for even spacing. build_top20.py resolves both into per-leg t0/dt in _data.js, which is what the page and the GIF read.",
+  "_comment": "The 20 stories of /top-20. Each leg is an Intervals.icu activity id; the GPS comes from its stream. `pace` decides how the animation's time is split between the legs — \"km\" (default, sqrt of the distance: right inside one day) or \"chapters\" (equal share: right when the legs are different days). `beat_at` pins each of the five captions to a fraction of the timeline, so a caption about the 17th of May cannot land while the dot is running the 29th of June; omit it for even spacing. build_top20.py resolves both into per-leg t0/dt in _data.js, which is what the page and the GIF read. Each leg also carries `line` — the single short caption the reel has room for (the five `beats` are the page's; a 20-story GIF cannot hold 100 of them, so the reel shows one line per leg, which is why the multi-day stories get the most text). `frame: \"all\"` frames that leg against every leg of the story instead of itself. `places` on a leg names the map: {from, to} go to the polyline's ends and {top} to the highest GPS fix. Only points the coordinates identify beyond doubt are named — the reel uses a no-labels basemap, so these are the only place names on it and a wrong one would be the most visible mistake on the whole thing.",
   "out_data": "../top-20/_data.js",
   "out_gif": "../top-20/top-20.gif",
   "points_per_leg": 260,
@@ -15,7 +15,12 @@
         {
           "id": "i62695126",
           "sport": "bike",
-          "label": "Milano → Sanremo"
+          "label": "Milano → Sanremo",
+          "line": "288 chilometri. Il record, prima di oggi, era 192.",
+          "places": {
+            "from": "Milano",
+            "to": "Sanremo"
+          }
         }
       ],
       "beats": [
@@ -37,7 +42,12 @@
         {
           "id": "i62695131",
           "sport": "bike",
-          "label": "l'anello"
+          "label": "l'anello",
+          "line": "Gavia e Mortirolo lo stesso giorno. 3.227 metri.",
+          "places": {
+            "from": "Edolo",
+            "top": "Passo Gavia"
+          }
         }
       ],
       "beats": [
@@ -59,7 +69,12 @@
         {
           "id": "i62695158",
           "sport": "bike",
-          "label": "il Giro delle Fiandre"
+          "label": "il Giro delle Fiandre",
+          "line": "Le Fiandre non hanno montagne. Hanno muri.",
+          "places": {
+            "from": "Anversa",
+            "to": "Oudenaarde"
+          }
         }
       ],
       "beats": [
@@ -81,7 +96,11 @@
         {
           "id": "i62695260",
           "sport": "bike",
-          "label": "la Doyenne"
+          "label": "la Doyenne",
+          "line": "Liège – Bastogne – Mal di testa. 204 km, 3.346 m.",
+          "places": {
+            "from": "Liège"
+          }
         }
       ],
       "beats": [
@@ -103,7 +122,11 @@
         {
           "id": "i62695523",
           "sport": "run",
-          "label": "la prima mezza"
+          "label": "la prima mezza",
+          "line": "«Buona la prima.» È la prima mezza maratona.",
+          "places": {
+            "from": "Milano"
+          }
         }
       ],
       "beats": [
@@ -125,12 +148,18 @@
         {
           "id": "i62696125",
           "sport": "bike",
-          "label": "bici — 90 km"
+          "label": "bici — 90 km",
+          "line": "Le gare erano cancellate. Il 70.3 te lo fai da solo.",
+          "frame": "all",
+          "places": {
+            "from": "Valle Seriana"
+          }
         },
         {
           "id": "i62696128",
           "sport": "run",
-          "label": "mezza maratona"
+          "label": "mezza maratona",
+          "line": "90 km di bici, poi 21 di corsa. Nessun pettorale."
         }
       ],
       "beats": [
@@ -159,7 +188,11 @@
         {
           "id": "i62696232",
           "sport": "run",
-          "label": "42,195 km"
+          "label": "42,195 km",
+          "line": "Si può correre solo dentro il Comune. Allora 42 km lì.",
+          "places": {
+            "from": "Orezzo"
+          }
         }
       ],
       "beats": [
@@ -181,7 +214,12 @@
         {
           "id": "i62696671",
           "sport": "bike",
-          "label": "la santissima trinità"
+          "label": "la santissima trinità",
+          "line": "Gavia, Stelvio, Mortirolo. 6.182 metri: il record.",
+          "places": {
+            "from": "Edolo",
+            "top": "Passo dello Stelvio"
+          }
         }
       ],
       "beats": [
@@ -203,7 +241,12 @@
         {
           "id": "i62696752",
           "sport": "bike",
-          "label": "il percorso lungo"
+          "label": "il percorso lungo",
+          "line": "«La mia rivincita dopo la fisiologica.»",
+          "places": {
+            "from": "Alta Badia",
+            "top": "Passo Giau"
+          }
         }
       ],
       "beats": [
@@ -225,17 +268,23 @@
         {
           "id": "i62696968",
           "sport": "swim",
-          "label": "nuoto — mare"
+          "label": "nuoto — mare",
+          "line": "Il primo Ironman 70.3 col pettorale vero.",
+          "places": {
+            "from": "Calella"
+          }
         },
         {
           "id": "i62696973",
           "sport": "bike",
-          "label": "bici — 90 km"
+          "label": "bici — 90 km",
+          "line": "«Caduta nei primi 100 metri, top.» E fa i 91 km."
         },
         {
           "id": "i62696976",
           "sport": "run",
-          "label": "mezza maratona"
+          "label": "mezza maratona",
+          "line": "«Dolori ovunque. Non so come l'ho finita.»"
         }
       ],
       "beats": [
@@ -264,7 +313,11 @@
         {
           "id": "i62693426",
           "sport": "run",
-          "label": "42,195 km"
+          "label": "42,195 km",
+          "line": "2h45. La prima maratona su strada.",
+          "places": {
+            "from": "Padova"
+          }
         }
       ],
       "beats": [
@@ -286,7 +339,12 @@
         {
           "id": "i62693494",
           "sport": "bike",
-          "label": "309 km"
+          "label": "309 km",
+          "line": "Sette anni dopo, la stessa corsa. Venti km in più.",
+          "places": {
+            "from": "Milano",
+            "to": "Sanremo"
+          }
         }
       ],
       "beats": [
@@ -308,7 +366,12 @@
         {
           "id": "i62694119",
           "sport": "run",
-          "label": "Hopkinton → Boylston"
+          "label": "Hopkinton → Boylston",
+          "line": "Boston non si compra: si corre un tempo. 2h55.",
+          "places": {
+            "from": "Hopkinton",
+            "to": "Boston"
+          }
         }
       ],
       "beats": [
@@ -330,7 +393,12 @@
         {
           "id": "i62694301",
           "sport": "bike",
-          "label": "il giro francese"
+          "label": "il giro francese",
+          "line": "Iseran, 2.770 m. Fatto con la gravel, per scelta.",
+          "places": {
+            "from": "Susa",
+            "top": "Col de l'Iseran"
+          }
         }
       ],
       "beats": [
@@ -352,12 +420,25 @@
         {
           "id": "i62694325",
           "sport": "bike",
-          "label": "giorno 1 — Mortirolo, Foscagno"
+          "label": "giorno 1 — Mortirolo, Foscagno",
+          "line": "Da casa a Livigno in bici. Mortirolo e Foscagno.",
+          "frame": "all",
+          "places": {
+            "from": "Orezzo",
+            "to": "Livigno",
+            "top": "Foscagno"
+          }
         },
         {
           "id": "i62694326",
           "sport": "bike",
-          "label": "giorno 2 — Aprica, Ganda"
+          "label": "giorno 2 — Aprica, Ganda",
+          "line": "E il giorno dopo si torna. 357 km in due giorni.",
+          "frame": "all",
+          "places": {
+            "from": "Livigno",
+            "to": "Orezzo"
+          }
         }
       ],
       "beats": [
@@ -387,7 +468,11 @@
         {
           "id": "i62694555",
           "sport": "run",
-          "label": "42,195 km"
+          "label": "42,195 km",
+          "line": "«I cried many times.» 2h39, record personale.",
+          "places": {
+            "from": "Málaga"
+          }
         }
       ],
       "beats": [
@@ -409,12 +494,22 @@
         {
           "id": "i67647879",
           "sport": "bike",
-          "label": "sabato — 234 km fino a Bologna"
+          "label": "sabato — 234 km fino a Bologna",
+          "line": "Alla maratona di Bologna ci si va in treno. O in bici.",
+          "frame": "all",
+          "places": {
+            "from": "Bergamo",
+            "to": "Bologna"
+          }
         },
         {
           "id": "i67761997",
           "sport": "run",
-          "label": "domenica — Bologna Marathon"
+          "label": "domenica — Bologna Marathon",
+          "line": "Il giorno dopo, la maratona: 2h41'06\", sedicesimo.",
+          "places": {
+            "from": "Bologna"
+          }
         }
       ],
       "beats": [
@@ -444,22 +539,39 @@
         {
           "id": "i76257928",
           "sport": "bike",
-          "label": "29 aprile — 🩻"
+          "label": "29 aprile — 🩻",
+          "line": "29 aprile 2025: clavicola rotta. «Bene ma non benissimo».",
+          "places": {
+            "from": "Orezzo"
+          }
         },
         {
           "id": "i77988384",
           "sport": "bike",
-          "label": "11 maggio — «un passo alla volta»"
+          "label": "11 maggio — «un passo alla volta»",
+          "line": "Dodici giorni dopo, dieci chilometri di salita.",
+          "places": {
+            "from": "Orezzo"
+          }
         },
         {
           "id": "i78859932",
           "sport": "run",
-          "label": "17 maggio — Clavicle In Half"
+          "label": "17 maggio — Clavicle In Half",
+          "line": "Diciotto giorni dopo, una mezza: «Clavicle In Half».",
+          "places": {
+            "from": "Orezzo"
+          }
         },
         {
           "id": "i85238516",
           "sport": "bike",
-          "label": "29 giugno — Manghen e Rolle"
+          "label": "29 giugno — Manghen e Rolle",
+          "line": "Due mesi dopo: Manghen e Rolle, 3.895 metri.",
+          "places": {
+            "from": "Valsugana",
+            "top": "Passo Manghen"
+          }
         }
       ],
       "beats": [
@@ -489,17 +601,23 @@
         {
           "id": "i98213662",
           "sport": "swim",
-          "label": "3,9 km a nuoto"
+          "label": "3,9 km a nuoto",
+          "line": "3,9 km a nuoto. «I hate swimming: confirmed.»",
+          "places": {
+            "from": "Cervia"
+          }
         },
         {
           "id": "i98213664",
           "sport": "bike",
-          "label": "178,6 km in bici"
+          "label": "178,6 km in bici",
+          "line": "178 km in bici. Foratura a 55 all'ora, in discesa."
         },
         {
           "id": "i98213667",
           "sport": "run",
-          "label": "la maratona"
+          "label": "la maratona",
+          "line": "«Stomach down at km 15.» Restano 27 chilometri."
         }
       ],
       "beats": [
@@ -528,7 +646,11 @@
         {
           "id": "i144972812",
           "sport": "run",
-          "label": "98,8 km"
+          "label": "98,8 km",
+          "line": "98,8 km di corsa. E un chilometro da casa, a pezzi.",
+          "places": {
+            "from": "Orezzo"
+          }
         }
       ],
       "beats": [

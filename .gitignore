@@ -10,3 +10,8 @@ __pycache__/
 tools/.cache_streams/
 # provini dei build (build_top20_gif.py --png)
 tools/.gif_check.png
+# basemap.py: tile CartoDB + Natural Earth (si riscaricano da sole)
+tools/.cache_tiles/
+# provini dei build
+tools/.basemap_demo.png
+tools/.reel_probe.png
