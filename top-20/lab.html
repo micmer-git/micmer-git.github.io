@@ -102,15 +102,15 @@ footer a:hover{border-color:var(--ink-3)}
   <p class="sub">La stessa traccia — <b>Edolo · Gavia · Mortirolo, 9 luglio 2016</b>, 124 km e 3.227 m —
   disegnata in trentadue modi diversi. Linea, colore, fondo, camera, movimento, testi, ritmo,
   composizione: cambia una cosa alla volta.</p>
-  <p class="fine">Sotto ogni variante: tocca un numero da 0 a 10, aggiungi una nota se vuoi.
-  I voti si salvano da soli sul telefono; alla fine premi «copia i voti» e incollali in chat.
-  Diventano la guida estetica di tutti i progetti micmer. Solo V18 usa tutte e venti le giornate.</p>
+  <p class="fine">In cima c'è il <b>round 2</b>: tre sintesi (S01–S03) assemblate dai tuoi primi voti —
+  carta vera, quota come colore, camera calma, pausa in vetta, profilo di fianco. Vota anche quelle.
+  Tocca un numero da 0 a 10, aggiungi una nota se vuoi: si salva da solo, poi «copia i voti» e incolla in chat.</p>
 </header>
 
 <main id="main"></main>
 
 <div class="bar" id="bar">
-  <span class="prog" id="prog"><b>0</b> / 32 votate</span>
+  <span class="prog" id="prog"><b>0</b> / 35 votate</span>
   <button class="copy" id="copy" type="button">copia i voti</button>
   <button class="wipe" id="wipe" type="button">azzera</button>
 </div>
@@ -321,6 +321,73 @@ const SUMMIT_WARP=(function(){
     return (lo+f)/N;
   };
 })();
+
+/* ---- sintesi round 2: mercatore + tile CARTO vere ---- */
+const dv=(p,c,w)=>Math.exp(-((p-c)*(p-c))/(2*w*w));
+function mercator(pts){
+  return pts.map(p=>{
+    const lat=clamp(p[0],-85,85), s=Math.sin(lat*Math.PI/180);
+    return [(p[1]+180)/360*256, (0.5-Math.log((1+s)/(1-s))/(4*Math.PI))*256];
+  });
+}
+const SM=(function(){
+  const xy=mercator(decode(RAWLEG));
+  return {xy:xy, bb:bbox(xy), cum:arclen(xy)};
+})();
+const TILES={cache:{},
+  get(z,x,y,style){
+    const n=1<<z; x=((x%n)+n)%n;
+    if(y<0||y>=n) return null;
+    const k=style+"/"+z+"/"+x+"/"+y;
+    let t=this.cache[k];
+    if(!t){
+      t={img:new Image(),ok:false};
+      t.img.crossOrigin="anonymous";
+      t.img.onload=()=>{t.ok=true;};
+      t.img.src="https://basemaps.cartocdn.com/"+style+"/"+z+"/"+x+"/"+y+".png";
+      this.cache[k]=t;
+    }
+    return t.ok?t.img:null;
+  }};
+function drawTiles(g,cam,W,H,style,veil){
+  const z=clamp(Math.round(Math.log2(cam.s)),3,18), n2=Math.pow(2,z);
+  const tw=cam.s*256/n2;
+  const x0=cam.cx-(W/2)/cam.s, y0=cam.cy-(H/2)/cam.s;
+  const tx0=Math.floor(x0*n2/256), ty0=Math.floor(y0*n2/256);
+  const nx=Math.ceil(W/tw)+1, ny=Math.ceil(H/tw)+1;
+  for(let i=0;i<=nx;i++) for(let j=0;j<=ny;j++){
+    const img=TILES.get(z,tx0+i,ty0+j,style);
+    if(!img) continue;
+    g.drawImage(img,((tx0+i)*256/n2-x0)*cam.s,((ty0+j)*256/n2-y0)*cam.s,tw+.5,tw+.5);
+  }
+  g.fillStyle=veil; g.fillRect(0,0,W,H);   // velo perché la traccia resti protagonista
+}
+function elevLine(g,cam,W,H,headI,r0,r1,wd){
+  for(let i=1;i<=headI;i++){
+    const a=px(cam,W,H,SM.xy[i-1][0],SM.xy[i-1][1]), b=px(cam,W,H,SM.xy[i][0],SM.xy[i][1]);
+    const u=(L.alt[i]-L.amin)/(L.amax-L.amin);
+    g.beginPath(); g.moveTo(a[0],a[1]); g.lineTo(b[0],b[1]);
+    stroke(g,mix(r0,r1,u),wd||2.8,.95);
+  }
+}
+/* profilo "di fianco": colonna a destra, distanza verticale, quota orizzontale */
+function sideProfile(g,x0,W,H,headI,acc,dark){
+  const bw=W-x0-12, total=L.cum[L.cum.length-1]||1;
+  const yOf=k=>10+L.cum[k]/total*(H-20);
+  const xOf=v=>x0+4+((v-L.amin)/(L.amax-L.amin))*(bw-8);
+  g.strokeStyle=dark?"rgba(250,248,243,.18)":C.rule; g.lineWidth=1;
+  g.beginPath(); g.moveTo(x0,0); g.lineTo(x0,H); g.stroke();
+  g.beginPath(); g.moveTo(x0+4,10);
+  for(let k=0;k<L.alt.length;k++) g.lineTo(xOf(L.alt[k]),yOf(k));
+  g.lineTo(x0+4,H-10); g.closePath();
+  g.fillStyle=dark?"rgba(250,248,243,.14)":C.rule; g.globalAlpha=dark?1:.8; g.fill(); g.globalAlpha=1;
+  g.beginPath(); g.moveTo(x0+4,10);
+  for(let k=0;k<=headI;k++) g.lineTo(xOf(L.alt[k]),yOf(k));
+  g.lineTo(x0+4,yOf(headI)); g.closePath();
+  g.fillStyle=acc; g.globalAlpha=.35; g.fill(); g.globalAlpha=1;
+  g.strokeStyle=acc; g.lineWidth=1.4; g.globalAlpha=.9;
+  g.beginPath(); g.moveTo(x0,yOf(headI)); g.lineTo(x0+bw,yOf(headI)); g.stroke(); g.globalAlpha=1;
+}
 
 /* ================= the variants ================= */
 /* Each draw(g,W,H,t) gets a cleared canvas at css-pixel scale, t in [0,1]. */
@@ -848,8 +915,87 @@ function(g,W,H,t){
   }
 });
 
+/* --- sintesi: la ricetta assemblata dai voti del 30/07 --- */
+def("S01","sintesi","La candidata","Carta geografica vera, linea colorata per quota (il tuo 9), camera che si tuffa a 2× solo su Gavia e Mortirolo, il tempo rallenta in vetta, profilo di fianco.",false,
+function(g,W,H,t){
+  const p=SUMMIT_WARP(ease(t)), MW=Math.round(W*.74);
+  const head=at(SM,p);
+  const wide=fitCam(SM.bb,MW,H,.12);
+  const f=ease(clamp(Math.max(dv(p,GF,.05),dv(p,MF,.05))*1.15,0,1));
+  const cam={s:wide.s*lerp(1,2,f), cx:lerp(SM.bb.cx,head.x,f), cy:lerp(SM.bb.cy,head.y,f)};
+  g.save(); g.beginPath(); g.rect(0,0,MW,H); g.clip();
+  drawTiles(g,cam,MW,H,"light_all","rgba(250,248,243,.38)");
+  path(g,SM,cam,MW,H); stroke(g,C.ink3,1.2,.45);
+  elevLine(g,cam,MW,H,head.i,"#cfe0bd","#22400f");
+  startPin(g,SM,cam,MW,H,C.green);
+  const q=px(cam,MW,H,head.x,head.y);
+  dot(g,q[0],q[1],mix("#cfe0bd","#22400f",(L.alt[head.i]-L.amin)/(L.amax-L.amin)));
+  if(f>.5){
+    g.globalAlpha=clamp((f-.5)*3,0,1);
+    haloText(g,Math.abs(p-GF)<Math.abs(p-MF)?"Passo Gavia · 2.551 m":"Mortirolo",14,24,12);
+    g.globalAlpha=1;
+  }
+  g.restore();
+  sideProfile(g,MW,W,H,head.i,C.green,false);
+});
+def("S02","sintesi","La candidata di notte","La stessa ricetta nella variazione notturna che hai promosso: carta scura, linea oro con alone, profilo di fianco in negativo. Per le giornate speciali.",true,
+function(g,W,H,t){
+  g.fillStyle="#131017"; g.fillRect(0,0,W,H);
+  const p=SUMMIT_WARP(ease(t)), MW=Math.round(W*.74);
+  const head=at(SM,p);
+  const wide=fitCam(SM.bb,MW,H,.12);
+  const f=ease(clamp(Math.max(dv(p,GF,.05),dv(p,MF,.05))*1.15,0,1));
+  const cam={s:wide.s*lerp(1,2,f), cx:lerp(SM.bb.cx,head.x,f), cy:lerp(SM.bb.cy,head.y,f)};
+  g.save(); g.beginPath(); g.rect(0,0,MW,H); g.clip();
+  drawTiles(g,cam,MW,H,"dark_all","rgba(19,16,23,.35)");
+  path(g,SM,cam,MW,H); stroke(g,"#4a4438",1.2,.7);
+  g.shadowColor=C.gold; g.shadowBlur=10;
+  elevLine(g,cam,MW,H,head.i,"#8a6a25","#ffd978",2.4);
+  g.shadowBlur=0;
+  const q=px(cam,MW,H,head.x,head.y);
+  g.beginPath(); g.arc(q[0],q[1],9,0,7); g.fillStyle=C.gold; g.globalAlpha=.2; g.fill(); g.globalAlpha=1;
+  g.beginPath(); g.arc(q[0],q[1],4,0,7); g.fillStyle="#faf8f3"; g.fill();
+  g.restore();
+  sideProfile(g,MW,W,H,head.i,C.gold,true);
+});
+def("S03","sintesi","L'inseguimento morbido","Il follow che chiedevi: camera smorzata che accompagna senza scatti, si avvicina solo tre volte — Gavia, Mortirolo, arrivo — e lì compare il commento.",false,
+function(g,W,H,t){
+  const st=this._st||(this._st={cx:SM.bb.cx,cy:SM.bb.cy,z:1,lastT:1});
+  if(t<st.lastT){ st.cx=SM.bb.cx; st.cy=SM.bb.cy; st.z=1; }
+  st.lastT=t;
+  const p=SUMMIT_WARP(ease(t));
+  const head=at(SM,p);
+  const wide=fitCam(SM.bb,W,H,.12);
+  const f=clamp(dv(p,GF,.045)+dv(p,MF,.045)+dv(p,.972,.03),0,1);
+  const zt=lerp(1.12,2.1,ease(f));
+  const k=(zt-1.12)/0.98;
+  const tx=lerp(SM.bb.cx,head.x,.25+.75*k), ty=lerp(SM.bb.cy,head.y,.25+.75*k);
+  st.z+=(zt-st.z)*.055; st.cx+=(tx-st.cx)*.075; st.cy+=(ty-st.cy)*.075;
+  const cam={s:wide.s*st.z, cx:st.cx, cy:st.cy};
+  drawTiles(g,cam,W,H,"light_all","rgba(250,248,243,.38)");
+  path(g,SM,cam,W,H); stroke(g,C.ink3,1.2,.45);
+  elevLine(g,cam,W,H,head.i,"#cfe0bd","#22400f");
+  const q=px(cam,W,H,head.x,head.y);
+  dot(g,q[0],q[1],mix("#cfe0bd","#22400f",(L.alt[head.i]-L.amin)/(L.amax-L.amin)));
+  if(f>.45){
+    const near=[[GF,"Passo Gavia, 2.551 m: il tetto della giornata"],
+                [MF,"Mortirolo, quando le gambe hanno già dato"],
+                [.972,"Edolo, 6h09 dopo la partenza"]]
+      .reduce((a,b)=>Math.abs(p-a[0])<Math.abs(p-b[0])?a:b);
+    g.globalAlpha=clamp((f-.45)*2.5,0,1);
+    haloText(g,near[1],14,H-14,12);
+    g.globalAlpha=1;
+  }
+});
+
+for(const v of V){
+  if(v.id==="V15") v.dur=24;          // «ok ma poi rallentalo»
+  if(v.fam==="sintesi") v.dur=18;
+}
+
 /* ================= scaffolding ================= */
-const FAMS=[["linea","la grafia del tratto"],["colore","cosa codifica la tinta"],
+const FAMS=[["sintesi","round 2 — la ricetta assemblata dai tuoi voti"],
+            ["linea","la grafia del tratto"],["colore","cosa codifica la tinta"],
             ["fondo","la carta sotto la traccia"],["camera","dove guarda l'occhio · quanta e di che tipo"],
             ["movimento","la vita del puntino"],["testi","dove stanno le parole e come appaiono"],
             ["ritmo","il tempo dell'animazione"],["composizione","cosa sta nel quadro"]];
@@ -896,7 +1042,7 @@ for(const [fam,tag] of FAMS){
         const g=cv.getContext("2d");
         g.setTransform(this.dpr,0,0,this.dpr,0,0);
         g.clearRect(0,0,this.W,this.H);
-        this.v.draw(g,this.W,this.H,Math.min(1,this.t));
+        this.v.draw.call(this.v,g,this.W,this.H,Math.min(1,this.t));
       }};
     card.querySelector(".replay").addEventListener("click",()=>{ sc.t=0; if(RM){sc.t=1; sc.frame();} });
     scenes.push(sc);
@@ -909,8 +1055,9 @@ function tick(ts){
   const dt=last?Math.min(.05,(ts-last)/1000):0; last=ts;
   for(const sc of scenes){
     if(!sc.on) continue;
-    sc.t+=dt/DUR;
-    if(sc.t>1+PAUSE/DUR) sc.t=0;
+    const d=sc.v.dur||DUR;
+    sc.t+=dt/d;
+    if(sc.t>1+PAUSE/d) sc.t=0;
     sc.frame();
   }
   requestAnimationFrame(tick);
