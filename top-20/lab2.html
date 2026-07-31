@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Laboratorio 2 — le parole · top-20</title>
+<meta name="description" content="La ricetta visiva è ferma. Ora si decide dove stanno le parole, che aspetto hanno, che cosa raccontano e con che voce. Diciotto varianti da votare.">
+<meta name="theme-color" content="#131017">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E✒️%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf8f3; --ink:#14150f; --ink-2:#5c5f52; --ink-3:#8f9382; --rule:#e4e1d6;
+  --dawn:#c2761a; --dusk:#3b5bb5; --green:#4d7238; --stone:#8a5a3c; --gold:#e8b23a;
+  --serif:"Instrument Serif",Georgia,serif; --sans:"Inter",system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--sans);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
+
+header{background:radial-gradient(120% 90% at 50% 118%,#3a2a17 0%,#221a14 34%,#131017 72%);
+  color:#faf8f3;text-align:center;padding:64px 24px 56px}
+header .ey{font-size:.7rem;text-transform:uppercase;letter-spacing:.2em;font-weight:600;color:#b3a893;margin:0 0 16px}
+header h1{font-family:var(--serif);font-weight:400;letter-spacing:-.015em;line-height:.95;
+  font-size:clamp(2.6rem,8vw,4.6rem);margin:0}
+header .sub{color:#d6cfc0;font-size:clamp(.95rem,3.5vw,1.1rem);line-height:1.55;max-width:52ch;margin:18px auto 0}
+header .sub b{font-weight:600;color:#faf8f3}
+header .fine{color:#8d8578;font-size:.8rem;line-height:1.5;max-width:60ch;margin:14px auto 0}
+
+main{max-width:1240px;margin:0 auto;padding:34px 20px 80px}
+.fam{margin:44px 4px 14px;display:flex;align-items:baseline;gap:14px}
+.fam h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.5rem,4vw,2rem);letter-spacing:-.01em;margin:0}
+.fam span{font-size:.72rem;text-transform:uppercase;letter-spacing:.16em;font-weight:600;color:var(--ink-3)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(430px,100%),1fr));gap:18px}
+.grid.solo{grid-template-columns:1fr}
+
+.card{border:1px solid var(--rule);border-radius:12px;background:#fff;overflow:hidden;
+  display:flex;flex-direction:column}
+.cvwrap{position:relative;background:var(--bg)}
+.cv{width:100%;aspect-ratio:4/3;display:block}
+.solo .cv{aspect-ratio:16/9}
+.vno{position:absolute;top:10px;left:12px;font-family:var(--serif);font-size:1.5rem;line-height:1;
+  color:var(--ink);background:rgba(250,248,243,.82);border:1px solid var(--rule);
+  border-radius:8px;padding:5px 9px 3px;letter-spacing:-.02em}
+.replay{position:absolute;right:10px;bottom:10px;font-size:.66rem;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3);background:rgba(250,248,243,.85);border:1px solid var(--rule);
+  border-radius:99px;padding:6px 12px;cursor:pointer;transition:color .3s,border-color .3s}
+.replay:hover{color:var(--ink);border-color:var(--ink-3)}
+.meta{padding:13px 16px 15px;border-top:1px solid var(--rule)}
+.meta h3{font-family:var(--serif);font-weight:400;font-size:1.28rem;letter-spacing:-.01em;margin:0;line-height:1.1}
+.meta p{margin:5px 0 0;font-size:.86rem;line-height:1.45;color:var(--ink-2)}
+.meta .tag{display:inline-block;font-size:.6rem;text-transform:uppercase;letter-spacing:.15em;
+  font-weight:700;color:var(--ink-3);margin-bottom:6px}
+
+.vote{margin-top:12px;padding-top:11px;border-top:1px dashed var(--rule)}
+.vlab{font-size:.62rem;text-transform:uppercase;letter-spacing:.15em;font-weight:700;color:var(--ink-3)}
+.chips{display:flex;gap:4px;margin-top:7px;flex-wrap:wrap}
+.chip{width:30px;height:30px;border-radius:8px;border:1px solid var(--rule);background:#fff;
+  font-size:.78rem;font-weight:600;color:var(--ink-2);cursor:pointer;
+  transition:background .15s,color .15s,border-color .15s,transform .15s}
+.chip:hover{border-color:var(--ink-3);transform:translateY(-1px)}
+.chip.sel{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.note{margin-top:8px;width:100%;border:1px solid var(--rule);border-radius:8px;background:#fff;
+  font-family:var(--sans);font-size:.84rem;color:var(--ink);padding:8px 10px}
+.note::placeholder{color:var(--ink-3)}
+.note:focus{outline:none;border-color:var(--ink-3)}
+
+/* casella libera per il prossimo round */
+.freebox{margin:56px 4px 0;border:1px solid var(--rule);border-radius:12px;background:#fff;padding:20px 22px 22px}
+.freebox h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.4rem,4vw,1.8rem);margin:0 0 4px}
+.freebox p{margin:0 0 12px;font-size:.88rem;line-height:1.5;color:var(--ink-2)}
+.freebox textarea{width:100%;min-height:110px;resize:vertical;border:1px solid var(--rule);border-radius:8px;
+  background:#fff;font-family:var(--sans);font-size:.9rem;line-height:1.5;color:var(--ink);padding:10px 12px}
+.freebox textarea::placeholder{color:var(--ink-3)}
+.freebox textarea:focus{outline:none;border-color:var(--ink-3)}
+
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(250,248,243,.94);
+  backdrop-filter:blur(6px);border-top:1px solid var(--rule);
+  display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;
+  padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
+.bar .prog{font-size:.8rem;color:var(--ink-2)}
+.bar .prog b{font-family:var(--serif);font-weight:400;font-size:1.1rem;color:var(--ink)}
+.copy{font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  background:var(--ink);color:var(--bg);border:none;border-radius:99px;padding:10px 20px;cursor:pointer;
+  transition:opacity .2s}
+.copy:hover{opacity:.85}
+.copy.ok{background:var(--green)}
+.wipe{font-size:.68rem;font-weight:600;color:var(--ink-3);background:none;border:none;cursor:pointer;
+  text-decoration:underline;text-underline-offset:3px}
+.outbox{display:none;width:min(680px,92vw);margin:10px auto 0;font-size:.75rem;line-height:1.5;
+  font-family:ui-monospace,monospace;border:1px solid var(--rule);border-radius:8px;padding:10px;background:#fff}
+
+footer{border-top:1px solid var(--rule);text-align:center;padding:34px 20px 120px;color:var(--ink-2);font-size:.9rem}
+footer a{color:var(--ink);font-weight:600;text-decoration:none;border-bottom:1px solid var(--rule)}
+footer a:hover{border-color:var(--ink-3)}
+
+@media (prefers-reduced-motion:reduce){ .replay{display:none} }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="ey">micmer · laboratorio di stile · secondo giro</p>
+  <h1>Adesso,<br>le parole</h1>
+  <p class="sub">La ricetta visiva è <b>ferma</b> — carta vera, quota come colore, camera calma,
+  pausa in vetta, profilo di fianco: è la candidata uscita dai tuoi voti, in cima alla pagina.
+  Ora si decide il resto: <b>dove</b> stanno le parole, che <b>aspetto</b> hanno,
+  <b>che cosa</b> raccontano e con che <b>voce</b> lo dicono.</p>
+  <p class="fine">Si vota come l'altra volta: 0–10 e una nota se vuoi. E in fondo c'è una casella libera:
+  scrivici qualsiasi cosa vorresti mettere alla prova al prossimo giro — ogni round esplora
+  una dimensione nuova.</p>
+</header>
+
+<main id="main"></main>
+
+<div class="bar" id="bar">
+  <span class="prog" id="prog"><b>0</b> / 18 votate</span>
+  <button class="copy" id="copy" type="button">copia i voti</button>
+  <button class="wipe" id="wipe" type="button">azzera</button>
+</div>
+<textarea class="outbox" id="outbox" rows="8" readonly aria-label="riepilogo voti"></textarea>
+
+<footer>
+  <p>Le varianti girano in loop finché sono sullo schermo ·
+  <a href="lab.html">← il primo laboratorio</a> · <a href="./">il top-20</a></p>
+</footer>
+
+<script src="_data.js"></script>
+<script>
+(function(){
+"use strict";
+const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const C = {bg:"#faf8f3", ink:"#14150f", ink2:"#5c5f52", ink3:"#8f9382", rule:"#e4e1d6",
+           dawn:"#c2761a", dusk:"#3b5bb5", green:"#4d7238", stone:"#8a5a3c", gold:"#e8b23a",
+           night:"#131017", cream:"#faf8f3"};
+
+/* ---------- stessa geometria del primo lab ---------- */
+function decode(leg){
+  const pts=[], d=leg.d; let x=0,y=0;
+  for(let i=0;i<d.length;i+=2){ x+=d[i]; y+=d[i+1]; pts.push([leg.lat0+x*QUANT, leg.lng0+y*QUANT]); }
+  return pts;
+}
+function bbox(xy){
+  let a=1e9,b=1e9,c=-1e9,e=-1e9;
+  for(const p of xy){ if(p[0]<a)a=p[0]; if(p[1]<b)b=p[1]; if(p[0]>c)c=p[0]; if(p[1]>e)e=p[1]; }
+  const w=Math.max(c-a,1e-6), h=Math.max(e-b,1e-6);
+  return {x:a,y:b,w:w,h:h,cx:a+w/2,cy:b+h/2};
+}
+function arclen(xy){
+  const cum=new Float64Array(xy.length);
+  for(let i=1;i<xy.length;i++) cum[i]=cum[i-1]+Math.hypot(xy[i][0]-xy[i-1][0],xy[i][1]-xy[i-1][1]);
+  return cum;
+}
+function at(l,p){
+  const total=l.cum[l.cum.length-1], target=total*Math.min(1,Math.max(0,p));
+  let lo=0,hi=l.cum.length-1;
+  while(lo<hi-1){ const m=(lo+hi)>>1; if(l.cum[m]<=target)lo=m; else hi=m; }
+  const span=l.cum[hi]-l.cum[lo], f=span>0?(target-l.cum[lo])/span:0;
+  return {i:lo,f:f,x:l.xy[lo][0]+(l.xy[hi][0]-l.xy[lo][0])*f,y:l.xy[lo][1]+(l.xy[hi][1]-l.xy[lo][1])*f};
+}
+const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+const lerp=(a,b,t)=>a+(b-a)*t;
+const fmtN=n=>n.toLocaleString("it-IT");
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+function hex2rgb(h){ return [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)]; }
+function mix(h1,h2,t){
+  const a=hex2rgb(h1),b=hex2rgb(h2);
+  return "rgb("+Math.round(lerp(a[0],b[0],t))+","+Math.round(lerp(a[1],b[1],t))+","+Math.round(lerp(a[2],b[2],t))+")";
+}
+const dv=(p,c,w)=>Math.exp(-((p-c)*(p-c))/(2*w*w));
+
+const ST = STORIES.find(s=>s.slug==="gavia-mortirolo-2016");
+const RAWLEG = ST.legs[0];
+const A0 = RAWLEG.alt0||0;
+function mercator(pts){
+  return pts.map(p=>{
+    const lat=clamp(p[0],-85,85), s=Math.sin(lat*Math.PI/180);
+    return [(p[1]+180)/360*256, (0.5-Math.log((1+s)/(1-s))/(4*Math.PI))*256];
+  });
+}
+const SM=(function(){
+  const xy=mercator(decode(RAWLEG));
+  return {xy:xy, bb:bbox(xy), cum:arclen(xy)};
+})();
+const L=(function(){
+  const l={alt:RAWLEG.alt};
+  let mn=1e9,mx=-1e9; for(const v of l.alt){ if(v<mn)mn=v; if(v>mx)mx=v; }
+  l.amin=mn; l.amax=mx;
+  return l;
+})();
+const TOTALU=SM.cum[SM.cum.length-1];
+const GAVIA_I=(function(){ let im=0; for(let i=0;i<L.alt.length;i++) if(L.alt[i]>L.alt[im]) im=i; return im; })();
+const MORT_I=(function(){ let im=Math.round(L.alt.length*.55);
+  for(let i=im;i<Math.round(L.alt.length*.92);i++) if(L.alt[i]>L.alt[im]) im=i; return im; })();
+const GF=SM.cum[GAVIA_I]/TOTALU, MF=SM.cum[MORT_I]/TOTALU;
+const CLIMB=(function(){ const c=new Float64Array(L.alt.length);
+  for(let i=1;i<L.alt.length;i++){ const d=L.alt[i]-L.alt[i-1]; c[i]=c[i-1]+(d>0?d:0); } return c; })();
+const kmAt=i=>Math.round(SM.cum[i]/TOTALU*RAWLEG.km);
+
+/* fatti calcolati dall'archivio, per la narrazione a confronto */
+function gainOf(leg){ let s=0; for(let i=1;i<leg.alt.length;i++){ const d=leg.alt[i]-leg.alt[i-1]; if(d>0)s+=d; } return s; }
+const GAINS=STORIES.map(s=>s.legs.reduce((a,l)=>a+gainOf(l),0));
+const MYGAIN=GAINS[STORIES.indexOf(ST)];
+const GRANK=1+GAINS.filter(x=>x>MYGAIN*1.001).length;
+const ARCHMAX=STORIES.reduce((m,s)=>Math.max(m,...s.legs.map(l=>{
+  let mx=-1e9; for(const v of l.alt) if(v>mx)mx=v; return mx+(l.alt0||0);
+})),-1e9);
+const MYMAX=Math.round(L.amax+A0);
+const MALT=Math.round(L.alt[MORT_I]+A0);
+
+/* il tempo si addensa in vetta (identico al round 2) */
+const SUMMIT_WARP=(function(){
+  const N=600, T=new Float64Array(N+1);
+  const dip=(u,x)=>Math.exp(-((u-x)*(u-x))/(2*.018*.018));
+  for(let k=1;k<=N;k++){
+    const u=(k-.5)/N;
+    T[k]=T[k-1]+1+7*(dip(u,GF)+dip(u,MF));
+  }
+  const tot=T[N];
+  return function(t){
+    const target=tot*clamp(t,0,1);
+    let lo=0,hi=N;
+    while(lo<hi-1){ const m=(lo+hi)>>1; if(T[m]<=target)lo=m; else hi=m; }
+    const span=T[hi]-T[lo], f=span>0?(target-T[lo])/span:0;
+    return (lo+f)/N;
+  };
+})();
+
+/* ---------- tile CARTO ---------- */
+const TILES={cache:{},
+  get(z,x,y,style){
+    const n=1<<z; x=((x%n)+n)%n;
+    if(y<0||y>=n) return null;
+    const k=style+"/"+z+"/"+x+"/"+y;
+    let t=this.cache[k];
+    if(!t){
+      t={img:new Image(),ok:false};
+      t.img.crossOrigin="anonymous";
+      t.img.onload=()=>{t.ok=true;};
+      t.img.src="https://basemaps.cartocdn.com/"+style+"/"+z+"/"+x+"/"+y+".png";
+      this.cache[k]=t;
+    }
+    return t.ok?t.img:null;
+  }};
+function drawTiles(g,cam,W,H,style,veil){
+  const z=clamp(Math.round(Math.log2(cam.s)),3,18), n2=Math.pow(2,z);
+  const tw=cam.s*256/n2;
+  const x0=cam.cx-(W/2)/cam.s, y0=cam.cy-(H/2)/cam.s;
+  const tx0=Math.floor(x0*n2/256), ty0=Math.floor(y0*n2/256);
+  const nx=Math.ceil(W/tw)+1, ny=Math.ceil(H/tw)+1;
+  for(let i=0;i<=nx;i++) for(let j=0;j<=ny;j++){
+    const img=TILES.get(z,tx0+i,ty0+j,style);
+    if(!img) continue;
+    g.drawImage(img,((tx0+i)*256/n2-x0)*cam.s,((ty0+j)*256/n2-y0)*cam.s,tw+.5,tw+.5);
+  }
+  g.fillStyle=veil; g.fillRect(0,0,W,H);
+}
+
+/* ---------- disegno ---------- */
+function fitCam(bb,W,H,pad){
+  const span=Math.max(bb.w,bb.h)*(1+(pad||0.12)*2);
+  return {s:Math.min(W,H)/span, cx:bb.cx, cy:bb.cy};
+}
+function px(cam,W,H,x,y){ return [W/2+(x-cam.cx)*cam.s, H/2+(y-cam.cy)*cam.s]; }
+function path(g,l,cam,W,H,from,to,headXY){
+  g.beginPath();
+  const a=from||0, b=to==null?l.xy.length-1:to;
+  for(let i=a;i<=b;i++){
+    const q=px(cam,W,H,l.xy[i][0],l.xy[i][1]);
+    i===a?g.moveTo(q[0],q[1]):g.lineTo(q[0],q[1]);
+  }
+  if(headXY){ const q=px(cam,W,H,headXY.x,headXY.y); g.lineTo(q[0],q[1]); }
+}
+function stroke(g,col,wd,alpha){
+  g.globalAlpha=alpha==null?1:alpha; g.strokeStyle=col; g.lineWidth=wd;
+  g.lineJoin=g.lineCap="round"; g.stroke(); g.globalAlpha=1;
+}
+function dot(g,x,y,ac,r){
+  g.beginPath(); g.arc(x,y,(r||4.4)*2.3,0,7); g.fillStyle=ac; g.globalAlpha=.16; g.fill(); g.globalAlpha=1;
+  g.beginPath(); g.arc(x,y,r||4.4,0,7); g.fillStyle=ac; g.fill();
+  g.lineWidth=1.6; g.strokeStyle=C.cream; g.stroke();
+}
+function startPin(g,l,cam,W,H,ac){
+  const q=px(cam,W,H,l.xy[0][0],l.xy[0][1]);
+  g.beginPath(); g.arc(q[0],q[1],3.2,0,7);
+  g.fillStyle=C.cream; g.fill(); g.lineWidth=1.4; g.strokeStyle=ac; g.stroke();
+}
+function elevLine(g,cam,W,H,headI){
+  for(let i=1;i<=headI;i++){
+    const a=px(cam,W,H,SM.xy[i-1][0],SM.xy[i-1][1]), b=px(cam,W,H,SM.xy[i][0],SM.xy[i][1]);
+    const u=(L.alt[i]-L.amin)/(L.amax-L.amin);
+    g.beginPath(); g.moveTo(a[0],a[1]); g.lineTo(b[0],b[1]);
+    stroke(g,mix("#cfe0bd","#22400f",u),2.8,.95);
+  }
+}
+function sideProfile(g,x0,W,H,headI,acc){
+  const bw=W-x0-12;
+  const yOf=k=>10+SM.cum[k]/TOTALU*(H-20);
+  const xOf=v=>x0+4+((v-L.amin)/(L.amax-L.amin))*(bw-8);
+  g.strokeStyle=C.rule; g.lineWidth=1;
+  g.beginPath(); g.moveTo(x0,0); g.lineTo(x0,H); g.stroke();
+  g.beginPath(); g.moveTo(x0+4,10);
+  for(let k=0;k<L.alt.length;k++) g.lineTo(xOf(L.alt[k]),yOf(k));
+  g.lineTo(x0+4,H-10); g.closePath();
+  g.fillStyle=C.rule; g.globalAlpha=.8; g.fill(); g.globalAlpha=1;
+  g.beginPath(); g.moveTo(x0+4,10);
+  for(let k=0;k<=headI;k++) g.lineTo(xOf(L.alt[k]),yOf(k));
+  g.lineTo(x0+4,yOf(headI)); g.closePath();
+  g.fillStyle=acc; g.globalAlpha=.35; g.fill(); g.globalAlpha=1;
+  g.strokeStyle=acc; g.lineWidth=1.4; g.globalAlpha=.9;
+  g.beginPath(); g.moveTo(x0,yOf(headI)); g.lineTo(x0+bw,yOf(headI)); g.stroke(); g.globalAlpha=1;
+}
+function label(g,txt,x,y,col,size,align,fam){
+  g.font=(fam||"600 ")+(size||10)+"px "+(fam?"'Instrument Serif',Georgia,serif":"Inter,sans-serif");
+  g.fillStyle=col; g.textAlign=align||"left"; g.textBaseline="alphabetic";
+  g.fillText(txt,x,y);
+}
+function haloText(g,txt,x,y,size){
+  g.font="600 "+size+"px Inter,sans-serif";
+  const w=g.measureText(txt).width;
+  g.fillStyle="rgba(250,248,243,.85)";
+  g.fillRect(x-5,y-size,w+10,size+7);
+  g.fillStyle=C.ink; g.textAlign="left"; g.fillText(txt,x,y);
+  return w;
+}
+function wrap(g,txt,maxw){
+  const words=txt.split(" "), lines=[]; let cur="";
+  for(const wd of words){
+    const test=cur?cur+" "+wd:wd;
+    if(g.measureText(test).width>maxw&&cur){ lines.push(cur); cur=wd; }
+    else cur=test;
+  }
+  if(cur) lines.push(cur);
+  return lines;
+}
+
+/* ---------- la base: la candidata del round 2, senza parole ---------- */
+function baseRecipe(g,W,H,t){
+  const p=SUMMIT_WARP(ease(t)), MW=Math.round(W*.74);
+  const head=at(SM,p);
+  const wide=fitCam(SM.bb,MW,H,.12);
+  const f=ease(clamp(Math.max(dv(p,GF,.05),dv(p,MF,.05))*1.15,0,1));
+  const cam={s:wide.s*lerp(1,2,f), cx:lerp(SM.bb.cx,head.x,f), cy:lerp(SM.bb.cy,head.y,f)};
+  g.save(); g.beginPath(); g.rect(0,0,MW,H); g.clip();
+  drawTiles(g,cam,MW,H,"light_all","rgba(250,248,243,.38)");
+  path(g,SM,cam,MW,H); stroke(g,C.ink3,1.2,.45);
+  elevLine(g,cam,MW,H,head.i);
+  startPin(g,SM,cam,MW,H,C.green);
+  const q=px(cam,MW,H,head.x,head.y);
+  dot(g,q[0],q[1],mix("#cfe0bd","#22400f",(L.alt[head.i]-L.amin)/(L.amax-L.amin)));
+  g.restore();
+  sideProfile(g,MW,W,H,head.i,C.green);
+  return {p:p,head:head,cam:cam,MW:MW,q:q,f:f,W:W,H:H};
+}
+
+/* ---------- i quattro momenti del giro ---------- */
+const MOM=[
+  {f:.012, w:.035, key:"start",     i:2},
+  {f:GF,   w:.05,  key:"gavia",     i:GAVIA_I},
+  {f:MF,   w:.05,  key:"mortirolo", i:MORT_I},
+  {f:.985, w:.03,  key:"arrivo",    i:L.alt.length-2}];
+function alphaOf(p,m){ return clamp((dv(p,m.f,m.w)-.25)/.65,0,1); }
+
+/* ---------- che cosa dicono: i set di didascalie ---------- */
+const GKM=kmAt(GAVIA_I), MKM=kmAt(MORT_I), SALT=Math.round(L.alt[0]+A0);
+const CAPS={
+  luoghi:{ start:"Edolo · 8:21", gavia:"Passo Gavia · 2.551 m",
+           mortirolo:"Passo del Mortirolo", arrivo:"Edolo · 6h09 dopo" },
+  telegrafo:{ start:"Edolo. Si parte.", gavia:"Gavia. 2.551 m.",
+              mortirolo:"Mortirolo.", arrivo:"Edolo. 6h09. Fine." },
+  epica:{ start:"L'alba a Edolo, la valle ancora fredda",
+          gavia:"Il tetto della giornata: 2.551 metri di cielo",
+          mortirolo:"Il Mortirolo, quando le gambe hanno già dato",
+          arrivo:"Edolo di nuovo: il cerchio si chiude dopo sei ore" },
+  seconda:{ start:"Parti da Edolo alle 8:21",
+            gavia:"Sei a 2.551 metri: fa freddo anche a luglio",
+            mortirolo:"Il Mortirolo arriva quando non ne hai più",
+            arrivo:"Torni a Edolo sei ore e nove minuti dopo" },
+  radio:{ start:"km 0 · Edolo · "+fmtN(SALT)+" m slm",
+          gavia:"km "+GKM+" · Passo Gavia · 2.551 m slm",
+          mortirolo:"km "+MKM+" · Passo del Mortirolo · "+fmtN(MALT)+" m slm",
+          arrivo:"km "+Math.round(RAWLEG.km)+" · Edolo · 6h09 in movimento" },
+  confronto:{ start:GRANK===1?"Il giro con più dislivello dei venti":"Per dislivello, il numero "+GRANK+" dei venti",
+              gavia:MYMAX>=ARCHMAX-1?"2.551 m: il punto più alto di tutto il top-20":"2.551 m: fra i tetti del top-20",
+              mortirolo:"In vetta al Mortirolo hai già "+fmtN(Math.round(CLIMB[MORT_I]))+" m nelle gambe",
+              arrivo:"124 km e 3.227 m di dislivello in 6h09" }
+};
+
+/* didascalia standard: cartiglio in basso a sinistra della mappa */
+function capBlock(g,ctx,txt,a,size){
+  if(a<=0||!txt) return;
+  size=size||12;
+  g.font="600 "+size+"px Inter,sans-serif";
+  const lines=wrap(g,txt,Math.min(ctx.MW-28,340));
+  g.globalAlpha=a;
+  lines.forEach((ln,j)=>haloText(g,ln,14,ctx.H-14-(lines.length-1-j)*(size+8),size));
+  g.globalAlpha=1;
+}
+function eachMoment(ctx,fn){
+  for(const m of MOM){ const a=alphaOf(ctx.p,m); if(a>0) fn(m,a); }
+}
+
+/* ================= le varianti ================= */
+const V=[];
+function def(id,fam,name,what,opts,draw){
+  V.push(Object.assign({id:id,fam:fam,name:name,what:what,draw:draw,dur:18},opts||{}));
+}
+
+/* --- base --- */
+def("B01","base","La candidata, nuda",
+"La ricetta ferma del round 2, senza una parola sopra: carta vera, quota come colore, tuffo calmo a 2× su Gavia e Mortirolo, pausa in vetta, profilo di fianco. Tutto quello che vedi qui sotto le si appoggia addosso.",
+{noChips:true},
+function(g,W,H,t){ baseRecipe(g,W,H,t); });
+
+/* --- posizione: dove stanno le parole (contenuto e stile fissi) --- */
+def("P01","posizione","Sul punto",
+"Il nome compare dove succede: ancorato al punto vero della strada, con il suo puntino. Il testo abita la mappa.",null,
+function(g,W,H,t){
+  const ctx=baseRecipe(g,W,H,t);
+  eachMoment(ctx,(m,a)=>{
+    const pos=at(SM,m.f), q=px(ctx.cam,ctx.MW,H,pos.x,pos.y);
+    if(q[0]<-20||q[0]>ctx.MW+20||q[1]<-20||q[1]>H+20) return;
+    g.globalAlpha=a;
+    g.beginPath(); g.arc(clamp(q[0],6,ctx.MW-6),clamp(q[1],6,H-6),2.6,0,7); g.fillStyle=C.ink; g.fill();
+    haloText(g,CAPS.luoghi[m.key],clamp(q[0]+8,6,ctx.MW-150),clamp(q[1]-10,18,H-8),11);
+    g.globalAlpha=1;
+  });
+});
+def("P02","posizione","La fascia",
+"Una striscia fissa in basso: le parole hanno una casa stabile e la mappa resta pulita. L'occhio sa sempre dove andare a leggere.",null,
+function(g,W,H,t){
+  const ctx=baseRecipe(g,W,H,t);
+  let best=null,ba=0;
+  eachMoment(ctx,(m,a)=>{ if(a>ba){ba=a;best=m;} });
+  if(!best) return;
+  g.globalAlpha=Math.min(1,ba*1.4);
+  g.fillStyle="rgba(250,248,243,.92)"; g.fillRect(0,H-42,ctx.MW,42);
+  g.strokeStyle=C.rule; g.lineWidth=1;
+  g.beginPath(); g.moveTo(0,H-42); g.lineTo(ctx.MW,H-42); g.stroke();
+  g.globalAlpha=ba;
+  g.font="600 12.5px Inter,sans-serif"; g.fillStyle=C.ink; g.textAlign="center";
+  g.fillText(CAPS.luoghi[best.key],ctx.MW/2,H-17);
+  g.globalAlpha=1;
+});
+def("P03","posizione","L'angolo",
+"In alto a sinistra, sempre nello stesso posto, come la firma di un quadro. Discreto, mai sopra la traccia.",null,
+function(g,W,H,t){
+  const ctx=baseRecipe(g,W,H,t);
+  eachMoment(ctx,(m,a)=>{
+    g.globalAlpha=a;
+    label(g,"IL GIRO · 9 LUGLIO 2016",14,22,C.ink3,7.5,"left");
+    haloText(g,CAPS.luoghi[m.key],14,40,12);
+    g.globalAlpha=1;
+  });
+});
+def("P04","posizione","Nel profilo",
+"Le parole si agganciano al profilo di fianco, all'altezza giusta del percorso: testo e quota si leggono insieme, la mappa resta muta.",null,
+function(g,W,H,t){
+  const ctx=baseRecipe(g,W,H,t);
+  const yOf=k=>10+SM.cum[k]/TOTALU*(H-20);
+  eachMoment(ctx,(m,a)=>{
+    const y=clamp(yOf(m.i),16,H-8);
+    g.globalAlpha=a;
+    g.strokeStyle=C.ink2; g.lineWidth=1;
+    g.beginPath(); g.moveTo(ctx.MW-6,y-4); g.lineTo(ctx.MW+10,y-4); g.stroke();
+    g.font="600 11px Inter,sans-serif";
+    const txt=CAPS.luoghi[m.key], w=g.measureText(txt).width;
+    g.fillStyle="rgba(250,248,243,.85)"; g.fillRect(ctx.MW-14-w-5,y-15,w+10,18);
+    g.fillStyle=C.ink; g.textAlign="left"; g.fillText(txt,ctx.MW-14-w,y-1);
+    g.globalAlpha=1;
+  });
+});
+def("P05","posizione","Il centro",
+"Grande, al centro, per un attimo: un titolo che attraversa lo schermo e sparisce. Il momento diventa un capitolo.",null,
+function(g,W,H,t){
+  const ctx=baseRecipe(g,W,H,t);
+  eachMoment(ctx,(m,a)=>{
+    g.save(); g.globalAlpha=a;
+    g.shadowColor="rgba(250,248,243,.95)"; g.shadowBlur=10;
+    g.font="400 26px 'Instrument Serif',Georgia,serif";
+    g.fillStyle=C.ink; g.textAlign="center";
+    g.fillText(CAPS.luoghi[m.key],ctx.MW/2,H*.42);
+    g.restore();
+  });
+});
+
+/* --- tipografia: come appaiono le parole (posizione e contenuto fissi) --- */
+def("T01","tipografia","Il cartiglio",
+"Il riferimento: fondo crema dietro le lettere, sans-serif, in basso a sinistra — com'era nel round 2.",null,
+function(g,W,H,t){
+  const ctx=baseRecipe(g,W,H,t);
+  eachMoment(ctx,(m,a)=>capBlock(g,ctx,CAPS.luoghi[m.key],a));
+});
+def("T02","tipografia","Il serif",
+"Instrument Serif, grande, senza scatola: le parole della copertina prestate alla mappa. Solo un alone chiaro a difenderle dal fondo.",null,
+function(g,W,H,t){
+  const ctx=baseRecipe(g,W,H,t);
+  eachMoment(ctx,(m,a)=>{
+    g.save(); g.globalAlpha=a;
+    g.shadowColor="rgba(250,248,243,.95)"; g.shadowBlur=8;
+    g.font="400 22px 'Instrument Serif',Georgia,serif";
+    g.fillStyle=C.ink; g.textAlign="left";
+    g.fillText(CAPS.luoghi[m.key],14,H-16);
+    g.restore();
+  });
+});
+def("T03","tipografia","Il maiuscoletto",
+"Piccolo, tutto maiuscole, spaziatura larga, un trattino oro sopra: la voce dei sottotitoli dei documentari.",null,
+function(g,W,H,t){
+  const ctx=baseRecipe(g,W,H,t);
+  eachMoment(ctx,(m,a)=>{
+    g.save(); g.globalAlpha=a;
+    if("letterSpacing" in g) g.letterSpacing="2px";
+    g.font="700 9.5px Inter,sans-serif";
+    const txt=CAPS.luoghi[m.key].toUpperCase(), w=g.measureText(txt).width;
+    g.fillStyle="rgba(250,248,243,.85)"; g.fillRect(9,H-46,w+10,34);
+    g.strokeStyle=C.gold; g.lineWidth=2;
+    g.beginPath(); g.moveTo(14,H-38); g.lineTo(38,H-38); g.stroke();
+    g.fillStyle=C.ink; g.textAlign="left"; g.fillText(txt,14,H-20);
+    if("letterSpacing" in g) g.letterSpacing="0px";
+    g.restore();
+  });
+});
+def("T04","tipografia","La macchina da scrivere",
+"Le lettere si battono una alla volta, col cursore: il testo diventa un evento, non un'etichetta.",null,
+function(g,W,H,t){
+  const ctx=baseRecipe(g,W,H,t);
+  eachMoment(ctx,(m,a)=>{
+    const full=CAPS.luoghi[m.key];
+    const r=m.key==="start"?clamp(.4+ctx.p/.05,0,1):clamp((ctx.p-m.f+m.w)/(m.w*1.2),0,1);
+    const n=Math.round(full.length*r);
+    g.globalAlpha=a;
+    haloText(g,full.slice(0,n)+(n<full.length?"▎":""),14,H-16,12.5);
+    g.globalAlpha=1;
+  });
+});
+def("T05","tipografia","Il contrappunto",
+"Un numero grande in serif e una riga piccola in sans: prima il dato, poi il nome. La gerarchia del top-20, in miniatura.",null,
+function(g,W,H,t){
+  const ctx=baseRecipe(g,W,H,t);
+  const BIG={start:"8:21",gavia:"2.551 m",mortirolo:fmtN(MALT)+" m",arrivo:"6h09"};
+  const SMALL={start:"Edolo, partenza",gavia:"Passo Gavia",mortirolo:"Passo del Mortirolo",arrivo:"di nuovo a Edolo"};
+  eachMoment(ctx,(m,a)=>{
+    g.save(); g.globalAlpha=a;
+    g.shadowColor="rgba(250,248,243,.95)"; g.shadowBlur=8;
+    g.font="400 30px 'Instrument Serif',Georgia,serif";
+    g.fillStyle=C.ink; g.textAlign="left";
+    g.fillText(BIG[m.key],14,H-30);
+    g.shadowBlur=0;
+    g.font="600 9px Inter,sans-serif"; g.fillStyle=C.ink2;
+    g.fillText(SMALL[m.key].toUpperCase(),15,H-14);
+    g.restore();
+  });
+});
+
+/* --- narrazione: che cosa raccontano (posizione e stile fissi) --- */
+def("N01","narrazione","I luoghi",
+"Il riferimento: toponimi e quote, quattro momenti — Edolo, il Gavia, il Mortirolo, il ritorno. La mappa parla la lingua delle mappe.",null,
+function(g,W,H,t){
+  const ctx=baseRecipe(g,W,H,t);
+  eachMoment(ctx,(m,a)=>capBlock(g,ctx,CAPS.luoghi[m.key],a));
+});
+def("N02","narrazione","I numeri vivi",
+"Nessuna frase: km, metri saliti e ore che corrono in continuo. Racconta il contatore, non la voce.",null,
+function(g,W,H,t){
+  const ctx=baseRecipe(g,W,H,t);
+  const secs=Math.round(ctx.p*RAWLEG.secs);
+  g.fillStyle="rgba(250,248,243,.88)"; g.fillRect(10,H-58,236,48);
+  g.strokeStyle=C.rule; g.lineWidth=1; g.strokeRect(10.5,H-57.5,235,47);
+  g.textAlign="left";
+  g.font="400 19px 'Instrument Serif',Georgia,serif"; g.fillStyle=C.ink;
+  g.fillText(Math.round(ctx.p*RAWLEG.km)+" km",22,H-32);
+  g.fillText(fmtN(Math.round(CLIMB[ctx.head.i]))+" m ↑",96,H-32);
+  g.fillText(Math.floor(secs/3600)+"h"+String(Math.floor(secs%3600/60)).padStart(2,"0"),192,H-32);
+  g.font="600 7.5px Inter,sans-serif"; g.fillStyle=C.ink3;
+  g.fillText("DISTANZA",22,H-18); g.fillText("DISLIVELLO",96,H-18); g.fillText("TEMPO",192,H-18);
+});
+def("N03","narrazione","La storia",
+"Le cinque righe del diario di quel giorno, ognuna al suo momento: la narrazione del top-20 portata dentro la mappa.",null,
+function(g,W,H,t){
+  const ctx=baseRecipe(g,W,H,t);
+  const BA=ST.beat_at;
+  let k=0; for(let b=0;b<BA.length;b++) if(t>=BA[b]) k=b;
+  const a=clamp((t-BA[k])/.04,0,1);
+  capBlock(g,ctx,ST.beats[k],a,11.5);
+});
+def("N04","narrazione","Il confronto",
+"Ogni momento messo in prospettiva sull'archivio: quanto è alto, quanto è duro rispetto agli altri diciannove giri. I numeri sono calcolati, non scritti a mano.",null,
+function(g,W,H,t){
+  const ctx=baseRecipe(g,W,H,t);
+  eachMoment(ctx,(m,a)=>capBlock(g,ctx,CAPS.confronto[m.key],a,11.5));
+});
+
+/* --- voce: con che tono lo dicono (tutto il resto fisso) --- */
+def("R01","voce","Il telegrafo",
+"Frasi di due parole. Punto. La montagna non ha bisogno di aggettivi.",null,
+function(g,W,H,t){
+  const ctx=baseRecipe(g,W,H,t);
+  eachMoment(ctx,(m,a)=>capBlock(g,ctx,CAPS.telegrafo[m.key],a));
+});
+def("R02","voce","L'epica",
+"Il tono del racconto: cielo, fatica, il cerchio che si chiude. Parole che provano a pesare quanto i metri.",null,
+function(g,W,H,t){
+  const ctx=baseRecipe(g,W,H,t);
+  eachMoment(ctx,(m,a)=>capBlock(g,ctx,CAPS.epica[m.key],a,11.5));
+});
+def("R03","voce","La seconda persona",
+"Le didascalie parlano a te: sei tu che parti, che sali, che torni. Il giro smette di essere un documento.",null,
+function(g,W,H,t){
+  const ctx=baseRecipe(g,W,H,t);
+  eachMoment(ctx,(m,a)=>capBlock(g,ctx,CAPS.seconda[m.key],a,11.5));
+});
+def("R04","voce","La radiocorsa",
+"Chilometro, località, quota: il tono asciutto della telecronaca. Ogni riga è una posizione, non un giudizio.",null,
+function(g,W,H,t){
+  const ctx=baseRecipe(g,W,H,t);
+  eachMoment(ctx,(m,a)=>capBlock(g,ctx,CAPS.radio[m.key],a,11.5));
+});
+
+/* ================= impalcatura ================= */
+const FAMS=[["base","la ricetta ferma — dai tuoi voti del round 1"],
+            ["posizione","dove stanno le parole"],
+            ["tipografia","come appaiono le parole"],
+            ["narrazione","che cosa raccontano"],
+            ["voce","con che tono lo dicono"]];
+const main=document.getElementById("main");
+const scenes=[];
+const DUR=18, PAUSE=1.4;
+
+for(const [fam,tag] of FAMS){
+  const h=document.createElement("div");
+  h.className="fam";
+  h.innerHTML='<h2>'+fam.charAt(0).toUpperCase()+fam.slice(1)+'</h2><span>'+tag+'</span>';
+  main.appendChild(h);
+  const grid=document.createElement("div");
+  grid.className="grid"+(fam==="base"?" solo":"");
+  main.appendChild(grid);
+  for(const v of V.filter(x=>x.fam===fam)){
+    const card=document.createElement("article");
+    card.className="card";
+    card.id=v.id.toLowerCase();
+    card.innerHTML=
+      '<div class="cvwrap">'
+      + '<canvas class="cv" aria-label="Variante '+v.id+': '+v.name+'" role="img"></canvas>'
+      + '<span class="vno">'+v.id+'</span>'
+      + '<button class="replay" type="button">rivedi ↻</button>'
+      + '</div>'
+      + '<div class="meta"><span class="tag">'+v.fam+'</span>'
+      + '<h3>'+v.name+'</h3><p>'+v.what+'</p>'
+      + '<div class="vote">'
+      + (v.noChips
+        ? '<span class="vlab">appunti sulla base</span>'
+          +'<input class="note" type="text" maxlength="200" placeholder="commenti liberi sulla ricetta (facoltativo)">'
+        : '<span class="vlab">il tuo voto</span>'
+          +'<div class="chips" role="radiogroup" aria-label="voto '+v.id+'">'
+          +Array.from({length:11},(_,n)=>'<button class="chip" type="button" data-n="'+n+'">'+n+'</button>').join("")
+          +'</div>'
+          +'<input class="note" type="text" maxlength="140" placeholder="nota (facoltativa)">')
+      + '</div></div>';
+    grid.appendChild(card);
+    const cv=card.querySelector(".cv");
+    const sc={v:v, cv:cv, t:0, on:false, W:0, H:0, dpr:1,
+      size(){
+        this.dpr=Math.min(devicePixelRatio||1,2);
+        const r=cv.getBoundingClientRect();
+        this.W=Math.max(1,Math.round(r.width)); this.H=Math.max(1,Math.round(r.height));
+        cv.width=this.W*this.dpr; cv.height=this.H*this.dpr;
+      },
+      frame(){
+        const g=cv.getContext("2d");
+        g.setTransform(this.dpr,0,0,this.dpr,0,0);
+        g.clearRect(0,0,this.W,this.H);
+        this.v.draw.call(this.v,g,this.W,this.H,Math.min(1,this.t));
+      }};
+    card.querySelector(".replay").addEventListener("click",()=>{ sc.t=0; if(RM){sc.t=1; sc.frame();} });
+    scenes.push(sc);
+  }
+}
+
+/* la casella libera per il prossimo round */
+const free=document.createElement("section");
+free.className="freebox";
+free.innerHTML='<h2>Per il prossimo giro</h2>'
+  +'<p>Qui non si vota: si propone. Scrivi qualsiasi cosa vorresti mettere alla prova al round 3 — '
+  +'una dimensione che non abbiamo ancora toccato, una variante che ti manca, un dubbio. '
+  +'Finisce nel blocco «copia i voti» insieme al resto.</p>'
+  +'<textarea id="freetxt" maxlength="2000" placeholder="es. vorrei provare i suoni… / il ritmo dei testi… / la mappa d\'inverno…"></textarea>';
+main.appendChild(free);
+
+let last=0;
+function tick(ts){
+  const dt=last?Math.min(.05,(ts-last)/1000):0; last=ts;
+  for(const sc of scenes){
+    if(!sc.on) continue;
+    const d=sc.v.dur||DUR;
+    sc.t+=dt/d;
+    if(sc.t>1+PAUSE/d) sc.t=0;
+    sc.frame();
+  }
+  requestAnimationFrame(tick);
+}
+const io=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    const sc=scenes.find(x=>x.cv===e.target);
+    if(!sc) return;
+    if(e.isIntersecting){
+      if(!sc.W) sc.size();
+      if(RM){ sc.t=1; sc.frame(); sc.on=false; }
+      else sc.on=true;
+    } else sc.on=false;
+  });
+},{threshold:.2});
+scenes.forEach(sc=>io.observe(sc.cv));
+
+let rt=0;
+addEventListener("resize",()=>{
+  clearTimeout(rt);
+  rt=setTimeout(()=>scenes.forEach(sc=>{ if(sc.W){ sc.size(); sc.frame(); } }),150);
+});
+
+if(!RM) requestAnimationFrame(tick);
+else scenes.forEach(sc=>{ sc.size(); sc.t=1; sc.frame(); });
+
+/* ================= voto ================= */
+const KEY="top20-lab2-voti";
+let votes={};
+try{ votes=JSON.parse(localStorage.getItem(KEY)||"{}"); }catch(e){ votes={}; }
+const progEl=document.getElementById("prog");
+const VOTABLE=V.filter(v=>!v.noChips);
+function saveVotes(){
+  try{ localStorage.setItem(KEY,JSON.stringify(votes)); }catch(e){}
+  const n=VOTABLE.filter(v=>votes[v.id]&&votes[v.id].n!=null).length;
+  progEl.innerHTML="<b>"+n+"</b> / "+VOTABLE.length+" votate";
+}
+for(const v of V){
+  const card=document.getElementById(v.id.toLowerCase());
+  const chips=[...card.querySelectorAll(".chip")];
+  const note=card.querySelector(".note");
+  const st=votes[v.id]||{};
+  if(st.n!=null&&chips[st.n]) chips[st.n].classList.add("sel");
+  if(st.c) note.value=st.c;
+  chips.forEach(ch=>ch.addEventListener("click",()=>{
+    const n=+ch.dataset.n;
+    votes[v.id]=votes[v.id]||{};
+    if(votes[v.id].n===n){ delete votes[v.id].n; ch.classList.remove("sel"); }
+    else{
+      votes[v.id].n=n;
+      chips.forEach(c=>c.classList.toggle("sel",c===ch));
+    }
+    saveVotes();
+  }));
+  note.addEventListener("input",()=>{
+    votes[v.id]=votes[v.id]||{};
+    votes[v.id].c=note.value.trim();
+    if(!votes[v.id].c) delete votes[v.id].c;
+    saveVotes();
+  });
+}
+const freetxt=document.getElementById("freetxt");
+if(votes._free) freetxt.value=votes._free;
+freetxt.addEventListener("input",()=>{
+  votes._free=freetxt.value.trim();
+  if(!votes._free) delete votes._free;
+  saveVotes();
+});
+saveVotes();
+
+const copyBtn=document.getElementById("copy"), outbox=document.getElementById("outbox");
+function summary(){
+  const lines=["VOTI LAB2 top-20 — "+new Date().toLocaleDateString("it-IT")];
+  for(const v of V){
+    const st=votes[v.id];
+    if(!st||(st.n==null&&!st.c)) continue;
+    lines.push(v.id+" "+v.name+" ["+v.fam+"]: "+(st.n!=null?st.n:"—")+(st.c?" — "+st.c:""));
+  }
+  if(votes._free) lines.push("PROSSIMO ROUND: "+votes._free);
+  if(lines.length===1) lines.push("(nessun voto ancora)");
+  return lines.join("\n");
+}
+copyBtn.addEventListener("click",()=>{
+  const txt=summary();
+  outbox.value=txt; outbox.style.display="block";
+  const done=()=>{
+    copyBtn.textContent="copiato ✓ — incollali in chat"; copyBtn.classList.add("ok");
+    setTimeout(()=>{ copyBtn.textContent="copia i voti"; copyBtn.classList.remove("ok"); },2600);
+  };
+  if(navigator.clipboard&&navigator.clipboard.writeText)
+    navigator.clipboard.writeText(txt).then(done,()=>{ outbox.select(); });
+  else{ outbox.select(); try{ document.execCommand("copy"); done(); }catch(e){} }
+});
+document.getElementById("wipe").addEventListener("click",()=>{
+  if(!confirm("Azzerare tutti i voti?")) return;
+  votes={}; saveVotes();
+  document.querySelectorAll(".chip.sel").forEach(c=>c.classList.remove("sel"));
+  document.querySelectorAll(".note").forEach(n=>n.value="");
+  freetxt.value="";
+  outbox.style.display="none";
+});
+})();
+</script>
+</body>
+</html>
