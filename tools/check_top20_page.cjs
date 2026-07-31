@@ -67,7 +67,7 @@ const d = w.document;
 const slides = d.querySelectorAll(".story-slide");
 if (slides.length !== 20) errors.push("story-slide: " + slides.length + " (attese 20)");
 slides.forEach((s, i) => {
-  for (const sel of [".cv2", ".shead h2", ".sbeat", ".scnt-l b", ".scnt-r b", ".replay2"])
+  for (const sel of [".cv2", ".shead h2", ".sbeat", ".sstats", ".stlink", ".replay2"])
     if (!s.querySelector(sel)) errors.push("scheda " + (i + 1) + " senza " + sel);
   if (/undefined|NaN/.test(s.innerHTML)) errors.push("scheda " + (i + 1) + " con undefined/NaN");
 });
@@ -93,8 +93,11 @@ async function run() {
   } catch (e) { errors.push("FRAME: " + (e.stack || e.message)); }
 
   const gavia = d.getElementById("gavia-mortirolo-2016");
-  const kmTxt = gavia.querySelector(".scnt-l b").textContent;
-  const gainTxt = gavia.querySelector(".scnt-r b").textContent;
+  const kmTxt = gavia.querySelector(".s-km").textContent;
+  const gainTxt = gavia.querySelector(".s-gain").textContent;
+  const href = gavia.querySelector(".stlink").getAttribute("href") || "";
+  if (href.indexOf("intervals.icu/activities/i62695131") < 0)
+    errors.push("link attività Gavia: '" + href + "'");
   const beatTxt = gavia.querySelector(".sbeat").textContent;
   /* i valori si confrontano da numeri: il separatore delle migliaia dipende
      dall'ICU di node, non dalla pagina */

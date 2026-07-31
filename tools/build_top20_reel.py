@@ -242,7 +242,7 @@ def prepare(stories, px, style, margin=1.62):
 
 def map_frame(story, li, p, zoomf, S, fonts, cap_alpha=1.0, chrome=True,
               total=20, follow=None, caption=None, note=None, note_alpha=1.0,
-              side=None, elev=False, counters=None):
+              side=None, elev=False, counters=None, cam_p=None):
     """One map frame: the leg `li` of `story` drawn to fraction `p`, at zoom `zoomf`."""
     legs = story["legs"]
     act = legs[li]
@@ -258,6 +258,12 @@ def map_frame(story, li, p, zoomf, S, fonts, cap_alpha=1.0, chrome=True,
     span = min(full_w, full_h)          # non "side": e' il nome del parametro
     i, h = head_at(act["pts"], act["cum"], p)
     hx, hy = to_px(*h)
+    # `cam_p`: la camera puo' inquadrare un punto DIVERSO da dove sta il puntino —
+    # serve al blocco sul commento: si stringe su dove il commento e' nato e resta
+    # ferma li' mentre il puntino avanza piano, cosi' il quadro non scivola
+    if cam_p is not None:
+        h2 = head_at(act["pts"], act["cum"], cam_p)[1]
+        hx, hy = to_px(*h2)
     cw = span / zoomf
     fo = follow if follow is not None else (zoomf - 1) / max(zoomf, 1e-6)
     cx = lerp((x0 + x1) / 2, hx, fo)

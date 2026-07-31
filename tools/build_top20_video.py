@@ -426,9 +426,10 @@ def build(stories, S, fonts, args, emit):
                        for b in range(1, len(st["beats"]))
                        for bt in [st["beat_at"][b]]
                        if lg["t0"] <= bt < lg["t0"] + lg["dt"] - 1e-9]
+                # TUTTE le note, ognuna al suo ancoraggio vero ("top" = la vetta
+                # registrata): il commento nasce nel punto di cui parla
                 ovs += [(R.note_at(l, nt), nt["text"])
-                        for nt in (l["leg"].get("notes") or [])
-                        if R.is_quote(nt["text"])]
+                        for nt in (l["leg"].get("notes") or [])]
 
             # dove sta il punto piu' alto del tratto, in frazione di percorso:
             # e' li' che la camera si tuffa, come la candidata S01 del laboratorio
@@ -458,8 +459,17 @@ def build(stories, S, fonts, args, emit):
                 f = R.ease(min(1.0, f * 1.15))
                 return R.lerp(1.0, zpeak, f), f
 
-            def shot(p, note=None, na=0.0):
+            def shot(p, fz=0.0, ztxt=1.8, cam_p=None):
                 z, fo = cam(p)
+                # lo stacco sul commento vince sul tuffo di vetta solo se stringe
+                # di piu' (e mai in gara, dove servono tutte e cinque le tracce)
+                if zmax > 1.0 and fz > 0.0:
+                    z2 = R.lerp(1.0, ztxt, fz)
+                    if z2 >= z:
+                        return R.map_frame(story, li, p, z2, S, fonts,
+                                           cap_alpha=1.0, total=total, follow=fz,
+                                           caption="", elev=elev,
+                                           counters=counters(p), cam_p=cam_p)
                 return R.map_frame(story, li, p, z, S, fonts, cap_alpha=1.0,
                                    total=total, follow=fo, caption="",
                                    elev=elev, counters=counters(p))
@@ -470,32 +480,57 @@ def build(stories, S, fonts, args, emit):
             if line and li > 0 and not race:
                 ovs.append((0.04, line))
             ovs.sort(key=lambda x: x[0])
-            # calendario dei testi: niente sovrapposizioni, 0,35 s d'aria fra due
-            timed, cursor = [], -10.0
+            # ogni testo vive il tempo che la sua lunghezza chiede (1,6–3,6 s);
+            # gli ancoraggi restano i loro, la coda si gestisce da sola: se un
+            # commento e' ancora in scena quando il puntino passa il prossimo
+            # ancoraggio, il prossimo parte appena il primo ha finito
+            timed, prev_at = [], -1.0
             for at, txt in ovs:
-                dur = max(1.5, min(2.8, 0.9 + 0.11 * len(txt.split())))
-                at = min(max(at, 0.03), 0.93)
-                if at * sec < cursor + 0.35:
-                    at = (cursor + 0.35) / sec
-                    if at > 0.93:
+                # niente emoji in sovrimpressione: con l'alone a 24 passate un
+                # glifo colorato diventa un francobollo scuro
+                txt = R.plain(txt) or txt
+                at = min(max(at, 0.03), 0.94)
+                if at <= prev_at + 0.01:
+                    at = prev_at + 0.01
+                    if at > 0.94:
                         continue
-                timed.append((at, at + dur / sec, txt))
-                cursor = at * sec + dur
+                timed.append((at, max(1.6, min(3.6, 1.2 + 0.14 * len(txt.split()))), txt))
+                prev_at = at
 
             # apertura del tratto sull'inquadratura intera, per leggere la forma
             emit(shot(0.005), 700 if li == 0 else 400)
 
-            n = max(2, nf(sec))
-            fs = 0.28 / sec                    # dissolvenza, in frazione di tratto
-            for j in range(n):
-                p = (j + 1) / float(n)
-                fr = shot(p)
-                for a0, a1, txt in timed:
-                    if a0 <= p <= a1:
-                        a = min(1.0, (p - a0) / fs, (a1 - p) / fs)
-                        fr = center_text(fr, S, fonts, txt, ac, a)
-                        break
-                emit(fr, FMS)
+            # --- il disegno, a orologio: piena velocita' quando la mappa parla da
+            # sola, 45% quando c'e' un commento da leggere (round 4: "use slow
+            # down needed for comments"). Sul commento la camera STACCA su dove il
+            # commento e' nato — tanto piu' vicino quanto piu' il testo e' lungo —
+            # resta ferma li' mentre si legge, poi riapre. Ferma, non a
+            # inseguimento: e' la camera votata, ed e' quella che la GIF regge.
+            TR = 0.30                          # transizione dello stacco, secondi
+            base = 1.0 / (sec * args.fps)      # avanzamento p a piena velocita'
+            p, oi, act = 0.004, 0, None
+            guard = int(args.fps * 150)
+            while p < 0.9995 and guard > 0:
+                guard -= 1
+                if act is not None and act["u"] >= act["dur"] + TR:
+                    act = None
+                if act is None and oi < len(timed) and p >= timed[oi][0]:
+                    at, dur, txt = timed[oi]; oi += 1
+                    act = {"txt": txt, "dur": dur, "u": 0.0, "lock": p,
+                           "z": 1.55 + min(0.75, 0.04 * len(txt.split()))}
+                if act is not None:
+                    act["u"] += 1.0 / args.fps
+                    u = act["u"]
+                    fz = min(1.0, u / TR, max(0.0, (act["dur"] + TR - u) / TR))
+                    a = min(1.0, u / 0.35, max(0.0, (act["dur"] - u) / 0.35))
+                    p = min(1.0, p + base * 0.45)
+                    fr = shot(p, fz=R.ease(fz), ztxt=act["z"], cam_p=act["lock"])
+                    if a > 0:
+                        fr = center_text(fr, S, fonts, act["txt"], ac, a)
+                    emit(fr, FMS)
+                else:
+                    p = min(1.0, p + base)
+                    emit(shot(p), FMS)
 
             # --- il giro finito, a inquadratura piena (la camera ci e' gia':
             # il tuffo si e' riassorbito da solo sulla coda della gaussiana)

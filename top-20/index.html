@@ -89,16 +89,16 @@ button{font-family:inherit}
     0 0 10px var(--bg),0 0 22px var(--bg);
   opacity:0;transition:opacity .45s var(--ease);pointer-events:none}
 .sbeat.on{opacity:1}
-.scnt{position:absolute;bottom:calc(12px + env(safe-area-inset-bottom));
-  background:rgba(250,248,243,.92);border:1px solid var(--rule);border-radius:12px;
-  padding:8px 14px 9px;text-align:left;pointer-events:none}
-.scnt-l{left:12px}
-.scnt-r{right:12px;text-align:right}
-.scnt b{display:block;font-family:var(--serif);font-weight:400;
-  font-size:clamp(1.25rem,4.2vw,1.7rem);line-height:1;color:var(--ink)}
-.scnt i{font-style:normal;font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;
-  font-weight:700;color:var(--ink-3)}
-.race .scnt-r{display:none}
+/* round 4: i numeri vivi stanno nello stesso angolo del nome, sotto il titolo —
+   e il titolo e' un link all'attivita' vera su intervals.icu */
+.stlink{color:inherit;text-decoration:none;display:block}
+.stlink:hover h2{text-decoration:underline;text-underline-offset:4px;
+  text-decoration-thickness:1px}
+.stlink h2::after{content:" ↗";font-size:.58em;color:var(--ink-3)}
+.sstats{margin:7px 0 0;font-family:var(--serif);
+  font-size:clamp(1rem,3.4vw,1.3rem);color:var(--ink);line-height:1.2}
+.sstats b{font-weight:400;font-variant-numeric:tabular-nums}
+.sstats em{font-style:normal;color:var(--ink-3);font-size:.82em;padding:0 2px}
 .srace{position:absolute;left:12px;bottom:calc(78px + env(safe-area-inset-bottom));
   display:flex;flex-direction:column;gap:4px;background:rgba(250,248,243,.92);
   border:1px solid var(--rule);border-radius:12px;padding:10px 14px;text-align:left}
@@ -175,7 +175,7 @@ button{font-family:inherit}
       <p class="ey stg stg1">come leggere le venti schede</p>
       <h2 class="h stg stg2">La traccia è vera,<br>la storia sta al centro</h2>
       <p class="sub stg stg3">Le cinque righe di ogni giorno compaiono al centro della mappa, una alla volta, mentre il puntino corre. Escono dalle descrizioni scritte quel giorno stesso.</p>
-      <p class="fine stg stg4">Nei giorni di montagna la linea si scurisce con la quota, verde valle → verde passo, e il tempo rallenta in vetta. In pianura resta il colore del giorno. I chilometri e i metri contano su negli angoli.</p>
+      <p class="fine stg stg4">Nei giorni di montagna la linea si scurisce con la quota, verde valle → verde passo, il profilo scorre di fianco e il tempo rallenta in vetta. In pianura resta il colore del giorno. I numeri contano su accanto al nome — e il nome è un link: cliccalo per aprire l'attività vera.</p>
     </div>
   </section>
 
@@ -223,6 +223,21 @@ const SPORT_ICON = {bike:"🚲", run:"👟", swim:"🏊"};
 /* le tinte della gara — le stesse cinque del reel, così le due superfici
    raccontano la Maratona con gli stessi colori */
 const TINTS = ["#c2761a","#3b5bb5","#4d7238","#8a5a3c","#963c6e"];
+/* gli id intervals.icu per tratto, estratti da tools/top-20.json: il titolo di
+   ogni scheda porta all'attivita' vera del tratto in corso */
+const IDS = {"milano-sanremo-2016":["i62695126"],"gavia-mortirolo-2016":["i62695131"],
+"ronde-2017":["i62695158"],"liegi-2018":["i62695260"],"milano-half-2019":["i62695523"],
+"primo-703-2020":["i62696125","i62696128"],"prima-maratona-2020":["i62696232"],
+"trinita-2021":["i62696671"],
+"mdd-race":["i62695369","i62696752","i62693540","i62694270","i162840168"],
+"barcelona-703-2021":["i62696968","i62696973","i62696976"],"padova-2023":["i62693426"],
+"milano-sanremo-2023":["i62693494"],"boston-2024":["i62694119"],"iseran-2024":["i62694301"],
+"livigno-2024":["i62694325","i62694326"],"malaga-2024":["i62694555"],
+"bologna-2025":["i67647879","i67761997"],
+"clavicola-2025":["i76257928","i77988384","i78859932","i85238516"],
+"ironman-2025":["i98213662","i98213664","i98213667"],
+"ironman703-9to5-2026":["i156558815","i156623161","i156710894"]};
+const ICU = id => "https://intervals.icu/activities/" + id;
 
 /* ---------- decode: delta ints of 1e-5 deg back to lat/lng ---------- */
 function decode(leg){
@@ -335,8 +350,10 @@ function Scene(st, sec){
   const cv = sec.querySelector(".cv2");
   const beatEl = sec.querySelector(".sbeat");
   const legEl = sec.querySelector(".sleg");
-  const cbL = sec.querySelector(".scnt-l b"), ciL = sec.querySelector(".scnt-l i");
-  const cbR = sec.querySelector(".scnt-r b");
+  const sK = sec.querySelector(".s-km"), sG = sec.querySelector(".s-gain"),
+        sT = sec.querySelector(".s-time");
+  const aT = sec.querySelector(".stlink");
+  const ids = IDS[st.slug] || [];
   const ac = AC[st.accent] || AC.stone;
 
   // t0/dt e beat_at arrivano già calcolati da tools/build_top20.py: la stessa
@@ -535,12 +552,11 @@ function Scene(st, sec){
       if (l.elev) sideProfileCol(g, l, head.i);
     }
 
-    // i numeri vivi negli angoli (lab2: N02 dentro T05) — i totali del giorno
-    // crescono attraverso i tratti, non ripartono da zero
+    // i numeri vivi, nello stesso angolo del nome (round 4) — i totali del
+    // giorno crescono attraverso i tratti, non ripartono da zero
     if (RACE){
       const tmax = legs.reduce((m,x)=>Math.max(m, x.leg.secs||1), 1);
-      cbL.textContent = fmtH(t*tmax);
-      ciL.textContent = "orologio unico · cinque passi";
+      sT.textContent = fmtH(t*tmax);
     } else {
       let km = 0, gain = 0, secs = 0;
       for (let i=0;i<li;i++){
@@ -551,10 +567,11 @@ function Scene(st, sec){
       km += (l.leg.km || 0) * p;
       gain += l.gc.length ? l.gc[Math.min(head.i, l.gc.length-1)] : (l.leg.gain||0)*p;
       secs += (l.leg.secs || 0) * p;
-      cbL.textContent = km >= 100 ? Math.round(km) + " km"
-                                  : km.toFixed(1).replace(".", ",") + " km";
-      ciL.textContent = "percorsi · " + fmtH(secs);
-      cbR.textContent = fmtN(Math.round(gain)) + " m";
+      sK.textContent = km >= 100 ? Math.round(km) + " km"
+                                 : km.toFixed(1).replace(".", ",") + " km";
+      sG.textContent = fmtN(Math.round(gain)) + " m ↑";
+      sT.textContent = fmtH(secs);
+      if (ids[li]) aT.href = ICU(ids[li]);
     }
 
     legEl.textContent = RACE ? "" :
@@ -616,17 +633,21 @@ STORIES.forEach((st, n) => {
   const ac = AC[st.accent] || AC.stone;
   sec.style.setProperty("--ac", ac);
 
+  const firstId = (IDS[st.slug]||[])[0];
   sec.innerHTML =
     '<canvas class="cv2" aria-label="'+st.title+', traccia GPS animata" role="img"></canvas>'
     + '<div class="shead">'
     +   '<p class="skick"><span class="sno">'+String(n+1).padStart(2,"0")+'</span> · '
     +     st.icon+'  '+st.kicker.toUpperCase()+'</p>'
-    +   '<h2>'+st.title+'</h2>'
+    +   '<a class="stlink"'+(firstId?' href="'+ICU(firstId)+'"':'')
+    +     ' target="_blank" rel="noopener" title="apri l\'attività su intervals.icu">'
+    +     '<h2>'+st.title+'</h2></a>'
+    +   (st.mode === "race"
+       ? '<p class="sstats"><b class="s-time">0h00</b> <em>orologio unico</em></p>'
+       : '<p class="sstats"><b class="s-km">0 km</b><em> · </em><b class="s-gain">0 m ↑</b><em> · </em><b class="s-time">0h00</b></p>')
     +   '<p class="sleg"></p>'
     + '</div>'
     + '<div class="sbeat" role="status"></div>'
-    + '<div class="scnt scnt-l"><b>0 km</b><i>percorsi</i></div>'
-    + '<div class="scnt scnt-r"><b>0 m</b><i>di salita</i></div>'
     + (st.mode === "race"
        ? '<div class="srace">'+st.legs.map((l,j)=>
            '<span><em style="background:'+TINTS[j%TINTS.length]+'"></em>'+l.label+'</span>').join("")+'</div>'
