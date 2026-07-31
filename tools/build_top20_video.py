@@ -1,5 +1,20 @@
 #!/usr/bin/env python3
-"""top-20, v3: lo stesso racconto come **video**, non piu' come GIF.
+"""top-20, v3/v4: lo stesso racconto come **video**, non piu' come GIF.
+
+La v4 applica i voti del laboratorio 2 (top-20/lab2.html, 31/07/2026):
+
+- **i commenti stanno al centro, sopra la mappa velata** (P05 = 10, "non solo i
+  passi, ma tutti i commenti") — non piu' pagine di carta piena: la mappa resta
+  visibile sotto il testo, al 74% di velo;
+- **i numeri vivi negli angoli in contrappunto** (N02 = 9 dentro T05 = 7): km e
+  tempo in basso a sinistra, dislivello a destra, cifra grande in Georgia ed
+  etichetta in maiuscoletto, contano su mentre il puntino corre. Via la barra
+  dei dati ferma;
+- **la quota come colore, ma solo dove si sale** ("questa mappa quando
+  dislivello, se non dislivello solo path"): sopra i 12 m/km il tratto si
+  disegna con la rampa verde del laboratorio (RAMP in build_top20_reel), in
+  pianura resta il colore d'accento;
+- **la riga di ogni tratto** (dal secondo in poi) passa anche lei al centro.
 
 Perche' un file diverso e non una bandiera in piu' su `build_top20_reel.py`: quel
 tool e' costruito attorno a un vincolo che qui non esiste. In una GIF **tenere un
@@ -49,12 +64,13 @@ import os
 import sys
 import time
 
-from PIL import Image
+from PIL import Image, ImageDraw
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+import basemap as BM                                                  # noqa: E402
 import build_top20_reel as R                                          # noqa: E402
-from build_top20_gif import AC, BG, INK3, font                        # noqa: E402
+from build_top20_gif import AC, BG, INK, INK2, INK3, font             # noqa: E402
 
 for _s in (sys.stdout, sys.stderr):
     if hasattr(_s, "reconfigure"):
@@ -98,18 +114,104 @@ def card_ms(st, minus=0):
 
 # ------------------------------------------------------------------ le pagine
 
-def note_card(S, fonts, text, st, n, total, ac, alpha=1.0):
-    """Un commento a tutto schermo: la pagina che nella GIF non ci si poteva
-    permettere.
+def center_text(base, S, fonts, text, ac, alpha, kicker=None, body=None):
+    """Il testo al centro SOPRA un quadro vivo — il P05 del laboratorio 2, votato
+    10 con la nota "non solo i passi, ma tutti i commenti".
 
-    Il testo breve va grande, quello lungo va in corpo: sopra le novanta battute
-    il "big" andrebbe a quattro righe e a quel punto non e' piu' un'affermazione,
-    e' un paragrafo, e si legge meglio piccolo. `text_card` mette gia' in corsivo
-    le citazioni in corpo, che e' esattamente il caso delle note prese dal diario.
+    Non e' una pagina: e' una sovrimpressione. Lo scrim sta solo dietro il blocco
+    del testo, il resto del quadro continua a muoversi (la traccia si disegna, il
+    volo scorre) e si vede. Il testo breve va grande in Georgia, quello lungo in
+    corpo; le citazioni dal diario in corsivo, come ovunque.
     """
-    kind = "big" if len(R.plain(text)) <= 90 else "body"
-    lines = [("%02d · %s" % (n, st["kicker"].upper()), "kicker"), (text, kind)]
-    return R.text_card(S, fonts, alpha, lines, ac, n, total)
+    a = max(0.0, min(1.0, alpha))
+    if a < 0.03 or not text:
+        return base.convert("RGB")
+    out = base.convert("RGBA")
+    dr = ImageDraw.Draw(out)
+    f_kick, f_emo = fonts[0], fonts[5]
+    big = len(R.plain(text)) <= 90 and not body
+    f = fonts[7] if big else (fonts[10] if R.is_quote(text) else fonts[8])
+    f = fonts[7] if body else f            # nell'intro il titolo va comunque grande
+    pad = int(S * 0.115)
+    ls = R.wrap(dr, text, f, f_emo, S - 2 * pad)
+    lh = int(S * (0.092 if (big or body) else 0.050))
+    bls = R.wrap(dr, body, fonts[8], f_emo, S - 2 * pad) if body else []
+    h = (len(ls) * lh + len(bls) * int(S * 0.050)
+         + (int(S * 0.048) + int(S * 0.030) if kicker else int(S * 0.010))
+         + (int(S * 0.016) if body else 0))
+    y = (S - h) // 2
+    widths = ([R.text_w(dr, l, f, f_emo) for l in ls]
+              + [R.text_w(dr, l, fonts[8], f_emo) for l in bls]
+              + ([R.tracked_w(dr, kicker, f_kick, S * 0.006)] if kicker else []))
+    wmax = max(widths)
+    R.scrim(out, (S / 2 - wmax / 2 - int(S * .040), y - int(S * .032),
+                  S / 2 + wmax / 2 + int(S * .040), y + h + int(S * .028)),
+            int(S * 0.022), int(210 * a))
+    dr = ImageDraw.Draw(out)
+    fade = lambda c: tuple(int(round(BG[i] + (c[i] - BG[i]) * a)) for i in range(3))
+    if kicker:
+        tw = R.tracked_w(dr, kicker, f_kick, S * 0.006)
+        R.draw_tracked(dr, ((S - tw) // 2, y), kicker, f_kick, fade(INK3), S * 0.006)
+        y += int(S * 0.048)
+        R.rule(dr, S // 2 - int(S * 0.030), y + int(S * 0.010),
+               S // 2 + int(S * 0.030), fade(ac))
+        y += int(S * 0.030)
+    for line in ls:
+        w = R.text_w(dr, line, f, f_emo)
+        R.draw_text(dr, ((S - w) // 2, y), line, f, f_emo,
+                    fade(INK if (big or body) else INK2))
+        y += lh
+    if body:
+        y += int(S * 0.016)
+        fb = fonts[10] if R.is_quote(body) else fonts[8]
+        for line in bls:
+            w = R.text_w(dr, line, fb, f_emo)
+            R.draw_text(dr, ((S - w) // 2, y), line, fb, f_emo, fade(INK2))
+            y += int(S * 0.050)
+    return out.convert("RGB")
+
+
+# ------------------------------------------------------------------ il volo basso
+
+def make_flight(a, b, px, style):
+    """La carta del trasferimento: un mosaico solo che contiene il giorno prima e
+    il prossimo, con margine. Niente piu' ritorno al globo fra le storie: la
+    camera resta "vicino a terra" e scorre da un posto all'altro su una mappa
+    vera — il globo resta solo in apertura e in chiusura, dove e' un riassunto.
+    """
+    import math
+    la0, la1 = sorted((a[0], b[0]))
+    lo0, lo1 = sorted((a[1], b[1]))
+    dla = max(la1 - la0, 0.35)
+    dlo = max(lo1 - lo0, 0.35)
+    la0 -= dla * .40; la1 += dla * .40
+    lo0 -= dlo * .40; lo1 += dlo * .40
+    cla, clo = (la0 + la1) / 2, (lo0 + lo1) / 2
+    k = math.cos(math.radians(max(-80, min(80, cla)))) or 1.0
+    half = max(la1 - la0, (lo1 - lo0) * k) / 2
+    la0, la1 = cla - half, cla + half
+    lo0, lo1 = clo - half / k, clo + half / k
+    img, to_px = BM.mosaic(la0, la1, lo0, lo1, px=px, style=style, zmax=12)
+    return {"img": img, "to_px": to_px, "a": to_px(*a), "b": to_px(*b)}
+
+
+def flight_shot(fl, t, S):
+    """Un frame del volo: pan da A a B, con la camera che si alza a meta' strada
+    quanto basta a vedere tutti e due — mai fino allo spazio."""
+    import math
+    img = fl["img"]
+    mw, mh = img.size
+    span = min(mw, mh)
+    z = 1.0 + 1.05 * abs(math.cos(math.pi * t))     # 2.05 → 1.0 → 2.05
+    e = R.ease(t)
+    cx = R.lerp(fl["a"][0], fl["b"][0], e)
+    cy = R.lerp(fl["a"][1], fl["b"][1], e)
+    w = span / z
+    cx = min(max(cx, w / 2), mw - w / 2)
+    cy = min(max(cy, w / 2), mh - w / 2)
+    crop = img.crop((int(cx - w / 2), int(cy - w / 2),
+                     int(cx + w / 2), int(cy + w / 2)))
+    return crop.resize((S, S), Image.LANCZOS).convert("RGB")
 
 
 # ------------------------------------------------------------------ i raccordi
@@ -191,7 +293,10 @@ def build(stories, S, fonts, args, emit):
         moving(nf(1.6), lambda t: R.globe_frame(S, 46, 9, dots, fonts,
                                                 upto=int(t * (total - 1)),
                                                 radius=R.lerp(0.30, 0.86, R.ease(t))))
-        emit(R.globe_frame(S, 46, 9, dots, fonts, upto=total - 1), 900)
+        prev_globe = R.globe_frame(S, 46, 9, dots, fonts, upto=total - 1)
+        emit(prev_globe, 900)
+    else:
+        prev_globe = None
 
     prev_map = None
     for si, story in enumerate(stories):
@@ -200,28 +305,49 @@ def build(stories, S, fonts, args, emit):
         race = st.get("mode") == "race"
         plat, plon = (stories[si - 1]["clat"], stories[si - 1]["clon"]) if si else (46, 9)
 
-        # --- si esce dalla mappa precedente sciogliendola nella carta
+        # --- il trasferimento, "vicino a terra": niente piu' ritorno al globo fra
+        # le storie. Dalla mappa di prima si passa alla carta del volo — un
+        # mosaico vero che contiene tutti e due i posti — la camera scorre verso
+        # il giorno nuovo, e l'INTRO della storia si legge al centro MENTRE sotto
+        # si vola. Il globo resta solo in apertura e in chiusura, dove riassume.
+        lg0 = story["legs"][0]["leg"]
+        elev0 = (not race and bool(lg0.get("alt")) and lg0.get("km", 0) > 0
+                 and lg0.get("gain", 0) / float(lg0["km"]) >= 12.0)
+        target = R.map_frame(story, 0, 0.0, 1.0, S, fonts, cap_alpha=0.0, total=total,
+                             elev=elev0,
+                             counters=None if race else
+                             {"km": "0 km", "kml": "PERCORSI",
+                              "gain": "0 m", "gainl": "DI SALITA"})
+        card = st.get("card") or [["date", st["kicker"]], ["lead", st["title"]]]
+        date = next((t for k2, t in card if k2 == "date"), st["kicker"])
+        lead = next((t for k2, t in card if k2 == "lead"), st["title"])
+        body = next((t for k2, t in card if k2 == "body"), "")
+        kick = "%02d · %s" % (si + 1, date.upper())
+        fl = make_flight((plat, plon), (story["clat"], story["clon"]),
+                         args.fly_px, args.style)
+        first = flight_shot(fl, 0.0, S)
         if prev_map is not None:
-            moving(nf(0.5), lambda t: R.to_paper(R.on_paper(prev_map,
-                                                            R.lerp(1.0, 0.55, R.ease(t)), S),
-                                                 R.ease(t), S))
+            cross(prev_map, first, 0.45)
+        elif prev_globe is not None:
+            cross(prev_globe, first, 0.55)
+        nfl = nf(max(1.6, args.fly_sec))
+        for k in range(nfl):
+            t = (k + 1) / float(nfl)
+            fr = center_text(flight_shot(fl, t, S), S, fonts, lead, ac,
+                             min(1.0, t / 0.30), kicker=kick, body=body)
+            R.ticks(fr, si + 1, total, S, ac, fonts)
+            emit(fr, FMS)
+        last = flight_shot(fl, 1.0, S)
+        held = center_text(last, S, fonts, lead, ac, 1.0, kicker=kick, body=body)
+        R.ticks(held, si + 1, total, S, ac, fonts)
+        emit(held, card_ms(st))
+        moving(nf(0.35), lambda t: center_text(last, S, fonts, lead, ac,
+                                               1.0 - R.ease(t), kicker=kick, body=body))
+        cross(last, target, 0.5)
 
-        # --- la scheda del giorno, che si monta da sola e resta il tempo che serve
-        cin = nf(args.cardin_sec)
-        moving(cin, lambda t: R.story_card(S, fonts, st, si + 1, total, t, ac))
-        full_card = R.story_card(S, fonts, st, si + 1, total, 1.0, ac)
-        emit(full_card, card_ms(st, minus=int(args.cardin_sec * 1000 * 0.6)))
-        moving(nf(0.4), lambda t: R.to_paper(full_card, R.ease(t), S))
-
-        # --- il volo: il globo cresce, ruota, e la mappa entra sulla carta
-        target = R.map_frame(story, 0, 0.0, 1.0, S, fonts, cap_alpha=0.0, total=total)
-        moving(nf(args.fly_sec),
-               lambda t: R.globe_frame(S, R.lerp(plat, story["clat"], R.ease(t)),
-                                       R.lerp(plon, story["clon"], R.ease(t)), dots, fonts,
-                                       upto=si if t > .45 else max(0, si - 1),
-                                       radius=R.lerp(0.26, 0.90, R.ease(min(1, t * 1.25)))))
-        moving(nf(0.55), lambda t: R.on_paper(target, R.lerp(0.38, 1.0, R.ease(t)), S))
-
+        # i totali del giorno crescono attraverso i tratti: i contatori negli
+        # angoli non ripartono da zero quando Bologna passa dalla bici alla corsa
+        km_before, gain_before, secs_before = 0.0, 0.0, 0.0
         for li, l in enumerate(story["legs"]):
             if race and li > 0:
                 break                     # in gara le cinque edizioni corrono insieme
@@ -235,31 +361,78 @@ def build(stories, S, fonts, args, emit):
             # servono tutte e cinque nell'inquadratura, o non c'e' confronto
             zmax = 1.0 if race else args.zdraw
 
+            # quota-colore solo dove il giorno sale davvero: sotto i 12 m/km la
+            # rampa direbbe "pianura" con sei verdi diversi, e resta l'accento
+            lg = l["leg"]
+            elev = (not race and bool(lg.get("alt"))
+                    and lg.get("km", 0) > 0
+                    and lg.get("gain", 0) / float(lg["km"]) >= 12.0)
+            # dislivello cumulato lungo il tratto, per il contatore di destra
+            alt = lg.get("alt") or []
+            gc = [0.0]
+            for j in range(1, len(alt)):
+                d = alt[j] - alt[j - 1]
+                gc.append(gc[-1] + (d if d > 0 else 0.0))
+
+            def counters(p):
+                if race:
+                    return None
+                i, _ = R.head_at(l["pts"], l["cum"], p)
+                km = km_before + l["cum"][-1] * p / 1000.0
+                gain = gain_before + (gc[min(i, len(gc) - 1)] if alt else
+                                      lg.get("gain", 0) * p)
+                secs = secs_before + p * (lg.get("secs") or 0)
+                return {"km": ("%d km" % round(km)) if km >= 100
+                               else ("%.1f km" % km).replace(".", ","),
+                        "kml": "PERCORSI · " + R.hm(secs).upper(),
+                        "gain": R.thou(gain) + " m", "gainl": "DI SALITA"}
+
             notes = sorted(l["leg"].get("notes") or [], key=lambda x: R.note_at(l, x))
             stops = [(R.note_at(l, nt), nt) for nt in notes]
             stops = [(p, nt) for p, nt in stops if 0.04 < p < 0.985]
 
-            def cam(p):
-                """Zoom e inseguimento a questo punto del tratto.
+            # dove sta il punto piu' alto del tratto, in frazione di percorso:
+            # e' li' che la camera si tuffa, come la candidata S01 del laboratorio
+            if alt:
+                ti = max(range(len(alt)), key=lambda x: alt[x])
+                topf = l["cum"][min(ti, len(l["cum"]) - 1)] / (l["cum"][-1] or 1.0)
+            else:
+                topf = 0.5
+            dive_c = topf if elev else 0.5
+            zpeak = min(args.zdraw, 2.0 if elev else 1.8)
 
-                Si apre largo, stringe entro il primo 18 % e molla nell'ultimo 12 %:
-                cosi' il tratto si legge tre volte — la forma prima, il dettaglio
-                durante, la forma finita dopo.
+            def cam(p):
+                """Camera FERMA, con un solo tuffo calmo — la ricetta del
+                laboratorio (S01), non l'inseguimento continuo della v3.
+
+                Il tuffo e' una gaussiana attorno al punto piu' alto (o a meta',
+                in pianura): 2× in vetta, 1,8× altrove, e per tutto il resto del
+                tratto l'inquadratura non si muove. Oltre a essere la camera
+                votata, e' quella che la GIF si puo' permettere: un frame a
+                camera ferma scrive solo la linea che avanza e i contatori,
+                uno a camera mobile riscrive l'intero quadro.
                 """
                 if zmax <= 1.0:
                     return 1.0, 0.0
-                u = (min(1.0, p / 0.18) if p < 0.18 else
-                     1.0 - min(1.0, (p - 0.88) / 0.12) if p > 0.88 else 1.0)
-                z = R.lerp(1.0, zmax, R.ease(u))
-                return z, R.ease(u)
+                import math
+                f = math.exp(-((p - dive_c) ** 2) / (2 * 0.06 ** 2))
+                f = R.ease(min(1.0, f * 1.15))
+                return R.lerp(1.0, zpeak, f), f
 
             def shot(p, note=None, na=0.0):
                 z, fo = cam(p)
                 return R.map_frame(story, li, p, z, S, fonts, cap_alpha=1.0,
-                                   total=total, follow=fo, caption="")
+                                   total=total, follow=fo, caption="",
+                                   elev=elev, counters=counters(p))
 
             # apertura del tratto sull'inquadratura intera, per leggere la forma
             emit(shot(0.005), 700 if li == 0 else 400)
+
+            # la riga del tratto entra nel flusso come una nota a inizio tratto
+            # (la scheda l'ha gia' detta per il primo: solo dal secondo in poi)
+            line = lg.get("line")
+            if line and li > 0 and not race:
+                stops = [(0.03, {"text": line})] + stops
 
             prev_p = 0.0
             for k, (at, nt) in enumerate(stops + [(1.0, None)]):
@@ -271,24 +444,34 @@ def build(stories, S, fonts, args, emit):
                 prev_p = at
                 if nt is None:
                     break
-                # --- il commento prende tutto lo schermo, poi si torna
-                held = shot(at)
-                emit(held, 260)                       # un attimo di sospensione
-                card = note_card(S, fonts, nt["text"], st, si + 1, total, ac)
-                cross(held, card, 0.55)
-                emit(card, read_ms(nt["text"]))
-                cross(card, held, 0.5, k1=1.03)
-                emit(held, 200)
+                # --- la nota al centro, e la traccia NON si ferma: sotto il testo
+                # il puntino continua a un quarto della velocita'. Niente pagina
+                # piena, niente quadro congelato: una sovrimpressione sul vivo.
+                ms = read_ms(nt["text"])
+                nsec = ms / 1000.0
+                nxt = stops[k + 1][0] if k + 1 < len(stops) else 1.0
+                dp = min(0.25 * nsec / sec, max(0.0, nxt - at) * 0.5)
+                # cinque passi al secondo, non trenta: 200 ms e' la soglia oltre
+                # cui la GIF tratta il frame come pausa e lo scrive UNA volta —
+                # sotto il testo il puntino avanza comunque, e il file non esplode
+                nn = max(6, int(round(nsec * 5.0)))
+                for j in range(nn):
+                    t = (j + 1) / float(nn)
+                    tsec = t * nsec
+                    a = min(1.0, tsec / 0.40, max(0.0, (nsec - tsec) / 0.40))
+                    emit(center_text(shot(at + dp * t), S, fonts, nt["text"], ac, a),
+                         200)
+                prev_p = at + dp
 
-            # --- si allarga a mostrare il giro finito
-            if zmax > 1.0:
-                moving(nf(0.7), lambda t: R.map_frame(
-                    story, li, 1.0, R.lerp(cam(0.5)[0], 1.0, R.ease(t)), S, fonts,
-                    total=total, follow=R.lerp(cam(0.5)[1], 0.0, R.ease(t)), caption=""))
+            # --- il giro finito, a inquadratura piena (la camera ci e' gia':
+            # il tuffo si e' riassorbito da solo sulla coda della gaussiana)
             end = R.map_frame(story, li, 1.0, 1.0, S, fonts, total=total,
-                              follow=0.0, caption="")
+                              follow=0.0, caption="", elev=elev, counters=counters(1.0))
             emit(end, args.hold if li == len(story["legs"]) - 1 else args.hold_leg)
             prev_map = end
+            km_before += l["cum"][-1] / 1000.0
+            gain_before += gc[-1] if alt else lg.get("gain", 0)
+            secs_before += lg.get("secs") or 0
 
     # --- finale
     moving(nf(0.5), lambda t: R.to_paper(prev_map, R.ease(t), S))
@@ -439,18 +622,23 @@ def main():
                     help="quanto stringe la camera mentre insegue il puntino")
     ap.add_argument("--cardin-sec", type=float, default=1.5,
                     help="quanto ci mette la scheda del giorno a montarsi")
-    ap.add_argument("--fly-sec", type=float, default=1.8, help="il volo sul globo")
+    ap.add_argument("--fly-sec", type=float, default=1.8,
+                    help="il volo basso fra due storie")
+    ap.add_argument("--fly-px", type=int, default=1500,
+                    help="lato del mosaico del volo di trasferimento")
     ap.add_argument("--hold-leg", type=int, default=700, help="pausa a fine tratto")
     ap.add_argument("--hold", type=int, default=1500, help="pausa a fine giornata")
     ap.add_argument("--only", help="solo queste storie, numerate da 1: 1,17,18")
     ap.add_argument("--intro", action="store_true",
                     help="tieni apertura e finale anche con --only")
     ap.add_argument("--out", default=OUT)
-    ap.add_argument("--gif", nargs="?", const=OUT.replace(".mp4", "-v3.gif"),
+    ap.add_argument("--gif", nargs="?", const=OUT.replace(".mp4", "-v4.gif"),
                     help="scrivi anche la GIF, dagli stessi frame, ridotti")
-    ap.add_argument("--gif-size", type=int, default=440, help="lato della GIF")
-    ap.add_argument("--gif-fps", type=float, default=10.0,
-                    help="passo del movimento in GIF: le pause restano lunghe comunque")
+    ap.add_argument("--gif-size", type=int, default=400, help="lato della GIF")
+    ap.add_argument("--gif-fps", type=float, default=8.0,
+                    help="passo del movimento in GIF: le pause restano lunghe comunque. "
+                         "Otto e non dieci: nella v4 anche note e voli sono quadri in "
+                         "movimento, e a dieci il file sfora i trenta MB")
     ap.add_argument("--colors", type=int, default=44)
     args = ap.parse_args()
 

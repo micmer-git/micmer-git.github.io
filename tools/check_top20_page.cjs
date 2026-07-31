@@ -1,144 +1,113 @@
-/* Headless smoke test for top-20/index.html.
+/* Smoke test jsdom per top-20/index.html — layout full-bleed (lab2, 2026-07-31).
  *
- * There is no browser on this machine, so the page's own script is extracted and
- * run against a stub DOM plus a canvas context that records every coordinate it
- * is handed. It catches what matters: reference errors, NaN geometry, and a dot
- * that leaves the canvas. Run: node tools/.check_page.js
+ * Stub di canvas (con controllo di coordinate finite), Image (le tile CARTO non
+ * si scaricano: drawTiles salta i tile mai pronti), IntersectionObserver e rAF a
+ * clock finto. Si fa girare l'animazione di TUTTE le schede fino in fondo e si
+ * controllano: markup (testata, beat, contatori, legenda gara), geometria
+ * finita, contatori che arrivano ai totali, beat visibile.
+ *
+ *   node tools/check_top20_page.cjs
+ *
+ * jsdom risale da qui a scratchpad/node_modules (il repo vive nello scratchpad
+ * della sessione); altrove: npm i jsdom accanto al repo.
  */
 const fs = require("fs");
 const path = require("path");
+const { JSDOM } = require("jsdom");
 const ROOT = path.join(__dirname, "..");
 
 const html = fs.readFileSync(path.join(ROOT, "top-20", "index.html"), "utf8");
-const script = html.match(/<script>([\s\S]*?)<\/script>/g).pop()
-                   .replace(/^<script>/, "").replace(/<\/script>$/, "");
-const data = fs.readFileSync(path.join(ROOT, "top-20", "_data.js"), "utf8")
-               .replace(/^const /gm, "var ");
+const data = fs.readFileSync(path.join(ROOT, "top-20", "_data.js"), "utf8");
+const script = html.match(/<script>([\s\S]*?)<\/script>\s*<\/body>/)[1];
 
-const W = 640, H = 480, PW = 640, PH = 46;
-const bad = [];
-let strokes = 0, arcs = 0;
+const dom = new JSDOM(html.replace(/<script[\s\S]*?<\/script>/g, ""),
+  { url: "https://example.org/", runScripts: "outside-only" });
+const w = dom.window, errors = [], bad = [];
 
-function ctx(w, h, tag){
-  const rec = (x, y, what) => {
-    if (!Number.isFinite(x) || !Number.isFinite(y)) bad.push(tag+" "+what+" non finito: "+x+","+y);
-  };
+const fin = (tag) => (x, y) => {
+  if (!Number.isFinite(x) || !Number.isFinite(y)) bad.push(tag + ": " + x + "," + y);
+};
+function ctx() {
+  const chk = fin("geom");
+  const grad = { addColorStop() {} };
   return {
-    _t:[1,0,0,1,0,0],
-    setTransform(){}, clearRect(){}, beginPath(){}, closePath(){},
-    moveTo(x,y){ rec(x,y,"moveTo"); }, lineTo(x,y){ rec(x,y,"lineTo"); },
-    arc(x,y,r){ rec(x,y,"arc"); if(!Number.isFinite(r)||r<0) bad.push(tag+" raggio "+r); arcs++; },
-    stroke(){ strokes++; }, fill(){},
-    set globalAlpha(v){ if(!(v>=0&&v<=1)) bad.push(tag+" alpha "+v); },
-    get globalAlpha(){ return 1; },
-    set lineWidth(v){ if(!(v>0)) bad.push(tag+" lineWidth "+v); },
-    get lineWidth(){ return 1; },
-    strokeStyle:"", fillStyle:"", lineJoin:"", lineCap:""
+    setTransform() {}, clearRect() {}, save() {}, restore() {}, clip() {},
+    beginPath() {}, closePath() {}, rect() {}, fillRect() {},
+    moveTo(x, y) { chk(x, y); }, lineTo(x, y) { chk(x, y); },
+    arc(x, y, r) { chk(x, y); if (!Number.isFinite(r) || r < 0) bad.push("raggio " + r); },
+    stroke() {}, fill() {}, drawImage() {}, fillText() {},
+    measureText: t => ({ width: (t || "").length * 6.2 }),
+    createRadialGradient: () => grad, createLinearGradient: () => grad,
+    font: "", fillStyle: "", strokeStyle: "", lineWidth: 1, globalAlpha: 1,
+    lineJoin: "", lineCap: "", textAlign: "", textBaseline: ""
   };
 }
-
-function el(tag){
-  const e = {
-    tagName:(tag||"div").toUpperCase(), className:"", id:"", style:{}, children:[],
-    _html:"", _text:"", width:0, height:0,
-    classList:{ _s:new Set(),
-      add(c){this._s.add(c)}, remove(c){this._s.delete(c)},
-      toggle(c,on){ on ? this._s.add(c) : this._s.delete(c) },
-      contains(c){return this._s.has(c)} },
-    set innerHTML(v){ this._html = v; }, get innerHTML(){ return this._html; },
-    set textContent(v){ this._text = v; }, get textContent(){ return this._text; },
-    appendChild(c){ this.children.push(c); return c; },
-    insertBefore(c){ this.children.push(c); return c; },
-    addEventListener(){}, removeEventListener(){},
-    getBoundingClientRect(){ return this.tagName === "CANVAS" && this._prof
-      ? {width:PW, height:PH} : {width:W, height:H}; },
-    getContext(){ return this._ctx || (this._ctx = ctx(this.width, this.height, this.className)); },
-    scrollTo(){}, scrollTop:0, scrollHeight:1000, clientHeight:500,
-    querySelector(sel){ return this._q(sel)[0] || null; },
-    querySelectorAll(sel){ return this._q(sel); },
-    _q(sel){
-      // enough of a selector engine for what the page asks of it
-      if (sel === ".cv"){ const c = el("canvas"); return [c]; }
-      if (sel === ".prof"){ const c = el("canvas"); c._prof = true; return [c]; }
-      if (sel === ".legname" || sel === ".replay") return [el("p")];
-      if (sel === ".beats li"){
-        return [0,1,2,3,4].map(() => el("li"));
-      }
-      return [];
-    }
-  };
-  return e;
-}
-
-const slides = [];
-global.document = {
-  createElement: el,
-  getElementById(id){ return (global.document._by[id] || (global.document._by[id] = el("div"))); },
-  querySelectorAll(sel){
-    // le venti schede sono state iniettate in #story: sono loro le .slide
-    return sel === ".slide" ? slides.concat(global.document._by["story"].children) : [];
-  },
-  _by:{}
+w.HTMLCanvasElement.prototype.getContext = function () { return this._g || (this._g = ctx()); };
+Object.defineProperty(w.HTMLCanvasElement.prototype, "width", { writable: true, value: 800 });
+Object.defineProperty(w.HTMLCanvasElement.prototype, "height", { writable: true, value: 600 });
+w.Element.prototype.getBoundingClientRect = function () {
+  return { width: 800, height: 600, top: 0, left: 0, right: 800, bottom: 600 };
 };
-global.matchMedia = () => ({matches:false});
-global.devicePixelRatio = 2;
-/* Il vero test è far scorrere l'animazione fino in fondo: rAF esegue subito, con
-   un tetto di frame per non ricorrere all'infinito su venti scene in parallelo. */
-let frames = 0;
-global.requestAnimationFrame = (f) => { if (frames++ < 40000) f(); return 0; };
-global.cancelAnimationFrame = () => {};
-global.addEventListener = () => {};
-global.setTimeout = (f) => 0;
-global.clearTimeout = () => {};
-const observed = [];
-global.IntersectionObserver = class {
-  constructor(cb){ this.cb = cb; ioList.push(this); }
-  observe(t){ observed.push(t); }
+w.Image = class { constructor() { this.crossOrigin = ""; } set src(v) { this._s = v; } set onload(f) {} };
+w.matchMedia = () => ({ matches: false, addListener() {}, addEventListener() {} });
+w.devicePixelRatio = 1;
+const ios = [];
+w.IntersectionObserver = class {
+  constructor(cb) { this.cb = cb; this.targets = []; ios.push(this); }
+  observe(t) { this.targets.push(t); } unobserve() {} disconnect() {}
 };
-const ioList = [];
+let rafQ = [];
+w.requestAnimationFrame = f => { rafQ.push(f); return rafQ.length; };
+w.cancelAnimationFrame = () => {};
 
-// il page script chiude su document/window: eseguilo
-eval(data + "\n" + script);
+try { w.eval(data + "\n" + script); }
+catch (e) { errors.push("EVAL: " + e.message); }
 
-if (!ioList.length) { console.log("!! nessun IntersectionObserver registrato"); process.exit(1); }
-const io = ioList[0];
-
-// niente scene senza slide osservate: le sezioni iniettate finiscono in
-// document._by.story.children
-const story = global.document._by["story"];
-const sections = story.children;
-console.log("sezioni iniettate:", sections.length);
-if (sections.length !== 20) { console.log("!! attese 20 schede"); process.exit(1); }
-
-// ogni scheda deve avere titolo, kicker, 4 statistiche e 5 righe
-let issues = 0;
-sections.forEach((s, i) => {
-  const h = s.innerHTML;
-  for (const need of ["st-title", "st-kick", "beats", "replay", "class=\"cv\"", "class=\"prof\""]){
-    if (h.indexOf(need) < 0){ console.log("!! scheda", i+1, "senza", need); issues++; }
-  }
-  const stats = (h.match(/class="stat"/g) || []).length;
-  if (stats !== 4){ console.log("!! scheda", i+1, "ha", stats, "statistiche"); issues++; }
-  const li = (h.match(/<li>/g) || []).length;
-  if (li !== 5){ console.log("!! scheda", i+1, "ha", li, "righe"); issues++; }
-  if (/undefined|NaN|null/.test(h)){ console.log("!! scheda", i+1, "contiene undefined/NaN/null"); issues++; }
+const d = w.document;
+const slides = d.querySelectorAll(".story-slide");
+if (slides.length !== 20) errors.push("story-slide: " + slides.length + " (attese 20)");
+slides.forEach((s, i) => {
+  for (const sel of [".cv2", ".shead h2", ".sbeat", ".scnt-l b", ".scnt-r b", ".replay2"])
+    if (!s.querySelector(sel)) errors.push("scheda " + (i + 1) + " senza " + sel);
+  if (/undefined|NaN/.test(s.innerHTML)) errors.push("scheda " + (i + 1) + " con undefined/NaN");
 });
+const race = d.querySelector(".story-slide.race");
+if (!race) errors.push("manca la scheda race");
+else if (race.querySelectorAll(".srace span").length !== 5)
+  errors.push("legenda gara: " + race.querySelectorAll(".srace span").length + " voci");
+if (d.getElementById("grid20").children.length !== 20)
+  errors.push("indice: " + d.getElementById("grid20").children.length + " voci");
 
-// far girare l'animazione: entra in vista -> start(), poi avanza a mano
-io.cb(observed.map(t => ({target:t, isIntersecting:true})));
-console.log("start() su", observed.length, "slide senza eccezioni");
+/* tutte in vista → start(); poi si spinge il clock oltre i 18 s di ogni scena */
+for (const io of ios) if (io.targets.length) io.cb(io.targets.map(t => ({ target: t, isIntersecting: true })));
+async function run() {
+  try {
+    /* il tick cappa dt a 50 ms: servono ~360 passi per i 18 s delle scene warp */
+    for (let ts = 0; ts <= 42000; ts += 100) {
+      const q = rafQ; rafQ = [];
+      for (const f of q) f(ts);
+      if (ts === 12000) await new Promise(r => setTimeout(r, 420));  // fa scattare lo swap del beat
+    }
+    await new Promise(r => setTimeout(r, 420));
+    const q = rafQ; rafQ = []; for (const f of q) f(42100);
+  } catch (e) { errors.push("FRAME: " + (e.stack || e.message)); }
 
-// l'indice deve avere 20 voci
-const grid = global.document._by["grid20"];
-console.log("voci d'indice:", grid.children.length);
-if (grid.children.length !== 20) issues++;
+  const gavia = d.getElementById("gavia-mortirolo-2016");
+  const kmTxt = gavia.querySelector(".scnt-l b").textContent;
+  const gainTxt = gavia.querySelector(".scnt-r b").textContent;
+  const beatTxt = gavia.querySelector(".sbeat").textContent;
+  /* i valori si confrontano da numeri: il separatore delle migliaia dipende
+     dall'ICU di node, non dalla pagina */
+  const num = s => parseInt((s || "").replace(/\D/g, ""), 10);
+  if (Math.abs(num(kmTxt) - 123) > 4) errors.push("contatore km Gavia a fine corsa: '" + kmTxt + "'");
+  if (Math.abs(num(gainTxt) - 3212) > 120) errors.push("contatore D+ Gavia: '" + gainTxt + "'");
+  if (!beatTxt || beatTxt.length < 10) errors.push("beat Gavia vuoto: '" + beatTxt + "'");
+  if (!gavia.querySelector(".sbeat").classList.contains("on")) errors.push("beat Gavia non visibile");
+  const bologna = d.getElementById("bologna-2025");
+  if (!bologna.querySelector(".sleg").textContent) errors.push("sleg Bologna vuoto (multi-tratto)");
+  if (bad.length) errors.push("geometria: " + bad.length + " valori non finiti — " + bad.slice(0, 4).join(" · "));
 
-console.log("frame disegnati:", frames, "· stroke:", strokes, "· arc:", arcs);
-if (strokes < 20 * 100){ console.log("!! troppo pochi stroke: l'animazione non è girata"); issues++; }
-if (bad.length){
-  console.log("!! coordinate non valide:", bad.length);
-  bad.slice(0,8).forEach(b => console.log("   ", b));
-  process.exit(1);
+  if (errors.length) { console.log("FAIL\n" + errors.join("\n")); process.exit(1); }
+  console.log("OK — 20 schede full-bleed, geometria finita, contatori a totale, beat al centro, legenda gara");
 }
-if (issues){ console.log("!!", issues, "problemi di markup"); process.exit(1); }
-console.log("\nOK — 20 schede, geometria finita, nessuna eccezione");
+run();

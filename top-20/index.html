@@ -61,56 +61,53 @@ button{font-family:inherit}
 .in .stg1{transition-delay:.05s}.in .stg2{transition-delay:.16s}.in .stg3{transition-delay:.28s}
 .in .stg4{transition-delay:.42s}.in .stg5{transition-delay:.56s}
 
-/* ===== the twenty ===== */
-.story-slide{padding-top:calc(30px + env(safe-area-inset-top));padding-bottom:calc(50px + env(safe-area-inset-bottom))}
-.card{width:100%;max-width:1180px;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);
-  gap:clamp(18px,3vw,44px);align-items:center;text-align:left}
-.mapcol{min-width:0;position:relative}
-.cv{width:100%;aspect-ratio:4/3;display:block;background:transparent;border-radius:10px}
-.prof{width:100%;height:46px;display:block;margin-top:6px}
-.legname{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;
-  color:var(--ink-3);min-height:1.2em;margin-top:4px;transition:color .4s}
-
-.txtcol{min-width:0;display:flex;flex-direction:column}
-.no{font-family:var(--serif);font-size:clamp(2.6rem,7vw,4.4rem);line-height:.85;
-  color:var(--rule);letter-spacing:-.03em}
-.st-kick{font-size:.72rem;text-transform:uppercase;letter-spacing:.19em;font-weight:600;
-  color:var(--ink-3);margin-top:10px}
-.st-title{font-family:var(--serif);font-size:clamp(1.7rem,4.2vw,2.6rem);line-height:1.02;
-  letter-spacing:-.01em;margin:6px 0 0}
-.stats{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:14px;padding-bottom:16px;
-  border-bottom:1px solid var(--rule)}
-.stat{display:flex;flex-direction:column}
-.stat i{font-style:normal;font-size:.64rem;text-transform:uppercase;letter-spacing:.14em;
-  color:var(--ink-3);font-weight:600}
-.stat b{font-family:var(--serif);font-weight:400;font-size:1.5rem;line-height:1.1}
-
-.beats{list-style:none;margin:16px 0 0;padding:0;counter-reset:b}
-.beats li{counter-increment:b;position:relative;padding:0 0 0 30px;margin:0 0 13px;
-  font-size:clamp(.94rem,1.9vw,1.06rem);line-height:1.42;color:var(--ink-2);
-  opacity:.18;transform:translateY(6px);transition:opacity .6s var(--ease),transform .6s var(--ease),color .6s}
-.beats li::before{content:counter(b);position:absolute;left:0;top:.15em;width:19px;height:19px;
-  border-radius:50%;border:1px solid var(--rule);font-size:.63rem;font-weight:700;
-  display:flex;align-items:center;justify-content:center;color:var(--ink-3);
-  transition:background .5s,border-color .5s,color .5s}
-.beats li.on{opacity:1;transform:none;color:var(--ink)}
-.beats li.on::before{background:var(--ac);border-color:var(--ac);color:#fff}
-
-.replay{align-self:flex-start;margin-top:6px;font-size:.72rem;font-weight:600;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--ink-3);background:none;border:1px solid var(--rule);
-  border-radius:99px;padding:7px 15px;cursor:pointer;transition:color .3s,border-color .3s}
-.replay:hover{color:var(--ink);border-color:var(--ink-3)}
-
-@media (max-width:860px){
-  .card{grid-template-columns:1fr;gap:12px}
-  .mapcol{order:1}.txtcol{order:2}
-  .cv{aspect-ratio:1/1;max-height:40dvh;margin:0 auto}
-  .prof{height:34px}
-  .no{font-size:2.2rem}
-  .stats{gap:4px 16px;padding-bottom:12px;margin-top:10px}
-  .stat b{font-size:1.15rem}
-  .beats li{margin-bottom:9px;font-size:.9rem;padding-left:26px}
-  .beats li::before{width:17px;height:17px;font-size:.58rem}
+/* ===== the twenty — full-bleed, la ricetta del laboratorio =====
+   La mappa (tile vere) riempie la schermata; la storia si legge AL CENTRO una
+   riga alla volta mentre il puntino corre; i numeri contano negli angoli in
+   contrappunto. Niente piu' colonna di testo di fianco. */
+.story-slide{padding:0;display:block}
+.story-slide .cv2{position:absolute;inset:0;width:100%;height:100%;display:block}
+.shead{position:absolute;top:calc(12px + env(safe-area-inset-top));left:12px;
+  max-width:min(74vw,560px);background:rgba(250,248,243,.92);border:1px solid var(--rule);
+  border-radius:12px;padding:10px 16px 12px;text-align:left}
+.skick{font-size:.62rem;text-transform:uppercase;letter-spacing:.16em;font-weight:700;
+  color:var(--ink-3);margin:0}
+.sno{color:var(--ac);font-weight:700}
+.shead h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.15rem,3.6vw,1.75rem);
+  line-height:1.04;margin:4px 0 0;color:var(--ink);letter-spacing:-.01em}
+.sleg{font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600;
+  color:var(--ink-2);margin:6px 0 0}
+.sleg:empty{display:none}
+.sbeat{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  max-width:min(84vw,560px);width:max-content;text-align:center;
+  font-family:var(--serif);font-size:clamp(1.2rem,4.6vw,1.95rem);line-height:1.28;
+  color:var(--ink);background:rgba(250,248,243,.9);border-radius:14px;padding:16px 24px;
+  box-shadow:0 2px 18px rgba(20,21,15,.07);
+  opacity:0;transition:opacity .5s var(--ease);pointer-events:none}
+.sbeat.on{opacity:1}
+.scnt{position:absolute;bottom:calc(12px + env(safe-area-inset-bottom));
+  background:rgba(250,248,243,.92);border:1px solid var(--rule);border-radius:12px;
+  padding:8px 14px 9px;text-align:left;pointer-events:none}
+.scnt-l{left:12px}
+.scnt-r{right:12px;text-align:right}
+.scnt b{display:block;font-family:var(--serif);font-weight:400;
+  font-size:clamp(1.25rem,4.2vw,1.7rem);line-height:1;color:var(--ink)}
+.scnt i{font-style:normal;font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;
+  font-weight:700;color:var(--ink-3)}
+.race .scnt-r{display:none}
+.srace{position:absolute;left:12px;bottom:calc(78px + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;gap:4px;background:rgba(250,248,243,.92);
+  border:1px solid var(--rule);border-radius:12px;padding:10px 14px;text-align:left}
+.srace span{font-size:.68rem;color:var(--ink-2);display:flex;align-items:center;gap:7px}
+.srace em{width:9px;height:9px;border-radius:50%;display:inline-block}
+.replay2{position:absolute;right:12px;top:calc(12px + env(safe-area-inset-top));
+  font-size:.66rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-3);background:rgba(250,248,243,.9);border:1px solid var(--rule);
+  border-radius:99px;padding:7px 14px;cursor:pointer;transition:color .3s,border-color .3s}
+.replay2:hover{color:var(--ink);border-color:var(--ink-3)}
+@media (max-width:600px){
+  .shead{max-width:calc(100vw - 116px)}
+  .sbeat{font-size:clamp(1.02rem,4.6vw,1.45rem);padding:12px 16px}
 }
 
 /* index + chrome */
@@ -140,7 +137,7 @@ button{font-family:inherit}
 @media (prefers-reduced-motion:reduce){
   .story{scroll-behavior:auto}
   .stg{transition:none}
-  .beats li{opacity:1;transform:none;color:var(--ink)}
+  .sbeat{transition:none}
   .hint span{animation:none}
 }
 </style>
@@ -172,9 +169,9 @@ button{font-family:inherit}
   <section class="slide sl-cream">
     <div class="wrap">
       <p class="ey stg stg1">come leggere le venti schede</p>
-      <h2 class="h stg stg2">La traccia è vera,<br>la storia sta nei numeri</h2>
-      <p class="sub stg stg3">Le cinque righe di ogni giorno escono dalle descrizioni scritte quel giorno stesso, e dai numeri registrati. Niente è stato aggiunto dopo.</p>
-      <p class="fine stg stg4">Sotto ogni mappa c'è il profilo altimetrico che si riempie insieme al puntino. Le storie di più giorni hanno più tracce: la camera si sposta da una all'altra.</p>
+      <h2 class="h stg stg2">La traccia è vera,<br>la storia sta al centro</h2>
+      <p class="sub stg stg3">Le cinque righe di ogni giorno compaiono al centro della mappa, una alla volta, mentre il puntino corre. Escono dalle descrizioni scritte quel giorno stesso.</p>
+      <p class="fine stg stg4">Nei giorni di montagna la linea si scurisce con la quota, verde valle → verde passo, e il tempo rallenta in vetta. In pianura resta il colore del giorno. I chilometri e i metri contano su negli angoli.</p>
     </div>
   </section>
 
@@ -233,15 +230,58 @@ function decode(leg){
   return pts;
 }
 
-/* Equirectangular, with the longitude squeezed by cos(lat): at 45° a degree of
-   longitude is 0.71 of a degree of latitude, and without this every route comes
-   out stretched east-west. Good enough at these scales, and it keeps the shapes
-   recognisable against the real map. */
+/* Web-Mercator, non piu' equirettangolare: sotto la traccia ora ci sono le tile
+   CARTO vere (la "carta" che il laboratorio ha promosso), e le tile parlano solo
+   mercatore. Unita': il mondo e' 256. */
 function project(pts){
-  const latm = pts.reduce((s,p)=>s+p[0],0)/pts.length;
-  const k = Math.cos(latm*Math.PI/180);
-  return pts.map(p=>[p[1]*k, -p[0]]);       // x east, y down
+  return pts.map(p=>{
+    const lat = Math.max(-85, Math.min(85, p[0]));
+    const s = Math.sin(lat*Math.PI/180);
+    return [(p[1]+180)/360*256, (0.5-Math.log((1+s)/(1-s))/(4*Math.PI))*256];
+  });
 }
+
+function hex2rgb(h){ return [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)]; }
+function mix(h1,h2,t){
+  const a=hex2rgb(h1), b=hex2rgb(h2);
+  return "rgb("+Math.round(lerp(a[0],b[0],t))+","+Math.round(lerp(a[1],b[1],t))+","+Math.round(lerp(a[2],b[2],t))+")";
+}
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+
+/* ---------- le tile, con cache — lo stesso giro del laboratorio ---------- */
+const TILES={cache:{},
+  get(z,x,y){
+    const n=1<<z; x=((x%n)+n)%n;
+    if(y<0||y>=n) return null;
+    const k=z+"/"+x+"/"+y;
+    let t=this.cache[k];
+    if(!t){
+      t={img:new Image(),ok:false};
+      t.img.crossOrigin="anonymous";
+      t.img.onload=()=>{t.ok=true;};
+      t.img.src="https://basemaps.cartocdn.com/light_all/"+z+"/"+x+"/"+y+".png";
+      this.cache[k]=t;
+    }
+    return t.ok?t.img:null;
+  }};
+function drawTiles(g,cam,W,H){
+  const z=clamp(Math.round(Math.log2(cam.s)),3,17), n2=Math.pow(2,z);
+  const tw=cam.s*256/n2;
+  const x0=cam.cx-(W/2)/cam.s, y0=cam.cy-(H/2)/cam.s;
+  const tx0=Math.floor(x0*n2/256), ty0=Math.floor(y0*n2/256);
+  const nx=Math.ceil(W/tw)+1, ny=Math.ceil(H/tw)+1;
+  for(let i=0;i<=nx;i++) for(let j=0;j<=ny;j++){
+    const img=TILES.get(z,tx0+i,ty0+j);
+    if(!img) continue;
+    g.drawImage(img,((tx0+i)*256/n2-x0)*cam.s,((ty0+j)*256/n2-y0)*cam.s,tw+.5,tw+.5);
+  }
+  g.fillStyle="rgba(250,248,243,.38)"; g.fillRect(0,0,W,H);   // il velo del lab
+}
+function fitCam(bb,W,H,pad){
+  const span=Math.max(bb.w,bb.h)*(1+(pad||0.12)*2);
+  return {s:Math.min(W,H)/span, cx:bb.cx, cy:bb.cy};
+}
+function px(cam,W,H,x,y){ return [W/2+(x-cam.cx)*cam.s, H/2+(y-cam.cy)*cam.s]; }
 
 function bbox(xy){
   let a=1e9,b=1e9,c=-1e9,e=-1e9;
@@ -285,53 +325,143 @@ function at(l, p){
           y: l.xy[lo][1] + (l.xy[hi][1]-l.xy[lo][1])*f};
 }
 
-function Scene(st, cv, prof, legname, beats){
+function Scene(st, sec){
   const RACE = st.mode === "race";
+  const cv = sec.querySelector(".cv2");
+  const beatEl = sec.querySelector(".sbeat");
+  const legEl = sec.querySelector(".sleg");
+  const cbL = sec.querySelector(".scnt-l b"), ciL = sec.querySelector(".scnt-l i");
+  const cbR = sec.querySelector(".scnt-r b");
+  const ac = AC[st.accent] || AC.stone;
+
   // t0/dt e beat_at arrivano già calcolati da tools/build_top20.py: la stessa
   // linea del tempo la usa anche la GIF, e ricalcolarla qui vorrebbe dire due
   // versioni dello stesso peso che divergono al primo ritocco.
   const legs = st.legs.map(l => {
     const xy = project(decode(l));
-    return {leg:l, xy:xy, bb:bbox(xy), alt:l.alt, cum:arclen(xy), t0:l.t0, dt:l.dt};
+    const o = {leg:l, xy:xy, bb:bbox(xy), alt:l.alt||[], cum:arclen(xy), t0:l.t0, dt:l.dt};
+    // quota-colore solo dove il giorno sale davvero (lab2: "questa mappa quando
+    // dislivello, se non dislivello solo path") — soglia 12 m/km, come la GIF
+    o.elev = !RACE && o.alt.length > 1 && l.km > 0 && (l.gain||0)/l.km >= 12;
+    const gc = [0];
+    for (let i=1;i<o.alt.length;i++){ const d=o.alt[i]-o.alt[i-1]; gc.push(gc[i-1]+(d>0?d:0)); }
+    o.gc = gc;
+    let mn=1e9, mx=-1e9;
+    for (const v of o.alt){ if(v<mn)mn=v; if(v>mx)mx=v; }
+    o.amin = mn; o.amax = Math.max(mx, mn+1);
+    if (o.elev){
+      // le vette: la più alta, più una seconda se è lontana e prominente
+      // (il giro Gavia+Mortirolo ha due pause, non una)
+      let im=0; for(let i=0;i<o.alt.length;i++) if(o.alt[i]>o.alt[im]) im=i;
+      const tot=o.cum[o.cum.length-1]||1;
+      const fr=i=>o.cum[Math.min(i,o.cum.length-1)]/tot;
+      o.peaks=[fr(im)];
+      let i2=-1;
+      for(let i=0;i<o.alt.length;i++){
+        if(Math.abs(fr(i)-o.peaks[0])<.2) continue;
+        if(o.alt[i]>o.amin+(o.amax-o.amin)*.55 && (i2<0||o.alt[i]>o.alt[i2])) i2=i;
+      }
+      if(i2>=0) o.peaks.push(fr(i2));
+      // e il tempo si addensa sulle vette (V32): tabella integrata, invertita
+      const N=400, T=new Float64Array(N+1);
+      const dip=(u,x)=>Math.exp(-((u-x)*(u-x))/(2*.02*.02));
+      for(let k=1;k<=N;k++){
+        const u=(k-.5)/N;
+        let dens=1; for(const pk of o.peaks) dens+=6*dip(u,pk);
+        T[k]=T[k-1]+dens;
+      }
+      const wtot=T[N];
+      o.warp=function(q2){
+        const target=wtot*clamp(q2,0,1);
+        let lo=0,hi=N;
+        while(lo<hi-1){ const m=(lo+hi)>>1; if(T[m]<=target)lo=m; else hi=m; }
+        const span=T[hi]-T[lo], f=span>0?(target-T[lo])/span:0;
+        return (lo+f)/N;
+      };
+    } else { o.peaks=[0.5]; o.warp=q2=>q2; }
+    return o;
   });
+  const allbb = bbox([].concat.apply([], legs.map(x=>x.xy)));
 
-  const ac = AC[st.accent] || AC.stone;
   let raf = 0, t = 0, running = false, dpr = 1, W = 0, H = 0;
+  let shownBeat = -1, swapTimer = 0;
 
   function size(){
     dpr = Math.min(devicePixelRatio || 1, 2);
     const r = cv.getBoundingClientRect();
     W = Math.max(1, Math.round(r.width)); H = Math.max(1, Math.round(r.height));
     cv.width = W*dpr; cv.height = H*dpr;
-    const rp = prof.getBoundingClientRect();
-    prof.width = Math.max(1,Math.round(rp.width))*dpr; prof.height = Math.max(1,Math.round(rp.height))*dpr;
   }
 
-  /* camera: frame the whole leg, dive to 3.2x around the dot in the middle
-     third, come back out before handing over to the next leg */
+  /* camera FERMA con un solo tuffo calmo sulla vetta (S01): gaussiana attorno
+     al punto più alto — 2× in montagna, 1,8× a metà strada in pianura. In gara
+     l'inquadratura tiene tutte e cinque le edizioni, sempre. */
   function camera(l, head, p){
-    const pad = 0.10;
-    const wide = Math.max(l.bb.w, l.bb.h) * (1 + pad*2);
-    let f = 0;                                   // 0 = wide, 1 = tight on the dot
-    if (p > .16 && p < .84) f = ease(Math.min(1,(p-.16)/.18)) * ease(Math.min(1,(.84-p)/.18));
-    const zoom = lerp(1, 3.2, f);
-    const span = wide / zoom;
-    return {s: Math.min(W, H) / span,
-            cx: lerp(l.bb.cx, head.x, f),
-            cy: lerp(l.bb.cy, head.y, f)};
+    const bb = (RACE || l.leg.frame === "all") ? allbb : l.bb;
+    const wide = fitCam(bb, W, H, .12);
+    if (RACE) return wide;
+    let f = 0;
+    for (const pk of l.peaks) f = Math.max(f, Math.exp(-((p-pk)*(p-pk))/(2*.06*.06)));
+    f = ease(Math.min(1, f*1.15));
+    const z = lerp(1, l.elev ? 2 : 1.8, f);
+    return {s: wide.s*z, cx: lerp(bb.cx, head.x, f), cy: lerp(bb.cy, head.y, f)};
   }
 
   function drawTrack(g, l, cam, head, alpha, colour, width){
     g.beginPath();
     const end = head ? head.i : l.xy.length - 1;
     for (let i = 0; i <= end; i++){
-      const x = W/2 + (l.xy[i][0]-cam.cx)*cam.s;
-      const y = H/2 + (l.xy[i][1]-cam.cy)*cam.s;
-      i ? g.lineTo(x,y) : g.moveTo(x,y);
+      const q = px(cam, W, H, l.xy[i][0], l.xy[i][1]);
+      i ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1]);
     }
-    if (head) g.lineTo(W/2 + (head.x-cam.cx)*cam.s, H/2 + (head.y-cam.cy)*cam.s);
+    if (head){ const q = px(cam, W, H, head.x, head.y); g.lineTo(q[0], q[1]); }
     g.globalAlpha = alpha; g.strokeStyle = colour; g.lineWidth = width;
     g.lineJoin = g.lineCap = "round"; g.stroke(); g.globalAlpha = 1;
+  }
+
+  const rampCol = (l,i) => mix("#cfe0bd", "#22400f",
+                               (l.alt[Math.min(i,l.alt.length-1)]-l.amin)/(l.amax-l.amin));
+
+  function haloName(g, txt, x, y){
+    g.font = "600 10.5px Inter,sans-serif";
+    const w = g.measureText(txt).width;
+    g.fillStyle = "rgba(250,248,243,.85)"; g.fillRect(x-4, y-11, w+8, 15);
+    g.fillStyle = "#14150f"; g.textAlign = "left"; g.fillText(txt, x, y);
+  }
+  /* i nomi veri — partenza, arrivo, vetta — ancorati alla traccia (lab2: luoghi 9) */
+  function places(g, l, cam){
+    const pl = l.leg.places || {};
+    const marks = [];
+    if (pl.from) marks.push([0, pl.from]);
+    if (pl.to) marks.push([l.xy.length-1, pl.to]);
+    if (pl.top && l.alt.length){
+      let im=0; for(let i=0;i<l.alt.length;i++) if(l.alt[i]>l.alt[im]) im=i;
+      marks.push([im, pl.top]);
+    }
+    for (const m of marks){
+      const q = px(cam, W, H, l.xy[m[0]][0], l.xy[m[0]][1]);
+      if (q[0]<10||q[0]>W-10||q[1]<24||q[1]>H-12) continue;
+      g.beginPath(); g.arc(q[0], q[1], 2.4, 0, 7);
+      g.fillStyle="#faf8f3"; g.fill(); g.lineWidth=1; g.strokeStyle="#8f9382"; g.stroke();
+      haloName(g, m[1], Math.min(q[0]+7, W-90), Math.max(20, q[1]-8));
+    }
+  }
+  /* il profilo, ridotto a una silhouette in basso al centro: si riempie col
+     puntino, solo nei giorni in cui la quota è la storia */
+  function profileStrip(g, l, p, headI){
+    const bw = Math.min(W*.42, 300), x0 = (W-bw)/2, hh = 36, y0 = H - hh - 20;
+    const total = l.cum[l.cum.length-1] || 1;
+    const xOf = k => x0 + l.cum[k]/total*bw;
+    const yOf = v => y0 + hh - 2 - ((v-l.amin)/(l.amax-l.amin))*(hh-6);
+    g.beginPath(); g.moveTo(x0, y0+hh);
+    for (let k=0;k<l.alt.length;k++) g.lineTo(xOf(k), yOf(l.alt[k]));
+    g.lineTo(x0+bw, y0+hh); g.closePath();
+    g.fillStyle = "rgba(228,225,214,.75)"; g.fill();
+    g.save(); g.beginPath(); g.rect(x0, y0, p*bw, hh); g.clip();
+    g.beginPath(); g.moveTo(x0, y0+hh);
+    for (let k=0;k<l.alt.length;k++) g.lineTo(xOf(k), yOf(l.alt[k]));
+    g.lineTo(x0+bw, y0+hh); g.closePath();
+    g.fillStyle = "rgba(77,114,56,.4)"; g.fill(); g.restore();
   }
 
   function frame(){
@@ -342,97 +472,113 @@ function Scene(st, cv, prof, legname, beats){
     let li = legs.length-1;
     for (let i=0;i<legs.length;i++) if (t >= legs[i].t0 && t < legs[i].t0+legs[i].dt){ li = i; break; }
     const l = legs[li];
-    const p = Math.min(1, Math.max(0, (t - l.t0)/l.dt));
+    const q2 = clamp((t - l.t0)/l.dt, 0, 1);
+    const p = l.warp(q2);
     const head = at(l, p);
     const cam = camera(l, head, p);
 
+    drawTiles(g, cam, W, H);
+
     if (RACE){
-      // Cinque edizioni della stessa corsa, partite nello stesso istante e ognuna
-      // col passo che aveva quel luglio: i due percorsi corti finiscono a un terzo
-      // e restano ad aspettare i lunghi. Senza questo ramo la pagina avrebbe
-      // animato solo la prima delle cinque, che con quel titolo sarebbe falso.
       const tmax = legs.reduce((m,x)=>Math.max(m, x.leg.secs||1), 1);
       for (let i=0;i<legs.length;i++){
-        const q = legs[i], tint = TINTS[i % TINTS.length];
-        drawTrack(g, q, cam, null, .14, "#8f9382", 1.2);
-        const qp = Math.min(1, t * tmax / (q.leg.secs || 1));
-        const qh = at(q, qp);
-        drawTrack(g, q, cam, qh, .95, tint, 2.2);
-        const qx = W/2+(qh.x-cam.cx)*cam.s, qy = H/2+(qh.y-cam.cy)*cam.s;
-        g.beginPath(); g.arc(qx,qy,3.4,0,7); g.fillStyle = tint; g.fill();
+        const e = legs[i], tint = TINTS[i % TINTS.length];
+        drawTrack(g, e, cam, null, .30, "#8f9382", 1.1);
+        const ep = Math.min(1, t * tmax / (e.leg.secs || 1));
+        const eh = at(e, ep);
+        drawTrack(g, e, cam, eh, .95, tint, 2.2);
+        const qd = px(cam, W, H, eh.x, eh.y);
+        g.beginPath(); g.arc(qd[0], qd[1], 3.4, 0, 7); g.fillStyle = tint; g.fill();
         g.lineWidth = 1.4; g.strokeStyle = "#faf8f3"; g.stroke();
       }
     } else {
-      // gli altri tratti restano sotto, sbiaditi: nelle storie di due giorni si
-      // vede l'andata mentre parte il ritorno
       for (let i=0;i<legs.length;i++){
         if (i === li) continue;
-        drawTrack(g, legs[i], cam, null, i < li ? .30 : .12, i < li ? ac : "#c9c4b6", 1.4);
+        drawTrack(g, legs[i], cam, null, i < li ? .55 : .30, i < li ? ac : "#c9c4b6", 1.4);
       }
-      drawTrack(g, l, cam, null, .16, "#8f9382", 1.6);        // il tratto intero, pallido
-      drawTrack(g, l, cam, head, .95, ac, 2.6);                // quello già percorso
+      drawTrack(g, l, cam, null, .40, "#8f9382", 1.4);          // il tratto intero
+      if (l.elev){
+        // la quota come colore: verde valle → verde passo, a segmenti
+        for (let i=1;i<=head.i;i++){
+          const a = px(cam,W,H,l.xy[i-1][0],l.xy[i-1][1]), b = px(cam,W,H,l.xy[i][0],l.xy[i][1]);
+          g.beginPath(); g.moveTo(a[0],a[1]); g.lineTo(b[0],b[1]);
+          g.strokeStyle = rampCol(l,i); g.lineWidth = 2.7;
+          g.lineJoin = g.lineCap = "round"; g.stroke();
+        }
+      } else {
+        drawTrack(g, l, cam, head, .95, ac, 2.6);
+      }
+      const s0 = px(cam, W, H, l.xy[0][0], l.xy[0][1]);
+      g.beginPath(); g.arc(s0[0], s0[1], 3.2, 0, 7);
+      g.fillStyle = "#faf8f3"; g.fill(); g.lineWidth = 1.4; g.strokeStyle = ac; g.stroke();
+      const hq = px(cam, W, H, head.x, head.y);
+      const dc = l.elev ? rampCol(l, head.i) : ac;
+      g.beginPath(); g.arc(hq[0], hq[1], 10, 0, 7); g.fillStyle = dc; g.globalAlpha = .16; g.fill();
+      g.globalAlpha = 1;
+      g.beginPath(); g.arc(hq[0], hq[1], 4.4, 0, 7); g.fillStyle = dc; g.fill();
+      g.lineWidth = 1.6; g.strokeStyle = "#faf8f3"; g.stroke();
+      places(g, l, cam);
+      if (l.elev) profileStrip(g, l, p, head.i);
     }
 
-    // start marker + dot
-    const s0 = l.xy[0];
-    g.beginPath();
-    g.arc(W/2+(s0[0]-cam.cx)*cam.s, H/2+(s0[1]-cam.cy)*cam.s, 3.2, 0, 7);
-    g.fillStyle = "#faf8f3"; g.fill(); g.lineWidth = 1.4; g.strokeStyle = ac; g.stroke();
+    // i numeri vivi negli angoli (lab2: N02 dentro T05) — i totali del giorno
+    // crescono attraverso i tratti, non ripartono da zero
+    if (RACE){
+      const tmax = legs.reduce((m,x)=>Math.max(m, x.leg.secs||1), 1);
+      cbL.textContent = fmtH(t*tmax);
+      ciL.textContent = "orologio unico · cinque passi";
+    } else {
+      let km = 0, gain = 0, secs = 0;
+      for (let i=0;i<li;i++){
+        km += legs[i].leg.km || 0;
+        gain += legs[i].gc.length ? legs[i].gc[legs[i].gc.length-1] : (legs[i].leg.gain||0);
+        secs += legs[i].leg.secs || 0;
+      }
+      km += (l.leg.km || 0) * p;
+      gain += l.gc.length ? l.gc[Math.min(head.i, l.gc.length-1)] : (l.leg.gain||0)*p;
+      secs += (l.leg.secs || 0) * p;
+      cbL.textContent = km >= 100 ? Math.round(km) + " km"
+                                  : km.toFixed(1).replace(".", ",") + " km";
+      ciL.textContent = "percorsi · " + fmtH(secs);
+      cbR.textContent = fmtN(Math.round(gain)) + " m";
+    }
 
-    const hx = W/2+(head.x-cam.cx)*cam.s, hy = H/2+(head.y-cam.cy)*cam.s;
-    g.beginPath(); g.arc(hx,hy,10,0,7); g.fillStyle = ac; g.globalAlpha = .16; g.fill();
-    g.globalAlpha = 1;
-    g.beginPath(); g.arc(hx,hy,4.4,0,7); g.fillStyle = ac; g.fill();
-    g.lineWidth = 1.6; g.strokeStyle = "#faf8f3"; g.stroke();
+    legEl.textContent = RACE ? "" :
+      (legs.length > 1 ? SPORT_ICON[l.leg.sport] + "  " + l.leg.label : "");
 
-    // profilo altimetrico — l'asse x è la distanza percorsa, non l'indice del
-    // punto: dopo Douglas-Peucker i due non sono più la stessa cosa
-    const q = prof.getContext("2d"), pw = prof.width/dpr, ph = prof.height/dpr;
-    q.setTransform(dpr,0,0,dpr,0,0); q.clearRect(0,0,pw,ph);
-    const A = l.alt, total = l.cum[l.cum.length-1] || 1;
-    let amax = 1;
-    for (const v of A) if (v > amax) amax = v;
-    const xOf = k => l.cum[k]/total*pw;
-    const yOf = v => ph-2 - (v/amax)*(ph-8);
-    q.beginPath(); q.moveTo(0, ph);
-    for (let k=0;k<A.length;k++) q.lineTo(xOf(k), yOf(A[k]));
-    q.lineTo(pw, ph); q.closePath();
-    q.fillStyle = "#e4e1d6"; q.globalAlpha = .8; q.fill(); q.globalAlpha = 1;
-    const hxp = p*pw, hyp = yOf(A[head.i] + (A[Math.min(head.i+1,A.length-1)]-A[head.i])*head.f);
-    q.beginPath(); q.moveTo(0, ph);
-    for (let k=0;k<=head.i;k++) q.lineTo(xOf(k), yOf(A[k]));
-    q.lineTo(hxp, hyp); q.lineTo(hxp, ph); q.closePath();
-    q.fillStyle = ac; q.globalAlpha = .30; q.fill(); q.globalAlpha = 1;
-    q.beginPath();
-    for (let k=0;k<=head.i;k++){ const x=xOf(k), y=yOf(A[k]); k?q.lineTo(x,y):q.moveTo(x,y); }
-    q.lineTo(hxp, hyp);
-    q.strokeStyle = ac; q.lineWidth = 1.4; q.stroke();
-
-    legname.textContent = RACE
-      ? "🏔️  cinque edizioni, partite insieme"
-      : SPORT_ICON[l.leg.sport] + "  " + l.leg.label;
-
-    // le cinque righe, ognuna al suo momento: vedi beat_at in tools/top-20.json
+    // la riga della storia, AL CENTRO, una alla volta (lab2: P05 = 10)
     let k = 0;
     for (let b=0;b<st.beat_at.length;b++) if (t >= st.beat_at[b]) k = b;
-    for (let b=0;b<beats.length;b++) beats[b].classList.toggle("on", b <= k);
+    if (k !== shownBeat){
+      shownBeat = k;
+      if (RM){ beatEl.textContent = st.beats[k]; beatEl.classList.add("on"); }
+      else {
+        beatEl.classList.remove("on");
+        clearTimeout(swapTimer);
+        swapTimer = setTimeout(()=>{ beatEl.textContent = st.beats[k]; beatEl.classList.add("on"); }, 280);
+      }
+    }
   }
 
-  function tick(){
+  let last = 0;
+  function tick(ts){
     if (!running) return;
-    t += 1/(60*DUR);
+    const dt = last ? Math.min(.05, (ts-last)/1000) : 0;
+    last = ts;
+    t += dt/DUR;
     if (t >= 1){ t = 1; frame(); running = false; return; }
     frame();
     raf = requestAnimationFrame(tick);
   }
 
-  const DUR = 15;   // secondi per storia
+  // le storie di montagna respirano di più: il warp si prende le sue pause
+  const DUR = legs.some(x=>x.elev) ? 18 : 15;
   return {
     resize(){ size(); frame(); },
     start(){
-      if (RM){ t = 1; size(); frame(); return; }
+      if (RM){ t = 1; shownBeat = -1; size(); frame(); return; }
       if (running) return;
-      t = 0; running = true; size(); frame();
+      t = 0; last = 0; shownBeat = -1; running = true; size(); frame();
       cancelAnimationFrame(raf); raf = requestAnimationFrame(tick);
     },
     stop(){ running = false; cancelAnimationFrame(raf); },
@@ -448,45 +594,31 @@ const scenes = [];
 
 STORIES.forEach((st, n) => {
   const sec = document.createElement("section");
-  sec.className = "slide sl-cream story-slide";
+  sec.className = "slide sl-cream story-slide" + (st.mode === "race" ? " race" : "");
   sec.id = st.slug;
   const ac = AC[st.accent] || AC.stone;
-  // Per una giornata sola vale il tempo dal via all'arrivo. Per più giorni vale
-  // l'arco del calendario, non il numero di tracce: la clavicola ha quattro legs
-  // ma va dal 29 aprile al 29 giugno, e "4 giorni" direbbe l'opposto.
-  const dates = st.legs.map(l => l.date).sort();
-  const uniq = new Set(dates).size;
-  const span = uniq === 1 ? 1 :
-    Math.round((Date.parse(dates[dates.length-1]) - Date.parse(dates[0])) / 864e5) + 1;
-  const label = uniq === 1 ? "giornata" : (span > 3 ? "arco" : "durata");
-  const when = uniq === 1 ? fmtH(st.elapsed) + " dal via all'arrivo"
-             : span + " giorni" + (span > 3 ? ", " + uniq + " uscite" : "");
+  sec.style.setProperty("--ac", ac);
 
   sec.innerHTML =
-    '<div class="card" style="--ac:'+ac+'">'
-    + '<div class="mapcol">'
-    +   '<canvas class="cv"></canvas><canvas class="prof"></canvas>'
-    +   '<p class="legname"></p>'
+    '<canvas class="cv2" aria-label="'+st.title+', traccia GPS animata" role="img"></canvas>'
+    + '<div class="shead">'
+    +   '<p class="skick"><span class="sno">'+String(n+1).padStart(2,"0")+'</span> · '
+    +     st.icon+'  '+st.kicker.toUpperCase()+'</p>'
+    +   '<h2>'+st.title+'</h2>'
+    +   '<p class="sleg"></p>'
     + '</div>'
-    + '<div class="txtcol">'
-    +   '<p class="no stg stg1">'+String(n+1).padStart(2,"0")+'</p>'
-    +   '<p class="st-kick stg stg1">'+st.icon+'  '+st.kicker+'</p>'
-    +   '<h2 class="st-title stg stg2">'+st.title+'</h2>'
-    +   '<div class="stats stg stg3">'
-    +     '<span class="stat"><i>distanza</i><b class="tnum">'+fmtN(Math.round(st.km))+' km</b></span>'
-    +     '<span class="stat"><i>dislivello</i><b class="tnum">'+fmtN(st.gain)+' m</b></span>'
-    +     '<span class="stat"><i>in movimento</i><b class="tnum">'+fmtH(st.secs)+'</b></span>'
-    +     '<span class="stat"><i>'+label+'</i><b class="tnum">'+when+'</b></span>'
-    +   '</div>'
-    +   '<ol class="beats">'+st.beats.map(b=>'<li>'+b+'</li>').join("")+'</ol>'
-    +   '<button class="replay" type="button">rivedi ↻</button>'
-    + '</div></div>';
+    + '<div class="sbeat" role="status"></div>'
+    + '<div class="scnt scnt-l"><b>0 km</b><i>percorsi</i></div>'
+    + '<div class="scnt scnt-r"><b>0 m</b><i>di salita</i></div>'
+    + (st.mode === "race"
+       ? '<div class="srace">'+st.legs.map((l,j)=>
+           '<span><em style="background:'+TINTS[j%TINTS.length]+'"></em>'+l.label+'</span>').join("")+'</div>'
+       : '')
+    + '<button class="replay2" type="button">rivedi ↻</button>';
   story.insertBefore(sec, fine);
 
-  const sc = Scene(st, sec.querySelector(".cv"), sec.querySelector(".prof"),
-                   sec.querySelector(".legname"),
-                   Array.from(sec.querySelectorAll(".beats li")));
-  sec.querySelector(".replay").addEventListener("click", () => sc.replay());
+  const sc = Scene(st, sec);
+  sec.querySelector(".replay2").addEventListener("click", () => sc.replay());
   scenes.push({sec:sec, sc:sc});
 
   const a = document.createElement("a");

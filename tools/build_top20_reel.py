@@ -85,6 +85,19 @@ SPORT = {"bike": "in bici", "run": "di corsa", "swim": "a nuoto"}
 # median-cut le fonde in due grigi (e' quello che era successo a Malaga).
 RACE_TINTS = [(194, 118, 26), (59, 91, 181), (77, 114, 56), (138, 90, 60), (150, 60, 110)]
 
+# La rampa di quota del laboratorio (V05 votata 9, poi la "candidata" S01): la
+# linea si scurisce salendo, verde valle → verde passo. Sei gradini DISCRETI e
+# non un gradiente: ogni gradino e' uno slot di tavolozza riservato in
+# fixed_palette, e sei bastano a leggere una salita. Si usa solo dove il giorno
+# ha dislivello vero (vedi la soglia in build_top20_video); in pianura la quota
+# non racconta niente e resta il colore d'accento.
+RAMP = [(207, 224, 189), (172, 198, 148), (137, 171, 108),
+        (103, 144, 71), (68, 106, 42), (34, 64, 15)]
+
+
+def ramp_col(u):
+    return RAMP[min(len(RAMP) - 1, max(0, int(u * len(RAMP))))]
+
 
 def plain(t):
     """Il testo senza emoji, per le righe piccole della barra dei dati."""
@@ -229,7 +242,7 @@ def prepare(stories, px, style, margin=1.62):
 
 def map_frame(story, li, p, zoomf, S, fonts, cap_alpha=1.0, chrome=True,
               total=20, follow=None, caption=None, note=None, note_alpha=1.0,
-              side=None):
+              side=None, elev=False, counters=None):
     """One map frame: the leg `li` of `story` drawn to fraction `p`, at zoom `zoomf`."""
     legs = story["legs"]
     act = legs[li]
@@ -312,20 +325,36 @@ def map_frame(story, li, p, zoomf, S, fonts, cap_alpha=1.0, chrome=True,
                    150 if j < li else 45)
         stroke([off(q) for q in act["pts"]], INK3, 1.6, 60)      # il tratto intero
         done = [off(q) for q in act["pts"][:i + 1]] + [off(h)]
-        stroke(done, ac, 6.5, 55)                                # alone
-        stroke(done, ac, 2.8, 255)                               # traccia
+        alt = act["leg"].get("alt") or []
+        if elev and len(alt) >= 2:
+            # la quota come colore (lab: V05→S01): l'alone resta uno, la traccia
+            # si disegna a segmenti col gradino di rampa della quota locale
+            amin, amax = min(alt), max(alt)
+            rng = max(1.0, amax - amin)
+            stroke(done, RAMP[2], 6.5, 45)
+            wpx = max(1, int(round(2.8 * K)))
+            for j in range(1, len(done)):
+                u = (alt[min(j, len(alt) - 1)] - amin) / rng
+                dr.line([done[j - 1], done[j]], fill=ramp_col(u) + (255,),
+                        width=wpx, joint="curve")
+            hc = ramp_col((alt[min(i, len(alt) - 1)] - amin) / rng)
+        else:
+            stroke(done, ac, 6.5, 55)                            # alone
+            stroke(done, ac, 2.8, 255)                           # traccia
+            hc = ac
         sx, sy = off(act["pts"][0])
         r = 3.4 * K
         dr.ellipse([sx - r, sy - r, sx + r, sy + r], fill=BG + (255,), outline=ac + (255,),
                    width=max(1, int(round(1.6 * K))))
-        dot(*off(h), ac)
+        dot(*off(h), hc)
 
     frame = Image.alpha_composite(crop, lay).resize((S, S), Image.LANCZOS)
     if not race:
         place_labels(frame, act, box, to_px, S, fonts, ac,
                      reserve=side["rect"] if side else None)
     if chrome:
-        chrome_over(frame, story, li, S, fonts, cap_alpha, total, caption, race)
+        chrome_over(frame, story, li, S, fonts, cap_alpha, total, caption, race,
+                    counters)
     if side:
         side_column(frame, S, fonts, ac, side["rect"], side.get("line"),
                     side.get("reveal", 1.0), note, note_alpha)
@@ -509,8 +538,32 @@ def scrim(im, box, radius, alpha=214):
     im.alpha_composite(lay)
 
 
+def corner_stats(frame, S, fonts, c):
+    """I numeri vivi negli angoli in basso, in contrappunto (lab2: N02 dentro T05):
+    la cifra grande in Georgia, l'etichetta in maiuscoletto spaziato sotto. Contano
+    su mentre il puntino corre — km e tempo a sinistra, dislivello a destra — e
+    prendono il posto della barra dei dati, che diceva le stesse cose ma da ferma."""
+    f_leg, f_num = fonts[4], fonts[11]
+    dr = ImageDraw.Draw(frame)
+    pad = int(S * 0.050)
+    for big, small, right in ((c["km"], c["kml"], False),
+                              (c["gain"], c["gainl"], True)):
+        w = dr.textlength(big, font=f_num)
+        lw = tracked_w(dr, small, f_leg, S * 0.005)
+        bw = max(w, lw)
+        x = S - pad - bw if right else pad
+        top = S - pad - int(S * 0.100)
+        scrim(frame, (x - int(S * .020), top - int(S * .012),
+                      x + bw + int(S * .020), S - pad + int(S * .016)),
+              int(S * 0.018), 226)
+        d2 = ImageDraw.Draw(frame)
+        d2.text((x + bw - w if right else x, top), big, font=f_num, fill=INK)
+        draw_tracked(d2, (x + bw - lw if right else x, top + int(S * 0.072)),
+                     small, f_leg, INK3, S * 0.005)
+
+
 def chrome_over(frame, story, li, S, fonts, cap_alpha, total, caption=None,
-                race=False):
+                race=False, counters=None):
     f_kick, f_title, f_cap, f_stat, f_leg, f_emo, f_emos, f_big, f_sub = fonts[:9]
     st = story["st"]
     ac = AC.get(st["accent"], AC["stone"])
@@ -540,6 +593,15 @@ def chrome_over(frame, story, li, S, fonts, cap_alpha, total, caption=None,
         c = ac if k < story["n"] else RULE
         dr.rounded_rectangle([bx + k * (tw + gap), pad, bx + k * (tw + gap) + tw - 1,
                               pad + int(S * 0.010)], 2, fill=c)
+
+    # In basso: o i contatori vivi negli angoli (v4, dal laboratorio 2) o la
+    # vecchia barra dei dati. Mai tutti e due: direbbero le stesse cose.
+    if counters is not None:
+        corner_stats(frame, S, fonts, counters)
+        if race:
+            race_legend(frame, S, fonts, story["legs"], ac)
+        credit(frame, S, f_leg)
+        return
 
     # didascalia + statistiche in basso. La riga del PRIMO tratto l'ha già detta la
     # scheda a schermo pieno un attimo prima, quindi qui resta vuota: ripeterla
@@ -1192,7 +1254,8 @@ def fixed_palette(sample, colors):
     keep = ([BG, INK, INK2, INK3, RULE, (255, 255, 255)]
             + [AC[k] for k in sorted(AC)]
             + [blend(AC[k], .60) for k in sorted(AC)]
-            + RACE_TINTS)
+            + RACE_TINTS
+            + RAMP)          # i sei gradini della quota-colore (giorni di dislivello)
     base = sample.quantize(colors=max(8, colors - len(keep)), method=Image.MEDIANCUT)
     raw = base.getpalette()[: max(8, colors - len(keep)) * 3]
     for c in keep:
