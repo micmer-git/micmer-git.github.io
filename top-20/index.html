@@ -81,9 +81,13 @@ button{font-family:inherit}
 .sbeat{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
   max-width:min(84vw,560px);width:max-content;text-align:center;
   font-family:var(--serif);font-size:clamp(1.2rem,4.6vw,1.95rem);line-height:1.28;
-  color:var(--ink);background:rgba(250,248,243,.9);border-radius:14px;padding:16px 24px;
-  box-shadow:0 2px 18px rgba(20,21,15,.07);
-  opacity:0;transition:opacity .5s var(--ease);pointer-events:none}
+  color:var(--ink);
+  /* niente scatola (round 3): solo un alone di carta attorno alle lettere,
+     cosi' la traccia e il puntino si vedono anche sotto il testo */
+  text-shadow:0 1px 0 var(--bg),0 -1px 0 var(--bg),1px 0 0 var(--bg),-1px 0 0 var(--bg),
+    1px 1px 0 var(--bg),-1px -1px 0 var(--bg),1px -1px 0 var(--bg),-1px 1px 0 var(--bg),
+    0 0 10px var(--bg),0 0 22px var(--bg);
+  opacity:0;transition:opacity .45s var(--ease);pointer-events:none}
 .sbeat.on{opacity:1}
 .scnt{position:absolute;bottom:calc(12px + env(safe-area-inset-bottom));
   background:rgba(250,248,243,.92);border:1px solid var(--rule);border-radius:12px;
@@ -447,22 +451,31 @@ function Scene(st, sec){
       haloName(g, m[1], Math.min(q[0]+7, W-90), Math.max(20, q[1]-8));
     }
   }
-  /* il profilo, ridotto a una silhouette in basso al centro: si riempie col
-     puntino, solo nei giorni in cui la quota è la storia */
-  function profileStrip(g, l, p, headI){
-    const bw = Math.min(W*.42, 300), x0 = (W-bw)/2, hh = 36, y0 = H - hh - 20;
-    const total = l.cum[l.cum.length-1] || 1;
-    const xOf = k => x0 + l.cum[k]/total*bw;
-    const yOf = v => y0 + hh - 2 - ((v-l.amin)/(l.amax-l.amin))*(hh-6);
-    g.beginPath(); g.moveTo(x0, y0+hh);
-    for (let k=0;k<l.alt.length;k++) g.lineTo(xOf(k), yOf(l.alt[k]));
-    g.lineTo(x0+bw, y0+hh); g.closePath();
-    g.fillStyle = "rgba(228,225,214,.75)"; g.fill();
-    g.save(); g.beginPath(); g.rect(x0, y0, p*bw, hh); g.clip();
-    g.beginPath(); g.moveTo(x0, y0+hh);
-    for (let k=0;k<l.alt.length;k++) g.lineTo(xOf(k), yOf(l.alt[k]));
-    g.lineTo(x0+bw, y0+hh); g.closePath();
-    g.fillStyle = "rgba(77,114,56,.4)"; g.fill(); g.restore();
+  /* il profilo DI FIANCO del laboratorio (S01, «profile as side»): colonna a
+     destra, la distanza scende, la quota sporge; si riempie col passaggio.
+     Solo nei giorni in cui la quota è la storia. */
+  function sideProfileCol(g, l, headI){
+    const bw = Math.min(W*0.20, 132), x0 = W - bw - 12;
+    const top = Math.max(84, H*0.17), bot = H - Math.max(96, H*0.22);
+    if (bot - top < 80) return;
+    const tot = l.cum[l.cum.length-1] || 1;
+    const yOf = k => top + l.cum[Math.min(k, l.cum.length-1)]/tot*(bot-top);
+    const xOf = v => x0 + 3 + ((v-l.amin)/(l.amax-l.amin))*(bw-6);
+    g.fillStyle = "rgba(250,248,243,.72)";
+    g.fillRect(x0-8, top-10, bw+20, bot-top+20);
+    g.beginPath(); g.moveTo(x0+3, top);
+    for (let k2=0;k2<l.alt.length;k2++) g.lineTo(xOf(l.alt[k2]), yOf(k2));
+    g.lineTo(x0+3, bot); g.closePath();
+    g.fillStyle = "rgba(228,225,214,.95)"; g.fill();
+    const hi = Math.max(1, Math.min(headI, l.alt.length-1));
+    g.beginPath(); g.moveTo(x0+3, top);
+    for (let k2=0;k2<=hi;k2++) g.lineTo(xOf(l.alt[k2]), yOf(k2));
+    g.lineTo(x0+3, yOf(hi)); g.closePath();
+    g.fillStyle = "rgba(103,144,71,.5)"; g.fill();
+    const yh = yOf(hi);
+    g.strokeStyle = "#22400f"; g.lineWidth = 1.4; g.globalAlpha = .9;
+    g.beginPath(); g.moveTo(x0-6, yh); g.lineTo(x0+bw+6, yh); g.stroke();
+    g.globalAlpha = 1;
   }
 
   function frame(){
@@ -519,7 +532,7 @@ function Scene(st, sec){
       g.beginPath(); g.arc(hq[0], hq[1], 4.4, 0, 7); g.fillStyle = dc; g.fill();
       g.lineWidth = 1.6; g.strokeStyle = "#faf8f3"; g.stroke();
       places(g, l, cam);
-      if (l.elev) profileStrip(g, l, p, head.i);
+      if (l.elev) sideProfileCol(g, l, head.i);
     }
 
     // i numeri vivi negli angoli (lab2: N02 dentro T05) — i totali del giorno
@@ -547,7 +560,8 @@ function Scene(st, sec){
     legEl.textContent = RACE ? "" :
       (legs.length > 1 ? SPORT_ICON[l.leg.sport] + "  " + l.leg.label : "");
 
-    // la riga della storia, AL CENTRO, una alla volta (lab2: P05 = 10)
+    // la riga della storia, AL CENTRO, una alla volta (lab2: P05 = 10) — e per
+    // ~2 secondi soltanto: poi il testo se ne va e resta il movimento (round 3)
     let k = 0;
     for (let b=0;b<st.beat_at.length;b++) if (t >= st.beat_at[b]) k = b;
     if (k !== shownBeat){
@@ -558,6 +572,8 @@ function Scene(st, sec){
         clearTimeout(swapTimer);
         swapTimer = setTimeout(()=>{ beatEl.textContent = st.beats[k]; beatEl.classList.add("on"); }, 280);
       }
+    } else if (!RM && (t - st.beat_at[k]) * DUR > 2.3){
+      beatEl.classList.remove("on");
     }
   }
 

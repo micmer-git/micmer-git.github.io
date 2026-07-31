@@ -355,6 +355,8 @@ def map_frame(story, li, p, zoomf, S, fonts, cap_alpha=1.0, chrome=True,
     if chrome:
         chrome_over(frame, story, li, S, fonts, cap_alpha, total, caption, race,
                     counters)
+    if elev and chrome:
+        side_profile(frame, S, act, i)
     if side:
         side_column(frame, S, fonts, ac, side["rect"], side.get("line"),
                     side.get("reveal", 1.0), note, note_alpha)
@@ -536,6 +538,40 @@ def scrim(im, box, radius, alpha=214):
     lay = Image.new("RGBA", im.size, (0, 0, 0, 0))
     ImageDraw.Draw(lay).rounded_rectangle(box, radius, fill=BG + (alpha,))
     im.alpha_composite(lay)
+
+
+def side_profile(frame, S, act, head_i):
+    """Il profilo di fianco del laboratorio (S01, «profile as side»): colonna a
+    destra, la distanza scorre verso il basso, la quota sporge verso sinistra;
+    si riempie col passaggio e una linea segna dove sei. Solo nei giorni in cui
+    la quota e' la storia — in pianura la colonna direbbe una riga piatta."""
+    alt = act["leg"].get("alt") or []
+    if len(alt) < 2:
+        return
+    cum = act["cum"]
+    tot = cum[-1] or 1.0
+    x0 = int(S * 0.795)
+    bw = S - x0 - int(S * 0.025)
+    top, bot = int(S * 0.155), int(S * 0.815)
+    amin, amax = min(alt), max(alt)
+    rng = max(1.0, amax - amin)
+    lay = Image.new("RGBA", frame.size, (0, 0, 0, 0))
+    dr = ImageDraw.Draw(lay)
+    dr.rounded_rectangle([x0 - int(S * 0.012), top - int(S * 0.014),
+                          S - int(S * 0.012), bot + int(S * 0.014)],
+                         int(S * 0.016), fill=BG + (185,))
+    yOf = lambda k: top + cum[min(k, len(cum) - 1)] / tot * (bot - top)
+    xOf = lambda v: x0 + 3 + (v - amin) / rng * (bw - 6)
+    n = len(alt)
+    dr.polygon([(x0 + 3, top)] + [(xOf(alt[k]), yOf(k)) for k in range(n)]
+               + [(x0 + 3, bot)], fill=RULE + (235,))
+    hi = max(1, min(head_i, n - 1))
+    dr.polygon([(x0 + 3, top)] + [(xOf(alt[k]), yOf(k)) for k in range(hi + 1)]
+               + [(x0 + 3, yOf(hi))], fill=RAMP[3] + (130,))
+    yh = yOf(hi)
+    dr.line([(x0, yh), (S - int(S * 0.02), yh)], fill=RAMP[5] + (235,),
+            width=max(1, int(round(S * 0.004))))
+    frame.alpha_composite(lay)
 
 
 def corner_stats(frame, S, fonts, c):

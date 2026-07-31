@@ -82,14 +82,14 @@ if (d.getElementById("grid20").children.length !== 20)
 for (const io of ios) if (io.targets.length) io.cb(io.targets.map(t => ({ target: t, isIntersecting: true })));
 async function run() {
   try {
-    /* il tick cappa dt a 50 ms: servono ~360 passi per i 18 s delle scene warp */
+    /* il tick cappa dt a 50 ms: servono ~360 passi per i 18 s delle scene warp.
+       I timer dello swap si fanno scattare DURANTE la corsa (a metà e verso la
+       fine), così i frame successivi possono anche rispegnere il beat. */
     for (let ts = 0; ts <= 42000; ts += 100) {
       const q = rafQ; rafQ = [];
       for (const f of q) f(ts);
-      if (ts === 12000) await new Promise(r => setTimeout(r, 420));  // fa scattare lo swap del beat
+      if (ts === 12000 || ts === 30000) await new Promise(r => setTimeout(r, 420));
     }
-    await new Promise(r => setTimeout(r, 420));
-    const q = rafQ; rafQ = []; for (const f of q) f(42100);
   } catch (e) { errors.push("FRAME: " + (e.stack || e.message)); }
 
   const gavia = d.getElementById("gavia-mortirolo-2016");
@@ -102,7 +102,9 @@ async function run() {
   if (Math.abs(num(kmTxt) - 123) > 4) errors.push("contatore km Gavia a fine corsa: '" + kmTxt + "'");
   if (Math.abs(num(gainTxt) - 3212) > 120) errors.push("contatore D+ Gavia: '" + gainTxt + "'");
   if (!beatTxt || beatTxt.length < 10) errors.push("beat Gavia vuoto: '" + beatTxt + "'");
-  if (!gavia.querySelector(".sbeat").classList.contains("on")) errors.push("beat Gavia non visibile");
+  /* a fine corsa il beat DEVE essersi spento: dal round 3 il testo vive ~2 s */
+  if (gavia.querySelector(".sbeat").classList.contains("on"))
+    errors.push("beat Gavia ancora acceso a fine corsa (doveva svanire)");
   const bologna = d.getElementById("bologna-2025");
   if (!bologna.querySelector(".sleg").textContent) errors.push("sleg Bologna vuoto (multi-tratto)");
   if (bad.length) errors.push("geometria: " + bad.length + " valori non finiti — " + bad.slice(0, 4).join(" · "));

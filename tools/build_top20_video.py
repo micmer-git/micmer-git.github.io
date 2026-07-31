@@ -114,6 +114,9 @@ def card_ms(st, minus=0):
 
 # ------------------------------------------------------------------ le pagine
 
+_CT_CACHE = {}
+
+
 def center_text(base, S, fonts, text, ac, alpha, kicker=None, body=None):
     """Il testo al centro SOPRA un quadro vivo — il P05 del laboratorio 2, votato
     10 con la nota "non solo i passi, ma tutti i commenti".
@@ -126,8 +129,24 @@ def center_text(base, S, fonts, text, ac, alpha, kicker=None, body=None):
     a = max(0.0, min(1.0, alpha))
     if a < 0.03 or not text:
         return base.convert("RGB")
+    # NIENTE scatola (round 3 dei feedback): solo un alone di carta attorno alle
+    # lettere, come i nomi dei luoghi. Il testo vive su un layer con la propria
+    # trasparenza, cosi' la dissolvenza e' vera e sotto si vede tutto: la traccia
+    # che avanza, il puntino, il volo.
+    #
+    # Il layer si mette in CACHE per (testo, alpha quantizzata): l'alone sono 24
+    # passate di disegno per riga, e rifarle a ogni frame — il testo ora sta
+    # sopra quadri in movimento — quintuplicava la resa. Comporre un layer
+    # pronto costa quasi niente.
+    a = round(a * 24) / 24.0
     out = base.convert("RGBA")
-    dr = ImageDraw.Draw(out)
+    key = (text, kicker, body, a, S)
+    cached = _CT_CACHE.get(key)
+    if cached is not None:
+        out.alpha_composite(cached)
+        return out.convert("RGB")
+    lay = Image.new("RGBA", out.size, (0, 0, 0, 0))
+    dr = ImageDraw.Draw(lay)
     f_kick, f_emo = fonts[0], fonts[5]
     big = len(R.plain(text)) <= 90 and not body
     f = fonts[7] if big else (fonts[10] if R.is_quote(text) else fonts[8])
@@ -140,34 +159,44 @@ def center_text(base, S, fonts, text, ac, alpha, kicker=None, body=None):
          + (int(S * 0.048) + int(S * 0.030) if kicker else int(S * 0.010))
          + (int(S * 0.016) if body else 0))
     y = (S - h) // 2
-    widths = ([R.text_w(dr, l, f, f_emo) for l in ls]
-              + [R.text_w(dr, l, fonts[8], f_emo) for l in bls]
-              + ([R.tracked_w(dr, kicker, f_kick, S * 0.006)] if kicker else []))
-    wmax = max(widths)
-    R.scrim(out, (S / 2 - wmax / 2 - int(S * .040), y - int(S * .032),
-                  S / 2 + wmax / 2 + int(S * .040), y + h + int(S * .028)),
-            int(S * 0.022), int(210 * a))
-    dr = ImageDraw.Draw(out)
-    fade = lambda c: tuple(int(round(BG[i] + (c[i] - BG[i]) * a)) for i in range(3))
+    halo = BG + (int(235 * a),)
+    aink = lambda c: c + (int(255 * a),)
+
+    def puts(x, yy, txt, fnt, col, ring):
+        for ox in range(-ring, ring + 1):
+            for oy in range(-ring, ring + 1):
+                if ox or oy:
+                    R.draw_text(dr, (x + ox, yy + oy), txt, fnt, f_emo, halo)
+        R.draw_text(dr, (x, yy), txt, fnt, f_emo, col)
+
     if kicker:
         tw = R.tracked_w(dr, kicker, f_kick, S * 0.006)
-        R.draw_tracked(dr, ((S - tw) // 2, y), kicker, f_kick, fade(INK3), S * 0.006)
+        for ox in (-1, 0, 1):
+            for oy in (-1, 0, 1):
+                if ox or oy:
+                    R.draw_tracked(dr, ((S - tw) // 2 + ox, y + oy), kicker,
+                                   f_kick, halo, S * 0.006)
+        R.draw_tracked(dr, ((S - tw) // 2, y), kicker, f_kick, aink(INK3), S * 0.006)
         y += int(S * 0.048)
-        R.rule(dr, S // 2 - int(S * 0.030), y + int(S * 0.010),
-               S // 2 + int(S * 0.030), fade(ac))
+        dr.rectangle([S // 2 - int(S * 0.030), y + int(S * 0.010),
+                      S // 2 + int(S * 0.030), y + int(S * 0.010) + 1],
+                     fill=aink(ac))
         y += int(S * 0.030)
     for line in ls:
         w = R.text_w(dr, line, f, f_emo)
-        R.draw_text(dr, ((S - w) // 2, y), line, f, f_emo,
-                    fade(INK if (big or body) else INK2))
+        puts((S - w) // 2, y, line, f, aink(INK if (big or body) else INK2), 2)
         y += lh
     if body:
         y += int(S * 0.016)
         fb = fonts[10] if R.is_quote(body) else fonts[8]
         for line in bls:
             w = R.text_w(dr, line, fb, f_emo)
-            R.draw_text(dr, ((S - w) // 2, y), line, fb, f_emo, fade(INK2))
+            puts((S - w) // 2, y, line, fb, aink(INK2), 2)
             y += int(S * 0.050)
+    if len(_CT_CACHE) > 500:
+        _CT_CACHE.clear()
+    _CT_CACHE[key] = lay
+    out.alpha_composite(lay)
     return out.convert("RGB")
 
 
@@ -330,20 +359,18 @@ def build(stories, S, fonts, args, emit):
             cross(prev_map, first, 0.45)
         elif prev_globe is not None:
             cross(prev_globe, first, 0.55)
-        nfl = nf(max(1.6, args.fly_sec))
+        # il volo NON si ferma mai: l'intro entra presto, si legge in movimento
+        # e se ne va prima dell'atterraggio. Niente frame tenuti (round 3:
+        # "less still text and more text while other things happen")
+        nfl = nf(args.fly_sec + 1.8)
         for k in range(nfl):
             t = (k + 1) / float(nfl)
-            fr = center_text(flight_shot(fl, t, S), S, fonts, lead, ac,
-                             min(1.0, t / 0.30), kicker=kick, body=body)
+            a = min(1.0, t / 0.16, max(0.0, (0.94 - t) / 0.10))
+            fr = center_text(flight_shot(fl, t, S), S, fonts, lead, ac, a,
+                             kicker=kick, body=body)
             R.ticks(fr, si + 1, total, S, ac, fonts)
             emit(fr, FMS)
-        last = flight_shot(fl, 1.0, S)
-        held = center_text(last, S, fonts, lead, ac, 1.0, kicker=kick, body=body)
-        R.ticks(held, si + 1, total, S, ac, fonts)
-        emit(held, card_ms(st))
-        moving(nf(0.35), lambda t: center_text(last, S, fonts, lead, ac,
-                                               1.0 - R.ease(t), kicker=kick, body=body))
-        cross(last, target, 0.5)
+        cross(flight_shot(fl, 1.0, S), target, 0.5)
 
         # i totali del giorno crescono attraverso i tratti: i contatori negli
         # angoli non ripartono da zero quando Bologna passa dalla bici alla corsa
@@ -356,7 +383,7 @@ def build(stories, S, fonts, args, emit):
             # i tratti di una giornata spezzata di meno
             sec = (args.draw_sec * 1.7 if race else
                    args.draw_sec if len(story["legs"]) == 1 else
-                   max(2.4, args.draw_sec * 0.62))
+                   max(3.5, args.draw_sec * 0.72))
             # la camera stringe solo se c'e' una traccia sola da seguire: in gara
             # servono tutte e cinque nell'inquadratura, o non c'e' confronto
             zmax = 1.0 if race else args.zdraw
@@ -387,9 +414,21 @@ def build(stories, S, fonts, args, emit):
                         "kml": "PERCORSI · " + R.hm(secs).upper(),
                         "gain": R.thou(gain) + " m", "gainl": "DI SALITA"}
 
-            notes = sorted(l["leg"].get("notes") or [], key=lambda x: R.note_at(l, x))
-            stops = [(R.note_at(l, nt), nt) for nt in notes]
-            stops = [(p, nt) for p, nt in stops if 0.04 < p < 0.985]
+            # --- i testi in corsa: LA STORIA, non i numeri (round 3). Le righe
+            # del racconto (beats) cadono al loro momento della giornata, le
+            # citazioni dal diario restano dove sono successe; ogni testo vive
+            # un secondo e mezzo — di piu' solo se e' lungo — e NON ferma niente.
+            if race:
+                ovs = [(st["beat_at"][b], st["beats"][b])
+                       for b in range(1, len(st["beats"]))]
+            else:
+                ovs = [((bt - lg["t0"]) / lg["dt"], st["beats"][b])
+                       for b in range(1, len(st["beats"]))
+                       for bt in [st["beat_at"][b]]
+                       if lg["t0"] <= bt < lg["t0"] + lg["dt"] - 1e-9]
+                ovs += [(R.note_at(l, nt), nt["text"])
+                        for nt in (l["leg"].get("notes") or [])
+                        if R.is_quote(nt["text"])]
 
             # dove sta il punto piu' alto del tratto, in frazione di percorso:
             # e' li' che la camera si tuffa, come la candidata S01 del laboratorio
@@ -425,43 +464,38 @@ def build(stories, S, fonts, args, emit):
                                    total=total, follow=fo, caption="",
                                    elev=elev, counters=counters(p))
 
+            # la riga del tratto apre il flusso (la scheda l'ha gia' detta per il
+            # primo tratto: solo dal secondo in poi)
+            line = lg.get("line")
+            if line and li > 0 and not race:
+                ovs.append((0.04, line))
+            ovs.sort(key=lambda x: x[0])
+            # calendario dei testi: niente sovrapposizioni, 0,35 s d'aria fra due
+            timed, cursor = [], -10.0
+            for at, txt in ovs:
+                dur = max(1.5, min(2.8, 0.9 + 0.11 * len(txt.split())))
+                at = min(max(at, 0.03), 0.93)
+                if at * sec < cursor + 0.35:
+                    at = (cursor + 0.35) / sec
+                    if at > 0.93:
+                        continue
+                timed.append((at, at + dur / sec, txt))
+                cursor = at * sec + dur
+
             # apertura del tratto sull'inquadratura intera, per leggere la forma
             emit(shot(0.005), 700 if li == 0 else 400)
 
-            # la riga del tratto entra nel flusso come una nota a inizio tratto
-            # (la scheda l'ha gia' detta per il primo: solo dal secondo in poi)
-            line = lg.get("line")
-            if line and li > 0 and not race:
-                stops = [(0.03, {"text": line})] + stops
-
-            prev_p = 0.0
-            for k, (at, nt) in enumerate(stops + [(1.0, None)]):
-                span = max(0.02, at - prev_p)
-                n = max(2, nf(sec * span))
-                for j in range(n):
-                    p = prev_p + span * (j + 1) / float(n)
-                    emit(shot(p), FMS)
-                prev_p = at
-                if nt is None:
-                    break
-                # --- la nota al centro, e la traccia NON si ferma: sotto il testo
-                # il puntino continua a un quarto della velocita'. Niente pagina
-                # piena, niente quadro congelato: una sovrimpressione sul vivo.
-                ms = read_ms(nt["text"])
-                nsec = ms / 1000.0
-                nxt = stops[k + 1][0] if k + 1 < len(stops) else 1.0
-                dp = min(0.25 * nsec / sec, max(0.0, nxt - at) * 0.5)
-                # cinque passi al secondo, non trenta: 200 ms e' la soglia oltre
-                # cui la GIF tratta il frame come pausa e lo scrive UNA volta —
-                # sotto il testo il puntino avanza comunque, e il file non esplode
-                nn = max(6, int(round(nsec * 5.0)))
-                for j in range(nn):
-                    t = (j + 1) / float(nn)
-                    tsec = t * nsec
-                    a = min(1.0, tsec / 0.40, max(0.0, (nsec - tsec) / 0.40))
-                    emit(center_text(shot(at + dp * t), S, fonts, nt["text"], ac, a),
-                         200)
-                prev_p = at + dp
+            n = max(2, nf(sec))
+            fs = 0.28 / sec                    # dissolvenza, in frazione di tratto
+            for j in range(n):
+                p = (j + 1) / float(n)
+                fr = shot(p)
+                for a0, a1, txt in timed:
+                    if a0 <= p <= a1:
+                        a = min(1.0, (p - a0) / fs, (a1 - p) / fs)
+                        fr = center_text(fr, S, fonts, txt, ac, a)
+                        break
+                emit(fr, FMS)
 
             # --- il giro finito, a inquadratura piena (la camera ci e' gia':
             # il tuffo si e' riassorbito da solo sulla coda della gaussiana)
@@ -616,8 +650,9 @@ def main():
                     help="lato del mosaico basemap. Deve stare sopra size*zdraw o "
                          "la mappa si ingrandisce da sola e sfoca")
     ap.add_argument("--style", default="light_nolabels")
-    ap.add_argument("--draw-sec", type=float, default=7.0,
-                    help="quanto ci mette una traccia intera a disegnarsi")
+    ap.add_argument("--draw-sec", type=float, default=8.0,
+                    help="quanto ci mette una traccia intera a disegnarsi — otto "
+                         "secondi, che ora sono anche il palco dei testi in corsa")
     ap.add_argument("--zdraw", type=float, default=2.2,
                     help="quanto stringe la camera mentre insegue il puntino")
     ap.add_argument("--cardin-sec", type=float, default=1.5,
