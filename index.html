@@ -229,7 +229,8 @@
         Mountain,
         Moon,
         Map,
-        BarChart3
+        BarChart3,
+        Users
       } from 'lucide-react';
 
       // --- Data Content ---
@@ -654,6 +655,14 @@
       ];
 
       const dataList = [
+            {
+                name: 'Bike2Work',
+                desc: 'Per chiunque: collega Strava e scopri quanto vale pedalare al lavoro. Classifica, community e mappa.',
+                icon: <Users size={32} />,
+                url: 'https://bike2work.pages.dev/',
+                color: 'bg-io-red',
+                textColor: 'text-white'
+            },
             {
                 name: 'Al lavoro in bici',
                 desc: 'Ogni commute tracciato: km, benzina risparmiata, la mappa dei giorni paralleli.',
