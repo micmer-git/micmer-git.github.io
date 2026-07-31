@@ -571,7 +571,12 @@ def side_profile(frame, S, act, head_i):
     n = len(alt)
     dr.polygon([(x0 + 3, top)] + [(xOf(alt[k]), yOf(k)) for k in range(n)]
                + [(x0 + 3, bot)], fill=RULE + (235,))
+    # il riempimento avanza a SCATTI (~40 per tratto): fra uno scatto e l'altro
+    # la colonna e' identica al frame prima, e la GIF non la riscrive. Continuo
+    # costava piu' della traccia stessa.
+    step = max(1, n // 40)
     hi = max(1, min(head_i, n - 1))
+    hi = max(1, (hi // step) * step)
     dr.polygon([(x0 + 3, top)] + [(xOf(alt[k]), yOf(k)) for k in range(hi + 1)]
                + [(x0 + 3, yOf(hi))], fill=RAMP[3] + (130,))
     yh = yOf(hi)

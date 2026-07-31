@@ -225,16 +225,28 @@ def make_flight(a, b, px, style):
 
 
 def flight_shot(fl, t, S):
-    """Un frame del volo: pan da A a B, con la camera che si alza a meta' strada
-    quanto basta a vedere tutti e due — mai fino allo spazio."""
-    import math
+    """Un frame del volo, in tre tempi LENTI (round 5): la camera si alza con
+    calma dal giorno prima, resta FERMA sul campo largo — e' li' che si capisce
+    come le due giornate si posizionano l'una rispetto all'altra, ed e' li' che
+    si legge l'intro — poi scende con la stessa calma sul giorno nuovo. Il campo
+    fermo in mezzo e' anche quello che la GIF paga zero."""
     img = fl["img"]
     mw, mh = img.size
     span = min(mw, mh)
-    z = 1.0 + 1.05 * abs(math.cos(math.pi * t))     # 2.05 → 1.0 → 2.05
-    e = R.ease(t)
-    cx = R.lerp(fl["a"][0], fl["b"][0], e)
-    cy = R.lerp(fl["a"][1], fl["b"][1], e)
+    ax, ay = fl["a"]
+    bx, by = fl["b"]
+    cx0, cy0 = mw / 2.0, mh / 2.0
+    ZC = 2.3
+    if t < 0.30:
+        u = R.ease(t / 0.30)
+        z = R.lerp(ZC, 1.0, u)
+        cx, cy = R.lerp(ax, cx0, u), R.lerp(ay, cy0, u)
+    elif t < 0.70:
+        z, cx, cy = 1.0, cx0, cy0
+    else:
+        u = R.ease((t - 0.70) / 0.30)
+        z = R.lerp(1.0, ZC, u)
+        cx, cy = R.lerp(cx0, bx, u), R.lerp(cy0, by, u)
     w = span / z
     cx = min(max(cx, w / 2), mw - w / 2)
     cy = min(max(cy, w / 2), mh - w / 2)
@@ -362,10 +374,10 @@ def build(stories, S, fonts, args, emit):
         # il volo NON si ferma mai: l'intro entra presto, si legge in movimento
         # e se ne va prima dell'atterraggio. Niente frame tenuti (round 3:
         # "less still text and more text while other things happen")
-        nfl = nf(args.fly_sec + 1.8)
+        nfl = nf(max(5.0, args.fly_sec))
         for k in range(nfl):
             t = (k + 1) / float(nfl)
-            a = min(1.0, t / 0.16, max(0.0, (0.94 - t) / 0.10))
+            a = min(1.0, t / 0.10, max(0.0, (0.92 - t) / 0.08))
             fr = center_text(flight_shot(fl, t, S), S, fonts, lead, ac, a,
                              kicker=kick, body=body)
             R.ticks(fr, si + 1, total, S, ac, fonts)
@@ -409,27 +421,69 @@ def build(stories, S, fonts, args, emit):
                 gain = gain_before + (gc[min(i, len(gc) - 1)] if alt else
                                       lg.get("gain", 0) * p)
                 secs = secs_before + p * (lg.get("secs") or 0)
-                return {"km": ("%d km" % round(km)) if km >= 100
-                               else ("%.1f km" % km).replace(".", ","),
-                        "kml": "PERCORSI · " + R.hm(secs).upper(),
-                        "gain": R.thou(gain) + " m", "gainl": "DI SALITA"}
+                # a scatti di 5 km / 50 m (round 5: «less crazy numbers»): il
+                # contatore scandisce, non frulla. Il valore esatto solo all'arrivo.
+                if p >= 0.999:
+                    kmt = ("%d km" % round(km)) if km >= 100 \
+                        else ("%.1f km" % km).replace(".", ",")
+                    gnt = R.thou(gain)
+                else:
+                    kmt = "%d km" % (int(km // 5) * 5)
+                    gnt = R.thou(int(gain // 50) * 50)
+                return {"km": kmt, "kml": "PERCORSI · " + R.hm(secs).upper(),
+                        "gain": gnt + " m", "gainl": "DI SALITA"}
 
-            # --- i testi in corsa: LA STORIA, non i numeri (round 3). Le righe
-            # del racconto (beats) cadono al loro momento della giornata, le
-            # citazioni dal diario restano dove sono successe; ogni testo vive
-            # un secondo e mezzo — di piu' solo se e' lungo — e NON ferma niente.
-            if race:
-                ovs = [(st["beat_at"][b], st["beats"][b])
-                       for b in range(1, len(st["beats"]))]
+            # --- i testi in corsa (round 5): dove SUCCEDONO. Le note hanno un
+            # ancoraggio scritto a mano e sono intoccabili; le righe del racconto
+            # si agganciano al luogo se lo nominano (il Foscagno compare al
+            # Foscagno), altrimenti cadono al loro momento e si infilano nei
+            # buchi lasciati dalle note. Quando il punto ha un nome, il nome fa
+            # da occhiello sopra il testo: e' il "contestuale" chiesto.
+            pl = l["leg"].get("places") or {}
+            alt2 = l["leg"].get("alt") or []
+            if alt2:
+                ti2 = max(range(len(alt2)), key=lambda x: alt2[x])
+                topfrac = l["cum"][min(ti2, len(l["cum"]) - 1)] / (l["cum"][-1] or 1.0)
             else:
-                ovs = [((bt - lg["t0"]) / lg["dt"], st["beats"][b])
-                       for b in range(1, len(st["beats"]))
-                       for bt in [st["beat_at"][b]]
-                       if lg["t0"] <= bt < lg["t0"] + lg["dt"] - 1e-9]
-                # TUTTE le note, ognuna al suo ancoraggio vero ("top" = la vetta
-                # registrata): il commento nasce nel punto di cui parla
-                ovs += [(R.note_at(l, nt), nt["text"])
-                        for nt in (l["leg"].get("notes") or [])]
+                topfrac = 0.5
+            dur_of = lambda tx: max(1.6, min(3.6, 1.2 + 0.14 * len(tx.split())))
+            occ_of = lambda dur: dur * 0.45 / sec + 0.012
+
+            fixed = []
+            if not race:
+                for nt in (l["leg"].get("notes") or []):
+                    tx = R.plain(nt["text"]) or nt["text"]
+                    kk = pl.get("top") if nt.get("at") == "top" else None
+                    fixed.append([min(max(R.note_at(l, nt), 0.03), 0.90),
+                                  dur_of(tx), tx, kk])
+            fixed.sort(key=lambda o: o[0])
+            cur = -1.0
+            for o in fixed:              # due note attaccate: la seconda slitta
+                if o[0] < cur:
+                    o[0] = cur
+                cur = o[0] + occ_of(o[1])
+
+            loose = []
+            if race:
+                loose = [(st["beat_at"][b], st["beats"][b], None)
+                         for b in range(1, len(st["beats"]))]
+            else:
+                for b in range(1, len(st["beats"])):
+                    bt = st["beat_at"][b]
+                    if not (lg["t0"] <= bt < lg["t0"] + lg["dt"] - 1e-9):
+                        continue
+                    tx = st["beats"][b]
+                    at, kk = (bt - lg["t0"]) / lg["dt"], None
+                    low = tx.lower()
+                    for key, frac in (("top", topfrac), ("to", 0.88), ("from", 0.05)):
+                        name = pl.get(key)
+                        if name and name.lower() in low:
+                            at, kk = frac, name
+                            break
+                    loose.append((at, tx, kk))
+                line = lg.get("line")
+                if line and li > 0:
+                    loose.insert(0, (0.04, line, None))
 
             # dove sta il punto piu' alto del tratto, in frazione di percorso:
             # e' li' che la camera si tuffa, come la candidata S01 del laboratorio
@@ -474,28 +528,34 @@ def build(stories, S, fonts, args, emit):
                                    total=total, follow=fo, caption="",
                                    elev=elev, counters=counters(p))
 
-            # la riga del tratto apre il flusso (la scheda l'ha gia' detta per il
-            # primo tratto: solo dal secondo in poi)
-            line = lg.get("line")
-            if line and li > 0 and not race:
-                ovs.append((0.04, line))
-            ovs.sort(key=lambda x: x[0])
-            # ogni testo vive il tempo che la sua lunghezza chiede (1,6–3,6 s);
-            # gli ancoraggi restano i loro, la coda si gestisce da sola: se un
-            # commento e' ancora in scena quando il puntino passa il prossimo
-            # ancoraggio, il prossimo parte appena il primo ha finito
-            timed, prev_at = [], -1.0
-            for at, txt in ovs:
-                # niente emoji in sovrimpressione: con l'alone a 24 passate un
-                # glifo colorato diventa un francobollo scuro
-                txt = R.plain(txt) or txt
-                at = min(max(at, 0.03), 0.94)
-                if at <= prev_at + 0.01:
-                    at = prev_at + 0.01
-                    if at > 0.94:
-                        continue
-                timed.append((at, max(1.6, min(3.6, 1.2 + 0.14 * len(txt.split()))), txt))
-                prev_at = at
+            # le righe libere si sistemano nei buchi fra le note (che non si
+            # muovono): se il posto e' occupato slittano in avanti, se non c'e'
+            # piu' posto entro il tratto si lasciano andare
+            occ = [(o[0], o[0] + occ_of(o[1])) for o in fixed]
+            timed = [tuple(o) for o in fixed]
+            for at, tx, kk in loose:
+                tx = R.plain(tx) or tx
+                need = occ_of(dur_of(tx))
+                at = min(max(at, 0.03), 0.90)
+                placed = None
+                for _ in range(8):
+                    hit = None
+                    for s, e in occ:
+                        if s < at + need and e > at:
+                            hit = e
+                            break
+                    if hit is None:
+                        placed = at
+                        break
+                    at = hit
+                    if at > 0.92:
+                        break
+                if placed is None:
+                    continue
+                occ.append((placed, placed + need))
+                occ.sort()
+                timed.append((placed, dur_of(tx), tx, kk))
+            timed.sort(key=lambda o: o[0])
 
             # apertura del tratto sull'inquadratura intera, per leggere la forma
             emit(shot(0.005), 700 if li == 0 else 400)
@@ -515,8 +575,9 @@ def build(stories, S, fonts, args, emit):
                 if act is not None and act["u"] >= act["dur"] + TR:
                     act = None
                 if act is None and oi < len(timed) and p >= timed[oi][0]:
-                    at, dur, txt = timed[oi]; oi += 1
+                    at, dur, txt, kk = timed[oi]; oi += 1
                     act = {"txt": txt, "dur": dur, "u": 0.0, "lock": p,
+                           "kick": kk.upper() if kk else None,
                            "z": 1.55 + min(0.75, 0.04 * len(txt.split()))}
                 if act is not None:
                     act["u"] += 1.0 / args.fps
@@ -526,7 +587,8 @@ def build(stories, S, fonts, args, emit):
                     p = min(1.0, p + base * 0.45)
                     fr = shot(p, fz=R.ease(fz), ztxt=act["z"], cam_p=act["lock"])
                     if a > 0:
-                        fr = center_text(fr, S, fonts, act["txt"], ac, a)
+                        fr = center_text(fr, S, fonts, act["txt"], ac, a,
+                                         kicker=act["kick"])
                     emit(fr, FMS)
                 else:
                     p = min(1.0, p + base)
@@ -685,15 +747,17 @@ def main():
                     help="lato del mosaico basemap. Deve stare sopra size*zdraw o "
                          "la mappa si ingrandisce da sola e sfoca")
     ap.add_argument("--style", default="light_nolabels")
-    ap.add_argument("--draw-sec", type=float, default=8.0,
-                    help="quanto ci mette una traccia intera a disegnarsi — otto "
-                         "secondi, che ora sono anche il palco dei testi in corsa")
+    ap.add_argument("--draw-sec", type=float, default=12.0,
+                    help="quanto ci mette una traccia intera a disegnarsi — dodici "
+                         "secondi (round 5: «1,5x piu lenti in genere», il palco "
+                         "dei testi in corsa deve dare il tempo di leggerli)")
     ap.add_argument("--zdraw", type=float, default=2.2,
                     help="quanto stringe la camera mentre insegue il puntino")
     ap.add_argument("--cardin-sec", type=float, default=1.5,
                     help="quanto ci mette la scheda del giorno a montarsi")
-    ap.add_argument("--fly-sec", type=float, default=1.8,
-                    help="il volo basso fra due storie")
+    ap.add_argument("--fly-sec", type=float, default=6.0,
+                    help="il volo basso fra due storie: lento, con il campo largo "
+                         "fermo in mezzo a mostrare dove stanno l'una e l'altra")
     ap.add_argument("--fly-px", type=int, default=1500,
                     help="lato del mosaico del volo di trasferimento")
     ap.add_argument("--hold-leg", type=int, default=700, help="pausa a fine tratto")

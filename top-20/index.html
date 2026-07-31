@@ -567,9 +567,13 @@ function Scene(st, sec){
       km += (l.leg.km || 0) * p;
       gain += l.gc.length ? l.gc[Math.min(head.i, l.gc.length-1)] : (l.leg.gain||0)*p;
       secs += (l.leg.secs || 0) * p;
-      sK.textContent = km >= 100 ? Math.round(km) + " km"
-                                 : km.toFixed(1).replace(".", ",") + " km";
-      sG.textContent = fmtN(Math.round(gain)) + " m ↑";
+      // a scatti di 5 km / 50 m (round 5): il contatore scandisce, non frulla;
+      // il valore esatto arriva solo a giro finito
+      const done = t >= 0.999;
+      sK.textContent = done
+        ? (km >= 100 ? Math.round(km) + " km" : km.toFixed(1).replace(".", ",") + " km")
+        : (Math.floor(km/5)*5) + " km";
+      sG.textContent = fmtN(done ? Math.round(gain) : Math.floor(gain/50)*50) + " m ↑";
       sT.textContent = fmtH(secs);
       if (ids[li]) aT.href = ICU(ids[li]);
     }
@@ -606,7 +610,8 @@ function Scene(st, sec){
   }
 
   // le storie di montagna respirano di più: il warp si prende le sue pause
-  const DUR = legs.some(x=>x.elev) ? 18 : 15;
+  // (round 5: tutto un filo più lento, i testi si devono leggere)
+  const DUR = legs.some(x=>x.elev) ? 22 : 17;
   return {
     resize(){ size(); frame(); },
     start(){

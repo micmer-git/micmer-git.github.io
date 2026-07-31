@@ -82,13 +82,13 @@ if (d.getElementById("grid20").children.length !== 20)
 for (const io of ios) if (io.targets.length) io.cb(io.targets.map(t => ({ target: t, isIntersecting: true })));
 async function run() {
   try {
-    /* il tick cappa dt a 50 ms: servono ~360 passi per i 18 s delle scene warp.
+    /* il tick cappa dt a 50 ms: servono ~440 passi per i 22 s delle scene warp.
        I timer dello swap si fanno scattare DURANTE la corsa (a metà e verso la
        fine), così i frame successivi possono anche rispegnere il beat. */
-    for (let ts = 0; ts <= 42000; ts += 100) {
+    for (let ts = 0; ts <= 60000; ts += 100) {
       const q = rafQ; rafQ = [];
       for (const f of q) f(ts);
-      if (ts === 12000 || ts === 30000) await new Promise(r => setTimeout(r, 420));
+      if (ts === 12000 || ts === 38000) await new Promise(r => setTimeout(r, 420));
     }
   } catch (e) { errors.push("FRAME: " + (e.stack || e.message)); }
 
