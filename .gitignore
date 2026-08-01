@@ -24,3 +24,6 @@ tools/.*.gif
 # rigenera con `python tools/build_top20_video.py` e si carica a mano dove serve
 # (LinkedIn accetta fino a 5 GB). Nel repo ci va la GIF, non lui.
 top-20/*.mp4
+
+# il racconto v5 in h264 e' un deliverable della pagina, non un file di lavoro
+!top-20/top-20-reel-v5.mp4
