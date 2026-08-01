@@ -71,12 +71,27 @@ button{font-family:inherit}
 .viz svg{display:block;width:100%;height:auto;overflow:visible}
 svg text{font-family:var(--sans)}
 
-/* parallel-day canvas slide */
+/* parallel-day map — fixed backdrop layer, the story scrolls over it.
+   Faint behind the opening stats (s1→s3), full on the map slide; the GIF
+   download IS this map, so the story has no second bike-map renderer.
+   (.pd resta per la slide srun, che ha il suo canvas dedicato.) */
+.pdbg{position:fixed;inset:0;z-index:0;background:var(--bg);display:flex;align-items:center;
+  justify-content:center;pointer-events:none}
+.pdbg canvas{width:min(88vw,54vh,480px);height:min(88vw,54vh,480px)}
+/* stat slides the map shines through — rgba backgrounds instead of opaque paint */
+.slide.glass{background:rgba(250,248,243,.87)}
+.slide.glass-dawn{background:linear-gradient(165deg,rgba(253,243,228,.88),rgba(248,227,196,.88))}
+/* the map slide itself: fully transparent, content pushed to the edges */
+.sl-map{background:transparent;color:var(--ink);justify-content:space-between}
+.sl-map .ey{color:var(--ink-3)}.sl-map .fine{color:var(--ink-3)}
+.mapfoot{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:40px}
+.sl-map .pd-clock,.sl-map .pd-live{padding:2px 12px;border-radius:12px;
+  background:color-mix(in srgb,var(--bg) 62%,transparent)}
 .pd{width:100%;display:flex;flex-direction:column;align-items:center}
 .pd canvas{width:min(86vw,44vh,440px);height:min(86vw,44vh,440px)}
 .pd-clock{font-family:var(--serif);font-size:clamp(2rem,9vw,2.9rem);line-height:1;margin-top:2px}
 .pd-live{font-size:.74rem;color:var(--ink-2);margin:5px 0 6px;min-height:1em}
-.gifbtn{display:inline-block;margin-top:14px;font-size:.78rem;font-weight:600;padding:9px 16px;
+.gifbtn{display:inline-block;margin-top:10px;font-size:.78rem;font-weight:600;padding:9px 16px;
   border-radius:999px;border:1px solid var(--rule);color:var(--ink-2);text-decoration:none;background:#fff}
 .gifbtn:hover{color:var(--ink)}
 
@@ -142,8 +157,9 @@ svg text{font-family:var(--sans)}
 <a class="brand" href="#s0" aria-label="micmer — inizio">micmer</a>
 <a class="skip" href="esplora.html">esplora i dati →</a>
 <div class="rail on-dark" id="rail" aria-hidden="true"></div>
+<div class="pdbg" id="pdbg" aria-hidden="true"><canvas id="pd-cv"></canvas></div>
 
-<main class="story" id="story" tabindex="-1">
+<main class="story" id="story" tabindex="-1" style="position:relative;z-index:1">
 
   <!-- 0 · cover -->
   <section class="slide sl-night" id="s0" data-pal="dark" aria-roledescription="schermata" aria-label="Copertina">
@@ -157,7 +173,7 @@ svg text{font-family:var(--sans)}
   </section>
 
   <!-- 1 · the number -->
-  <section class="slide sl-cream" id="s1" data-pal="light" aria-label="Quante volte al lavoro in bici">
+  <section class="slide sl-cream glass" id="s1" data-pal="light" aria-label="Quante volte al lavoro in bici">
     <div class="wrap">
       <div class="ey stg stg1" id="n-days-ey">Timbrature su due ruote</div>
       <div class="big stg stg2 tnum" id="n-days">0</div>
@@ -168,7 +184,7 @@ svg text{font-family:var(--sans)}
   </section>
 
   <!-- 2 · the ride out -->
-  <section class="slide sl-dawn" id="s2" data-pal="light" aria-label="L'andata: chilometri in discesa">
+  <section class="slide sl-dawn glass-dawn" id="s2" data-pal="light" aria-label="L'andata: chilometri in discesa">
     <div class="wrap">
       <div class="ey stg stg1">L'andata</div>
       <div class="mid stg stg2 tnum"><span id="r-km">0</span><span class="unit"> km</span></div>
@@ -188,7 +204,7 @@ svg text{font-family:var(--sans)}
   </section>
 
   <!-- 3 · departures -->
-  <section class="slide sl-cream" id="s3" data-pal="light" aria-label="Le partenze prima dell'alba">
+  <section class="slide sl-cream glass" id="s3" data-pal="light" aria-label="Le partenze prima dell'alba">
     <div class="wrap">
       <div class="ey stg stg1">La sveglia</div>
       <h2 class="mid stg stg2">In sella alle<br><em style="font-style:italic;color:var(--dawn)" class="tnum" id="n-dep">—</em></h2>
@@ -198,17 +214,16 @@ svg text{font-family:var(--sans)}
     <button class="cont" data-next aria-label="Continua"><span>continua</span><span class="ch">↓</span></button>
   </section>
 
-  <!-- 3b · parallel day -->
-  <section class="slide sl-cream" id="smap" data-pal="light" aria-label="La giornata in parallelo: tutte le giornate animate insieme sulla stessa mappa">
-    <div class="wrap">
+  <!-- 3b · parallel day — the backdrop map takes the stage -->
+  <section class="slide sl-map" id="smap" data-pal="light" aria-label="La giornata in parallelo: tutte le giornate animate insieme sulla stessa mappa">
+    <div class="wrap" style="gap:0">
       <div class="ey stg stg1">Tutte le giornate, sovrapposte</div>
-      <div class="pd stg stg2">
-        <div class="pd-clock tnum" id="pd-clock">–:–</div>
-        <div class="pd-live" id="pd-live">&nbsp;</div>
-        <canvas id="pd-cv" aria-hidden="true"></canvas>
-      </div>
-      <p class="fine stg stg3" id="pd-fine"></p>
-      <a class="gifbtn stg stg4" href="bike-to-work.gif" download>scarica la GIF quadrata ↓</a>
+      <div class="pd-clock tnum stg stg2" id="pd-clock">–:–</div>
+      <div class="pd-live stg stg2" id="pd-live">&nbsp;</div>
+    </div>
+    <div class="mapfoot">
+      <p class="fine stg stg3" id="pd-fine" style="margin-top:0"></p>
+      <a class="gifbtn stg stg4" href="bike-to-work.gif" download>⬇ scarica la GIF — è questa mappa</a>
     </div>
     <button class="cont" data-next aria-label="Continua"><span>continua</span><span class="ch">↓</span></button>
   </section>
@@ -443,10 +458,10 @@ function pdRate(vt){
     if(h>=a&&h<=b){let f=b>a?(h-a)/(b-a):0;f=f*f*(3-2*f);return va+(vb-va)*f;}}
   return 1300;
 }
-let pdGen=0;
+let pdGen=0,pdRunning=false;
 function pdStart(){
   const cv=document.getElementById("pd-cv"),ckEl=document.getElementById("pd-clock"),
-        lvEl=document.getElementById("pd-live"),slide=document.getElementById("smap");
+        lvEl=document.getElementById("pd-live");
   if(!RUNNERS.length)return;
   const ctx=cv.getContext?cv.getContext("2d"):null;
   const gen=++pdGen;
@@ -514,7 +529,7 @@ function pdStart(){
     lvEl.textContent=RUNNERS.length+" giornate sovrapposte";return;}
   let vt=PT0,last=nowMs(),hold=0;
   (function step(){
-    if(gen!==pdGen||!slide.classList.contains("vis"))return;
+    if(gen!==pdGen)return;
     const t=nowMs(),dt=Math.min(.1,(t-last)/1000);last=t;
     if(hold>0){hold-=dt;if(hold<=0)vt=PT0;}
     else{vt+=pdRate(vt)*dt;if(vt>=PT1){vt=PT1;hold=1.8;}}
@@ -637,7 +652,6 @@ function rnStart(){
 /* ---- reveal orchestration ---- */
 const REVEAL={
   srun:rnStart,
-  smap:pdStart,
   s1:()=>countTo(document.getElementById("n-days"),DAYS.length),
   s2:()=>countTo(document.getElementById("r-km"),MKM,{dec:0}),
   s2b:()=>countTo(document.getElementById("r-up"),MUP),
@@ -672,15 +686,25 @@ function setCurrent(idx){
    rimbalzo, o un dito appoggiato vicino alla soglia del 55%, per far ripartire
    da zero i conteggi e i grafici. Ora chi torna indietro ritrova i numeri fermi
    dove li aveva lasciati.
-   `vis` resta invece legato alla visibilita reale, perche la mappa in parallelo
-   e un ciclo continuo: va sospeso quando esce dallo schermo e ripreso al
-   rientro, altrimenti macina batteria fuori campo. */
+   `vis` resta invece legato alla visibilita reale: la mappa in parallelo e il
+   fondale fisso del tratto s1→smap, quindi il suo ciclo continuo gira solo
+   mentre una di quelle slide e sullo schermo (s2b compresa, cosi il giorno
+   virtuale non riparte nel passaggio) — fuori da li macinerebbe batteria
+   dietro fondali opachi. La slide srun ha il suo ciclo dedicato e riprende
+   dall'inizio a ogni rientro. */
 const revealed=new Set();
-const LOOPING=new Set(["smap","srun"]);   /* animazioni cicliche: riprendono */
+const LOOPING=new Set(["srun"]);          /* animazioni cicliche: riprendono */
+const MAPIDS=["s1","s2","s2b","s3","smap"];   /* slide col fondale-mappa attivo */
+function syncMap(){
+  const any=MAPIDS.some(id=>{const el=document.getElementById(id);
+    return el&&el.classList.contains("vis");});
+  if(any&&!pdRunning){pdRunning=true;pdStart();}
+  else if(!any&&pdRunning){pdRunning=false;pdGen++;}
+}
 const io=new IntersectionObserver(es=>{
   es.forEach(en=>{const i=slides.indexOf(en.target);
-    if(!(en.isIntersecting&&en.intersectionRatio>=.55)){en.target.classList.remove("vis");return;}
-    setCurrent(i);en.target.classList.add("in");en.target.classList.add("vis");
+    if(!(en.isIntersecting&&en.intersectionRatio>=.55)){en.target.classList.remove("vis");syncMap();return;}
+    setCurrent(i);en.target.classList.add("in");en.target.classList.add("vis");syncMap();
     if(revealed.has(en.target.id)&&!LOOPING.has(en.target.id))return;
     revealed.add(en.target.id);
     if(REVEAL[en.target.id])REVEAL[en.target.id]();
@@ -703,7 +727,8 @@ addEventListener("keydown",e=>{
   else if(e.key==="End"){e.preventDefault();go(slides.length-1);}
 });
 let rt;addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(()=>{
-  const s=slides[current];if(s&&REVEAL[s.id])REVEAL[s.id]();},220);});
+  const s=slides[current];if(s&&REVEAL[s.id])REVEAL[s.id]();
+  if(pdRunning)pdStart();},220);});
 
 setCurrent(0);slides[0].classList.add("in");
 </script>
