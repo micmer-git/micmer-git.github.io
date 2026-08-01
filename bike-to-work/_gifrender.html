@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>gif render harness</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#333}canvas{display:block}</style>
+</head>
+<body>
+<canvas id="cv" width="560" height="560"></canvas>
+<script src="_data.js"></script>
+<script>
+"use strict";
+/* Mirrors the parallel-day renderer in index.html exactly (colors, trails,
+   pdRate timing curve), stepped deterministically for GIF frames. */
+const S=560,FPS=20;
+const cv=document.getElementById("cv"),ctx=cv.getContext("2d");
+const clock=s=>{s=Math.round(s);const h=Math.floor(s/3600),m=Math.floor(s%3600/60);return h+":"+String(m).padStart(2,"0");};
+const itNum=v=>Math.round(v).toLocaleString("it-IT");
+
+/* runners — same as index.html */
+const RUNNERS=[];let PT0=1e12,PT1=0;
+DAYS.forEach(d=>(d.acts||[]).forEach(id=>{
+  const trk=TRACKS[id];
+  if(!trk||trk.length<4)return;
+  RUNNERS.push({trk,t0:trk[0][0],t1:trk[trk.length-1][0]});
+  PT0=Math.min(PT0,trk[0][0]);PT1=Math.max(PT1,trk[trk.length-1][0]);
+}));
+PT0-=600;PT1+=900;
+
+/* totals for the closing card */
+const nLegs=d=>d.est?2:Object.keys(d.legs).length;
+const LEGS=DAYS.reduce((a,d)=>a+nLegs(d),0);
+const CAR_KM=LEGS*CFG.carKm;
+const CO2=CAR_KM*CFG.co2KgPerKm;
+const priceOf=ym=>PREZZI[ym]!=null?PREZZI[ym]:CFG.priceLast;
+const EURO=DAYS.reduce((a,d)=>a+nLegs(d)*CFG.carKm*CFG.lPer100Km/100*priceOf(d.d.slice(0,7)),0);
+const KCAL=DAYS.reduce((a,d)=>a+d.cal,0);
+const PIZZE=KCAL/CFG.pizzaKcal;
+const KM_BIKE=DAYS.reduce((a,d)=>a+d.km,0);
+const Y0=+DAYS[0].d.slice(0,4),Y1=+DAYS[DAYS.length-1].d.slice(0,4);
+
+/* geometry — map square under a text band, metres-true */
+const TOP=96,PAD=26;
+let la0=90,la1=-90,lo0=180,lo1=-180;
+RUNNERS.forEach(r=>r.trk.forEach(p=>{if(p[1]<la0)la0=p[1];if(p[1]>la1)la1=p[1];
+  if(p[2]<lo0)lo0=p[2];if(p[2]>lo1)lo1=p[2];}));
+const K=Math.cos((la0+la1)/2*Math.PI/180);
+const box=Math.min(S-2*PAD,S-TOP-PAD),sc=Math.min(box/((lo1-lo0)*K),box/(la1-la0));
+const ox=PAD+(S-2*PAD-(lo1-lo0)*K*sc)/2,oy=TOP+(S-TOP-PAD-(la1-la0)*sc)/2;
+const X=(lat,lng)=>[ox+(lng-lo0)*K*sc,oy+(la1-lat)*sc];
+const nearW=(lat,lng)=>{const dy=(lat-CFG.work[0])*111320,dx=(lng-CFG.work[1])*111320*K;
+  return dy*dy+dx*dx<=600*600;};
+function posAt(r,t){const trk=r.trk;
+  if(t<=trk[0][0])return[trk[0][1],trk[0][2],false];
+  const n=trk.length-1;if(t>=trk[n][0])return[trk[n][1],trk[n][2],false];
+  let lo=0,hi=n;while(hi-lo>1){const m=(lo+hi)>>1;if(trk[m][0]<=t)lo=m;else hi=m;}
+  const a=trk[lo],b=trk[lo+1],g=b[0]-a[0],f=g>0?(t-a[0])/g:0;
+  return[a[1]+(b[1]-a[1])*f,a[2]+(b[2]-a[2])*f,g<240];}
+
+/* ghost routes pre-drawn once — same colors as the live canvas */
+const ghost=document.createElement("canvas");ghost.width=ghost.height=S;
+const gx=ghost.getContext("2d");
+gx.strokeStyle="#dedbce";gx.lineWidth=1;
+RUNNERS.forEach(r=>{gx.beginPath();r.trk.forEach((p,i)=>{const[x,y]=X(p[1],p[2]);
+  i?gx.lineTo(x,y):gx.moveTo(x,y);});gx.stroke();});
+[[CFG.home,"#faf8f3","casa"],[CFG.work,"#e8b23a","Kilometro Rosso"]].forEach(([pt,fill,lab])=>{
+  const[x,y]=X(pt[0],pt[1]);gx.beginPath();gx.arc(x,y,5,0,7);gx.fillStyle=fill;gx.fill();
+  gx.lineWidth=2;gx.strokeStyle="#14150f";gx.stroke();
+  gx.fillStyle="#5c5f52";gx.font="11px Inter,sans-serif";gx.fillText(lab,x+9,y+4);});
+
+/* virtual clock speed — identical curve to index.html pdRate */
+function pdRate(vt){
+  const h=vt/3600,P=[[4.5,1300],[8.3,1300],[9.3,6500],[11.3,6500],[12.0,2000],
+    [13.3,2000],[14.0,5500],[15.2,5500],[16.0,1250],[20.4,1250]];
+  for(let i=0;i<P.length-1;i++){const[a,va]=P[i],[b,vb]=P[i+1];
+    if(h>=a&&h<=b){let f=b>a?(h-a)/(b-a):0;f=f*f*(3-2*f);return va+(vb-va)*f;}}
+  return 1300;
+}
+const FADE=3600;
+function renderMap(vt,alpha){
+  ctx.globalAlpha=1;ctx.fillStyle="#faf8f3";ctx.fillRect(0,0,S,S);
+  ctx.globalAlpha=alpha;ctx.drawImage(ghost,0,0);
+  let road=0,office=0;
+  const evening=vt>13*3600,col=evening?"#3b5bb5":"#e0932f";
+  RUNNERS.forEach(r=>{
+    if(vt<r.t0||vt>r.t1+1800)return;
+    const[lat,lng,moving]=posAt(r,vt),[x,y]=X(lat,lng);
+    const done=vt>r.t1,fade=done?Math.max(0,1-(vt-r.t1)/1800):1;
+    const win=[];for(let i=0;i<r.trk.length;i++){const t=r.trk[i][0];
+      if(t>vt)break;if(t>=vt-FADE)win.push(X(r.trk[i][1],r.trk[i][2]));}
+    if(!done)win.push([x,y]);
+    const n=win.length;
+    if(n>1){ctx.lineWidth=1.8;ctx.lineCap="round";ctx.strokeStyle=col;
+      const bands=[[0,.33,.10],[.33,.66,.26],[.66,1,.5]];
+      bands.forEach(([f0,f1,al])=>{const i0=Math.floor(f0*(n-1)),i1=Math.floor(f1*(n-1));
+        if(i1<=i0)return;ctx.globalAlpha=al*fade*alpha;ctx.beginPath();
+        for(let i=i0;i<=i1;i++){i===i0?ctx.moveTo(win[i][0],win[i][1]):ctx.lineTo(win[i][0],win[i][1]);}
+        ctx.stroke();});
+      ctx.globalAlpha=alpha;}
+    if(done)return;
+    if(nearW(lat,lng)&&!moving){office++;
+      ctx.fillStyle="#8f9382";ctx.beginPath();ctx.arc(x,y,2.3,0,7);ctx.fill();}
+    else{road++;
+      ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(x,y,4.4,0,7);ctx.fill();
+      ctx.fillStyle=col;ctx.beginPath();ctx.arc(x,y,3.3,0,7);ctx.fill();}
+  });
+  /* text band — same hierarchy as the story slide: clock, then live counters */
+  ctx.globalAlpha=alpha;
+  ctx.fillStyle="#14150f";ctx.textAlign="center";
+  ctx.font="46px 'Instrument Serif',Georgia,serif";
+  ctx.fillText(clock(vt),S/2,52);
+  ctx.fillStyle="#5c5f52";ctx.font="500 14px Inter,sans-serif";
+  ctx.fillText("in strada "+road+" · in ufficio "+office,S/2,76);
+  ctx.globalAlpha=1;
+}
+function renderCard(f){ /* closing totals card, f = 0..1 fade-in */
+  ctx.globalAlpha=1;ctx.fillStyle="#faf8f3";ctx.fillRect(0,0,S,S);
+  ctx.globalAlpha=Math.min(1,f*1.6);
+  ctx.textAlign="center";
+  ctx.fillStyle="#8f9382";ctx.font="600 13px Inter,sans-serif";
+  ctx.fillText(("OREZZO → KILOMETRO ROSSO · "+(Y0===Y1?Y0:Y0+"–"+Y1)).toUpperCase(),S/2,96);
+  ctx.fillStyle="#14150f";ctx.font="120px 'Instrument Serif',Georgia,serif";
+  ctx.fillText(itNum(DAYS.length),S/2,216);
+  ctx.font="italic 34px 'Instrument Serif',Georgia,serif";
+  ctx.fillText("giorni al lavoro in bici",S/2,262);
+  ctx.fillStyle="#5c5f52";ctx.font="500 19px Inter,sans-serif";
+  const rows=[
+    itNum(KM_BIKE)+" km pedalati · "+itNum(CO2)+" kg di CO₂ evitata",
+    itNum(EURO)+" € di benzina mai comprata",
+    itNum(PIZZE)+" pizze guadagnate 🍕"];
+  rows.forEach((t,i)=>ctx.fillText(t,S/2,330+i*36));
+  ctx.fillStyle="#8f9382";ctx.font="500 15px Inter,sans-serif";
+  ctx.fillText("bike2work.pages.dev",S/2,486);
+  ctx.globalAlpha=1;
+}
+
+/* deterministic frame plan: map run + short fade + totals card */
+let vt=PT0,phase="map",fadeF=0,cardF=0;
+const CARD_FRAMES=Math.round(2.6*FPS),FADE_FRAMES=Math.round(.5*FPS);
+window.__ready=document.fonts.ready.then(()=>{return{runners:RUNNERS.length,pt0:PT0,pt1:PT1}});
+window.__next=function(){
+  if(phase==="map"){
+    renderMap(vt,1);
+    vt+=pdRate(vt)/FPS;
+    if(vt>=PT1){phase="fade";fadeF=0;}
+    return{done:false,phase:"map",vt};
+  }
+  if(phase==="fade"){
+    fadeF++;renderMap(PT1,1-fadeF/FADE_FRAMES);
+    if(fadeF>=FADE_FRAMES){phase="card";cardF=0;}
+    return{done:false,phase:"fade"};
+  }
+  cardF++;renderCard(cardF/10);
+  return{done:cardF>=CARD_FRAMES,phase:"card"};
+};
+window.__grab=()=>cv.toDataURL("image/png");
+</script>
+</body>
+</html>
