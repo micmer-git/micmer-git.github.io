@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Laboratorio 4 — il tempo di leggere · top-20</title>
+<meta name="description" content="Transizioni fra una storia e l'altra, tempo di lettura, corpo del testo in funzione della frase, narrazione costruita a mano. Cinquanta varianti da votare.">
+<meta name="theme-color" content="#131017">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E⏱%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf8f3; --ink:#14150f; --ink-2:#5c5f52; --ink-3:#8f9382; --rule:#e4e1d6;
+  --dawn:#c2761a; --dusk:#3b5bb5; --green:#4d7238; --stone:#8a5a3c; --gold:#e8b23a;
+  --serif:"Instrument Serif",Georgia,serif; --sans:"Inter",system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--sans);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
+
+header{background:radial-gradient(120% 90% at 50% 118%,#3a2a17 0%,#221a14 34%,#131017 72%);
+  color:#faf8f3;text-align:center;padding:66px 24px 58px}
+header .ey{font-size:.7rem;text-transform:uppercase;letter-spacing:.2em;font-weight:600;color:#b3a893;margin:0 0 16px}
+header h1{font-family:var(--serif);font-weight:400;letter-spacing:-.015em;line-height:.95;
+  font-size:clamp(2.5rem,7.6vw,4.4rem);margin:0}
+header h1 i{font-style:italic;color:var(--gold)}
+header .sub{color:#d6cfc0;font-size:clamp(.95rem,3.5vw,1.1rem);line-height:1.55;max-width:56ch;margin:20px auto 0}
+header .sub b{font-weight:600;color:#faf8f3}
+header .fine{color:#8d8578;font-size:.8rem;line-height:1.5;max-width:64ch;margin:14px auto 0}
+header .won{margin:22px auto 0;max-width:60ch;border-top:1px solid rgba(255,255,255,.14);padding-top:16px;
+  color:#c9c0ad;font-size:.82rem;line-height:1.6}
+header .won b{color:var(--gold);font-weight:600}
+
+nav.tnav{position:sticky;top:0;z-index:40;background:rgba(250,248,243,.95);backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--rule);padding:9px 12px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:thin}
+nav.tnav a{flex:0 0 auto;font-size:.7rem;font-weight:600;text-decoration:none;color:var(--ink-2);
+  border:1px solid var(--rule);border-radius:99px;padding:6px 12px;white-space:nowrap;transition:.2s}
+nav.tnav a:hover{color:var(--ink);border-color:var(--ink-3)}
+nav.tnav a b{font-weight:700;color:var(--ink-3);font-variant-numeric:tabular-nums}
+nav.tnav a.full{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+nav.tnav a.full b{color:var(--gold)}
+
+main{max-width:1500px;margin:0 auto;padding:26px 18px 90px}
+.fam{margin:52px 4px 16px;scroll-margin-top:64px}
+.fam .q{font-size:.72rem;text-transform:uppercase;letter-spacing:.16em;font-weight:700;color:var(--gold);margin:0 0 2px}
+.fam h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.6rem,4.4vw,2.3rem);letter-spacing:-.01em;margin:2px 0 0}
+.fam p{margin:8px 0 0;font-size:.94rem;line-height:1.55;color:var(--ink-2);max-width:72ch}
+.fam p.said{color:var(--stone);font-style:italic}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(345px,100%),1fr));gap:16px}
+.grid.solo{grid-template-columns:1fr;max-width:980px}
+
+.card{border:1px solid var(--rule);border-radius:12px;background:#fff;overflow:hidden;display:flex;flex-direction:column}
+.card.hot{border-color:var(--ink-3);box-shadow:0 0 0 3px rgba(232,178,58,.22)}
+.card.star{border-color:var(--gold)}
+.cvwrap{position:relative;background:var(--bg)}
+.cv{width:100%;aspect-ratio:16/10;display:block}
+.solo .cv{aspect-ratio:16/9}
+.vno{position:absolute;top:9px;left:10px;font-family:var(--serif);font-size:1.18rem;line-height:1;
+  color:var(--ink);background:rgba(250,248,243,.82);border:1px solid var(--rule);
+  border-radius:7px;padding:4px 8px 3px;letter-spacing:-.02em}
+.replay{position:absolute;right:9px;bottom:9px;font-size:.62rem;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3);background:rgba(250,248,243,.85);border:1px solid var(--rule);
+  border-radius:99px;padding:5px 10px;cursor:pointer;transition:.3s}
+.replay:hover{color:var(--ink);border-color:var(--ink-3)}
+.meta{padding:12px 14px 14px;border-top:1px solid var(--rule);flex:1;display:flex;flex-direction:column}
+.meta h3{font-family:var(--serif);font-weight:400;font-size:1.18rem;letter-spacing:-.01em;margin:0;line-height:1.12}
+.meta p{margin:5px 0 0;font-size:.83rem;line-height:1.45;color:var(--ink-2);flex:1}
+.meta .num{display:inline-block;margin-top:6px;font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;
+  font-weight:700;color:var(--ink-3);font-variant-numeric:tabular-nums}
+
+.vote{margin-top:11px;padding-top:10px;border-top:1px dashed var(--rule)}
+.vrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.chips{display:flex;gap:3px;flex-wrap:wrap}
+.chip{width:24px;height:26px;border-radius:6px;border:1px solid var(--rule);background:#fff;
+  font-size:.72rem;font-weight:600;color:var(--ink-2);cursor:pointer;padding:0;transition:.15s}
+.chip:hover{border-color:var(--ink-3);transform:translateY(-1px)}
+.chip.sel{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.stbtn{margin-left:auto;border:1px solid var(--rule);background:#fff;border-radius:99px;cursor:pointer;
+  font-size:.86rem;line-height:1;padding:6px 9px;color:var(--ink-3);transition:.15s}
+.stbtn:hover{border-color:var(--gold)}
+.stbtn.on{background:var(--gold);border-color:var(--gold);color:#3a2a17}
+.note{margin-top:7px;width:100%;border:1px solid var(--rule);border-radius:8px;background:#fff;
+  font-family:var(--sans);font-size:.82rem;color:var(--ink);padding:7px 9px}
+.note::placeholder{color:var(--ink-3)}
+.note:focus{outline:none;border-color:var(--ink-3)}
+
+.freebox{margin:60px 4px 0;border:1px solid var(--rule);border-radius:12px;background:#fff;padding:20px 22px 22px}
+.freebox h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.4rem,4vw,1.9rem);margin:0 0 4px}
+.freebox p{margin:0 0 12px;font-size:.88rem;line-height:1.5;color:var(--ink-2);max-width:74ch}
+.freebox textarea{width:100%;min-height:120px;resize:vertical;border:1px solid var(--rule);border-radius:8px;
+  background:#fff;font-family:var(--sans);font-size:.9rem;line-height:1.5;color:var(--ink);padding:10px 12px}
+.freebox textarea:focus{outline:none;border-color:var(--ink-3)}
+
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(250,248,243,.94);
+  backdrop-filter:blur(6px);border-top:1px solid var(--rule);
+  display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;
+  padding:9px 14px calc(9px + env(safe-area-inset-bottom))}
+.bar .prog{font-size:.78rem;color:var(--ink-2)}
+.bar .prog b{font-family:var(--serif);font-weight:400;font-size:1.1rem;color:var(--ink)}
+.copy{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  background:var(--ink);color:var(--bg);border:none;border-radius:99px;padding:9px 18px;cursor:pointer}
+.copy:hover{opacity:.85}
+.copy.ok{background:var(--green)}
+.ghost{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);
+  background:#fff;border:1px solid var(--rule);border-radius:99px;padding:8px 14px;cursor:pointer}
+.wipe{font-size:.66rem;font-weight:600;color:var(--ink-3);background:none;border:none;cursor:pointer;
+  text-decoration:underline;text-underline-offset:3px}
+.outbox{display:none;width:min(720px,92vw);margin:10px auto 0;font-size:.74rem;line-height:1.5;
+  font-family:ui-monospace,monospace;border:1px solid var(--rule);border-radius:8px;padding:10px;background:#fff}
+
+footer{border-top:1px solid var(--rule);text-align:center;padding:34px 20px 130px;color:var(--ink-2);font-size:.9rem}
+footer a{color:var(--ink);font-weight:600;text-decoration:none;border-bottom:1px solid var(--rule)}
+@media (prefers-reduced-motion:reduce){ .replay{display:none} }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="ey">micmer · laboratorio di stile · quarto giro</p>
+  <h1>Il tempo<br>di <i>leggere</i></h1>
+  <p class="sub">Quattro cose che hai chiesto, una per tema: come si passa <b>da una storia all'altra</b>,
+  quanto sta un testo <b>perché si possa leggerlo davvero</b>, quanto è grande <b>in funzione di quanto è lungo</b>,
+  e come si costruisce la narrazione <b>a mano, riga per riga</b>. Più gli accenti: quale storia si prende quale effetto.</p>
+  <p class="won">Nella base sono già montati i vincitori del round 3: <b>doppio tratto</b> (la tua ★),
+  <b>annotazione a penna</b> in vetta (9), <b>riavvolgimento</b> dopo il Gavia (9),
+  <b>diario + confessione</b> mescolati (VO07 × VO08).</p>
+  <p class="fine">Si vota 0–10, la ★ segna le preferite (quante vuoi per tema), da tastiera si vota
+  passando sopra una scheda e premendo un numero (<b>d</b> = 10, <b>s</b> = stella). In fondo la casella per il round 5.</p>
+</header>
+
+<nav class="tnav" id="tnav"></nav>
+<main id="main"></main>
+
+<div class="bar" id="bar">
+  <span class="prog" id="prog"><b>0</b> / 50 votate</span>
+  <button class="ghost" id="rand" type="button">sorprendimi ↦</button>
+  <button class="copy" id="copy" type="button">copia i voti</button>
+  <button class="wipe" id="wipe" type="button">azzera</button>
+</div>
+<textarea class="outbox" id="outbox" rows="10" readonly aria-label="riepilogo voti"></textarea>
+
+<footer>
+  <p>Traccia di controllo: Edolo–Gavia–Mortirolo 2016 → Ronde van Vlaanderen 2017 (la transizione vera del top-20) ·
+  <a href="lab3.html">← il terzo laboratorio</a> · <a href="./">il top-20</a></p>
+</footer>
+
+<script src="_data.js"></script>
+<script>
+(function(){
+"use strict";
+const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const C = {bg:"#faf8f3", ink:"#14150f", ink2:"#5c5f52", ink3:"#8f9382", rule:"#e4e1d6",
+           dawn:"#c2761a", dusk:"#3b5bb5", green:"#4d7238", stone:"#8a5a3c", gold:"#e8b23a",
+           night:"#131017", cream:"#faf8f3"};
+
+/* ================= geometria, generica su una traccia qualsiasi ================= */
+function decode(leg){
+  const pts=[], d=leg.d; let x=0,y=0;
+  for(let i=0;i<d.length;i+=2){ x+=d[i]; y+=d[i+1]; pts.push([leg.lat0+x*QUANT, leg.lng0+y*QUANT]); }
+  return pts;
+}
+function bbox(xy){
+  let a=1e9,b=1e9,c=-1e9,e=-1e9;
+  for(const p of xy){ if(p[0]<a)a=p[0]; if(p[1]<b)b=p[1]; if(p[0]>c)c=p[0]; if(p[1]>e)e=p[1]; }
+  const w=Math.max(c-a,1e-6), h=Math.max(e-b,1e-6);
+  return {x:a,y:b,w:w,h:h,cx:a+w/2,cy:b+h/2};
+}
+const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+const lerp=(a,b,t)=>a+(b-a)*t;
+const fmtN=n=>n.toLocaleString("it-IT");
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+function hex2rgb(h){ return [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)]; }
+function mix(h1,h2,t){
+  const a=hex2rgb(h1),b=hex2rgb(h2);
+  return "rgb("+Math.round(lerp(a[0],b[0],t))+","+Math.round(lerp(a[1],b[1],t))+","+Math.round(lerp(a[2],b[2],t))+")";
+}
+const dv=(p,c,w)=>Math.exp(-((p-c)*(p-c))/(2*w*w));
+function mercator(pts){
+  return pts.map(p=>{
+    const lat=clamp(p[0],-85,85), s=Math.sin(lat*Math.PI/180);
+    return [(p[1]+180)/360*256, (0.5-Math.log((1+s)/(1-s))/(4*Math.PI))*256];
+  });
+}
+const TR_CACHE={};
+function mk(slug,li){
+  const key=slug+"/"+(li||0);
+  if(TR_CACHE[key]) return TR_CACHE[key];
+  const s=STORIES.find(x=>x.slug===slug), leg=s.legs[li||0];
+  const xy=mercator(decode(leg));
+  const cum=new Float64Array(xy.length);
+  for(let i=1;i<xy.length;i++) cum[i]=cum[i-1]+Math.hypot(xy[i][0]-xy[i-1][0],xy[i][1]-xy[i-1][1]);
+  const T={slug:slug, story:s, leg:leg, xy:xy, bb:bbox(xy), cum:cum,
+           alt:leg.alt, alt0:leg.alt0||0, km:leg.km, secs:leg.secs, title:s.title, year:s.year};
+  T.total=cum[cum.length-1];
+  let mn=1e9,mx=-1e9,im=0;
+  for(let i=0;i<T.alt.length;i++){ const v=T.alt[i]; if(v<mn)mn=v; if(v>mx){mx=v;im=i;} }
+  T.amin=mn; T.amax=mx; T.topI=im; T.topF=cum[im]/T.total;
+  const cl=new Float64Array(T.alt.length);
+  for(let i=1;i<T.alt.length;i++){ const d=T.alt[i]-T.alt[i-1]; cl[i]=cl[i-1]+(d>0?d:0); }
+  T.climb=cl; T.gain=cl[cl.length-1];
+  T.mPerU=T.km*1000/T.total;
+  const gr=new Float64Array(T.alt.length);
+  for(let i=1;i<T.alt.length;i++){
+    const dl=(cum[i]-cum[i-1])*T.mPerU;
+    gr[i]=dl>1?clamp((T.alt[i]-T.alt[i-1])/dl,-.18,.18):gr[i-1];
+  }
+  T.grad=new Float64Array(gr.length);
+  for(let i=0;i<gr.length;i++){ let a=0,n=0; for(let k=Math.max(0,i-6);k<=Math.min(gr.length-1,i+6);k++){a+=gr[k];n++;} T.grad[i]=a/n; }
+  /* regola distillata: quota-colore solo se il giro sale davvero */
+  T.ramp = (T.gain/T.km) >= 12;
+  T.accent = {dawn:C.dawn,dusk:C.dusk,green:C.green,stone:C.stone,gold:C.gold}[s.accent]||C.green;
+  TR_CACHE[key]=T;
+  return T;
+}
+function at(T,p){
+  const target=T.total*clamp(p,0,1);
+  let lo=0,hi=T.cum.length-1;
+  while(lo<hi-1){ const m=(lo+hi)>>1; if(T.cum[m]<=target)lo=m; else hi=m; }
+  const span=T.cum[hi]-T.cum[lo], f=span>0?(target-T.cum[lo])/span:0;
+  return {i:lo,f:f,x:T.xy[lo][0]+(T.xy[hi][0]-T.xy[lo][0])*f,y:T.xy[lo][1]+(T.xy[hi][1]-T.xy[lo][1])*f};
+}
+function colAt(T,i){
+  return T.ramp ? mix("#cfe0bd","#22400f",(T.alt[i]-T.amin)/Math.max(1,T.amax-T.amin)) : T.accent;
+}
+function kmAt(T,i){ return Math.round(T.cum[i]/T.total*T.km); }
+
+/* le due tracce della transizione vera: la 2 e la 3 del top-20 */
+const A=mk("gavia-mortirolo-2016"), B=mk("ronde-2017");
+const GF=A.topF;
+const MORT_I=(function(){ let im=Math.round(A.alt.length*.55);
+  for(let i=im;i<Math.round(A.alt.length*.92);i++) if(A.alt[i]>A.alt[im]) im=i; return im; })();
+const MF=A.cum[MORT_I]/A.total;
+
+function warpMaker(T,marks,k,w){
+  const N=500, S=new Float64Array(N+1);
+  for(let j=1;j<=N;j++){
+    const u=(j-.5)/N; let bump=0;
+    for(const m of marks) bump+=Math.exp(-((u-m)*(u-m))/(2*w*w));
+    S[j]=S[j-1]+1+k*bump;
+  }
+  const tot=S[N];
+  return function(t){
+    const target=tot*clamp(t,0,1);
+    let lo=0,hi=N;
+    while(lo<hi-1){ const m=(lo+hi)>>1; if(S[m]<=target)lo=m; else hi=m; }
+    const span=S[hi]-S[lo], f=span>0?(target-S[lo])/span:0;
+    return (lo+f)/N;
+  };
+}
+const WARP_A=warpMaker(A,[GF,MF],7,.018);
+const WARP_B=warpMaker(B,[B.topF],5,.02);
+/* inversa campionata: da frazione di percorso a istante (serve per programmare i testi) */
+const PT=(function(){ const N=400,a=new Float64Array(N+1); for(let i=0;i<=N;i++) a[i]=WARP_A(ease(i/N)); return a; })();
+function tOf(p){
+  let lo=0,hi=400;
+  while(lo<hi-1){ const m=(lo+hi)>>1; if(PT[m]<=p)lo=m; else hi=m; }
+  return lo/400;
+}
+
+/* ================= tile CARTO ================= */
+const TILES={cache:{},
+  get(z,x,y,style){
+    const n=1<<z; x=((x%n)+n)%n;
+    if(y<0||y>=n) return null;
+    const k=style+"/"+z+"/"+x+"/"+y;
+    let t=this.cache[k];
+    if(!t){
+      t={img:new Image(),ok:false};
+      t.img.crossOrigin="anonymous";
+      t.img.onload=()=>{t.ok=true;};
+      t.img.src="https://basemaps.cartocdn.com/"+style+"/"+z+"/"+x+"/"+y+".png";
+      this.cache[k]=t;
+    }
+    return t.ok?t.img:null;
+  }};
+function drawTiles(g,cam,W,H,style,veil){
+  const z=clamp(Math.round(Math.log2(cam.s)),3,16), n2=Math.pow(2,z);
+  const tw=cam.s*256/n2;
+  const x0=cam.cx-(W/2)/cam.s, y0=cam.cy-(H/2)/cam.s;
+  const tx0=Math.floor(x0*n2/256), ty0=Math.floor(y0*n2/256);
+  const nx=Math.ceil(W/tw)+1, ny=Math.ceil(H/tw)+1;
+  if(nx*ny>900) return;
+  for(let i=0;i<=nx;i++) for(let j=0;j<=ny;j++){
+    const img=TILES.get(z,tx0+i,ty0+j,style);
+    if(!img) continue;
+    g.drawImage(img,((tx0+i)*256/n2-x0)*cam.s,((ty0+j)*256/n2-y0)*cam.s,tw+.5,tw+.5);
+  }
+  if(veil){ g.fillStyle=veil; g.fillRect(0,0,W,H); }
+}
+
+/* ================= disegno ================= */
+function fitCam(bb,W,H,pad){
+  const span=Math.max(bb.w,bb.h)*(1+(pad||.12)*2);
+  return {s:Math.min(W,H)/span, cx:bb.cx, cy:bb.cy};
+}
+function px(cam,W,H,x,y){ return [W/2+(x-cam.cx)*cam.s, H/2+(y-cam.cy)*cam.s]; }
+function pathT(g,T,cam,W,H,from,to,step){
+  g.beginPath();
+  const a=from||0, b=to==null?T.xy.length-1:to, st=step||1;
+  for(let i=a;i<=b;i+=st){
+    const q=px(cam,W,H,T.xy[i][0],T.xy[i][1]);
+    i===a?g.moveTo(q[0],q[1]):g.lineTo(q[0],q[1]);
+  }
+}
+function stroke(g,col,wd,alpha){
+  g.globalAlpha=alpha==null?1:alpha; g.strokeStyle=col; g.lineWidth=wd;
+  g.lineJoin=g.lineCap="round"; g.stroke(); g.globalAlpha=1;
+}
+/* MA02, la vincitrice: ogni tratto ripassato due volte, fuori registro */
+function doubleLine(g,T,cam,W,H,headI,wd){
+  const st=Math.max(1,Math.round(T.xy.length/700));
+  for(let k=0;k<2;k++){
+    const off=k?1.5:0;
+    for(let i=st;i<=headI;i+=st){
+      const a=px(cam,W,H,T.xy[i-st][0],T.xy[i-st][1]), b=px(cam,W,H,T.xy[i][0],T.xy[i][1]);
+      g.beginPath(); g.moveTo(a[0]+off,a[1]-off*.6); g.lineTo(b[0]+off,b[1]-off*.6);
+      stroke(g,colAt(T,i),k?(wd||2.5)*.6:(wd||2.5),k?.4:.92);
+    }
+  }
+}
+function dot(g,x,y,ac,r){
+  g.beginPath(); g.arc(x,y,(r||4.2)*2.3,0,7); g.fillStyle=ac; g.globalAlpha=.16; g.fill(); g.globalAlpha=1;
+  g.beginPath(); g.arc(x,y,r||4.2,0,7); g.fillStyle=ac; g.fill();
+  g.lineWidth=1.5; g.strokeStyle=C.cream; g.stroke();
+}
+function halo(g,txt,x,y,size,o){
+  o=o||{};
+  g.save();
+  g.font=(o.serif?(o.italic?"italic 400 ":"400 "):(o.weight||"600 "))+size+"px "+
+         (o.serif?"'Instrument Serif',Georgia,serif":"Inter,sans-serif");
+  g.textAlign=o.align||"left"; g.textBaseline="alphabetic";
+  g.shadowColor=o.hcol||"rgba(250,248,243,.95)"; g.shadowBlur=o.blur==null?9:o.blur;
+  g.fillStyle=o.col||C.ink;
+  for(let k=0;k<(o.passes||3);k++) g.fillText(txt,x,y);
+  g.restore();
+}
+function wrap(g,txt,maxw){
+  const words=String(txt).split(" "), lines=[]; let cur="";
+  for(const wd of words){
+    const test=cur?cur+" "+wd:wd;
+    if(g.measureText(test).width>maxw&&cur){ lines.push(cur); cur=wd; }
+    else cur=test;
+  }
+  if(cur) lines.push(cur);
+  return lines;
+}
+function kicker(g,txt,x,y,size,col,align){
+  g.save();
+  if("letterSpacing" in g) g.letterSpacing="1.6px";
+  halo(g,String(txt).toUpperCase(),x,y,size||8,{weight:"700 ",col:col||C.ink2,align:align||"center",blur:7});
+  if("letterSpacing" in g) g.letterSpacing="0px";
+  g.restore();
+}
+/* blocco di testo al centro: torna l'altezza usata */
+function block(g,ctx,kick,txt,a,o){
+  if(a<=0||!txt) return 0;
+  o=o||{};
+  const size=o.size||Math.max(12,Math.round(ctx.MW*.043));
+  g.save(); g.globalAlpha=clamp(a,0,1);
+  g.font=(o.serif?(o.italic?"italic 400 ":"400 "):"600 ")+size+"px "+
+         (o.serif?"'Instrument Serif',Georgia,serif":"Inter,sans-serif");
+  const lines=wrap(g,txt,ctx.MW*(o.wide||.78));
+  const y0=ctx.H*(o.y||.44)-(lines.length-1)*size*.62;
+  if(kick) kicker(g,kick,ctx.MW/2,y0-size*1.15,Math.max(7.5,size*.42),o.kcol||C.ink2);
+  lines.forEach((ln,j)=>halo(g,ln,ctx.MW/2,y0+j*size*1.24,size,
+    {align:"center",serif:o.serif,italic:o.italic,col:o.col}));
+  g.restore();
+  return y0+(lines.length-1)*size*1.24;
+}
+function counters(g,T,ctx){
+  const p=ctx.p, exact=p>=.999;
+  const km=exact?Math.round(T.km):Math.floor(p*T.km/5)*5;
+  const gain=exact?Math.round(T.gain):Math.floor(T.climb[ctx.head.i]/50)*50;
+  const secs=Math.round(p*T.secs);
+  const hh=Math.floor(secs/3600)+"h"+String(Math.floor(secs%3600/60)).padStart(2,"0");
+  const H=ctx.H, MW=ctx.MW, big=Math.max(14,Math.round(MW*.048)), sm=Math.max(6.5,big*.32);
+  g.save(); g.globalAlpha=.96;
+  halo(g,km+" km",12,H-22,big,{serif:true});
+  kicker(g,"distanza",12,H-11,sm,C.ink3,"left");
+  halo(g,hh,12+MW*.22,H-22,big,{serif:true});
+  kicker(g,"in sella",12+MW*.22,H-11,sm,C.ink3,"left");
+  halo(g,fmtN(gain)+" m",MW-12,H-22,big,{serif:true,align:"right"});
+  kicker(g,"dislivello",MW-12,H-11,sm,C.ink3,"right");
+  g.restore();
+}
+function sideProfile(g,T,x0,W,H,headI){
+  const bw=W-x0-10, st=Math.max(1,Math.round(T.alt.length/300));
+  const yOf=k=>10+T.cum[k]/T.total*(H-20);
+  const xOf=v=>x0+4+((v-T.amin)/Math.max(1,T.amax-T.amin))*(bw-8);
+  g.strokeStyle=C.rule; g.lineWidth=1;
+  g.beginPath(); g.moveTo(x0,0); g.lineTo(x0,H); g.stroke();
+  g.beginPath(); g.moveTo(x0+4,10);
+  for(let k=0;k<T.alt.length;k+=st) g.lineTo(xOf(T.alt[k]),yOf(k));
+  g.lineTo(x0+4,H-10); g.closePath();
+  g.fillStyle=C.rule; g.globalAlpha=.8; g.fill(); g.globalAlpha=1;
+  g.beginPath(); g.moveTo(x0+4,10);
+  for(let k=0;k<=headI;k+=st) g.lineTo(xOf(T.alt[k]),yOf(k));
+  g.lineTo(x0+4,yOf(headI)); g.closePath();
+  g.fillStyle=T.accent; g.globalAlpha=.35; g.fill(); g.globalAlpha=1;
+  g.strokeStyle=T.accent; g.lineWidth=1.3; g.globalAlpha=.9;
+  g.beginPath(); g.moveTo(x0,yOf(headI)); g.lineTo(x0+bw,yOf(headI)); g.stroke(); g.globalAlpha=1;
+}
+/* MA08, votata 9: cerchio storto e freccia a penna sul passo */
+function penNote(g,T,ctx,frac,txt,a){
+  if(a<=0) return;
+  const nz=x=>{ const s=Math.sin(x*127.1)*43758.5453; return (s-Math.floor(s))*2-1; };
+  const o=at(T,frac), q=px(ctx.cam,ctx.MW,ctx.H,o.x,o.y);
+  if(q[0]<-40||q[0]>ctx.MW+40) return;
+  g.save(); g.globalAlpha=a; g.strokeStyle="#1d3a6e"; g.lineWidth=1.6; g.lineCap="round";
+  g.beginPath();
+  for(let k=0;k<=40;k++){
+    const an=k/40*7.1, r=16+nz(k*.4)*3;
+    const x=q[0]+Math.cos(an)*r*1.25, y=q[1]+Math.sin(an)*r;
+    k?g.lineTo(x,y):g.moveTo(x,y);
+  }
+  g.stroke();
+  g.beginPath(); g.moveTo(q[0]+32,q[1]-28); g.quadraticCurveTo(q[0]+28,q[1]-13,q[0]+21,q[1]-8); g.stroke();
+  g.beginPath(); g.moveTo(q[0]+21,q[1]-8); g.lineTo(q[0]+29,q[1]-9);
+  g.moveTo(q[0]+21,q[1]-8); g.lineTo(q[0]+24,q[1]-15); g.stroke();
+  halo(g,txt,q[0]+34,q[1]-32,12,{serif:true,italic:true,col:"#1d3a6e"});
+  g.restore();
+}
+
+/* ================= i testi della traccia di controllo ================= */
+/* diario (VO07) + confessione (VO08) mescolati, come chiesto */
+const SAY=[
+  {at:.02, kick:"Edolo", txt:"Sveglia alle sei, in valle c'era ancora l'ombra.",
+   conf:"(avevo dormito quattro ore)"},
+  {at:GF, kick:"Passo Gavia", txt:"Sono arrivato in cima che non sentivo più le dita.",
+   conf:"(qui ho pensato di girarmi)"},
+  {at:MF, kick:"Mortirolo", txt:"Il Mortirolo l'ho fatto pensando ad altro, apposta, contando i tornanti uno per uno per non guardare mai in su.",
+   conf:"(non l'ho detto a nessuno)"},
+  {at:.97, kick:"Edolo", txt:"Rientrato alle due e mezza.", conf:null}
+];
+SAY.forEach(s=>{ s.t=tOf(s.at); s.w=s.txt.split(" ").length; s.c=s.txt.length; });
+const B_INTRO="Un anno dopo, in Belgio, la strada diventa pavé.";
+
+/* durata di lettura: ogni variante ha la sua legge */
+function sched(list,durFn,o){
+  o=o||{};
+  const DUR=o.dur||22, fin=o.fade==null?.28:o.fade, fout=o.fadeOut==null?.35:o.fadeOut;
+  return function(t){
+    const out=[];
+    for(const s of list){
+      const secs=durFn(s), w=secs/DUR;
+      const u=(t-s.t)/w;
+      if(u<-fin/secs||u>1+fout/secs) continue;
+      let a=1;
+      if(t<s.t) a=clamp(1+(t-s.t)*DUR/fin,0,1);
+      else if(t>s.t+w) a=clamp(1-((t-s.t-w)*DUR)/fout,0,1);
+      out.push({s:s,a:a,u:clamp(u,0,1),secs:secs});
+    }
+    return out;
+  };
+}
+/* barrettina che mostra quanto tempo resta per leggere: è un lab, si deve vedere */
+function readBar(g,ctx,item){
+  const w=ctx.MW*.3, x=ctx.MW/2-w/2, y=ctx.H*.80;
+  g.save(); g.globalAlpha=item.a*.85;
+  g.fillStyle="rgba(140,145,130,.3)"; g.fillRect(x,y,w,2.5);
+  g.fillStyle=C.stone; g.fillRect(x,y,w*(1-item.u),2.5);
+  kicker(g,item.secs.toFixed(1)+" s per "+item.s.w+" parole",ctx.MW/2,y+13,7,C.ink3);
+  g.restore();
+}
+
+/* ================= la scena base ================= */
+function ride(g,W,H,t,o){
+  o=o||{};
+  const T=o.T||A, warp=o.warp||(T===A?WARP_A:WARP_B);
+  const p=o.p!=null?clamp(o.p,0,1):warp(ease(t));
+  const MW=o.full?W:Math.round(W*.78);
+  const head=at(T,p);
+  const wide=fitCam(T.bb,MW,H,.12);
+  const marks=o.marks||(T===A?[GF,MF]:[T.topF]);
+  let f=0; for(const m of marks) f=Math.max(f,dv(p,m,.05));
+  f=ease(clamp(f*1.15,0,1));
+  const cam=o.cam||{s:wide.s*lerp(1,o.zoom||2,f), cx:lerp(T.bb.cx,head.x,f), cy:lerp(T.bb.cy,head.y,f)};
+  const ctx={p:p,t:t,head:head,cam:cam,MW:MW,W:W,H:H,f:f,wide:wide,T:T};
+  g.save(); g.beginPath(); g.rect(0,0,MW,H); g.clip();
+  drawTiles(g,cam,MW,H,o.style||"light_all",o.veil||"rgba(250,248,243,.38)");
+  pathT(g,T,cam,MW,H,0,null,Math.max(1,Math.round(T.xy.length/500))); stroke(g,C.ink3,1.1,.35);
+  if(o.line) o.line(g,ctx); else doubleLine(g,T,cam,MW,H,head.i);
+  ctx.q=px(cam,MW,H,head.x,head.y);
+  dot(g,ctx.q[0],ctx.q[1],colAt(T,head.i));
+  if(o.pen!==false&&T===A){
+    penNote(g,T,ctx,GF,"qui faceva freddo",clamp((dv(p,GF,.035)-.3)/.6,0,1));
+    penNote(g,T,ctx,MF,"qui non ne avevo più",clamp((dv(p,MF,.035)-.3)/.6,0,1));
+  }
+  if(o.over) o.over(g,ctx);
+  g.restore();
+  if(!o.full) sideProfile(g,T,MW,W,H,head.i);
+  if(o.counters!==false) counters(g,T,ctx);
+  if(o.text!==false) (o.textFn||defaultText)(g,ctx);
+  return ctx;
+}
+/* narrazione di base: diario al centro, confessione piccola sotto (IN01) */
+const SCHED_BASE=sched(SAY,s=>clamp(s.w*.36+.8,1.8,4.6));
+function defaultText(g,ctx){
+  for(const it of SCHED_BASE(ctx.t)){
+    const y=block(g,ctx,it.s.kick,it.s.txt,it.a,{serif:true,italic:true,
+      size:sizeByLen(ctx,it.s.txt)});
+    if(it.s.conf) halo(g,it.s.conf,ctx.MW/2,y+ctx.H*.075,Math.max(9.5,ctx.MW*.026),
+      {align:"center",serif:true,italic:true,col:C.ink2,passes:2});
+  }
+}
+/* legge di default per il corpo: la frase corta è grande, la lunga è piccola */
+function sizeByLen(ctx,txt){
+  const w=String(txt).split(" ").length;
+  return clamp(Math.round(ctx.MW*.075-w*ctx.MW*.0022),Math.round(ctx.MW*.030),Math.round(ctx.MW*.075));
+}
+
+/* ================= transizione fra due storie ================= */
+function fly(TA,TB,u,W,H,o){
+  o=o||{};
+  const ca=fitCam(TA.bb,W,H,.12), cb=fitCam(TB.bb,W,H,.12);
+  const zp=o.zprof||(x=>Math.sin(clamp(x,0,1)*Math.PI));
+  const pp=o.pprof||(x=>ease(clamp((x-.18)/.64,0,1)));
+  const k=zp(u), pan=pp(u);
+  const base=lerp(ca.s,cb.s,pan);
+  let cx=lerp(ca.cx,cb.cx,pan), cy=lerp(ca.cy,cb.cy,pan);
+  if(o.arc){
+    const dx=cb.cx-ca.cx, dy=cb.cy-ca.cy, len=Math.hypot(dx,dy)||1;
+    cx+=-dy/len*len*.10*k; cy+=dx/len*len*.10*k;
+  }
+  return {s:base/Math.pow(o.out||10,k), cx:cx, cy:cy, k:k, pan:pan};
+}
+/* una scheda intera: storia A → volo → storia B */
+function pair(g,W,H,t,o){
+  o=o||{};
+  const a0=o.a0==null?.36:o.a0, b0=o.b0==null?.60:o.b0;
+  const MW=Math.round(W*.78);
+  if(t<a0){
+    return ride(g,W,H,t/a0,Object.assign({T:A},o.A||{}));
+  }
+  if(t>=b0){
+    return ride(g,W,H,(t-b0)/(1-b0),Object.assign({T:B,warp:WARP_B},o.B||{}));
+  }
+  /* il volo */
+  const u=(t-a0)/(b0-a0);
+  const cam=(o.flyCam||fly)(A,B,u,MW,H,o.flyOpt||{});
+  const ctx={p:1,t:t,cam:cam,MW:MW,W:W,H:H,u:u,head:{i:A.alt.length-1},T:A};
+  g.save(); g.beginPath(); g.rect(0,0,MW,H); g.clip();
+  drawTiles(g,cam,MW,H,"light_all","rgba(250,248,243,.38)");
+  const stA=Math.max(1,Math.round(A.xy.length/400)), stB=Math.max(1,Math.round(B.xy.length/400));
+  pathT(g,A,cam,MW,H,0,null,stA); stroke(g,C.green,2.2,clamp(1.2-u,.25,1));
+  pathT(g,B,cam,MW,H,0,null,stB); stroke(g,C.ink3,1.8,clamp(u*1.4,0,.75));
+  if(o.flyOver) o.flyOver(g,ctx);
+  g.restore();
+  if(o.flyText!==false){
+    const a=clamp(Math.sin(clamp((u-.12)/.76,0,1)*Math.PI)*1.9,0,1);
+    block(g,ctx,"2017 · Ronde van Vlaanderen",B_INTRO,a,{serif:true,size:Math.round(MW*.05)});
+  }
+  return ctx;
+}
+
+/* ================= le varianti ================= */
+const V=[];
+function def(id,fam,name,what,opts,draw){
+  V.push(Object.assign({id:id,fam:fam,name:name,what:what,draw:draw,dur:24},opts||{}));
+}
+
+def("B00","base","La base del round 4",
+"Il Gavia con i vincitori del terzo giro già montati — doppio tratto, annotazione a penna sui due passi, diario con la confessione sotto — poi il volo verso il Belgio e l'inizio del Ronde. È la cosa da battere: tutto quello che c'è sotto cambia un pezzo di questa.",
+{noChips:true,dur:30},
+function(g,W,H,t){ pair(g,W,H,t,{}); });
+
+/* ---------- 1. TRANSIZIONE ---------- */
+function trans(opt,over){
+  return function(g,W,H,t){ pair(g,W,H,t,Object.assign({},opt,over?{flyOver:over}:{})); };
+}
+def("TR01","transizione","Dieci volte",
+"Quello che hai chiesto, dritto: la camera si allarga dieci volte, scorre fino al Belgio e riscende dieci volte. Mai il globo, sempre carta vera sotto.",
+{dur:30}, trans({flyOpt:{out:10}}));
+
+def("TR02","transizione","Sei volte",
+"Meno aria: si sale solo sei volte. Si resta più bassi, si vede più territorio scorrere, il viaggio sembra più lungo.",
+{dur:30}, trans({flyOpt:{out:6}}));
+
+def("TR03","transizione","Sedici volte",
+"Più aria: sedici volte. Si capisce meglio la geografia, ma per un attimo il paesaggio diventa astratto.",
+{dur:30}, trans({flyOpt:{out:16}}));
+
+def("TR04","transizione","Tre tempi",
+"La regola del round 5, applicata al volo: 30% per salire, 40% fermi al campo largo — è lì che si legge l'intro e si vede dove stanno le due storie — 30% per riscendere.",
+{dur:30}, trans({flyOpt:{out:10,
+  zprof:x=>x<.3?ease(x/.3):(x<.7?1:ease((1-x)/.3)),
+  pprof:x=>ease(clamp((x-.3)/.4,0,1))}}));
+
+def("TR05","transizione","Il pan puro",
+"Nessuno zoom: la camera scorre e basta, alla quota della storia. Onesto sulle distanze, ma lunghissimo — si vede quanto sono lontane davvero.",
+{dur:30}, trans({flyOpt:{out:1.6}}));
+
+def("TR06","transizione","L'arco",
+"Il volo non va dritto: descrive una curva, come una rotta aerea. Il movimento si legge come un gesto, non come un taglia-e-incolla.",
+{dur:30}, trans({flyOpt:{out:10,arc:true}}));
+
+def("TR07","transizione","Zoom out e stacco",
+"Si allarga, e poi taglia netto sulla storia nuova già a fuoco. Veloce, ma la relazione geografica si perde.",
+{dur:30}, trans({flyOpt:{out:10,
+  zprof:x=>x<.55?ease(x/.55):0, pprof:x=>x<.55?0:1}}));
+
+def("TR08","transizione","L'intro che vola",
+"Il testo della storia nuova compare mentre si è ancora in volo, mai da fermi: quando la camera si posa, hai già letto.",
+{dur:30}, trans({flyOpt:{out:10,pprof:x=>ease(clamp(x/.8,0,1))}}));
+
+def("TR09","transizione","La camera anticipa",
+"La camera comincia a spostarsi verso il Belgio prima che il Gavia sia finito: la storia dopo tira, come in un montaggio serrato.",
+{dur:30}, trans({a0:.30,b0:.58,flyOpt:{out:10,pprof:x=>ease(clamp((x+.12)/.75,0,1))}}));
+
+def("TR10","transizione","Il respiro largo",
+"Salita, e poi due secondi buoni fermi in campo largo senza una parola: le due tracce lì, ferme, lontane. Poi si scende.",
+{dur:32}, trans({flyText:false,flyOpt:{out:12,
+  zprof:x=>x<.25?ease(x/.25):(x<.75?1:ease((1-x)/.25)),
+  pprof:x=>ease(clamp((x-.25)/.5,0,1))}},
+function(g,ctx){
+  if(ctx.u>.35&&ctx.u<.68) kicker(g,"novecento chilometri",ctx.MW/2,ctx.H*.14,10,C.ink2);
+}));
+
+/* ---------- 2. LETTURA ---------- */
+function readVar(durFn,o){
+  o=o||{};
+  const S=sched(SAY,durFn,{dur:24,fade:o.fade,fadeOut:o.fadeOut});
+  return function(g,W,H,t){
+    ride(g,W,H,t,{textFn:function(g,ctx){
+      for(const it of S(ctx.t)){
+        if(o.perLine){
+          const size=sizeByLen(ctx,it.s.txt);
+          g.font="italic 400 "+size+"px 'Instrument Serif',Georgia,serif";
+          const lines=wrap(g,it.s.txt,ctx.MW*.78);
+          const y0=ctx.H*.44-(lines.length-1)*size*.62;
+          kicker(g,it.s.kick,ctx.MW/2,y0-size*1.15,Math.max(7.5,size*.42),C.ink2);
+          lines.forEach((ln,j)=>{
+            const la=clamp((it.u*lines.length*1.5)-j,0,1)*it.a;
+            halo(g,ln,ctx.MW/2,y0+j*size*1.24,size,{align:"center",serif:true,italic:true});
+            g.globalAlpha=1;
+            if(la<1){ g.save(); g.globalAlpha=1-la; g.fillStyle="rgba(250,248,243,.92)";
+              g.fillRect(0,y0+j*size*1.24-size,ctx.MW,size*1.4); g.restore(); }
+          });
+        } else {
+          const y=block(g,ctx,it.s.kick,it.s.txt,it.a,{serif:true,italic:true,size:sizeByLen(ctx,it.s.txt)});
+          if(it.s.conf) halo(g,it.s.conf,ctx.MW/2,y+ctx.H*.075,Math.max(9.5,ctx.MW*.026),
+            {align:"center",serif:true,italic:true,col:C.ink2,passes:2});
+        }
+        readBar(g,ctx,it);
+      }
+    }, p:o.p?o.p(t):undefined});
+  };
+}
+def("LT01","lettura","Un secondo e mezzo",
+"Com'è adesso: ogni testo sta 1,5 secondi, che sia di tre parole o di venti. La frase lunga non si riesce a finire — è il problema.",
+{num:"1,5 s fissi"}, readVar(()=>1.5));
+
+def("LT02","lettura","Parole per un terzo di secondo",
+"La durata la decidono le parole: 0,35 s ciascuna. Una regola sola, applicata sempre.",
+{num:"0,35 s × parola"}, readVar(s=>s.w*.35));
+
+def("LT03","lettura","Quindici caratteri al secondo",
+"Si conta la lunghezza vera, non le parole: quindici caratteri al secondo, la velocità di lettura tranquilla.",
+{num:"15 car/s"}, readVar(s=>s.c/15));
+
+def("LT04","lettura","Lettura più coda",
+"Il tempo di leggere, più otto decimi per respirare prima che sparisca. La coda è quella che manca sempre.",
+{num:"0,35 s × parola + 0,8 s"}, readVar(s=>s.w*.35+.8));
+
+def("LT05","lettura","Con i limiti",
+"Come sopra, ma non meno di 1,8 s e non più di 4,6: nessun testo lampeggia, nessuno annoia.",
+{num:"clamp 1,8 – 4,6 s"}, readVar(s=>clamp(s.w*.36+.8,1.8,4.6)));
+
+def("LT06","lettura","Entra piano, esce netto",
+"Mezzo secondo per comparire, sparizione istantanea. La dissolvenza lenta in uscita ruba tempo di lettura.",
+{num:"fade in 0,5 · out 0,05"}, readVar(s=>clamp(s.w*.36+.8,1.8,4.6),{fade:.5,fadeOut:.05}));
+
+def("LT07","lettura","Riga per riga",
+"Le righe si accendono una dopo l'altra al ritmo della lettura: l'occhio è accompagnato invece che lasciato solo.",
+{num:"riga per riga"}, readVar(s=>clamp(s.w*.36+1,2,5),{perLine:true}));
+
+def("LT08","lettura","Con l'aria in mezzo",
+"Fra un testo e l'altro, quattro decimi di niente. Il vuoto fa capire che è finita una frase e ne comincia un'altra.",
+{num:"+0,4 s di silenzio"}, readVar(s=>clamp(s.w*.36+.4,1.6,4.2),{fadeOut:.4}));
+
+def("LT09","lettura","Il disegno rallenta mentre leggi",
+"Il testo prende il tempo che gli serve e nel frattempo la traccia continua ma al 45%: non ci si ferma mai, però si legge.",
+{num:"disegno al 45% sotto i testi"},
+(function(){
+  const durFn=s=>clamp(s.w*.36+.8,1.8,4.6);
+  const S=sched(SAY,durFn,{dur:24});
+  /* rimappatura del tempo precalcolata: dove c'è un testo, il disegno va a rilento */
+  const N=600, MAP=new Float64Array(N+1);
+  for(let i=1;i<=N;i++){
+    const t=i/N;
+    let slow=1;
+    for(const s of SAY){ const w=durFn(s)/24; if(t>=s.t&&t<=s.t+w) slow=.45; }
+    MAP[i]=MAP[i-1]+slow;
+  }
+  const tot=MAP[N];
+  return function(g,W,H,t){
+    const k=clamp(Math.round(t*N),0,N);
+    ride(g,W,H,t,{p:WARP_A(ease(MAP[k]/tot)),textFn:function(g,ctx){
+      for(const it of S(t)){
+        const y=block(g,ctx,it.s.kick,it.s.txt,it.a,{serif:true,italic:true,size:sizeByLen(ctx,it.s.txt)});
+        if(it.s.conf) halo(g,it.s.conf,ctx.MW/2,y+ctx.H*.075,Math.max(9.5,ctx.MW*.026),
+          {align:"center",serif:true,italic:true,col:C.ink2,passes:2});
+        readBar(g,ctx,it);
+      }
+    }});
+  };
+})());
+
+def("LT10","lettura","Finché sei lì",
+"Il testo non ha una durata: resta finché il puntino è dentro il tratto che racconta. La geografia detta il tempo, non l'orologio.",
+{num:"ancorato al tratto"},
+function(g,W,H,t){
+  const ZONE=[[0,.10],[GF-.06,GF+.06],[MF-.07,MF+.05],[.93,1]];
+  ride(g,W,H,t,{textFn:function(g,ctx){
+    SAY.forEach((s,k)=>{
+      const z=ZONE[k];
+      const a=clamp(Math.min((ctx.p-z[0])/.02,(z[1]-ctx.p)/.02),0,1);
+      if(a<=0) return;
+      const y=block(g,ctx,s.kick,s.txt,a,{serif:true,italic:true,size:sizeByLen(ctx,s.txt)});
+      if(s.conf) halo(g,s.conf,ctx.MW/2,y+ctx.H*.075,Math.max(9.5,ctx.MW*.026),
+        {align:"center",serif:true,italic:true,col:C.ink2,passes:2});
+      const secs=(z[1]-z[0])*24;
+      kicker(g,"~"+secs.toFixed(1)+" s, li dà la strada",ctx.MW/2,ctx.H*.82,7,C.ink3);
+    });
+  }});
+});
+
+/* ---------- 3. CORPO ---------- */
+function sizeVar(fn,o){
+  o=o||{};
+  const S=sched(SAY,s=>clamp(s.w*.36+.8,1.8,4.6),{dur:24});
+  return function(g,W,H,t){
+    ride(g,W,H,t,{textFn:function(g,ctx){
+      for(const it of S(ctx.t)){
+        const size=fn(ctx,it.s,g);
+        if(o.custom){ o.custom(g,ctx,it,size); continue; }
+        const y=block(g,ctx,it.s.kick,it.s.txt,it.a,{serif:o.serif!==false,italic:o.italic!==false,size:size});
+        if(it.s.conf) halo(g,it.s.conf,ctx.MW/2,y+ctx.H*.075,Math.max(9.5,ctx.MW*.026),
+          {align:"center",serif:true,italic:true,col:C.ink2,passes:2});
+        kicker(g,Math.round(size)+" px · "+it.s.w+" parole",ctx.MW/2,ctx.H*.84,7,C.ink3);
+      }
+    }});
+  };
+}
+def("CP01","corpo","Sempre uguale",
+"Il riferimento: un solo corpo per tutte le frasi. La corta sembra timida, la lunga occupa mezzo schermo.",
+{num:"fisso"}, sizeVar(ctx=>Math.round(ctx.MW*.043)));
+
+def("CP02","corpo","Inversamente proporzionale",
+"Più parole, più piccolo, in modo continuo. Una legge sola, senza scalini.",
+{num:"−0,22% per parola"}, sizeVar((ctx,s)=>clamp(Math.round(ctx.MW*.075-s.w*ctx.MW*.0022),Math.round(ctx.MW*.030),Math.round(ctx.MW*.075))));
+
+def("CP03","corpo","A gradini",
+"Tre taglie sole: fino a 4 parole grande, fino a 12 media, oltre piccola. Prevedibile, tipografica, facile da tenere in un video.",
+{num:"3 taglie"}, sizeVar((ctx,s)=>Math.round(ctx.MW*(s.w<=4?.085:(s.w<=12?.052:.034)))));
+
+def("CP04","corpo","Riempi la larghezza",
+"Il corpo si calcola perché la frase occupi sempre la stessa larghezza: ogni testo è un blocco della stessa misura.",
+{num:"larghezza costante"},
+sizeVar((ctx,s,g)=>{
+  const target=ctx.MW*.74;
+  g.font="italic 400 100px 'Instrument Serif',Georgia,serif";
+  const w=g.measureText(s.txt).width/100;
+  const lines=Math.max(1,Math.round(Math.sqrt(w*100/target*1.1)));
+  return clamp(target/(w/lines),Math.round(ctx.MW*.028),Math.round(ctx.MW*.09));
+}));
+
+def("CP05","corpo","Riempi il riquadro",
+"Il testo occupa sempre la stessa area, qualunque cosa dica: due parole enormi o venti piccole, il peso sullo schermo non cambia.",
+{num:"area costante"},
+sizeVar((ctx,s,g)=>{
+  const area=ctx.MW*ctx.H*.10;
+  g.font="italic 400 100px 'Instrument Serif',Georgia,serif";
+  const w=g.measureText(s.txt).width/100;
+  return clamp(Math.sqrt(area/(w*1.3)),Math.round(ctx.MW*.026),Math.round(ctx.MW*.085));
+}));
+
+def("CP06","corpo","Misura fissa",
+"La regola dei libri: quaranta caratteri per riga, sempre. La dimensione esce da lì, e il numero di righe cresce con la frase.",
+{num:"40 caratteri per riga"},
+sizeVar((ctx,s,g)=>{
+  g.font="italic 400 100px 'Instrument Serif',Georgia,serif";
+  const per=g.measureText("m").width/100;
+  return clamp(ctx.MW*.74/(40*per),Math.round(ctx.MW*.026),Math.round(ctx.MW*.08));
+}));
+
+def("CP07","corpo","Serif per le corte, sans per le lunghe",
+"Non solo la taglia: cambia il carattere. Le frasi brevi diventano titoli in serif, le lunghe testo in sans.",
+{num:"cambia il carattere"},
+sizeVar((ctx,s)=>Math.round(ctx.MW*(s.w<=6?.078:.036)),{custom:function(g,ctx,it,size){
+  const short=it.s.w<=6;
+  const y=block(g,ctx,it.s.kick,it.s.txt,it.a,{serif:short,italic:short,size:size});
+  if(it.s.conf) halo(g,it.s.conf,ctx.MW/2,y+ctx.H*.075,Math.max(9.5,ctx.MW*.026),
+    {align:"center",serif:true,italic:true,col:C.ink2,passes:2});
+}}));
+
+def("CP08","corpo","L'attacco",
+"Le prime due parole grandi, il resto normale: ogni frase ha un attacco, come nei giornali.",
+{num:"prime 2 parole grandi"},
+sizeVar((ctx)=>Math.round(ctx.MW*.036),{custom:function(g,ctx,it,size){
+  const parts=it.s.txt.split(" ");
+  const head=parts.slice(0,2).join(" "), rest=parts.slice(2).join(" ");
+  g.save(); g.globalAlpha=it.a;
+  halo(g,head,ctx.MW/2,ctx.H*.40,Math.round(ctx.MW*.072),{align:"center",serif:true});
+  g.font="italic 400 "+size+"px 'Instrument Serif',Georgia,serif";
+  wrap(g,rest,ctx.MW*.72).forEach((ln,j)=>
+    halo(g,ln,ctx.MW/2,ctx.H*.40+size*1.9+j*size*1.25,size,{align:"center",serif:true,italic:true}));
+  g.restore();
+}}));
+
+def("CP09","corpo","Il numero comanda",
+"Se nella frase c'è un numero, quello diventa grande e le parole gli stanno intorno piccole. Il dato è il titolo.",
+{num:"numero in evidenza"},
+sizeVar((ctx)=>Math.round(ctx.MW*.034),{custom:function(g,ctx,it,size){
+  const NUMS={0:"6:00",1:"2.551 m",2:"1.852 m",3:"14:30"};
+  const k=SAY.indexOf(it.s);
+  g.save(); g.globalAlpha=it.a;
+  halo(g,NUMS[k]||"",ctx.MW/2,ctx.H*.38,Math.round(ctx.MW*.10),{align:"center",serif:true});
+  g.font="italic 400 "+size+"px 'Instrument Serif',Georgia,serif";
+  wrap(g,it.s.txt,ctx.MW*.7).forEach((ln,j)=>
+    halo(g,ln,ctx.MW/2,ctx.H*.38+size*2.2+j*size*1.25,size,{align:"center",serif:true,italic:true,col:C.ink2}));
+  g.restore();
+}}));
+
+def("CP10","corpo","Che si spegne",
+"Il corpo cala man mano che la storia va avanti: si comincia con un titolo, si finisce con un sussurro.",
+{num:"decrescente"},
+sizeVar((ctx,s)=>Math.round(ctx.MW*lerp(.082,.032,clamp(s.t,0,1)))));
+
+/* ---------- 4. INTRECCIO ---------- */
+function weave(fn,o){
+  o=o||{};
+  const S=sched(SAY,o.durFn||(s=>clamp(s.w*.36+.8,1.8,4.6)),{dur:24});
+  return function(g,W,H,t){ ride(g,W,H,t,{textFn:function(g,ctx){ fn(g,ctx,S(ctx.t)); }}); };
+}
+function conf(g,ctx,txt,a,y){
+  if(!txt) return;
+  halo(g,txt,ctx.MW/2,y,Math.max(9.5,ctx.MW*.026),{align:"center",serif:true,italic:true,col:C.ink2,passes:2,blur:7});
+}
+def("IN01","intreccio","Diario e confessione",
+"Quello che hai chiesto: la riga di diario al centro e, sotto, piccola, la cosa che di solito non si scrive. Due piani nello stesso momento.",null,
+weave(function(g,ctx,items){
+  for(const it of items){
+    const y=block(g,ctx,it.s.kick,it.s.txt,it.a,{serif:true,italic:true,size:sizeByLen(ctx,it.s.txt)});
+    conf(g,ctx,it.s.conf,it.a,y+ctx.H*.075);
+  }
+}));
+
+def("IN02","intreccio","La confessione dopo",
+"Prima il diario. Quando è finito di leggere, e solo allora, arriva la confessione — da sola, al centro.",null,
+weave(function(g,ctx,items){
+  for(const it of items){
+    if(it.u<.55) block(g,ctx,it.s.kick,it.s.txt,it.a,{serif:true,italic:true,size:sizeByLen(ctx,it.s.txt)});
+    else if(it.s.conf) block(g,ctx,null,it.s.conf,it.a*clamp((it.u-.55)/.15,0,1),
+      {serif:true,italic:true,size:Math.round(ctx.MW*.04),col:C.ink2});
+    else block(g,ctx,it.s.kick,it.s.txt,it.a,{serif:true,italic:true,size:sizeByLen(ctx,it.s.txt)});
+  }
+},{durFn:s=>clamp(s.w*.36+2,3,6.5)}));
+
+def("IN03","intreccio","Una sola confessione",
+"Il diario ovunque, ma la confessione una volta sola in tutto il giro: quella del Gavia. Se sono quattro non pesano più niente.",null,
+weave(function(g,ctx,items){
+  for(const it of items){
+    const y=block(g,ctx,it.s.kick,it.s.txt,it.a,{serif:true,italic:true,size:sizeByLen(ctx,it.s.txt)});
+    if(SAY.indexOf(it.s)===1) conf(g,ctx,it.s.conf,it.a,y+ctx.H*.075);
+  }
+}));
+
+def("IN04","intreccio","Il numero risponde",
+"Il diario fa un'affermazione, il numero la conferma un attimo dopo: «non sentivo più le dita» → «2.551 m, 6°».",null,
+weave(function(g,ctx,items){
+  const ANS={0:"6:04 · partenza",1:"2.551 m · 6 gradi",2:"1.852 m · 34 tornanti",3:"6h09 · 3.227 m"};
+  for(const it of items){
+    const y=block(g,ctx,it.s.kick,it.s.txt,it.a,{serif:true,italic:true,size:sizeByLen(ctx,it.s.txt)});
+    const k=SAY.indexOf(it.s);
+    if(it.u>.5) halo(g,ANS[k],ctx.MW/2,y+ctx.H*.085,Math.max(11,ctx.MW*.032),
+      {align:"center",col:C.stone,weight:"700 ",passes:2});
+  }
+},{durFn:s=>clamp(s.w*.36+1.6,2.6,6)}));
+
+def("IN05","intreccio","In salita si parla, in discesa no",
+"Le parole stanno solo dove si fatica. In discesa la mappa tace e si sente la velocità.",null,
+weave(function(g,ctx,items){
+  const up=ctx.T.grad[ctx.head.i]>.01;
+  for(const it of items){
+    const a=it.a*(up?1:.15);
+    const y=block(g,ctx,it.s.kick,it.s.txt,a,{serif:true,italic:true,size:sizeByLen(ctx,it.s.txt)});
+    conf(g,ctx,it.s.conf,a,y+ctx.H*.075);
+  }
+  if(!up) kicker(g,"discesa · silenzio",ctx.MW/2,ctx.H*.9,8,C.ink3);
+}));
+
+def("IN06","intreccio","Le quattro funzioni",
+"Ogni testo dichiara che cosa fa: apertura, sviluppo, svolta, chiusura. Una struttura visibile, come nelle sceneggiature.",null,
+weave(function(g,ctx,items){
+  const FN=["apertura","sviluppo","svolta","chiusura"];
+  for(const it of items){
+    const k=SAY.indexOf(it.s);
+    const y=block(g,ctx,FN[k],it.s.txt,it.a,{serif:true,italic:true,size:sizeByLen(ctx,it.s.txt),kcol:C.stone});
+    conf(g,ctx,it.s.conf,it.a,y+ctx.H*.075);
+  }
+}));
+
+def("IN07","intreccio","Frasi che si accorciano",
+"Si comincia con una frase lunga e si finisce con due parole: il respiro si accorcia insieme alle gambe.",null,
+weave(function(g,ctx,items){
+  const SHORT=["Sveglia alle sei, in valle c'era ancora l'ombra e faceva freddo davvero.",
+               "In cima non sentivo più le dita.","Il Mortirolo, contando i tornanti.","Rientrato."];
+  for(const it of items){
+    const k=SAY.indexOf(it.s);
+    const y=block(g,ctx,it.s.kick,SHORT[k],it.a,{serif:true,italic:true,size:Math.round(ctx.MW*lerp(.038,.075,k/3))});
+    conf(g,ctx,k===1?it.s.conf:null,it.a,y+ctx.H*.075);
+  }
+}));
+
+def("IN08","intreccio","Tre testi, non uno di più",
+"In tutto il giro solo tre frasi, scelte. Ognuna ha aria intorno e il tempo di essere letta due volte.",null,
+weave(function(g,ctx,items){
+  for(const it of items){
+    if(SAY.indexOf(it.s)===0) continue;
+    const y=block(g,ctx,it.s.kick,it.s.txt,it.a,{serif:true,italic:true,size:sizeByLen(ctx,it.s.txt)});
+    conf(g,ctx,it.s.conf,it.a,y+ctx.H*.075);
+  }
+},{durFn:s=>clamp(s.w*.42+2,3.4,7)}));
+
+def("IN09","intreccio","Due piani fissi",
+"Il diario sempre al centro, la confessione sempre in basso allo stesso posto: due voci con due case, mai in mezzo alla strada.",null,
+weave(function(g,ctx,items){
+  for(const it of items){
+    block(g,ctx,it.s.kick,it.s.txt,it.a,{serif:true,italic:true,size:sizeByLen(ctx,it.s.txt),y:.40});
+    conf(g,ctx,it.s.conf,it.a,ctx.H*.70);
+  }
+}));
+
+def("IN10","intreccio","Il luogo prima, sempre",
+"Occhiello con il nome del posto, mezzo secondo prima della frase: sai dove sei, poi ti dicono cosa è successo lì.",null,
+weave(function(g,ctx,items){
+  for(const it of items){
+    const ka=clamp(it.u*8,0,1)*it.a, ta=clamp((it.u-.10)*8,0,1)*it.a;
+    const size=sizeByLen(ctx,it.s.txt);
+    const y0=ctx.H*.44;
+    g.save(); g.globalAlpha=ka;
+    kicker(g,it.s.kick,ctx.MW/2,y0-size*1.3,Math.max(8.5,size*.46),C.stone);
+    g.restore();
+    const y=block(g,ctx,null,it.s.txt,ta,{serif:true,italic:true,size:size});
+    conf(g,ctx,it.s.conf,ta,y+ctx.H*.075);
+  }
+}));
+
+/* ---------- 5. ACCENTI: quale storia si prende quale effetto ---------- */
+function acc(slug,li,label,fn,warpMarks){
+  return function(g,W,H,t){
+    const T=mk(slug,li||0);
+    const w=warpMaker(T,warpMarks||[T.topF],6,.02);
+    ride(g,W,H,t,{T:T,warp:w,pen:false,text:false,over:fn?function(g,ctx){ fn(g,ctx,T); }:null,
+      textFn:function(g,ctx){
+        const a=clamp(Math.sin(clamp(ctx.t,0,1)*Math.PI)*1.6,0,1);
+        block(g,ctx,T.year+" · "+T.title,label,a*.95,{serif:true,size:Math.round(ctx.MW*.042)});
+      }});
+  };
+}
+def("AC01","accenti","Il retino sulla clavicola",
+"Il retino più fitto (MT02, «più puntini») su una storia sola: quella dell'incidente. Grana da giornale, come una foto di cronaca — e il testo al centro resta nello stile normale, non retinato.",null,
+function(g,W,H,t){
+  const T=mk("clavicola-2025",0), w=warpMaker(T,[T.topF],6,.02);
+  const MW=Math.round(W*.78);
+  const c=(function(){
+    if(!window._sc) window._sc=document.createElement("canvas");
+    const cv=window._sc;
+    if(cv.width!==W||cv.height!==H){ cv.width=W; cv.height=H; }
+    const x=cv.getContext("2d",{willReadFrequently:true});
+    x.setTransform(1,0,0,1,0,0); x.clearRect(0,0,W,H);
+    x.fillStyle=C.cream; x.fillRect(0,0,W,H);
+    return x;
+  })();
+  ride(c,W,H,t,{T:T,warp:w,pen:false,text:false});
+  const d=c.getImageData(0,0,W,H).data;
+  g.fillStyle="#faf8f3"; g.fillRect(0,0,W,H);
+  g.fillStyle="#1b1c14";
+  const step=3;
+  for(let y=0;y<H;y+=step) for(let x=0;x<W;x+=step){
+    const i=((y*W)+x)*4, lum=(d[i]*.3+d[i+1]*.59+d[i+2]*.11)/255;
+    const r=(1-lum)*step*.8;
+    if(r>.25){ g.beginPath(); g.arc(x+step/2,y+step/2,r,0,7); g.fill(); }
+  }
+  const a=clamp(Math.sin(clamp(t,0,1)*Math.PI)*1.6,0,1);
+  block(g,{MW:MW,H:H},"2025 · La clavicola","Il giorno in cui la strada ha vinto.",a,{serif:true,size:Math.round(MW*.045)});
+});
+
+def("AC02","accenti","L'arco del sole sull'Ironman",
+"L'arco del sole (SC07) sulla giornata più lunga di tutte: nuoto all'alba, arrivo col buio. Lì il sole è il vero cronometro.",null,
+acc("ironman-2025",1,"Una giornata intera, dall'acqua al buio.",function(g,ctx,T){
+  const h=6.8+ctx.p*13, u=clamp((h-6)/14,0,1);
+  g.save();
+  g.strokeStyle="rgba(194,118,26,.4)"; g.lineWidth=1;
+  g.beginPath();
+  for(let k=0;k<=40;k++){ const uu=k/40, x=ctx.MW*.06+uu*ctx.MW*.88, y=ctx.H*.16-Math.sin(uu*Math.PI)*ctx.H*.09;
+    k?g.lineTo(x,y):g.moveTo(x,y); }
+  g.stroke();
+  const x=ctx.MW*.06+u*ctx.MW*.88, y=ctx.H*.16-Math.sin(u*Math.PI)*ctx.H*.09;
+  g.beginPath(); g.arc(x,y,5,0,7); g.fillStyle=u>.86?C.dusk:C.dawn; g.fill();
+  kicker(g,Math.floor(h)+":"+String(Math.round(h%1*60)).padStart(2,"0"),x,y-10,8,C.ink2);
+  g.restore();
+}));
+
+def("AC03","accenti","L'ossigeno sulla Trinità",
+"La colonnina dell'aria che manca (MO05) sulla storia più alta dell'archivio: Gavia, Stelvio e Mortirolo nello stesso giorno, 6.182 metri.",null,
+acc("trinita-2021",0,"Tre passi in un giorno solo: 6.182 metri.",function(g,ctx,T){
+  const alt=T.alt[ctx.head.i]+T.alt0, ox=Math.pow(1-alt*2.25577e-5,5.2559);
+  const x=ctx.MW-26, y0=ctx.H*.16, hh=ctx.H*.34;
+  g.save();
+  g.fillStyle="rgba(250,248,243,.72)"; g.fillRect(x-7,y0-6,20,hh+12);
+  g.strokeStyle=C.rule; g.strokeRect(x-7.5,y0-6.5,20,hh+12);
+  g.fillStyle=mix("#3b5bb5","#c2761a",clamp((1-ox)/.3,0,1));
+  const fr=clamp((ox-.7)/.3,0,1);
+  g.fillRect(x-2,y0+hh*(1-fr),9,hh*fr);
+  halo(g,Math.round(ox*100)+"%",x+3,y0-10,10,{align:"center"});
+  kicker(g,"ossigeno",x+3,y0+hh+16,7,C.ink3,"center");
+  g.restore();
+}));
+
+def("AC04","accenti","Il riavvolgimento sulla Sanremo",
+"Il riavvolgimento (RI04) dove serve al racconto: sul Poggio della Milano–Sanremo, il punto che tutti conoscono. Si torna indietro di tre chilometri e lo si rifà.",null,
+function(g,W,H,t){
+  const T=mk("milano-sanremo-2016",0), w=warpMaker(T,[.86],6,.02);
+  let u=ease(t);
+  if(u>.86&&u<.90) u=.86-(u-.86)*1.3;
+  else if(u>=.90&&u<.94) u=.86-(.94-u)*1.3;
+  ride(g,W,H,t,{T:T,warp:w,p:w(clamp(u,0,1)),pen:false,text:false,
+    textFn:function(g,ctx){
+      const a=clamp(Math.sin(clamp(t,0,1)*Math.PI)*1.6,0,1);
+      block(g,ctx,"2016 · Milano – Sanremo","288 chilometri. Il record, prima di oggi, era 192.",a,
+        {serif:true,size:Math.round(ctx.MW*.042)});
+      if(t>.86&&t<.95) kicker(g,"↺ il Poggio, di nuovo",ctx.MW/2,ctx.H*.2,10,C.stone);
+    }});
+});
+
+def("AC05","accenti","La notte sul 70.3 in giornata lavorativa",
+"Carta notturna e oro (MT06) sulla storia che comincia prima dell'alba e finisce dopo cena: l'unica in cui il buio è il protagonista.",null,
+acc("ironman703-9to5-2026",0,"Un 70.3 infilato dentro un giorno di lavoro.",function(g,ctx,T){
+  g.save(); g.globalAlpha=.55; g.fillStyle="#131017"; g.fillRect(0,0,ctx.MW,ctx.H);
+  g.globalAlpha=1;
+  g.beginPath(); g.arc(ctx.q[0],ctx.q[1],9,0,7);
+  g.fillStyle="rgba(232,178,58,.22)"; g.fill();
+  g.restore();
+}));
+
+def("AC06","accenti","Le impronte sulle maratone",
+"Le impronte che restano (PU05) solo dove si corre: sulle maratone il segno ogni chilometro ha senso, in bici no.",null,
+acc("boston-2024",0,"Da Hopkinton a Boylston Street, come tutti gli altri.",function(g,ctx,T){
+  for(let k=2;k<=T.km;k+=2){
+    const f=k/T.km;
+    if(f>ctx.p) break;
+    const o=at(T,f), q=px(ctx.cam,ctx.MW,ctx.H,o.x,o.y);
+    g.beginPath(); g.arc(q[0],q[1],1.8,0,7); g.fillStyle=C.cream; g.fill();
+    g.lineWidth=1.1; g.strokeStyle=colAt(T,o.i); g.stroke();
+  }
+}));
+
+def("AC07","accenti","Il rivale sulla Sanremo 2023",
+"Il puntino rivale (PU08) dove esiste davvero: la Sanremo del 2023 contro quella del 2016, sette anni dopo, stessa strada.",null,
+function(g,W,H,t){
+  const T=mk("milano-sanremo-2023",0), O=mk("milano-sanremo-2016",0);
+  const w=warpMaker(T,[.86],6,.02);
+  ride(g,W,H,t,{T:T,warp:w,pen:false,text:false,
+    over:function(g,ctx){
+      const o=at(O,clamp(ctx.p*.96,0,1)), q=px(ctx.cam,ctx.MW,ctx.H,o.x,o.y);
+      g.beginPath(); g.arc(q[0],q[1],3.4,0,7); g.fillStyle="rgba(59,91,181,.75)"; g.fill();
+      g.lineWidth=1.3; g.strokeStyle=C.cream; g.stroke();
+      kicker(g,"2016",q[0],q[1]-9,7.5,C.dusk);
+    },
+    textFn:function(g,ctx){
+      const a=clamp(Math.sin(clamp(t,0,1)*Math.PI)*1.6,0,1);
+      block(g,ctx,"2023 · Sanremo, sette anni dopo","La stessa strada, un'altra persona.",a,
+        {serif:true,size:Math.round(ctx.MW*.042)});
+    }});
+});
+
+def("AC08","accenti","Il conto alla rovescia sulla Maratona dles Dolomites",
+"Il countdown (ST03) sulla storia con più dislivello dell'archivio: lì l'unica cosa che conta è quanto manca.",null,
+acc("mdd-race",0,"Quello che manca, non quello che hai fatto.",function(g,ctx,T){
+  const left=Math.max(0,Math.ceil((T.km-ctx.p*T.km)/5)*5);
+  g.save();
+  halo(g,"−"+left,ctx.MW/2,ctx.H*.9,Math.round(ctx.MW*.10),{align:"center",serif:true});
+  kicker(g,"chilometri alla fine",ctx.MW/2,ctx.H*.955,8,C.ink3);
+  g.restore();
+}));
+
+def("AC09","accenti","Il calendario sulla prima maratona",
+"Il calendario dei venti (AR06) sulla storia che apre un capitolo: la prima maratona, corsa in comune nel 2020.",null,
+acc("prima-maratona-2020",0,"La prima volta che 42 chilometri sono un'idea.",function(g,ctx,T){
+  const x0=14, y0=ctx.H*.12, step=Math.min(13,ctx.MW*.032);
+  g.save();
+  STORIES.forEach((s,k)=>{
+    const x=x0+(k%10)*step, y=y0+Math.floor(k/10)*step;
+    g.beginPath(); g.arc(x,y,s.slug===T.slug?4:2.3,0,7);
+    g.fillStyle=s.slug===T.slug?C.green:"rgba(140,145,130,.5)"; g.fill();
+  });
+  kicker(g,"la settima dei venti",x0,y0+step*2+9,7.5,C.ink3,"left");
+  g.restore();
+}));
+
+def("AC10","accenti","Niente accenti sulla mezza di Milano",
+"La prova del contrario: la storia più semplice dell'archivio senza nessun effetto, solo la ricetta base. Se regge da sola, gli accenti sono davvero accenti.",null,
+acc("milano-half-2019",0,"Ventuno chilometri piatti, in città, senza niente attorno.",null));
+
+/* ================= impalcatura ================= */
+const FAMS=[
+  ["base","","Il punto di partenza","La base con dentro i tuoi vincitori del round 3, e la transizione vera fra la seconda e la terza storia."],
+  ["transizione","1","La transizione",
+   "«da una storia all'altra lo zoom in and out sia 10× in frames / pan anche per spostamenti chiari»",
+   "Dieci modi di passare dal Gavia al Ronde: quanto si sale, se ci si ferma in campo largo, se il volo è dritto o curvo, se l'intro si legge in volo. Nessuno arriva al globo — si vola sopra la carta vera."],
+  ["lettura","2","Il tempo di leggere",
+   "«voglio che tutti i testi abbiano un tempo necessario per essere letti»",
+   "Le stesse quattro frasi, di lunghezza volutamente diversissima, con dieci leggi diverse per decidere quanto restano. La barretta sotto mostra il tempo che hanno: serve solo qui, in produzione sparisce."],
+  ["corpo","3","Il corpo del testo",
+   "«font size dipende da lunghezza frasi»",
+   "Dieci leggi tipografiche per legare la dimensione alla lunghezza della frase. In basso, per ogni testo, il corpo effettivo in pixel e il numero di parole."],
+  ["intreccio","4","L'intreccio",
+   "«narrazione crafted precisely»",
+   "Il diario (VO07) e la confessione (VO08) sono i vincitori, ma vanno orchestrati: insieme o in sequenza, sempre o una volta sola, con il numero che risponde, in salita soltanto. Dieci partiture."],
+  ["accenti","5","Gli accenti",
+   "«applica solo a una delle storie» · «mettilo in una storia» · «solo in una»",
+   "Gli effetti che ti sono piaciuti assegnati ciascuno a una storia sola, quella in cui significano qualcosa. Se un abbinamento non ti convince, la nota dice a quale storia spostarlo."]
+];
+const main=document.getElementById("main"), tnav=document.getElementById("tnav");
+const scenes=[];
+const DUR=24, PAUSE=1.4;
+
+for(const F of FAMS){
+  const fam=F[0], no=F[1], title=F[2];
+  const said=F.length>4?F[3]:null, intro=F.length>4?F[4]:F[3];
+  const vs=V.filter(x=>x.fam===fam);
+  if(!vs.length) continue;
+  const h=document.createElement("section");
+  h.className="fam"; h.id="f-"+fam;
+  h.innerHTML=(no?'<p class="q">tema '+no+' di 5</p>':'')
+    +'<h2>'+title+'</h2>'
+    +(said?'<p class="said">'+said+'</p>':'')
+    +'<p>'+intro+'</p>';
+  main.appendChild(h);
+  if(fam!=="base"){
+    const a=document.createElement("a");
+    a.href="#f-"+fam; a.innerHTML=title+' <b data-fam="'+fam+'">0/'+vs.length+'</b>';
+    tnav.appendChild(a);
+  }
+  const grid=document.createElement("div");
+  grid.className="grid"+(fam==="base"?" solo":"");
+  main.appendChild(grid);
+  for(const v of vs){
+    const card=document.createElement("article");
+    card.className="card"; card.id=v.id.toLowerCase(); card.dataset.id=v.id;
+    card.innerHTML=
+      '<div class="cvwrap">'
+      + '<canvas class="cv" aria-label="Variante '+v.id+': '+v.name+'" role="img"></canvas>'
+      + '<span class="vno">'+v.id+'</span>'
+      + '<button class="replay" type="button">rivedi ↻</button>'
+      + '</div>'
+      + '<div class="meta"><h3>'+v.name+'</h3><p>'+v.what+'</p>'
+      + (v.num?'<span class="num">'+v.num+'</span>':'')
+      + '<div class="vote">'
+      + (v.noChips
+        ? '<input class="note" type="text" maxlength="240" placeholder="appunti sulla base (facoltativo)">'
+        : '<div class="vrow"><div class="chips" role="group" aria-label="voto '+v.id+'">'
+          +Array.from({length:11},(_,n)=>'<button class="chip" type="button" data-n="'+n+'">'+n+'</button>').join("")
+          +'</div><button class="stbtn" type="button" title="preferita del tema (puoi sceglierne più di una)">★</button></div>'
+          +'<input class="note" type="text" maxlength="180" placeholder="nota (facoltativa)">')
+      + '</div></div>';
+    grid.appendChild(card);
+    const cv=card.querySelector(".cv");
+    const sc={v:v, cv:cv, card:card, t:0, on:false, W:0, H:0, dpr:1,
+      size(){
+        this.dpr=Math.min(devicePixelRatio||1,1.75);
+        const r=cv.getBoundingClientRect();
+        this.W=Math.max(1,Math.round(r.width)); this.H=Math.max(1,Math.round(r.height));
+        cv.width=Math.round(this.W*this.dpr); cv.height=Math.round(this.H*this.dpr);
+      },
+      frame(){
+        const g=cv.getContext("2d");
+        g.setTransform(this.dpr,0,0,this.dpr,0,0);
+        g.clearRect(0,0,this.W,this.H);
+        try{ this.v.draw.call(this.v,g,this.W,this.H,Math.min(1,this.t),this); }
+        catch(err){ if(!this.err){ this.err=1; console.warn(this.v.id,err); } }
+      }};
+    card.querySelector(".replay").addEventListener("click",()=>{ sc.t=0; if(RM){sc.t=1; sc.frame();} });
+    scenes.push(sc);
+  }
+}
+
+const free=document.createElement("section");
+free.className="freebox";
+free.innerHTML='<h2>Per il round 5</h2>'
+  +'<p>Come sempre: qui non si vota, si propone. Quando questi quattro pezzi saranno decisi, la ricetta è '
+  +'praticamente chiusa e si torna a produrre (pagina e reel). Che cosa manca prima di chiuderla?</p>'
+  +'<textarea id="freetxt" maxlength="3000" placeholder="es. le transizioni con il suono… / la prima e l\'ultima storia trattate diversamente… / i testi in inglese?"></textarea>';
+main.appendChild(free);
+
+let last=0;
+function tick(ts){
+  const dt=last?Math.min(.05,(ts-last)/1000):0; last=ts;
+  for(const sc of scenes){
+    if(!sc.on) continue;
+    sc.t+=dt/(sc.v.dur||DUR);
+    if(sc.t>1+PAUSE/(sc.v.dur||DUR)) sc.t=0;
+    sc.frame();
+  }
+  requestAnimationFrame(tick);
+}
+const io=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    const sc=scenes.find(x=>x.cv===e.target);
+    if(!sc) return;
+    if(e.isIntersecting){
+      if(!sc.W) sc.size();
+      if(RM){ sc.t=1; sc.frame(); sc.on=false; }
+      else sc.on=true;
+    } else sc.on=false;
+  });
+},{threshold:.15});
+scenes.forEach(sc=>io.observe(sc.cv));
+
+let rt=0;
+addEventListener("resize",()=>{
+  clearTimeout(rt);
+  rt=setTimeout(()=>scenes.forEach(sc=>{ if(sc.W){ sc.size(); sc.frame(); } }),160);
+});
+if(!RM) requestAnimationFrame(tick);
+else scenes.forEach(sc=>{ sc.size(); sc.t=1; sc.frame(); });
+
+/* ================= voto ================= */
+const KEY="top20-lab4-voti";
+let votes={};
+try{ votes=JSON.parse(localStorage.getItem(KEY)||"{}"); }catch(e){ votes={}; }
+const progEl=document.getElementById("prog");
+const VOTABLE=V.filter(v=>!v.noChips);
+function saveVotes(){
+  try{ localStorage.setItem(KEY,JSON.stringify(votes)); }catch(e){}
+  const n=VOTABLE.filter(v=>votes[v.id]&&votes[v.id].n!=null).length;
+  progEl.innerHTML="<b>"+n+"</b> / "+VOTABLE.length+" votate";
+  document.querySelectorAll("#tnav b[data-fam]").forEach(b=>{
+    const fam=b.dataset.fam, vs=V.filter(v=>v.fam===fam&&!v.noChips);
+    const k=vs.filter(v=>votes[v.id]&&votes[v.id].n!=null).length;
+    b.textContent=k+"/"+vs.length;
+    b.parentElement.classList.toggle("full",k===vs.length);
+  });
+}
+let HOT=null;
+for(const v of V){
+  const card=document.getElementById(v.id.toLowerCase());
+  const chips=[...card.querySelectorAll(".chip")];
+  const note=card.querySelector(".note");
+  const star=card.querySelector(".stbtn");
+  const st=votes[v.id]||{};
+  if(st.n!=null&&chips[st.n]) chips[st.n].classList.add("sel");
+  if(st.c) note.value=st.c;
+  if(st.s&&star){ star.classList.add("on"); card.classList.add("star"); }
+  function setN(n){
+    votes[v.id]=votes[v.id]||{};
+    if(votes[v.id].n===n){ delete votes[v.id].n; chips.forEach(c=>c.classList.remove("sel")); }
+    else{ votes[v.id].n=n; chips.forEach(c=>c.classList.toggle("sel",+c.dataset.n===n)); }
+    saveVotes();
+  }
+  chips.forEach(ch=>ch.addEventListener("click",()=>setN(+ch.dataset.n)));
+  if(star) star.addEventListener("click",()=>{
+    votes[v.id]=votes[v.id]||{};
+    votes[v.id].s=!votes[v.id].s;
+    if(!votes[v.id].s) delete votes[v.id].s;
+    star.classList.toggle("on",!!votes[v.id].s);
+    card.classList.toggle("star",!!votes[v.id].s);
+    saveVotes();
+  });
+  note.addEventListener("input",()=>{
+    votes[v.id]=votes[v.id]||{};
+    votes[v.id].c=note.value.trim();
+    if(!votes[v.id].c) delete votes[v.id].c;
+    saveVotes();
+  });
+  card.addEventListener("mouseenter",()=>{ HOT=v.id; card.classList.add("hot"); });
+  card.addEventListener("mouseleave",()=>{ if(HOT===v.id) HOT=null; card.classList.remove("hot"); });
+  card._setN=setN;
+}
+addEventListener("keydown",e=>{
+  if(!HOT||e.metaKey||e.ctrlKey||e.altKey) return;
+  if(/^(INPUT|TEXTAREA)$/.test((document.activeElement||{}).tagName||"")) return;
+  const card=document.getElementById(HOT.toLowerCase());
+  if(!card||!card._setN) return;
+  if(/^[0-9]$/.test(e.key)){ card._setN(+e.key); e.preventDefault(); }
+  else if(e.key==="d"||e.key==="D"){ card._setN(10); e.preventDefault(); }
+  else if(e.key==="s"||e.key==="S"){ const b=card.querySelector(".stbtn"); if(b) b.click(); e.preventDefault(); }
+});
+
+const freetxt=document.getElementById("freetxt");
+if(votes._free) freetxt.value=votes._free;
+freetxt.addEventListener("input",()=>{
+  votes._free=freetxt.value.trim();
+  if(!votes._free) delete votes._free;
+  saveVotes();
+});
+saveVotes();
+
+document.getElementById("rand").addEventListener("click",()=>{
+  const left=VOTABLE.filter(v=>!votes[v.id]||votes[v.id].n==null);
+  const pool=left.length?left:VOTABLE;
+  const pick=pool[Math.floor(Math.random()*pool.length)];
+  const el=document.getElementById(pick.id.toLowerCase());
+  if(el) el.scrollIntoView({behavior:"smooth",block:"center"});
+});
+
+const copyBtn=document.getElementById("copy"), outbox=document.getElementById("outbox");
+function summary(){
+  const lines=["VOTI LAB4 top-20 — "+new Date().toLocaleDateString("it-IT")];
+  let fam="";
+  for(const v of V){
+    const st=votes[v.id];
+    if(!st||(st.n==null&&!st.c&&!st.s)) continue;
+    if(v.fam!==fam){ fam=v.fam; lines.push(""); lines.push("["+fam.toUpperCase()+"]"); }
+    lines.push((st.s?"★ ":"  ")+v.id+" "+v.name+": "+(st.n!=null?st.n:"—")+(st.c?" — "+st.c:""));
+  }
+  const stars=V.filter(v=>votes[v.id]&&votes[v.id].s);
+  if(stars.length){ lines.push(""); lines.push("PREFERITE: "+stars.map(v=>v.id).join(", ")); }
+  if(votes._free){ lines.push(""); lines.push("PROSSIMO ROUND: "+votes._free); }
+  if(lines.length===1) lines.push("(nessun voto ancora)");
+  return lines.join("\n");
+}
+copyBtn.addEventListener("click",()=>{
+  const txt=summary();
+  outbox.value=txt; outbox.style.display="block";
+  const done=()=>{
+    copyBtn.textContent="copiato ✓ — incollali in chat"; copyBtn.classList.add("ok");
+    setTimeout(()=>{ copyBtn.textContent="copia i voti"; copyBtn.classList.remove("ok"); },2600);
+  };
+  if(navigator.clipboard&&navigator.clipboard.writeText)
+    navigator.clipboard.writeText(txt).then(done,()=>{ outbox.select(); });
+  else{ outbox.select(); try{ document.execCommand("copy"); done(); }catch(e){} }
+});
+document.getElementById("wipe").addEventListener("click",()=>{
+  if(!confirm("Azzerare tutti i voti?")) return;
+  votes={}; saveVotes();
+  document.querySelectorAll(".chip.sel").forEach(c=>c.classList.remove("sel"));
+  document.querySelectorAll(".stbtn.on").forEach(c=>c.classList.remove("on"));
+  document.querySelectorAll(".card.star").forEach(c=>c.classList.remove("star"));
+  document.querySelectorAll(".note").forEach(n=>n.value="");
+  freetxt.value="";
+  outbox.style.display="none";
+});
+})();
+</script>
+</body>
+</html>
