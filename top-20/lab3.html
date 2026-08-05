@@ -1,0 +1,2175 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Laboratorio 3 — cento modi di non essere un programma · top-20</title>
+<meta name="description" content="Dieci temi di design, dieci varianti ciascuno: cento prove per rendere il racconto più vivo e meno automatico. Si vota 0–10, si possono segnare più preferite per tema.">
+<meta name="theme-color" content="#131017">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎛%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf8f3; --ink:#14150f; --ink-2:#5c5f52; --ink-3:#8f9382; --rule:#e4e1d6;
+  --dawn:#c2761a; --dusk:#3b5bb5; --green:#4d7238; --stone:#8a5a3c; --gold:#e8b23a;
+  --serif:"Instrument Serif",Georgia,serif; --sans:"Inter",system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--sans);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
+
+header{background:radial-gradient(120% 90% at 50% 118%,#3a2a17 0%,#221a14 34%,#131017 72%);
+  color:#faf8f3;text-align:center;padding:66px 24px 58px}
+header .ey{font-size:.7rem;text-transform:uppercase;letter-spacing:.2em;font-weight:600;color:#b3a893;margin:0 0 16px}
+header h1{font-family:var(--serif);font-weight:400;letter-spacing:-.015em;line-height:.95;
+  font-size:clamp(2.5rem,7.6vw,4.4rem);margin:0}
+header h1 i{font-style:italic;color:var(--gold)}
+header .sub{color:#d6cfc0;font-size:clamp(.95rem,3.5vw,1.1rem);line-height:1.55;max-width:56ch;margin:20px auto 0}
+header .sub b{font-weight:600;color:#faf8f3}
+header .fine{color:#8d8578;font-size:.8rem;line-height:1.5;max-width:62ch;margin:14px auto 0}
+
+nav.tnav{position:sticky;top:0;z-index:40;background:rgba(250,248,243,.95);backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--rule);padding:9px 12px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:thin}
+nav.tnav a{flex:0 0 auto;font-size:.7rem;font-weight:600;letter-spacing:.02em;text-decoration:none;
+  color:var(--ink-2);border:1px solid var(--rule);border-radius:99px;padding:6px 12px;white-space:nowrap;
+  transition:color .2s,border-color .2s,background .2s}
+nav.tnav a:hover{color:var(--ink);border-color:var(--ink-3)}
+nav.tnav a b{font-weight:700;color:var(--ink-3);font-variant-numeric:tabular-nums}
+nav.tnav a.full{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+nav.tnav a.full b{color:var(--gold)}
+
+main{max-width:1500px;margin:0 auto;padding:26px 18px 90px}
+.fam{margin:52px 4px 16px;scroll-margin-top:64px}
+.fam .no{font-family:var(--serif);font-size:1rem;color:var(--ink-3);letter-spacing:.02em}
+.fam h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.6rem,4.4vw,2.3rem);letter-spacing:-.01em;margin:2px 0 0}
+.fam .q{font-size:.72rem;text-transform:uppercase;letter-spacing:.16em;font-weight:700;color:var(--gold);margin:0 0 2px}
+.fam p{margin:8px 0 0;font-size:.94rem;line-height:1.55;color:var(--ink-2);max-width:70ch}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(325px,100%),1fr));gap:16px}
+.grid.solo{grid-template-columns:1fr;max-width:900px}
+
+.card{border:1px solid var(--rule);border-radius:12px;background:#fff;overflow:hidden;display:flex;flex-direction:column}
+.card.hot{border-color:var(--ink-3);box-shadow:0 0 0 3px rgba(232,178,58,.22)}
+.card.star{border-color:var(--gold)}
+.cvwrap{position:relative;background:var(--bg)}
+.cv{width:100%;aspect-ratio:4/3;display:block;touch-action:pan-y}
+.solo .cv{aspect-ratio:16/9}
+.vno{position:absolute;top:9px;left:10px;font-family:var(--serif);font-size:1.18rem;line-height:1;
+  color:var(--ink);background:rgba(250,248,243,.82);border:1px solid var(--rule);
+  border-radius:7px;padding:4px 8px 3px;letter-spacing:-.02em}
+.replay{position:absolute;right:9px;bottom:9px;font-size:.62rem;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3);background:rgba(250,248,243,.85);border:1px solid var(--rule);
+  border-radius:99px;padding:5px 10px;cursor:pointer;transition:color .3s,border-color .3s}
+.replay:hover{color:var(--ink);border-color:var(--ink-3)}
+.hand{position:absolute;left:9px;bottom:9px;font-size:.6rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:#5a4a22;background:rgba(232,178,58,.28);border:1px solid rgba(232,178,58,.6);
+  border-radius:99px;padding:5px 9px}
+.meta{padding:12px 14px 14px;border-top:1px solid var(--rule);flex:1;display:flex;flex-direction:column}
+.meta h3{font-family:var(--serif);font-weight:400;font-size:1.18rem;letter-spacing:-.01em;margin:0;line-height:1.12}
+.meta p{margin:5px 0 0;font-size:.83rem;line-height:1.45;color:var(--ink-2);flex:1}
+.meta .fake{display:inline-block;margin-top:6px;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;
+  font-weight:700;color:var(--stone)}
+
+.vote{margin-top:11px;padding-top:10px;border-top:1px dashed var(--rule)}
+.vrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.chips{display:flex;gap:3px;flex-wrap:wrap}
+.chip{width:24px;height:26px;border-radius:6px;border:1px solid var(--rule);background:#fff;
+  font-size:.72rem;font-weight:600;color:var(--ink-2);cursor:pointer;padding:0;
+  transition:background .15s,color .15s,border-color .15s,transform .12s}
+.chip:hover{border-color:var(--ink-3);transform:translateY(-1px)}
+.chip.sel{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.stbtn{margin-left:auto;border:1px solid var(--rule);background:#fff;border-radius:99px;cursor:pointer;
+  font-size:.86rem;line-height:1;padding:6px 9px;color:var(--ink-3);transition:.15s}
+.stbtn:hover{border-color:var(--gold)}
+.stbtn.on{background:var(--gold);border-color:var(--gold);color:#3a2a17}
+.note{margin-top:7px;width:100%;border:1px solid var(--rule);border-radius:8px;background:#fff;
+  font-family:var(--sans);font-size:.82rem;color:var(--ink);padding:7px 9px}
+.note::placeholder{color:var(--ink-3)}
+.note:focus{outline:none;border-color:var(--ink-3)}
+
+.freebox{margin:60px 4px 0;border:1px solid var(--rule);border-radius:12px;background:#fff;padding:20px 22px 22px}
+.freebox h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.4rem,4vw,1.9rem);margin:0 0 4px}
+.freebox p{margin:0 0 12px;font-size:.88rem;line-height:1.5;color:var(--ink-2);max-width:74ch}
+.freebox textarea{width:100%;min-height:120px;resize:vertical;border:1px solid var(--rule);border-radius:8px;
+  background:#fff;font-family:var(--sans);font-size:.9rem;line-height:1.5;color:var(--ink);padding:10px 12px}
+.freebox textarea::placeholder{color:var(--ink-3)}
+.freebox textarea:focus{outline:none;border-color:var(--ink-3)}
+
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(250,248,243,.94);
+  backdrop-filter:blur(6px);border-top:1px solid var(--rule);
+  display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;
+  padding:9px 14px calc(9px + env(safe-area-inset-bottom))}
+.bar .prog{font-size:.78rem;color:var(--ink-2)}
+.bar .prog b{font-family:var(--serif);font-weight:400;font-size:1.1rem;color:var(--ink)}
+.copy{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  background:var(--ink);color:var(--bg);border:none;border-radius:99px;padding:9px 18px;cursor:pointer;transition:opacity .2s}
+.copy:hover{opacity:.85}
+.copy.ok{background:var(--green)}
+.ghost{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);
+  background:#fff;border:1px solid var(--rule);border-radius:99px;padding:8px 14px;cursor:pointer}
+.ghost:hover{border-color:var(--ink-3)}
+.wipe{font-size:.66rem;font-weight:600;color:var(--ink-3);background:none;border:none;cursor:pointer;
+  text-decoration:underline;text-underline-offset:3px}
+.outbox{display:none;width:min(720px,92vw);margin:10px auto 0;font-size:.74rem;line-height:1.5;
+  font-family:ui-monospace,monospace;border:1px solid var(--rule);border-radius:8px;padding:10px;background:#fff}
+
+footer{border-top:1px solid var(--rule);text-align:center;padding:34px 20px 130px;color:var(--ink-2);font-size:.9rem}
+footer a{color:var(--ink);font-weight:600;text-decoration:none;border-bottom:1px solid var(--rule)}
+footer a:hover{border-color:var(--ink-3)}
+
+@media (prefers-reduced-motion:reduce){ .replay{display:none} }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="ey">micmer · laboratorio di stile · terzo giro</p>
+  <h1>Cento modi<br>di non sembrare<br><i>un programma</i></h1>
+  <p class="sub">La ricetta è decisa e piace: carta vera, quota come colore, camera ferma con due tuffi,
+  narrazione al centro, contatori negli angoli. Funziona — ma <b>si vede che l'ha fatta una macchina</b>.
+  Questo giro non tocca la ricetta: prova le cose che la rendono <b>viva</b>.</p>
+  <p class="fine">Dieci temi di design, dieci varianti ciascuno. Si vota 0–10 come sempre, e con la ★ puoi
+  segnare <b>più di una preferita per tema</b> — non devi scegliere. Puoi anche votare con la tastiera:
+  passa sopra una scheda e premi un numero. In fondo, la casella libera per il round 4.</p>
+</header>
+
+<nav class="tnav" id="tnav"></nav>
+
+<main id="main"></main>
+
+<div class="bar" id="bar">
+  <span class="prog" id="prog"><b>0</b> / 100 votate</span>
+  <button class="ghost" id="rand" type="button">sorprendimi ↦</button>
+  <button class="copy" id="copy" type="button">copia i voti</button>
+  <button class="wipe" id="wipe" type="button">azzera</button>
+</div>
+<textarea class="outbox" id="outbox" rows="10" readonly aria-label="riepilogo voti"></textarea>
+
+<footer>
+  <p>Le varianti girano in loop finché sono sullo schermo · traccia di controllo: Edolo–Gavia–Mortirolo, 9 luglio 2016 ·
+  <a href="lab2.html">← il secondo laboratorio</a> · <a href="./">il top-20</a></p>
+</footer>
+
+<script src="_data.js"></script>
+<script>
+(function(){
+"use strict";
+const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const C = {bg:"#faf8f3", ink:"#14150f", ink2:"#5c5f52", ink3:"#8f9382", rule:"#e4e1d6",
+           dawn:"#c2761a", dusk:"#3b5bb5", green:"#4d7238", stone:"#8a5a3c", gold:"#e8b23a",
+           night:"#131017", cream:"#faf8f3"};
+
+/* ================= geometria (identica ai lab 1 e 2) ================= */
+function decode(leg){
+  const pts=[], d=leg.d; let x=0,y=0;
+  for(let i=0;i<d.length;i+=2){ x+=d[i]; y+=d[i+1]; pts.push([leg.lat0+x*QUANT, leg.lng0+y*QUANT]); }
+  return pts;
+}
+function bbox(xy){
+  let a=1e9,b=1e9,c=-1e9,e=-1e9;
+  for(const p of xy){ if(p[0]<a)a=p[0]; if(p[1]<b)b=p[1]; if(p[0]>c)c=p[0]; if(p[1]>e)e=p[1]; }
+  const w=Math.max(c-a,1e-6), h=Math.max(e-b,1e-6);
+  return {x:a,y:b,w:w,h:h,cx:a+w/2,cy:b+h/2};
+}
+function arclen(xy){
+  const cum=new Float64Array(xy.length);
+  for(let i=1;i<xy.length;i++) cum[i]=cum[i-1]+Math.hypot(xy[i][0]-xy[i-1][0],xy[i][1]-xy[i-1][1]);
+  return cum;
+}
+function at(l,p){
+  const total=l.cum[l.cum.length-1], target=total*Math.min(1,Math.max(0,p));
+  let lo=0,hi=l.cum.length-1;
+  while(lo<hi-1){ const m=(lo+hi)>>1; if(l.cum[m]<=target)lo=m; else hi=m; }
+  const span=l.cum[hi]-l.cum[lo], f=span>0?(target-l.cum[lo])/span:0;
+  return {i:lo,f:f,x:l.xy[lo][0]+(l.xy[hi][0]-l.xy[lo][0])*f,y:l.xy[lo][1]+(l.xy[hi][1]-l.xy[lo][1])*f};
+}
+const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+const lerp=(a,b,t)=>a+(b-a)*t;
+const fmtN=n=>n.toLocaleString("it-IT");
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+function hex2rgb(h){ return [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)]; }
+function mix(h1,h2,t){
+  const a=hex2rgb(h1),b=hex2rgb(h2);
+  return "rgb("+Math.round(lerp(a[0],b[0],t))+","+Math.round(lerp(a[1],b[1],t))+","+Math.round(lerp(a[2],b[2],t))+")";
+}
+const dv=(p,c,w)=>Math.exp(-((p-c)*(p-c))/(2*w*w));
+/* rumore deterministico: serve alla famiglia "mano" (mai Math.random per frame) */
+function nz(x){ const s=Math.sin(x*127.1)*43758.5453; return (s-Math.floor(s))*2-1; }
+function fbm(x){ return nz(x)*.6+nz(x*2.3+11)*.3+nz(x*5.1+31)*.15; }
+
+function mercator(pts){
+  return pts.map(p=>{
+    const lat=clamp(p[0],-85,85), s=Math.sin(lat*Math.PI/180);
+    return [(p[1]+180)/360*256, (0.5-Math.log((1+s)/(1-s))/(4*Math.PI))*256];
+  });
+}
+function trackOf(leg){
+  const xy=mercator(decode(leg));
+  return {xy:xy, bb:bbox(xy), cum:arclen(xy), alt:leg.alt, alt0:leg.alt0||0};
+}
+
+const ST = STORIES.find(s=>s.slug==="gavia-mortirolo-2016");
+const RAWLEG = ST.legs[0];
+const A0 = RAWLEG.alt0||0;
+const SM = trackOf(RAWLEG);
+const L=(function(){
+  const l={alt:RAWLEG.alt};
+  let mn=1e9,mx=-1e9; for(const v of l.alt){ if(v<mn)mn=v; if(v>mx)mx=v; }
+  l.amin=mn; l.amax=mx; return l;
+})();
+const TOTALU=SM.cum[SM.cum.length-1];
+const M_PER_U = RAWLEG.km*1000/TOTALU;           /* metri veri per unità mercatore */
+const GAVIA_I=(function(){ let im=0; for(let i=0;i<L.alt.length;i++) if(L.alt[i]>L.alt[im]) im=i; return im; })();
+const MORT_I=(function(){ let im=Math.round(L.alt.length*.55);
+  for(let i=im;i<Math.round(L.alt.length*.92);i++) if(L.alt[i]>L.alt[im]) im=i; return im; })();
+const GF=SM.cum[GAVIA_I]/TOTALU, MF=SM.cum[MORT_I]/TOTALU;
+const CLIMB=(function(){ const c=new Float64Array(L.alt.length);
+  for(let i=1;i<L.alt.length;i++){ const d=L.alt[i]-L.alt[i-1]; c[i]=c[i-1]+(d>0?d:0); } return c; })();
+const GRAD=(function(){ const g=new Float64Array(L.alt.length);
+  for(let i=1;i<L.alt.length;i++){
+    const dl=(SM.cum[i]-SM.cum[i-1])*M_PER_U;
+    g[i]=dl>1?clamp((L.alt[i]-L.alt[i-1])/dl,-.18,.18):g[i-1];
+  }
+  /* lisciata: la pendenza grezza del GPS è rumore */
+  const s=new Float64Array(g.length);
+  for(let i=0;i<g.length;i++){ let a=0,n=0; for(let k=Math.max(0,i-6);k<=Math.min(g.length-1,i+6);k++){a+=g[k];n++;} s[i]=a/n; }
+  return s;
+})();
+const kmAt=i=>Math.round(SM.cum[i]/TOTALU*RAWLEG.km);
+const rampU=i=>(L.alt[i]-L.amin)/(L.amax-L.amin);
+const rampAt=i=>mix("#cfe0bd","#22400f",rampU(i));
+
+/* fatti calcolati sull'archivio */
+function gainOf(leg){ let s=0; for(let i=1;i<leg.alt.length;i++){ const d=leg.alt[i]-leg.alt[i-1]; if(d>0)s+=d; } return s; }
+const GAINS=STORIES.map(s=>s.legs.reduce((a,l)=>a+gainOf(l),0));
+const MYIDX=STORIES.indexOf(ST), MYGAIN=GAINS[MYIDX];
+const GRANK=1+GAINS.filter(x=>x>MYGAIN*1.001).length;
+const PREVBEST=Math.max.apply(null,GAINS.slice(0,MYIDX).concat([0]));
+const ARCHMAX=STORIES.reduce((m,s)=>Math.max(m,...s.legs.map(l=>{
+  let mx=-1e9; for(const v of l.alt) if(v>mx)mx=v; return mx+(l.alt0||0);
+})),-1e9);
+const MYMAX=Math.round(L.amax+A0), MALT=Math.round(L.alt[MORT_I]+A0);
+const SALT=Math.round(L.alt[0]+A0), GKM=kmAt(GAVIA_I), MKM=kmAt(MORT_I);
+const TOTKM=Math.round(RAWLEG.km);
+/* miniature di tutte le storie, per la famiglia archivio (una volta sola) */
+const THUMBS=STORIES.map(s=>{
+  const t=trackOf(s.legs[0]);
+  return {slug:s.slug, title:s.title, year:s.year, xy:t.xy, bb:t.bb};
+});
+let TRINITA=null;
+function trinita(){ if(!TRINITA){ const s=STORIES.find(x=>x.slug==="trinita-2021"); TRINITA=trackOf(s.legs[0]); } return TRINITA; }
+
+/* il tempo si addensa in vetta (round 2, confermato) */
+function warpMaker(k,w){
+  const N=600, T=new Float64Array(N+1);
+  const dip=(u,x)=>Math.exp(-((u-x)*(u-x))/(2*w*w));
+  for(let j=1;j<=N;j++){ const u=(j-.5)/N; T[j]=T[j-1]+1+k*(dip(u,GF)+dip(u,MF)); }
+  const tot=T[N];
+  return function(t){
+    const target=tot*clamp(t,0,1);
+    let lo=0,hi=N;
+    while(lo<hi-1){ const m=(lo+hi)>>1; if(T[m]<=target)lo=m; else hi=m; }
+    const span=T[hi]-T[lo], f=span>0?(target-T[lo])/span:0;
+    return (lo+f)/N;
+  };
+}
+const SUMMIT_WARP=warpMaker(7,.018);
+const WARP_HARD=warpMaker(22,.03);
+/* pause vere (il tempo si ferma, non rallenta) in punti dati */
+function holdAt(list,hold){
+  return function(t){
+    const total=1+hold*list.length;
+    let x=clamp(t,0,1)*total;
+    for(const c of list){
+      if(x>c+hold) x-=hold;
+      else if(x>c){ x=c; break; }
+      else break;
+    }
+    return clamp(x,0,1);
+  };
+}
+/* velocità vera stimata dalla pendenza: sul Mortirolo il puntino quasi si ferma */
+const TRUE_SPEED=(function(){
+  const N=SM.xy.length, T=new Float64Array(N);
+  for(let i=1;i<N;i++){
+    const d=(SM.cum[i]-SM.cum[i-1])*M_PER_U;
+    const v=clamp(9.2-GRAD[i]*66,1.6,15.5);
+    T[i]=T[i-1]+d/Math.max(v,.5);
+  }
+  const tot=T[N-1];
+  return function(t){
+    const target=tot*clamp(t,0,1);
+    let lo=0,hi=N-1;
+    while(lo<hi-1){ const m=(lo+hi)>>1; if(T[m]<=target)lo=m; else hi=m; }
+    return SM.cum[lo]/TOTALU;
+  };
+})();
+
+/* ================= tile CARTO ================= */
+const TILES={cache:{},
+  get(z,x,y,style){
+    const n=1<<z; x=((x%n)+n)%n;
+    if(y<0||y>=n) return null;
+    const k=style+"/"+z+"/"+x+"/"+y;
+    let t=this.cache[k];
+    if(!t){
+      t={img:new Image(),ok:false};
+      t.img.crossOrigin="anonymous";
+      t.img.onload=()=>{t.ok=true;};
+      t.img.src="https://basemaps.cartocdn.com/"+style+"/"+z+"/"+x+"/"+y+".png";
+      this.cache[k]=t;
+    }
+    return t.ok?t.img:null;
+  }};
+function drawTiles(g,cam,W,H,style,veil){
+  const z=clamp(Math.round(Math.log2(cam.s)),3,16), n2=Math.pow(2,z);
+  const tw=cam.s*256/n2;
+  const x0=cam.cx-(W/2)/cam.s, y0=cam.cy-(H/2)/cam.s;
+  const tx0=Math.floor(x0*n2/256), ty0=Math.floor(y0*n2/256);
+  const nx=Math.ceil(W/tw)+1, ny=Math.ceil(H/tw)+1;
+  for(let i=0;i<=nx;i++) for(let j=0;j<=ny;j++){
+    const img=TILES.get(z,tx0+i,ty0+j,style);
+    if(!img) continue;
+    g.drawImage(img,((tx0+i)*256/n2-x0)*cam.s,((ty0+j)*256/n2-y0)*cam.s,tw+.5,tw+.5);
+  }
+  if(veil){ g.fillStyle=veil; g.fillRect(0,0,W,H); }
+}
+
+/* ================= disegno ================= */
+function fitCam(bb,W,H,pad){
+  const span=Math.max(bb.w,bb.h)*(1+(pad||0.12)*2);
+  return {s:Math.min(W,H)/span, cx:bb.cx, cy:bb.cy};
+}
+function px(cam,W,H,x,y){ return [W/2+(x-cam.cx)*cam.s, H/2+(y-cam.cy)*cam.s]; }
+function path(g,l,cam,W,H,from,to){
+  g.beginPath();
+  const a=from||0, b=to==null?l.xy.length-1:to;
+  for(let i=a;i<=b;i++){
+    const q=px(cam,W,H,l.xy[i][0],l.xy[i][1]);
+    i===a?g.moveTo(q[0],q[1]):g.lineTo(q[0],q[1]);
+  }
+}
+function stroke(g,col,wd,alpha){
+  g.globalAlpha=alpha==null?1:alpha; g.strokeStyle=col; g.lineWidth=wd;
+  g.lineJoin=g.lineCap="round"; g.stroke(); g.globalAlpha=1;
+}
+function dot(g,x,y,ac,r){
+  g.beginPath(); g.arc(x,y,(r||4.2)*2.3,0,7); g.fillStyle=ac; g.globalAlpha=.16; g.fill(); g.globalAlpha=1;
+  g.beginPath(); g.arc(x,y,r||4.2,0,7); g.fillStyle=ac; g.fill();
+  g.lineWidth=1.5; g.strokeStyle=C.cream; g.stroke();
+}
+function startPin(g,l,cam,W,H,ac){
+  const q=px(cam,W,H,l.xy[0][0],l.xy[0][1]);
+  g.beginPath(); g.arc(q[0],q[1],3,0,7);
+  g.fillStyle=C.cream; g.fill(); g.lineWidth=1.3; g.strokeStyle=ac; g.stroke();
+}
+function elevLine(g,cam,W,H,headI,wd){
+  for(let i=1;i<=headI;i++){
+    const a=px(cam,W,H,SM.xy[i-1][0],SM.xy[i-1][1]), b=px(cam,W,H,SM.xy[i][0],SM.xy[i][1]);
+    g.beginPath(); g.moveTo(a[0],a[1]); g.lineTo(b[0],b[1]);
+    stroke(g,rampAt(i),wd||2.7,.95);
+  }
+}
+function sideProfile(g,x0,W,H,headI,acc){
+  const bw=W-x0-10;
+  const yOf=k=>10+SM.cum[k]/TOTALU*(H-20);
+  const xOf=v=>x0+4+((v-L.amin)/(L.amax-L.amin))*(bw-8);
+  g.strokeStyle=C.rule; g.lineWidth=1;
+  g.beginPath(); g.moveTo(x0,0); g.lineTo(x0,H); g.stroke();
+  g.beginPath(); g.moveTo(x0+4,10);
+  for(let k=0;k<L.alt.length;k+=2) g.lineTo(xOf(L.alt[k]),yOf(k));
+  g.lineTo(x0+4,H-10); g.closePath();
+  g.fillStyle=C.rule; g.globalAlpha=.8; g.fill(); g.globalAlpha=1;
+  g.beginPath(); g.moveTo(x0+4,10);
+  for(let k=0;k<=headI;k+=2) g.lineTo(xOf(L.alt[k]),yOf(k));
+  g.lineTo(x0+4,yOf(headI)); g.closePath();
+  g.fillStyle=acc||C.green; g.globalAlpha=.35; g.fill(); g.globalAlpha=1;
+  g.strokeStyle=acc||C.green; g.lineWidth=1.3; g.globalAlpha=.9;
+  g.beginPath(); g.moveTo(x0,yOf(headI)); g.lineTo(x0+bw,yOf(headI)); g.stroke(); g.globalAlpha=1;
+}
+/* testo: solo alone di carta, mai scatola (regola del round 3) */
+function halo(g,txt,x,y,size,o){
+  o=o||{};
+  g.save();
+  g.font=(o.serif?(o.italic?"italic 400 ":"400 "):(o.weight||"600 "))+size+"px "+
+         (o.serif?"'Instrument Serif',Georgia,serif":"Inter,sans-serif");
+  g.textAlign=o.align||"left"; g.textBaseline="alphabetic";
+  g.shadowColor=o.hcol||"rgba(250,248,243,.95)"; g.shadowBlur=o.blur==null?9:o.blur;
+  g.fillStyle=o.col||C.ink;
+  const n=o.passes||3;
+  for(let k=0;k<n;k++) g.fillText(txt,x,y);
+  g.restore();
+  return g.measureText(txt).width;
+}
+function wrap(g,txt,maxw){
+  const words=String(txt).split(" "), lines=[]; let cur="";
+  for(const wd of words){
+    const test=cur?cur+" "+wd:wd;
+    if(g.measureText(test).width>maxw&&cur){ lines.push(cur); cur=wd; }
+    else cur=test;
+  }
+  if(cur) lines.push(cur);
+  return lines;
+}
+function kicker(g,txt,x,y,size,col,align){
+  g.save();
+  if("letterSpacing" in g) g.letterSpacing="1.6px";
+  halo(g,txt.toUpperCase(),x,y,size||8,{weight:"700 ",col:col||C.ink2,align:align||"center",blur:7});
+  if("letterSpacing" in g) g.letterSpacing="0px";
+  g.restore();
+}
+/* narrazione al centro, sopra il vivo (regola distillata) */
+function centerText(g,ctx,kick,txt,a,o){
+  if(a<=0||!txt) return 0;
+  o=o||{};
+  const size=o.size||Math.max(12,Math.round(ctx.MW*.043));
+  g.save(); g.globalAlpha=clamp(a,0,1);
+  g.font=(o.serif?"400 ":"600 ")+size+"px "+(o.serif?"'Instrument Serif',Georgia,serif":"Inter,sans-serif");
+  const lines=wrap(g,txt,ctx.MW*(o.wide||.78));
+  const y0=ctx.H*(o.y||.44)-(lines.length-1)*size*.62;
+  if(kick) kicker(g,kick,ctx.MW/2,y0-size*1.15,Math.max(7.5,size*.42),o.kcol||C.ink2);
+  lines.forEach((ln,j)=>halo(g,ln,ctx.MW/2,y0+j*size*1.24,size,
+    {align:"center",serif:o.serif,italic:o.italic,col:o.col,weight:o.weight}));
+  g.restore();
+  return lines.length;
+}
+/* contatori a scatti negli angoli (round 5) */
+function counters(g,ctx,o){
+  o=o||{};
+  const p=ctx.p, exact=p>=.999;
+  const km=exact?TOTKM:Math.floor(p*RAWLEG.km/5)*5;
+  const gain=exact?Math.round(MYGAIN):Math.floor(CLIMB[ctx.head.i]/50)*50;
+  const secs=Math.round(p*RAWLEG.secs);
+  const hh=Math.floor(secs/3600)+"h"+String(Math.floor(secs%3600/60)).padStart(2,"0");
+  const H=ctx.H, MW=ctx.MW, big=Math.max(15,Math.round(MW*.052)), sm=Math.max(6.5,big*.32);
+  g.save(); g.globalAlpha=o.a==null?.96:o.a;
+  halo(g,km+" km",12,H-24,big,{serif:true});
+  kicker(g,"distanza",12,H-12,sm,C.ink3,"left");
+  halo(g,hh,12+MW*.22,H-24,big,{serif:true});
+  kicker(g,"in sella",12+MW*.22,H-12,sm,C.ink3,"left");
+  halo(g,fmtN(gain)+" m",MW-12,H-24,big,{serif:true,align:"right"});
+  kicker(g,"dislivello",MW-12,H-12,sm,C.ink3,"right");
+  g.restore();
+}
+
+/* ================= la base di produzione ================= */
+const KICK={start:"Edolo",gavia:"Passo Gavia",mortirolo:"Mortirolo",arrivo:"Edolo"};
+const MOM=[
+  {f:.02,  w:.04,  key:"start",     i:2},
+  {f:GF,   w:.05,  key:"gavia",     i:GAVIA_I},
+  {f:MF,   w:.05,  key:"mortirolo", i:MORT_I},
+  {f:.975, w:.035, key:"arrivo",    i:L.alt.length-2}];
+function alphaOf(p,m){ return clamp((dv(p,m.f,m.w)-.25)/.65,0,1); }
+function eachMoment(ctx,fn){ for(const m of MOM){ const a=alphaOf(ctx.p,m); if(a>0) fn(m,a); } }
+
+const CAPS={
+  base:{ start:"Non più quanto lontano. Quanto in alto.",
+         gavia:"2.551 metri: il tetto della giornata.",
+         mortirolo:"Il Mortirolo arriva quando le gambe hanno già dato tutto.",
+         arrivo:"124 km e 3.227 metri, in sei ore e nove." },
+  luoghi:{ start:"Edolo · 8:21", gavia:"Passo Gavia · 2.551 m",
+           mortirolo:"Passo del Mortirolo", arrivo:"Edolo · 6h09 dopo" }
+};
+
+function prod(g,W,H,t,o){
+  o=o||{};
+  const p = o.p!=null ? clamp(o.p,0,1) : SUMMIT_WARP(ease(t));
+  const MW = o.full?W:Math.round(W*.76);
+  const head=at(SM,p);
+  const wide=fitCam(SM.bb,MW,H,.12);
+  const f = o.f!=null ? o.f : ease(clamp(Math.max(dv(p,GF,.05),dv(p,MF,.05))*1.15,0,1));
+  const cam = o.cam || {s:wide.s*lerp(1,o.zoom||2,f), cx:lerp(SM.bb.cx,head.x,f), cy:lerp(SM.bb.cy,head.y,f)};
+  const ctx={p:p,t:t,head:head,cam:cam,MW:MW,W:W,H:H,f:f,wide:wide,g:g};
+  g.save(); g.beginPath(); g.rect(0,0,MW,H); g.clip();
+  if(o.tiles!==false) drawTiles(g,cam,MW,H,o.style||"light_all",o.veil||"rgba(250,248,243,.38)");
+  if(o.under) o.under(g,ctx);
+  if(o.ghost!==false){ path(g,SM,cam,MW,H); stroke(g,C.ink3,1.1,.38); }
+  if(o.line) o.line(g,ctx); else elevLine(g,cam,MW,H,head.i);
+  startPin(g,SM,cam,MW,H,C.green);
+  ctx.q=px(cam,MW,H,head.x,head.y);
+  if(o.dot) o.dot(g,ctx); else if(o.dot!==false) dot(g,ctx.q[0],ctx.q[1],rampAt(head.i));
+  if(o.over) o.over(g,ctx);
+  g.restore();
+  if(o.profile!==false&&!o.full) sideProfile(g,MW,W,H,head.i,C.green);
+  if(o.counters!==false) counters(g,ctx);
+  if(o.text!==false) eachMoment(ctx,(m,a)=>centerText(g,ctx,KICK[m.key],(o.caps||CAPS.base)[m.key],a));
+  return ctx;
+}
+/* scratch condiviso per gli effetti di stampa (una passata di pixel, 1×) */
+let SC_C=null;
+function scratch(W,H){
+  if(!SC_C) SC_C=document.createElement("canvas");
+  if(SC_C.width!==W||SC_C.height!==H){ SC_C.width=W; SC_C.height=H; }
+  const c=SC_C.getContext("2d",{willReadFrequently:true});
+  c.setTransform(1,0,0,1,0,0); c.clearRect(0,0,W,H);
+  c.fillStyle=C.cream; c.fillRect(0,0,W,H);
+  return c;
+}
+function post(g,W,H,drawBase,fn){
+  const c=scratch(W,H);
+  drawBase(c);
+  fn(c,W,H,g);
+}
+
+/* ================= le varianti ================= */
+const V=[];
+function def(id,fam,name,what,opts,draw){
+  V.push(Object.assign({id:id,fam:fam,name:name,what:what,draw:draw,dur:19},opts||{}));
+}
+
+/* ---------- 0. la base ---------- */
+def("B00","base","La ricetta di oggi",
+"Dove siamo arrivati dopo cinque round: carta vera, quota come colore, camera ferma con un tuffo calmo a 2× solo in vetta, pausa in vetta, narrazione al centro sopra il vivo, contatori a scatti negli angoli, profilo di fianco. Corretta. Leggibile. Un filo automatica — ed è il motivo di questa pagina.",
+{noChips:true,dur:20},
+function(g,W,H,t){ prod(g,W,H,t); });
+
+/* ---------- 1. LA MANO ---------- */
+function handLine(amp,seed){
+  return function(g,ctx){
+    const cam=ctx.cam,MW=ctx.MW,H=ctx.H;
+    for(let i=1;i<=ctx.head.i;i++){
+      const a=px(cam,MW,H,SM.xy[i-1][0],SM.xy[i-1][1]), b=px(cam,MW,H,SM.xy[i][0],SM.xy[i][1]);
+      const j1=fbm(i*.07+seed)*amp, j2=fbm(i*.07+seed+50)*amp;
+      g.beginPath(); g.moveTo(a[0]+j1,a[1]+j2);
+      g.lineTo(b[0]+fbm((i+1)*.07+seed)*amp,b[1]+fbm((i+1)*.07+seed+50)*amp);
+      stroke(g,rampAt(i),2.7,.95);
+    }
+  };
+}
+def("MA01","mano","La riga che trema",
+"La traccia non è più una polilinea perfetta: ondeggia di un pelo, come una linea tirata a mano libera. Stesso percorso, tocco umano.",null,
+function(g,W,H,t){ prod(g,W,H,t,{line:handLine(2.2,3)}); });
+
+def("MA02","mano","Il doppio tratto",
+"Ogni tratto è ripassato due volte, leggermente fuori registro: il gesto di chi ricalca per essere sicuro.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{line:function(g,ctx){
+    for(let k=0;k<2;k++){
+      const off=k?1.6:0;
+      for(let i=1;i<=ctx.head.i;i++){
+        const a=px(ctx.cam,ctx.MW,ctx.H,SM.xy[i-1][0],SM.xy[i-1][1]), b=px(ctx.cam,ctx.MW,ctx.H,SM.xy[i][0],SM.xy[i][1]);
+        g.beginPath(); g.moveTo(a[0]+off,a[1]-off*.6); g.lineTo(b[0]+off,b[1]-off*.6);
+        stroke(g,rampAt(i),k?1.5:2.5,k?.4:.9);
+      }
+    }
+  }});
+});
+
+def("MA03","mano","L'inchiostro che sbava",
+"Dove la strada rallenta l'inchiostro si accumula: macchie e spessori diversi, come una penna vera su carta assorbente.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{line:function(g,ctx){
+    elevLine(g,ctx.cam,ctx.MW,ctx.H,ctx.head.i,2.4);
+    for(let i=6;i<=ctx.head.i;i+=7){
+      const q=px(ctx.cam,ctx.MW,ctx.H,SM.xy[i][0],SM.xy[i][1]);
+      const r=1.2+Math.abs(GRAD[i])*22+Math.abs(fbm(i*.3))*1.6;
+      g.beginPath(); g.arc(q[0]+fbm(i)*1.2,q[1]+fbm(i+9)*1.2,r,0,7);
+      g.globalAlpha=.35; g.fillStyle=rampAt(i); g.fill(); g.globalAlpha=1;
+    }
+  }});
+});
+
+def("MA04","mano","Il pennino",
+"Lo spessore del tratto racconta la pendenza: sottile in discesa, grasso quando si sale davvero. La riga diventa scrittura.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{line:function(g,ctx){
+    for(let i=1;i<=ctx.head.i;i++){
+      const a=px(ctx.cam,ctx.MW,ctx.H,SM.xy[i-1][0],SM.xy[i-1][1]), b=px(ctx.cam,ctx.MW,ctx.H,SM.xy[i][0],SM.xy[i][1]);
+      g.beginPath(); g.moveTo(a[0],a[1]); g.lineTo(b[0],b[1]);
+      stroke(g,rampAt(i),clamp(1+GRAD[i]*46,.8,6.5),.95);
+    }
+  }});
+});
+
+def("MA05","mano","La matita",
+"Tratteggio a matita al posto del pieno: si vede la grana del gesto, non la precisione del vettore.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{line:function(g,ctx){
+    for(let i=2;i<=ctx.head.i;i++){
+      const a=px(ctx.cam,ctx.MW,ctx.H,SM.xy[i-1][0],SM.xy[i-1][1]), b=px(ctx.cam,ctx.MW,ctx.H,SM.xy[i][0],SM.xy[i][1]);
+      for(let k=0;k<3;k++){
+        const o1=fbm(i*.5+k*13)*1.5, o2=fbm(i*.5+k*13+7)*1.5;
+        g.beginPath(); g.moveTo(a[0]+o1,a[1]+o2); g.lineTo(b[0]+o1,b[1]+o2);
+        stroke(g,rampAt(i),.9,.35);
+      }
+    }
+  }});
+});
+
+def("MA06","mano","La carta a grana",
+"Sotto tutto, la grana di un foglio spesso: la mappa smette di essere uno schermo e diventa una pagina.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    g.globalAlpha=.12;
+    for(let x=0;x<ctx.MW;x+=3) for(let y=0;y<ctx.H;y+=3){
+      const v=fbm(x*.31+y*.17);
+      if(v>.25){ g.fillStyle=v>.6?"#8a7f66":"#ffffff"; g.fillRect(x,y,2,2); }
+    }
+    g.globalAlpha=1;
+    g.strokeStyle="rgba(120,110,90,.25)"; g.lineWidth=1;
+    g.strokeRect(.5,.5,ctx.MW-1,ctx.H-1);
+  }});
+});
+
+def("MA07","mano","Il quaderno",
+"Righe da quaderno e un margine rosso: il giro appuntato sul taccuino invece che renderizzato.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{veil:"rgba(250,248,243,.62)",under:function(g,ctx){
+    g.strokeStyle="rgba(90,120,160,.28)"; g.lineWidth=1;
+    for(let y=18;y<ctx.H;y+=17){ g.beginPath(); g.moveTo(0,y+.5); g.lineTo(ctx.MW,y+.5); g.stroke(); }
+    g.strokeStyle="rgba(190,80,70,.45)";
+    g.beginPath(); g.moveTo(34.5,0); g.lineTo(34.5,ctx.H); g.stroke();
+  }});
+});
+
+def("MA08","mano","L'annotazione a penna",
+"Una freccia storta e un cerchio tirato a mano attorno alla vetta, con due parole scritte di fretta. Il gesto di chi commenta la propria mappa.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{text:false,over:function(g,ctx){
+    eachMoment(ctx,(m,a)=>{
+      if(m.key!=="gavia"&&m.key!=="mortirolo") return;
+      const pos=at(SM,m.f), q=px(ctx.cam,ctx.MW,ctx.H,pos.x,pos.y);
+      g.save(); g.globalAlpha=a; g.strokeStyle="#1d3a6e"; g.lineWidth=1.6; g.lineCap="round";
+      g.beginPath();
+      for(let k=0;k<=40;k++){
+        const an=k/40*7.1, r=17+fbm(k*.4+m.i)*3;
+        const x=q[0]+Math.cos(an)*r*1.25, y=q[1]+Math.sin(an)*r;
+        k?g.lineTo(x,y):g.moveTo(x,y);
+      }
+      g.stroke();
+      g.beginPath(); g.moveTo(q[0]+34,q[1]-30); g.quadraticCurveTo(q[0]+30,q[1]-14,q[0]+22,q[1]-8);
+      g.stroke();
+      g.beginPath(); g.moveTo(q[0]+22,q[1]-8); g.lineTo(q[0]+30,q[1]-9);
+      g.moveTo(q[0]+22,q[1]-8); g.lineTo(q[0]+25,q[1]-15); g.stroke();
+      halo(g,m.key==="gavia"?"qui faceva freddo":"qui non ne avevo più",q[0]+36,q[1]-34,12.5,
+        {serif:true,italic:true,col:"#1d3a6e"});
+      g.restore();
+    });
+  }});
+});
+
+def("MA09","mano","La macchia di caffè",
+"Un alone di tazzina in un angolo, sempre lo stesso. Un difetto voluto: dice che questa pagina è stata usata.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    const cx=ctx.MW*.82, cy=ctx.H*.19, R=Math.min(ctx.MW,ctx.H)*.16;
+    g.save();
+    g.globalAlpha=.13; g.fillStyle="#7a5230";
+    g.beginPath();
+    for(let k=0;k<=60;k++){ const a=k/60*7.1, r=R*(1+fbm(k*.21)*.06);
+      const x=cx+Math.cos(a)*r, y=cy+Math.sin(a)*r; k?g.lineTo(x,y):g.moveTo(x,y); }
+    g.fill();
+    g.globalAlpha=.26; g.strokeStyle="#6b4526"; g.lineWidth=2.6; g.stroke();
+    g.restore();
+  }});
+});
+
+def("MA10","mano","Il bordo strappato",
+"Il riquadro non è un rettangolo: è un pezzo di carta strappato. Niente più cornice perfetta.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    g.save(); g.globalCompositeOperation="destination-in";
+    g.beginPath();
+    g.moveTo(0,0);
+    for(let x=0;x<=ctx.MW;x+=6) g.lineTo(x,3+fbm(x*.09)*4);
+    for(let y=0;y<=ctx.H;y+=6) g.lineTo(ctx.MW-3-fbm(y*.09+30)*4,y);
+    for(let x=ctx.MW;x>=0;x-=6) g.lineTo(x,ctx.H-3-fbm(x*.09+60)*4);
+    for(let y=ctx.H;y>=0;y-=6) g.lineTo(3+fbm(y*.09+90)*4,y);
+    g.closePath(); g.fillStyle="#000"; g.fill();
+    g.restore();
+  }});
+});
+
+/* ---------- 2. IL RESPIRO ---------- */
+function timeVar(fn,opt){
+  return function(g,W,H,t){ prod(g,W,H,t,Object.assign({p:fn(t)},opt||{})); };
+}
+def("RI01","respiro","Il falso avvio",
+"Parte, si ferma dopo due chilometri, riparte. Come tutte le partenze vere: mai al primo colpo.",null,
+timeVar(t=>{ const u=ease(t); return SUMMIT_WARP(u<.06?u*.5:(u<.11?.03:u)); }));
+
+def("RI02","respiro","Il fermo immagine",
+"In vetta tutto si blocca davvero — non rallenta: si ferma. Due secondi di niente, poi si riparte.",null,
+timeVar(holdAt([GF,MF],.075)));
+
+def("RI03","respiro","Il salto di montaggio",
+"Il tempo non è continuo: quattro stacchi netti saltano i pezzi che non raccontano niente. Il montaggio decide.",null,
+timeVar(t=>{
+  const cuts=[[0,.10],[.28,.45],[.52,.68],[.86,1]];
+  const u=clamp(ease(t),0,.999), seg=Math.min(3,Math.floor(u*4)), f=(u*4)%1;
+  return lerp(cuts[seg][0],cuts[seg][1],f);
+}));
+
+def("RI04","respiro","Il riavvolgimento",
+"Dopo il Gavia il nastro torna indietro di qualche chilometro — «aspetta, guarda di nuovo» — e poi riprende.",null,
+timeVar(t=>{
+  const u=ease(t);
+  if(u>GF&&u<GF+.05) return SUMMIT_WARP(GF-(u-GF)*1.4);
+  if(u>=GF+.05&&u<GF+.10) return SUMMIT_WARP(GF-(.10-(u-GF))*1.4);
+  return SUMMIT_WARP(u);
+}));
+
+def("RI05","respiro","La corsa e la calma",
+"Pianure divorate, salite quasi al rallentatore: la differenza di ritmo diventa estrema, quasi comica.",null,
+timeVar(t=>WARP_HARD(ease(t))));
+
+def("RI06","respiro","Il battito",
+"Un respiro lento sotto tutto: il disegno accelera e decelera di poco, in continuo, come un torace.",null,
+timeVar(t=>SUMMIT_WARP(clamp(ease(t)+Math.sin(t*Math.PI*14)*.012,0,1))));
+
+def("RI07","respiro","Il fiato sospeso",
+"Prima del Mortirolo tutto sparisce per un attimo: resta solo il puntino sul bianco. Poi torna il mondo.",null,
+function(g,W,H,t){
+  const u=ease(t), hush=clamp(1-Math.abs(u-(MF-.055))/.03,0,1);
+  prod(g,W,H,t,{veil:"rgba(250,248,243,"+(.38+hush*.58)+")",counters:hush<.5,text:hush<.5});
+});
+
+def("RI08","respiro","L'accelerando",
+"Comincia lentissimo e finisce di corsa: la giornata che scivola via mentre la stanchezza cresce.",null,
+timeVar(t=>SUMMIT_WARP(Math.pow(t,2.1))));
+
+def("RI09","respiro","Le tre battute",
+"Esattamente tre pause, sempre lunghe uguali, sempre negli stessi punti. Un metro, non un caso.",null,
+timeVar(holdAt([.3,.6,.9],.07)));
+
+def("RI10","respiro","Il finale trattenuto",
+"Gli ultimi due chilometri a un quinto della velocità: l'arrivo non arriva mai, e proprio per questo pesa.",null,
+timeVar(t=>{
+  const u=ease(t);
+  return SUMMIT_WARP(u<.88?u/.88*.96:.96+(u-.88)/.12*.04);
+}));
+
+/* ---------- 3. LA VOCE ---------- */
+function capsVar(caps,opt){
+  return function(g,W,H,t){ prod(g,W,H,t,Object.assign({caps:caps},opt||{})); };
+}
+def("VO01","voce","L'understatement",
+"Tre parole in meno di quelle che servirebbero. Il tono di chi non vuole farla troppo grossa — e proprio per questo la fa grossa.",null,
+capsVar({start:"Un giro, niente di che.",gavia:"2.551 metri. Vabbè.",
+  mortirolo:"Ah, e c'è anche il Mortirolo.",arrivo:"Sei ore. Passano."}));
+
+def("VO02","voce","Il dubbio",
+"Le didascalie non sanno la risposta: chiedono. La sicurezza è la cosa più finta che ci sia.",null,
+capsVar({start:"Perché ho detto di sì?",gavia:"Da quassù: aveva senso?",
+  mortirolo:"No. Non aveva senso.",arrivo:"E lo rifarei."}));
+
+def("VO03","voce","Il dialogo",
+"Due voci: io e le gambe. Il racconto smette di essere una didascalia e diventa una conversazione.",null,
+function(g,W,H,t){
+  const D={start:["— Quanto è lunga?","— Non chiedere."],gavia:["— Manca tanto?","— Guarda in su."],
+           mortirolo:["— Non ce la faccio.","— Lo dici sempre."],arrivo:["— Fatto.","— Fatto."]};
+  prod(g,W,H,t,{text:false,over:function(g,ctx){
+    eachMoment(ctx,(m,a)=>{
+      const size=Math.max(12,Math.round(ctx.MW*.04));
+      g.save(); g.globalAlpha=a;
+      halo(g,D[m.key][0],ctx.MW*.5,ctx.H*.40,size,{align:"center",serif:true});
+      halo(g,D[m.key][1],ctx.MW*.5,ctx.H*.40+size*1.5,size,{align:"center",serif:true,col:C.stone,italic:true});
+      g.restore();
+    });
+  }});
+});
+
+def("VO04","voce","Il messaggio",
+"Fumetti da chat, come i messaggi mandati davvero quel giorno. Vero, sgrammaticato, immediato.",null,
+function(g,W,H,t){
+  const MSG={start:"parto ora, torno per pranzo",gavia:"sono in cima, fa un freddo assurdo",
+             mortirolo:"il mortirolo era una pessima idea",arrivo:"tornato. sto bene. giuro"};
+  prod(g,W,H,t,{text:false,over:function(g,ctx){
+    eachMoment(ctx,(m,a)=>{
+      const size=Math.max(11,Math.round(ctx.MW*.033));
+      g.save(); g.globalAlpha=a;
+      g.font="500 "+size+"px Inter,sans-serif";
+      const lines=wrap(g,MSG[m.key],ctx.MW*.52);
+      const w=Math.max.apply(null,lines.map(l=>g.measureText(l).width))+22;
+      const h=lines.length*size*1.35+16, x=ctx.MW*.5-w/2, y=ctx.H*.40;
+      g.fillStyle="rgba(255,255,255,.93)"; g.strokeStyle=C.rule; g.lineWidth=1;
+      if(g.roundRect){ g.beginPath(); g.roundRect(x,y,w,h,12); g.fill(); g.stroke(); }
+      else { g.fillRect(x,y,w,h); g.strokeRect(x,y,w,h); }
+      g.beginPath(); g.moveTo(x+16,y+h); g.lineTo(x+8,y+h+9); g.lineTo(x+28,y+h);
+      g.fillStyle="rgba(255,255,255,.93)"; g.fill();
+      g.fillStyle=C.ink; g.textAlign="left";
+      lines.forEach((l,j)=>g.fillText(l,x+11,y+size+j*size*1.35+6));
+      g.restore();
+    });
+  }});
+});
+
+def("VO05","voce","L'esclamazione",
+"Una parola sola, enorme, per momento. Nessuna spiegazione: il numero è già sotto, negli angoli.",null,
+function(g,W,H,t){
+  const W1={start:"VIA.",gavia:"SU.",mortirolo:"ANCORA.",arrivo:"FATTO."};
+  prod(g,W,H,t,{text:false,over:function(g,ctx){
+    eachMoment(ctx,(m,a)=>{
+      g.save(); g.globalAlpha=a*.92;
+      halo(g,W1[m.key],ctx.MW/2,ctx.H*.5,Math.round(ctx.MW*.20),{align:"center",serif:true,blur:16});
+      g.restore();
+    });
+  }});
+});
+
+def("VO06","voce","La domanda al lettore",
+"Ogni tanto la mappa si gira verso chi guarda e chiede qualcosa. Difficile restare spettatori.",null,
+capsVar({start:"Ti sembra una buona idea?",gavia:"Tu ti fermeresti qui?",
+  mortirolo:"Quanto manca, secondo te?",arrivo:"Ci torneresti?"},{serif:true}));
+
+def("VO07","voce","Il diario",
+"Prima persona, passato, corsivo: la pagina scritta la sera stessa, non la scheda tecnica del giorno dopo.",null,
+function(g,W,H,t){
+  const D={start:"9 luglio. Sveglia alle sei, in valle c'era ancora l'ombra.",
+           gavia:"Sono arrivato al Gavia che non sentivo più le dita.",
+           mortirolo:"Il Mortirolo l'ho fatto pensando ad altro, apposta.",
+           arrivo:"Rientrato alle due e mezza. Non ho scritto niente sull'orologio."};
+  prod(g,W,H,t,{text:false,over:function(g,ctx){
+    eachMoment(ctx,(m,a)=>centerText(g,ctx,null,D[m.key],a,{serif:true,italic:true,size:Math.max(13,ctx.MW*.042)}));
+  }});
+});
+
+def("VO08","voce","La confessione",
+"Piccolissima, in basso, quasi da non leggere: la cosa che di solito non si scrive.",null,
+function(g,W,H,t){
+  const D={start:"(avevo dormito quattro ore)",gavia:"(qui ho pensato di girarmi)",
+           mortirolo:"(ho contato i tornanti per non pensare)",arrivo:"(non l'ho detto a nessuno)"};
+  prod(g,W,H,t,{text:false,over:function(g,ctx){
+    eachMoment(ctx,(m,a)=>{
+      g.save(); g.globalAlpha=a*.9;
+      halo(g,D[m.key],ctx.MW/2,ctx.H*.62,Math.max(10,ctx.MW*.028),{align:"center",serif:true,italic:true,col:C.ink2});
+      g.restore();
+    });
+  }});
+});
+
+def("VO09","voce","Il superlativo onesto",
+"Niente aggettivi: solo il primato vero, calcolato sull'archivio. Se un momento è il più duro dei venti, lo dice — se no, tace.",null,
+capsVar({
+  start: GRANK===1?"Il giro con più dislivello dei venti.":"Per dislivello, il numero "+GRANK+" dei venti.",
+  gavia: MYMAX>=ARCHMAX-1?"2.551 m: il punto più alto di tutto l'archivio.":"2.551 m: fra i tetti dell'archivio.",
+  mortirolo:"In vetta al Mortirolo: "+fmtN(Math.round(CLIMB[MORT_I]))+" m già nelle gambe.",
+  arrivo:"3.227 m: "+(MYGAIN>PREVBEST?"record battuto, quel giorno.":"il secondo miglior dislivello, allora.")}));
+
+def("VO10","voce","Il silenzio",
+"Una sola parola in tutto il giro, in vetta. Tutto il resto lo dicono la carta e i contatori.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{text:false,over:function(g,ctx){
+    const a=alphaOf(ctx.p,MOM[1]);
+    if(a>0){ g.save(); g.globalAlpha=a;
+      halo(g,"Gavia",ctx.MW/2,ctx.H*.44,Math.round(ctx.MW*.075),{align:"center",serif:true});
+      g.restore(); }
+  }});
+});
+
+/* ---------- 4. IL MONDO ATTORNO ---------- */
+def("MO01","mondo","Il meteo",
+"Temperatura e cielo cambiano con la quota: a 2.551 metri, a luglio, erano sei gradi. Il dato va collegato all'API, qui è ricostruito.",
+{fake:true},
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    const alt=L.alt[ctx.head.i]+A0, temp=Math.round(26-(alt-300)*.0068);
+    g.save();
+    const sky=g.createLinearGradient(0,0,0,ctx.H*.3);
+    sky.addColorStop(0,"rgba(120,160,210,"+clamp((alt-800)/2600,0,.5)+")");
+    sky.addColorStop(1,"rgba(120,160,210,0)");
+    g.fillStyle=sky; g.fillRect(0,0,ctx.MW,ctx.H*.3);
+    halo(g,temp+"°",ctx.MW-14,30,Math.round(ctx.MW*.06),{serif:true,align:"right"});
+    kicker(g,"in quota",ctx.MW-14,42,7.5,C.ink3,"right");
+    g.restore();
+  }});
+});
+
+def("MO02","mondo","L'ora del giorno",
+"La luce della carta si muove con l'orologio: alba fredda alla partenza, mezzogiorno bianco in vetta, ombra lunga al ritorno.",null,
+function(g,W,H,t){
+  const p=SUMMIT_WARP(ease(t)), h=8.35+p*6.15;
+  const warm=clamp(1-Math.abs(h-13)/5,0,1);
+  prod(g,W,H,t,{p:p,veil:"rgba("+Math.round(255-warm*8)+","+Math.round(240+warm*8)+","+Math.round(220+warm*20)+",.42)",
+    over:function(g,ctx){
+      g.save(); g.globalAlpha=.5;
+      const dawn=g.createLinearGradient(0,0,ctx.MW,ctx.H);
+      dawn.addColorStop(0,"rgba(194,118,26,"+(1-warm)*.22+")");
+      dawn.addColorStop(1,"rgba(59,91,181,"+(1-warm)*.16+")");
+      g.fillStyle=dawn; g.fillRect(0,0,ctx.MW,ctx.H); g.globalAlpha=1;
+      halo(g,Math.floor(h)+":"+String(Math.round(h%1*60)).padStart(2,"0"),ctx.MW-14,30,Math.round(ctx.MW*.055),{serif:true,align:"right"});
+      g.restore();
+    }});
+});
+
+def("MO03","mondo","La stagione",
+"Ogni mese ha la sua tinta: luglio è secco e chiaro. Vent'anni di giri smettono di sembrare tutti lo stesso giorno.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{veil:"rgba(252,247,232,.44)",over:function(g,ctx){
+    g.save(); g.globalAlpha=.14; g.fillStyle="#d8b34a"; g.fillRect(0,0,ctx.MW,ctx.H); g.globalAlpha=1;
+    kicker(g,"luglio · piena estate",14,ctx.H*.07,8.5,C.stone,"left");
+    g.restore();
+  }});
+});
+
+def("MO04","mondo","L'ombra",
+"Il puntino proietta un'ombra che gira con il sole: alle otto è lunga verso ovest, a mezzogiorno sparisce.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{dot:function(g,ctx){
+    const h=8.35+ctx.p*6.15, ang=(h-12)/12*Math.PI+Math.PI/2;
+    const len=clamp(Math.abs(h-13)*3.4,2,16);
+    g.save(); g.globalAlpha=.3; g.strokeStyle="#3a3524"; g.lineWidth=4; g.lineCap="round";
+    g.beginPath(); g.moveTo(ctx.q[0],ctx.q[1]);
+    g.lineTo(ctx.q[0]+Math.cos(ang)*len,ctx.q[1]+Math.sin(ang)*len*.6); g.stroke();
+    g.restore();
+    dot(g,ctx.q[0],ctx.q[1],rampAt(ctx.head.i));
+  }});
+});
+
+def("MO05","mondo","L'aria che manca",
+"Una colonnina mostra quanto ossigeno resta rispetto al fondovalle: a 2.551 m è il 74%. Il numero che spiega la fatica.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    const alt=L.alt[ctx.head.i]+A0, ox=Math.pow(1-alt*2.25577e-5,5.2559);
+    const x=ctx.MW-26, y0=ctx.H*.16, hh=ctx.H*.34;
+    g.save();
+    g.fillStyle="rgba(250,248,243,.72)"; g.fillRect(x-7,y0-6,20,hh+12);
+    g.strokeStyle=C.rule; g.strokeRect(x-7.5,y0-6.5,20,hh+12);
+    g.fillStyle=mix("#3b5bb5","#c2761a",clamp((1-ox)/.3,0,1));
+    g.fillRect(x-2,y0+hh*(1-clamp((ox-.7)/.3,0,1)),9,hh*clamp((ox-.7)/.3,0,1));
+    halo(g,Math.round(ox*100)+"%",x+3,y0-10,10,{align:"center"});
+    kicker(g,"ossigeno",x+3,y0+hh+16,7,C.ink3,"center");
+    g.restore();
+  }});
+});
+
+def("MO06","mondo","Gli altri",
+"Non eri solo su quella strada: qualche puntino grigio passa in senso contrario. Il mondo continua anche fuori dalla traccia.",
+{fake:true},
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    for(let k=0;k<5;k++){
+      const off=(k*.19+.08), pk=(1-((ctx.p+off)%1));
+      const o=at(SM,pk), q=px(ctx.cam,ctx.MW,ctx.H,o.x,o.y);
+      if(q[0]<-10||q[0]>ctx.MW+10) continue;
+      g.beginPath(); g.arc(q[0],q[1],2.6,0,7);
+      g.fillStyle="rgba(90,95,82,.5)"; g.fill();
+    }
+  }});
+});
+
+def("MO07","mondo","La sosta",
+"Dove ci si è fermati davvero, il tempo si ferma con te: un segno, i minuti persi, e poi si riparte.",
+{fake:true},
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    const SP=[{f:.22,txt:"bar · 9 minuti"},{f:.63,txt:"borraccia · 3 minuti"}];
+    for(const s of SP){
+      const o=at(SM,s.f), q=px(ctx.cam,ctx.MW,ctx.H,o.x,o.y);
+      const a=clamp(1-Math.abs(ctx.p-s.f)/.09,0,1);
+      if(a<=0) continue;
+      g.save(); g.globalAlpha=a;
+      g.beginPath(); g.arc(q[0],q[1],6,0,7); g.strokeStyle=C.stone; g.lineWidth=1.6; g.stroke();
+      halo(g,s.txt,q[0]+10,q[1]-6,10.5,{col:C.stone});
+      g.restore();
+    }
+  }});
+});
+
+def("MO08","mondo","Il vento",
+"Sottili strisce che scorrono nella direzione del vento di quel giorno: si capisce quando spingeva e quando fermava.",
+{fake:true},
+function(g,W,H,t){
+  prod(g,W,H,t,{under:function(g,ctx){
+    g.save(); g.globalAlpha=.16; g.strokeStyle="#3b5bb5"; g.lineWidth=1;
+    const dr=(ctx.t*90)%40;
+    for(let y=-20;y<ctx.H+20;y+=17){
+      g.beginPath();
+      for(let x=-20;x<ctx.MW+20;x+=6) g.lineTo(x,y+Math.sin((x+dr)*.06)*3+dr*.1);
+      g.stroke();
+    }
+    g.restore();
+  }});
+});
+
+def("MO09","mondo","Il caldo e il freddo",
+"La carta stessa cambia temperatura: dorata in fondovalle, azzurra sopra i duemila. Il colore lo senti addosso.",null,
+function(g,W,H,t){
+  const p=SUMMIT_WARP(ease(t)), h=at(SM,p), cold=clamp((L.alt[h.i]+A0-900)/1700,0,1);
+  prod(g,W,H,t,{p:p,veil:"rgba("+Math.round(252-cold*40)+","+Math.round(247-cold*10)+","+Math.round(232+cold*23)+",.46)"});
+});
+
+def("MO10","mondo","Il fondo",
+"Asfalto liscio o cemento del Mortirolo: la traccia cambia texture con quello che c'era sotto le ruote.",
+{fake:true},
+function(g,W,H,t){
+  prod(g,W,H,t,{line:function(g,ctx){
+    for(let i=1;i<=ctx.head.i;i++){
+      const rough=SM.cum[i]/TOTALU>MF-.10&&SM.cum[i]/TOTALU<MF+.02;
+      const a=px(ctx.cam,ctx.MW,ctx.H,SM.xy[i-1][0],SM.xy[i-1][1]), b=px(ctx.cam,ctx.MW,ctx.H,SM.xy[i][0],SM.xy[i][1]);
+      g.beginPath(); g.moveTo(a[0],a[1]); g.lineTo(b[0],b[1]);
+      if(rough){ g.setLineDash([3,2]); stroke(g,rampAt(i),3.4,.95); g.setLineDash([]); }
+      else stroke(g,rampAt(i),2.7,.95);
+    }
+  }});
+});
+
+/* ---------- 5. L'ARCHIVIO ---------- */
+function thumbGrid(g,MW,H,alpha,hl){
+  g.save(); g.globalAlpha=alpha;
+  const cols=5, rows=4, cw=MW/cols, ch=H/rows;
+  THUMBS.forEach((th,k)=>{
+    const cx=(k%cols)*cw+cw/2, cy=Math.floor(k/cols)*ch+ch/2;
+    const s=Math.min(cw,ch)*.72/Math.max(th.bb.w,th.bb.h);
+    g.beginPath();
+    for(let i=0;i<th.xy.length;i+=3){
+      const x=cx+(th.xy[i][0]-th.bb.cx)*s, y=cy+(th.xy[i][1]-th.bb.cy)*s;
+      i?g.lineTo(x,y):g.moveTo(x,y);
+    }
+    g.strokeStyle=(hl===k)?C.green:C.ink3; g.lineWidth=(hl===k)?1.6:.9;
+    g.globalAlpha=alpha*((hl===k)?2.2:1); g.stroke();
+  });
+  g.restore(); g.globalAlpha=1;
+}
+def("AR01","archivio","I fantasmi",
+"Dietro la carta, tutti e venti i giri, appena accennati. Questo non è un giro: è uno dei venti, e si vede.",null,
+function(g,W,H,t){ prod(g,W,H,t,{under:function(g,ctx){ thumbGrid(g,ctx.MW,ctx.H,.13,MYIDX); }}); });
+
+def("AR02","archivio","Un anno fa, qui",
+"Quando la traccia arriva al Gavia compare in trasparenza la Trinità del 2021: stessa strada, cinque anni dopo.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{under:function(g,ctx){
+    const a=clamp(alphaOf(ctx.p,MOM[1])*1.2,0,1);
+    if(a<=0) return;
+    const T=trinita();
+    g.save(); g.globalAlpha=a*.5;
+    g.beginPath();
+    for(let i=0;i<T.xy.length;i+=2){
+      const q=px(ctx.cam,ctx.MW,ctx.H,T.xy[i][0],T.xy[i][1]);
+      i?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1]);
+    }
+    g.setLineDash([5,4]); g.strokeStyle=C.dusk; g.lineWidth=1.8; g.stroke(); g.setLineDash([]);
+    halo(g,"2021 · Gavia, Stelvio, Mortirolo",14,ctx.H*.12,10.5,{col:C.dusk});
+    g.restore();
+  }});
+});
+
+def("AR03","archivio","La classifica che sale",
+"Mentre il dislivello cresce, il giro scala la classifica dei venti in diretta: sedicesimo, nono, quarto, primo.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    const now=CLIMB[ctx.head.i];
+    const rank=1+GAINS.filter(x=>x>now).length;
+    g.save();
+    halo(g,"#"+rank,ctx.MW-14,ctx.H*.17,Math.round(ctx.MW*.085),{serif:true,align:"right"});
+    kicker(g,"per dislivello, sui venti",ctx.MW-14,ctx.H*.17+14,7.5,C.ink3,"right");
+    g.restore();
+  }});
+});
+
+def("AR04","archivio","La strada che torna",
+"Una barra ricorda quante volte queste stesse strade ricompaiono nell'archivio: il Gavia è passato tre volte in dieci anni.",
+{fake:true},
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    const a=alphaOf(ctx.p,MOM[1]);
+    if(a<=0) return;
+    g.save(); g.globalAlpha=a;
+    halo(g,"terza volta quassù",ctx.MW/2,ctx.H*.66,Math.max(11,ctx.MW*.033),{align:"center",col:C.ink2});
+    for(let k=0;k<3;k++){
+      g.beginPath(); g.arc(ctx.MW/2-14+k*14,ctx.H*.70,3.4,0,7);
+      g.fillStyle=k===2?C.green:C.ink3; g.fill();
+    }
+    g.restore();
+  }});
+});
+
+def("AR05","archivio","Il primo e l'ultimo",
+"Per un attimo, accanto al 2016, il profilo del giro più recente: dieci anni in una sola inquadratura.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    const a=alphaOf(ctx.p,MOM[3]);
+    if(a<=0) return;
+    const last=THUMBS[THUMBS.length-1];
+    g.save(); g.globalAlpha=a*.85;
+    const cx=ctx.MW*.24, cy=ctx.H*.28, s=Math.min(ctx.MW,ctx.H)*.24/Math.max(last.bb.w,last.bb.h);
+    g.beginPath();
+    for(let i=0;i<last.xy.length;i+=2){
+      const x=cx+(last.xy[i][0]-last.bb.cx)*s, y=cy+(last.xy[i][1]-last.bb.cy)*s;
+      i?g.lineTo(x,y):g.moveTo(x,y);
+    }
+    g.strokeStyle=C.stone; g.lineWidth=1.4; g.stroke();
+    halo(g,last.year+" · "+last.title,cx,cy+ctx.H*.16,9.5,{align:"center",col:C.stone});
+    g.restore();
+  }});
+});
+
+def("AR06","archivio","Il calendario",
+"In un angolo, undici anni di puntini. Quello di oggi si accende: capisci subito dove sei nella storia.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    const x0=14, y0=ctx.H*.10, step=Math.min(13,ctx.MW*.035);
+    g.save();
+    THUMBS.forEach((th,k)=>{
+      const x=x0+(k%10)*step, y=y0+Math.floor(k/10)*step;
+      g.beginPath(); g.arc(x,y,k===MYIDX?4:2.4,0,7);
+      g.fillStyle=k===MYIDX?C.green:"rgba(140,145,130,.55)"; g.fill();
+    });
+    kicker(g,"2016 — il secondo dei venti",x0,y0+step*2+8,7.5,C.ink3,"left");
+    g.restore();
+  }});
+});
+
+def("AR07","archivio","Il record che cade",
+"Il contatore del dislivello ha una tacca: il primato precedente. Quando la supera, la pagina lo dice.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    const now=CLIMB[ctx.head.i], done=now>PREVBEST;
+    const a=clamp((now-PREVBEST)/220,0,1)*clamp((PREVBEST+400-now)/220,0,1);
+    if(done&&a>0){
+      g.save(); g.globalAlpha=a;
+      halo(g,"record superato · "+fmtN(Math.round(PREVBEST))+" m",ctx.MW/2,ctx.H*.72,Math.max(11,ctx.MW*.032),
+        {align:"center",col:C.dawn,weight:"700 "});
+      g.restore();
+    }
+  }});
+});
+
+def("AR08","archivio","La somma dell'anno",
+"Una barra sottile: quanto pesa questo giro sul dislivello di tutto il 2016. Un giorno che sposta l'anno.",null,
+function(g,W,H,t){
+  const Y2016=STORIES.filter(s=>s.year===2016).reduce((a,s,i)=>a+GAINS[STORIES.indexOf(s)],0);
+  prod(g,W,H,t,{over:function(g,ctx){
+    const w=ctx.MW*.34, x=ctx.MW-14-w, y=ctx.H*.10;
+    g.save();
+    g.fillStyle="rgba(250,248,243,.7)"; g.fillRect(x,y-8,w,12);
+    g.fillStyle=C.green; g.fillRect(x,y-8,w*clamp(CLIMB[ctx.head.i]/Y2016,0,1),12);
+    g.strokeStyle=C.rule; g.strokeRect(x+.5,y-8.5,w,12);
+    kicker(g,"sul dislivello 2016",ctx.MW-14,y+16,7.5,C.ink3,"right");
+    g.restore();
+  }});
+});
+
+def("AR09","archivio","Il vicino",
+"Il giro più simile dell'archivio, in piccolo, di fianco: due profili accostati mostrano che cosa è cambiato in cinque anni.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    const T=trinita(), a=clamp(alphaOf(ctx.p,MOM[2])*1.1,0,1);
+    if(a<=0) return;
+    g.save(); g.globalAlpha=a;
+    const x0=ctx.MW*.06, y0=ctx.H*.80, w=ctx.MW*.34, h=ctx.H*.14;
+    let mn=1e9,mx=-1e9; for(const v of T.alt){ if(v<mn)mn=v; if(v>mx)mx=v; }
+    g.beginPath();
+    for(let i=0;i<T.alt.length;i+=4) g.lineTo(x0+i/T.alt.length*w, y0+h-(T.alt[i]-mn)/(mx-mn)*h);
+    g.strokeStyle=C.dusk; g.lineWidth=1.2; g.stroke();
+    g.beginPath();
+    for(let i=0;i<L.alt.length;i+=4) g.lineTo(x0+i/L.alt.length*w, y0+h-(L.alt[i]-L.amin)/(L.amax-L.amin)*h);
+    g.strokeStyle=C.green; g.lineWidth=1.6; g.stroke();
+    halo(g,"2016 vs 2021",x0,y0-6,9.5,{col:C.ink2});
+    g.restore();
+  }});
+});
+
+def("AR10","archivio","Il futuro",
+"Sull'ultimo fotogramma si intravede il giro dopo: l'archivio non finisce mai, e la pagina te lo ricorda.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    const a=clamp((ctx.p-.93)/.05,0,1);
+    if(a<=0) return;
+    const nx=THUMBS[MYIDX+1];
+    g.save(); g.globalAlpha=a*.75;
+    const cx=ctx.MW*.78, cy=ctx.H*.75, s=Math.min(ctx.MW,ctx.H)*.2/Math.max(nx.bb.w,nx.bb.h);
+    g.beginPath();
+    for(let i=0;i<nx.xy.length;i+=2){
+      const x=cx+(nx.xy[i][0]-nx.bb.cx)*s, y=cy+(nx.xy[i][1]-nx.bb.cy)*s;
+      i?g.lineTo(x,y):g.moveTo(x,y);
+    }
+    g.strokeStyle=C.ink3; g.lineWidth=1.2; g.stroke();
+    kicker(g,"poi: "+nx.title,cx,cy+ctx.H*.13,8,C.ink3,"center");
+    g.restore();
+  }});
+});
+
+/* ---------- 6. LA MATERIA ---------- */
+def("MT01","materia","Il riso a due colori",
+"Stampa risografica: due soli inchiostri, fuori registro di un millimetro. Imperfetta per scelta, non per errore.",null,
+function(g,W,H,t){
+  post(g,W,H,c=>prod(c,W,H,t,{text:false,counters:false}),(c,W,H,g)=>{
+    const cv=c.canvas;
+    g.save(); g.fillStyle="#f7f2e6"; g.fillRect(0,0,W,H);
+    g.globalCompositeOperation="multiply";
+    g.globalAlpha=.75; g.drawImage(cv,-1.5,1,W,H);
+    g.globalAlpha=.55; g.drawImage(cv,1.5,-1,W,H);
+    g.restore();
+  });
+  /* le parole restano nitide sopra la stampa */
+  const ctx={p:SUMMIT_WARP(ease(t)),MW:Math.round(W*.76),H:H,W:W};
+  ctx.head=at(SM,ctx.p);
+  eachMoment(ctx,(m,a)=>centerText(g,ctx,KICK[m.key],CAPS.base[m.key],a));
+});
+
+def("MT02","materia","Il retino",
+"Niente pieni: solo puntini di dimensione variabile, come una foto di giornale ingrandita.",{dur:22},
+function(g,W,H,t){
+  post(g,W,H,c=>prod(c,W,H,t,{text:false}),(c,W,H,g)=>{
+    const d=c.getImageData(0,0,W,H).data;
+    g.fillStyle="#faf8f3"; g.fillRect(0,0,W,H);
+    g.fillStyle="#1b1c14";
+    const step=4;
+    for(let y=0;y<H;y+=step) for(let x=0;x<W;x+=step){
+      const i=((y*W)+x)*4, lum=(d[i]*.3+d[i+1]*.59+d[i+2]*.11)/255;
+      const r=(1-lum)*step*.75;
+      if(r>.3){ g.beginPath(); g.arc(x+step/2,y+step/2,r,0,7); g.fill(); }
+    }
+  });
+});
+
+def("MT03","materia","La fotocopia",
+"Contrasto spinto, polvere sul vetro, bianchi bruciati: il giro fotocopiato e attaccato al muro.",{dur:22},
+function(g,W,H,t){
+  post(g,W,H,c=>prod(c,W,H,t),(c,W,H,g)=>{
+    const im=c.getImageData(0,0,W,H), d=im.data;
+    for(let i=0;i<d.length;i+=4){
+      const lum=(d[i]*.3+d[i+1]*.59+d[i+2]*.11);
+      const v=lum>150?248:(lum>112?170:28);
+      d[i]=d[i+1]=d[i+2]=v;
+    }
+    c.putImageData(im,0,0);
+    g.drawImage(c.canvas,0,0,W,H);
+    g.globalAlpha=.5; g.fillStyle="#000";
+    for(let k=0;k<40;k++){ const x=(fbm(k*3.1)*.5+.5)*W, y=(fbm(k*7.7+3)*.5+.5)*H;
+      g.fillRect(x,y,1,1+Math.abs(fbm(k))*4); }
+    g.globalAlpha=1;
+  });
+});
+
+def("MT04","materia","La stampa a caldo",
+"Le vette sono impresse in oro caldo, con un'ombra incisa: il rilievo di un frontespizio, non un pixel piatto.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{text:false,over:function(g,ctx){
+    eachMoment(ctx,(m,a)=>{
+      if(a<=0) return;
+      const size=Math.round(ctx.MW*.062);
+      g.save(); g.globalAlpha=a;
+      g.font="400 "+size+"px 'Instrument Serif',Georgia,serif"; g.textAlign="center";
+      g.fillStyle="rgba(90,80,50,.35)"; g.fillText(KICK[m.key],ctx.MW/2+1.5,ctx.H*.44+1.5);
+      const grd=g.createLinearGradient(0,ctx.H*.4,0,ctx.H*.48);
+      grd.addColorStop(0,"#f2d489"); grd.addColorStop(.5,"#b98a24"); grd.addColorStop(1,"#f0cf7c");
+      g.fillStyle=grd; g.fillText(KICK[m.key],ctx.MW/2,ctx.H*.44);
+      g.restore();
+    });
+  }});
+});
+
+def("MT05","materia","La pellicola",
+"Grana fotografica, angoli scuri, un tremolio minimo: il giro girato in super8 e non renderizzato.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    g.save();
+    const vg=g.createRadialGradient(ctx.MW/2,ctx.H/2,ctx.H*.2,ctx.MW/2,ctx.H/2,ctx.H*.78);
+    vg.addColorStop(0,"rgba(0,0,0,0)"); vg.addColorStop(1,"rgba(30,24,12,.34)");
+    g.fillStyle=vg; g.fillRect(0,0,ctx.MW,ctx.H);
+    g.globalAlpha=.09;
+    const seed=Math.floor(ctx.t*24);
+    for(let k=0;k<420;k++){
+      const x=(fbm(k*1.7+seed)*.5+.5)*ctx.MW, y=(fbm(k*2.9+seed*3)*.5+.5)*ctx.H;
+      g.fillStyle=k%2?"#fff":"#000"; g.fillRect(x,y,1.4,1.4);
+    }
+    g.restore();
+  }});
+});
+
+def("MT06","materia","Il duotone notturno",
+"Due colori soltanto — notte e oro — su tutta l'immagine. Il giro come una copertina di disco.",{dur:20},
+function(g,W,H,t){
+  post(g,W,H,c=>prod(c,W,H,t,{style:"dark_all",veil:"rgba(19,16,23,.42)",text:false}),(c,W,H,g)=>{
+    const im=c.getImageData(0,0,W,H), d=im.data;
+    const a=hex2rgb("#131017"), b=hex2rgb("#e8b23a");
+    for(let i=0;i<d.length;i+=4){
+      const u=(d[i]*.3+d[i+1]*.59+d[i+2]*.11)/255;
+      d[i]=lerp(a[0],b[0],u); d[i+1]=lerp(a[1],b[1],u); d[i+2]=lerp(a[2],b[2],u);
+    }
+    c.putImageData(im,0,0); g.drawImage(c.canvas,0,0,W,H);
+  });
+  const ctx={p:SUMMIT_WARP(ease(t)),MW:Math.round(W*.76),H:H,W:W};
+  ctx.head=at(SM,ctx.p);
+  eachMoment(ctx,(m,a)=>centerText(g,ctx,KICK[m.key],CAPS.base[m.key],a,
+    {col:"#f7ead0",kcol:"#c9a45c"}));
+});
+
+def("MT07","materia","Il collage",
+"La mappa è un ritaglio incollato: bordo bianco, ombra netta, un filo storto rispetto alla pagina.",null,
+function(g,W,H,t){
+  g.save();
+  g.translate(W/2,H/2); g.rotate(-.012); g.translate(-W/2,-H/2);
+  g.fillStyle="rgba(0,0,0,.16)"; g.fillRect(10,12,W*.76,H-14);
+  g.fillStyle="#fff"; g.fillRect(6,6,W*.76,H-16);
+  prod(g,W,H,t,{});
+  g.restore();
+});
+
+def("MT08","materia","Il nastro adesivo",
+"Due pezzi di scotch tengono la carta agli angoli. Un dettaglio stupido che cambia tutto: qualcuno l'ha attaccata.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    const tape=(x,y,rot)=>{
+      g.save(); g.translate(x,y); g.rotate(rot);
+      g.fillStyle="rgba(226,214,180,.62)"; g.fillRect(-26,-9,52,18);
+      g.strokeStyle="rgba(180,168,135,.5)"; g.lineWidth=1; g.strokeRect(-26,-9,52,18);
+      g.restore();
+    };
+    tape(16,14,-.5); tape(ctx.MW-16,ctx.H-14,-.5);
+  }});
+});
+
+def("MT09","materia","Il timbro",
+"Un timbro di gomma con la data, storto e mal inchiostrato, sopra tutto. Il giro archiviato a mano.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    g.save();
+    g.translate(ctx.MW*.76,ctx.H*.80); g.rotate(-.22); g.globalAlpha=.5;
+    g.strokeStyle="#8c3b2e"; g.lineWidth=2.4;
+    g.strokeRect(-56,-17,112,34);
+    if("letterSpacing" in g) g.letterSpacing="2px";
+    g.font="700 12px Inter,sans-serif"; g.fillStyle="#8c3b2e"; g.textAlign="center";
+    g.fillText("9 LUG 2016",0,5);
+    if("letterSpacing" in g) g.letterSpacing="0px";
+    g.globalAlpha=.16;
+    for(let k=0;k<70;k++) g.fillRect(fbm(k*1.3)*100-50,fbm(k*2.1+5)*30-15,2,2);
+    g.restore();
+  }});
+});
+
+def("MT10","materia","Il margine",
+"Crocini di taglio, numero di pagina, una nota a margine: la grafica di un libro stampato davvero.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    g.save(); g.strokeStyle=C.ink3; g.lineWidth=.8;
+    const m=9, cs=7;
+    [[m,m,1,1],[ctx.MW-m,m,-1,1],[m,ctx.H-m,1,-1],[ctx.MW-m,ctx.H-m,-1,-1]].forEach(c=>{
+      g.beginPath(); g.moveTo(c[0]-c[2]*cs,c[1]); g.lineTo(c[0]+c[2]*cs,c[1]);
+      g.moveTo(c[0],c[1]-c[3]*cs); g.lineTo(c[0],c[1]+c[3]*cs); g.stroke();
+    });
+    if("letterSpacing" in g) g.letterSpacing="1.4px";
+    g.font="600 7.5px Inter,sans-serif"; g.fillStyle=C.ink3; g.textAlign="left";
+    g.fillText("TOP-20 · CAPITOLO II",m+cs+4,m+3);
+    g.textAlign="right"; g.fillText("2 / 20",ctx.MW-m-cs-4,ctx.H-m+3);
+    if("letterSpacing" in g) g.letterSpacing="0px";
+    g.restore();
+  }});
+});
+
+/* ---------- 7. LA STRUTTURA ---------- */
+def("ST01","struttura","Il cold open",
+"Comincia in vetta, senza spiegazioni. Poi il nastro torna indietro e ti racconta come ci sei arrivato.",null,
+function(g,W,H,t){
+  const pre=clamp(t/.14,0,1);
+  const p = t<.14 ? GF : SUMMIT_WARP(ease((t-.14)/.86));
+  prod(g,W,H,t,{p:p,f:t<.14?1:undefined,text:t>=.14,
+    over:t<.14?function(g,ctx){
+      centerText(g,ctx,"2.551 m","Qui, prima di tutto.",clamp(Math.sin(pre*Math.PI)*2,0,1),{serif:true});
+    }:null});
+});
+
+def("ST02","struttura","Il titolo di capitolo",
+"A metà giro lo schermo si prende una pausa e annuncia il capitolo successivo, come in un film.",null,
+function(g,W,H,t){
+  const card=clamp(1-Math.abs(t-.5)/.045,0,1);
+  prod(g,W,H,t,{text:card<.4,counters:card<.4,
+    over:function(g,ctx){
+      if(card<=0) return;
+      g.save(); g.globalAlpha=card;
+      g.fillStyle="rgba(250,248,243,.93)"; g.fillRect(0,0,ctx.MW,ctx.H);
+      kicker(g,"capitolo due",ctx.MW/2,ctx.H*.44,10,C.ink3);
+      halo(g,"Il Mortirolo",ctx.MW/2,ctx.H*.56,Math.round(ctx.MW*.1),{align:"center",serif:true});
+      g.restore();
+    }});
+});
+
+def("ST03","struttura","Il conto alla rovescia",
+"Non quanto hai fatto: quanto manca. Un numero che scende crea una tensione che un numero che sale non ha.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{counters:false,over:function(g,ctx){
+    const left=Math.max(0,Math.ceil((TOTKM-ctx.p*RAWLEG.km)/5)*5);
+    g.save();
+    halo(g,"−"+left,ctx.MW/2,ctx.H*.90,Math.round(ctx.MW*.11),{align:"center",serif:true});
+    kicker(g,"chilometri alla fine",ctx.MW/2,ctx.H*.955,8,C.ink3);
+    g.restore();
+  }});
+});
+
+def("ST04","struttura","La domanda e la risposta",
+"Si apre con una domanda e si chiude con la sua risposta. In mezzo, il giro è la dimostrazione.",null,
+capsVar({start:"Quanto in alto si può arrivare in un giorno?",gavia:"",
+  mortirolo:"",arrivo:"Tremiladuecentoventisette metri."},{serif:true}));
+
+def("ST05","struttura","I tre atti",
+"Il giro diviso in tre parti dichiarate: la salita, il crollo, il ritorno. Una struttura, non una sequenza.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    const acts=[[0,"I · la salita"],[.42,"II · il crollo"],[.78,"III · il ritorno"]];
+    let cur=acts[0];
+    for(const a of acts) if(ctx.p>=a[0]) cur=a;
+    g.save(); g.globalAlpha=.85;
+    kicker(g,cur[1],14,ctx.H*.09,9,C.stone,"left");
+    const x=14, w=ctx.MW*.3;
+    g.strokeStyle=C.rule; g.lineWidth=2;
+    g.beginPath(); g.moveTo(x,ctx.H*.11); g.lineTo(x+w,ctx.H*.11); g.stroke();
+    g.strokeStyle=C.stone;
+    g.beginPath(); g.moveTo(x,ctx.H*.11); g.lineTo(x+w*ctx.p,ctx.H*.11); g.stroke();
+    g.restore();
+  }});
+});
+
+def("ST06","struttura","Il presagio",
+"Nei primi chilometri, un lampo di quello che succederà sul Mortirolo. Sai che arriva, e aspetti.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    const a=clamp(1-Math.abs(t-.13)/.05,0,1);
+    if(a<=0) return;
+    const o=at(SM,MF), q=px(ctx.cam,ctx.MW,ctx.H,o.x,o.y);
+    g.save(); g.globalAlpha=a;
+    g.beginPath(); g.arc(q[0],q[1],9,0,7); g.strokeStyle=C.stone; g.setLineDash([3,3]); g.lineWidth=1.6; g.stroke(); g.setLineDash([]);
+    halo(g,"fra quattro ore, qui",q[0]+12,q[1]+4,10.5,{col:C.stone,italic:true,serif:true});
+    g.restore();
+  }});
+});
+
+def("ST07","struttura","L'epilogo",
+"Dopo l'arrivo non finisce: resta un fotogramma silenzioso, la traccia intera e una riga sola. Il respiro dopo il punto.",null,
+function(g,W,H,t){
+  const p=t<.85?SUMMIT_WARP(ease(t/.85)):1;
+  const ep=clamp((t-.85)/.15,0,1);
+  prod(g,W,H,t,{p:p,f:ep>0?0:undefined,text:ep<=0,counters:ep<=0,
+    veil:"rgba(250,248,243,"+(.38+ep*.3)+")",
+    over:ep>0?function(g,ctx){
+      centerText(g,ctx,null,"E poi si torna a casa in silenzio.",Math.min(1,ep*2.2),{serif:true,italic:true,y:.5});
+    }:null});
+});
+
+def("ST08","struttura","Il flashback",
+"A metà salita il racconto stacca su un altro giro, per due secondi, e torna. La memoria funziona così.",null,
+function(g,W,H,t){
+  const fb=clamp(1-Math.abs(t-.44)/.05,0,1);
+  if(fb>.3){
+    const T=trinita();
+    g.save(); g.fillStyle="#f3efe4"; g.fillRect(0,0,W,H);
+    const cam=fitCam(T.bb,W,H,.16);
+    g.beginPath();
+    for(let i=0;i<T.xy.length;i+=2){ const q=px(cam,W,H,T.xy[i][0],T.xy[i][1]); i?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1]); }
+    stroke(g,C.dusk,1.8,.7);
+    centerText(g,{MW:W,H:H},"cinque anni dopo","Qui ci saresti tornato con lo Stelvio in mezzo.",fb,{serif:true,italic:true});
+    g.restore();
+    return;
+  }
+  prod(g,W,H,t);
+});
+
+def("ST09","struttura","Il gancio",
+"L'ultima riga non chiude: apre. «Un mese dopo, in Belgio, la strada diventa pavé.» Si va avanti a leggere.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    const a=clamp((ctx.p-.94)/.05,0,1);
+    if(a<=0) return;
+    centerText(g,ctx,"il prossimo","Un anno dopo, in Belgio, la strada diventa pavé.",a,{serif:true,y:.62});
+  }});
+});
+
+def("ST10","struttura","In medias res",
+"Si comincia nel mezzo del Mortirolo, senza contesto, e solo dopo si scopre com'è iniziata la giornata.",null,
+function(g,W,H,t){
+  const p = t<.2 ? MF-.06+t*.28 : SUMMIT_WARP(ease((t-.2)/.8))*.999;
+  prod(g,W,H,t,{p:p,f:t<.2?1:undefined,text:t>=.2,
+    over:t<.2?function(g,ctx){
+      centerText(g,ctx,null,"Nessuno sa perché sono qui.",clamp(Math.sin(t/.2*Math.PI)*1.6,0,1),{serif:true,italic:true});
+    }:null});
+});
+
+/* ---------- 8. IL PUNTINO ---------- */
+function dotVar(fn,opt){
+  return function(g,W,H,t){ prod(g,W,H,t,Object.assign({dot:fn},opt||{})); };
+}
+def("PU01","puntino","Respira",
+"Il puntino si gonfia e si sgonfia con la pendenza: piccolo e calmo in discesa, grosso e affannato in salita.",null,
+dotVar(function(g,ctx){
+  const eff=clamp(GRAD[ctx.head.i]/.10,0,1);
+  const r=3.4+eff*3+Math.sin(ctx.t*Math.PI*(6+eff*14))*(.6+eff*1.5);
+  dot(g,ctx.q[0],ctx.q[1],rampAt(ctx.head.i),r);
+}));
+
+def("PU02","puntino","Rallenta a vista",
+"Nessun trucco di ritmo: la velocità la detta la pendenza, come quel giorno. Sul Mortirolo il puntino è quasi fermo, in discesa vola.",null,
+timeVar(t=>TRUE_SPEED(t)));
+
+def("PU03","puntino","Traballa",
+"Sopra il 10% il puntino comincia a ondeggiare da un lato all'altro della strada. Quella è fatica, non un dato.",null,
+dotVar(function(g,ctx){
+  const eff=clamp((GRAD[ctx.head.i]-.05)/.08,0,1);
+  const wob=Math.sin(ctx.t*Math.PI*22)*eff*4;
+  dot(g,ctx.q[0]+wob,ctx.q[1],rampAt(ctx.head.i));
+}));
+
+def("PU04","puntino","L'ombra lunga",
+"Dietro al puntino resta una scia corta che si riassorbe: dice da dove arriva senza sporcare la mappa.",null,
+dotVar(function(g,ctx){
+  const n=26;
+  for(let k=n;k>0;k--){
+    const pk=clamp(ctx.p-k*.0022,0,1), o=at(SM,pk), q=px(ctx.cam,ctx.MW,ctx.H,o.x,o.y);
+    g.beginPath(); g.arc(q[0],q[1],1.2+(n-k)/n*2.6,0,7);
+    g.fillStyle=rampAt(o.i); g.globalAlpha=(1-k/n)*.35; g.fill(); g.globalAlpha=1;
+  }
+  dot(g,ctx.q[0],ctx.q[1],rampAt(ctx.head.i));
+}));
+
+def("PU05","puntino","Le impronte",
+"Ogni cinque chilometri lascia un segno che resta: alla fine la traccia è fatta di passi, non di pixel.",null,
+dotVar(function(g,ctx){
+  for(let k=5;k<=RAWLEG.km;k+=5){
+    const f=k/RAWLEG.km;
+    if(f>ctx.p) break;
+    const o=at(SM,f), q=px(ctx.cam,ctx.MW,ctx.H,o.x,o.y);
+    g.beginPath(); g.arc(q[0],q[1],1.9,0,7); g.fillStyle=C.cream; g.fill();
+    g.lineWidth=1.1; g.strokeStyle=rampAt(o.i); g.stroke();
+  }
+  dot(g,ctx.q[0],ctx.q[1],rampAt(ctx.head.i));
+}));
+
+def("PU06","puntino","Il colore della fatica",
+"Il puntino cambia colore man mano che il dislivello si accumula: parte fresco, arriva cotto.",null,
+dotVar(function(g,ctx){
+  const cooked=clamp(CLIMB[ctx.head.i]/MYGAIN,0,1);
+  dot(g,ctx.q[0],ctx.q[1],mix("#4d7238","#a8341f",cooked),4.2+cooked*1.4);
+}));
+
+def("PU07","puntino","La bicicletta",
+"Non un punto: una bici minuscola che si inclina con la pendenza. Un personaggio, non un cursore.",null,
+dotVar(function(g,ctx){
+  const ang=-Math.atan(GRAD[ctx.head.i]*4);
+  g.save(); g.translate(ctx.q[0],ctx.q[1]); g.rotate(ang);
+  g.strokeStyle=C.ink; g.lineWidth=1.3; g.fillStyle=C.cream;
+  g.beginPath(); g.arc(-4,0,2.6,0,7); g.fill(); g.stroke();
+  g.beginPath(); g.arc(4,0,2.6,0,7); g.fill(); g.stroke();
+  g.beginPath(); g.moveTo(-4,0); g.lineTo(0,-3); g.lineTo(4,0); g.moveTo(0,-3); g.lineTo(1,-5); g.stroke();
+  g.restore();
+}));
+
+def("PU08","puntino","Il rivale",
+"Un secondo puntino: il te stesso del 2021 sulla stessa salita. Non è una gara, ma un po' lo è.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{dot:function(g,ctx){
+    const T=trinita();
+    const o=at(T,clamp(ctx.p*.94,0,1)), q=px(ctx.cam,ctx.MW,ctx.H,o.x,o.y);
+    g.beginPath(); g.arc(q[0],q[1],3.4,0,7); g.fillStyle="rgba(59,91,181,.75)"; g.fill();
+    g.lineWidth=1.3; g.strokeStyle=C.cream; g.stroke();
+    dot(g,ctx.q[0],ctx.q[1],rampAt(ctx.head.i));
+  }});
+});
+
+def("PU09","puntino","Il sudore",
+"Sulle rampe più dure il puntino perde qualcosa per strada: piccole gocce che cadono e svaniscono.",null,
+dotVar(function(g,ctx){
+  const eff=clamp((GRAD[ctx.head.i]-.05)/.09,0,1);
+  if(eff>0) for(let k=0;k<5;k++){
+    const ph=(ctx.t*2.2+k*.2)%1;
+    g.beginPath(); g.arc(ctx.q[0]+fbm(k*3.3)*7,ctx.q[1]+ph*13,1.5,0,7);
+    g.fillStyle="rgba(59,91,181,"+((1-ph)*.5*eff)+")"; g.fill();
+  }
+  dot(g,ctx.q[0],ctx.q[1],rampAt(ctx.head.i));
+}));
+
+def("PU10","puntino","Il puntino che pensa",
+"Ogni tanto una nuvoletta minuscola sopra il puntino, con dentro tre parole. Il protagonista ha una testa.",null,
+function(g,W,H,t){
+  const TH={start:"si parte",gavia:"che freddo",mortirolo:"perché",arrivo:"finita"};
+  prod(g,W,H,t,{text:false,over:function(g,ctx){
+    eachMoment(ctx,(m,a)=>{
+      g.save(); g.globalAlpha=a;
+      g.font="500 10px Inter,sans-serif";
+      const w=g.measureText(TH[m.key]).width+16;
+      const x=ctx.q[0]+10, y=ctx.q[1]-30;
+      g.fillStyle="rgba(255,255,255,.92)"; g.strokeStyle=C.rule; g.lineWidth=1;
+      if(g.roundRect){ g.beginPath(); g.roundRect(x,y,w,20,10); g.fill(); g.stroke(); }
+      else { g.fillRect(x,y,w,20); g.strokeRect(x,y,w,20); }
+      g.beginPath(); g.arc(x+2,y+24,2.4,0,7); g.fill(); g.stroke();
+      g.beginPath(); g.arc(x-3,y+29,1.5,0,7); g.fill(); g.stroke();
+      g.fillStyle=C.ink; g.textAlign="left"; g.fillText(TH[m.key],x+8,y+14);
+      g.restore();
+    });
+  }});
+});
+
+/* ---------- 9. LA SCALA ---------- */
+def("SC01","scala","L'uomo",
+"Accanto al profilo, una sagoma alta un metro e ottanta. Duemilacinquecento metri smettono di essere un numero.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    const x=ctx.MW*.09, base=ctx.H*.92, full=ctx.H*.62;
+    const hh=full*(1.8/(L.amax-L.amin));
+    g.save();
+    g.strokeStyle=C.ink2; g.lineWidth=1;
+    g.beginPath(); g.moveTo(x-6,base); g.lineTo(x+6,base); g.stroke();
+    g.beginPath(); g.moveTo(x,base); g.lineTo(x,base-full); g.stroke();
+    g.fillStyle=C.ink; g.fillRect(x-1.2,base-Math.max(hh,3),2.4,Math.max(hh,3));
+    halo(g,fmtN(Math.round(L.amax-L.amin))+" m",x+9,base-full+4,10,{col:C.ink2});
+    halo(g,"1,80 m",x+9,base-2,9,{col:C.ink3});
+    g.restore();
+  }});
+});
+
+def("SC02","scala","Il grattacielo",
+"2.551 metri = undici volte il grattacielo più alto di Milano, uno sopra l'altro. Un paragone che si vede.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    const a=alphaOf(ctx.p,MOM[1]);
+    if(a<=0) return;
+    g.save(); g.globalAlpha=a;
+    const x=ctx.MW*.14, base=ctx.H*.9, unit=(ctx.H*.62)/11;
+    for(let k=0;k<11;k++){
+      g.fillStyle="rgba(90,95,82,"+(.25+k*.05)+")";
+      g.fillRect(x-5,base-(k+1)*unit+1.5,10,unit-2);
+    }
+    halo(g,"11 × Torre Unicredit",x+14,base-ctx.H*.3,10.5,{col:C.ink2});
+    g.restore();
+  }});
+});
+
+def("SC03","scala","Lo zoom all'Italia",
+"Una volta sola, per due secondi, la carta si allarga fino a mostrare dove sta questa scarabocchiata di strada. Poi torna giù. (Contro la regola del «mai il globo»: serve saperlo.)",null,
+function(g,W,H,t){
+  const out=clamp(1-Math.abs(t-.30)/.06,0,1);
+  const p=SUMMIT_WARP(ease(t)), head=at(SM,p);
+  const MW=Math.round(W*.76), wide=fitCam(SM.bb,MW,H,.12);
+  const f=ease(clamp(Math.max(dv(p,GF,.05),dv(p,MF,.05))*1.15,0,1));
+  const s=lerp(wide.s*lerp(1,2,f), wide.s*.045, ease(out));
+  prod(g,W,H,t,{p:p,cam:{s:s,cx:lerp(lerp(SM.bb.cx,head.x,f),SM.bb.cx,out),
+    cy:lerp(lerp(SM.bb.cy,head.y,f),SM.bb.cy+ (1-s/wide.s)*0,out)},text:out<.4,counters:out<.4,
+    over:out>0?function(g,ctx){
+      g.save(); g.globalAlpha=out;
+      kicker(g,"tutto questo sta qui",ctx.MW/2,ctx.H*.16,10,C.ink2);
+      g.restore();
+    }:null});
+});
+
+def("SC04","scala","La griglia dei chilometri",
+"Tacche sulla traccia ogni dieci chilometri, numerate. La distanza smette di essere astratta.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    for(let k=10;k<RAWLEG.km;k+=10){
+      const f=k/RAWLEG.km, o=at(SM,f), q=px(ctx.cam,ctx.MW,ctx.H,o.x,o.y);
+      if(q[0]<0||q[0]>ctx.MW) continue;
+      g.beginPath(); g.arc(q[0],q[1],1.6,0,7);
+      g.fillStyle=f<=ctx.p?C.ink:C.ink3; g.globalAlpha=f<=ctx.p?.9:.35; g.fill(); g.globalAlpha=1;
+      if(f<=ctx.p&&ctx.cam.s>ctx.wide.s*1.2) halo(g,String(k),q[0]+4,q[1]-4,8,{col:C.ink2});
+    }
+  }});
+});
+
+def("SC05","scala","Le altre salite",
+"Dietro il profilo, in trasparenza, l'Alpe d'Huez e lo Stelvio alla stessa scala. Capisci subito che roba è.",
+{fake:true},
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    const a=alphaOf(ctx.p,MOM[1]);
+    if(a<=0) return;
+    const REF=[["Alpe d'Huez",1071],["Stelvio",1533],["oggi",Math.round(MYGAIN)]];
+    g.save(); g.globalAlpha=a;
+    const x=ctx.MW*.06, y=ctx.H*.72, w=ctx.MW*.36;
+    REF.forEach((r,k)=>{
+      const yy=y+k*15;
+      g.fillStyle=k===2?C.green:"rgba(140,145,130,.5)";
+      g.fillRect(x,yy,w*r[1]/3300,9);
+      halo(g,r[0]+" · "+fmtN(r[1])+" m",x+w*r[1]/3300+6,yy+8,8.5,{col:C.ink2});
+    });
+    g.restore();
+  }});
+});
+
+def("SC06","scala","Quanto manca",
+"Una barra sottile in alto che si svuota. Sempre visibile, mai invadente: sai sempre a che punto sei.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    g.save();
+    g.fillStyle="rgba(140,145,130,.28)"; g.fillRect(0,0,ctx.MW,3);
+    g.fillStyle=C.green; g.fillRect(0,0,ctx.MW*ctx.p,3);
+    const o=at(SM,GF), pxg=GF*ctx.MW;
+    g.fillStyle=C.stone; g.fillRect(pxg-1,0,2,6);
+    g.fillRect(MF*ctx.MW-1,0,2,6);
+    g.restore();
+  }});
+});
+
+def("SC07","scala","L'arco del sole",
+"In alto, il sole percorre la sua giornata mentre tu percorri la tua. Due orologi, uno solo dei quali si può fermare.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    const h=8.35+ctx.p*6.15, u=clamp((h-6)/13,0,1);
+    g.save();
+    g.strokeStyle="rgba(194,118,26,.35)"; g.lineWidth=1;
+    g.beginPath();
+    for(let k=0;k<=40;k++){ const uu=k/40, x=ctx.MW*.06+uu*ctx.MW*.88, y=ctx.H*.15-Math.sin(uu*Math.PI)*ctx.H*.08;
+      k?g.lineTo(x,y):g.moveTo(x,y); }
+    g.stroke();
+    const x=ctx.MW*.06+u*ctx.MW*.88, y=ctx.H*.15-Math.sin(u*Math.PI)*ctx.H*.08;
+    g.beginPath(); g.arc(x,y,4.5,0,7); g.fillStyle=C.dawn; g.fill();
+    g.restore();
+  }});
+});
+
+def("SC08","scala","La larghezza della strada",
+"Una volta, in cima, la carta scende fino a mostrare i tornanti veri, larghi tre metri. Lì capisci dove sei passato.",null,
+function(g,W,H,t){
+  const p=SUMMIT_WARP(ease(t)), head=at(SM,p);
+  const MW=Math.round(W*.76), wide=fitCam(SM.bb,MW,H,.12);
+  const f=ease(clamp(dv(p,GF,.028)*1.2,0,1));
+  prod(g,W,H,t,{p:p,cam:{s:wide.s*lerp(1,26,f),cx:lerp(SM.bb.cx,head.x,f>.02?1:f),cy:lerp(SM.bb.cy,head.y,f>.02?1:f)},
+    over:f>.3?function(g,ctx){ kicker(g,"scala 1:2.000 — i tornanti veri",ctx.MW/2,ctx.H*.9,9,C.ink2); }:null});
+});
+
+def("SC09","scala","Il dislivello in piani",
+"3.227 metri sono milleventi piani di palazzo. La colonnina si riempie mentre sali, un piano alla volta.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    const floors=Math.floor(CLIMB[ctx.head.i]/3);
+    const x=ctx.MW-30, y0=ctx.H*.14, hh=ctx.H*.38;
+    g.save();
+    g.strokeStyle=C.rule; g.lineWidth=1; g.strokeRect(x-.5,y0-.5,16,hh);
+    g.fillStyle="rgba(77,114,56,.55)";
+    const fill=hh*clamp(floors/1076,0,1);
+    g.fillRect(x,y0+hh-fill,16,fill);
+    for(let k=0;k<14;k++){ g.strokeStyle="rgba(255,255,255,.5)";
+      g.beginPath(); g.moveTo(x,y0+hh-hh*k/14); g.lineTo(x+16,y0+hh-hh*k/14); g.stroke(); }
+    halo(g,fmtN(floors),x+8,y0-7,11,{align:"center",serif:true});
+    kicker(g,"piani",x+8,y0+hh+13,7,C.ink3,"center");
+    g.restore();
+  }});
+});
+
+def("SC10","scala","La mappa dentro la mappa",
+"Un localizzatore minuscolo in un angolo: l'Italia, e un punto. Nessuno zoom, nessuna transizione, solo un ancoraggio.",null,
+function(g,W,H,t){
+  prod(g,W,H,t,{over:function(g,ctx){
+    const s=Math.min(ctx.MW,ctx.H)*.16, x=ctx.MW-s-12, y=12;
+    g.save();
+    g.fillStyle="rgba(250,248,243,.85)"; g.fillRect(x,y,s,s*1.15);
+    g.strokeStyle=C.rule; g.strokeRect(x+.5,y+.5,s,s*1.15);
+    /* schizzo minimo dello stivale, non geografico: è un simbolo */
+    g.strokeStyle=C.ink3; g.lineWidth=1.1; g.beginPath();
+    const pts=[[.42,.05],[.62,.14],[.55,.3],[.68,.42],[.78,.62],[.7,.78],[.5,.88],[.38,.75],[.3,.5],[.2,.3],[.28,.1],[.42,.05]];
+    pts.forEach((p,k)=>{ const px2=x+p[0]*s, py=y+p[1]*s*1.15; k?g.lineTo(px2,py):g.moveTo(px2,py); });
+    g.stroke();
+    g.beginPath(); g.arc(x+.5*s,y+.20*s*1.15,3,0,7); g.fillStyle=C.green; g.fill();
+    g.restore();
+  }});
+});
+
+/* ---------- 10. IL LETTORE ---------- */
+def("LE01","lettore","Lo scorrimento",
+"Passa il dito (o il mouse) sulla scheda: il giro segue la tua mano. Sei tu a decidere quando è successo cosa.",
+{inter:true,hand:"trascina",manualT:function(sc,dt){
+  if(sc.ptr.in) return clamp((sc.ptr.x)/Math.max(1,sc.W),0,1);
+  return null;
+}},
+function(g,W,H,t,sc){
+  prod(g,W,H,t,{over:function(g,ctx){
+    if(!sc.ptr.in) return;
+    g.save(); g.globalAlpha=.5; g.strokeStyle=C.ink3; g.lineWidth=1;
+    g.beginPath(); g.moveTo(sc.ptr.x,0); g.lineTo(sc.ptr.x,ctx.H); g.stroke(); g.restore();
+  }});
+});
+
+def("LE02","lettore","Il dito che rallenta",
+"Tieni premuto e il tempo va a un quarto: puoi fermarti a guardare un tornante senza perdere il filo.",
+{inter:true,hand:"tieni premuto",speed:function(sc){ return sc.ptr.down?.25:1; }},
+function(g,W,H,t,sc){
+  prod(g,W,H,t,{over:function(g,ctx){
+    if(sc.ptr.down) kicker(g,"× 0,25",ctx.MW-14,20,9,C.stone,"right");
+  }});
+});
+
+def("LE03","lettore","Il passaggio rivela",
+"Il mouse sulla traccia mostra quota e chilometro di quel punto preciso. La mappa risponde alle domande.",
+{inter:true,hand:"passaci sopra"},
+function(g,W,H,t,sc){
+  prod(g,W,H,t,{over:function(g,ctx){
+    if(!sc.ptr.in) return;
+    let bi=0,bd=1e9;
+    for(let i=0;i<SM.xy.length;i+=3){
+      const q=px(ctx.cam,ctx.MW,ctx.H,SM.xy[i][0],SM.xy[i][1]);
+      const d=(q[0]-sc.ptr.x)*(q[0]-sc.ptr.x)+(q[1]-sc.ptr.y)*(q[1]-sc.ptr.y);
+      if(d<bd){bd=d;bi=i;}
+    }
+    if(bd>3600) return;
+    const q=px(ctx.cam,ctx.MW,ctx.H,SM.xy[bi][0],SM.xy[bi][1]);
+    g.save();
+    g.beginPath(); g.arc(q[0],q[1],5,0,7); g.strokeStyle=C.ink; g.lineWidth=1.4; g.stroke();
+    halo(g,kmAt(bi)+" km · "+fmtN(Math.round(L.alt[bi]+A0))+" m",q[0]+9,q[1]-7,11);
+    g.restore();
+  }});
+});
+
+def("LE04","lettore","Tocca per fermare",
+"Un clic e resta un fermo immagine, con i suoi numeri. Un altro clic e riparte. Il controllo più semplice che esiste.",
+{inter:true,hand:"clicca",speed:function(sc){ return sc.paused?0:1; },onClick:function(sc){ sc.paused=!sc.paused; }},
+function(g,W,H,t,sc){
+  prod(g,W,H,t,{over:function(g,ctx){
+    if(!sc.paused) return;
+    g.save(); g.fillStyle="rgba(250,248,243,.2)"; g.fillRect(0,0,ctx.MW,ctx.H);
+    g.fillStyle=C.ink; g.fillRect(ctx.MW/2-7,ctx.H*.08,4,14); g.fillRect(ctx.MW/2+3,ctx.H*.08,4,14);
+    g.restore();
+  }});
+});
+
+def("LE05","lettore","Scegli il capitolo",
+"Tre pulsanti sulla carta: Edolo, Gavia, Mortirolo. Chi guarda salta dove vuole — la storia resta, l'ordine no.",
+{inter:true,hand:"clicca un nome",onClick:function(sc){
+  const zones=[[.06,.02],[.40,GF],[.72,MF]];
+  if(sc.ptr.y<sc.H*.86) return;
+  for(const z of zones) if(sc.ptr.x>sc.W*z[0]&&sc.ptr.x<sc.W*(z[0]+.26)) sc.jump=z[1];
+}},
+function(g,W,H,t,sc){
+  if(sc.jump!=null){ sc.t=sc.jump; sc.jump=null; }
+  prod(g,W,H,t,{p:clamp(t,0,1),over:function(g,ctx){
+    const names=[["Edolo",.06],["Gavia",.40],["Mortirolo",.72]];
+    g.save();
+    names.forEach(n=>{
+      const x=ctx.MW*n[1], y=ctx.H*.88;
+      g.fillStyle="rgba(250,248,243,.9)"; g.strokeStyle=C.rule; g.lineWidth=1;
+      g.fillRect(x,y,ctx.MW*.24,20); g.strokeRect(x+.5,y+.5,ctx.MW*.24,20);
+      g.font="600 10px Inter,sans-serif"; g.fillStyle=C.ink; g.textAlign="center";
+      g.fillText(n[0],x+ctx.MW*.12,y+13.5);
+    });
+    g.restore();
+  }});
+});
+
+def("LE06","lettore","La tendina",
+"Una tendina verticale: a sinistra la quota come colore, a destra la traccia nuda. Confronto in mano al lettore.",
+{inter:true,hand:"muovi il taglio"},
+function(g,W,H,t,sc){
+  const cut=sc.ptr.in?sc.ptr.x:W*.5;
+  prod(g,W,H,t,{line:function(g,ctx){
+    g.save(); g.beginPath(); g.rect(0,0,cut,ctx.H); g.clip();
+    elevLine(g,ctx.cam,ctx.MW,ctx.H,ctx.head.i); g.restore();
+    g.save(); g.beginPath(); g.rect(cut,0,ctx.MW-cut,ctx.H); g.clip();
+    path(g,SM,ctx.cam,ctx.MW,ctx.H,0,ctx.head.i); stroke(g,C.stone,2.7,.95); g.restore();
+    g.strokeStyle=C.ink; g.lineWidth=1;
+    g.beginPath(); g.moveTo(cut,0); g.lineTo(cut,ctx.H); g.stroke();
+  }});
+});
+
+def("LE07","lettore","La lente",
+"Dove passi il dito, la carta si ingrandisce dentro un cerchio. Il dettaglio senza perdere l'insieme.",
+{inter:true,hand:"passaci sopra"},
+function(g,W,H,t,sc){
+  const ctx=prod(g,W,H,t);
+  if(!sc.ptr.in||sc.ptr.x>ctx.MW) return;
+  const R=Math.min(W,H)*.17;
+  g.save();
+  g.beginPath(); g.arc(sc.ptr.x,sc.ptr.y,R,0,7); g.clip();
+  const cam2={s:ctx.cam.s*3.2,
+    cx:ctx.cam.cx+(sc.ptr.x-ctx.MW/2)/ctx.cam.s,
+    cy:ctx.cam.cy+(sc.ptr.y-H/2)/ctx.cam.s};
+  const dx=sc.ptr.x-ctx.MW/2, dy=sc.ptr.y-H/2;
+  g.translate(dx,dy);
+  drawTiles(g,cam2,ctx.MW,H,"light_all","rgba(250,248,243,.3)");
+  path(g,SM,cam2,ctx.MW,H,0,ctx.head.i); stroke(g,C.green,3,.9);
+  g.restore();
+  g.beginPath(); g.arc(sc.ptr.x,sc.ptr.y,R,0,7);
+  g.strokeStyle=C.ink; g.lineWidth=1.6; g.stroke();
+});
+
+def("LE08","lettore","Il riassunto",
+"Doppio clic e rivedi tutto in cinque secondi, senza pause: il ripasso veloce dopo il racconto lento.",
+{inter:true,hand:"doppio clic",speed:function(sc){ return sc.fast?4:1; },onDbl:function(sc){ sc.fast=true; sc.t=0; }},
+function(g,W,H,t,sc){
+  if(t>=.999) sc.fast=false;
+  prod(g,W,H,t,{text:!sc.fast,counters:true,
+    over:sc.fast?function(g,ctx){ kicker(g,"riassunto",ctx.MW/2,20,9,C.stone); }:null});
+});
+
+def("LE09","lettore","Il segno del lettore",
+"Chi guarda può annotare: il dito lascia un tratto a matita che sbiadisce piano. La mappa diventa condivisa.",
+{inter:true,hand:"disegna"},
+function(g,W,H,t,sc){
+  if(sc.ptr.down&&sc.ptr.in){
+    sc.marks=sc.marks||[];
+    sc.marks.push([sc.ptr.x,sc.ptr.y,performance.now()]);
+    if(sc.marks.length>320) sc.marks.shift();
+  }
+  prod(g,W,H,t,{over:function(g,ctx){
+    if(!sc.marks) return;
+    const now=performance.now();
+    g.save(); g.strokeStyle="#8c3b2e"; g.lineWidth=2; g.lineCap="round";
+    for(let k=1;k<sc.marks.length;k++){
+      const a=sc.marks[k-1], b=sc.marks[k];
+      if(b[2]-a[2]>120) continue;
+      g.globalAlpha=clamp(1-(now-b[2])/9000,0,1)*.8;
+      g.beginPath(); g.moveTo(a[0],a[1]); g.lineTo(b[0],b[1]); g.stroke();
+    }
+    g.restore();
+  }});
+});
+
+def("LE10","lettore","Lo scroll comanda",
+"Il tempo del racconto è la posizione della pagina: scendendo, il giro avanza. Nessun play, nessun loop.",
+{inter:true,hand:"scorri la pagina",manualT:function(sc){
+  const r=sc.cv.getBoundingClientRect();
+  const u=(innerHeight-r.top)/(innerHeight+r.height);
+  return clamp((u-.15)/.7,0,1);
+}},
+function(g,W,H,t,sc){
+  prod(g,W,H,t,{over:function(g,ctx){
+    g.save(); g.fillStyle="rgba(140,145,130,.25)"; g.fillRect(ctx.MW-4,0,3,ctx.H);
+    g.fillStyle=C.green; g.fillRect(ctx.MW-4,0,3,ctx.H*ctx.p); g.restore();
+  }});
+});
+
+/* ================= impalcatura ================= */
+const FAMS=[
+  ["base","","Il punto di partenza","Prima di cambiare qualcosa: com'è adesso."],
+  ["mano","1","La mano","La perfezione è il difetto: tutto è troppo dritto, troppo uguale, troppo calcolato. Qui il tratto trema, l'inchiostro sbava, la carta ha una grana. Sono errori messi apposta."],
+  ["respiro","2","Il respiro","Il ritmo è regolare e quindi prevedibile: si sa sempre cosa succede dopo. Qui si rompe — false partenze, riavvolgimenti, silenzi, finali trattenuti."],
+  ["voce","3","La voce","Le didascalie sono corrette e quindi fredde. Qui provano a essere una persona: che dubita, che scherza, che confessa, che ti fa una domanda."],
+  ["mondo","4","Il mondo attorno","La traccia esiste nel vuoto. Ma quel giorno c'erano sei gradi in vetta, il sole a picco, altra gente sulla strada. Il contesto è la differenza fra un dato e un ricordo."],
+  ["archivio","5","L'archivio","Ogni giro è raccontato come se fosse solo. Invece è il secondo di venti: qui il resto della collezione si affaccia — fantasmi, primati che cadono, il giro che verrà."],
+  ["materia","6","La materia","Sembra uno schermo. Qui diventa una cosa stampata: riso a due colori, retino da giornale, fotocopia, oro a caldo, nastro adesivo."],
+  ["struttura","7","La struttura","Comincia all'inizio e finisce alla fine. Qui no: cold open, capitoli, conto alla rovescia, presagi, epiloghi, ganci per la storia dopo."],
+  ["puntino","8","Il puntino","È un cerchio che si sposta. Qui diventa un personaggio: respira, traballa, suda, si stanca, pensa, e ogni tanto ha un rivale."],
+  ["scala","9","La scala","2.551 metri non dicono niente a nessuno. Qui provano a dirlo: una sagoma umana, undici grattacieli, mille piani, l'arco del sole."],
+  ["lettore","10","Il lettore","Adesso si guarda e basta. Qui si tocca: si trascina il tempo, si rallenta col dito, si sceglie il capitolo, si annota sulla carta."]
+];
+const main=document.getElementById("main"), tnav=document.getElementById("tnav");
+const scenes=[];
+const DUR=19, PAUSE=1.2;
+
+for(const [fam,no,title,intro] of FAMS){
+  const vs=V.filter(x=>x.fam===fam);
+  if(!vs.length) continue;
+  const h=document.createElement("section");
+  h.className="fam"; h.id="f-"+fam;
+  h.innerHTML=(no?'<p class="q">tema '+no+' di 10</p>':'')
+    +(no?'<span class="no">'+no+'</span>':'')
+    +'<h2>'+title+'</h2><p>'+intro+'</p>';
+  main.appendChild(h);
+  if(fam!=="base"){
+    const a=document.createElement("a");
+    a.href="#f-"+fam; a.innerHTML=title+' <b data-fam="'+fam+'">0/'+vs.length+'</b>';
+    tnav.appendChild(a);
+  }
+  const grid=document.createElement("div");
+  grid.className="grid"+(fam==="base"?" solo":"");
+  main.appendChild(grid);
+  for(const v of vs){
+    const card=document.createElement("article");
+    card.className="card"; card.id=v.id.toLowerCase(); card.dataset.id=v.id;
+    card.innerHTML=
+      '<div class="cvwrap">'
+      + '<canvas class="cv" aria-label="Variante '+v.id+': '+v.name+'" role="img"></canvas>'
+      + '<span class="vno">'+v.id+'</span>'
+      + (v.hand?'<span class="hand">'+v.hand+'</span>':'')
+      + '<button class="replay" type="button">rivedi ↻</button>'
+      + '</div>'
+      + '<div class="meta">'
+      + '<h3>'+v.name+'</h3><p>'+v.what+'</p>'
+      + (v.fake?'<span class="fake">dato da collegare</span>':'')
+      + '<div class="vote">'
+      + (v.noChips
+        ? '<span class="vlab"></span><input class="note" type="text" maxlength="240" placeholder="appunti sulla base (facoltativo)">'
+        : '<div class="vrow"><div class="chips" role="group" aria-label="voto '+v.id+'">'
+          +Array.from({length:11},(_,n)=>'<button class="chip" type="button" data-n="'+n+'">'+n+'</button>').join("")
+          +'</div><button class="stbtn" type="button" title="preferita del tema (puoi sceglierne più di una)">★</button></div>'
+          +'<input class="note" type="text" maxlength="180" placeholder="nota (facoltativa)">')
+      + '</div></div>';
+    grid.appendChild(card);
+    const cv=card.querySelector(".cv");
+    const sc={v:v, cv:cv, card:card, t:0, on:false, W:0, H:0, dpr:1,
+      ptr:{x:0,y:0,in:false,down:false}, paused:false, fast:false, jump:null,
+      size(){
+        this.dpr=Math.min(devicePixelRatio||1,1.75);
+        const r=cv.getBoundingClientRect();
+        this.W=Math.max(1,Math.round(r.width)); this.H=Math.max(1,Math.round(r.height));
+        cv.width=Math.round(this.W*this.dpr); cv.height=Math.round(this.H*this.dpr);
+      },
+      frame(){
+        const g=cv.getContext("2d");
+        g.setTransform(this.dpr,0,0,this.dpr,0,0);
+        g.clearRect(0,0,this.W,this.H);
+        try{ this.v.draw.call(this.v,g,this.W,this.H,Math.min(1,this.t),this); }
+        catch(err){ if(!this.err){ this.err=1; console.warn(this.v.id,err); } }
+      }};
+    card.querySelector(".replay").addEventListener("click",()=>{ sc.t=0; sc.paused=false; sc.fast=false; if(RM){sc.t=1; sc.frame();} });
+    if(v.inter){
+      const rel=e=>{ const r=cv.getBoundingClientRect();
+        sc.ptr.x=(e.touches?e.touches[0].clientX:e.clientX)-r.left;
+        sc.ptr.y=(e.touches?e.touches[0].clientY:e.clientY)-r.top; sc.ptr.in=true; };
+      cv.addEventListener("pointermove",rel);
+      cv.addEventListener("pointerdown",e=>{ rel(e); sc.ptr.down=true; if(v.onClick) v.onClick(sc); });
+      addEventListener("pointerup",()=>{ sc.ptr.down=false; });
+      cv.addEventListener("pointerleave",()=>{ sc.ptr.in=false; sc.ptr.down=false; });
+      cv.addEventListener("dblclick",()=>{ if(v.onDbl) v.onDbl(sc); });
+    }
+    scenes.push(sc);
+  }
+}
+
+const free=document.createElement("section");
+free.className="freebox";
+free.innerHTML='<h2>Per il round 4</h2>'
+  +'<p>Come sempre: qui non si vota, si propone. Che cosa manca a questa pagina? Una dimensione che non abbiamo '
+  +'toccato, un incrocio fra due temi che vorresti vedere («la voce del diario con la materia del riso»), '
+  +'una cosa vista da un\'altra parte. Finisce nel blocco «copia i voti».</p>'
+  +'<textarea id="freetxt" maxlength="3000" placeholder="es. incrocia MA08 con VO07… / voglio provare il suono… / e se il puntino fosse due?"></textarea>';
+main.appendChild(free);
+
+let last=0;
+function tick(ts){
+  const dt=last?Math.min(.05,(ts-last)/1000):0; last=ts;
+  for(const sc of scenes){
+    if(!sc.on) continue;
+    const v=sc.v, d=v.dur||DUR;
+    if(v.manualT){
+      const m=v.manualT(sc,dt);
+      if(m!=null) sc.t=m;
+      else { sc.t+=dt/d; if(sc.t>1+PAUSE/d) sc.t=0; }
+    } else {
+      const spd=v.speed?v.speed(sc):1;
+      sc.t+=dt*spd/d;
+      if(sc.t>1+PAUSE/d) sc.t=0;
+    }
+    sc.frame();
+  }
+  requestAnimationFrame(tick);
+}
+const io=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    const sc=scenes.find(x=>x.cv===e.target);
+    if(!sc) return;
+    if(e.isIntersecting){
+      if(!sc.W) sc.size();
+      if(RM){ sc.t=1; sc.frame(); sc.on=false; }
+      else sc.on=true;
+    } else sc.on=false;
+  });
+},{threshold:.15});
+scenes.forEach(sc=>io.observe(sc.cv));
+
+let rt=0;
+addEventListener("resize",()=>{
+  clearTimeout(rt);
+  rt=setTimeout(()=>scenes.forEach(sc=>{ if(sc.W){ sc.size(); sc.frame(); } }),160);
+});
+if(!RM) requestAnimationFrame(tick);
+else scenes.forEach(sc=>{ sc.size(); sc.t=1; sc.frame(); });
+
+/* ================= voto ================= */
+const KEY="top20-lab3-voti";
+let votes={};
+try{ votes=JSON.parse(localStorage.getItem(KEY)||"{}"); }catch(e){ votes={}; }
+const progEl=document.getElementById("prog");
+const VOTABLE=V.filter(v=>!v.noChips);
+function saveVotes(){
+  try{ localStorage.setItem(KEY,JSON.stringify(votes)); }catch(e){}
+  const n=VOTABLE.filter(v=>votes[v.id]&&votes[v.id].n!=null).length;
+  progEl.innerHTML="<b>"+n+"</b> / "+VOTABLE.length+" votate";
+  document.querySelectorAll("#tnav b[data-fam]").forEach(b=>{
+    const fam=b.dataset.fam, vs=V.filter(v=>v.fam===fam&&!v.noChips);
+    const k=vs.filter(v=>votes[v.id]&&votes[v.id].n!=null).length;
+    b.textContent=k+"/"+vs.length;
+    b.parentElement.classList.toggle("full",k===vs.length);
+  });
+}
+for(const v of V){
+  const card=document.getElementById(v.id.toLowerCase());
+  const chips=[...card.querySelectorAll(".chip")];
+  const note=card.querySelector(".note");
+  const star=card.querySelector(".stbtn");
+  const st=votes[v.id]||{};
+  if(st.n!=null&&chips[st.n]) chips[st.n].classList.add("sel");
+  if(st.c) note.value=st.c;
+  if(st.s&&star){ star.classList.add("on"); card.classList.add("star"); }
+  function setN(n){
+    votes[v.id]=votes[v.id]||{};
+    if(votes[v.id].n===n){ delete votes[v.id].n; chips.forEach(c=>c.classList.remove("sel")); }
+    else{ votes[v.id].n=n; chips.forEach(c=>c.classList.toggle("sel",+c.dataset.n===n)); }
+    saveVotes();
+  }
+  chips.forEach(ch=>ch.addEventListener("click",()=>setN(+ch.dataset.n)));
+  if(star) star.addEventListener("click",()=>{
+    votes[v.id]=votes[v.id]||{};
+    votes[v.id].s=!votes[v.id].s;
+    if(!votes[v.id].s) delete votes[v.id].s;
+    star.classList.toggle("on",!!votes[v.id].s);
+    card.classList.toggle("star",!!votes[v.id].s);
+    saveVotes();
+  });
+  note.addEventListener("input",()=>{
+    votes[v.id]=votes[v.id]||{};
+    votes[v.id].c=note.value.trim();
+    if(!votes[v.id].c) delete votes[v.id].c;
+    saveVotes();
+  });
+  /* voto da tastiera: passa sopra la scheda e premi un numero (0-9, poi "d" per 10) */
+  card.addEventListener("mouseenter",()=>{ HOT=v.id; card.classList.add("hot"); });
+  card.addEventListener("mouseleave",()=>{ if(HOT===v.id) HOT=null; card.classList.remove("hot"); });
+  card._setN=setN;
+}
+let HOT=null;
+addEventListener("keydown",e=>{
+  if(!HOT||e.metaKey||e.ctrlKey||e.altKey) return;
+  if(/^(INPUT|TEXTAREA)$/.test((document.activeElement||{}).tagName||"")) return;
+  const card=document.getElementById(HOT.toLowerCase());
+  if(!card||!card._setN) return;
+  if(/^[0-9]$/.test(e.key)){ card._setN(+e.key); e.preventDefault(); }
+  else if(e.key==="d"||e.key==="D"){ card._setN(10); e.preventDefault(); }
+  else if(e.key==="s"||e.key==="S"){ const b=card.querySelector(".stbtn"); if(b) b.click(); e.preventDefault(); }
+});
+
+const freetxt=document.getElementById("freetxt");
+if(votes._free) freetxt.value=votes._free;
+freetxt.addEventListener("input",()=>{
+  votes._free=freetxt.value.trim();
+  if(!votes._free) delete votes._free;
+  saveVotes();
+});
+saveVotes();
+
+document.getElementById("rand").addEventListener("click",()=>{
+  const left=VOTABLE.filter(v=>!votes[v.id]||votes[v.id].n==null);
+  const pick=(left.length?left:VOTABLE)[Math.floor(Math.random()*(left.length||VOTABLE.length))];
+  const el=document.getElementById(pick.id.toLowerCase());
+  if(el) el.scrollIntoView({behavior:"smooth",block:"center"});
+});
+
+const copyBtn=document.getElementById("copy"), outbox=document.getElementById("outbox");
+function summary(){
+  const lines=["VOTI LAB3 top-20 — "+new Date().toLocaleDateString("it-IT")];
+  let fam="";
+  for(const v of V){
+    const st=votes[v.id];
+    if(!st||(st.n==null&&!st.c&&!st.s)) continue;
+    if(v.fam!==fam){ fam=v.fam; lines.push(""); lines.push("["+fam.toUpperCase()+"]"); }
+    lines.push((st.s?"★ ":"  ")+v.id+" "+v.name+": "+(st.n!=null?st.n:"—")+(st.c?" — "+st.c:""));
+  }
+  const stars=V.filter(v=>votes[v.id]&&votes[v.id].s);
+  if(stars.length){ lines.push(""); lines.push("PREFERITE: "+stars.map(v=>v.id).join(", ")); }
+  if(votes._free){ lines.push(""); lines.push("PROSSIMO ROUND: "+votes._free); }
+  if(lines.length===1) lines.push("(nessun voto ancora)");
+  return lines.join("\n");
+}
+copyBtn.addEventListener("click",()=>{
+  const txt=summary();
+  outbox.value=txt; outbox.style.display="block";
+  const done=()=>{
+    copyBtn.textContent="copiato ✓ — incollali in chat"; copyBtn.classList.add("ok");
+    setTimeout(()=>{ copyBtn.textContent="copia i voti"; copyBtn.classList.remove("ok"); },2600);
+  };
+  if(navigator.clipboard&&navigator.clipboard.writeText)
+    navigator.clipboard.writeText(txt).then(done,()=>{ outbox.select(); });
+  else{ outbox.select(); try{ document.execCommand("copy"); done(); }catch(e){} }
+});
+document.getElementById("wipe").addEventListener("click",()=>{
+  if(!confirm("Azzerare tutti i voti?")) return;
+  votes={}; saveVotes();
+  document.querySelectorAll(".chip.sel").forEach(c=>c.classList.remove("sel"));
+  document.querySelectorAll(".stbtn.on").forEach(c=>c.classList.remove("on"));
+  document.querySelectorAll(".card.star").forEach(c=>c.classList.remove("star"));
+  document.querySelectorAll(".note").forEach(n=>n.value="");
+  freetxt.value="";
+  outbox.style.display="none";
+});
+})();
+</script>
+</body>
+</html>
