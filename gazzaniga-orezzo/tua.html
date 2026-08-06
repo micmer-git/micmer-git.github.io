@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Quante volte l'hai fatta — Il signore delle salite</title>
+<meta name="description" content="Colleghi Strava e conto quante volte sei salito da Gazzaniga a Orezzo: ogni passaggio, anno per anno, in bici e di corsa.">
+<meta name="theme-color" content="#faf8f3">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E⛰️%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{
+  --bg:#faf8f3; --ink:#14150f; --ink-2:#5c5f52; --ink-3:#8f9382; --rule:#e4e1d6; --rule-soft:#efece3;
+  --dawn:#e0932f; --viola:#7B5EA7; --verde:#6AAF49;
+  --serif:"Instrument Serif",Georgia,serif; --sans:"Inter",system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--sans);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.tnum{font-variant-numeric:tabular-nums}
+a{color:inherit}
+.wrap{max-width:780px;margin:0 auto;padding:0 22px 60px}
+.hd{display:flex;align-items:center;gap:16px;padding:12px 22px;border-bottom:1px solid var(--rule)}
+.hd .wm{font-family:var(--serif);font-size:1.18rem;text-decoration:none}
+.hd .wm em{font-style:italic;color:var(--viola)}
+.hd nav{margin-left:auto;font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.hd nav a{color:var(--ink-3);text-decoration:none}
+
+.hero{padding:52px 0 10px}
+.kick{font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin:0 0 13px}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(2.3rem,6.5vw,3.6rem);line-height:.97;letter-spacing:-.015em;margin:0 0 16px}
+h1 em{font-style:italic;color:var(--viola)}
+.lede{font-size:.98rem;color:var(--ink-2);line-height:1.65;max-width:56ch;margin:0}
+.lede b{font-weight:600;color:var(--ink)}
+.mini{font-size:.78rem;color:var(--ink-3);line-height:1.6;margin:14px 0 0}
+
+.btn{display:inline-flex;align-items:center;gap:9px;border:0;border-radius:999px;padding:14px 24px;font-family:var(--sans);
+  font-size:.86rem;font-weight:600;cursor:pointer;text-decoration:none;background:#FC4C02;color:#fff;
+  box-shadow:0 10px 26px -14px #FC4C02;transition:transform .12s}
+.btn:hover{transform:translateY(-1px)}
+.btn.ghost{background:#fff;border:1px solid var(--rule);color:var(--ink-2);box-shadow:none}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.azioni{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:26px 0 0}
+.stato{font-size:.78rem;color:var(--ink-3)}
+
+#mappa{height:230px;border-radius:15px;border:1px solid var(--rule);margin:28px 0 0;background:var(--rule-soft)}
+
+.numeri{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule-soft);border:1px solid var(--rule-soft);
+  border-radius:15px;overflow:hidden;margin:22px 0}
+.numeri div{background:var(--bg);padding:15px 16px}
+.numeri .v{font-family:var(--serif);font-size:1.95rem;line-height:1}
+.numeri .v small{font-family:var(--sans);font-size:.6rem;font-weight:600;color:var(--ink-3);margin-left:3px}
+.numeri .k{font-size:.57rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3);font-weight:700;margin-top:6px}
+@media(max-width:600px){.numeri{grid-template-columns:repeat(2,1fr)}}
+
+.h2{font-family:var(--serif);font-weight:400;font-size:1.6rem;margin:32px 0 12px}
+.anno{display:flex;align-items:center;gap:12px;padding:7px 0;font-size:.82rem}
+.anno .a{width:46px;flex:none;color:var(--ink-2);font-weight:600}
+.anno .b{flex:1;height:11px;border-radius:3px;background:var(--rule-soft);overflow:hidden}
+.anno .b i{display:block;height:100%;background:var(--viola);opacity:.85}
+.anno .n{width:34px;text-align:right;color:var(--ink-3);font-weight:600}
+
+.lista{margin-top:10px;border-top:1px solid var(--rule)}
+.p{display:flex;align-items:baseline;gap:12px;padding:10px 2px;border-bottom:1px solid var(--rule-soft);font-size:.83rem}
+.p .d{width:88px;flex:none;color:var(--ink-3);font-weight:600}
+.p .n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.p .t{color:var(--ink-2);font-weight:600;white-space:nowrap}
+.p .ic{width:18px;flex:none;text-align:center}
+.piu{display:block;width:100%;margin:16px 0 0;border:1px solid var(--rule);background:#fff;border-radius:999px;padding:12px;
+  font-family:var(--sans);font-size:.76rem;font-weight:600;color:var(--ink-2);cursor:pointer}
+.nota{font-size:.74rem;color:var(--ink-3);line-height:1.65;border-top:1px solid var(--rule);margin-top:36px;padding-top:20px}
+.nota a{color:var(--ink-2)}
+.nascosto{display:none}
+</style>
+</head>
+<body>
+
+<div class="hd">
+  <a class="wm" href="/">il signore delle <em>salite</em></a>
+  <nav><a href="/">la storia della salita →</a></nav>
+</div>
+
+<div class="wrap">
+  <div class="hero">
+    <p class="kick">Gazzaniga → Orezzo · 1,5 km · 280 m</p>
+    <h1>Quante volte <em>l'hai fatta</em></h1>
+    <p class="lede">Questa rampa è la palestra di mezza valle. Collega Strava e conto <b>ogni volta che ci sei passato</b> — in bici, di corsa, per allenamento o per andare a casa. Guardo la traccia, non il nome dell'attività: se sei salito, ti trovo.</p>
+
+    <div id="prima">
+      <div class="azioni">
+        <button class="btn" id="btnVai">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15.4 21l-3-5.9L9.5 21H4.7L12.4 6l7.7 15h-4.7z"/></svg>
+          conta i miei passaggi
+        </button>
+        <span class="stato" id="stato"></span>
+      </div>
+      <p class="mini">Uso <a href="https://pettorale.pages.dev/">il pettorale</a>: se hai già collegato Strava da un'altra pagina di casa, qui non ti chiede niente.</p>
+    </div>
+
+    <div id="dopo" class="nascosto">
+      <div class="numeri" id="numeri"></div>
+      <div id="mappa"></div>
+      <h2 class="h2">Anno per anno</h2>
+      <div id="anni"></div>
+      <h2 class="h2">Uno per uno</h2>
+      <div class="lista" id="lista"></div>
+      <button class="piu" id="piu">mostrane altri venti</button>
+      <div class="azioni">
+        <a class="btn ghost" href="/">guarda la storia di questa salita →</a>
+        <button class="btn ghost" id="btnAncora">ricontrolla</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="nota">
+    <p style="margin:0 0 8px">Un passaggio conta se la traccia tocca <b>il fondo</b> (Gazzaniga, 393 m) e <b>la cima</b> (Orezzo, 675 m) entro 250 metri, nell'ordine giusto. Strava manda una traccia semplificata, quindi un'uscita lunghissima con pochi punti può sfuggire; e due giri nella stessa uscita contano per uno.</p>
+    <p style="margin:0">Il conto si fa nel tuo browser: le attività arrivano da Strava e restano lì. · <a href="https://pettorale.pages.dev/">il pettorale</a> · <a href="https://sempredicorsa.pages.dev/">sempre di corsa</a></p>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://pettorale.pages.dev/attivita.js"></script>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const N = n => n.toLocaleString('it-IT');
+
+/* La salita, ridotta all'osso: fondo, cima e tre punti in mezzo per non prendere
+   per buona una strada parallela. Sono gli estremi della traccia di ROUTE. */
+const FONDO = [45.797175, 9.834797];
+const CIMA  = [45.805377, 9.822751];
+const MEZZO = [[45.799630, 9.831210], [45.801880, 9.827640], [45.803900, 9.824700]];
+const RAGGIO = 250;
+
+let passaggi = [], mostrati = 20, mappa = null;
+
+/* Il passaggio: la traccia tocca il fondo, poi la cima. L'ordine dei punti nella
+   polilinea è l'ordine in cui ci sei passato, quindi dice anche il verso. */
+function passaggio(a){
+  const pts = Pettorale.puntiDi(a);
+  if (pts.length < 4) return null;
+  let iF = -1, iC = -1, dF = 1e9, dC = 1e9;
+  for (let i = 0; i < pts.length; i++) {
+    const f = Pettorale.distanza(pts[i], FONDO);
+    if (f < dF) { dF = f; iF = i; }
+    const c = Pettorale.distanza(pts[i], CIMA);
+    if (c < dC) { dC = c; iC = i; }
+  }
+  if (dF > RAGGIO || dC > RAGGIO) return null;
+  const dentro = MEZZO.filter(m => pts.some(p => Pettorale.distanza(p, m) <= RAGGIO * 1.4)).length;
+  if (dentro < 2) return null;                  // passa altrove, non su questa rampa
+  return { a, salita: iC > iF, verso: iC > iF ? 'su' : 'giù' };
+}
+
+async function conta(forza){
+  const auth = Pettorale.leggiPettorale();
+  if (!auth) { Pettorale.collega(location.href); return; }
+  $('btnVai').disabled = true;
+  const st = $('stato');
+  try {
+    const att = await Pettorale.tutte({ auth, forza, avanzamento: m => { st.textContent = m; } });
+    st.textContent = 'guardo dove sei passato…';
+    passaggi = att.map(passaggio).filter(Boolean).sort((x, y) => x.a.d < y.a.d ? 1 : -1);
+    st.textContent = '';
+    disegna(att.length);
+  } catch (e) {
+    $('btnVai').disabled = false;
+    st.textContent = e.message || 'non ci sono riuscito';
+  }
+}
+
+function disegna(quante){
+  $('prima').classList.add('nascosto');
+  $('dopo').classList.remove('nascosto');
+
+  const su = passaggi.filter(p => p.salita).length;
+  const bici = passaggi.filter(p => /Ride|Bike|Velo/i.test(p.a.t)).length;
+  const anni = [...new Set(passaggi.map(p => p.a.d.slice(0, 4)))].sort();
+  const celle = [
+    [N(passaggi.length), '', 'passaggi'],
+    [N(su), '', 'in salita'],
+    [N(bici), '', 'in bici'],
+    [anni.length ? anni[0] + '–' + anni[anni.length - 1] : '—', '', 'anni']
+  ];
+  $('numeri').innerHTML = celle.map(([v, u, k]) =>
+    `<div><div class="v tnum">${v}${u ? `<small>${u}</small>` : ''}</div><div class="k">${k}</div></div>`).join('');
+
+  if (!passaggi.length) {
+    $('anni').innerHTML = `<p class="mini">Fra le tue ${N(quante)} attività non ne trovo nessuna che salga di qui. Se sei sicuro del contrario, può essere che la traccia semplificata di Strava tagli proprio quel pezzo.</p>`;
+    $('lista').innerHTML = ''; $('piu').style.display = 'none';
+    return;
+  }
+
+  const per = {};
+  passaggi.forEach(p => { const y = p.a.d.slice(0, 4); per[y] = (per[y] || 0) + 1; });
+  const max = Math.max(...Object.values(per));
+  $('anni').innerHTML = Object.keys(per).sort().map(y =>
+    `<div class="anno"><div class="a tnum">${y}</div>
+      <div class="b"><i style="width:${Math.round(per[y] / max * 100)}%"></i></div>
+      <div class="n tnum">${per[y]}</div></div>`).join('');
+
+  lista();
+  disegnaMappa();
+}
+
+function lista(){
+  $('lista').innerHTML = passaggi.slice(0, mostrati).map(p => {
+    const [y, m, g] = p.a.d.split('-');
+    const bici = /Ride|Bike|Velo/i.test(p.a.t);
+    return `<div class="p"><div class="d tnum">${g}/${m}/${y}</div>
+      <div class="ic">${bici ? '🚲' : '🏃'}</div>
+      <div class="n">${p.a.n || (bici ? 'in bici' : 'di corsa')}</div>
+      <div class="t">${p.verso === 'su' ? '↑' : '↓'} ${p.a.km} km</div></div>`;
+  }).join('');
+  $('piu').style.display = passaggi.length > mostrati ? '' : 'none';
+  $('piu').textContent = `mostrane altri venti (${N(passaggi.length - mostrati)} ancora)`;
+}
+$('piu').onclick = () => { mostrati += 20; lista(); };
+$('btnVai').onclick = () => conta(false);
+$('btnAncora').onclick = () => { $('btnVai').disabled = false; conta(true); };
+
+function disegnaMappa(){
+  if (mappa) return;
+  mappa = L.map('mappa', { scrollWheelZoom:false, zoomControl:false });
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+    { attribution:'© OpenStreetMap © CARTO', maxZoom:19 }).addTo(mappa);
+  // le tue tracce, una sopra l'altra: dove si addensano è la rampa
+  const b = L.latLngBounds([FONDO, CIMA]);
+  passaggi.slice(0, 60).forEach(p => {
+    const pts = Pettorale.puntiDi(p.a).filter(q =>
+      Pettorale.distanza(q, FONDO) < 2500 || Pettorale.distanza(q, CIMA) < 2500);
+    if (pts.length > 1) L.polyline(pts, { color:'#7B5EA7', weight:2, opacity:.28 }).addTo(mappa);
+  });
+  L.circleMarker(FONDO, { radius:5, color:'#6AAF49', fillColor:'#fff', fillOpacity:1, weight:2 })
+    .bindTooltip('il fondo · 393 m').addTo(mappa);
+  L.circleMarker(CIMA, { radius:5, color:'#C0453B', fillColor:'#fff', fillOpacity:1, weight:2 })
+    .bindTooltip('la cima · 675 m').addTo(mappa);
+  mappa.fitBounds(b, { padding:[40, 40] });
+  setTimeout(() => mappa.invalidateSize(), 100);
+}
+
+/* chi arriva col pettorale in tasca non deve premere niente */
+if (Pettorale.leggiPettorale()) conta(false);
+</script>
+</body>
+</html>
