@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Banco di prova del conta-passaggi.
+"""Banco di prova del conta-salite.
 
 Attività finte costruite da tracce vere, date in pasto alla pagina vera dentro
 Chrome headless. Serve un server locale (i fetch non funzionano da file://):
 
     python -m http.server 8898 --bind 127.0.0.1
-    python tools_prova_salite.py
+    python tools_prova.py
 """
 import io
 import json
@@ -15,6 +15,7 @@ import subprocess
 import sys
 
 QUI = os.path.dirname(os.path.abspath(__file__))
+STORIA = os.path.join(os.path.dirname(QUI), "gazzaniga-orezzo")
 LIB = r"C:\Users\Alessandro Merelli\pettorale\public\attivita.js"
 TRACCE = r"C:\Users\Alessandro Merelli\atlante-orobico\data\tracce"
 CHROME = r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
@@ -42,38 +43,35 @@ def att(i, giorno, nome, tipo, punti):
 
 
 def main():
-    s = io.open(os.path.join(QUI, "_data.js"), encoding="utf-8").read()
+    s = io.open(os.path.join(STORIA, "_data.js"), encoding="utf-8").read()
     route = [p[:2] for p in json.loads(re.search(r"const\s+ROUTE\s*=\s*(\[.*?\]);", s, re.S).group(1))]
     poieto = json.load(io.open(os.path.join(TRACCE, "i62693758.json"), encoding="utf-8"))["punti"]
     valzurio = json.load(io.open(os.path.join(TRACCE, "i62693435.json"), encoding="utf-8"))["punti"]
-    # una strada parallela: la stessa salita spostata di ~500 m a est
-    parallela = [[p[0], p[1] + 0.0064] for p in route]
+    parallela = [[p[0], p[1] + 0.0064] for p in route]      # la stessa rampa 500 m più a est
 
     prove = [
-        ("orezzo su",      att(1, "2024-05-01", "salita Orezzo", "Ride", route),        {"orezzo": "su"}),
-        ("orezzo giu",     att(2, "2023-05-02", "discesa Orezzo", "Run", route[::-1]),  {"orezzo": "giù"}),
-        # il 521 parte dallo stesso fondo e passa a 98 m dalla cima di Orezzo:
-        # chi sale al Poieto ha salito anche Orezzo, quindi contarlo due volte e' giusto
-        ("poieto su",      att(3, "2023-10-08", "521 Vertical", "Run", poieto),
-         {"poieto": "su", "orezzo": "su"}),
-        ("valzurio",       att(4, "2023-04-29", "Valzurio Trail", "Run", valzurio),     {}),
-        ("strada parallela", att(5, "2022-06-01", "quella di fianco", "Ride", parallela), {}),
+        ("salita Orezzo",     att(1, "2024-05-01", "su", "Ride", route),          ["orezzo"]),
+        # la discesa non è una salita: da adesso non conta
+        ("discesa Orezzo",    att(2, "2023-05-02", "giù", "Run", route[::-1]),    []),
+        # il 521 passa davvero sopra Orezzo: quel giorno le hai salite tutt'e due
+        ("521 verso Poieto",  att(3, "2023-10-08", "521", "Run", poieto),         ["orezzo", "poieto"]),
+        ("un trail altrove",  att(4, "2023-04-29", "Valzurio", "Run", valzurio),  []),
+        ("strada parallela",  att(5, "2022-06-01", "di fianco", "Ride", parallela), []),
     ]
 
     lib = io.open(LIB, encoding="utf-8").read().replace(CHIUDI, "<\\/" + "script>")
     assert CHIUDI not in lib
-    attivita = [p[1] for p in prove]
     stub = ("<" + "script>" + lib + "\n"
             "Pettorale.leggiPettorale = () => ({access_token:'finto'});\n"
-            "window.A = " + json.dumps(attivita, ensure_ascii=False) + ";\n"
+            "window.A = " + json.dumps([p[1] for p in prove], ensure_ascii=False) + ";\n"
             "Pettorale.tutte = async () => window.A;\n"
             "setTimeout(() => {\n"
             "  const o = {};\n"
-            "  for (const id in esiti) for (const p of esiti[id]) (o[p.a.i] = o[p.a.i] || {})[id] = p.verso;\n"
+            "  for (const id in esiti) for (const p of esiti[id]) (o[p.a.i] = o[p.a.i] || []).push(id);\n"
             "  console.log('ESITO ' + JSON.stringify(o));\n"
             "}, 5000);\n" + CHIUDI)
 
-    pagina = io.open(os.path.join(QUI, "tua.html"), encoding="utf-8").read()
+    pagina = io.open(os.path.join(QUI, "index.html"), encoding="utf-8").read()
     pagina = pagina.replace('<script src="https://pettorale.pages.dev/attivita.js">' + CHIUDI, stub)
     io.open(os.path.join(QUI, "_prova.html"), "w", encoding="utf-8").write(pagina)
 
@@ -89,10 +87,10 @@ def main():
 
     bene = True
     for nome, a, atteso in prove:
-        ris = avuto.get(str(a["i"]), {})
-        ok = ris == atteso
+        ris = sorted(avuto.get(str(a["i"]), []))
+        ok = ris == sorted(atteso)
         bene &= ok
-        print(f"  {'OK ' if ok else 'NO '} {nome:20} atteso {atteso or '{}'}  avuto {ris or '{}'}")
+        print(f"  {'OK ' if ok else 'NO '} {nome:20} atteso {atteso}  avuto {ris}")
     print("\ntutto a posto" if bene else "\nqualcosa non torna")
     sys.exit(0 if bene else 1)
 
