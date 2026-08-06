@@ -18,8 +18,8 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{
-  --bg:#faf8f3; --ink:#14150f; --ink-2:#5c5f52; --ink-3:#8f9382; --rule:#e4e1d6; --rule-soft:#efece3;
-  --dawn:#e0932f; --viola:#7B5EA7; --verde:#6AAF49; --rosso:#C0453B;
+  --bg:#faf8f3; --ink:#14150f; --ink-2:#565a4d; --ink-3:#6f7363; --ink-4:#9a9e8d; --rule:#e4e1d6; --rule-soft:#efece3;
+  --dawn:#e0932f; --viola:#7B5EA7; --viola-ink:#5f4487; --verde:#6AAF49; --rosso:#C0453B;
   --serif:"Instrument Serif",Georgia,serif; --sans:"Inter",system-ui,-apple-system,sans-serif;
 }
 *{box-sizing:border-box}
@@ -31,7 +31,7 @@ a{color:inherit}
   position:sticky;top:0;z-index:900;background:color-mix(in srgb,#faf8f3 92%,transparent);
   -webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px)}
 .hd .wm{font-family:var(--serif);font-size:1.18rem;text-decoration:none}
-.hd .wm em{font-style:italic;color:var(--viola)}
+.hd .wm em{font-style:italic;color:var(--viola-ink)}
 .hd nav{margin-left:auto;display:flex;gap:15px;font-size:.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
 .hd nav a{color:var(--ink-3);text-decoration:none}
 .hd nav a:hover{color:var(--ink)}
@@ -39,7 +39,7 @@ a{color:inherit}
 .hero{padding:54px 0 10px}
 .kick{font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin:0 0 13px}
 h1{font-family:var(--serif);font-weight:400;font-size:clamp(2.4rem,6.5vw,3.9rem);line-height:.96;letter-spacing:-.015em;margin:0 0 16px}
-h1 em{font-style:italic;color:var(--viola)}
+h1 em{font-style:italic;color:var(--viola-ink)}
 .lede{font-size:.99rem;color:var(--ink-2);line-height:1.65;max-width:57ch;margin:0}
 .lede b{font-weight:600;color:var(--ink)}
 .mini{font-size:.78rem;color:var(--ink-3);line-height:1.6;margin:14px 0 0}
@@ -72,7 +72,7 @@ h1 em{font-style:italic;color:var(--viola)}
 .tab td{padding:11px 8px 11px 0;border-bottom:1px solid var(--rule-soft);font-size:.86rem;vertical-align:middle}
 .tab td.n b{display:block;font-weight:600}
 .tab td.n span{font-size:.7rem;color:var(--ink-3)}
-.tab td.c{font-family:var(--serif);font-size:1.5rem;color:var(--viola);width:64px}
+.tab td.c{font-family:var(--serif);font-size:1.5rem;color:var(--viola-ink);width:64px}
 .tab td.c.zero{color:var(--ink-3);opacity:.5}
 .tab .bar{width:110px}
 .tab .bar i{display:block;height:9px;border-radius:3px;background:var(--viola);opacity:.85}
@@ -128,6 +128,7 @@ h1 em{font-style:italic;color:var(--viola)}
         <span class="stato" id="stato"></span>
       </div>
       <p class="mini">Uso <a href="https://pettorale.pages.dev/">il pettorale</a>: se hai già collegato Strava da un'altra pagina di casa, qui non ti chiede niente.</p>
+      <div id="mappaIntro" style="height:clamp(220px,42vw,320px);border-radius:15px;border:1px solid var(--rule);margin:22px 0 0;background:var(--rule-soft)"></div>
       <table class="tab" id="anteprima"></table>
     </div>
   </div>
@@ -168,6 +169,16 @@ let esiti = {}, scelta = null, mostrati = 20, mappa = null, quante = 0;
 function salita(a, s){
   const pts = Pettorale.puntiDi(a);
   if (pts.length < 4) return null;
+  // prima di calcolare distanze vere: la traccia passa almeno *vicino* al riquadro?
+  if (!s._bb) {
+    const la = s.pts.map(p => p[0]), lo = s.pts.map(p => p[1]);
+    s._bb = [Math.min(...la) - .03, Math.max(...la) + .03, Math.min(...lo) - .04, Math.max(...lo) + .04];
+  }
+  const b = s._bb;
+  let dentroRiquadro = false;
+  for (let k = 0; k < pts.length; k++)
+    if (pts[k][0] > b[0] && pts[k][0] < b[1] && pts[k][1] > b[2] && pts[k][1] < b[3]) { dentroRiquadro = true; break; }
+  if (!dentroRiquadro) return null;
   const vicino = q => {
     let d = Infinity, i = -1;
     for (let k = 0; k < pts.length; k++) {
@@ -176,8 +187,10 @@ function salita(a, s){
     }
     return { d, i };
   };
-  const f = vicino(s.fondo), c = vicino(s.cima);
-  if (f.d > RAGGIO || c.d > RAGGIO) return null;
+  const f = vicino(s.fondo);
+  if (f.d > RAGGIO) return null;
+  const c = vicino(s.cima);
+  if (c.d > RAGGIO) return null;
   if (c.i <= f.i) return null;                       // l'hai fatta in discesa
   const dentro = s.mezzi.filter(m => vicino(m).d <= RAGGIO).length;
   if (dentro < 3) return null;
@@ -194,8 +207,12 @@ async function conta(forza){
     quante = att.length;
     st.textContent = 'guardo dove sei salito…';
     esiti = {};
-    for (const s of SALITE)
+    for (let k = 0; k < SALITE.length; k++) {
+      const s = SALITE[k];
+      st.textContent = `guardo dove sei salito… ${k + 1} di ${SALITE.length}: ${s.nome}`;
+      await new Promise(r => setTimeout(r));     // un respiro, se no lo schermo resta fermo
       esiti[s.id] = att.map(a => salita(a, s)).filter(Boolean).sort((x, y) => x.a.d < y.a.d ? 1 : -1);
+    }
     // una salita può stare dentro un'altra: chi sale al Poieto passa da Orezzo
     for (const s of SALITE)
       for (const p of esiti[s.id])
@@ -222,7 +239,8 @@ function riepilogo(){
   const anni = [...new Set(tutte.map(x => x.p.a.d.slice(0, 4)))].sort();
   const celle = [
     [N(tutte.length), '', 'salite in tutto'],
-    [N(Math.round(dsl / 1000)), 'k', 'metri di dislivello'],
+    dsl >= 10000 ? [N(Math.round(dsl / 1000)), 'k', 'metri di dislivello']
+                 : [N(dsl), '', 'metri di dislivello'],
     [diverse + '<small>/' + SALITE.length + '</small>', '', 'rampe diverse'],
     [anni.length ? anni[0] + (anni.length > 1 ? '–' + anni[anni.length - 1] : '') : '—', '', 'anni']
   ];
@@ -250,7 +268,7 @@ function tabella(){
     `<thead><tr><th>volte</th><th>salita</th><th class="dsl r">misura</th><th class="bar"></th></tr></thead>
      <tbody>${ord.map(s => riga(s, esiti[s.id].length, max, true)).join('')}</tbody>`;
   $('tabella').querySelectorAll('.riga').forEach(r => r.onclick = () => {
-    scelta = r.dataset.s; mostrati = 20; mappa = null; tabella(); dettaglio();
+    scelta = r.dataset.s; mostrati = 20; tabella(); dettaglio();
     $('dett').scrollIntoView({ behavior:'smooth', block:'start' });
   });
 }
@@ -305,7 +323,8 @@ function lista(){
 }
 
 function disegnaMappa(s, salite){
-  mappa = L.map('mappa', { scrollWheelZoom:false, zoomControl:false });
+  if (mappa) { mappa.remove(); mappa = null; }
+  mappa = L.map('mappa', { scrollWheelZoom:false, zoomControl:true });
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
     { attribution:'© OpenStreetMap © CARTO', maxZoom:19 }).addTo(mappa);
   salite.slice(0, 60).forEach(x => {
@@ -329,6 +348,24 @@ $('anteprima').innerHTML =
   SALITE.map(s => `<tr><td class="n"><b>${s.nome}</b><span>${s.sotto}</span></td>
     <td class="dsl r" style="color:var(--ink-3);font-size:.75rem;white-space:nowrap">
     ${String(s.km).replace('.', ',')} km · +${s.dsl} m</td></tr>`).join('') + '</tbody>';
+
+/* Prima di chiedere il collegamento, la pagina mostra di cosa sta parlando:
+   le nove salite sono già qui dentro, sarebbe un peccato tenerle nascoste. */
+(function mappaIntro(){
+  const el = document.getElementById('mappaIntro');
+  if (!el || typeof L === 'undefined') return;
+  const mi = L.map(el, { scrollWheelZoom:false, zoomControl:false, dragging:false, keyboard:false, attributionControl:true });
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+    { attribution:'© OpenStreetMap © CARTO', maxZoom:17 }).addTo(mi);
+  const bb = L.latLngBounds([]);
+  SALITE.forEach(s => {
+    const l = L.polyline(s.pts, { color:'#7B5EA7', weight:3, opacity:.8 })
+      .bindTooltip(`${s.nome} · +${s.dsl} m`, { sticky:true }).addTo(mi);
+    bb.extend(l.getBounds());
+  });
+  if (bb.isValid()) mi.fitBounds(bb, { padding:[22, 22] });
+  setTimeout(() => mi.invalidateSize(), 120);
+})();
 
 $('btnVai').onclick = () => conta(false);
 $('btnAncora').onclick = () => conta(true);
