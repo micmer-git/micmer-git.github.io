@@ -8,6 +8,9 @@ __pycache__/
 
 # build_top20.py: cache locale degli stream Intervals (si riscarica da sola)
 tools/.cache_streams/
+# build_cruscotto.py: la pull grezza di wellness + attivita' (si riscarica da sola,
+# e comunque la pagina generata la contiene gia' in forma compatta)
+tools/.cruscotto_cache.json
 # provini dei build (build_top20_gif.py --png)
 tools/.gif_check.png
 # basemap.py: tile CartoDB + Natural Earth (si riscaricano da sole)

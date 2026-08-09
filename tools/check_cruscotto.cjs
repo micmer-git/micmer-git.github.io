@@ -1,0 +1,278 @@
+/* Smoke test per vita/cruscotto/index.html — senza browser e senza dipendenze.
+ *
+ * jsdom non si installa da questa rete, e comunque il resto di tools/ gira in sola
+ * stdlib: qui il DOM e' uno shim di poche decine di righe. Regge perche' la pagina
+ * costruisce i nodi uno a uno e se ne tiene il riferimento, invece di scrivere
+ * innerHTML e poi rileggerlo con querySelector — se un giorno torna a farlo, questo
+ * check smette di girare, ed e' il segnale giusto.
+ *
+ * Cosa verifica:
+ *   1. lo script gira senza eccezioni, e ogni riquadro si disegna su TUTTE e quattro
+ *      le finestre temporali (un renderer che esplode viene ripreso dalla pagina, ma
+ *      lascia il motivo in data-err: qui e' un errore, non un riquadro vuoto);
+ *   2. nessuna coordinata NaN/Infinity in nessun attributo SVG — il modo tipico in cui
+ *      un grafico sbagliato non si vede invece di rompersi;
+ *   3. i totali in testata rifatti a mano dal payload coincidono con quelli scritti;
+ *   4. ogni riquadro ha la sua tabella di ripiego, e ogni riquadro con piu' di una
+ *      serie ha la legenda (l'identita' non puo' stare nel solo colore);
+ *   5. la tavolozza nel CSS e' ancora quella validata contro il fondo della scheda;
+ *   6. il buco 2021-2023 e' dichiarato fra i gaps: le zone "nessun dato" dipendono
+ *      da quello, e senza si tornerebbe a disegnare una linea attraverso il vuoto.
+ *
+ *   node tools/check_cruscotto.cjs
+ *
+ * L'esito viene appeso a tools/cruscotto_tests.md insieme a quello dei build.
+ */
+const fs = require("fs");
+const path = require("path");
+const vm = require("vm");
+
+const ROOT = path.join(__dirname, "..");
+const PAGE = path.join(ROOT, "vita", "cruscotto", "index.html");
+const REPORT = path.join(__dirname, "cruscotto_tests.md");
+
+const html = fs.readFileSync(PAGE, "utf8");
+const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
+
+const fails = [], notes = [];
+const ok = (cond, msg) => { (cond ? notes : fails).push((cond ? "ok   " : "FAIL ") + msg); };
+
+/* ----------------------------------------------------------------- DOM shim */
+const ALL = [];
+class Node {
+  constructor(tag, ns) {
+    this.tagName = tag; this.ns = ns || null;
+    this.attrs = {}; this.children = []; this.parent = null;
+    this.style = { setProperty() {} }; this.dataset = {};
+    this._text = ""; this._html = "";
+    this.classList = {
+      _s: new Set(),
+      add: (...c) => c.forEach(x => this.classList._s.add(x)),
+      remove: (...c) => c.forEach(x => this.classList._s.delete(x)),
+      contains: c => this.classList._s.has(c),
+    };
+    ALL.push(this);
+  }
+  set className(v) { this.attrs.class = v; }
+  get className() { return this.attrs.class || ""; }
+  set textContent(v) { this._text = String(v); }
+  get textContent() { return this._text; }
+  set innerHTML(v) { this._html = String(v); this.children = []; }
+  get innerHTML() { return this._html; }
+  setAttribute(k, v) { this.attrs[k] = String(v); }
+  getAttribute(k) { return this.attrs[k]; }
+  appendChild(c) { c.parent = this; this.children.push(c); return c; }
+  addEventListener() {}
+  getBoundingClientRect() { return { width: 360, height: 180, top: 0, left: 0, right: 360, bottom: 180 }; }
+  get clientWidth() { return 360; }
+  /* the only descendant walk the page does is over ranges' direct children */
+  descendants() { return this.children.flatMap(c => [c, ...c.descendants()]); }
+}
+
+const byId = {};
+const document = {
+  createElement: t => new Node(t),
+  createElementNS: (ns, t) => new Node(t, ns),
+  getElementById: id => byId[id] || (byId[id] = new Node("div")),
+  body: new Node("body"),
+  addEventListener() {},
+};
+for (const id of ["tip", "totals", "ranges", "range-note",
+  "panel-carico", "panel-notte", "panel-recupero", "panel-corpo",
+  "panel-volume", "panel-incroci"]) document.getElementById(id);
+
+const sandbox = {
+  document, console,
+  window: {}, innerWidth: 1200, innerHeight: 900,
+  setTimeout: () => 0, clearTimeout() {}, addEventListener() {},
+  Math, Date, JSON, Number, String, Array, Object, Map, Set, isFinite, parseFloat, parseInt,
+};
+sandbox.window = sandbox;
+sandbox.globalThis = sandbox;
+
+let ran = true;
+try {
+  vm.createContext(sandbox);
+  vm.runInContext(script, sandbox, { filename: "cruscotto-inline.js", timeout: 60000 });
+} catch (e) {
+  ran = false;
+  fails.push("FAIL lo script della pagina ha sollevato: " + (e && e.stack || e));
+}
+ok(ran, "lo script inline gira senza eccezioni");
+
+if (ran) {
+  const K = sandbox.CRUSCOTTO;
+  ok(!!K, "window.CRUSCOTTO esposto");
+  const D = K.D;
+
+  /* -------------------------------------------------- 1. tutti i riquadri */
+  ok(K.TILES.length === K.MOUNTED.length,
+    `ogni riquadro dichiarato e' montato (${K.MOUNTED.length}/${K.TILES.length})`);
+  ok(K.MOUNTED.length >= 20, `almeno 20 riquadri (${K.MOUNTED.length})`);
+
+  for (const r of ["sempre", "12m", "ytd", "90g"]) {
+    let threw = 0, empty = [];
+    try { K.setRange(r); } catch (e) { fails.push(`FAIL setRange(${r}): ${e && e.stack || e}`); }
+    K.MOUNTED.forEach(([n, t]) => {
+      if (n.art.dataset.err) { threw++; fails.push(`FAIL [${r}] ${t.title}: ${n.art.dataset.err}`); }
+      if (n.art.dataset.empty) empty.push(t.title);
+    });
+    ok(threw === 0, `finestra "${r}": nessun renderer solleva eccezioni`);
+    if (r === "sempre") {
+      ok(empty.length === 0, `finestra "sempre": nessun riquadro vuoto` +
+        (empty.length ? ` — vuoti: ${empty.join(", ")}` : ""));
+    } else {
+      notes.push(`info  finestra "${r}": ${empty.length} riquadri senza dati` +
+        (empty.length ? ` (${empty.join(", ")})` : ""));
+    }
+  }
+  K.setRange("sempre");
+
+  /* --------------------------------------------- 2. geometria finita ovunque */
+  const bad = [];
+  for (const n of ALL) {
+    if (!n.ns) continue;                       /* solo i nodi SVG */
+    for (const [k, v] of Object.entries(n.attrs)) {
+      if (/NaN|Infinity|undefined|null/.test(v)) bad.push(`<${n.tagName} ${k}="${v.slice(0, 60)}">`);
+    }
+  }
+  ok(bad.length === 0, `nessuna coordinata NaN/Infinity negli SVG` +
+    (bad.length ? ` — ${bad.length} attributi, es. ${bad[0]}` : ` (${ALL.filter(n => n.ns).length} nodi controllati)`));
+
+  /* i path devono avere un `d` non vuoto e con almeno un segmento */
+  const paths = ALL.filter(n => n.tagName === "path");
+  const emptyD = paths.filter(p => !p.attrs.d || !/[ML]/.test(p.attrs.d));
+  ok(emptyD.length === 0, `ogni <path> ha un tracciato reale (${paths.length} path)`);
+
+  /* --------------------------------- 2b. impaginazione: niente fuori, niente sopra
+     Il posto dei controlli che si farebbero a occhio. Senza browser si misurano:
+     ogni segno dentro il proprio viewBox, ogni etichetta dell'asse y dentro la sua
+     gronda (il modo in cui "50.000" finisce tagliato a meta'), e nessuna coppia di
+     etichette sull'asse x che si sovrappone. La larghezza di un glifo IBM Plex Mono
+     a font-size 8 e' ~4.85px: la stessa costante che usa la pagina per dimensionare
+     la gronda, quindi il controllo misura la stessa cosa che il disegno assume. */
+  const GLYPH = 4.85;
+  const outside = [], clipped = [], collide = [];
+  for (const [n, t] of K.MOUNTED) {
+    const svg = n.box.children.find(c => c.tagName === "svg");
+    if (!svg) continue;
+    const [, , W, H] = svg.attrs.viewBox.split(/\s+/).map(Number);
+    const kids = svg.descendants();
+    for (const c of kids) {
+      const num = k => c.attrs[k] === undefined ? null : parseFloat(c.attrs[k]);
+      const pts = [];
+      if (c.tagName === "circle") pts.push([num("cx"), num("cy")]);
+      if (c.tagName === "rect") pts.push([num("x"), num("y")],
+        [num("x") + num("width"), num("y") + num("height")]);
+      if (c.tagName === "line") pts.push([num("x1"), num("y1")], [num("x2"), num("y2")]);
+      for (const [x, y] of pts) {
+        if (x < -0.6 || x > W + 0.6 || y < -0.6 || y > H + 0.6) {
+          outside.push(`${t.title}: <${c.tagName}> a ${x && x.toFixed(1)},${y && y.toFixed(1)} fuori da ${W}×${H}`);
+          break;
+        }
+      }
+      /* etichetta dell'asse y: ancorata a destra, quindi il suo bordo sinistro e'
+         x - larghezza. Sotto zero vuol dire tagliata dal bordo della scheda. */
+      if (c.tagName === "text" && c.attrs["text-anchor"] === "end") {
+        const w = (c.textContent || "").length * GLYPH;
+        if (num("x") - w < -0.5) clipped.push(`${t.title}: "${c.textContent}" sborda di ${(w - num("x")).toFixed(1)}px`);
+      }
+    }
+    /* etichette sull'asse x: stessa riga (y a fondo grafico), non si devono toccare */
+    const xlab = kids.filter(c => c.tagName === "text" && parseFloat(c.attrs.y) > H - 12)
+      .map(c => {
+        const w = (c.textContent || "").length * GLYPH, x = parseFloat(c.attrs.x);
+        const a = c.attrs["text-anchor"];
+        const l = a === "end" ? x - w : a === "middle" ? x - w / 2 : x;
+        return { l, r: l + w, s: c.textContent };
+      }).sort((a, b) => a.l - b.l);
+    for (let i = 1; i < xlab.length; i++) {
+      if (xlab[i].l < xlab[i - 1].r + 1) {
+        collide.push(`${t.title}: "${xlab[i - 1].s}" e "${xlab[i].s}" si sovrappongono`);
+      }
+    }
+  }
+  ok(outside.length === 0, `nessun segno fuori dal proprio viewBox` +
+    (outside.length ? ` — ${outside.length}, es. ${outside[0]}` : ""));
+  ok(clipped.length === 0, `nessuna etichetta dell'asse y tagliata dalla gronda` +
+    (clipped.length ? ` — ${clipped.length}, es. ${clipped[0]}` : ""));
+  ok(collide.length === 0, `nessuna sovrapposizione fra etichette dell'asse x` +
+    (collide.length ? ` — ${collide.length}, es. ${collide[0]}` : ""));
+
+  /* ------------------------------------------------ 3. totali ricalcolati */
+  const N = D.n;
+  let secs = 0, dist = 0, gain = 0;
+  for (const [, , s, m, up] of D.acts) { secs += s; dist += m; gain += up; }
+  const totalsHtml = document.getElementById("totals").innerHTML;
+  const it = v => v.toLocaleString("it-IT");
+  const expect = [
+    [it(D.acts.length), "attività"],
+    [it(Math.round(dist / 1000)), "chilometri"],
+    [it(Math.round(secs / 3600)), "ore in movimento"],
+    [it(D.sleep.filter(v => v !== null).length), "notti misurate"],
+  ];
+  for (const [v, label] of expect) {
+    ok(totalsHtml.includes(`>${v}<`),
+      `testata: ${label} = ${v} (ricalcolato dal payload)`);
+  }
+  ok(Math.round(gain / 1000) > 1000, `dislivello totale plausibile: ${it(Math.round(gain))} m`);
+
+  /* --------------------------------- 4. ripiego tabellare + legende */
+  const noTable = K.MOUNTED.filter(([n]) => !n.tbody.innerHTML.includes("<tr")).map(([, t]) => t.title);
+  ok(noTable.length === 0, `ogni riquadro ha la tabella di ripiego` +
+    (noTable.length ? ` — mancano: ${noTable.join(", ")}` : ""));
+
+  const multi = K.MOUNTED.filter(([, t]) =>
+    (t.spec.series && t.spec.series.length > 1) ||
+    (t.spec.names && t.spec.names.length > 1) ||
+    (t.spec.points && t.spec.points(0, N - 1).length > 1));
+  const noLegend = multi.filter(([, t]) => !t.legend).map(([, t]) => t.title);
+  ok(noLegend.length === 0, `ogni riquadro multi-serie ha la legenda (${multi.length} riquadri)` +
+    (noLegend.length ? ` — mancano: ${noLegend.join(", ")}` : ""));
+
+  /* ------------------------------------------------------ 6. il buco 2022 */
+  const d0 = new Date(D.d0 + "T00:00:00");
+  const iso = i => new Date(d0.getTime() + i * 86400000).toISOString().slice(0, 10);
+  const spans = D.gaps.map(([a, b]) => `${iso(a)}→${iso(b)}`);
+  const hole = D.gaps.find(([a, b]) => iso(a) < "2022-01-01" && iso(b) > "2022-12-31");
+  ok(!!hole, `il buco che copre tutto il 2022 e' dichiarato` +
+    (hole ? ` (${iso(hole[0])}→${iso(hole[1])})` : ` — gaps: ${spans.join(", ")}`));
+  ok(D.gaps.length >= 3, `${D.gaps.length} buchi ≥45 giorni dichiarati: ${spans.join(", ")}`);
+}
+
+/* -------------------------------------------------- 5. la tavolozza nel CSS */
+const PAL = { "--s1": "#3987e5", "--s2": "#d95926", "--s3": "#199e70", "--s4": "#c98500" };
+for (const [k, v] of Object.entries(PAL)) {
+  ok(new RegExp(k + ":\\s*" + v, "i").test(html), `CSS ${k} = ${v} (slot validato)`);
+}
+ok(/--paper:#211d16/.test(html), "CSS --paper = #211d16 (il fondo su cui la tavolozza e' stata validata)");
+
+/* --------------------------------------------------------------- --verbose
+   Cosa dice davvero la pagina, riquadro per riquadro: il numero in testa e la riga
+   di piede con finestra, n e correlazioni. Serve a leggere il contenuto senza
+   aprire un browser — che da questa macchina non c'e'. */
+if (ran && process.argv.includes("--verbose")) {
+  const K = sandbox.CRUSCOTTO;
+  const strip = s => String(s).replace(/<br>/g, " · ").replace(/<[^>]+>/g, "").trim();
+  console.log("\n--- contenuto dei riquadri (finestra \"sempre\") ---");
+  for (const [n, t] of K.MOUNTED) {
+    const now = strip(n.now.innerHTML);
+    console.log(`\n  ${t.title}${now ? "  [" + now + "]" : ""}`);
+    console.log(`    ${strip(n.foot.innerHTML).split(" · ").slice(0, 6).join(" · ")}`);
+  }
+}
+
+/* ------------------------------------------------------------------ esito */
+const stamp = new Date().toISOString().slice(0, 16).replace("T", " ");
+const body = [...notes, ...fails].join("\n");
+console.log(body);
+console.log(fails.length ? `\n${fails.length} CONTROLLI FALLITI` : "\ntutto a posto");
+
+const head = fs.existsSync(REPORT) ? "" :
+  "# /vita/cruscotto — report cumulativo dei build\n";
+fs.appendFileSync(REPORT,
+  `${head}\n## ${stamp} — check_cruscotto.cjs\n\n\`\`\`\n${body}\n\`\`\`\n\n` +
+  `esito: ${fails.length ? fails.length + " FALLITI" : "tutti passati"} ` +
+  `(${notes.length} ok)\n`, "utf8");
+
+process.exit(fails.length ? 1 : 0);

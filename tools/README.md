@@ -1,6 +1,6 @@
 # tools/
 
-Nine scripts. The sync/build ones need nothing beyond the Python standard
+Eleven scripts. The sync/build ones need nothing beyond the Python standard
 library; the three that make images (`build_top20_gif.py`, `build_top20_reel.py`,
 `basemap.py`) want Pillow, and `build_top20_video.py` additionally wants OpenCV,
 which is the only thing here that can write a video. Every one takes `--dry-run`
@@ -10,6 +10,8 @@ and backs up what it overwrites to `*.bak`.
 python tools/sync_intervals.py --config tools/gazzaniga-orezzo.json   # new efforts -> _data.js
 python tools/sync_sogni.py                                            # new weeks   -> data.json + load.json
 python tools/sync_diario.py                                           # refresh the monthly chapter numbers
+python tools/build_cruscotto.py                                       # rebuild /vita/cruscotto from Intervals
+node   tools/check_cruscotto.cjs                                      # smoke-test it, no browser needed
 python tools/build_vita.py                                            # rebuild /vita from all of the above
 python tools/build_top20.py                                           # rebuild /top-20 data from Intervals
 python tools/build_top20_gif.py                                       # the twenty square cards
@@ -19,8 +21,9 @@ python tools/gifweigh.py <file.gif>                                   # dove son
 node   tools/check_top20_page.cjs                                     # smoke-test /top-20 without a browser
 ```
 
-The weekly GitHub Action (`.github/workflows/weekly-vita.yml`) runs all four on
-Monday morning and commits whatever moved. It needs the repo secret
+The weekly GitHub Action (`.github/workflows/weekly-vita.yml`) runs the three syncs
+plus both builds on Monday morning, smoke-tests the cruscotto, and commits whatever
+moved. It needs the repo secret
 **`INTERVALS_API_KEY`** (Intervals.icu ▸ Settings ▸ Developer ▸ API key). Locally the
 scripts read `INTERVALS_API_KEY`, `--api-key`, or `tools/.intervals_key` (gitignored).
 
@@ -138,6 +141,91 @@ tracker's name.
 **Adding a tracker:** write a `load_*()` returning the same dict shape, add it to
 the list in `main()` and to `TRACKED` (for the changelog), and give it an accent —
 re-validate the set if you go past three.
+
+The hub also carries the band linking to `/vita/cruscotto`. That band lives in
+`build_vita.py`, not in the generated HTML — editing `vita/index.html` by hand gets
+it wiped by the next Monday run.
+
+---
+
+## build_cruscotto.py
+
+Builds `/vita/cruscotto`: 22 compact charts over everything Intervals.icu holds.
+Unlike the rest of `tools/`, it does **not** read a published page — it pulls the
+whole wellness history and the whole activity list straight from the API, packs
+them into one payload and inlines it. The page is a flat 320 KB file with no runtime
+fetch and no key on the client. `--offline` rebuilds from `tools/.cruscotto_cache.json`
+(gitignored), which makes iterating on the layout free.
+
+**What the archive actually holds** — measured, and re-measured by every run, which
+is the whole point of `--check`:
+
+| field | from | n |
+|---|---|---|
+| ctl / atl | 2015-03-29 (every day) | 4.152 |
+| training load | **2019-06-19** | 1.738 non-zero |
+| sleep, sleepScore, hrv | **2025-01-21** | 548 |
+| restingHR, steps | 2025-01-20 | 566 |
+| vo2max | 2025-01-22 | 279 |
+| weight / bodyFat | 2025-01-21 / 2025-06-27 | 65 / 53 |
+
+Three traps live in that table, and every one of them produces a *plausible* chart
+if ignored:
+
+- **ctl/atl exist for days that have no training behind them.** Intervals fills the
+  whole calendar, so "first non-null" says 2015 for a series that is flat zero until
+  2019 — the 2015-2018 Strava imports carry no HR or power, hence no load. The load
+  tiles start at the first day whose next 28 carry more than a token amount, which
+  lands on 2019-06-19. Do not replace that with `first non-null`.
+- **2021-10-18 → 2023-04-09 is a hole in the archive, not a break from training.**
+  CTL decays smoothly across it and reads exactly like eighteen months of detraining.
+  Every run of ≥45 days with no activity at all is detected and drawn as a shaded
+  "nessun dato" band, and paths break over nulls rather than bridging them. Six such
+  runs exist; the early ones are real gaps in the record too.
+- **Sleep and HRV are 18 months of a page that otherwise spans eleven years.** Each
+  tile resolves "sempre" against *its own* first day, so no tile can imply coverage
+  it doesn't have, and its footer prints the window it actually drew.
+
+**Colour.** Slots 1-4 of the dataviz reference palette, dark steps, validated as a
+set against this page's card surface `#211d16` — not against the reference surface,
+which is a different colour and would have passed things that fail here. Adjacent
+worst CVD ΔE 8.4, normal-vision 19.3, all four ≥3:1 on the card. The one scatter
+with more than one group carries **two** of them: four hues cannot clear the
+all-pairs floor, and yellow beside orange is exactly the failing pair — which is why
+"distanza contro dislivello" plots bike and run only. `check_cruscotto.cjs` asserts
+the four hexes are still in the CSS, so a casual re-colour trips a test instead of
+silently shipping.
+
+**The y-axis gutter is computed, not fixed.** A five-figure tick ("50.000") needs
+38px where a two-figure one needs 20; a fixed 34px either clips the big numbers or
+wastes a tenth of a 320px tile. Both axes size themselves from the widest label at
+~4.85px per mono glyph, and the check measures with the same constant.
+
+---
+
+## check_cruscotto.cjs
+
+The cruscotto's smoke test, and the substitute for a pair of eyes: there is no
+browser on this machine and jsdom does not install through the proxy, so the DOM
+here is a fifty-line shim. It works because the page builds its nodes one at a time
+and keeps a reference to each, instead of writing `innerHTML` and querying it back —
+if the page ever returns to that, this stops running, and that is the correct signal.
+
+It runs the page's own script and checks: every tile draws on **all four** time
+windows (a renderer that throws is caught by the page but leaves its reason in
+`data-err`, which is a failure here, not an empty tile); no NaN or Infinity in any
+of ~36.000 SVG attributes; nothing drawn outside its viewBox; no y label clipped by
+its gutter; no two x labels overlapping; the headline totals re-derived from the
+payload independently; a data table under every tile and a legend on every
+multi-series one; the palette still in the CSS; and the 2022 hole still declared.
+
+`--verbose` prints what each tile *says* — its headline figure and its footer, with
+window, n and correlation. That is how you read the page without opening it, and how
+the captions get checked against the numbers instead of against expectations. It
+earned its keep immediately: a caption asserting VO₂max rises with fitness went in
+before the fit was run, and the actual r is **0.00**.
+
+Every run appends to `tools/cruscotto_tests.md`, alongside what each build found.
 
 ---
 

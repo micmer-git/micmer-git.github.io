@@ -376,6 +376,24 @@ TEMPLATE = r"""<!DOCTYPE html>
     text-transform:uppercase; padding:2px 8px; border-radius:999px;
     border:1px solid currentColor; opacity:.92}
 
+  /* ---------- cruscotto ---------- */
+  /* Not a tracker card: the dashboard has no story of its own, it is the raw
+     instrument panel behind all of them. It sits above the cards, styled as a band
+     rather than a fourth card, so it cannot be mistaken for one. */
+  .dash{display:block; margin:34px 0 0; padding:20px 24px; border-radius:8px;
+    text-decoration:none; border:1px solid var(--rule); background:var(--paper);
+    transition:border-color .18s,background .18s,transform .18s}
+  .dash:hover{border-color:var(--gold); background:var(--paper-2); transform:translateY(-2px)}
+  .dash:focus-visible{outline:2px solid var(--gold); outline-offset:3px}
+  .dash .k{font-family:'IBM Plex Mono',monospace; font-size:.64rem; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--gold)}
+  .dash h2{font-family:'Cinzel',serif; font-size:1.5rem; font-weight:700; margin:5px 0 0}
+  .dash p{color:var(--ink-soft); font-size:.95rem; margin-top:6px; max-width:52em}
+  .dash .go{font-family:'IBM Plex Mono',monospace; font-size:.66rem; letter-spacing:.13em;
+    text-transform:uppercase; color:var(--gold); font-weight:600; margin-top:10px;
+    display:inline-block}
+  @media(prefers-reduced-motion:reduce){.dash{transition:none}.dash:hover{transform:none}}
+
   /* ---------- also / footer ---------- */
   .also{margin-top:46px; text-align:center}
   .also a{display:inline-block; margin:6px 7px; padding:7px 15px; border-radius:999px;
@@ -426,6 +444,15 @@ TEMPLATE = r"""<!DOCTYPE html>
 
 <div class="ornament">✦ ✦ ✦</div>
 
+<a class="dash" href="cruscotto/">
+  <div class="k">tutti i numeri, senza racconto</div>
+  <h2>Cruscotto</h2>
+  <p>Ventidue grafici su un pannello solo: carico e forma dal 2019, sonno, HRV,
+  frequenza a riposo, VO₂max, peso, volume e gli incroci fra una serie e l'altra.
+  Presi da Intervals.icu e inseriti nella pagina, non caricati dal browser.</p>
+  <span class="go">Apri il cruscotto →</span>
+</a>
+
 <main class="cards" id="cards"></main>
 
 <section class="log">
@@ -435,6 +462,7 @@ TEMPLATE = r"""<!DOCTYPE html>
 </section>
 
 <nav class="also">
+  <a href="cruscotto/">Cruscotto</a>
   <a href="../top-20/">Venti giorni su 2.923</a>
   <a href="../bike-to-work/">Al lavoro in bici</a>
   <a href="../signore-dei-kj.html">Il Signore dei kJ</a>
