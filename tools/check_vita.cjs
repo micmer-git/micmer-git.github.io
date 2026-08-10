@@ -37,12 +37,29 @@ const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
 const fails = [], notes = [];
 const ok = (cond, msg) => { (cond ? notes : fails).push((cond ? "ok   " : "FAIL ") + msg); };
 
+/* Il payload viene inlineato dentro <script>: se un nome di attivita' o di
+   alimento contenesse "</script" il browser chiuderebbe li' il blocco e la pagina
+   resterebbe senza JS — cioe' senza un solo grafico, senza nessun errore visibile
+   nel sorgente. Si controlla che i tag siano esattamente due e che lo script
+   arrivi in fondo. */
+{
+  const opens = (html.match(/<script>/g) || []).length;
+  const closes = (html.match(/<\/script>/g) || []).length;
+  const body = (html.match(/<script>([\s\S]*?)<\/script>/) || [])[1] || "";
+  const okTags = opens === 1 && closes === 1;
+  (okTags ? notes : fails).push((okTags ? "ok   " : "FAIL ") +
+    `un solo blocco <script> (aperti ${opens}, chiusi ${closes}) — nessun "</script" nel payload`);
+  const ends = /drawAll\(\);/.test(body.slice(-400));
+  (ends ? notes : fails).push((ends ? "ok   " : "FAIL ") +
+    `lo script arriva in fondo (${(body.length / 1024).toFixed(0)} KB, chiude su drawAll)`);
+}
+
 /* ----------------------------------------------------------------- DOM shim */
 const ALL = [];
 class Node {
   constructor(tag, ns) {
     this.tagName = tag; this.ns = ns || null;
-    this.attrs = {}; this.children = []; this.parent = null;
+    this.attrs = {}; this._kids = []; this.parent = null;
     this.style = { setProperty() {} }; this.dataset = {};
     this._text = ""; this._html = "";
     this.classList = {
@@ -57,16 +74,28 @@ class Node {
   get className() { return this.attrs.class || ""; }
   set textContent(v) { this._text = String(v); }
   get textContent() { return this._text; }
-  set innerHTML(v) { this._html = String(v); this.children = []; }
+  set innerHTML(v) { this._html = String(v); this._kids = []; }
   get innerHTML() { return this._html; }
   setAttribute(k, v) { this.attrs[k] = String(v); }
   getAttribute(k) { return this.attrs[k]; }
-  appendChild(c) { c.parent = this; this.children.push(c); return c; }
+  appendChild(c) { c.parent = this; this._kids.push(c); return c; }
+  /* `children` deve comportarsi come una HTMLCollection VERA: indicizzabile e
+     iterabile, ma SENZA i metodi di Array. Prima era un array, e ha nascosto un
+     bug fatale — `side.children.find(...)` girava qui e moriva nel browser, cioe'
+     la pagina intera senza un grafico. Uno shim piu' permissivo del DOM vero non
+     e' uno shim, e' un modo di non accorgersene. */
+  get children() {
+    const arr = this._kids;
+    const col = { length: arr.length, item: i => arr[i] ?? null,
+                  [Symbol.iterator]: function* () { yield* arr; } };
+    arr.forEach((c, i) => { col[i] = c; });
+    return col;
+  }
   addEventListener() {}
   getBoundingClientRect() { return { width: 360, height: 180, top: 0, left: 0, right: 360, bottom: 180 }; }
   get clientWidth() { return 360; }
   /* the only descendant walk the page does is over ranges' direct children */
-  descendants() { return this.children.flatMap(c => [c, ...c.descendants()]); }
+  descendants() { return this._kids.flatMap(c => [c, ...c.descendants()]); }
 }
 
 const byId = {};
@@ -156,7 +185,7 @@ if (ran) {
   const GLYPH = 6.05;
   const outside = [], clipped = [], collide = [];
   for (const [n, t] of K.MOUNTED) {
-    const svg = n.box.children.find(c => c.tagName === "svg");
+    const svg = n.box._kids.find(c => c.tagName === "svg");
     if (!svg) continue;
     const [, , W, H] = svg.attrs.viewBox.split(/\s+/).map(Number);
     const kids = svg.descendants();

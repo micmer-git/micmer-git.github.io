@@ -1590,7 +1590,7 @@ function tileNode(t) {
   mk("div", "t-title", head, t.title);
   const now = mk("div", "t-now", side);
   mk("div", "t-cap", side, t.cap);
-  if (t.shifters) mk("div", "t-shift", side);
+  const shift = t.shifters ? mk("div", "t-shift", side) : null;
   if (t.legend) {
     const lg = mk("div", "t-legend", side);
     lg.innerHTML = t.legend.map(([n, c]) =>
@@ -1601,7 +1601,10 @@ function tileNode(t) {
   const sum = mk("summary", null, det, "dati");
   const tbl = mk("table", "fallback", det);
   const tbody = mk("tbody", null, tbl);
-  return { art, now, box, sum, tbody, shift:side.children.find(c => c.className === "t-shift") };
+  /* si tiene il riferimento, non lo si ricerca: `children` nel browser e' una
+     HTMLCollection e non ha .find() — cercarlo li' uccideva l'intero script, cioe'
+     la pagina senza nemmeno un grafico */
+  return { art, now, box, sum, tbody, shift };
 }
 
 function drawTile(n, t) {
