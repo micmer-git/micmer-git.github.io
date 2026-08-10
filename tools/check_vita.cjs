@@ -149,9 +149,11 @@ if (ran) {
      ogni segno dentro il proprio viewBox, ogni etichetta dell'asse y dentro la sua
      gronda (il modo in cui "50.000" finisce tagliato a meta'), e nessuna coppia di
      etichette sull'asse x che si sovrappone. La larghezza di un glifo IBM Plex Mono
-     a font-size 8 e' ~4.85px: la stessa costante che usa la pagina per dimensionare
-     la gronda, quindi il controllo misura la stessa cosa che il disegno assume. */
-  const GLYPH = 4.85;
+     a font-size 10 e' ~6.05px: **la stessa costante che usa la pagina** (TICKW) per
+     dimensionare la gronda, quindi il controllo misura la stessa cosa che il disegno
+     assume. Se la' cambia il corpo del testo, va cambiata anche qui, o il check
+     smette di vedere le sovrapposizioni invece di segnalarle. */
+  const GLYPH = 6.05;
   const outside = [], clipped = [], collide = [];
   for (const [n, t] of K.MOUNTED) {
     const svg = n.box.children.find(c => c.tagName === "svg");
@@ -238,11 +240,14 @@ if (ran) {
   ok(typeof openDay === "function", "openDay() esiste");
   if (typeof openDay === "function") {
     // un giorno con dentro tutto: cibo + attivita' + wellness
-    const withFood = Object.keys(D.days || {});
+    // _t (template) e _p (forme ricostruite) non sono giorni
+    const withFood = Object.keys(D.days || {}).filter(k => !k.startsWith("_"));
     ok(withFood.length > 0, `il dettaglio giornaliero e' inlineato (${withFood.length} giorni)`);
     let opened = 0, sections = {};
     const d0 = new Date(D.d0 + "T00:00:00");
-    for (const k of withFood.slice(0, 40)) {
+    const sample = withFood.filter(k => typeof D.days[k] === "object").slice(0, 20)
+      .concat(withFood.filter(k => typeof D.days[k] === "string").slice(0, 20));
+    for (const k of sample) {
       const i = Math.round((new Date(k + "T00:00:00") - d0) / 86400000);
       try { openDay(i); } catch (e) { fails.push(`FAIL openDay(${k}): ${e && e.stack || e}`); break; }
       const h = sheetIn.innerHTML;
@@ -252,7 +257,7 @@ if (ran) {
       if (h.includes("% del fabbisogno")) sections.micro = 1;
       if (h.length > 400) opened++;
     }
-    ok(opened > 0, `il popup si riempie (${opened}/40 giorni provati)`);
+    ok(opened === sample.length, `il popup si riempie su tutti i giorni provati (${opened}/${sample.length}, veri + ricostruiti)`);
     for (const sec of ["corpo", "allenamento", "tavola", "micro"]) {
       ok(!!sections[sec], `il popup mostra la sezione "${sec}" su almeno un giorno`);
     }
@@ -260,7 +265,7 @@ if (ran) {
     try { openDay(10); ok(true, "openDay() regge un giorno senza diario alimentare"); }
     catch (e) { fails.push(`FAIL openDay su giorno senza cibo: ${e}`); }
     // i link devono puntare a Intervals/Strava, non essere costruiti a vuoto
-    const anyLink = withFood.some(k => {
+    const anyLink = withFood.filter(k => typeof D.days[k] === "object").some(k => {
       const i = Math.round((new Date(k + "T00:00:00") - d0) / 86400000);
       openDay(i); return /intervals\.icu\/activities\/\d/.test(sheetIn.innerHTML);
     });
@@ -342,7 +347,7 @@ if (ran && process.argv.includes("--verbose")) {
   for (const [n, t] of K.MOUNTED) {
     const now = strip(n.now.innerHTML);
     console.log(`\n  ${t.title}${now ? "  [" + now + "]" : ""}`);
-    console.log(`    ${strip(n.foot.innerHTML).split(" · ").slice(0, 6).join(" · ")}`);
+    console.log(`    ${strip(n.sum.textContent)}`);
   }
 }
 
