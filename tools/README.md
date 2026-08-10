@@ -20,7 +20,7 @@ python tools/build_top20_reel.py                                      # the one 
 python tools/build_top20_video.py --gif                               # v3: lo stesso racconto in video (+GIF)
 python tools/gifweigh.py <file.gif>                                   # dove sono i byte
 node   tools/check_top20_page.cjs                                     # smoke-test /top-20 without a browser
-node   tools/check_lab_stile.cjs                                      # smoke-test /lab-stile, contrasti ricalcolati
+node   tools/check_lab_stile.cjs                                      # smoke-test /lab-stile 3×3, contrasti e ΔE ricalcolati
 ```
 
 The weekly GitHub Action (`.github/workflows/weekly-vita.yml`) runs the three syncs,
@@ -655,69 +655,121 @@ touching the page's script — it catches what a syntax check cannot.
 
 ## check_lab_stile.cjs — e la pagina che controlla, `/lab-stile`
 
-`lab-stile/index.html` è il quinto giro dei **laboratori di stile**, ma il primo
-che non guarda il reel: guarda il fronte del sito. Stessa grammatica dei
-`top-20/lab*.html` — sezioni con contatore nella barra appiccicosa, voto 0–10 a
-gettoni, ★ per le preferite, nota libera, voto da tastiera passando sopra una
-scheda (`0`–`9`, `d` = 10, `s` = stella), progresso in fondo, **copia i voti** che
-sputa un blob da incollare in chat, e la casella per il giro dopo. I voti stanno
-in `localStorage` sotto `micmer-lab-stile-voti`.
+`lab-stile/index.html` è il laboratorio del **fronte del sito**, ed è una
+**griglia 3×3**: nove caselle quadrate, tutte visibili insieme, ognuna con la
+stessa cosa dentro. Il giro precedente era una colonna lunga di ventidue schede
+in cinque sezioni; le sue misure sono rimaste (e sono già in produzione, vedi
+sotto), la forma no — una lista che si scorre non fa confrontare, fa ricordare.
 
-Ventidue varianti in cinque sezioni: **quattro direzioni complete** (non quattro
-palette: fondo, carta, tre inchiostri, accento, filo, raggio, ombra, densità,
-tre caratteri), **cinque accoppiate di caratteri**, **quattro trattamenti di
-superficie**, **quattro modi di disegnare la serie**, **cinque accenti**. Dentro
-ogni direzione c'è la stessa pagina vera — testata, totali, le tre
-schede-tracker, un riquadro con legenda e tabella di ripiego — con le classi
-di `/vita` e i dati veri (CTL e ATL, una goccia ogni 4 settimane, ago 2023 → ago
-2026, estratti dal payload della pagina). La pagina **propone e basta**: non
-tocca `/vita` né `build_vita.py`.
+**In ogni casella c'è un'istantanea vera, non un campione di colore.** Il
+riquadro «Fitness e fatica» di `/vita` — la sua marcatura (`.tile`, `.t-side`,
+`.t-head`, `.t-title`, `.t-now`, `.t-cap`, `.t-legend`, `.t-foot`), i suoi testi
+parola per parola dalla specifica in `build_vita.py`, il suo grafico disegnato
+con la stessa aritmetica degli assi (`nice()`, `yTicks()`, `padFor()`, `TICKW`
+6,05, etichette a corpo 10, area al 14% sotto la CTL, tratto 2) — renderizzato
+dal vivo con i token di quella variante e rimpicciolito con `transform:scale()`.
+Su questa macchina non c'è un browser e non c'è uno strumento per gli screenshot:
+«istantanea» qui vuol dire *la cosa vera che gira*, non una figura di essa.
+
+**I dati sono veri**: 40 coppie di CTL e ATL, una ogni 28 giorni dal 2023-08-14
+al 2026-08-10, prese dal payload di `vita/index.html`. Non una spezzata a denti
+di sega: il check le ricerca nel payload alla data che dichiarano e pretende che
+coincidano, poi inverte le coordinate del tracciato SVG e le riporta ai valori di
+partenza.
+
+**Le nove varianti** (la casella dice i token esatti che cambia, cinque righe
+fisse: superfici, inchiostri, accento e filo, forma, caratteri — dove non cambia
+niente c'è scritto `= oggi`, che è un'informazione anche quella):
+
+| | variante | che cosa cambia | esito |
+|---|---|---|---|
+| V1 | Pergamena (oggi) | niente: è il blocco `:root` di `build_vita.py` | ✓ il metro |
+| V2 | Alba | superfici chiare + `--gold #7d5310` | ✓ |
+| V3 | Inchiostro | grafite neutra, raggio 12px, ombra, Instrument Serif + Inter + JetBrains, `--gold #e3b344` | ✗ ΔE 12,4 da s4 |
+| V4 | Editoriale | raggio 3px, corpo 19px/1,68, filo neutro, Fraunces + Newsreader | ✓ |
+| V5 | Senza scheda | nessuna carta: filo sopra e aria — la tavolozza si rimisura sul fondo pagina | ✓ |
+| V6 | Rilievo | `--paper #262117`, bordo tolto, ombra, raggio 12px | ✓ (minuto a 4,89, margine sottile) |
+| V7 | Denso | `pad 6/10/5`, `corpo 17px/1,45`, colonna 140px — zero colori toccati | ✓ |
+| V8 | Un carattere solo | EB Garamond 500 +.12em anche per i titoli, Cinzel esce | ✓ |
+| V9 | Oro di ieri | il controllo: `--muted #8a7d62` e `--gold #c89a3f` com'erano | ✗ tre soglie |
+
+**Sotto ogni istantanea i numeri, calcolati in pagina quando si apre**, tre righe
+per casella: contrasto di `--ink`, `--ink-soft`, `--muted` e `--gold` sulla
+superficie *di quella variante* (soglia 4,5:1 — il testo minuto a 0,53–0,55rem è
+testo corrente, non testo grande); distanza ΔE dell'accento dai quattro slot dei
+grafici (soglia 15, OKLab ×100, visione normale); e i quattro slot contro la
+stessa superficie (soglia 3:1). **Una variante che sfonda una soglia resta in
+griglia con la croce e il numero che la condanna** — è il caso di V3 e V9, e
+vederli accanto agli altri sette è metà del lavoro della pagina.
+
+Da lì escono due risultati che il giro precedente non aveva isolato:
+
+- **la direzione chiara non può avere un accento «oro».** Su carta `#fffdf7`
+  l'accento deve scurirsi per arrivare a 4,5:1, e scurendosi finisce addosso al
+  giallo dei grafici: `#8e6a20` (il candidato di ieri) sta a ΔE 13,1 da `--s4` e
+  13,9 da `--s2`. Uno scan dello spazio sRGB dice che il colore più saturo di
+  tonalità oro che passa entrambe le soglie sta intorno a `#914900`, cioè un
+  bronzo. V2 usa `#7d5310`: 6,62:1 e ΔE minimo 17,9.
+- **l'oro di ieri sfondava tre soglie, non due**: `#c89a3f` è a ΔE 5,2 dallo slot
+  4 (già noto) **e a 14,6 dallo slot 2**, l'arancio. Ora ogni slot che sfonda
+  porta la sua croce nella casella, non solo il minimo.
 
 **La tavolozza dei grafici non è in gara.** I quattro slot restano
-`#3987e5 #d95926 #199e70 #c98500` in tutte e quattro le direzioni — zero hex
-cambiati. Quello che cambia è il fondo sotto, e quello sì che va rimisurato:
-ogni fondo è passato dal validatore prima di finire nella pagina. Da lì viene
-l'unico vincolo numerico della direzione chiara: **la carta della scheda non può
-essere più scura di `#fffdf7`**, perché a `#faf8f3` — la crema che il sito usa
-altrove — il giallo scende a 2,87:1 e la tavolozza esce dalle soglie. Non è un
-gusto, è una misura.
+`#3987e5 #d95926 #199e70 #c98500` in tutte e nove le caselle — zero hex cambiati.
+Quello che cambia è la superficie sotto, e quella sì che va rimisurata ogni
+volta; per V5 la superficie non è la carta ma il fondo pagina `#17150f`, e la
+casella lo dice.
 
-**Due difetti dell'impianto attuale li ha trovati il calcolatore, non l'occhio**,
-e sono il motivo per cui la pagina esiste:
+**Due misure sono già in produzione** e questa pagina esiste perché le ha
+trovate il calcolatore, non l'occhio. `--muted` era `#8a7d62` = 4,15:1 sulla
+scheda, sotto 4,5 — ed è il colore di ogni piede, didascalia, etichetta d'asse e
+intestazione di tabella; ora è `#9a8d70` = 5,13:1. `--gold` era `#c89a3f`, a ΔE
+5,2 dallo slot 4: l'accento del sito si spacciava per una serie di dati; ora è
+`#e2c98f`, ΔE minimo 18,6 e contrasto 10,37:1. Sono nel `:root` di
+`build_vita.py` con il commento che spiega perché non vanno ritoccate a occhio.
 
-- `--muted` `#8a7d62` sul fondo della scheda fa **4,15:1**, sotto la soglia di
-  4,5 — ed è il colore dei piedi, delle didascalie, delle etichette degli assi e
-  delle intestazioni di tabella, cioè di tutto il testo minuto della pagina. È
-  l'unico ruolo sotto soglia in tutto il sistema; le altre tre direzioni lo
-  alzano.
-- l'oro `#c89a3f` sta a **ΔE 5,2** (OKLab ×100) dalla serie gialla `#c98500`
-  che gli sta accanto **dentro la stessa scheda**: un colore di cornice che a
-  occhio nudo è un colore di dato. Dei cinque accenti provati, solo
-  `#e2c98f` supera 15 da tutte e quattro le serie (min 18,6); gli altri ori
-  arrivano a 12,2–12,4.
-
-I rapporti non sono scritti a mano nel testo: **la pagina li calcola quando si
-apre**, con le stesse formule del validatore (WCAG 2.x e ΔE euclidea in OKLab),
-e li mostra riga per riga con la soglia accanto — 4,5:1 per il testo corrente,
-3:1 per il testo grande e per i segni dei grafici. Il minuto conta come testo
-corrente: è piccolo, non grande.
+Il voto è la grammatica dei quattro laboratori precedenti: gettoni 0–10, ★ per le
+preferite, `0`–`9` / `d` = 10 / `s` = stella passando sopra una casella,
+progresso nella barra in fondo, **copia i voti** che sputa un blob da incollare in
+chat — e il blob si porta dietro le misure di tutte e nove. I voti stanno in
+`localStorage` sotto `micmer-lab-stile-voti-3x3`. Un clic sull'istantanea apre la
+casella a grandezza vera, larga quanto la griglia. La pagina **propone e basta**:
+non tocca `/vita` né `build_vita.py`. Quando una casella avrà vinto, i suoi token
+si scrivono una volta sola nel `:root` di `build_vita.py` e scendono su tutti e
+31 i grafici.
 
 Il controllo, `node tools/check_lab_stile.cjs`, è nello stile di `check_vita.cjs`
 e per lo stesso motivo: **jsdom non si installa da questa rete** — i
 `check_lab3.cjs` / `check_lab4.cjs` del top-20 lo pretendono e infatti da qui non
 girano — quindi il DOM è uno shim di un centinaio di righe, e la pagina è scritta
 apposta per reggerlo (nodi costruiti uno a uno, riferimento tenuto, mai un
-`innerHTML` riletto con una query). Verifica: le cinque sezioni e le ventidue
-varianti con i loro gettoni; che dentro ogni direzione ci siano davvero i
-componenti veri; che i token siano applicati come custom property sul
-contenitore; nessun NaN negli SVG, niente fuori dal viewBox, nessuna etichetta
-tagliata dalla gronda; e soprattutto **ricalcola da capo, con una seconda
-implementazione, tutti gli 81 rapporti di contrasto che la pagina dichiara** e li
-confronta riga per riga — una lettura di contrasto che si autocertifica non vale
-niente. Poi vota, stella, e legge il blob. `--verbose` stampa le quattro letture
-di contrasto per intero. Ogni esito viene appeso a `tools/lab_stile_tests.md`.
+`innerHTML` riletto con una query; il check verifica anche che nel sorgente non
+compaia proprio `innerHTML =`). 182 verifiche:
 
-Un controllo è nato da un errore vero: tre sezioni costruivano il proprio
-campione e non lo appendevano mai. Disegnava benissimo in memoria — 26 SVG,
-zero NaN — e in un browser sarebbero state tre sezioni vuote. Ora il check
-cammina l'albero a partire da ogni scheda invece di contare i nodi creati.
+- le nove caselle, con istantanea appesa, 11 gettoni e stella;
+- che l'istantanea sia il riquadro vero — le otto classi di `/vita` e i quattro
+  testi, che devono esistere **anche in `build_vita.py`**, altrimenti sono stati
+  riscritti qui e la pagina mente;
+- i 40 punti riletti nel payload di `/vita` alla loro data, poi le **720
+  coordinate** dei tracciati invertite e ricondotte ai valori (scarto massimo
+  0,14 — il tracciato arrotonda a 0,1px);
+- nessun NaN, niente fuori dal viewBox, nessuna etichetta d'asse tagliata;
+- che ogni casella **dichiari** i token che cambia — e che non ne dichiari
+  nessuno che non cambia;
+- che quei token siano davvero applicati come custom property sul contenitore
+  dell'istantanea;
+- **ogni numero stampato ricalcolato con una seconda implementazione di WCAG e
+  di ΔE OKLab e ricercato, formattato, dentro il testo della casella** (126 per
+  giro): una lettura di contrasto che si autocertifica non vale niente;
+- che le due misure in produzione non siano regredite, e che V3 e V9 dichiarino
+  esattamente 1 e 3 soglie sfondate;
+- il voto, la stella, il contatore e il blob.
+
+`--verbose` stampa le nove caselle per intero, misure e differenze. Ogni esito
+viene appeso a `tools/lab_stile_tests.md`.
+
+Un controllo è nato da un errore vero del giro precedente: tre sezioni
+costruivano il proprio campione e non lo appendevano mai. Disegnava benissimo in
+memoria — 26 SVG, zero NaN — e in un browser sarebbero state tre sezioni vuote.
+Il check cammina l'albero a partire da ogni casella invece di contare i nodi
+creati.

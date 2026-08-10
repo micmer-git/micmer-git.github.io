@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Laboratorio di stile — colori, caratteri, superfici · micmer</title>
-<meta name="description" content="Quattro direzioni complete per il fronte del sito: superfici, inchiostri, accenti, caratteri, grafici. Stesse schede vere di /vita in ognuna, con il contrasto calcolato in pagina. Ventidue varianti da votare.">
+<title>Laboratorio di stile — nove riquadri, tre per tre · micmer</title>
+<meta name="description" content="Nove varianti del fronte del sito in una griglia 3×3. In ogni casella lo stesso riquadro vero di /vita, con i dati veri di CTL e ATL, vestito con i suoi token. Sotto: le differenze esatte e il contrasto misurato in pagina.">
 <meta name="robots" content="noindex, follow">
 <meta name="theme-color" content="#17150f">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎨%3C/text%3E%3C/svg%3E">
@@ -13,238 +13,148 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Fraunces:opsz,wght@9..144,400;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
 <style>
 /* ============================================================================
-   La cornice del laboratorio (non e' in gara: e' il tavolo su cui stanno le
-   direzioni). Usa token propri --l-*, cosi' nessuna variante puo' sporcarla e
-   la si puo' comunque vestire con una direzione dal menu in alto.
+   LA CORNICE — non e' in gara.
+   Token propri --l-*, cosi' nessuna variante puo' sporcarla e nessun token di
+   una variante puo' colare fuori dalla sua casella.
    ========================================================================== */
 :root{
   --l-bg:#17150f; --l-paper:#211d16; --l-paper-2:#2a2519;
-  --l-ink:#ece3cd; --l-soft:#c6b997; --l-muted:#9b8e70;
+  --l-ink:#ece3cd; --l-soft:#c6b997; --l-muted:#9a8d70;
   --l-acc:#e2c98f; --l-rule:rgba(236,227,205,.16);
   --l-ok:#199e70; --l-no:#e66767;
   --l-mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
   --l-body:'EB Garamond',Georgia,serif;
   --l-disp:'Cinzel',Georgia,serif;
 }
-/* Il laboratorio si presenta di giorno a chi ha il sistema di giorno: e' anche
-   il primo assaggio della direzione B, prima ancora di scorrerla. */
-@media (prefers-color-scheme: light){
-  :root{
-    --l-bg:#f1e9d9; --l-paper:#fffdf7; --l-paper-2:#f7f0e0;
-    --l-ink:#231f18; --l-soft:#4a4436; --l-muted:#6f6449;
-    --l-acc:#8e6a20; --l-rule:rgba(35,31,24,.16);
-  }
-}
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%}
 body{background:var(--l-bg);color:var(--l-ink);font-family:var(--l-body);
   font-size:18px;line-height:1.6}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--l-acc);outline-offset:3px;border-radius:5px}
-button,input,textarea,select{font-family:inherit}
+button,input,textarea{font-family:inherit}
 
-header.top{text-align:center;padding:56px 20px 40px;max-width:960px;margin:0 auto}
-header.top .ey{font-family:var(--l-mono);font-size:.64rem;letter-spacing:.24em;
+header.top{text-align:center;padding:44px 20px 22px;max-width:900px;margin:0 auto}
+header.top .ey{font-family:var(--l-mono);font-size:.62rem;letter-spacing:.24em;
   text-transform:uppercase;color:var(--l-acc)}
-header.top h1{font-family:var(--l-disp);font-size:clamp(2.1rem,8vw,3.6rem);font-weight:700;
-  letter-spacing:.05em;line-height:1.02;margin:12px 0 0}
-header.top .sub{color:var(--l-soft);max-width:44em;margin:16px auto 0;font-size:1.02rem}
+header.top h1{font-family:var(--l-disp);font-size:clamp(1.9rem,7vw,3rem);font-weight:700;
+  letter-spacing:.05em;line-height:1.04;margin:10px 0 0}
+header.top .sub{color:var(--l-soft);max-width:46em;margin:14px auto 0;font-size:1rem}
 header.top .sub b{color:var(--l-ink);font-weight:500}
-header.top .fine{color:var(--l-muted);font-size:.84rem;line-height:1.6;max-width:52em;
-  margin:14px auto 0;font-style:italic}
+header.top .fine{color:var(--l-muted);font-size:.82rem;line-height:1.6;max-width:54em;
+  margin:12px auto 0;font-style:italic}
 
-nav.tnav{position:sticky;top:0;z-index:40;background:var(--l-bg);
-  border-bottom:1px solid var(--l-rule);padding:8px 12px;
-  display:flex;gap:6px;align-items:center;overflow-x:auto;scrollbar-width:thin}
-nav.tnav a{flex:0 0 auto;font-family:var(--l-mono);font-size:.62rem;letter-spacing:.12em;
-  text-transform:uppercase;text-decoration:none;color:var(--l-soft);
-  border:1px solid var(--l-rule);border-radius:999px;padding:6px 12px;white-space:nowrap}
-nav.tnav a:hover{color:var(--l-ink);border-color:var(--l-acc)}
-nav.tnav a b{font-weight:600;color:var(--l-muted);font-variant-numeric:tabular-nums}
-nav.tnav a.full{background:var(--l-acc);border-color:var(--l-acc);color:var(--l-bg)}
-nav.tnav a.full b{color:var(--l-bg)}
-nav.tnav label{flex:0 0 auto;margin-left:auto;font-family:var(--l-mono);font-size:.58rem;
-  letter-spacing:.1em;text-transform:uppercase;color:var(--l-muted);display:flex;
-  gap:6px;align-items:center;white-space:nowrap}
-nav.tnav select{background:transparent;color:var(--l-soft);border:1px solid var(--l-rule);
-  border-radius:999px;padding:5px 8px;font-family:var(--l-mono);font-size:.6rem}
+main{max-width:1220px;margin:0 auto;padding:6px 16px 120px}
 
-main{max-width:1280px;margin:0 auto;padding:8px 16px 110px}
-section.fam{margin:46px 0 0;scroll-margin-top:58px}
-section.fam .q{font-family:var(--l-mono);font-size:.62rem;letter-spacing:.2em;
-  text-transform:uppercase;color:var(--l-acc)}
-section.fam h2{font-family:var(--l-disp);font-size:clamp(1.4rem,4.6vw,2rem);font-weight:700;
-  letter-spacing:.03em;margin:6px 0 0}
-section.fam .lead{color:var(--l-soft);font-size:.96rem;max-width:70ch;margin:8px 0 0}
-section.fam .lead b{color:var(--l-ink);font-weight:500}
-.grid{display:grid;gap:16px;margin-top:18px;
-  grid-template-columns:repeat(auto-fill,minmax(min(430px,100%),1fr))}
-.grid.wide{grid-template-columns:1fr}
-@media(min-width:1120px){ .grid.wide{grid-template-columns:1fr 1fr} }
+/* ------------------------------------------------------------ la griglia 3×3 */
+.grid9{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+@media(max-width:1040px){ .grid9{grid-template-columns:repeat(2,1fr)} }
+@media(max-width:660px){  .grid9{grid-template-columns:1fr} }
 
-/* ------------------------------------------------------------- la scheda */
-article.v{border:1px solid var(--l-rule);border-radius:10px;background:var(--l-paper);
-  overflow:hidden;display:flex;flex-direction:column}
-article.v.hot{border-color:var(--l-acc)}
-article.v.star{border-color:var(--l-acc);box-shadow:inset 0 0 0 1px var(--l-acc)}
-article.v > .head{padding:13px 15px 10px;border-bottom:1px solid var(--l-rule)}
-article.v .vno{font-family:var(--l-mono);font-size:.6rem;letter-spacing:.16em;color:var(--l-acc)}
-article.v h3{font-family:var(--l-disp);font-size:1.12rem;font-weight:700;letter-spacing:.02em;
-  margin:3px 0 0}
-article.v .why{color:var(--l-soft);font-size:.86rem;line-height:1.5;margin:5px 0 0}
-article.v .why em{color:var(--l-muted)}
-.body{padding:14px 15px}
-.vote{padding:10px 15px 13px;border-top:1px dashed var(--l-rule);margin-top:auto}
-.vrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.chips{display:flex;gap:3px;flex-wrap:wrap}
-.chip{width:25px;height:26px;border-radius:5px;border:1px solid var(--l-rule);
-  background:transparent;font-family:var(--l-mono);font-size:.68rem;color:var(--l-soft);
-  cursor:pointer;padding:0;transition:border-color .15s,background .15s,color .15s}
+/* La casella e' un quadrato: aspect-ratio 1/1 la tiene tale finche' il contenuto
+   ci sta, e la lascia crescere invece di tagliarlo quando non ci sta (schermi
+   stretti, corpo di sistema ingrandito). Tutte le caselle hanno la STESSA
+   struttura — una riga di testa, l'istantanea, cinque righe di differenze, tre
+   righe di numeri, la riga del voto — cosi' l'istantanea riceve la stessa altezza
+   in tutte e nove, ed e' l'unica cosa che cambia davvero fra una e l'altra. */
+/* niente overflow:hidden qui: se il contenuto non ci sta (corpo di sistema
+   ingrandito, schermo strettissimo) la casella deve CRESCERE, non tagliare i
+   numeri — e' l'unica parte che non puo' mancare */
+.cell{aspect-ratio:1/1;display:flex;flex-direction:column;min-width:0;
+  border:1px solid var(--l-rule);border-radius:10px;background:var(--l-paper);
+  transition:border-color .15s}
+.cell.hot{border-color:var(--l-acc)}
+.cell.star{border-color:var(--l-acc);box-shadow:inset 0 0 0 1px var(--l-acc)}
+.cell.zoom{grid-column:1/-1;aspect-ratio:auto}
+
+.chead{display:flex;align-items:baseline;gap:8px;padding:7px 11px 6px;
+  border-bottom:1px solid var(--l-rule);flex:0 0 auto}
+.chead .no{font-family:var(--l-mono);font-size:.58rem;letter-spacing:.14em;color:var(--l-acc)}
+.chead .nm{font-family:var(--l-disp);font-size:.9rem;font-weight:700;letter-spacing:.02em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chead .pill{margin-left:auto;font-family:var(--l-mono);font-size:.5rem;letter-spacing:.08em;
+  text-transform:uppercase;border:1px solid currentColor;border-radius:999px;padding:1px 7px;
+  white-space:nowrap}
+.pill.ok{color:var(--l-ok)} .pill.no{color:var(--l-no)}
+
+/* L'ISTANTANEA. Il palco ha larghezza logica fissa (--sw) e viene rimpicciolito
+   con transform:scale: dentro non c'e' un mockup, c'e' il riquadro vero di /vita
+   con la sua marcatura e i suoi dati, quindi scalarlo e' l'unico modo onesto di
+   farcelo stare — quello che si vede e' quello che si avrebbe, piu' piccolo. */
+.snap{position:relative;flex:1 1 auto;min-height:96px;overflow:hidden;cursor:zoom-in;
+  background:var(--bg);border:0;display:block;width:100%;text-align:left}
+.cell.zoom .snap{cursor:zoom-out}
+.stage{position:absolute;left:0;top:0;width:var(--sw);transform-origin:0 0;
+  transform:scale(var(--k,1));padding:11px 13px 9px}
+
+.deltas{flex:0 0 auto;padding:7px 11px 0;font-family:var(--l-mono);font-size:.5rem;
+  line-height:1.62;letter-spacing:.02em;color:var(--l-muted)}
+.deltas .row{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.deltas .g{color:var(--l-acc);letter-spacing:.1em;text-transform:uppercase}
+.deltas b{color:var(--l-ink);font-weight:600}
+.deltas .same{font-style:italic}
+
+.figs{flex:0 0 auto;padding:6px 11px 0;font-family:var(--l-mono);font-size:.52rem;
+  line-height:1.6;font-variant-numeric:tabular-nums}
+.figs .row{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--l-soft)}
+.figs .lbl{color:var(--l-muted);letter-spacing:.09em;text-transform:uppercase}
+.figs .yes{color:var(--l-ok);font-weight:600}
+.figs .nox{color:var(--l-no);font-weight:600}
+.figs .need{color:var(--l-muted)}
+
+.vote{flex:0 0 auto;display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+  padding:6px 10px 8px;margin-top:auto;border-top:1px dashed var(--l-rule)}
+.chips{display:flex;gap:2px;flex-wrap:wrap}
+.chip{width:20px;height:21px;border-radius:4px;border:1px solid var(--l-rule);
+  background:transparent;font-family:var(--l-mono);font-size:.6rem;color:var(--l-soft);
+  cursor:pointer;padding:0;line-height:1}
 .chip:hover{border-color:var(--l-acc);color:var(--l-ink)}
 .chip.sel{background:var(--l-acc);border-color:var(--l-acc);color:var(--l-bg);font-weight:600}
 .stbtn{margin-left:auto;border:1px solid var(--l-rule);background:transparent;border-radius:999px;
-  cursor:pointer;font-size:.84rem;line-height:1;padding:6px 10px;color:var(--l-muted)}
+  cursor:pointer;font-size:.74rem;line-height:1;padding:5px 9px;color:var(--l-muted)}
 .stbtn:hover{border-color:var(--l-acc);color:var(--l-ink)}
 .stbtn.on{background:var(--l-acc);border-color:var(--l-acc);color:var(--l-bg)}
-.note{margin-top:7px;width:100%;border:1px solid var(--l-rule);border-radius:6px;
-  background:transparent;font-family:var(--l-mono);font-size:.72rem;color:var(--l-ink);
-  padding:7px 9px}
-.note::placeholder{color:var(--l-muted)}
-.note:focus{outline:none;border-color:var(--l-acc)}
-
-/* -------------------------------------------------- gettoni dei token */
-.toks{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
-.tok{display:inline-flex;align-items:center;gap:5px;font-family:var(--l-mono);font-size:.55rem;
-  letter-spacing:.06em;color:var(--l-muted);border:1px solid var(--l-rule);
-  border-radius:999px;padding:3px 8px 3px 4px}
-.tok i{width:11px;height:11px;border-radius:3px;display:inline-block;
-  border:1px solid rgba(128,128,128,.35)}
-
-/* -------------------------------------------------- lettura del contrasto */
-table.cr{width:100%;border-collapse:collapse;margin-top:10px;font-family:var(--l-mono);
-  font-size:.62rem;font-variant-numeric:tabular-nums}
-table.cr caption{text-align:left;font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--l-muted);padding-bottom:5px}
-table.cr th,table.cr td{text-align:right;padding:3px 0 3px 8px;
-  border-bottom:1px solid var(--l-rule);color:var(--l-soft);white-space:nowrap}
-table.cr th:first-child,table.cr td:first-child{text-align:left;padding-left:0}
-table.cr th{color:var(--l-muted);font-weight:500}
-table.cr td.r{color:var(--l-ink)}
-td.m{font-weight:600}
-td.m.ok{color:var(--l-ok)} td.m.no{color:var(--l-no)}
-.verd{font-family:var(--l-mono);font-size:.6rem;letter-spacing:.08em;margin-top:7px}
-.verd.ok{color:var(--l-ok)} .verd.no{color:var(--l-no)}
 
 /* ============================================================================
-   Il campione: le stesse classi di /vita, con i caratteri e i colori presi dai
-   token della direzione invece che da :root. Quello che si vede qui e' quello
-   che si otterrebbe cambiando il blocco :root di build_vita.py — niente di piu'.
+   IL RIQUADRO VERO DI /vita
+   Queste regole sono copiate da tools/build_vita.py (blocco .tile / .t-*), con
+   una sola differenza: dove li' c'e' un valore fisso ('Cinzel', 7px, 1px, 18px)
+   qui c'e' una custom property, e la variante V1 la riempie con esattamente quel
+   valore fisso. Cosi' V1 e' bit per bit la pagina di oggi, e ogni altra casella
+   differisce solo per i token che dichiara.
    ========================================================================== */
-.demo{background:var(--bg);color:var(--ink);font-family:var(--ff-b);font-size:var(--fs);
-  line-height:var(--lh);border-radius:8px;padding:16px 14px;overflow:hidden}
-.demo .mono{font-family:var(--ff-m)}
-.demo .eyebrow{font-family:var(--ff-m);font-size:.66rem;letter-spacing:.24em;
-  text-transform:uppercase;color:var(--gold)}
-.demo h1.t{font-family:var(--ff-d);font-size:2.1rem;font-weight:var(--wd);
-  letter-spacing:var(--lsd);line-height:1;margin:8px 0 4px}
-.demo p.sub{color:var(--ink-soft);font-style:italic;font-size:1.02rem;margin-top:6px}
-.demo p.plain{color:var(--ink-soft);margin-top:8px}
-.demo .totals{display:grid;grid-template-columns:repeat(auto-fit,minmax(84px,1fr));
-  gap:14px 8px;margin:16px 0 0}
-.demo .total{text-align:center}
-.demo .total .n{font-family:var(--ff-d);font-size:1.5rem;font-weight:var(--wd);color:var(--gold);
-  font-variant-numeric:tabular-nums;line-height:1.1}
-.demo .total .l{font-family:var(--ff-m);font-size:.58rem;letter-spacing:.13em;
-  text-transform:uppercase;color:var(--muted);margin-top:4px}
-.demo .tracks{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
-  gap:10px;margin:16px 0 0}
-.demo .track{position:relative;display:block;text-decoration:none;border-radius:var(--rad);
-  border:var(--bw) solid var(--rule);background:var(--paper);padding:12px 14px 11px;
-  box-shadow:var(--sh);overflow:hidden;transition:border-color .16s,background .16s}
-.demo .track::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--a)}
-.demo .track:hover{border-color:var(--a);background:var(--paper-2)}
-.demo .track .k{font-family:var(--ff-m);font-size:.56rem;letter-spacing:.19em;
-  text-transform:uppercase;color:var(--a)}
-.demo .track h3{font-family:var(--ff-d);font-size:1.08rem;font-weight:var(--wd);margin:4px 0 0;
-  letter-spacing:var(--lsd)}
-.demo .track p{color:var(--ink-soft);font-size:.84rem;line-height:1.5;margin-top:5px}
-.demo .track .nums{display:flex;gap:14px;flex-wrap:wrap;margin-top:9px}
-.demo .track .nums b{font-family:var(--ff-m);font-size:.82rem;font-weight:600;color:var(--ink);
-  font-variant-numeric:tabular-nums;display:block}
-.demo .track .nums span{font-family:var(--ff-m);font-size:.5rem;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--muted)}
-.demo .ranges{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin:16px 0 4px}
-.demo .ranges button{font-family:var(--ff-m);font-size:.64rem;letter-spacing:.14em;
-  text-transform:uppercase;padding:6px 14px;border-radius:999px;cursor:pointer;
-  background:transparent;border:var(--bw) solid var(--rule);color:var(--ink-soft)}
-.demo .ranges button[aria-pressed="true"]{border-color:var(--gold);background:var(--gold);
-  color:var(--bg);font-weight:600}
-.demo h2.band{font-family:var(--ff-d);font-size:.9rem;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--gold);text-align:center;font-weight:var(--wd);margin:20px 0 2px}
-.demo .band-sub{text-align:center;color:var(--muted);font-size:.82rem;font-style:italic;margin:0}
+.demo{color:var(--ink);font-family:var(--ff-b);font-size:var(--fs);line-height:var(--lh)}
 .demo .tile{position:relative;background:var(--paper);border:var(--bw) solid var(--rule);
-  border-radius:var(--rad);padding:var(--pad);box-shadow:var(--sh);margin-top:10px;
-  min-width:0;display:grid;grid-template-columns:150px 1fr;gap:0 16px;align-items:center}
-.demo .tile.bare{background:transparent;border:0;box-shadow:none;border-top:1px solid var(--rule);
-  border-radius:0;padding:12px 0 6px}
+  border-radius:var(--rad);padding:var(--pad);box-shadow:var(--sh);
+  min-width:0;display:grid;grid-template-columns:var(--tw) 1fr;gap:0 16px;align-items:center}
+.demo .tile.bare{background:transparent;border:0;box-shadow:none;border-radius:0;
+  border-top:1px solid var(--rule);padding:12px 0 6px}
 .demo .t-side{min-width:0}
+.demo .t-head{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
 .demo .t-title{font-family:var(--ff-d);font-size:.98rem;font-weight:var(--wd);
   letter-spacing:var(--lsd);line-height:1.2}
 .demo .t-now{font-family:var(--ff-m);font-size:1.15rem;font-weight:600;
   font-variant-numeric:tabular-nums;color:var(--gold);line-height:1.15;margin-top:3px}
-.demo .t-now small{display:block;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--muted);font-weight:400;margin-top:1px}
-.demo .t-cap{font-family:var(--ff-m);font-size:.55rem;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--muted);margin-top:2px;line-height:1.45}
-.demo .t-legend{display:flex;gap:9px;flex-wrap:wrap;margin:3px 0 0;font-family:var(--ff-m);
-  font-size:.54rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
-.demo .t-legend i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px;
-  vertical-align:-1px}
+.demo .t-now small{display:block;font-size:.55rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);font-weight:400;margin-top:1px}
+.demo .t-cap{font-family:var(--ff-m);font-size:.55rem;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted);margin-top:2px;line-height:1.45}
+.demo .t-legend{display:flex;gap:9px;flex-wrap:wrap;margin:3px 0 0;
+  font-family:var(--ff-m);font-size:.54rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink-soft)}
+.demo .t-legend i{display:inline-block;width:8px;height:8px;border-radius:2px;
+  margin-right:4px;vertical-align:-1px}
 .demo svg.plot{width:100%;height:auto;display:block;overflow:visible}
-.demo .t-foot{font-family:var(--ff-m);font-size:.53rem;letter-spacing:.06em;color:var(--muted);
-  margin-top:3px;line-height:1.45;grid-column:1/-1}
-.demo details.data{margin-top:4px;grid-column:1/-1}
-.demo details.data summary{font-family:var(--ff-m);font-size:.55rem;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--muted);cursor:pointer;list-style:none}
-.demo details.data summary::-webkit-details-marker{display:none}
-.demo details.data summary::before{content:"▸ "}
-.demo details.data[open] summary::before{content:"▾ "}
-.demo table.fallback{width:100%;border-collapse:collapse;margin-top:6px;font-size:.72rem;
-  font-family:var(--ff-m);font-variant-numeric:tabular-nums}
-.demo table.fallback th,.demo table.fallback td{text-align:right;padding:2px 0 2px 8px;
-  border-bottom:1px solid var(--rule);color:var(--ink-soft);white-space:nowrap}
-.demo table.fallback th:first-child,.demo table.fallback td:first-child{text-align:left;padding-left:0}
-.demo table.fallback th{color:var(--muted);font-weight:500}
-@media(max-width:720px){
-  .demo .tile{grid-template-columns:1fr;gap:5px 0}
-  .demo .t-side{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
-  .demo .t-now{font-size:1rem;margin-top:0;text-align:right}
-  .demo .t-now small{display:inline;margin-left:5px}
-  .demo .t-cap{flex-basis:100%;margin-top:0}
-}
-
-/* -------------------------------------------------- campionario tipografico */
-.spec{background:var(--bg);color:var(--ink);border-radius:8px;padding:16px 15px;
-  font-family:var(--ff-b);font-size:var(--fs);line-height:var(--lh)}
-.spec .d{font-family:var(--ff-d);font-weight:var(--wd);letter-spacing:var(--lsd);
-  font-size:2.05rem;line-height:1.05}
-.spec .d2{font-family:var(--ff-d);font-weight:var(--wd);letter-spacing:var(--lsd);
-  font-size:.98rem;margin-top:12px;color:var(--ink)}
-.spec p.body{margin-top:8px;color:var(--ink-soft)}
-.spec .num{font-family:var(--ff-m);font-size:1.15rem;font-weight:600;color:var(--gold);
-  font-variant-numeric:tabular-nums;margin-top:12px}
-.spec .cap{font-family:var(--ff-m);font-size:.53rem;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--muted);margin-top:8px;line-height:1.5}
-.spec .names{font-family:var(--l-mono);font-size:.58rem;letter-spacing:.08em;color:var(--muted);
-  margin-top:12px;border-top:1px solid var(--rule);padding-top:8px}
+.demo .t-foot{font-family:var(--ff-m);font-size:.53rem;letter-spacing:.06em;
+  color:var(--muted);margin-top:3px;line-height:1.45;grid-column:1/-1}
 
 /* ------------------------------------------------------------- casella libera */
-.freebox{margin:56px 0 0;border:1px solid var(--l-rule);border-radius:10px;
-  background:var(--l-paper);padding:18px 20px 20px}
-.freebox h2{font-family:var(--l-disp);font-weight:700;font-size:1.4rem;margin:0 0 4px}
-.freebox p{margin:0 0 12px;font-size:.9rem;line-height:1.55;color:var(--l-soft);max-width:74ch}
-.freebox textarea{width:100%;min-height:110px;resize:vertical;border:1px solid var(--l-rule);
-  border-radius:7px;background:transparent;font-family:var(--l-mono);font-size:.8rem;
+.freebox{margin:34px 0 0;border:1px solid var(--l-rule);border-radius:10px;
+  background:var(--l-paper);padding:16px 18px 18px}
+.freebox h2{font-family:var(--l-disp);font-weight:700;font-size:1.3rem;margin:0 0 4px}
+.freebox p{margin:0 0 10px;font-size:.88rem;line-height:1.55;color:var(--l-soft);max-width:74ch}
+.freebox textarea{width:100%;min-height:96px;resize:vertical;border:1px solid var(--l-rule);
+  border-radius:7px;background:transparent;font-family:var(--l-mono);font-size:.78rem;
   line-height:1.55;color:var(--l-ink);padding:10px 12px}
 .freebox textarea:focus{outline:none;border-color:var(--l-acc)}
 
@@ -252,59 +162,53 @@ td.m.ok{color:var(--l-ok)} td.m.no{color:var(--l-no)}
 .bar{position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--l-bg);
   border-top:1px solid var(--l-rule);display:flex;align-items:center;justify-content:center;
   gap:12px;flex-wrap:wrap;padding:9px 14px calc(9px + env(safe-area-inset-bottom))}
-.bar .prog{font-family:var(--l-mono);font-size:.68rem;letter-spacing:.08em;color:var(--l-soft)}
+.bar .prog{font-family:var(--l-mono);font-size:.66rem;letter-spacing:.08em;color:var(--l-soft)}
 .bar .prog b{font-size:1rem;color:var(--l-ink);font-variant-numeric:tabular-nums}
-.copy{font-family:var(--l-mono);font-size:.66rem;font-weight:600;letter-spacing:.12em;
+.copy{font-family:var(--l-mono);font-size:.64rem;font-weight:600;letter-spacing:.12em;
   text-transform:uppercase;background:var(--l-acc);color:var(--l-bg);border:none;
   border-radius:999px;padding:9px 18px;cursor:pointer}
-.ghost{font-family:var(--l-mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--l-soft);background:transparent;border:1px solid var(--l-rule);border-radius:999px;
-  padding:8px 14px;cursor:pointer}
 .wipe{font-family:var(--l-mono);font-size:.6rem;color:var(--l-muted);background:none;border:none;
   cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .outbox{display:none;width:min(760px,92vw);margin:12px auto 0;font-size:.72rem;line-height:1.55;
   font-family:var(--l-mono);border:1px solid var(--l-rule);border-radius:7px;padding:10px;
   background:var(--l-paper);color:var(--l-ink)}
-footer{border-top:1px solid var(--l-rule);text-align:center;padding:30px 20px 140px;
-  color:var(--l-muted);font-size:.86rem;line-height:1.7}
+footer{border-top:1px solid var(--l-rule);text-align:center;padding:26px 20px 150px;
+  color:var(--l-muted);font-size:.84rem;line-height:1.7}
 footer a{color:var(--l-soft);text-decoration:none;border-bottom:1px solid var(--l-rule)}
 
-@media(prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
-  *{transition:none !important;animation:none !important}
-}
-@media(max-width:560px){
+@media(prefers-reduced-motion:reduce){ *{transition:none !important;animation:none !important} }
+@media(max-width:660px){
   body{font-size:17px}
-  main{padding:8px 11px 120px}
-  header.top{padding:38px 14px 26px}
-  .chip{width:23px;height:25px}
+  main{padding:6px 11px 130px}
+  header.top{padding:32px 14px 18px}
+  .deltas{font-size:.56rem}
+  .figs{font-size:.58rem}
 }
 </style>
 </head>
 <body>
 
 <header class="top">
-  <div class="ey">micmer · laboratorio di stile · il fronte del sito</div>
-  <h1>Quattro modi<br>di vestire gli stessi dati</h1>
-  <p class="sub">Non quattro palette: quattro <b>sistemi interi</b> — superfici, inchiostri, accento,
-  raggi, bordi, densità, caratteri. In ognuno stanno le <b>stesse schede vere di /vita</b>, con i
-  numeri veri e la stessa marcatura, così quello che vedi è quello che avresti.</p>
-  <p class="fine">Si vota 0–10, la ★ segna le preferite (quante vuoi per sezione), da tastiera si vota
-  passando sopra una scheda e premendo un numero (d = 10, s = stella). Il contrasto sotto ogni
-  direzione è <b>calcolato qui, adesso</b>, non promesso: 4,5:1 per il testo, 3:1 per il testo grande
-  e per i segni dei grafici. In fondo la casella per il prossimo giro.</p>
+  <div class="ey">micmer · laboratorio di stile · nove riquadri</div>
+  <h1>Tre per tre</h1>
+  <p class="sub">Nove modi di vestire <b>lo stesso riquadro vero di /vita</b> — «Fitness e fatica»,
+  con la CTL e la ATL vere prese dal cruscotto. Non sono campioni di colore: in ogni casella c'è la
+  marcatura vera e il disegno vero, rimpicciolito, con i token di quella variante.</p>
+  <p class="fine">Sotto ogni istantanea: le differenze <b>esatte</b> rispetto a oggi (i valori, non
+  gli aggettivi) e i numeri <b>calcolati adesso in pagina</b> — contrasto di inchiostro, secondario,
+  minuto e accento sulla superficie di quella variante, e distanza ΔE dell'accento dai quattro
+  colori delle serie. Una casella che sfonda una soglia resta in griglia, con il numero che la
+  condanna. Si vota 0–10, la ★ segna le preferite. Un clic sull'istantanea la apre a grandezza vera.</p>
 </header>
 
-<nav class="tnav" id="tnav"></nav>
 <main id="main"></main>
 
 <div class="bar">
   <span class="prog" id="prog"><b>0</b> / 0 votate</span>
-  <button class="ghost" id="rand" type="button">sorprendimi ↦</button>
   <button class="copy" id="copy" type="button">copia i voti</button>
   <button class="wipe" id="wipe" type="button">azzera</button>
 </div>
-<textarea class="outbox" id="outbox" rows="12" readonly aria-label="riepilogo voti"></textarea>
+<textarea class="outbox" id="outbox" rows="14" readonly aria-label="riepilogo voti"></textarea>
 
 <footer>
   <p id="foot"></p>
@@ -316,51 +220,44 @@ footer a{color:var(--l-soft);text-decoration:none;border-bottom:1px solid var(--
 
 /* ===========================================================================
    1. DATI VERI
-   La spezzata è la CTL di /vita campionata ogni 4 settimane dal 2023-08 a oggi,
-   con la ATL accanto: due serie, quindi legenda obbligatoria — la stessa regola
-   della pagina vera. I totali in testa e le tre schede-tracker sono copiati dal
-   payload di /vita, non inventati: una direzione va giudicata su cifre della
-   lunghezza giusta ("76.437" occupa il doppio di "42").
+   Quaranta punti di CTL e ATL, uno ogni 28 giorni, dal 2023-08-14 al 2026-08-10:
+   sono i valori del payload di vita/index.html letti agli indici corrispondenti,
+   non una spezzata inventata. DAY[] tiene lo scostamento in giorni dal primo
+   punto, perche' e' quello che decide le etichette dell'asse x (oltre 900 giorni
+   di finestra /vita scrive gli anni, non i mesi) — stessa regola di frame().
    ========================================================================= */
-const DATES = ["2023-08","2023-09","2023-09","2023-10","2023-11","2023-12","2024-01","2024-02",
-  "2024-03","2024-04","2024-05","2024-06","2024-07","2024-08","2024-08","2024-09","2024-10",
-  "2024-11","2024-12","2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07",
-  "2025-08","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01","2026-02","2026-03",
-  "2026-04","2026-05","2026-06","2026-07","2026-08"];
-const CTL = [131.9,102.5,104.8,91.7,89.6,99,99.4,88.6,96.9,93,90.4,151.2,172.4,134,138.5,125.6,
-  121.4,127.9,106.6,123.6,115.6,136.3,157.7,152.6,146.1,135.1,142.4,170.2,150,132.2,118.7,106.4,
-  87.4,91.4,129,150.4,179.6,192.8,171.4,153.9];
-const ATL = [178.4,76.8,116.6,63.9,92.8,142.5,106.8,77.7,126.3,72.5,117.4,268.5,230.7,85.3,112.8,
-  142.9,124.8,126.6,80.8,142.4,104.9,162.6,195.7,114.8,148,119,167.3,201.1,118.7,128,95.8,101.7,
-  78.4,113.9,174.4,205,224.9,212.6,170.1,120.3];
-const TOTALS = [["2.257","attività"],["76.437","chilometri"],["1.485k","metri di salita"],
-  ["3.868","ore in movimento"],["154","fitness (CTL)"]];
-const TRACKS = [
-  {k:"la salita", t:"Gazzaniga → Orezzo", a:"#d95926",
-   p:"Una sola salita, undici anni, ogni singola ripetizione — in bici e di corsa.",
-   n:[["624","ascensioni"],["19,9","volte l'Everest"],["13:33","record in bici"]]},
-  {k:"la cronaca", t:"Diario di un Unno", a:"#199e70",
-   p:"39 capitoli mensili: ogni luna di allenamento scritta come un romanzo in numeri.",
-   n:[["39","lune"],["48.663","km"],["965.384","m saliti"]]},
-  {k:"le notti", t:"Sogni di un Unno", a:"#3987e5",
-   p:"274 settimane di sonno dal 2021 a oggi — quando vado a letto, quanto dormo.",
-   n:[["274","settimane"],["6,4 h","media, ultimo anno"],["6","anni tracciati"]]}
-];
-/* Prosa vera del sito, non lorem: è l'unico modo di vedere come un carattere
-   tiene le parole italiane (accenti, doppie, parole lunghe come "correlazione"). */
-const PROSA = "Una serie contro l'altra. La retta è una regressione dei minimi quadrati e r è " +
-  "la correlazione. Il risultato onesto di questa sezione è che sono tutte vicine a zero: niente " +
-  "di quello che l'orologio misura al mattino sa dire cosa è successo il giorno prima. Le nuvole " +
-  "sono qui apposta — una correlazione nulla si vede solo se la si disegna.";
-const PROSA2 = "Tutto quello che misuro, in una colonna sola. I numeri arrivano da Intervals.icu " +
-  "e dal diario alimentare, e sono inseriti nella pagina quando viene generata: nessuna chiamata, " +
-  "nessun dato che esce di qui.";
+const D0 = "2023-08-14";
+const DAY = [];
+for (let k = 0; k < 40; k++) DAY.push(k * 28);
+const DATES = ["2023-08-14","2023-09-11","2023-10-09","2023-11-06","2023-12-04","2024-01-01",
+  "2024-01-29","2024-02-26","2024-03-25","2024-04-22","2024-05-20","2024-06-17","2024-07-15",
+  "2024-08-12","2024-09-09","2024-10-07","2024-11-04","2024-12-02","2024-12-30","2025-01-27",
+  "2025-02-24","2025-03-24","2025-04-21","2025-05-19","2025-06-16","2025-07-14","2025-08-11",
+  "2025-09-08","2025-10-06","2025-11-03","2025-12-01","2025-12-29","2026-01-26","2026-02-23",
+  "2026-03-23","2026-04-20","2026-05-18","2026-06-15","2026-07-13","2026-08-10"];
+const CTL = [126.8,104.3,103.4,87,88.9,104.8,92.6,89.2,91.9,88.8,102.3,158.8,157.6,149.7,129.6,
+  121.1,122.2,123.4,106.1,125.9,115.4,136.3,171.7,147.3,133.3,137.3,148,169.6,143.3,129.4,113.8,
+  104.4,87.2,104.7,125.6,159.7,182.7,186.5,168.3,156.8];
+const ATL = [111.7,101.6,104.5,62.2,88.4,133.3,74,88.6,87.5,62.8,155.8,226.9,141.4,187.8,94.8,
+  115.5,131.2,115.4,92.1,141.4,114.6,145.8,231.7,121.8,102,135.6,176.6,183.1,115.1,118.3,93.9,
+  96.4,84,151.2,129.9,212.8,206.8,180.7,166.9,160.6];
+
+/* Testi del riquadro: sono quelli della specifica in build_vita.py, parola per
+   parola — titolo, didascalia, legenda, unita' del numero di oggi, piede. */
+const TILE = {
+  title:"Fitness e fatica",
+  cap:"CTL e ATL · giorno per giorno",
+  nowUnit:"CTL oggi",
+  foot:"Arancio sopra blu: si sta scavando.",
+  legend:[["Fitness (CTL)","var(--s1)"],["Fatica (ATL)","var(--s2)"]]
+};
 
 /* ===========================================================================
-   2. COLORE — le stesse formule del validatore della tavolozza
-   contrasto WCAG 2.x e ΔE euclidea in OKLab ×100 (visione normale). Sono qui in
-   venti righe perché una lettura di contrasto scritta a mano nel testo invecchia
-   male: questa si ricalcola ogni volta che la pagina si apre.
+   2. COLORE — contrasto WCAG 2.x e ΔE euclidea in OKLab ×100.
+   Vivono qui, in venti righe, perche' un numero di contrasto scritto a mano nel
+   testo invecchia male: questo si ricalcola a ogni apertura della pagina, e
+   tools/check_lab_stile.cjs lo ricalcola una terza volta con un'altra
+   implementazione e pretende che coincidano.
    ========================================================================= */
 const s2lin = c => c <= 0.04045 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4);
 function lin(h){
@@ -370,8 +267,7 @@ function lin(h){
 const relLum = h => { const c = lin(h); return 0.2126*c[0] + 0.7152*c[1] + 0.0722*c[2]; };
 function contrast(a,b){
   const x = relLum(a), y = relLum(b);
-  const hi = Math.max(x,y), lo = Math.min(x,y);
-  return (hi + 0.05) / (lo + 0.05);
+  return (Math.max(x,y) + 0.05) / (Math.min(x,y) + 0.05);
 }
 function oklab(h){
   const c = lin(h);
@@ -389,86 +285,106 @@ function deltaE(a,b){
 const f2 = n => n.toFixed(2).replace(".",",");
 const f1 = n => n.toFixed(1).replace(".",",");
 
-/* La tavolozza dei grafici NON è in gara: è validata come insieme contro il
-   fondo della scheda (peggior coppia adiacente ΔE 8,4 in CVD, 19,8 a visione
-   normale). Ogni direzione la eredita identica — cambia solo il fondo sotto,
-   e quello sì che va rimisurato, ed è misurato qui sotto. */
+/* I quattro slot dei grafici NON sono in gara: sono validati come insieme e non
+   si toccano. Cambia la superficie sotto — e quella va rimisurata ogni volta. */
 const PAL = {s1:"#3987e5", s2:"#d95926", s3:"#199e70", s4:"#c98500"};
+const SLOTS = ["s1","s2","s3","s4"];
 
 /* ===========================================================================
-   3. LE QUATTRO DIREZIONI — set di token completi
+   3. IL SISTEMA DI OGGI + LE NOVE VARIANTI
+   BASE e' copiato dal blocco :root di tools/build_vita.py (10 agosto 2026).
+   Ogni variante dichiara SOLO i token che cambia: e' questa la differenza che
+   finisce scritta nella casella, ed e' l'unica cosa che si legge in griglia.
    ========================================================================= */
 const FONTS = {
-  cinzel:   {d:"'Cinzel',Georgia,serif", wd:"700", ls:".02em"},
-  fraunces: {d:"'Fraunces',Georgia,serif", wd:"600", ls:"-.005em"},
-  instr:    {d:"'Instrument Serif',Georgia,serif", wd:"400", ls:"-.01em"},
-  garamond: "'EB Garamond',Georgia,serif",
-  newsreader:"'Newsreader',Georgia,serif",
-  inter:    "'Inter',system-ui,-apple-system,sans-serif",
-  plex:     "'IBM Plex Mono',ui-monospace,monospace",
-  jet:      "'JetBrains Mono',ui-monospace,monospace"
+  cinzel:"'Cinzel',Georgia,serif", garamond:"'EB Garamond',Georgia,serif",
+  plex:"'IBM Plex Mono',ui-monospace,monospace", fraunces:"'Fraunces',Georgia,serif",
+  newsreader:"'Newsreader',Georgia,serif", instr:"'Instrument Serif',Georgia,serif",
+  inter:"'Inter',system-ui,-apple-system,sans-serif", jet:"'JetBrains Mono',ui-monospace,monospace"
 };
-function tokens(o){
-  const t = Object.assign({
-    "paper-2": o.paper2, rad:"7px", bw:"1px", sh:"none", pad:"9px 13px 7px",
-    fs:"18px", lh:"1.6", wd:"700", lsd:".02em"
-  }, o, PAL);
-  delete t.paper2;                /* il nome vero della custom property e' --paper-2 */
-  return t;
-}
-const DIRS = [
-{ id:"D1", key:"pergamena", name:"Pergamena notturna",
-  why:"Quella di oggi, messa in gara come le altre. Serve da metro: se una direzione non la batte su qualcosa di misurabile, non vale il costo di cambiarla.",
-  note:"L'unica falla che il calcolatore trova è il grigio dei piedini: 4,15:1, sotto la soglia — ed è il colore delle didascalie, dei piedi e delle intestazioni di tabella.",
-  tok:{ bg:"#17150f", paper:"#211d16", paper2:"#2a2519",
-        ink:"#ece3cd", "ink-soft":"#c6b997", muted:"#8a7d62", gold:"#c89a3f",
-        rule:"rgba(200,154,63,.22)", grid:"rgba(236,227,205,.09)", axis:"rgba(236,227,205,.20)",
-        "ff-d":FONTS.cinzel.d, wd:FONTS.cinzel.wd, lsd:FONTS.cinzel.ls,
-        "ff-b":FONTS.garamond, "ff-m":FONTS.plex },
-  faces:"Cinzel 700 · EB Garamond 400 · IBM Plex Mono" },
+const BASE = {
+  bg:"#17150f", paper:"#211d16", "paper-2":"#2a2519",
+  ink:"#ece3cd", "ink-soft":"#c6b997", muted:"#9a8d70",
+  gold:"#e2c98f", rule:"rgba(200,154,63,.22)",
+  grid:"rgba(236,227,205,.09)", axis:"rgba(236,227,205,.20)",
+  s1:PAL.s1, s2:PAL.s2, s3:PAL.s3, s4:PAL.s4,
+  rad:"7px", bw:"1px", sh:"none", pad:"9px 13px 7px", tw:"170px",
+  fs:"18px", lh:"1.6", wd:"600", lsd:".02em",
+  "ff-d":FONTS.cinzel, "ff-b":FONTS.garamond, "ff-m":FONTS.plex
+};
+const FACES_BASE = "Cinzel 600 · EB Garamond · IBM Plex Mono";
 
-{ id:"D2", key:"alba", name:"Pergamena all'alba",
-  why:"La stessa identità girata di giorno: carta chiara, inchiostro scuro, oro bruciato. È la direzione che risolve il problema che il sito ha fuori — al sole, in bici, sul telefono.",
-  note:"Vincolo misurato, non estetico: la carta della scheda non può essere più scura di #fffdf7. A #faf8f3, la crema usata altrove nel sito, il giallo dei grafici scende a 2,87:1 e la tavolozza esce dalle soglie.",
-  tok:{ bg:"#f1e9d9", paper:"#fffdf7", paper2:"#f7f0e0",
-        ink:"#231f18", "ink-soft":"#4a4436", muted:"#6f6449", gold:"#8e6a20",
-        rule:"rgba(35,31,24,.16)", grid:"rgba(35,31,24,.10)", axis:"rgba(35,31,24,.24)",
-        "ff-d":FONTS.cinzel.d, wd:FONTS.cinzel.wd, lsd:FONTS.cinzel.ls,
-        "ff-b":FONTS.garamond, "ff-m":FONTS.plex },
-  faces:"Cinzel 700 · EB Garamond 400 · IBM Plex Mono" },
+const VARS = [
+{ id:"V1", name:"Pergamena (oggi)",
+  why:"Il metro. Nessun token cambiato: è esattamente il blocco :root di build_vita.py del 10 agosto 2026. Se una casella non la batte su qualcosa di misurabile, non vale il costo di cambiarla.",
+  tok:{}, faces:FACES_BASE },
 
-{ id:"D3", key:"inchiostro", name:"Inchiostro",
-  why:"Grafite fredda, angoli larghi, ombra al posto del bordo, e un solo caldo rimasto: l'accento. È la direzione dei laboratori del top-20 (Instrument Serif + Inter) portata sul cruscotto — e l'unica in cui il testo minuto è di sistema, quindi leggibile davvero sul telefono.",
-  note:"Sul fondo neutro i quattro colori dei grafici sono l'unica cosa satura della pagina: la lettura ci guadagna, l'identità «carta antica» ci perde.",
-  tok:{ bg:"#131417", paper:"#1b1d20", paper2:"#232629",
+{ id:"V2", name:"Alba",
+  why:"La stessa identità girata di giorno. L'accento NON può restare oro: sulla carta chiara l'oro deve scurirsi per arrivare a 4,5:1, e scurendosi finisce addosso al giallo delle serie — #8e6a20 sta a ΔE 13,1 dallo slot 4. #7d5310 è il bronzo che ci arriva.",
+  tok:{ bg:"#f1e9d9", paper:"#fffdf7", "paper-2":"#f7f0e0",
+        ink:"#231f18", "ink-soft":"#4a4436", muted:"#6f6449", gold:"#7d5310",
+        rule:"rgba(35,31,24,.16)", grid:"rgba(35,31,24,.10)", axis:"rgba(35,31,24,.24)" },
+  faces:FACES_BASE },
+
+{ id:"V3", name:"Inchiostro",
+  why:"Grafite fredda, angoli larghi, ombra al posto del bordo, minuto in sans. È la voce dei laboratori del top-20 portata sul cruscotto. L'oro acceso che chiede questo fondo è però il difetto che avevamo appena tolto: ΔE 12,4 dallo slot 4.",
+  tok:{ bg:"#131417", paper:"#1b1d20", "paper-2":"#232629",
         ink:"#eceff3", "ink-soft":"#c3c8d0", muted:"#959aa3", gold:"#e3b344",
         rule:"rgba(236,239,243,.11)", grid:"rgba(236,239,243,.07)", axis:"rgba(236,239,243,.18)",
         rad:"12px", sh:"0 1px 0 rgba(255,255,255,.04),0 10px 26px rgba(0,0,0,.38)",
-        pad:"11px 15px 9px", fs:"17px", lh:"1.62",
-        "ff-d":FONTS.instr.d, wd:FONTS.instr.wd, lsd:FONTS.instr.ls,
-        "ff-b":FONTS.inter, "ff-m":FONTS.jet },
-  faces:"Instrument Serif 400 · Inter 400 · JetBrains Mono" },
+        pad:"11px 15px 9px", fs:"17px",
+        "ff-d":FONTS.instr, wd:"400", lsd:"-.01em", "ff-b":FONTS.inter, "ff-m":FONTS.jet },
+  faces:"Instrument Serif 400 · Inter · JetBrains Mono" },
 
-{ id:"D4", key:"editoriale", name:"Notturno editoriale",
-  why:"La pergamena che smette di essere un'insegna e diventa una pagina: angoli quasi vivi, filo neutro invece del bordo dorato, più aria, corpo 19px. Cambia soprattutto il carattere dei titoli — Fraunces ha le minuscole, Cinzel no.",
-  note:"Cinzel è un alfabeto di sole capitali: sotto 1rem il titolo di un riquadro diventa un blocco grigio, ed è esattamente la misura a cui /vita lo usa (0,98rem, 31 volte).",
-  tok:{ bg:"#1a1712", paper:"#24201c", paper2:"#2e2922",
-        ink:"#f0e8d6", "ink-soft":"#cdc0a4", muted:"#a29477", gold:"#d9b26a",
+{ id:"V4", name:"Editoriale",
+  why:"La pergamena che smette di essere un'insegna e diventa una pagina: angoli quasi vivi, filo neutro invece del bordo dorato, più aria, corpo 19px. Cambia soprattutto il titolo — Fraunces ha le minuscole, Cinzel no, e il titolo di riquadro sta a 0,98rem in tutti e 31 i grafici.",
+  tok:{ bg:"#1a1712", paper:"#24201c", "paper-2":"#2e2922",
+        ink:"#f0e8d6", "ink-soft":"#cdc0a4", muted:"#a29477",
         rule:"rgba(240,232,214,.15)", grid:"rgba(240,232,214,.08)", axis:"rgba(240,232,214,.20)",
-        rad:"4px", pad:"12px 16px 10px", fs:"19px", lh:"1.68",
-        "ff-d":FONTS.fraunces.d, wd:FONTS.fraunces.wd, lsd:FONTS.fraunces.ls,
-        "ff-b":FONTS.newsreader, "ff-m":FONTS.plex },
-  faces:"Fraunces 600 · Newsreader 400 · IBM Plex Mono" }
+        rad:"3px", pad:"12px 16px 10px", fs:"19px", lh:"1.68",
+        "ff-d":FONTS.fraunces, wd:"600", lsd:"-.005em", "ff-b":FONTS.newsreader },
+  faces:"Fraunces 600 · Newsreader · IBM Plex Mono" },
+
+{ id:"V5", name:"Senza scheda", bare:true, surfKey:"bg",
+  why:"Niente carta: il grafico sta sulla pagina nuda, separato solo da un filo sopra. Massimo inchiostro sui dati, zero cornice — e la tavolozza torna a essere validata contro il fondo pagina #17150f, non contro la scheda, il che le fa guadagnare mezzo punto di contrasto su tutti e quattro gli slot.",
+  tok:{ bw:"0", rad:"0", sh:"none", pad:"12px 0 6px" },
+  faces:FACES_BASE },
+
+{ id:"V6", name:"Rilievo",
+  why:"Il bordo sparisce e la scheda si stacca con un tono più chiaro e un'ombra. Su una colonna lunga dà ritmo. Il prezzo è che la carta più chiara abbassa tutto: il minuto scende a 4,89:1, ancora dentro ma senza margine.",
+  tok:{ paper:"#262117", rule:"rgba(0,0,0,0)", rad:"12px",
+        sh:"0 1px 0 rgba(255,255,255,.05),0 10px 26px rgba(0,0,0,.45)" },
+  faces:FACES_BASE },
+
+{ id:"V7", name:"Denso",
+  why:"Stessi colori, stessi caratteri: cambia solo quanto respira. /vita è una colonna di 31 riquadri, e togliere 3px di padding e 0,15 di interlinea a ciascuno vale mezzo schermo di scorrimento in meno. Nessun colore si muove, quindi nessun numero si muove.",
+  tok:{ rad:"4px", pad:"6px 10px 5px", fs:"17px", lh:"1.45", tw:"140px" },
+  faces:FACES_BASE },
+
+{ id:"V8", name:"Un carattere solo",
+  why:"Cinzel esce, EB Garamond fa anche i titoli, spaziato .12em. Toglie un font dal caricamento e un'insegna alla pagina — e risolve il problema che Cinzel ha a 0,98rem, dove un alfabeto di sole capitali diventa un blocco grigio. Zero token di colore toccati.",
+  tok:{ "ff-d":FONTS.garamond, wd:"500", lsd:".12em" },
+  faces:"EB Garamond 500 +.12em · EB Garamond · IBM Plex Mono" },
+
+{ id:"V9", name:"Oro di ieri",
+  why:"Il controllo. Sono i due valori che il laboratorio precedente ha misurato e che build_vita.py ha già sostituito: il grigio del minuto e l'oro dell'accento com'erano prima del 10 agosto. Sta in griglia perché la differenza si veda, non perché sia una candidata.",
+  tok:{ muted:"#8a7d62", gold:"#c89a3f" },
+  faces:FACES_BASE }
 ];
-DIRS.forEach(d => { d.tok = tokens(d.tok); });
-const BASE = DIRS[0].tok;
+
+/* Ogni variante porta con se' il set completo di token e la superficie su cui il
+   riquadro appoggia davvero: per V5 non e' la carta, e' il fondo pagina. */
+for (const v of VARS){
+  v.tok = Object.assign({}, BASE, v.tok);
+  v.surf = v.tok[v.surfKey || "paper"];
+}
 
 /* ===========================================================================
    4. COSTRUZIONE DEI NODI
    Uno alla volta, tenendosi il riferimento — mai innerHTML riletto con una
-   query. È la stessa disciplina di /vita, ed è ciò che permette a
-   tools/check_lab_stile.cjs di far girare questa pagina su uno shim di DOM
-   invece che su un browser (che su questa macchina non c'è).
+   query. È la stessa disciplina di /vita, ed è cio' che permette al controllo di
+   far girare questa pagina su uno shim di DOM invece che su un browser, che su
+   questa macchina non c'e'.
    ========================================================================= */
 const NS = "http://www.w3.org/2000/svg";
 function mk(tag, cls, parent, text){
@@ -478,9 +394,10 @@ function mk(tag, cls, parent, text){
   if (parent) parent.appendChild(e);
   return e;
 }
-function sv(tag, attrs, parent){
+function sv(tag, attrs, parent, text){
   const e = document.createElementNS(NS, tag);
   for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (text !== undefined) e.textContent = text;
   if (parent) parent.appendChild(e);
   return e;
 }
@@ -489,487 +406,373 @@ function paint(node, tok){
   return node;
 }
 
-/* ------------------------------------------------------------ la spezzata
-   Stessa aritmetica di /vita: gronda calcolata dall'etichetta più larga
-   (~4,85px per glifo mono a corpo 8) invece che fissa, così "192,8" non viene
-   tagliato e "87" non spreca un decimo del riquadro. */
-const GLYPH = 4.85;
-function plot(host, st){
-  st = st || {};
-  const W = 360, H = st.H || 104;
-  const series = st.solo ? [{v:CTL, c:"var(--s1)", n:"forma (CTL)"}]
-                         : [{v:CTL, c:"var(--s1)", n:"forma (CTL)"},
-                            {v:ATL, c:"var(--s2)", n:"fatica (ATL)"}];
-  let lo = Infinity, hi = -Infinity;
-  for (const s of series) for (const v of s.v){ if (v < lo) lo = v; if (v > hi) hi = v; }
-  const span = hi - lo || 1;
-  lo = Math.floor((lo - span*0.08)/10)*10;
-  hi = Math.ceil((hi + span*0.08)/10)*10;
-  const ticks = [lo, Math.round((lo+hi)/20)*10, hi];
-  const lab = t => String(t).replace(".",",");
-  const gut = Math.max.apply(null, ticks.map(t => lab(t).length)) * GLYPH + 6;
-  const P = {l:gut, r:st.endLabel ? 34 : 8, t:9, b:14};
-  const iw = W - P.l - P.r, ih = H - P.t - P.b;
-  const n = CTL.length;
-  const X = i => P.l + iw * (n === 1 ? 0 : i/(n-1));
-  const Y = v => P.t + ih * (1 - (v - lo)/(hi - lo));
-  const svg = sv("svg", {class:"plot", viewBox:"0 0 "+W+" "+H, role:"img",
-    "aria-label":"Forma e fatica, quattro settimane per punto, dal 2023 a oggi"}, host);
+/* ------------------------------------------------- l'aritmetica degli assi
+   nice(), yTicks(), padFor() e TICKW sono ricopiati da build_vita.py: se la
+   gronda qui fosse calcolata in un altro modo, l'istantanea mentirebbe proprio
+   sulla cosa che si sta giudicando, cioe' quanto spazio il testo minuto mangia
+   al disegno. */
+const TICKW = 6.05;
+const nfIt = (v, d) => v.toLocaleString("it-IT", {minimumFractionDigits:d, maximumFractionDigits:d});
+function nice(lo, hi){
+  if (lo === hi){ lo -= 1; hi += 1; }
+  const span = hi - lo, mag = Math.pow(10, Math.floor(Math.log10(span/3)));
+  const step = [1,2,2.5,5,10].map(m => m*mag).filter(s => span/s <= 5)[0] || mag*10;
+  return {lo:Math.floor(lo/step)*step, hi:Math.ceil(hi/step)*step, step};
+}
+function yTicks(yd){
+  const out = [];
+  for (let v = yd.lo; v <= yd.hi + 1e-9; v += yd.step) out.push([v, nfIt(v, yd.step < 1 ? 1 : 0)]);
+  return out;
+}
+const padFor = ticks => Math.min(74, Math.max(28,
+  Math.ceil(Math.max.apply(null, ticks.map(t => t[1].length)) * TICKW) + 10));
 
-  if (st.grid !== false) for (const t of ticks){
-    sv("line", {x1:P.l, x2:P.l+iw, y1:Y(t).toFixed(2), y2:Y(t).toFixed(2),
-      stroke:"var(--grid)", "stroke-width":1}, svg);
-  }
-  sv("line", {x1:P.l, x2:P.l+iw, y1:(P.t+ih).toFixed(2), y2:(P.t+ih).toFixed(2),
-    stroke:"var(--axis)", "stroke-width":1}, svg);
+/* ------------------------------------------------------ il grafico, come /vita
+   rLines + frame: griglia, asse dello zero, area al 14% sotto la prima serie,
+   tratto 2, etichette d'asse a corpo 10 in mono. Niente crosshair: qui non si
+   punta col dito, si guarda. */
+const MON = ["gen","feb","mar","apr","mag","giu","lug","ago","set","ott","nov","dic"];
+function plot(host, W, H){
+  const all = CTL.concat(ATL);
+  const yd = nice(Math.min(0, Math.min.apply(null, all)), Math.max.apply(null, all));
+  const ticks = yTicks(yd);
+  const P = {l:padFor(ticks), r:8, t:9, b:20};
+  const iw = W - P.l - P.r, ih = H - P.t - P.b;
+  const x0 = DAY[0], x1 = DAY[DAY.length - 1];
+  const X = v => P.l + (v - x0)/(x1 - x0)*iw;
+  const Y = v => P.t + ih - (v - yd.lo)/(yd.hi - yd.lo)*ih;
+  const svg = sv("svg", {class:"plot", viewBox:"0 0 " + W + " " + H, role:"img",
+    "aria-label":TILE.title + " — " + TILE.cap}, host);
+
   for (const t of ticks){
-    const e = sv("text", {x:(P.l-4).toFixed(2), y:(Y(t)+2.6).toFixed(2), "text-anchor":"end",
-      fill:"var(--muted)", "font-size":8, "font-family":"var(--ff-m)"}, svg);
-    e.textContent = lab(t);
+    const y = Y(t[0]).toFixed(2);
+    sv("line", {x1:P.l, x2:W - P.r, y1:y, y2:y,
+      stroke:t[0] === 0 ? "var(--axis)" : "var(--grid)", "stroke-width":1}, svg);
+    sv("text", {x:(P.l - 6).toFixed(2), y:(Y(t[0]) + 3.5).toFixed(2), "text-anchor":"end",
+      fill:"var(--muted)", "font-size":"10", "font-family":"var(--ff-m)"}, svg, t[1]);
   }
-  const marks = [[0,"start"],[Math.floor((n-1)/2),"middle"],[n-1,"end"]];
-  for (const m of marks){
-    const e = sv("text", {x:X(m[0]).toFixed(2), y:(H-3).toFixed(2), "text-anchor":m[1],
-      fill:"var(--muted)", "font-size":8, "font-family":"var(--ff-m)"}, svg);
-    e.textContent = DATES[m[0]].slice(0,4);
+  /* la finestra e' 1.092 giorni, oltre i 900 che in /vita fanno scattare le
+     etichette per anno invece che per mese: stessa soglia, stesso esito */
+  const kmax = iw < 300 ? 3 : iw < 520 ? 4 : 5;
+  for (let k = 0; k < kmax; k++){
+    const v = x0 + (x1 - x0)*k/(kmax - 1);
+    const i = Math.min(DATES.length - 1, Math.round(v/28));
+    sv("text", {x:X(v).toFixed(2), y:(H - 5).toFixed(2),
+      "text-anchor":k === 0 ? "start" : k === kmax - 1 ? "end" : "middle",
+      fill:"var(--muted)", "font-size":"10", "font-family":"var(--ff-m)"}, svg,
+      DATES[i].slice(0,4));
   }
-  series.forEach((s, si) => {
+  const path = vals => {
     let d = "";
-    for (let i = 0; i < n; i++) d += (i ? "L" : "M") + X(i).toFixed(2) + " " + Y(s.v[i]).toFixed(2);
-    if (st.area && si === 0){
-      const a = d + "L" + X(n-1).toFixed(2) + " " + (P.t+ih).toFixed(2)
-              + "L" + X(0).toFixed(2) + " " + (P.t+ih).toFixed(2) + "Z";
-      sv("path", {d:a, fill:s.c, opacity:.14, stroke:"none"}, svg);
-    }
-    sv("path", {d:d, fill:"none", stroke:s.c, "stroke-width":st.lw || 1.6,
-      "stroke-linejoin":"round", "stroke-linecap":"round",
-      opacity: si && !st.area ? .9 : 1}, svg);
-    if (st.dots){
-      sv("circle", {cx:X(n-1).toFixed(2), cy:Y(s.v[n-1]).toFixed(2), r:2.6, fill:s.c,
-        stroke:"var(--paper)", "stroke-width":1}, svg);
-    }
-    if (st.endLabel){
-      const e = sv("text", {x:(X(n-1)+5).toFixed(2), y:(Y(s.v[n-1])+2.6).toFixed(2),
-        "text-anchor":"start", fill:s.c, "font-size":8, "font-family":"var(--ff-m)"}, svg);
-      e.textContent = si ? "ATL" : "CTL";
-    }
-  });
+    for (let i = 0; i < vals.length; i++)
+      d += (i ? "L" : "M") + X(DAY[i]).toFixed(1) + " " + Y(vals[i]).toFixed(1) + " ";
+    return d.trim();
+  };
+  const base = Y(Math.max(yd.lo, 0)).toFixed(1);
+  const dc = path(CTL);
+  sv("path", {d:dc + " L" + X(x1).toFixed(1) + " " + base + " L" + X(x0).toFixed(1) + " " + base + " Z",
+    fill:"var(--s1)", opacity:".14"}, svg);
+  sv("path", {d:dc, fill:"none", stroke:"var(--s1)", "stroke-width":2,
+    "stroke-linejoin":"round", "stroke-linecap":"round"}, svg);
+  sv("path", {d:path(ATL), fill:"none", stroke:"var(--s2)", "stroke-width":2,
+    "stroke-linejoin":"round", "stroke-linecap":"round"}, svg);
   return svg;
 }
 
-/* ------------------------------------------------------------- un riquadro */
-function tile(parent, st){
-  st = st || {};
-  const art = mk("article", "tile" + (st.bare ? " bare" : ""), parent);
+/* -------------------------------------------- il riquadro vero, con i suoi testi */
+function tileNode(parent, bare, W, H){
+  const art = mk("article", "tile" + (bare ? " bare" : ""), parent);
   const side = mk("div", "t-side", art);
-  mk("div", "t-title", side, "Forma e fatica");
+  const head = mk("div", "t-head", side);
+  mk("div", "t-title", head, TILE.title);
   const now = mk("div", "t-now", side);
-  mk("span", null, now, "154");
-  const sm = mk("small", null, now, "ctl, oggi");
-  mk("div", "t-cap", side, "media mobile a 42 giorni · una goccia ogni 4 settimane");
-  if (!st.solo){
-    const lg = mk("div", "t-legend", side);
-    for (const s of [["forma (CTL)","var(--s1)"],["fatica (ATL)","var(--s2)"]]){
-      const w = mk("span", null, lg);
-      const i = mk("i", null, w); i.style.setProperty("background", s[1]);
-      mk("span", null, w, " " + s[0]);
-    }
+  mk("span", null, now, nfIt(Math.round(CTL[CTL.length - 1]), 0));
+  mk("small", null, now, TILE.nowUnit);
+  mk("div", "t-cap", side, TILE.cap);
+  const lg = mk("div", "t-legend", side);
+  for (const l of TILE.legend){
+    const w = mk("span", null, lg);
+    const i = mk("i", null, w);
+    i.style.setProperty("background", l[1]);
+    mk("span", null, w, l[0]);
   }
   const box = mk("div", "figbox", art);
-  plot(box, st);
-  mk("div", "t-foot", art, "ago 2023 → ago 2026 · n 40 · " +
-    (st.solo ? "una serie sola" : "due serie, quindi legenda"));
-  const det = mk("details", "data", art);
-  mk("summary", null, det, "dati");
-  const tbl = mk("table", "fallback", det);
-  const thead = mk("thead", null, tbl), hr = mk("tr", null, thead);
-  for (const h of ["mese","CTL","ATL"]) mk("th", null, hr, h);
-  const tb = mk("tbody", null, tbl);
-  for (let i = CTL.length - 6; i < CTL.length; i++){
-    const tr = mk("tr", null, tb);
-    mk("td", null, tr, DATES[i]);
-    mk("td", null, tr, f1(CTL[i]));
-    mk("td", null, tr, f1(ATL[i]));
-  }
-  return art;
-}
-
-/* --------------------------------------------- l'anteprima di una direzione */
-function preview(tok, st){
-  st = st || {};
-  const d = paint(mk("div", "demo"), tok);
-  mk("div", "eyebrow", d, "micmer · quadro di comando");
-  mk("h1", "t", d, "Vita");
-  mk("p", "sub", d, PROSA2);
-  const tot = mk("div", "totals", d);
-  for (const t of TOTALS){
-    const c = mk("div", "total", tot);
-    mk("div", "n", c, t[0]);
-    mk("div", "l", c, t[1]);
-  }
-  const tr = mk("nav", "tracks", d);
-  for (const t of TRACKS){
-    const a = mk("a", "track", tr);
-    a.setAttribute("href", "#"); a.style.setProperty("--a", t.a);
-    mk("div", "k", a, t.k);
-    mk("h3", null, a, t.t);
-    mk("p", null, a, t.p);
-    const nn = mk("div", "nums", a);
-    for (const x of t.n){ const w = mk("div", null, nn); mk("b", null, w, x[0]); mk("span", null, w, x[1]); }
-  }
-  const rg = mk("div", "ranges", d);
-  ["2 anni","1 anno","3 mesi","sempre"].forEach((r,i) => {
-    const b = mk("button", null, rg, r);
-    b.setAttribute("type","button");
-    b.setAttribute("aria-pressed", String(i === 3));
-  });
-  mk("h2", "band", d, "Carico");
-  mk("p", "band-sub", d, "Quanto lavoro c'è addosso, e quanto ne è già stato smaltito.");
-  tile(d, st);
-  return d;
-}
-
-/* --------------------------------------------- la lettura del contrasto */
-/* Le soglie: 4,5:1 per il testo corrente, 3:1 per il testo grande e per i segni
-   di un grafico. Il minuto (0,53–0,58rem) è testo corrente a tutti gli effetti:
-   è piccolo, non grande, e va tenuto a 4,5. */
-const READOUTS = [];
-function readout(parent, tok, id, extra){
-  const rows = [
-    ["corpo del testo", tok.ink, "ink su scheda", 4.5],
-    ["testo secondario", tok["ink-soft"], "ink-soft su scheda", 4.5],
-    ["minuto: piedi, assi, didascalie", tok.muted, "muted su scheda", 4.5],
-    ["accento come testo", tok.gold, "gold su scheda", 4.5],
-    ["accento come titolo grande", tok.gold, "gold su scheda, ≥18px", 3],
-    ["grafico · serie 1", PAL.s1, "s1 su scheda", 3],
-    ["grafico · serie 2", PAL.s2, "s2 su scheda", 3],
-    ["grafico · serie 3", PAL.s3, "s3 su scheda", 3],
-    ["grafico · serie 4", PAL.s4, "s4 su scheda", 3]
-  ].concat(extra || []);
-  const t = mk("table", "cr", parent);
-  mk("caption", null, t, "contrasto sul fondo della scheda " + tok.paper + " — calcolato in pagina");
-  const hr = mk("tr", null, mk("thead", null, t));
-  for (const h of ["ruolo","colore","rapporto","soglia",""]) mk("th", null, hr, h);
-  const tb = mk("tbody", null, t);
-  const out = {id:id, paper:tok.paper, rows:[], fails:0};
-  for (const r of rows){
-    const ratio = contrast(r[1], tok.paper), pass = ratio >= r[3] - 0.005;
-    if (!pass) out.fails++;
-    out.rows.push({role:r[0], fg:r[1], ratio:ratio, need:r[3], pass:pass});
-    const tr = mk("tr", null, tb);
-    mk("td", null, tr, r[0]);
-    const c = mk("td", null, tr, r[1]);
-    c.style.setProperty("color", r[1]);
-    mk("td", "r", tr, f2(ratio) + ":1");
-    mk("td", null, tr, r[3] === 4.5 ? "4,5:1" : "3:1");
-    mk("td", "m " + (pass ? "ok" : "no"), tr, pass ? "✓" : "✗");
-  }
-  const v = mk("p", "verd " + (out.fails ? "no" : "ok"), parent,
-    out.fails ? out.fails + " ruolo/i sotto soglia" : "tutti i ruoli sopra soglia");
-  v.setAttribute("data-fails", String(out.fails));
-  READOUTS.push(out);
-  return out;
+  const svg = plot(box, W, H);
+  mk("div", "t-foot", art, TILE.foot);
+  return {art:art, svg:svg};
 }
 
 /* ===========================================================================
-   5. LE SEZIONI E LE VARIANTI
+   5. LE MISURE DI UNA VARIANTE
+   Tre famiglie, tre soglie, e ognuna finisce scritta nella casella con il suo
+   numero. Nessuna e' promessa: sono tutte calcolate qui sotto, adesso.
+     · testo   4,5:1  — il minuto (0,53-0,55rem) e' testo corrente, non grande
+     · accento ΔE 15  — sotto, l'accento si spaccia per una serie di dati
+     · serie   3:1    — soglia dei segni grafici
    ========================================================================= */
-const FAMS = [
-{ key:"dir", q:"prima domanda", title:"Le quattro direzioni",
-  lead:"Ogni scheda è un sistema intero, non un colore: fondo, carta, tre inchiostri, accento, " +
-       "filo, raggio, ombra, densità, tre caratteri. Dentro c'è sempre la stessa pagina — testata, " +
-       "totali, le tre schede-tracker, un riquadro con la sua legenda e la sua tabella. " +
-       "<b>La tavolozza dei grafici non cambia mai</b>: quei quattro colori sono già validati come " +
-       "insieme, e ogni direzione è stata rimisurata contro il proprio fondo prima di finire qui.",
-  wide:true,
-  items: DIRS.map(d => ({
-    id:d.id, name:d.name, why:d.why, note:d.note, dir:d,
-    build: function(host){
-      const t = mk("div", null, host);
-      const toks = mk("div", "toks", t);
-      for (const k of ["bg","paper","ink","ink-soft","muted","gold"]){
-        const s = mk("span", "tok", toks);
-        const i = mk("i", null, s); i.style.setProperty("background", d.tok[k]);
-        mk("span", null, s, k + " " + d.tok[k]);
-      }
-      const r = mk("span", "tok", toks);
-      mk("span", null, r, "raggio " + d.tok.rad + " · corpo " + d.tok.fs);
-      const f = mk("span", "tok", toks);
-      mk("span", null, f, d.faces);
-      host.appendChild(preview(d.tok, {dots:true}));
-      const sp = paint(mk("div", "spec", host), d.tok);
-      mk("div", "d", sp, "Sogni di un Unno");
-      mk("div", "d2", sp, "Forma e fatica · il titolo di un riquadro, a corpo vero");
-      mk("p", "body", sp, PROSA);
-      mk("div", "num", sp, "192,8 · 6:41 · 76.437 km");
-      mk("div", "cap", sp, "MEDIA MOBILE A 42 GIORNI · N 40 · R 0,00 SU 548 PUNTI — QUESTO È IL CORPO MINUTO, 0,53REM");
-      readout(host, d.tok, d.id);
-    }
-  }))
-},
-
-{ key:"caratteri", q:"seconda domanda", title:"I caratteri",
-  lead:"Stessa pagina, stessi colori (la pergamena di oggi), cambia solo la voce. Ogni campione " +
-       "mostra le tre misure che contano davvero: il titolo grande, il <b>titolo di riquadro a 0,98rem</b> " +
-       "— dove Cinzel soffre, perché è un alfabeto di sole capitali — un paragrafo vero in italiano, " +
-       "e la riga minuta in mono a 0,53rem che porta i piedi di tutti e 31 i grafici.",
-  items:[
-   {id:"C1", name:"Cinzel + EB Garamond + Plex Mono", why:"Quella di oggi. Le capitali romane danno l'insegna, il Garamond dà la pagina. <em>Il prezzo: i titoli piccoli e le maiuscolette non hanno minuscole su cui appoggiarsi.</em>",
-    tok:{"ff-d":FONTS.cinzel.d, wd:FONTS.cinzel.wd, lsd:FONTS.cinzel.ls, "ff-b":FONTS.garamond, "ff-m":FONTS.plex}},
-   {id:"C2", name:"Fraunces + Newsreader + Plex Mono", why:"Un display con le minuscole e un asse ottico, e un corpo con l'occhio medio più alto del Garamond: la coppia che regge meglio a 0,98rem e sul telefono.",
-    tok:{"ff-d":FONTS.fraunces.d, wd:FONTS.fraunces.wd, lsd:FONTS.fraunces.ls, "ff-b":FONTS.newsreader, "ff-m":FONTS.plex}},
-   {id:"C3", name:"Instrument Serif + Inter + JetBrains Mono", why:"La coppia già scelta nei laboratori del top-20. Adottarla qui vuol dire che il sito parla con una voce sola — e che il minuto passa a un sans, che è la cosa più leggibile che si possa fare a 0,53rem.",
-    tok:{"ff-d":FONTS.instr.d, wd:FONTS.instr.wd, lsd:FONTS.instr.ls, "ff-b":FONTS.inter, "ff-m":FONTS.jet}},
-   {id:"C4", name:"Solo EB Garamond (+ Plex Mono)", why:"Un carattere solo, spaziato per i titoli. Toglie un font dal caricamento e un'insegna alla pagina: più libro, meno lapide.",
-    tok:{"ff-d":FONTS.garamond, wd:"500", lsd:".12em", "ff-b":FONTS.garamond, "ff-m":FONTS.plex}},
-   {id:"C5", name:"Cinzel + Inter + Plex Mono", why:"L'insegna resta com'è, cambia solo il corpo: la mossa minima, quella che si può fare senza che nessuno se ne accorga tranne chi legge sul telefono.",
-    tok:{"ff-d":FONTS.cinzel.d, wd:FONTS.cinzel.wd, lsd:FONTS.cinzel.ls, "ff-b":FONTS.inter, "ff-m":FONTS.plex}}
-  ].map(v => ({
-    id:v.id, name:v.name, why:v.why,
-    build: function(host){
-      const tok = Object.assign({}, BASE, v.tok);
-      const sp = paint(mk("div", "spec", host), tok);
-      mk("div", "d", sp, "Sogni di un Unno");
-      mk("div", "d2", sp, "Forma e fatica · Notti misurate · Peso e grasso");
-      mk("p", "body", sp, PROSA);
-      mk("div", "num", sp, "192,8 · 6:41 · 76.437 km");
-      mk("div", "cap", sp, "AGO 2023 → AGO 2026 · N 40 · MEDIA MOBILE A 42 GIORNI · R 0,00");
-      mk("div", "names", sp, v.name);
-      const d = paint(mk("div", "demo"), tok);
-      host.appendChild(d);
-      tile(d, {dots:true});
-    }
-  }))
-},
-
-{ key:"superfici", q:"terza domanda", title:"Superfici e densità",
-  lead:"Lo stesso riquadro quattro volte, stessi colori e stesso carattere: cambia solo come la " +
-       "scheda si stacca dal fondo. È la decisione che si vede meno e si sente di più, perché la " +
-       "pagina è <b>una colonna di 31 riquadri</b>: quello che qui è un dettaglio, lì è trentuno volte.",
-  items:[
-   {id:"S1", name:"Filo dorato (oggi)", why:"1px di oro al 22%, raggio 7, nessuna ombra. Il bordo porta l'identità e delimita il grafico.",
-    tok:{}},
-   {id:"S2", name:"Filo neutro", why:"Stesso peso, colore tolto: il filo smette di competere con l'accento e con la serie gialla, che gli stanno accanto dentro la stessa scheda.",
-    tok:{rule:"rgba(236,227,205,.14)", rad:"4px"}},
-   {id:"S3", name:"Rilievo", why:"Niente bordo: la scheda si stacca con un tono più chiaro e un'ombra. Su una colonna lunga dà ritmo — ma trentuno ombre sono trentuno macchie scure.",
-    tok:{paper:"#262117", rule:"rgba(0,0,0,0)", rad:"12px",
-         sh:"0 1px 0 rgba(255,255,255,.05),0 10px 26px rgba(0,0,0,.45)"}},
-   {id:"S4", name:"Nessuna scheda", why:"Il grafico sulla pagina nuda, separato solo da un filo sopra e dall'aria. Massimo inchiostro sui dati, zero cornice — e la tavolozza torna a essere validata contro il fondo pagina, non contro la carta.",
-    tok:{}, bare:true}
-  ].map(v => ({
-    id:v.id, name:v.name, why:v.why,
-    build: function(host){
-      const tok = Object.assign({}, BASE, v.tok);
-      const d = paint(mk("div", "demo", host), tok);
-      tile(d, {dots:true, bare:v.bare});
-      tile(d, {dots:true, bare:v.bare, solo:true});
-    }
-  }))
-},
-
-{ key:"grafici", q:"quarta domanda", title:"Come si disegna la serie",
-  lead:"Stessi dati, stessa tavolozza, stesso riquadro: cambia il modo di disegnare. " +
-       "Le due varianti senza griglia portano l'<b>etichetta diretta</b> a fine linea — che non è " +
-       "decorazione ma la contropartita richiesta quando un segno sta sotto 3:1 su una carta chiara: " +
-       "è la stessa mossa che tiene in piedi la direzione di giorno.",
-  items:[
-   {id:"G1", name:"Come oggi", why:"Tre righe di griglia, asse tenue, linea 1,6, legenda a lato.", st:{dots:true}},
-   {id:"G2", name:"Senza griglia, etichette dirette", why:"Solo la linea di base. Il nome della serie è scritto dove la serie finisce: nessun salto fra legenda e disegno.", st:{grid:false, endLabel:true, dots:true}},
-   {id:"G3", name:"Area", why:"La prima serie riempita al 14%. Dà massa alla forma — e rende la seconda serie un ospite, non una pari.", st:{area:true, dots:true}},
-   {id:"G4", name:"Tratto grosso", why:"Linea 2,6 e punto finale marcato: si legge da lontano e sul telefono, ma i massimi si smussano.", st:{lw:2.6, dots:true, grid:false}}
-  ].map(v => ({
-    id:v.id, name:v.name, why:v.why,
-    build: function(host){
-      const d = paint(mk("div", "demo", host), BASE);
-      tile(d, v.st);
-    }
-  }))
-},
-
-{ key:"accenti", q:"quinta domanda", title:"L'accento",
-  lead:"L'oro è il colore dei numeri in testata, dei titoli di sezione e del bottone premuto. " +
-       "Sta sulla stessa scheda dei grafici, e lì c'è già un giallo che è <b>un dato</b>: " +
-       "sotto ogni variante c'è la distanza ΔE dai quattro colori delle serie. " +
-       "Sotto 15 un lettore fatica a distinguerli — e un colore di cornice che somiglia a una serie " +
-       "è un colore che mente.",
-  items:[
-   {id:"A1", name:"Oro attuale #c89a3f", why:"Quello di oggi. <em>Misurato: ΔE 5,2 dal giallo delle serie — a occhio nudo sono lo stesso colore.</em>", acc:"#c89a3f"},
-   {id:"A2", name:"Oro chiaro #d9b26a", why:"Un passo più chiaro: sale il contrasto e sale la distanza dal giallo, ma resta sotto la soglia.", acc:"#d9b26a"},
-   {id:"A3", name:"Oro acceso #e3b344", why:"Più saturo e più chiaro: l'insegna si vede di più, la distanza dal giallo cresce appena.", acc:"#e3b344"},
-   {id:"A4", name:"Oro pallido #e2c98f", why:"L'unico candidato che supera 15 da tutte e quattro le serie. Costo: è meno «oro» e più «avorio» — l'insegna diventa discreta.", acc:"#e2c98f"},
-   {id:"A5", name:"Bronzo #b98b5a", why:"La direzione opposta, più calda e più scura. <em>Peggiora: ΔE 5,8 dal giallo e 11,4 dall'arancio.</em>", acc:"#b98b5a"}
-  ].map(v => ({
-    id:v.id, name:v.name, why:v.why,
-    build: function(host){
-      const tok = Object.assign({}, BASE, {gold:v.acc});
-      const d = paint(mk("div", "demo", host), tok);
-      mk("div", "eyebrow", d, "micmer · quadro di comando");
-      const tot = mk("div", "totals", d);
-      for (const t of TOTALS.slice(0,3)){
-        const c = mk("div", "total", tot);
-        mk("div", "n", c, t[0]); mk("div", "l", c, t[1]);
-      }
-      mk("h2", "band", d, "Carico");
-      tile(d, {dots:true});
-      const des =[["s1",PAL.s1],["s2",PAL.s2],["s3",PAL.s3],["s4",PAL.s4]]
-        .map(s => [s[0], deltaE(v.acc, s[1])]);
-      const worst = des.reduce((a,b) => b[1] < a[1] ? b : a);
-      readout(host, tok, v.id);
-      const t = mk("table", "cr", host);
-      mk("caption", null, t, "distanza ΔE (OKLab ×100, visione normale) dai colori delle serie");
-      const hr = mk("tr", null, mk("thead", null, t));
-      for (const h of ["serie","ΔE","soglia",""]) mk("th", null, hr, h);
-      const tb = mk("tbody", null, t);
-      for (const dd of des){
-        const tr = mk("tr", null, tb);
-        mk("td", null, tr, dd[0] + " " + PAL[dd[0]]);
-        mk("td", "r", tr, f1(dd[1]));
-        mk("td", null, tr, "15");
-        mk("td", "m " + (dd[1] >= 15 ? "ok" : "no"), tr, dd[1] >= 15 ? "✓" : "✗");
-      }
-      const v2 = mk("p", "verd " + (worst[1] >= 15 ? "ok" : "no"), host,
-        worst[1] >= 15 ? "distinguibile da tutte e quattro le serie"
-                       : "la più vicina è " + worst[0] + ", ΔE " + f1(worst[1]) + " — sotto 15");
-      v2.setAttribute("data-worst", worst[1].toFixed(2));
-      v.worst = worst;
-    }
-  }))
+const INK_ROLES = [["ink","ink"],["ink-soft","soft"],["muted","muted"],["gold","oro"]];
+function measure(v){
+  const m = {id:v.id, surf:v.surf, ink:[], de:[], slots:[], fails:0};
+  for (const r of INK_ROLES){
+    const ratio = contrast(v.tok[r[0]], v.surf), pass = ratio >= 4.5 - 0.005;
+    if (!pass) m.fails++;
+    m.ink.push({role:r[0], label:r[1], fg:v.tok[r[0]], ratio:ratio, need:4.5, pass:pass});
+  }
+  for (const k of SLOTS){
+    const d = deltaE(v.tok.gold, PAL[k]), pass = d >= 15 - 0.005;
+    if (!pass) m.fails++;
+    m.de.push({slot:k, fg:PAL[k], val:d, need:15, pass:pass});
+  }
+  for (const k of SLOTS){
+    const ratio = contrast(PAL[k], v.surf), pass = ratio >= 3 - 0.005;
+    if (!pass) m.fails++;
+    m.slots.push({slot:k, ratio:ratio, need:3, pass:pass});
+  }
+  m.minDE = Math.min.apply(null, m.de.map(x => x.val));
+  m.minSlot = Math.min.apply(null, m.slots.map(x => x.ratio));
+  m.worstDE = m.de.filter(x => x.val === m.minDE)[0];
+  return m;
 }
-];
 
 /* ===========================================================================
-   6. MONTAGGIO
+   6. LE DIFFERENZE, IN CHIARO
+   Cinque righe fisse in ogni casella — superfici, inchiostri, accento, forma,
+   caratteri — cosi' le nove istantanee ricevono la stessa altezza e il confronto
+   e' fra le stesse cose. Dove un token non cambia si scrive "= oggi": e' un'
+   informazione anche quella, e vale piu' di una riga che sparisce.
    ========================================================================= */
+function deltaGroups(v){
+  const t = v.tok, changed = k => t[k] !== BASE[k];
+  const list = ks => {
+    const out = ks.filter(changed).map(k => ["--" + k, t[k]]);
+    return out.length ? out : null;
+  };
+  /* forma compatta: "pad 6/10/5", "corpo 17px/1,45". Le righe della casella non
+     vanno a capo (le nove istantanee devono ricevere la stessa altezza), quindi
+     una riga troppo lunga perderebbe l'ultima misura nei puntini — e l'ultima
+     misura di solito e' proprio quella che distingue la variante. */
+  const px = s => s.replace(/px/g, "").split(/\s+/).join("/");
+  const forma = [];
+  if (changed("rad")) forma.push(["raggio", t.rad]);
+  if (changed("bw"))  forma.push(["bordo", t.bw === "0" ? "nessuno" : t.bw]);
+  if (changed("sh"))  forma.push(["ombra", t.sh === "none" ? "no" : "sì"]);
+  if (changed("pad")) forma.push(["pad", px(t.pad)]);
+  if (changed("fs") || changed("lh"))
+    forma.push(["corpo", t.fs + "/" + t.lh.replace(".",",")]);
+  if (changed("tw"))  forma.push(["colonna", t.tw]);
+  if (v.bare)         forma.push(["scheda", "nessuna"]);
+  return [
+    ["superfici", list(["bg","paper","paper-2"])],
+    ["inchiostri", list(["ink","ink-soft","muted"])],
+    ["accento e filo", list(["gold","rule"])],
+    ["forma", forma.length ? forma : null],
+    ["caratteri", v.faces === FACES_BASE ? null : [[v.faces, ""]]]
+  ];
+}
+
+/* ===========================================================================
+   7. MONTAGGIO DELLA GRIGLIA
+   ========================================================================= */
+const SW = 470;          /* larghezza logica del palco, poi scalato */
+const PLOTW = 262;       /* larghezza del disegno dentro il riquadro, a SW pieno */
+const PLOTH = 150;       /* /vita disegna questo riquadro a h 190 su ~1000px di
+                            larghezza; qui la colonna e' molto piu' stretta, e
+                            tenere 190 darebbe un grafico piu' alto che largo —
+                            che non e' la pagina vera. 150 su 262 e' il rapporto
+                            piu' vicino a quello che si vede sullo schermo. */
 const main = document.getElementById("main");
-const tnav = document.getElementById("tnav");
-const ITEMS = [];
-const NAVB = {};
+const grid = mk("div", "grid9", main);
+grid.setAttribute("role", "list");
+const CELLS = [];
 
-for (const fam of FAMS){
-  const a = mk("a", null, tnav);
-  a.setAttribute("href", "#s-" + fam.key);
-  mk("span", null, a, fam.title + " ");
-  fam._navA = a;
-  fam._navB = mk("b", null, a, "0/" + fam.items.length);
-  NAVB[fam.key] = fam._navB;
+for (const v of VARS){
+  const m = measure(v);
+  v.m = m;
 
-  const sec = mk("section", "fam", main);
-  sec.id = "s-" + fam.key;
-  sec.setAttribute("id", "s-" + fam.key);
-  mk("div", "q", sec, fam.q);
-  mk("h2", null, sec, fam.title);
-  const lead = mk("p", "lead", sec);
-  lead.innerHTML = fam.lead;
-  const grid = mk("div", "grid" + (fam.wide ? " wide" : ""), sec);
+  const cell = mk("article", "cell", grid);
+  cell.setAttribute("id", "c-" + v.id.toLowerCase());
+  cell.setAttribute("role", "listitem");
 
-  for (const v of fam.items){
-    v.fam = fam.key;
-    const card = mk("article", "v", grid);
-    card.setAttribute("id", "v-" + v.id.toLowerCase());
-    const head = mk("div", "head", card);
-    mk("div", "vno", head, v.id);
-    mk("h3", null, head, v.name);
-    const why = mk("p", "why", head);
-    why.innerHTML = v.why;
-    if (v.note){
-      const nn = mk("p", "why", head);
-      nn.innerHTML = "<em>" + v.note + "</em>";
+  /* --- testa: numero, nome, verdetto --- */
+  const head = mk("div", "chead", cell);
+  mk("span", "no", head, v.id);
+  const nm = mk("span", "nm", head, v.name);
+  nm.setAttribute("title", v.why);
+  const pill = mk("span", "pill " + (m.fails ? "no" : "ok"), head,
+    m.fails ? m.fails + (m.fails === 1 ? " fuori soglia" : " fuori soglia") : "tutto in soglia");
+
+  /* --- l'istantanea: il riquadro vero, coi token della variante --- */
+  const snap = mk("button", "snap", cell);
+  snap.setAttribute("type", "button");
+  snap.setAttribute("aria-label", "apri " + v.id + " " + v.name + " a grandezza vera");
+  paint(snap, v.tok);
+  const stage = mk("div", "stage", snap);
+  stage.style.setProperty("--sw", SW + "px");
+  const demo = mk("div", "demo", stage);
+  const t = tileNode(demo, v.bare, PLOTW, PLOTH);
+  v.stage = stage; v.snap = snap; v.svg = t.svg;
+
+  /* --- le differenze --- */
+  const dl = mk("div", "deltas", cell);
+  const groups = deltaGroups(v);
+  v.deltaText = [];
+  for (const g of groups){
+    const row = mk("div", "row", dl);
+    mk("span", "g", row, g[0] + " ");
+    let txt = "";
+    if (!g[1]){
+      mk("span", "same", row, "= oggi");
+      txt = "= oggi";
+    } else {
+      g[1].forEach(function(p, i){
+        if (i) mk("span", null, row, " · ");
+        mk("span", null, row, p[0] + (p[1] ? " " : ""));
+        if (p[1]) mk("b", null, row, p[1]);
+        txt += (i ? " · " : "") + p[0] + (p[1] ? " " + p[1] : "");
+      });
     }
-    const body = mk("div", "body", card);
-    v.build(body);
-
-    const vote = mk("div", "vote", card);
-    const row = mk("div", "vrow", vote);
-    const chips = mk("div", "chips", row);
-    chips.setAttribute("role", "group");
-    chips.setAttribute("aria-label", "voto " + v.id);
-    v.chips = [];
-    for (let n = 0; n <= 10; n++){
-      const b = mk("button", "chip", chips, String(n));
-      b.setAttribute("type", "button");
-      b.setAttribute("data-n", String(n));
-      v.chips.push(b);
-    }
-    const star = mk("button", "stbtn", row, "★");
-    star.setAttribute("type", "button");
-    star.setAttribute("title", "preferita della sezione");
-    const note = mk("input", "note", vote);
-    note.setAttribute("type", "text");
-    note.setAttribute("maxlength", "180");
-    note.setAttribute("placeholder", "nota (facoltativa)");
-    v.card = card; v.star = star; v.note = note;
-    ITEMS.push(v);
+    v.deltaText.push(g[0] + " " + txt);
   }
+
+  /* --- i numeri, calcolati sopra --- */
+  const fg = mk("div", "figs", cell);
+  const r1 = mk("div", "row", fg);
+  mk("span", "lbl", r1, "su " + m.surf + " ");
+  m.ink.forEach(function(x, i){
+    if (i) mk("span", null, r1, " ");
+    mk("span", null, r1, x.label + " " + f2(x.ratio));
+    mk("span", x.pass ? "yes" : "nox", r1, x.pass ? "✓" : "✗");
+  });
+  mk("span", "need", r1, " ≥4,5");
+
+  const r2 = mk("div", "row", fg);
+  mk("span", "lbl", r2, "ΔE oro↔ ");
+  /* ogni slot che sfonda porta la sua croce, non solo il minimo: quando l'oro
+     ne impersona due (e' il caso di V9) una croce sola lo racconterebbe meta' */
+  m.de.forEach(function(x, i){
+    if (i) mk("span", null, r2, " ");
+    mk("span", null, r2, x.slot + " " + f1(x.val));
+    if (!x.pass) mk("span", "nox", r2, "✗");
+  });
+  mk("span", null, r2, " min ");
+  mk("span", m.minDE >= 15 - 0.005 ? "yes" : "nox", r2,
+    f1(m.minDE) + (m.minDE >= 15 - 0.005 ? "✓" : "✗"));
+  mk("span", "need", r2, " ≥15");
+
+  const r3 = mk("div", "row", fg);
+  mk("span", "lbl", r3, "serie su fondo ");
+  m.slots.forEach(function(x, i){
+    if (i) mk("span", null, r3, " ");
+    mk("span", null, r3, f2(x.ratio));
+  });
+  mk("span", null, r3, " min ");
+  mk("span", m.minSlot >= 3 - 0.005 ? "yes" : "nox", r3,
+    f2(m.minSlot) + (m.minSlot >= 3 - 0.005 ? "✓" : "✗"));
+  mk("span", "need", r3, " ≥3");
+
+  v.figText = [r1.textContent, r2.textContent, r3.textContent];
+
+  /* --- il voto: la stessa grammatica dei quattro laboratori precedenti --- */
+  const vote = mk("div", "vote", cell);
+  const chips = mk("div", "chips", vote);
+  chips.setAttribute("role", "group");
+  chips.setAttribute("aria-label", "voto " + v.id);
+  v.chips = [];
+  for (let n = 0; n <= 10; n++){
+    const b = mk("button", "chip", chips, String(n));
+    b.setAttribute("type", "button");
+    b.setAttribute("data-n", String(n));
+    v.chips.push(b);
+  }
+  const star = mk("button", "stbtn", vote, "★");
+  star.setAttribute("type", "button");
+  star.setAttribute("title", "preferita");
+
+  v.card = cell; v.star = star; v.pill = pill;
+  CELLS.push(v);
 }
 
-/* la casella del prossimo giro — stessa idea dei laboratori del top-20 */
+/* --------------------------------------------------------- la scala del palco
+   Il palco ha larghezza logica fissa; il fattore lo detta la casella. Non e' un
+   vezzo: dentro c'e' marcatura vera con misure vere in px, e ridimensionarla
+   cambierebbe proprio i rapporti che si stanno giudicando. */
+function rescale(){
+  for (const v of CELLS){
+    const w = (v.snap.clientWidth || (v.snap.getBoundingClientRect &&
+      v.snap.getBoundingClientRect().width) || SW);
+    const zoom = v.card.classList.contains("zoom");
+    const k = zoom ? 1 : Math.min(1, Math.max(0.34, w / SW));
+    v.stage.style.setProperty("--k", k.toFixed(4));
+    /* il palco e' in position:absolute, quindi non spinge il contenitore: la sua
+       altezza scalata va restituita a mano, o in zoom la casella si taglia.
+       Fuori zoom invece avanza spazio, e il riquadro va centrato: appoggiato in
+       alto sembrerebbe che la variante lasci un buco sotto, che e' un difetto
+       del laboratorio, non della variante.
+       Si misura con offsetHeight e non con getBoundingClientRect: il secondo
+       restituisce il riquadro gia' trasformato, e misurare il palco con la scala
+       che gli si sta per dare e' un cane che si morde la coda. */
+    const nat = v.stage.offsetHeight || 0, h = nat * k;
+    const box = v.snap.getBoundingClientRect ? v.snap.getBoundingClientRect().height : 0;
+    v.snap.style.setProperty("min-height", zoom ? Math.ceil(h) + 12 + "px" : "");
+    v.stage.style.setProperty("top", !zoom && box > h && h ? Math.round((box - h) / 2) + "px" : "0px");
+    /* la scala non sale mai sopra 1: ingrandire una resa vera falserebbe proprio
+       la cosa che si giudica (quanto e' grande davvero il testo minuto). Quando
+       la casella e' piu' larga del palco, si centra invece di stirare. */
+    v.stage.style.setProperty("left", w > SW * k ? Math.round((w - SW * k) / 2) + "px" : "0px");
+    v.k = k;
+  }
+}
+for (const v of CELLS){
+  v.snap.addEventListener("click", function(){
+    const on = !v.card.classList.contains("zoom");
+    v.card.classList[on ? "add" : "remove"]("zoom");
+    rescale();
+  });
+}
+rescale();
+if (typeof ResizeObserver === "function"){
+  const ro = new ResizeObserver(function(){ rescale(); });
+  ro.observe(grid);
+} else if (typeof addEventListener === "function"){
+  addEventListener("resize", rescale);
+}
+
+/* ------------------------------------------------------------ casella libera */
 const free = mk("section", "freebox", main);
 mk("h2", null, free, "Per il prossimo giro");
 mk("p", null, free,
-  "Qui non si vota, si propone. Quando la direzione sarà scelta, la si scrive una volta sola nel " +
-  "blocco :root di tools/build_vita.py e scende su tutti e 31 i grafici. Che cosa manca prima " +
-  "di deciderla — un'altra direzione, un altro carattere, un dettaglio che qui non si vede?");
+  "Qui non si sceglie, si propone: il laboratorio non manda in produzione niente. " +
+  "Quando una casella avrà vinto, i suoi token si scrivono una volta sola nel blocco :root di " +
+  "tools/build_vita.py e scendono su tutti e 31 i grafici. Che cosa manca prima di deciderla — " +
+  "un'altra superficie, un altro accento, un dettaglio che a questa scala non si vede?");
 const freetxt = mk("textarea", null, free);
 freetxt.setAttribute("id", "freetxt");
 freetxt.setAttribute("maxlength", "3000");
-freetxt.setAttribute("placeholder", "es. proviamo il chiaro con l'oro scuro… / i titoli in minuscolo… / la colonna più stretta…");
-
-/* prova una direzione sull'intero laboratorio: la cornice usa token --l-*,
-   quindi vestirla è un rimappaggio esplicito, non un'ereditarietà per caso */
-const lab = mk("label", null, tnav, "vesti la pagina ");
-const sel = mk("select", null, lab);
-sel.setAttribute("id", "dressel");
-sel.setAttribute("aria-label", "vesti il laboratorio con una direzione");
-const opts = [["", "cornice neutra"]].concat(DIRS.map(d => [d.id, d.name]));
-for (const o of opts){
-  const e = mk("option", null, sel, o[1]);
-  e.setAttribute("value", o[0]);
-}
-function dress(id){
-  const d = DIRS.filter(x => x.id === id)[0];
-  const root = document.documentElement;
-  if (!root || !root.style) return;
-  const map = {"--l-bg":"bg", "--l-paper":"paper", "--l-paper-2":"paper-2", "--l-ink":"ink",
-    "--l-soft":"ink-soft", "--l-muted":"muted", "--l-acc":"gold",
-    "--l-mono":"ff-m", "--l-body":"ff-b", "--l-disp":"ff-d"};
-  for (const k in map){
-    if (d) root.style.setProperty(k, d.tok[map[k]]);
-    else root.style.removeProperty ? root.style.removeProperty(k) : root.style.setProperty(k, "");
-  }
-}
-sel.addEventListener("change", function(){ dress(sel.value); });
+freetxt.setAttribute("placeholder", "es. il denso ma con gli angoli del rilievo… / l'alba con l'oro chiaro e l'etichetta diretta…");
 
 /* ===========================================================================
-   7. VOTO — stesse convenzioni dei laboratori del top-20
+   8. VOTO
    ========================================================================= */
-const KEY = "micmer-lab-stile-voti";
+const KEY = "micmer-lab-stile-voti-3x3";
 let votes = {};
 try { votes = JSON.parse((window.localStorage && localStorage.getItem(KEY)) || "{}") || {}; }
 catch(e){ votes = {}; }
 const progEl = document.getElementById("prog");
-const progN = mk("b", null, null, "0");
 progEl.textContent = "";
-progEl.appendChild(progN);
-const progRest = mk("span", null, progEl, " / " + ITEMS.length + " votate");
+const progN = mk("b", null, progEl, "0");
+mk("span", null, progEl, " / " + CELLS.length + " votate");
 
 function save(){
   try { if (window.localStorage) localStorage.setItem(KEY, JSON.stringify(votes)); } catch(e){}
   let n = 0;
-  for (const v of ITEMS) if (votes[v.id] && votes[v.id].n != null) n++;
+  for (const v of CELLS) if (votes[v.id] && votes[v.id].n != null) n++;
   progN.textContent = String(n);
-  for (const fam of FAMS){
-    let k = 0;
-    for (const v of fam.items) if (votes[v.id] && votes[v.id].n != null) k++;
-    fam._navB.textContent = k + "/" + fam.items.length;
-    fam._navA.classList[k === fam.items.length ? "add" : "remove"]("full");
-  }
 }
 
 let HOT = null;
-for (const v of ITEMS){
+for (const v of CELLS){
   const st = votes[v.id] || {};
   if (st.n != null && v.chips[st.n]) v.chips[st.n].classList.add("sel");
-  if (st.c) v.note.value = st.c;
   if (st.s){ v.star.classList.add("on"); v.card.classList.add("star"); }
   v.setN = function(n){
     votes[v.id] = votes[v.id] || {};
@@ -993,14 +796,11 @@ for (const v of ITEMS){
     v.card.classList[votes[v.id].s ? "add" : "remove"]("star");
     save();
   });
-  v.note.addEventListener("input", function(){
-    votes[v.id] = votes[v.id] || {};
-    votes[v.id].c = String(v.note.value || "").trim();
-    if (!votes[v.id].c) delete votes[v.id].c;
-    save();
-  });
   v.card.addEventListener("mouseenter", function(){ HOT = v; v.card.classList.add("hot"); });
-  v.card.addEventListener("mouseleave", function(){ if (HOT === v) HOT = null; v.card.classList.remove("hot"); });
+  v.card.addEventListener("mouseleave", function(){
+    if (HOT === v) HOT = null;
+    v.card.classList.remove("hot");
+  });
 }
 if (votes._free) freetxt.value = votes._free;
 freetxt.addEventListener("input", function(){
@@ -1015,35 +815,35 @@ addEventListener("keydown", function(e){
   if (/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName || "")) return;
   if (/^[0-9]$/.test(e.key)){ HOT.setN(+e.key); e.preventDefault && e.preventDefault(); }
   else if (e.key === "d" || e.key === "D"){ HOT.setN(10); e.preventDefault && e.preventDefault(); }
-  else if (e.key === "s" || e.key === "S"){ HOT.star.click ? HOT.star.click() : 0; e.preventDefault && e.preventDefault(); }
+  else if (e.key === "s" || e.key === "S"){ HOT.star.click && HOT.star.click(); e.preventDefault && e.preventDefault(); }
 });
 
 function summary(){
-  const out = ["VOTI LAB-STILE micmer — " + new Date().toLocaleDateString("it-IT")];
-  for (const fam of FAMS){
-    let any = false;
-    for (const v of fam.items){
-      const st = votes[v.id];
-      if (!st || (st.n == null && !st.c && !st.s)) continue;
-      if (!any){ out.push(""); out.push("[" + fam.title.toUpperCase() + "]"); any = true; }
-      out.push((st.s ? "★ " : "  ") + v.id + " " + v.name + ": " +
-        (st.n != null ? st.n : "—") + (st.c ? " — " + st.c : ""));
-    }
+  const out = ["VOTI LAB-STILE micmer — griglia 3×3 — " + new Date().toLocaleDateString("it-IT")];
+  out.push("");
+  let any = false;
+  for (const v of CELLS){
+    const st = votes[v.id];
+    if (!st || (st.n == null && !st.s)) continue;
+    any = true;
+    out.push((st.s ? "★ " : "  ") + v.id + " " + v.name + ": " + (st.n != null ? st.n : "—"));
   }
-  const stars = ITEMS.filter(function(v){ return votes[v.id] && votes[v.id].s; });
+  if (!any) out.push("(nessun voto ancora)");
+  const stars = CELLS.filter(function(v){ return votes[v.id] && votes[v.id].s; });
   if (stars.length){
     out.push("");
     out.push("PREFERITE: " + stars.map(function(v){ return v.id; }).join(", "));
   }
   out.push("");
-  out.push("CONTRASTO MISURATO IN PAGINA:");
-  for (const r of READOUTS){
-    if (r.id.charAt(0) !== "D") continue;
-    out.push("  " + r.id + " su " + r.paper + ": " +
-      (r.fails ? r.fails + " ruoli sotto soglia" : "tutti sopra soglia"));
+  out.push("MISURATO IN PAGINA:");
+  for (const v of CELLS){
+    const m = v.m;
+    out.push("  " + v.id + " su " + m.surf + " — minuto " + f2(m.ink[2].ratio) + ":1, " +
+      "oro " + f2(m.ink[3].ratio) + ":1, ΔE min " + f1(m.minDE) + " (" + m.worstDE.slot + "), " +
+      "serie min " + f2(m.minSlot) + ":1 — " +
+      (m.fails ? m.fails + " fuori soglia" : "tutto in soglia"));
   }
   if (votes._free){ out.push(""); out.push("PROSSIMO GIRO: " + votes._free); }
-  if (out.length === 1) out.push("(nessun voto ancora)");
   return out.join("\n");
 }
 
@@ -1064,24 +864,19 @@ copyBtn.addEventListener("click", function(){
 document.getElementById("wipe").addEventListener("click", function(){
   if (typeof confirm === "function" && !confirm("Azzerare tutti i voti?")) return;
   votes = {};
-  for (const v of ITEMS){
+  for (const v of CELLS){
     for (const c of v.chips) c.classList.remove("sel");
-    v.star.classList.remove("on"); v.card.classList.remove("star"); v.note.value = "";
+    v.star.classList.remove("on");
+    v.card.classList.remove("star");
   }
   freetxt.value = "";
   outbox.style.setProperty("display", "none");
   save();
 });
-document.getElementById("rand").addEventListener("click", function(){
-  const left = ITEMS.filter(function(v){ return !votes[v.id] || votes[v.id].n == null; });
-  const pool = left.length ? left : ITEMS;
-  const pick = pool[Math.floor(Math.random()*pool.length)];
-  if (pick && pick.card.scrollIntoView) pick.card.scrollIntoView({behavior:"smooth", block:"center"});
-});
 save();
 
 const foot = document.getElementById("foot");
-mk("span", null, foot, "Dati veri: CTL e ATL di /vita, una goccia ogni 4 settimane · ");
+mk("span", null, foot, "CTL e ATL veri, un punto ogni 28 giorni dal 14 agosto 2023 al 10 agosto 2026 · ");
 const l1 = mk("a", null, foot, "il cruscotto");
 l1.setAttribute("href", "../vita/");
 mk("span", null, foot, " · ");
@@ -1090,11 +885,20 @@ l2.setAttribute("href", "../top-20/lab4.html");
 mk("span", null, foot, " · ");
 const l3 = mk("a", null, foot, "micmer");
 l3.setAttribute("href", "../");
+/* Una cosa che il palco NON mostra, e che va detta invece di lasciarla scoprire:
+   il palco ha larghezza logica fissa, quindi l'istantanea e' sempre l'impaginato
+   da schermo largo. Sotto i 720px /vita rovescia il riquadro (la colonna di
+   fianco diventa una riga sopra), e quel ribaltamento qui non si vede. */
+mk("br", null, foot);
+mk("span", null, foot, "L'istantanea mostra sempre l'impaginato da schermo largo: " +
+  "sotto i 720px /vita mette il titolo sopra il grafico invece che di fianco, e quel " +
+  "ribaltamento in griglia non si vede.");
 
-/* Quello che il controllo legge invece di aprire un browser. */
-window.LAB = {FAMS:FAMS, ITEMS:ITEMS, DIRS:DIRS, READOUTS:READOUTS, PAL:PAL,
-  contrast:contrast, deltaE:deltaE, summary:summary, votes:function(){ return votes; },
-  data:{DATES:DATES, CTL:CTL, ATL:ATL}};
+/* Quello che tools/check_lab_stile.cjs legge invece di aprire un browser. */
+window.LAB = {CELLS:CELLS, VARS:VARS, BASE:BASE, PAL:PAL, SLOTS:SLOTS,
+  contrast:contrast, deltaE:deltaE, measure:measure, summary:summary,
+  votes:function(){ return votes; },
+  data:{D0:D0, DAY:DAY, DATES:DATES, CTL:CTL, ATL:ATL, TILE:TILE}};
 })();
 </script>
 </body>
