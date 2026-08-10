@@ -206,6 +206,34 @@ Due cose vanno dette ogni volta che si guarda quella sezione:
   vegetale, fibra, fermentati e penalita' ultra-processati, con i pesi in chiaro
   nel sorgente. Vale la tendenza.
 
+**Il dominio y lo detta la media mobile, non i picchi.** Scalando sugli estremi,
+una notte da tre ore o un giorno da trentamila passi si prende meta' dell'altezza e
+schiaccia la media in una riga piatta — che e' esattamente la serie che si voleva
+guardare. La banda della media occupa il grosso dell'altezza, allargata quel tanto
+che basta a contenere il corpo centrale della nuvola (10°-90° percentile). I punti
+fuori **non si disegnano** e il piede li conta ("3 fuori scala"): dichiararli e'
+onesto, appiattire tutto per farceli stare no. Il check verifica che nessun segno
+esca dal viewBox, quindi dimenticarsi di scartarli e' un test rosso, non un disegno
+storto.
+
+**Un click su un grafico apre la giornata.** `openDay(i)` monta un popup con sonno,
+HRV, FC a riposo, passi, peso, fitness e forma; le attivita' con il link a
+Intervals (`intervals.icu/activities/<id>`) e a Strava dove c'e' `strava_id`; i
+pasti alimento per alimento, con le righe ricostruite in grigio; e le coperture dei
+fabbisogni a barre, con i tetti (sodio, saturi, zuccheri) che virano al rosso quando
+si sfonda. Il dettaglio sta in `vita/_days.json`, esportato da health-log con
+`--export-days`. **Il bottone di chiusura e' un nodo vero appeso dopo l'innerHTML,
+non un pezzo della stringa**: interrogare all'indietro l'HTML appena scritto e'
+proprio cio' che renderebbe la pagina impilotabile da `check_vita.cjs` — e infatti
+il check l'ha beccato al primo giro.
+
+**La matrice 3×3** (`rMatrix`) incrocia tre input della tavola (fibre, magnesio,
+potassio) con tre uscite del recupero (HRV, sonno, qualita'). Nove ipotesi guardate
+insieme: mostrarne una sola sarebbe scegliere il risultato dopo aver visto i dati.
+Il fondo della cella colora |r| con una divergente blu/rosso, il grigio centrale e'
+la maggioranza dei casi ed e' giusto che lo sia — la piu' forte oggi e' HRV ↔ fibre
+a **r +0,14** su 90 giorni.
+
 **The y-axis gutter is computed, not fixed.** A five-figure tick ("50.000") needs
 38px where a two-figure one needs 20; a fixed 34px either clips the big numbers or
 wastes a tenth of a 320px tile. Both axes size themselves from the widest label at

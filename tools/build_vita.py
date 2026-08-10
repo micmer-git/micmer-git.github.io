@@ -69,6 +69,9 @@ REPORT = os.path.join(HERE, "vita_tests.md")
 # del giorno: il diario dei pasti, con dentro dove e con chi ha mangiato, resta
 # privato di la'.
 NUTRITION = os.path.join(OUT_DIR, "_nutrition.csv")
+# Dettaglio giorno per giorno per il popup: pasti, alimenti, % dei fabbisogni.
+# Stesso esportatore, flag `--export-days`.
+DAYS = os.path.join(OUT_DIR, "_days.json")
 
 # The athlete. Intervals.icu also accepts "0" for "whoever owns the key", but the
 # explicit id keeps the CI logs readable when a key is swapped.
@@ -185,7 +188,9 @@ def build_payload(raw):
             break
 
     # activities -> [dayIdx, sport, movingSecs, metres, gainMetres, load]
-    arows, act_days = [], set()
+    # piu' una lista parallela di nomi/id: il popup della giornata apre le attivita'
+    # con il loro nome vero e il link a Intervals, e "Morning Ride" non e' un nome.
+    arows, anames, act_days = [], [], set()
     for a in acts:
         sd = (a.get("start_date_local") or "")[:10]
         if not sd or sd not in idx:
@@ -200,8 +205,12 @@ def build_payload(raw):
             int(round(a.get("total_elevation_gain") or 0)),
             int(round(a.get("icu_training_load") or 0)),
         ])
+        anames.append([a.get("name") or "", a.get("id") or "",
+                       a.get("strava_id") or ""])
         act_days.add(i)
-    arows.sort()
+    order = sorted(range(len(arows)), key=lambda j: arows[j])
+    arows = [arows[j] for j in order]
+    anames = [anames[j] for j in order]
 
     # Long runs with no activity at all. 2022 is the big one; the early years have
     # their own. Drawn as shaded "nessun dato" bands instead of being interpolated
@@ -262,9 +271,16 @@ def build_payload(raw):
     else:
         print(f"  alimentazione: nessun {os.path.basename(NUTRITION)}, riquadri saltati")
 
+    days_detail = {}
+    if os.path.exists(DAYS):
+        with open(DAYS, encoding="utf-8") as fh:
+            days_detail = json.load(fh)
+        print(f"  dettaglio giornaliero: {len(days_detail)} giorni")
+
     payload = {
         "built": date.today().isoformat(),
         "nutri": nutri,
+        "days": days_detail,
         "pulled": raw["pulled"],
         "d0": d0.isoformat(),
         "n": n,
@@ -274,6 +290,7 @@ def build_payload(raw):
         "sleep": sleep, "score": score, "hrv": hrv, "rhr": rhr,
         "steps": steps, "vo2": vo2, "weight": weight, "bodyfat": bodyfat,
         "acts": arows,
+        "anames": anames,
         "first": {
             "load": load_i0,
             "act": arows[0][0] if arows else 0,
@@ -526,6 +543,56 @@ TEMPLATE = r"""<!DOCTYPE html>
   table.fallback th:first-child,table.fallback td:first-child{text-align:left; padding-left:0}
   table.fallback th{color:var(--muted); font-weight:500}
 
+  /* ---------- il popup della giornata ---------- */
+  .sheet{position:fixed; inset:0; z-index:20; display:none; background:rgba(10,9,6,.72);
+    backdrop-filter:blur(2px); padding:4vh 14px; overflow-y:auto}
+  .sheet.on{display:block}
+  .sheet-in{position:relative; max-width:760px; margin:0 auto; background:var(--paper);
+    border:1px solid var(--rule); border-radius:9px; padding:20px 22px 24px;
+    box-shadow:0 20px 60px rgba(0,0,0,.6)}
+  .sheet h3{font-family:'Cinzel',serif; font-size:1.5rem; font-weight:700; margin:0}
+  .sheet .when{font-family:'IBM Plex Mono',monospace; font-size:.6rem; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--gold)}
+  .sheet-x{position:absolute; top:12px; right:12px; background:none; border:0; cursor:pointer;
+    color:var(--muted); font-size:1.5rem; line-height:1; padding:4px 8px}
+  .sheet-x:hover{color:var(--ink)}
+  .sheet-hd{padding-right:34px}
+  .sheet h4{font-family:'IBM Plex Mono',monospace; font-size:.6rem; letter-spacing:.17em;
+    text-transform:uppercase; color:var(--gold); font-weight:600; margin:20px 0 7px;
+    border-top:1px solid var(--rule); padding-top:11px}
+  .kv{display:grid; grid-template-columns:repeat(auto-fit,minmax(94px,1fr)); gap:10px 14px}
+  .kv div b{font-family:'IBM Plex Mono',monospace; font-size:.95rem; color:var(--ink);
+    font-variant-numeric:tabular-nums; display:block}
+  .kv div span{font-family:'IBM Plex Mono',monospace; font-size:.52rem; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--muted)}
+  .acts li{list-style:none; display:flex; justify-content:space-between; gap:12px;
+    padding:6px 0; border-bottom:1px solid rgba(200,154,63,.12); flex-wrap:wrap}
+  .acts a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--rule)}
+  .acts a:hover{color:var(--gold)}
+  .acts em{font-family:'IBM Plex Mono',monospace; font-size:.66rem; color:var(--muted);
+    font-style:normal; white-space:nowrap}
+  .meal{margin-bottom:9px}
+  .meal .mname{font-family:'IBM Plex Mono',monospace; font-size:.55rem; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--ink-soft)}
+  .meal ul{list-style:none; margin-top:3px}
+  .meal li{display:flex; justify-content:space-between; gap:10px; font-size:.86rem;
+    color:var(--ink-soft); padding:1px 0}
+  .meal li i{font-style:normal; font-family:'IBM Plex Mono',monospace; font-size:.68rem;
+    color:var(--muted); white-space:nowrap}
+  .meal li.asm{opacity:.62}
+  .meal li.asm::after{content:" ricostruito"; font-family:'IBM Plex Mono',monospace;
+    font-size:.5rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted)}
+  .bars{display:grid; gap:4px}
+  .bar{display:grid; grid-template-columns:96px 1fr 46px; gap:9px; align-items:center;
+    font-family:'IBM Plex Mono',monospace; font-size:.62rem; color:var(--ink-soft)}
+  .bar u{text-decoration:none; color:var(--muted)}
+  .bar div{height:7px; border-radius:99px; background:rgba(236,227,205,.09); overflow:hidden}
+  .bar div i{display:block; height:100%; border-radius:99px}
+  .bar b{text-align:right; color:var(--ink); font-variant-numeric:tabular-nums;
+    font-weight:500}
+  .hint{font-family:'IBM Plex Mono',monospace; font-size:.53rem; letter-spacing:.09em;
+    color:var(--muted); text-align:center; margin-top:9px}
+
   /* ---------- tooltip ---------- */
   .tip{position:fixed; z-index:9; pointer-events:none; opacity:0; transition:opacity .1s;
     background:#0e0d09; border:1px solid var(--rule); border-radius:5px; padding:6px 10px;
@@ -664,6 +731,10 @@ calorie qui sotto sono un minimo, non un totale.</p>
 </footer>
 
 <div class="tip" id="tip" role="status" aria-live="polite"></div>
+
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-t">
+  <div class="sheet-in" id="sheet-in"></div>
+</div>
 
 <script>
 const D = __DATA__;
@@ -917,6 +988,115 @@ function pathOf(pts, X, Y) {
   return d.trim();
 }
 
+/* ------------------------------------------------------ il popup di un giorno
+   Un click su un punto qualsiasi apre la giornata intera: sonno e recupero,
+   le attività con il link a Intervals e a Strava, i pasti alimento per alimento,
+   e le coperture dei fabbisogni. È il posto in cui una serie torna a essere una
+   giornata — e in cui si vede subito se un valore strano viene da un dato strano
+   o da una giornata strana. */
+const sheet = document.getElementById("sheet");
+const sheetIn = document.getElementById("sheet-in");
+const MEAL_IT = { colazione:"Colazione", pranzo:"Pranzo", cena:"Cena",
+  spuntino:"Spuntino", non_specificato:"Non specificato" };
+const NUTRI_IT = { protein_g:"Proteine", carb_g:"Carboidrati", fiber_g:"Fibre",
+  fat_g:"Grassi", omega3_g:"Omega 3", potassium_mg:"Potassio", calcium_mg:"Calcio",
+  iron_mg:"Ferro", magnesium_mg:"Magnesio", zinc_mg:"Zinco", vitc_mg:"Vit. C",
+  vita_ug:"Vit. A", vitd_ug:"Vit. D", b12_ug:"Vit. B12", folate_ug:"Folati" };
+const CAP_IT = { sodium_mg:"Sodio", satfat_g:"Grassi saturi", sugar_g:"Zuccheri" };
+
+function bar(label, pct, cap) {
+  const w = Math.max(0, Math.min(100, pct));
+  /* oltre il 100 % la barra resta piena: è una copertura, non una gara. Sui tetti
+     (sodio, saturi, zuccheri) il colore vira quando si sfonda. */
+  const col = cap ? (pct > 100 ? "var(--neg)" : "var(--s4)")
+                  : (pct >= 100 ? "var(--s3)" : pct >= 50 ? "var(--s4)" : "var(--s2)");
+  return `<div class="bar"><u>${label}</u><div><i style="width:${w}%;background:${col}"></i></div><b>${nf(pct, 0)}%</b></div>`;
+}
+
+function openDay(i) {
+  if (i < 0 || i >= N) return;
+  const k = dayDate(i).toISOString().slice(0, 10);
+  const day = (D.days || {})[k];
+  const acts = D.acts.map((a, j) => [a, j]).filter(([a]) => a[0] === i);
+  const sleep = D.sleep[i], hrv = D.hrv[i], rhr = D.rhr[i], steps = D.steps[i];
+  const score = D.score[i], w = D.weight[i];
+  const ctl = D.ctl[i], atl = D.atl[i];
+
+  let h = `<div class="sheet-hd"><div class="when">${DOW[(dayDate(i).getDay() + 6) % 7]}</div>` +
+    `<h3 id="sheet-t">${fmtDate(i)}</h3></div>`;
+
+  const kv = [];
+  if (sleep !== null) kv.push([hhmm(sleep), "sonno"]);
+  if (score !== null) kv.push([nf(score), "punteggio"]);
+  if (hrv !== null) kv.push([nf(hrv) + " ms", "hrv"]);
+  if (rhr !== null) kv.push([nf(rhr), "fc riposo"]);
+  if (steps !== null) kv.push([nf(steps), "passi"]);
+  if (w !== null) kv.push([nf(w, 1) + " kg", "peso"]);
+  if (ctl !== null) kv.push([nf(ctl, 0), "fitness"]);
+  if (ctl !== null && atl !== null) kv.push([nf(ctl - atl, 0), "forma"]);
+  if (kv.length) h += `<h4>Corpo</h4><div class="kv">` +
+    kv.map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join("") + `</div>`;
+
+  if (acts.length) {
+    h += `<h4>Allenamento</h4><ul class="acts">` + acts.map(([a, j]) => {
+      const nm = (D.anames || [])[j] || ["", "", ""];
+      const bits = [];
+      if (a[2]) bits.push(hhmm(a[2] / 60));
+      if (a[3]) bits.push(nf(a[3] / 1000, 1) + " km");
+      if (a[4]) bits.push(nf(a[4]) + " m");
+      if (a[5]) bits.push(nf(a[5]) + " TSS");
+      const links = [];
+      if (nm[1]) links.push(`<a href="https://intervals.icu/activities/${nm[1]}" target="_blank" rel="noopener">Intervals</a>`);
+      if (nm[2]) links.push(`<a href="https://www.strava.com/activities/${nm[2]}" target="_blank" rel="noopener">Strava</a>`);
+      return `<li><span>${nm[0] || S[a[1]]}${links.length ? " · " + links.join(" · ") : ""}</span><em>${bits.join(" · ")}</em></li>`;
+    }).join("") + `</ul>`;
+  }
+
+  if (day) {
+    const meals = day.meals || {};
+    const order = ["colazione", "pranzo", "cena", "spuntino", "non_specificato"];
+    const keys = order.filter(m => meals[m]).concat(
+      Object.keys(meals).filter(m => !order.includes(m)));
+    if (keys.length) {
+      h += `<h4>Tavola — ${nf(day.tot.kcal)} kcal` +
+        (day.asm ? ` · ${nf(Math.round(100 * day.obs / (day.obs + day.asm)))}% osservato` : "") +
+        `</h4>`;
+      for (const m of keys) {
+        h += `<div class="meal"><div class="mname">${MEAL_IT[m] || m}</div><ul>` +
+          meals[m].map(it => `<li class="${it.a ? "asm" : ""}"><span>${it.n}${it.r ? ` <u style="color:var(--muted);text-decoration:none">· ${it.r}</u>` : ""}</span><i>${it.q} · ${nf(it.kcal)} kcal</i></li>`).join("") +
+          `</ul></div>`;
+      }
+      const macro = ["protein_g", "carb_g", "fiber_g", "fat_g"];
+      h += `<h4>Macro e micro, in % del fabbisogno</h4><div class="bars">` +
+        macro.filter(nn => day.pct[nn] !== undefined).map(nn => bar(NUTRI_IT[nn], day.pct[nn])).join("") +
+        Object.keys(NUTRI_IT).filter(nn => !macro.includes(nn) && day.pct[nn] !== undefined)
+          .map(nn => bar(NUTRI_IT[nn], day.pct[nn])).join("") +
+        Object.keys(day.cap || {}).map(nn => bar(CAP_IT[nn] || nn, day.cap[nn], true)).join("") +
+        `</div><p class="hint">Sui tetti (sodio, saturi, zuccheri) il rosso è uno sforamento, non un obiettivo mancato.</p>`;
+    }
+  } else {
+    h += `<h4>Tavola</h4><p class="t-empty">Nessun pasto per questo giorno.</p>`;
+  }
+
+  sheetIn.innerHTML = h;
+  /* Il bottone di chiusura e' un nodo vero appeso dopo, non un pezzo della stringa
+     qui sopra: interrogare all'indietro l'HTML appena scritto e' proprio la cosa
+     che rende la pagina impossibile da pilotare senza browser — e che il check
+     non saprebbe piu' fare. Vale anche per un solo bottone. */
+  const x = mk("button", "sheet-x", sheetIn, "×");
+  x.setAttribute("type", "button");
+  x.setAttribute("aria-label", "Chiudi");
+  x.addEventListener("click", closeDay);
+  sheet.classList.add("on");
+  document.body.style.overflow = "hidden";
+}
+function closeDay() {
+  sheet.classList.remove("on");
+  document.body.style.overflow = "";
+}
+sheet.addEventListener("click", ev => { if (ev.target === sheet) closeDay(); });
+addEventListener("keydown", ev => { if (ev.key === "Escape") closeDay(); });
+
 /* --------------------------------------------------------------- renderers */
 /* Each returns {stats, table, foot} so the tile can print its own summary and its
    own data fallback without the renderer knowing about the DOM around it. */
@@ -995,6 +1175,8 @@ function rBars(svg, W, H, t, from, to) {
     r.addEventListener("pointerenter", ev => showTip(ev.clientX, ev.clientY,
       `<span class="d">${bucketLabel(o.k, plan.step)}</span><br>${t.name} <span class="v">${(t.fmt || FMT.num0)(o.v)}</span>`));
     r.addEventListener("pointerleave", hideTip);
+    r.setAttribute("style", "cursor:pointer");
+    r.addEventListener("click", () => openDay(o.i));
     svg.appendChild(r);
   }
   return { stats:stats(b.map(o => o.v)), plan,
@@ -1048,11 +1230,33 @@ function rCloud(svg, W, H, t, from, to) {
   if (!pts.length) return null;
   const mean = rolling(arr, from, to, t.win || 7);
   const nums = pts.map(p => p[1]);
-  let lo = Math.min(...nums), hi = Math.max(...nums);
+
+  /* Il dominio y lo detta la MEDIA MOBILE, non i picchi giornalieri.
+     Scalando sugli estremi, una notte da tre ore o un giorno da trentamila passi
+     si prende meta' dell'altezza e schiaccia la media in una riga piatta — che e'
+     esattamente la serie che si voleva guardare. Qui la banda della media occupa
+     il grosso dell'altezza, allargata quel tanto che basta a contenere il corpo
+     centrale della nuvola (dal 10esimo al 90esimo percentile). I punti che
+     restano fuori non si disegnano, e il piede della scheda li conta: meglio
+     dichiararli che appiattire tutto per farceli stare. */
+  const mvals = mean.filter(v => v !== null && isFinite(v));
+  const q = (a, p) => { const s = [...a].sort((x, y) => x - y);
+    return s[Math.max(0, Math.min(s.length - 1, Math.round(p * (s.length - 1))))]; };
+  let lo, hi;
+  if (mvals.length >= 2) {
+    const mLo = Math.min(...mvals), mHi = Math.max(...mvals);
+    const pad = Math.max((mHi - mLo) * .45, Math.abs(mHi) * .02, 1e-6);
+    lo = Math.min(mLo - pad, q(nums, .10));
+    hi = Math.max(mHi + pad, q(nums, .90));
+  } else {
+    lo = Math.min(...nums); hi = Math.max(...nums);
+    const pad = (hi - lo) * .06 || 1; lo -= pad; hi += pad;
+  }
   if (t.band) { lo = Math.min(lo, t.band[0]); hi = Math.max(hi, t.band[1]); }
-  const pad = (hi - lo) * .06; lo -= pad; hi += pad;
-  if (t.zero) lo = 0;
+  if (t.zero) lo = Math.max(0, lo);
+  const outside = nums.filter(v => v < lo || v > hi).length;
   const g = frame(svg, W, H, [from, to], [lo, hi], { ytick:t.ytick });
+  const inRange = v => v >= g.yd.lo && v <= g.yd.hi;
   if (t.band) {
     const yA = g.Y(t.band[1]), yB = g.Y(t.band[0]);
     svg.appendChild(el("rect", { x:g.P.l, y:yA, width:g.iw, height:Math.max(1, yB - yA),
@@ -1061,15 +1265,17 @@ function rCloud(svg, W, H, t, from, to) {
   /* over ~800 days the dots stop being dots; the daily cloud becomes weekly means */
   if (days > 800) {
     const w = aggregate(arr, from, to, "mean", "w").filter(o => o.v !== null);
-    for (const o of w) svg.appendChild(el("circle", { cx:g.X(o.i), cy:g.Y(o.v), r:1.6,
-      fill:t.col, opacity:".5" }));
+    for (const o of w) if (inRange(o.v))
+      svg.appendChild(el("circle", { cx:g.X(o.i), cy:g.Y(o.v), r:1.6,
+        fill:t.col, opacity:".5" }));
   } else {
     const r = days > 420 ? 1.5 : days > 200 ? 1.9 : days > 90 ? 2.4 : 3;
-    for (const [x, y] of pts) svg.appendChild(el("circle", { cx:g.X(x), cy:g.Y(y), r,
-      fill:t.col, opacity:".42" }));
+    for (const [x, y] of pts) if (inRange(y))
+      svg.appendChild(el("circle", { cx:g.X(x), cy:g.Y(y), r,
+        fill:t.col, opacity:".38" }));
   }
   svg.appendChild(el("path", { d:pathOf(mean.map((v, k) => [from + k, v]), g.X, g.Y),
-    fill:"none", stroke:t.col, "stroke-width":2, "stroke-linejoin":"round",
+    fill:"none", stroke:t.col, "stroke-width":2.2, "stroke-linejoin":"round",
     "stroke-linecap":"round" }));
   crosshair(svg, g, W, H, from, to, i => {
     const v = arr[i], m = mean[i - from];
@@ -1077,7 +1283,8 @@ function rCloud(svg, W, H, t, from, to) {
     return `${t.name} <span class="v">${(t.fmt || FMT.num0)(v)}</span>` +
       (m !== null ? `<br><span class="d">media ${t.win || 7} gg ${(t.fmt || FMT.num0)(m)}</span>` : "");
   });
-  return { stats:stats(nums), table:tableOf([{ name:t.name, vals:pts }], from, to, t.fmt, true) };
+  return { stats:stats(nums), outside,
+    table:tableOf([{ name:t.name, vals:pts }], from, to, t.fmt, true) };
 }
 
 /* A step line: VO2max moves in plateaus, so joining the estimates with a slope would
@@ -1141,6 +1348,8 @@ function rXY(svg, W, H, t, from, to) {
         `${t.yname} <span class="v">${(t.yfmt || FMT.num0)(p[1])}</span>` +
         (groups.length > 1 ? `<br><span class="d">${gr.name}</span>` : "")));
       c.addEventListener("pointerleave", hideTip);
+      if (p[2] !== undefined) { c.setAttribute("style", "cursor:pointer");
+        c.addEventListener("click", () => openDay(p[2])); }
       svg.appendChild(c);
     }
   });
@@ -1194,6 +1403,86 @@ function rDow(svg, W, H, t, from, to) {
       st.map((s, k) => s ? `<tr><td>${DOW[k]}</td><td>${(t.fmt || FMT.num0)(s.mean)}</td><td>${s.n}</td></tr>` : "").join("") };
 }
 
+/* Matrice di dispersione: righe × colonne di mini-scatter, ognuno con la sua retta
+   e la sua r. Serve a guardare nove ipotesi insieme invece che una alla volta —
+   ed è l'unico modo onesto di mostrarne nove, perché nove riquadri separati
+   inviterebbero a raccontare la più forte e tacere le altre otto.
+   La cella è colorata dalla FORZA della correlazione, non dal suo segno preso a sé:
+   una scala divergente blu↔rosso attorno allo zero, grigio in mezzo. Il grigio
+   centrale è la maggioranza dei casi, ed è giusto che lo sia. */
+function rMatrix(svg, W, H, t, from, to) {
+  const rows = t.rows, cols = t.cols;
+  const gap = 6, labL = 44, labT = 13;
+  const cw = (W - labL - gap * (cols.length - 1)) / cols.length;
+  const ch = (H - labT - gap * (rows.length - 1)) / rows.length;
+  if (cw < 24 || ch < 20) return null;
+
+  let best = null, n_ok = 0;
+  const table = [];
+  cols.forEach((c, ci) => {
+    const tx = axisText(labL + ci * (cw + gap) + cw / 2, 9, c.name, "middle");
+    tx.textContent = c.name; svg.appendChild(tx);
+  });
+  rows.forEach((r, ri) => {
+    const ty = axisText(labL - 5, labT + ri * (ch + gap) + ch / 2 + 3, r.name, "end");
+    ty.textContent = r.name; svg.appendChild(ty);
+
+    cols.forEach((c, ci) => {
+      const x0 = labL + ci * (cw + gap), y0 = labT + ri * (ch + gap);
+      const pts = [];
+      for (let i = from; i <= to; i++) {
+        const a = c.arr[i], b = r.arr[i];
+        if (a === null || a === undefined || b === null || b === undefined) continue;
+        pts.push([a, b, i]);
+      }
+      const f = fit(pts.map(p => [p[0], p[1]]));
+      const strength = f ? Math.abs(f.r) : 0;
+      /* fondo divergente: |r| porta l'intensità, il segno il verso */
+      const bg = !f ? "rgba(236,227,205,.03)"
+        : (f.r >= 0 ? `rgba(57,135,229,${(strength * .30).toFixed(3)}`
+                    : `rgba(230,103,103,${(strength * .30).toFixed(3)}`) + ")";
+      svg.appendChild(el("rect", { x:x0, y:y0, width:cw, height:ch, rx:3, fill:bg,
+        stroke:"rgba(236,227,205,.10)", "stroke-width":1 }));
+      if (!pts.length) return;
+      n_ok++;
+      const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+      const xa = Math.min(...xs), xb = Math.max(...xs);
+      const ya = Math.min(...ys), yb = Math.max(...ys);
+      const PX = v => x0 + 3 + (xb === xa ? cw / 2 - 3 : (v - xa) / (xb - xa) * (cw - 6));
+      const PY = v => y0 + ch - 3 - (yb === ya ? ch / 2 - 3 : (v - ya) / (yb - ya) * (ch - 6));
+      for (const p of pts) {
+        const dot = el("circle", { cx:PX(p[0]), cy:PY(p[1]), r:1.5, fill:t.col,
+          opacity:".5" });
+        dot.addEventListener("pointerenter", ev => showTip(ev.clientX, ev.clientY,
+          `<span class="d">${fmtDate(p[2])}</span><br>${c.name} <span class="v">${(c.fmt || FMT.num0)(p[0])}</span>` +
+          `<br>${r.name} <span class="v">${(r.fmt || FMT.num0)(p[1])}</span>`));
+        dot.addEventListener("pointerleave", hideTip);
+        dot.addEventListener("click", () => openDay(p[2]));
+        svg.appendChild(dot);
+      }
+      if (f) {
+        svg.appendChild(el("line", { x1:PX(xa), y1:PY(f.m * xa + f.b),
+          x2:PX(xb), y2:PY(f.m * xb + f.b), stroke:"var(--ink-soft)",
+          "stroke-width":1.1, opacity:".75" }));
+        const lab = axisText(x0 + cw - 3, y0 + 10, "", "end");
+        lab.setAttribute("fill", strength >= .3 ? "var(--ink)" : "var(--muted)");
+        lab.setAttribute("font-size", "8.5");
+        lab.textContent = (f.r >= 0 ? "+" : "") + f.r.toFixed(2);
+        svg.appendChild(lab);
+        table.push([`${r.name} ↔ ${c.name}`, f.r, f.n]);
+        if (!best || strength > Math.abs(best[1])) best = [`${r.name} ↔ ${c.name}`, f.r, f.n];
+      }
+    });
+  });
+  if (!n_ok) return null;
+  table.sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]));
+  return {
+    best2:best && `più forte ${best[0]} r ${(best[1] >= 0 ? "+" : "") + best[1].toFixed(2)} su ${best[2]} giorni`,
+    table:`<tr><th>coppia</th><th>r</th><th>giorni</th></tr>` +
+      table.map(([k, r, n]) => `<tr><td>${k}</td><td>${(r >= 0 ? "+" : "") + r.toFixed(2)}</td><td>${n}</td></tr>`).join(""),
+  };
+}
+
 /* One crosshair implementation for every day-indexed renderer. */
 function crosshair(svg, g, W, H, from, to, describe) {
   const line = el("line", { y1:g.P.t, y2:g.P.t + g.ih, stroke:"var(--gold)",
@@ -1214,6 +1503,14 @@ function crosshair(svg, g, W, H, from, to, describe) {
   hit.addEventListener("pointermove", at);
   hit.addEventListener("pointerenter", at);
   hit.addEventListener("pointerleave", () => { line.setAttribute("opacity", "0"); hideTip(); });
+  /* un click sul grafico apre la giornata sotto il cursore */
+  hit.setAttribute("style", "cursor:pointer");
+  hit.addEventListener("click", ev => {
+    const r = svg.getBoundingClientRect();
+    const px = (ev.clientX - r.left) / r.width * W;
+    const i = Math.round(from + (px - g.P.l) / g.iw * (to - from));
+    if (i >= from && i <= to) openDay(i);
+  });
   svg.appendChild(hit);
 }
 
@@ -1262,14 +1559,14 @@ const TILES = [
       { name:"Fitness (CTL)", col:SCH[0], area:true, get:(a, b) => D.ctl.slice(a, b + 1).map((v, k) => [a + k, v]) },
       { name:"Fatica (ATL)", col:SCH[1], get:(a, b) => D.atl.slice(a, b + 1).map((v, k) => [a + k, v]) },
     ] },
-    foot:"CTL è la media esponenziale a 42 giorni del carico, ATL quella a 7. Quando l'arancio sta sopra il blu, si sta scavando." },
+    foot:"Arancio sopra blu: si sta scavando." },
 
   { panel:"carico", cls:"wide", h:150, first:"load",
     title:"Forma", cap:"CTL − ATL · sopra lo zero si è freschi",
     now:() => D.ctl[N - 1] - D.atl[N - 1], nowFmt:FMT.num0, nowUnit:"forma oggi",
     kind:rDiverge, spec:{ name:"Forma", fmt:FMT.num0,
       get:(a, b) => { const o = []; for (let i = a; i <= b; i++) o.push([i, D.ctl[i] === null || D.atl[i] === null ? null : D.ctl[i] - D.atl[i]]); return o; } },
-    foot:"Il blu è credito, il rosso è debito. Le gare buone stanno quasi sempre appena dopo una risalita verso lo zero." },
+    foot:"Blu credito, rosso debito." },
 
   { panel:"carico", h:170, first:"load", title:"Carico", cap:"TSS sommato",
     now:() => D.load.slice(N - 7).reduce((a, b) => a + (b || 0), 0), nowFmt:FMT.num0, nowUnit:"TSS ultimi 7 gg",
@@ -1287,7 +1584,7 @@ const TILES = [
     nowFmt:FMT.hhmm, nowUnit:"media 7 notti",
     kind:rCloud, spec:{ name:"Sonno", arr:D.sleep, col:"var(--s1)", fmt:FMT.hhmm,
       band:[420, 480], win:7, ytick:v => (v / 60).toFixed(0) + "h" },
-    foot:"La fascia chiara è 7–8 ore. La media mobile è quella che conta: una notte corta non è un problema, dieci di fila lo sono." },
+    foot:"Fascia: 7–8 ore." },
 
   { panel:"notte", h:180, first:"score", title:"Punteggio del sonno",
     cap:"come lo valuta l'orologio · 0–100",
@@ -1306,7 +1603,7 @@ const TILES = [
     now:() => { const r = rolling(D.hrv, N - 7, N - 1, 7); return r[r.length - 1]; },
     nowFmt:FMT.num0, nowUnit:"ms, media 7 gg",
     kind:rCloud, spec:{ name:"HRV", arr:D.hrv, col:"var(--s2)", fmt:FMT.ms, win:7 },
-    foot:"Il singolo valore non vuole dire niente: quello che conta è se la media sta sopra o sotto la propria linea di base." },
+    foot:"Conta la media, non il singolo giorno." },
 
   { panel:"recupero", h:180, first:"rhr", title:"Frequenza a riposo",
     cap:"battiti al minuto · media mobile 7 giorni",
@@ -1319,7 +1616,7 @@ const TILES = [
     now:() => { for (let i = N - 1; i >= 0; i--) if (D.vo2[i] !== null) return D.vo2[i]; return null; },
     nowFmt:FMT.num1, nowUnit:"ml/kg/min",
     kind:rStep, spec:{ name:"VO₂max", arr:D.vo2, col:"var(--s3)", fmt:FMT.num1 },
-    foot:"A gradini, non a rampa: è una stima che si aggiorna a scatti, e una linea inclinata le darebbe una precisione che non ha." },
+    foot:"A gradini: la stima si aggiorna a scatti." },
 
   { panel:"recupero", h:180, first:"steps", title:"Passi", cap:"al giorno · media mobile 7 giorni",
     now:() => { const r = rolling(D.steps, N - 7, N - 1, 7); return r[r.length - 1]; },
@@ -1334,7 +1631,7 @@ const TILES = [
     kind:rXY, spec:{ xname:"giorno", yname:"Peso", yfmt:FMT.kg, r:3.2,
       xfmt:v => fmtDate(Math.round(v)), xtick:monthTick,
       points:(a, b) => [{ name:"Peso", col:"var(--s2)", pts:sparsePts(D.weight, a, b) }] },
-    foot:"Sessantacinque pesate in totale: una nuvola, non una serie. La retta è la tendenza su quelle." },
+    foot:"65 pesate: una nuvola, non una serie." },
 
   { panel:"corpo", h:170, first:"bodyfat", title:"Massa grassa", cap:"stima della bilancia · %",
     now:() => { for (let i = N - 1; i >= 0; i--) if (D.bodyfat[i] !== null) return D.bodyfat[i]; return null; },
@@ -1366,7 +1663,7 @@ const TILES = [
       points:(a, b) => [0, 1].map(sp => ({ name:S[sp], col:SCH[sp],
         pts:D.acts.filter(x => x[0] >= a && x[0] <= b && x[1] === sp && x[3] > 500)
           .map(x => [x[3] / 1000, x[4], x[0]]) })) },
-    foot:"Due gruppi soli: quattro colori non si separano abbastanza in uno scatter, e nuoto e palestra qui non avrebbero un asse." },
+    foot:"Solo bici e corsa: gli altri sport non hanno questo asse." },
 
   /* ---- Incroci ---- */
   { panel:"incroci", h:180, first:"sleep", title:"Sonno contro carico del giorno prima",
@@ -1400,7 +1697,7 @@ const TILES = [
       yfmt:FMT.num1, r:2.8,
       points:(a, b) => [{ name:"stime", col:"var(--s1)",
         pts:pairPts(i => D.ctl[i], i => D.vo2[i], a, b) }] },
-    foot:"Zero anche qui, ed è il più sorprendente dei cinque: fra una fitness da 90 e una da 190 la stima dell'orologio non si sposta. Qualunque cosa stia misurando, non è quella." },
+    foot:"Fra fitness 90 e 190 la stima non si sposta." },
 
   /* ---- Tavola: presenti solo se _nutrition.csv era sul disco al build ---- */
   ...nutriTiles(),
@@ -1424,7 +1721,7 @@ function nutriTiles() {
     nowFmt:v => nf(v, 0) + " %", nowUnit:"osservato",
     kind:rStack, spec:{ arrs:[N_.kcal_observed, N_.kcal_assumed],
       names:["Osservate", "Ricostruite"], cols:["var(--s3)", "var(--s4)"], fmt:FMT.num0 },
-    foot:"Il riquadro da leggere per primo: dice quanto delle calorie qui sotto viene da un pasto raccontato e quanto dallo schema abituale. Sotto il 50 % di osservato, tutto il resto della sezione è un minimo." });
+    foot:"Sotto il 50 % osservato, le kcal sono un minimo." });
 
   t.push({ panel:"tavola", h:118, first:"n_kcal", title:"Energia",
     cap:"kcal al giorno · media mobile 7 giorni",
@@ -1446,7 +1743,7 @@ function nutriTiles() {
     nowFmt:FMT.num0, nowUnit:"su 30",
     kind:rCloud, spec:{ name:"Piante", arr:N_.plants_7d, col:"var(--s1)", fmt:FMT.num0,
       band:[30, 30], zero:true, win:14 },
-    foot:"Cereali, legumi, frutta secca, erbe e spezie contano: sono piante. È la variabile con più evidenza dietro nella diversità del microbiota — più della quantità di fibra." });
+    foot:"Cereali, legumi, frutta secca, erbe e spezie contano." });
 
   t.push({ panel:"tavola", h:118, first:"n_carb_g", title:"Carboidrati contro fabbisogno",
     cap:"ingeriti e stimati dal TSS del giorno",
@@ -1457,7 +1754,7 @@ function nutriTiles() {
       { name:"Ingeriti", col:SCH[0], area:true, get:(a, b) => N_.carb_g.slice(a, b + 1).map((v, k) => [a + k, v]) },
       { name:"Stimati dal carico", col:SCH[1], get:(a, b) => N_.carb_target_g.slice(a, b + 1).map((v, k) => [a + k, v]) },
     ] },
-    foot:"La stima è una regola pratica da endurance: 3 g/kg da fermo, ~6 a TSS 100, fino a 10 nelle giornate grosse. Serve a vedere lo scarto, non a prescrivere una quantità." });
+    foot:"Stima: 3 g/kg da fermo, ~6 a TSS 100, fino a 10." });
 
   t.push({ panel:"tavola", h:118, first:"n_sugar_g", title:"Zuccheri",
     cap:"grammi al giorno · media mobile 7 giorni",
@@ -1474,7 +1771,7 @@ function nutriTiles() {
       { name:"Magnesio", col:SCH[2], get:(a, b) => rolling(N_.magnesium_mg, a, b, 7).map((v, k) => [a + k, v === null ? null : 100 * v / 350]) },
       { name:"Potassio", col:SCH[0], get:(a, b) => rolling(N_.potassium_mg, a, b, 7).map((v, k) => [a + k, v === null ? null : 100 * v / 3500]) },
     ] },
-    foot:"Due minerali su un asse solo perché sono già normalizzati al proprio fabbisogno: 100 % vuol dire coperto, per tutti e due." });
+    foot:"100 % = fabbisogno coperto." });
 
   t.push({ panel:"tavola", h:118, first:"n_vit_index", title:"Vitamine e minerali",
     cap:"indice 0-100 · media delle coperture, ognuna tagliata a 100",
@@ -1485,7 +1782,7 @@ function nutriTiles() {
       { name:"Vitamine", col:SCH[1], get:(a, b) => rolling(N_.vit_index, a, b, 7).map((v, k) => [a + k, v]) },
       { name:"Minerali", col:SCH[2], get:(a, b) => rolling(N_.min_index, a, b, 7).map((v, k) => [a + k, v]) },
     ] },
-    foot:"Ogni nutriente è tagliato al 100 % prima della media: senza il taglio, la vitamina A di una carota coprirebbe il buco di vitamina D — che non è come funziona un fabbisogno." });
+    foot:"Ogni nutriente tagliato al 100 % prima della media." });
 
   if (has("microbiome")) t.push({ panel:"tavola", h:118, first:"n_microbiome",
     title:"Indice microbiota", cap:"proxy 0-100 dal diario, non una misura",
@@ -1493,7 +1790,22 @@ function nutriTiles() {
     nowFmt:FMT.num0, nowUnit:"su 100, 14 gg",
     kind:rCloud, spec:{ name:"Microbiota", arr:N_.microbiome, col:"var(--s1)",
       fmt:FMT.num0, zero:true, win:14 },
-    foot:"Nessuno sta sequenziando niente: è una combinazione pesata di diversità vegetale (40 %), fibra (30 %), fermentati (15 %) e penalità per ultra-processati (15 %). Vale la tendenza, non il numero." });
+    foot:"Proxy: piante 40 %, fibra 30 %, fermentati 15 %, ultra-processati −15 %." });
+
+  /* La matrice 3×3: tre input della tavola contro tre uscite del recupero.
+     Nove ipotesi guardate insieme — se ne mostrassi solo la più forte starei
+     scegliendo il risultato dopo aver visto i dati. */
+  if (has("fiber_g") && has("magnesium_mg")) t.push({
+    panel:"tavola", h:230, first:"n_fiber_g", title:"Tavola contro recupero",
+    cap:"nove incroci · colonne: cosa è entrato · righe: come è andata la notte",
+    kind:rMatrix, spec:{ col:"var(--s1)",
+      cols:[{ name:"Fibre", arr:N_.fiber_g, fmt:v => nf(v, 0) + " g" },
+            { name:"Magnesio", arr:N_.magnesium_mg, fmt:v => nf(v, 0) + " mg" },
+            { name:"Potassio", arr:N_.potassium_mg, fmt:v => nf(v, 0) + " mg" }],
+      rows:[{ name:"HRV", arr:D.hrv, fmt:FMT.ms },
+            { name:"Sonno", arr:D.sleep, fmt:FMT.hhmm },
+            { name:"Qualità", arr:D.score, fmt:FMT.num0 }] },
+    foot:"Blu positivo, rosso negativo, grigio quasi niente. Su ~90 giorni il grigio è il risultato più probabile, e conta." });
 
   return t;
 }
@@ -1574,15 +1886,20 @@ function drawTile(n, t) {
       : `${t.nowFmt(v)}<br><small>${t.nowUnit}</small>`;
   }
 
+  /* Il piede dice solo quello che non si vede dal grafico. La finestra e il
+     conteggio dei punti erano rumore — l'asse mostra già le date, e "n 92" non ha
+     mai cambiato una decisione. Restano il passo di aggregazione quando non è
+     ovvio, la correlazione, e i punti lasciati fuori scala, che è l'unica cosa
+     che il disegno tace davvero. */
   const bits = [];
   if (res) {
-    bits.push(`${fmtDate(from)} → ${fmtDate(to)}`);
-    if (res.plan) bits.push(res.plan.label);
-    if (res.stats) bits.push(`n ${nf(res.stats.n)}`);
-    if (res.fit) bits.push(`r ${res.fit.r.toFixed(2)} su ${nf(res.fit.n)} punti`);
-    if (res.best) bits.push(`media più alta: ${res.best}`);
+    if (res.plan && res.plan.step !== "d") bits.push(res.plan.label);
+    if (res.fit) bits.push(`r ${res.fit.r.toFixed(2)}`);
+    if (res.best2) bits.push(res.best2);
+    if (res.best) bits.push(`più alta ${res.best}`);
+    if (res.outside) bits.push(`${res.outside} fuori scala`);
   }
-  n.foot.innerHTML = bits.join(" · ") + (t.foot ? `<br>${t.foot}` : "");
+  n.foot.innerHTML = bits.join(" · ") + (t.foot ? (bits.length ? " · " : "") + t.foot : "");
   n.tbody.innerHTML = res ? res.table : "";
 }
 
@@ -1596,6 +1913,7 @@ for (const t of TILES) {
 }
 const drawAll = () => { for (const [n, t] of MOUNTED) drawTile(n, t); };
 window.CRUSCOTTO = { D, TILES, MOUNTED, drawAll, setRange:k => { range = k; drawAll(); } };
+window.openDay = openDay;   /* il check lo chiama per verificare il popup */
 
 /* ---------------------------------------------------------- range control */
 const rangesEl = document.getElementById("ranges");

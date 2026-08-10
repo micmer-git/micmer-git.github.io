@@ -79,7 +79,7 @@ const document = {
 };
 for (const id of ["tip", "totals", "ranges", "range-note",
   "panel-carico", "panel-notte", "panel-recupero", "panel-corpo",
-  "panel-volume", "panel-incroci", "panel-tavola", "tracks"]) document.getElementById(id);
+  "panel-volume", "panel-incroci", "panel-tavola", "tracks", "sheet", "sheet-in"]) document.getElementById(id);
 
 const sandbox = {
   document, console,
@@ -108,7 +108,7 @@ if (ran) {
   /* -------------------------------------------------- 1. tutti i riquadri */
   ok(K.TILES.length === K.MOUNTED.length,
     `ogni riquadro dichiarato e' montato (${K.MOUNTED.length}/${K.TILES.length})`);
-  ok(K.MOUNTED.length >= 30, `almeno 30 riquadri (${K.MOUNTED.length})`);
+  ok(K.MOUNTED.length >= 32, `almeno 32 riquadri (${K.MOUNTED.length})`);
 
   for (const r of ["2a", "1a", "3m", "sempre"]) {
     let threw = 0, empty = [];
@@ -229,6 +229,43 @@ if (ran) {
   const noLegend = multi.filter(([, t]) => !t.legend).map(([, t]) => t.title);
   ok(noLegend.length === 0, `ogni riquadro multi-serie ha la legenda (${multi.length} riquadri)` +
     (noLegend.length ? ` — mancano: ${noLegend.join(", ")}` : ""));
+
+  /* ------------------------------- 5b. il popup della giornata si apre davvero
+     E' l'unica parte della pagina che non si vede finche' non ci si clicca sopra,
+     quindi e' anche l'unica che puo' rompersi senza che nessuno se ne accorga. */
+  const sheetIn = document.getElementById("sheet-in");
+  const openDay = sandbox.openDay;
+  ok(typeof openDay === "function", "openDay() esiste");
+  if (typeof openDay === "function") {
+    // un giorno con dentro tutto: cibo + attivita' + wellness
+    const withFood = Object.keys(D.days || {});
+    ok(withFood.length > 0, `il dettaglio giornaliero e' inlineato (${withFood.length} giorni)`);
+    let opened = 0, sections = {};
+    const d0 = new Date(D.d0 + "T00:00:00");
+    for (const k of withFood.slice(0, 40)) {
+      const i = Math.round((new Date(k + "T00:00:00") - d0) / 86400000);
+      try { openDay(i); } catch (e) { fails.push(`FAIL openDay(${k}): ${e && e.stack || e}`); break; }
+      const h = sheetIn.innerHTML;
+      if (h.includes("Tavola")) sections.tavola = 1;
+      if (h.includes("Corpo")) sections.corpo = 1;
+      if (h.includes("Allenamento")) sections.allenamento = 1;
+      if (h.includes("% del fabbisogno")) sections.micro = 1;
+      if (h.length > 400) opened++;
+    }
+    ok(opened > 0, `il popup si riempie (${opened}/40 giorni provati)`);
+    for (const sec of ["corpo", "allenamento", "tavola", "micro"]) {
+      ok(!!sections[sec], `il popup mostra la sezione "${sec}" su almeno un giorno`);
+    }
+    // un giorno senza cibo non deve esplodere
+    try { openDay(10); ok(true, "openDay() regge un giorno senza diario alimentare"); }
+    catch (e) { fails.push(`FAIL openDay su giorno senza cibo: ${e}`); }
+    // i link devono puntare a Intervals/Strava, non essere costruiti a vuoto
+    const anyLink = withFood.some(k => {
+      const i = Math.round((new Date(k + "T00:00:00") - d0) / 86400000);
+      openDay(i); return /intervals\.icu\/activities\/\d/.test(sheetIn.innerHTML);
+    });
+    ok(anyLink, "almeno un'attivita' nel popup linka a intervals.icu con un id vero");
+  }
 
   /* ------------------------------------------------------ 6. il buco 2022 */
   const d0 = new Date(D.d0 + "T00:00:00");
