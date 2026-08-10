@@ -746,11 +746,14 @@ correlazione nulla si vede solo se la si disegna.</p>
 
 <h2 class="band">Tavola</h2>
 <p class="band-sub">Cosa entra, contro cosa serve. Queste serie sono una
-<strong>ricostruzione</strong>, non un diario completo: i pasti raccontati coprono
-una parte delle giornate, il resto lo riempie lo schema abituale — colazione fissa,
-due avocado toast e due dahl a settimana. Il riquadro “quanto è raccontato” dice
-ogni giorno quanta parte è osservata davvero, e finché quella quota resta bassa le
-calorie qui sotto sono un minimo, non un totale.</p>
+<strong>ricostruzione</strong>, non un diario: due anni di giornate rimesse insieme
+da quello che Michele ha dichiarato di mangiare — la colazione fissa, due avocado
+toast e due dahl a settimana, e i piatti che ogni mese ricorrevano nelle sue foto,
+ognuno una volta nella sua settimana e poi a rotazione. Per sua stessa stima quei
+piatti sono circa il <strong>75 %</strong> di cosa mangia: il restante quarto —
+spuntini, avanzi, il resto — qui non c'è, quindi le calorie sono una base, non un
+totale. Il primo riquadro dice quanta parte di ogni giorno è invece osservata
+davvero.</p>
 <main class="panel" id="panel-tavola"></main>
 
 <nav class="also">
@@ -1862,14 +1865,14 @@ function nutriTiles() {
   const t = [];
 
   t.push({ panel:"tavola", h:132, first:"n_kcal", title:"Quanto è raccontato",
-    cap:"kcal osservate contro ricostruite", legend:[["Osservate", SCH[2]], ["Ricostruite", SCH[3]]],
+    cap:"kcal osservate contro ricostruite · i piatti dichiarati sono ~75 % della dieta", legend:[["Osservate", SCH[2]], ["Ricostruite", SCH[3]]],
     now:() => { const a = N_.kcal_observed, b = N_.kcal_assumed; let o = 0, s = 0;
       for (let i = 0; i < N; i++) if (a[i] !== null) { o += a[i]; s += a[i] + (b[i] || 0); }
       return s ? 100 * o / s : null; },
     nowFmt:v => nf(v, 0) + " %", nowUnit:"osservato",
     kind:rStack, spec:{ arrs:[N_.kcal_observed, N_.kcal_assumed],
       names:["Osservate", "Ricostruite"], cols:["var(--s3)", "var(--s4)"], fmt:FMT.num0 },
-    foot:"Sotto il 50 % osservato, le kcal sono un minimo." });
+    foot:"Osservato = un pasto raccontato. Ricostruito = lo schema mensile dichiarato, che copre circa tre quarti della dieta." });
 
   t.push({ panel:"tavola", h:132, first:"n_kcal", title:"Energia",
     cap:"kcal al giorno · media mobile 7 giorni",

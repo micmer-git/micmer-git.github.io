@@ -2591,3 +2591,235 @@ ok   --gold #e2c98f contro gli slot dei grafici: peggiore --s4 ΔE 18.6 (minimo 
 ```
 
 esito: tutti passati (45 ok)
+
+## 2026-08-10 19:05 — build
+
+```
+span: 2015-03-29 → 2026-08-10  (4153 giorni)
+  ctl        4153 valori (2431 non nulli)  dal 2015-03-29
+  load       4153 valori (1739 non nulli)  dal 2019-06-19
+  sleep       549 valori (549 non nulli)  dal 2025-01-21
+  score       549 valori (549 non nulli)  dal 2025-01-21
+  hrv         549 valori (549 non nulli)  dal 2025-01-21
+  rhr         567 valori (567 non nulli)  dal 2025-01-20
+  steps       567 valori (567 non nulli)  dal 2025-01-20
+  vo2         279 valori (279 non nulli)  dal 2025-01-22
+  weight       65 valori (65 non nulli)  dal 2025-01-21
+  bodyfat      53 valori (53 non nulli)  dal 2025-06-27
+  acts       2257 attività
+  attività per anno: 2015:3 2016:33 2017:39 2018:44 2019:105 2020:349 2021:300 2023:255 2024:378 2025:471 2026:280
+  buchi ≥45 giorni senza attività: 6 → 2015-03-30→2015-09-22, 2015-09-24→2016-02-03, 2016-08-18→2017-01-28, 2017-12-04→2018-02-16, 2018-11-21→2019-01-14, 2021-10-19→2023-04-10
+```
+
+pagina: scritta (832 KB)
+
+## 2026-08-10 17:05 — check_vita.cjs
+
+```
+ok   un solo blocco <script> (aperti 1, chiusi 1) — nessun "</script" nel payload
+ok   lo script arriva in fondo (813 KB, chiude su drawAll)
+ok   lo script inline gira senza eccezioni
+ok   window.CRUSCOTTO esposto
+ok   ogni riquadro dichiarato e' montato (34/34)
+ok   almeno 32 riquadri (34)
+ok   finestra "2a": nessun renderer solleva eccezioni
+info  finestra "2a": 0 riquadri senza dati
+ok   finestra "1a": nessun renderer solleva eccezioni
+info  finestra "1a": 0 riquadri senza dati
+ok   finestra "3m": nessun renderer solleva eccezioni
+info  finestra "3m": 2 riquadri senza dati (Peso, Massa grassa)
+ok   finestra "sempre": nessun renderer solleva eccezioni
+ok   finestra "sempre": nessun riquadro vuoto
+ok   nessuna coordinata NaN/Infinity negli SVG (82326 nodi controllati)
+ok   ogni <path> ha un tracciato reale (252 path)
+ok   nessun segno fuori dal proprio viewBox
+ok   nessuna etichetta dell'asse y tagliata dalla gronda
+ok   nessuna sovrapposizione fra etichette dell'asse x
+ok   testata: attività = 2.257 (ricalcolato dal payload)
+ok   testata: chilometri = 76.437 (ricalcolato dal payload)
+ok   testata: ore in movimento = 3.868 (ricalcolato dal payload)
+ok   testata: notti misurate = 549 (ricalcolato dal payload)
+ok   dislivello totale plausibile: 1.484.881 m
+ok   ogni riquadro ha la tabella di ripiego
+ok   ogni riquadro multi-serie ha la legenda (8 riquadri)
+ok   openDay() esiste
+ok   il dettaglio giornaliero e' inlineato (731 giorni)
+ok   il popup si riempie su tutti i giorni provati (40/40, veri + ricostruiti)
+ok   il popup mostra la sezione "corpo" su almeno un giorno
+ok   il popup mostra la sezione "allenamento" su almeno un giorno
+ok   il popup mostra la sezione "tavola" su almeno un giorno
+ok   il popup mostra la sezione "micro" su almeno un giorno
+ok   openDay() regge un giorno senza diario alimentare
+ok   almeno un'attivita' nel popup linka a intervals.icu con un id vero
+ok   il buco che copre tutto il 2022 e' dichiarato (2021-10-18→2023-04-09)
+ok   6 buchi ≥45 giorni dichiarati: 2015-03-29→2015-09-21, 2015-09-23→2016-02-02, 2016-08-17→2017-01-27, 2017-12-03→2018-02-15, 2018-11-20→2019-01-13, 2021-10-18→2023-04-09
+ok   CSS --s1 = #3987e5 (slot validato)
+ok   CSS --s2 = #d95926 (slot validato)
+ok   CSS --s3 = #199e70 (slot validato)
+ok   CSS --s4 = #c98500 (slot validato)
+ok   CSS --paper = #211d16 (il fondo su cui la tavolozza e' stata validata)
+ok   --muted #9a8d70 su #211d16: 5.13:1 (minimo 4,5 per il testo piccolo)
+ok   --gold #e2c98f su #211d16: 10.37:1
+ok   --gold #e2c98f contro gli slot dei grafici: peggiore --s4 ΔE 18.6 (minimo 15, o l'accento si spaccia per una serie)
+```
+
+esito: tutti passati (45 ok)
+
+## 2026-08-10 17:05 — check_vita.cjs
+
+```
+ok   un solo blocco <script> (aperti 1, chiusi 1) — nessun "</script" nel payload
+ok   lo script arriva in fondo (813 KB, chiude su drawAll)
+ok   lo script inline gira senza eccezioni
+ok   window.CRUSCOTTO esposto
+ok   ogni riquadro dichiarato e' montato (34/34)
+ok   almeno 32 riquadri (34)
+ok   finestra "2a": nessun renderer solleva eccezioni
+info  finestra "2a": 0 riquadri senza dati
+ok   finestra "1a": nessun renderer solleva eccezioni
+info  finestra "1a": 0 riquadri senza dati
+ok   finestra "3m": nessun renderer solleva eccezioni
+info  finestra "3m": 2 riquadri senza dati (Peso, Massa grassa)
+ok   finestra "sempre": nessun renderer solleva eccezioni
+ok   finestra "sempre": nessun riquadro vuoto
+ok   nessuna coordinata NaN/Infinity negli SVG (82326 nodi controllati)
+ok   ogni <path> ha un tracciato reale (252 path)
+ok   nessun segno fuori dal proprio viewBox
+ok   nessuna etichetta dell'asse y tagliata dalla gronda
+ok   nessuna sovrapposizione fra etichette dell'asse x
+ok   testata: attività = 2.257 (ricalcolato dal payload)
+ok   testata: chilometri = 76.437 (ricalcolato dal payload)
+ok   testata: ore in movimento = 3.868 (ricalcolato dal payload)
+ok   testata: notti misurate = 549 (ricalcolato dal payload)
+ok   dislivello totale plausibile: 1.484.881 m
+ok   ogni riquadro ha la tabella di ripiego
+ok   ogni riquadro multi-serie ha la legenda (8 riquadri)
+ok   openDay() esiste
+ok   il dettaglio giornaliero e' inlineato (731 giorni)
+ok   il popup si riempie su tutti i giorni provati (40/40, veri + ricostruiti)
+ok   il popup mostra la sezione "corpo" su almeno un giorno
+ok   il popup mostra la sezione "allenamento" su almeno un giorno
+ok   il popup mostra la sezione "tavola" su almeno un giorno
+ok   il popup mostra la sezione "micro" su almeno un giorno
+ok   openDay() regge un giorno senza diario alimentare
+ok   almeno un'attivita' nel popup linka a intervals.icu con un id vero
+ok   il buco che copre tutto il 2022 e' dichiarato (2021-10-18→2023-04-09)
+ok   6 buchi ≥45 giorni dichiarati: 2015-03-29→2015-09-21, 2015-09-23→2016-02-02, 2016-08-17→2017-01-27, 2017-12-03→2018-02-15, 2018-11-20→2019-01-13, 2021-10-18→2023-04-09
+ok   CSS --s1 = #3987e5 (slot validato)
+ok   CSS --s2 = #d95926 (slot validato)
+ok   CSS --s3 = #199e70 (slot validato)
+ok   CSS --s4 = #c98500 (slot validato)
+ok   CSS --paper = #211d16 (il fondo su cui la tavolozza e' stata validata)
+ok   --muted #9a8d70 su #211d16: 5.13:1 (minimo 4,5 per il testo piccolo)
+ok   --gold #e2c98f su #211d16: 10.37:1
+ok   --gold #e2c98f contro gli slot dei grafici: peggiore --s4 ΔE 18.6 (minimo 15, o l'accento si spaccia per una serie)
+```
+
+esito: tutti passati (45 ok)
+
+## 2026-08-10 17:06 — check_vita.cjs
+
+```
+ok   un solo blocco <script> (aperti 1, chiusi 1) — nessun "</script" nel payload
+ok   lo script arriva in fondo (813 KB, chiude su drawAll)
+ok   lo script inline gira senza eccezioni
+ok   window.CRUSCOTTO esposto
+ok   ogni riquadro dichiarato e' montato (34/34)
+ok   almeno 32 riquadri (34)
+ok   finestra "2a": nessun renderer solleva eccezioni
+info  finestra "2a": 0 riquadri senza dati
+ok   finestra "1a": nessun renderer solleva eccezioni
+info  finestra "1a": 0 riquadri senza dati
+ok   finestra "3m": nessun renderer solleva eccezioni
+info  finestra "3m": 2 riquadri senza dati (Peso, Massa grassa)
+ok   finestra "sempre": nessun renderer solleva eccezioni
+ok   finestra "sempre": nessun riquadro vuoto
+ok   nessuna coordinata NaN/Infinity negli SVG (82326 nodi controllati)
+ok   ogni <path> ha un tracciato reale (252 path)
+ok   nessun segno fuori dal proprio viewBox
+ok   nessuna etichetta dell'asse y tagliata dalla gronda
+ok   nessuna sovrapposizione fra etichette dell'asse x
+ok   testata: attività = 2.257 (ricalcolato dal payload)
+ok   testata: chilometri = 76.437 (ricalcolato dal payload)
+ok   testata: ore in movimento = 3.868 (ricalcolato dal payload)
+ok   testata: notti misurate = 549 (ricalcolato dal payload)
+ok   dislivello totale plausibile: 1.484.881 m
+ok   ogni riquadro ha la tabella di ripiego
+ok   ogni riquadro multi-serie ha la legenda (8 riquadri)
+ok   openDay() esiste
+ok   il dettaglio giornaliero e' inlineato (731 giorni)
+ok   il popup si riempie su tutti i giorni provati (40/40, veri + ricostruiti)
+ok   il popup mostra la sezione "corpo" su almeno un giorno
+ok   il popup mostra la sezione "allenamento" su almeno un giorno
+ok   il popup mostra la sezione "tavola" su almeno un giorno
+ok   il popup mostra la sezione "micro" su almeno un giorno
+ok   openDay() regge un giorno senza diario alimentare
+ok   almeno un'attivita' nel popup linka a intervals.icu con un id vero
+ok   il buco che copre tutto il 2022 e' dichiarato (2021-10-18→2023-04-09)
+ok   6 buchi ≥45 giorni dichiarati: 2015-03-29→2015-09-21, 2015-09-23→2016-02-02, 2016-08-17→2017-01-27, 2017-12-03→2018-02-15, 2018-11-20→2019-01-13, 2021-10-18→2023-04-09
+ok   CSS --s1 = #3987e5 (slot validato)
+ok   CSS --s2 = #d95926 (slot validato)
+ok   CSS --s3 = #199e70 (slot validato)
+ok   CSS --s4 = #c98500 (slot validato)
+ok   CSS --paper = #211d16 (il fondo su cui la tavolozza e' stata validata)
+ok   --muted #9a8d70 su #211d16: 5.13:1 (minimo 4,5 per il testo piccolo)
+ok   --gold #e2c98f su #211d16: 10.37:1
+ok   --gold #e2c98f contro gli slot dei grafici: peggiore --s4 ΔE 18.6 (minimo 15, o l'accento si spaccia per una serie)
+```
+
+esito: tutti passati (45 ok)
+
+## 2026-08-10 17:06 — check_signore.cjs
+
+```
+ok   la pagina emette i due <script> attesi (2)
+ok   lo script inline gira senza eccezioni
+ok   window.SIGNORE_VIEW esposto
+ok   payload: 1384 attività inline
+ok   payload: 45 campi per attività
+ok   ogni mese con attività ha il suo <details> in pagina (41/41 su 41 mesi)
+ok   sei grafici montati (6)
+ok   ogni attività del payload è montata in un mese (1384/1384)
+ok   nessun mese con <details> ma senza attività
+ok   anche i mesi senza attività restano in pagina (0 vuoti)
+ok   ogni voce dell'indice ha la sua ancora (41 mesi)
+ok   nessuna coordinata NaN/Infinity negli SVG (572 nodi)
+ok   [kJ per mese] ogni <path> ha un tracciato reale
+ok   [kJ cumulativi] ogni <path> ha un tracciato reale
+ok   [chilometri per mese] ogni <path> ha un tracciato reale
+ok   [dislivello per mese] ogni <path> ha un tracciato reale
+ok   [ore in movimento per mese] ogni <path> ha un tracciato reale
+ok   [carico (TL) per mese] ogni <path> ha un tracciato reale
+ok   nessun segno fuori dal proprio viewBox
+ok   nessuna etichetta y tagliata dalla gronda
+ok   nessuna sovrapposizione fra etichette x
+ok   una tabella di numeri per grafico (6/6)
+ok   ogni tabella riporta tutti i 41 mesi
+ok   1384 schede attività aperte, tutte
+ok   ogni riga cieca dice perché lo è e linka a Strava (18/18; 18 in tutta la saga)
+ok   ogni scheda linka a intervals.icu con un id vero
+ok   nessun link Strava inventato dove l'API non dà strava_id
+ok   il link Strava c'è ovunque l'API lo dia
+ok   nessuna scheda con meno di 4 statistiche
+ok   testata: kJ = 918.713 (ricalcolato dal payload)
+ok   testata: km = 50.429 (ricalcolato dal payload)
+ok   testata: m D+ = 1.012.260 (ricalcolato dal payload)
+ok   testata: ore = 2.550
+ok   anelli forgiati coerenti col contatore: 9 (kJ/100.000 = 9)
+ok   il buco che copre tutto il 2022 è nel payload (2021-10-18→2023-04-11, 540g)
+ok   il buco è scritto in pagina, non solo nei dati
+ok   il buco è chiamato buco d'archivio, non pausa
+ok   nessuna attività della saga precede l'inizio dell'era (2023-04-11) — nessun grafico attraversa il vuoto
+ok   il carico è dichiarato reale solo dal 2019-06-19, con il perché
+ok   il 2015-2018 è detto non misurato, non vuoto
+ok   nessun id Strava troncato sopravvissuto nella prosa (136 id distinti)
+ok   nessun link smontato lasciato a metà
+ok   signore-dei-kj-weekly.html reindirizza alla mensile
+ok   l'alias dichiara il canonical
+ok   l'alias è una pagina sottile (4.1 KB)
+ok   CSS --s1 = #b8860b (slot validato)
+ok   CSS --s2 = #8b2e1f (slot validato)
+ok   CSS --paper = #fffdf6 (il fondo su cui è stata validata)
+```
+
+esito: tutti passati (48 ok)
