@@ -18,6 +18,7 @@ python tools/build_top20_reel.py                                      # the one 
 python tools/build_top20_video.py --gif                               # v3: lo stesso racconto in video (+GIF)
 python tools/gifweigh.py <file.gif>                                   # dove sono i byte
 node   tools/check_top20_page.cjs                                     # smoke-test /top-20 without a browser
+node   tools/check_lab_stile.cjs                                      # smoke-test /lab-stile, contrasti ricalcolati
 ```
 
 The weekly GitHub Action (`.github/workflows/weekly-vita.yml`) runs the three syncs,
@@ -531,3 +532,74 @@ There is no browser on this machine, so `/top-20`'s own script is extracted from
 twenty animations to completion and fails on an exception, a non-finite
 coordinate, a missing caption, or `undefined` reaching the markup. Run it after
 touching the page's script — it catches what a syntax check cannot.
+
+---
+
+## check_lab_stile.cjs — e la pagina che controlla, `/lab-stile`
+
+`lab-stile/index.html` è il quinto giro dei **laboratori di stile**, ma il primo
+che non guarda il reel: guarda il fronte del sito. Stessa grammatica dei
+`top-20/lab*.html` — sezioni con contatore nella barra appiccicosa, voto 0–10 a
+gettoni, ★ per le preferite, nota libera, voto da tastiera passando sopra una
+scheda (`0`–`9`, `d` = 10, `s` = stella), progresso in fondo, **copia i voti** che
+sputa un blob da incollare in chat, e la casella per il giro dopo. I voti stanno
+in `localStorage` sotto `micmer-lab-stile-voti`.
+
+Ventidue varianti in cinque sezioni: **quattro direzioni complete** (non quattro
+palette: fondo, carta, tre inchiostri, accento, filo, raggio, ombra, densità,
+tre caratteri), **cinque accoppiate di caratteri**, **quattro trattamenti di
+superficie**, **quattro modi di disegnare la serie**, **cinque accenti**. Dentro
+ogni direzione c'è la stessa pagina vera — testata, totali, le tre
+schede-tracker, un riquadro con legenda e tabella di ripiego — con le classi
+di `/vita` e i dati veri (CTL e ATL, una goccia ogni 4 settimane, ago 2023 → ago
+2026, estratti dal payload della pagina). La pagina **propone e basta**: non
+tocca `/vita` né `build_vita.py`.
+
+**La tavolozza dei grafici non è in gara.** I quattro slot restano
+`#3987e5 #d95926 #199e70 #c98500` in tutte e quattro le direzioni — zero hex
+cambiati. Quello che cambia è il fondo sotto, e quello sì che va rimisurato:
+ogni fondo è passato dal validatore prima di finire nella pagina. Da lì viene
+l'unico vincolo numerico della direzione chiara: **la carta della scheda non può
+essere più scura di `#fffdf7`**, perché a `#faf8f3` — la crema che il sito usa
+altrove — il giallo scende a 2,87:1 e la tavolozza esce dalle soglie. Non è un
+gusto, è una misura.
+
+**Due difetti dell'impianto attuale li ha trovati il calcolatore, non l'occhio**,
+e sono il motivo per cui la pagina esiste:
+
+- `--muted` `#8a7d62` sul fondo della scheda fa **4,15:1**, sotto la soglia di
+  4,5 — ed è il colore dei piedi, delle didascalie, delle etichette degli assi e
+  delle intestazioni di tabella, cioè di tutto il testo minuto della pagina. È
+  l'unico ruolo sotto soglia in tutto il sistema; le altre tre direzioni lo
+  alzano.
+- l'oro `#c89a3f` sta a **ΔE 5,2** (OKLab ×100) dalla serie gialla `#c98500`
+  che gli sta accanto **dentro la stessa scheda**: un colore di cornice che a
+  occhio nudo è un colore di dato. Dei cinque accenti provati, solo
+  `#e2c98f` supera 15 da tutte e quattro le serie (min 18,6); gli altri ori
+  arrivano a 12,2–12,4.
+
+I rapporti non sono scritti a mano nel testo: **la pagina li calcola quando si
+apre**, con le stesse formule del validatore (WCAG 2.x e ΔE euclidea in OKLab),
+e li mostra riga per riga con la soglia accanto — 4,5:1 per il testo corrente,
+3:1 per il testo grande e per i segni dei grafici. Il minuto conta come testo
+corrente: è piccolo, non grande.
+
+Il controllo, `node tools/check_lab_stile.cjs`, è nello stile di `check_vita.cjs`
+e per lo stesso motivo: **jsdom non si installa da questa rete** — i
+`check_lab3.cjs` / `check_lab4.cjs` del top-20 lo pretendono e infatti da qui non
+girano — quindi il DOM è uno shim di un centinaio di righe, e la pagina è scritta
+apposta per reggerlo (nodi costruiti uno a uno, riferimento tenuto, mai un
+`innerHTML` riletto con una query). Verifica: le cinque sezioni e le ventidue
+varianti con i loro gettoni; che dentro ogni direzione ci siano davvero i
+componenti veri; che i token siano applicati come custom property sul
+contenitore; nessun NaN negli SVG, niente fuori dal viewBox, nessuna etichetta
+tagliata dalla gronda; e soprattutto **ricalcola da capo, con una seconda
+implementazione, tutti gli 81 rapporti di contrasto che la pagina dichiara** e li
+confronta riga per riga — una lettura di contrasto che si autocertifica non vale
+niente. Poi vota, stella, e legge il blob. `--verbose` stampa le quattro letture
+di contrasto per intero. Ogni esito viene appeso a `tools/lab_stile_tests.md`.
+
+Un controllo è nato da un errore vero: tre sezioni costruivano il proprio
+campione e non lo appendevano mai. Disegnava benissimo in memoria — 26 SVG,
+zero NaN — e in un browser sarebbero state tre sezioni vuote. Ora il check
+cammina l'albero a partire da ogni scheda invece di contare i nodi creati.
