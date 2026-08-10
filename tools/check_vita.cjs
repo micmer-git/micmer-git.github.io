@@ -380,6 +380,21 @@ if (ran && process.argv.includes("--verbose")) {
   }
 }
 
+/* --table <titolo>: stampa la tabella dati di un riquadro. Serve a leggere i
+   numeri che la pagina mostra senza aprirla. */
+if (ran && process.argv.includes("--table")) {
+  const want = (process.argv[process.argv.indexOf("--table") + 1] || "").toLowerCase();
+  for (const [n, t] of sandbox.CRUSCOTTO.MOUNTED) {
+    if (!t.title.toLowerCase().includes(want)) continue;
+    console.log("\n--- " + t.title + " ---");
+    const txt = n.tbody.innerHTML
+      .replace(/<\/tr>/g, "\n").replace(/<[^>]+>/g, " ")
+      .split("\n").map(l => l.trim().replace(/\s{2,}/g, "  "))
+      .filter(Boolean).slice(0, 14).join("\n");
+    console.log(txt);
+  }
+}
+
 /* ------------------------------------------------------------------ esito */
 const stamp = new Date().toISOString().slice(0, 16).replace("T", " ");
 const body = [...notes, ...fails].join("\n");

@@ -1115,6 +1115,98 @@ function rMatrix(svg, W, H, t, from, to) {
   };
 }
 
+/* Heatmap di correlazione. E' l'unico posto della pagina dove una griglia batte
+   tutto il resto: con dodici serie ci sono 66 coppie, e 66 scatter non si guardano.
+   Qui il colore porta un valore continuo con un segno — quindi scala DIVERGENTE
+   (blu positivo ↔ rosso negativo) con il grigio nel mezzo, mai un arcobaleno, e il
+   grigio centrale e' la maggioranza delle celle perche' la maggioranza delle
+   correlazioni e' nulla. Il numero e' scritto in ogni cella che ha spazio: il
+   colore da solo non si legge a due decimali, e serve anche a chi non lo distingue.
+   Solo il triangolo inferiore: la matrice e' simmetrica, disegnarla tutta sarebbe
+   il doppio dell'inchiostro per zero informazione in piu'. */
+function rHeat(svg, W, H, t, from, to) {
+  const V = t.vars.filter(v => Array.isArray(v.arr));
+  const n = V.length;
+  if (n < 3) return null;
+
+  const labL = Math.min(104, Math.max(52, Math.ceil(
+    Math.max(...V.map(v => v.name.length)) * TICKW) + 8));
+  const labB = 58, pad = 1.5;
+  const cell = Math.min((W - labL - 8) / (n - 1), (H - labB - 8) / (n - 1));
+  if (cell < 14) return null;
+  const x0 = labL, y0 = 6;
+
+  const pear = (a, b) => {
+    const pts = [];
+    for (let i = from; i <= to; i++) {
+      const p = a[i], q = b[i];
+      if (p === null || p === undefined || q === null || q === undefined) continue;
+      pts.push([p, q]);
+    }
+    if (pts.length < 20) return null;         /* sotto i 20 giorni non si dice niente */
+    const f = fit(pts);
+    return f ? { r: f.r, n: f.n } : null;
+  };
+
+  const rows = [];
+  let strongest = null;
+  /* riga i = variabile i+1, colonna j = variabile j — triangolo inferiore */
+  for (let i = 1; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      const res = pear(V[i].arr, V[j].arr);
+      const cx = x0 + j * cell, cy = y0 + (i - 1) * cell;
+      const g = res ? Math.min(1, Math.abs(res.r) / 0.6) : 0;
+      /* il grigio del fondo scheda e' il punto zero: da li' ci si allontana verso
+         il blu o verso il rosso, e la distanza e' |r| */
+      const fill = !res ? "rgba(236,227,205,.035)"
+        : (res.r >= 0 ? `rgba(57,135,229,${(g * .78).toFixed(3)})`
+                      : `rgba(230,103,103,${(g * .78).toFixed(3)})`);
+      const rect = el("rect", { x:cx + pad, y:cy + pad, width:cell - pad * 2,
+        height:cell - pad * 2, rx:2, fill,
+        stroke:"rgba(236,227,205,.08)", "stroke-width":1 });
+      if (res) {
+        rect.setAttribute("style", "cursor:pointer");
+        rect.addEventListener("pointerenter", ev => showTip(ev.clientX, ev.clientY,
+          `${V[i].name} ↔ ${V[j].name}<br><span class="v">r ${(res.r >= 0 ? "+" : "") + res.r.toFixed(2)}</span>` +
+          `<br><span class="d">su ${nf(res.n)} giorni</span>`));
+        rect.addEventListener("pointerleave", hideTip);
+        rows.push([`${V[i].name} ↔ ${V[j].name}`, res.r, res.n]);
+        if (!strongest || Math.abs(res.r) > Math.abs(strongest[1])) {
+          strongest = [`${V[i].name} ↔ ${V[j].name}`, res.r, res.n];
+        }
+      }
+      svg.appendChild(rect);
+      if (res && cell >= 26) {
+        const tx = el("text", { x:cx + cell / 2, y:cy + cell / 2 + 3,
+          "text-anchor":"middle", "font-size":"8.5",
+          "font-family":"'IBM Plex Mono',monospace",
+          fill:g > .55 ? "var(--ink)" : "var(--muted)" });
+        tx.textContent = (res.r >= 0 ? "+" : "") + res.r.toFixed(2).replace("0.", ".");
+        svg.appendChild(tx);
+      }
+    }
+  }
+  /* etichette: righe a sinistra, colonne in basso ruotate — a orizzontale si
+     sovrapporrebbero, ed e' il difetto classico di ogni heatmap */
+  for (let i = 1; i < n; i++) {
+    const ty = axisText(labL - 6, y0 + (i - 1) * cell + cell / 2 + 3, V[i].name, "end");
+    ty.textContent = V[i].name; svg.appendChild(ty);
+  }
+  for (let j = 0; j < n - 1; j++) {
+    const cx = x0 + j * cell + cell / 2, cy = y0 + (n - 1) * cell + 7;
+    const tx = el("text", { x:cx, y:cy, "text-anchor":"end", "font-size":"8",
+      "font-family":"'IBM Plex Mono',monospace", fill:"var(--muted)",
+      transform:`rotate(-52 ${cx.toFixed(1)} ${cy.toFixed(1)})` });
+    tx.textContent = V[j].name; svg.appendChild(tx);
+  }
+  rows.sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]));
+  return {
+    best2:strongest && `più forte ${strongest[0]} r ${(strongest[1] >= 0 ? "+" : "") + strongest[1].toFixed(2)}`,
+    table:`<tr><th>coppia</th><th>r</th><th>giorni</th></tr>` +
+      rows.slice(0, 40).map(([k, r, nn]) => `<tr><td>${k}</td><td>${(r >= 0 ? "+" : "") + r.toFixed(2)}</td><td>${nn}</td></tr>`).join(""),
+  };
+}
+
 /* Slope chart: ogni genere e' una linea con due punti, da com'era a com'e'.
    E' la forma giusta per "distribuzione + come e' cambiata": la y resta la quota,
    quindi si legge la composizione, e la pendenza e' il cambiamento. Dieci linee
@@ -1502,7 +1594,7 @@ function nutriTiles() {
      Nove ipotesi guardate insieme — se ne mostrassi solo la più forte starei
      scegliendo il risultato dopo aver visto i dati. */
   if (has("fiber_g") && has("magnesium_mg")) t.push({
-    panel:"tavola", h:230, first:"n_fiber_g", title:"Tavola contro recupero",
+    panel:"tavola", h:340, first:"n_fiber_g", title:"Tavola contro recupero",
     cap:"nove incroci · colonne: cosa è entrato · righe: come è andata la notte",
     kind:rMatrix, spec:{ col:"var(--s1)",
       cols:[{ name:"Fibre", arr:N_.fiber_g, fmt:v => nf(v, 0) + " g" },
@@ -1512,6 +1604,22 @@ function nutriTiles() {
             { name:"Sonno", arr:D.sleep, fmt:FMT.hhmm },
             { name:"Qualità", arr:D.score, fmt:FMT.num0 }] },
     foot:"Blu positivo, rosso negativo, grigio quasi niente. Il grigio è il risultato più probabile, e conta." });
+
+  /* Tutte contro tutte. Dodici serie fanno 66 coppie: 66 nuvole non si guardano,
+     una griglia si. E' l'unico punto della pagina in cui una griglia e' la forma
+     giusta — e lo e' perche' qui il colore porta un valore continuo con un segno. */
+  t.push({ panel:"tavola", h:430, first:"n_fiber_g",
+    title:"Tutte contro tutte", cap:"correlazione fra ogni coppia di serie · triangolo inferiore",
+    kind:rHeat, spec:{ vars:[
+      { name:"Fibre", arr:N_.fiber_g }, { name:"Magnesio", arr:N_.magnesium_mg },
+      { name:"Potassio", arr:N_.potassium_mg }, { name:"Zuccheri", arr:N_.sugar_g },
+      { name:"Energia", arr:N_.kcal }, { name:"Piante", arr:N_.plants_7d },
+      { name:"Microbiota", arr:N_.microbiome },
+      { name:"HRV", arr:D.hrv }, { name:"Sonno", arr:D.sleep },
+      { name:"Qualità", arr:D.score }, { name:"FC riposo", arr:D.rhr },
+      { name:"Passi", arr:D.steps }, { name:"Carico", arr:D.load },
+    ] },
+    foot:"Blu positivo, rosso negativo, grigio niente. Celle vuote = meno di 20 giorni in comune. Attenzione alle celle più accese: magnesio, potassio e fibre stanno negli stessi alimenti, e microbiota è <em>costruito</em> da piante e fibre — quelle non sono scoperte, sono il cablaggio. Le coppie che direbbero qualcosa (tavola contro recupero) restano grigie." });
 
   /* I dieci generi di cui si parla, modellati. Il titolo dice "modello" e la
      didascalia lo ripete: qui non c'è nessun campione, nessuna sequenza, nessuna
@@ -1528,7 +1636,11 @@ function nutriTiles() {
     labA:"inizio finestra", labB:"oggi",
     kind:rSlope, spec:{ labA:"inizio", labB:"oggi",
       items:GEN.map(([g, e]) => ({ name:g, emoji:e, arr:MICR[g] })) },
-    foot:"Nessuno ha sequenziato niente. Le associazioni fra dieta e abbondanza sono quelle riportate come direzionali in letteratura, fatte girare su un modello log-lineare con i pesi in chiaro nel sorgente. È una composizione: qualcuno sale solo se qualcun altro scende." });
+    /* niente piede su questa: il titolo dice gia' "modello, non una misura" e la
+       riga sotto era troppo lunga. L'avvertenza per esteso resta nell'etichetta
+       dei dati, dove non sta fra i piedi ma non sparisce nemmeno. */
+    noFoot:true,
+    dataNote:"Modello, non una misura: associazioni direzionali da letteratura su un modello log-lineare, pesi nel sorgente. È una composizione: qualcuno sale solo se qualcun altro scende." });
 
   /* i conteggi: quante volte è entrato in casa un certo alimento */
   const TAL = [["cnt_avocado", "avocado", "🥑"], ["cnt_lenticchie", "porzioni di lenticchie", "🫘"],
@@ -1650,8 +1762,8 @@ function drawTile(n, t) {
     if (res.best) bits.push(`più alta ${res.best}`);
     if (res.outside) bits.push(`${res.outside} fuori scala`);
   }
-  n.foot.innerHTML = bits.join(" · ") + (t.foot ? `<br>${t.foot}` : "");
-  n.sum.textContent = "dati";
+  n.foot.innerHTML = t.noFoot ? "" : bits.join(" · ") + (t.foot ? `<br>${t.foot}` : "");
+  n.sum.textContent = t.dataNote ? `dati · ${t.dataNote}` : "dati";
   n.tbody.innerHTML = res ? res.table : "";
 }
 
