@@ -152,8 +152,7 @@ ${monthSections}
 <div class="colophon">
   Composto a Bergamo Alta · ${data.author}<br>
   ${data.stats.months} lune dall'aprile 2023 al giugno 2026<br>
-  <a href="../signore-dei-kj-weekly.html">↗ Settimanale (104 capitoli)</a> ·
-  <a href="../signore-dei-kj.html">↗ Annuali</a> ·
+  <a href="../signore-dei-kj.html">↗ Il Signore dei kJ, mese per mese</a> ·
   <a href="../">↗ Indice</a>
 </div>
 

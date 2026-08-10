@@ -1,6 +1,6 @@
 # tools/
 
-Ten scripts. The sync/build ones need nothing beyond the Python standard
+Twelve scripts. The sync/build ones need nothing beyond the Python standard
 library; the three that make images (`build_top20_gif.py`, `build_top20_reel.py`,
 `basemap.py`) want Pillow, and `build_top20_video.py` additionally wants OpenCV,
 which is the only thing here that can write a video. Every one takes `--dry-run`
@@ -12,6 +12,8 @@ python tools/sync_sogni.py                                            # new week
 python tools/sync_diario.py                                           # refresh the monthly chapter numbers
 python tools/build_vita.py                                            # rebuild /vita: tracker + 31 grafici
 node   tools/check_vita.cjs                                           # smoke-test it, no browser needed
+python tools/build_signore.py                                         # /signore-dei-kj: la saga, mese per mese
+node   tools/check_signore.cjs                                        # smoke-test it, no browser needed
 python tools/build_top20.py                                           # rebuild /top-20 data from Intervals
 python tools/build_top20_gif.py                                       # the twenty square cards
 python tools/build_top20_reel.py                                      # the one reel, on a real map
@@ -265,6 +267,122 @@ earned its keep immediately: a caption asserting VO₂max rises with fitness wen
 before the fit was run, and the actual r is **0.00**.
 
 Every run appends to `tools/vita_tests.md`, alongside what each build found.
+
+---
+
+## build_signore.py
+
+Builds `/signore-dei-kj`, the saga of the kilojoules — **one routine where there
+used to be two pages**. Before this, `signore-dei-kj.html` (eight "rings" of
+100.000 kJ) and `signore-dei-kj-weekly.html` (55 weekly chapters) were maintained
+by hand from the same archive, and had drifted. `--check` measures the drift, and
+it is the argument for the merge:
+
+- the ring page claimed **eight rings forged**; the counter had already crossed
+  **nine** (900.585 kJ on 2026-07-26). A whole ring had gone unnoticed;
+- **four** of the 55 weekly stat strips disagree with the archive — week 52 says
+  five activities against nine, week 55 six against seven;
+- **two weeks inside the narrated arc have no chapter at all**, and they are not
+  small: 2026-06-29 (8 activities, 6.913 kJ) and 2026-07-20 (7, 10.130 kJ);
+- **three Strava links were dead** — ids `16615`, `16630`, `16645`, five digits
+  where a Strava id has eleven. All three now resolve.
+
+**The month is the unit, and everything else hangs off it.** Weeks survive as
+scenes inside the month that contains their Monday; rings survive as milestones
+planted in the month where the cumulative counter actually crossed the threshold
+— a computed date, printed next to the prose, because the old page assigned them
+by feel. The prose itself is not generated: it lives in `tools/signore.json`, the
+way /top-20's stories live in `top-20.json`. `--harvest` extracts it once from the
+two published pages (55 weeks, 18 ring chapters, the Compagnia) and **cannot be
+run again**: the first build overwrites the very pages it harvests from, so it
+refuses rather than silently emptying `signore.json`. The originals are in git —
+`git show 377fe8d:signore-dei-kj-weekly.html`. **No number survives in that JSON**
+— every figure on the page is recomputed each build, so the editorial file cannot
+age.
+
+**The weekly URL still answers, and answers nothing.** It is linked from `/vita`,
+`/diario-di-un-unno` and `/sogni-di-un-unno`; deleting it would be three 404s. So
+the same routine writes it as a 4 KB redirect to the monthly page, with the month
+index as the no-JS fallback. The two in-repo links that were mine to change now
+point at the monthly page directly; `build_vita.py`'s two still go through the
+redirect, which is exactly what it is for.
+
+**Four things that a build could otherwise get quietly wrong**, all of them
+measured rather than assumed:
+
+- **`strava_id` is not always there.** It appears from **2024-12-15** and not on
+  everything after: 727 of 2.238 real activities carry it, so Strava links exist
+  where the field does and nowhere else — the page says so in its own header
+  instead of leaving half the archive looking under-linked. The Intervals id
+  (`i161386165`) is the one that is always present, so it is always the first
+  link. Everything else comes off the **list** endpoint: `/activity/{id}` is not
+  needed for any of the 45 fields the card shows.
+- **Nineteen rows are blind.** Intervals lists them and then answers
+  `"STRAVA activities are not available via the API"` — no type, no name, no
+  numbers. Their `id` is not an Intervals id at all but the Strava one (same
+  magnitude as the `strava_id` of their neighbours), so they get a Strava link,
+  a sentence explaining themselves, and no contribution to any total. (They are
+  *not* the explanation for the old page's activity count: it summed to 1331
+  where the archive holds 1333 at the same date, and dropping the 18 blind rows
+  would have given 1315. Those two are still unexplained.) The old page's other
+  totals do replay, which is how the aggregation was pinned before anything was
+  written: at its own cut-off of 2026-06-24 the raw float sum gives **867.579 kJ
+  and 2.446 h to the digit** and 48.496 km against its 48.495. Its 963.183 m of
+  elevation is the one that does not — the archive says 963.218 — so that figure
+  was reached some other way, and is the only published number here that was not
+  reproduced.
+- **Rounding happens once, at the door.** `normalise()` rounds kJ, metres,
+  seconds and load before anything sums them, so the total in the headline is the
+  sum of the numbers the page shows. Without it the header read 918.725 kJ and
+  the payload added up to 918.713 — twelve kJ, and a page nobody could check.
+  `check_signore.cjs` re-derives the totals and demands the digit.
+- **`first_real_load()` is build_vita.py's rule, deliberately.** Fill the calendar,
+  then take the first day whose next 28 carry more than a token load: **2019-06-19**.
+  On a list of only the days that have activities the same code answers 2019-04-06,
+  because a 28-entry window there spans months. Two pages of one site must not date
+  the same fact differently.
+
+**The archive's hole is the reason the saga starts where it starts.**
+2021-10-18 → 2023-04-11 holds not one activity: 540 days, and the saga opens on
+the day the archive resumes, so no chart on this page ever crosses it. The 873
+activities before it are named in the header — as unmeasured training, not as
+absence.
+
+**Colour: two hues, and no chart that needs a third.** Gold `#b8860b` for
+everything that accumulates, amaranth `#8b2e1f` for load, validated as a pair
+against this page's paper `#fffdf6` with the dataviz reference validator. The six
+charts are single-series small multiples precisely so a categorical palette never
+has to exist here; each carries its full numbers in a `<details>` table under it.
+
+**The page is 595 KB and that is a choice.** 1.384 activities × 45 fields inline
+is 437 KB of payload, ~180 KB gzipped over Pages, and it buys every statistic on
+every activity with no runtime fetch and no key on the client. The summary rows
+and the stat cards are built by the page's own script from that payload; the
+months, their numbers and their prose are static HTML, so the saga still reads
+with JavaScript off.
+
+`--check` writes nothing and prints all of the above against live data;
+`--offline` rebuilds from `tools/.signore_cache.json` (gitignored), which makes
+iterating on the layout free.
+
+## check_signore.cjs
+
+Same shim, same reason as `check_vita.cjs`: no browser here, and jsdom does not
+install through the proxy. It concatenates the page's two `<script>` blocks and
+runs them as one program — `const SIGNORE` is a lexical binding, and two separate
+`runInContext` calls would not see it, while two `<script>` tags in a browser do.
+
+It opens **all 1.384 activity cards** (a second, total) rather than a sample,
+which is the point: the broken rows in an archive are exactly the ones a sample
+skips. Then it asserts every card links to intervals.icu with a real id, that a
+Strava link appears **exactly** where `strava_id` does and never where it doesn't,
+that each blind row explains itself, that the six charts draw with no NaN, nothing
+outside its viewBox, no clipped y label and no colliding x labels, that the
+headline totals re-derive from the payload to the digit, that every month chip has
+its anchor, that no truncated Strava id survived, and that the hole and the
+2015-2018 caveat are still written on the page and not only in the data.
+
+Its output appends to `tools/vita_tests.md`, next to the other builds.
 
 ---
 

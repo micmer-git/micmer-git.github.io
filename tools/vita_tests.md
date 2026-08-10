@@ -815,3 +815,551 @@ ok   CSS --paper = #211d16 (il fondo su cui la tavolozza e' stata validata)
 ```
 
 esito: tutti passati (40 ok)
+
+## 2026-08-10 11:27 — check_signore.cjs
+
+```
+ok   la pagina emette i due <script> attesi (2)
+ok   lo script inline gira senza eccezioni
+ok   window.SIGNORE_VIEW esposto
+ok   payload: 1384 attività inline
+ok   payload: 45 campi per attività
+ok   ogni mese con attività ha il suo <details> in pagina (41/41 su 41 mesi)
+ok   sei grafici montati (6)
+ok   ogni attività del payload è montata in un mese (1384/1384)
+ok   nessun mese con <details> ma senza attività
+ok   anche i mesi senza attività restano in pagina (0 vuoti)
+ok   ogni voce dell'indice ha la sua ancora (41 mesi)
+ok   nessuna coordinata NaN/Infinity negli SVG (572 nodi)
+ok   [kJ per mese] ogni <path> ha un tracciato reale
+ok   [kJ cumulativi] ogni <path> ha un tracciato reale
+ok   [chilometri per mese] ogni <path> ha un tracciato reale
+ok   [dislivello per mese] ogni <path> ha un tracciato reale
+ok   [ore in movimento per mese] ogni <path> ha un tracciato reale
+ok   [carico (TL) per mese] ogni <path> ha un tracciato reale
+ok   nessun segno fuori dal proprio viewBox
+ok   nessuna etichetta y tagliata dalla gronda
+ok   nessuna sovrapposizione fra etichette x
+ok   una tabella di numeri per grafico (6/6)
+ok   ogni tabella riporta tutti i 41 mesi
+ok   217 schede attività aperte a campione
+ok   nessun link Strava inventato dove l'API non dà strava_id
+ok   testata: km = 50.429 (ricalcolato dal payload)
+ok   testata: ore = 2.550
+ok   anelli forgiati coerenti col contatore: 9 (kJ/100.000 = 9)
+ok   il buco che copre tutto il 2022 è nel payload (2021-10-18→2023-04-11, 540g)
+ok   il buco è scritto in pagina, non solo nei dati
+ok   il buco è chiamato buco d'archivio, non pausa
+ok   nessuna attività della saga precede l'inizio dell'era (2023-04-11) — nessun grafico attraversa il vuoto
+ok   il carico è dichiarato reale solo dal 2019-06-19, con il perché
+ok   il 2015-2018 è detto non misurato, non vuoto
+ok   nessun id Strava troncato sopravvissuto nella prosa (136 id distinti)
+ok   nessun link smontato lasciato a metà
+ok   signore-dei-kj-weekly.html reindirizza alla mensile
+ok   l'alias dichiara il canonical
+ok   l'alias è una pagina sottile (4.1 KB)
+ok   CSS --s1 = #b8860b (slot validato)
+ok   CSS --s2 = #8b2e1f (slot validato)
+ok   CSS --paper = #fffdf6 (il fondo su cui è stata validata)
+FAIL ogni scheda linka a intervals.icu con un id vero — 217 senza
+FAIL il link Strava c'è ovunque l'API lo dia — 115 mancanti
+FAIL nessuna scheda con meno di 4 statistiche — 2
+FAIL testata: kJ = 918.713 (ricalcolato dal payload)
+FAIL testata: m D+ = 1.012.260 (ricalcolato dal payload)
+```
+
+esito: 5 FALLITI (42 ok)
+
+## 2026-08-10 11:28 — check_signore.cjs
+
+```
+ok   la pagina emette i due <script> attesi (2)
+ok   lo script inline gira senza eccezioni
+ok   window.SIGNORE_VIEW esposto
+ok   payload: 1384 attività inline
+ok   payload: 45 campi per attività
+ok   ogni mese con attività ha il suo <details> in pagina (41/41 su 41 mesi)
+ok   sei grafici montati (6)
+ok   ogni attività del payload è montata in un mese (1384/1384)
+ok   nessun mese con <details> ma senza attività
+ok   anche i mesi senza attività restano in pagina (0 vuoti)
+ok   ogni voce dell'indice ha la sua ancora (41 mesi)
+ok   nessuna coordinata NaN/Infinity negli SVG (572 nodi)
+ok   [kJ per mese] ogni <path> ha un tracciato reale
+ok   [kJ cumulativi] ogni <path> ha un tracciato reale
+ok   [chilometri per mese] ogni <path> ha un tracciato reale
+ok   [dislivello per mese] ogni <path> ha un tracciato reale
+ok   [ore in movimento per mese] ogni <path> ha un tracciato reale
+ok   [carico (TL) per mese] ogni <path> ha un tracciato reale
+ok   nessun segno fuori dal proprio viewBox
+ok   nessuna etichetta y tagliata dalla gronda
+ok   nessuna sovrapposizione fra etichette x
+ok   una tabella di numeri per grafico (6/6)
+ok   ogni tabella riporta tutti i 41 mesi
+ok   217 schede attività aperte a campione
+ok   nessun link Strava inventato dove l'API non dà strava_id
+ok   il link Strava c'è ovunque l'API lo dia
+ok   testata: kJ = 918.713 (ricalcolato dal payload)
+ok   testata: km = 50.429 (ricalcolato dal payload)
+ok   testata: m D+ = 1.012.260 (ricalcolato dal payload)
+ok   testata: ore = 2.550
+ok   anelli forgiati coerenti col contatore: 9 (kJ/100.000 = 9)
+ok   il buco che copre tutto il 2022 è nel payload (2021-10-18→2023-04-11, 540g)
+ok   il buco è scritto in pagina, non solo nei dati
+ok   il buco è chiamato buco d'archivio, non pausa
+ok   nessuna attività della saga precede l'inizio dell'era (2023-04-11) — nessun grafico attraversa il vuoto
+ok   il carico è dichiarato reale solo dal 2019-06-19, con il perché
+ok   il 2015-2018 è detto non misurato, non vuoto
+ok   nessun id Strava troncato sopravvissuto nella prosa (136 id distinti)
+ok   nessun link smontato lasciato a metà
+ok   signore-dei-kj-weekly.html reindirizza alla mensile
+ok   l'alias dichiara il canonical
+ok   l'alias è una pagina sottile (4.1 KB)
+ok   CSS --s1 = #b8860b (slot validato)
+ok   CSS --s2 = #8b2e1f (slot validato)
+ok   CSS --paper = #fffdf6 (il fondo su cui è stata validata)
+FAIL ogni scheda linka a intervals.icu con un id vero — 2 senza
+FAIL nessuna scheda con meno di 4 statistiche — 2
+```
+
+esito: 2 FALLITI (45 ok)
+
+## 2026-08-10 11:30 — check_signore.cjs
+
+```
+ok   la pagina emette i due <script> attesi (2)
+ok   lo script inline gira senza eccezioni
+ok   window.SIGNORE_VIEW esposto
+ok   payload: 1384 attività inline
+ok   payload: 45 campi per attività
+ok   ogni mese con attività ha il suo <details> in pagina (41/41 su 41 mesi)
+ok   sei grafici montati (6)
+ok   ogni attività del payload è montata in un mese (1384/1384)
+ok   nessun mese con <details> ma senza attività
+ok   anche i mesi senza attività restano in pagina (0 vuoti)
+ok   ogni voce dell'indice ha la sua ancora (41 mesi)
+ok   nessuna coordinata NaN/Infinity negli SVG (572 nodi)
+ok   [kJ per mese] ogni <path> ha un tracciato reale
+ok   [kJ cumulativi] ogni <path> ha un tracciato reale
+ok   [chilometri per mese] ogni <path> ha un tracciato reale
+ok   [dislivello per mese] ogni <path> ha un tracciato reale
+ok   [ore in movimento per mese] ogni <path> ha un tracciato reale
+ok   [carico (TL) per mese] ogni <path> ha un tracciato reale
+ok   nessun segno fuori dal proprio viewBox
+ok   nessuna etichetta y tagliata dalla gronda
+ok   nessuna sovrapposizione fra etichette x
+ok   una tabella di numeri per grafico (6/6)
+ok   ogni tabella riporta tutti i 41 mesi
+ok   217 schede attività aperte a campione
+ok   ogni scheda linka a intervals.icu con un id vero
+ok   nessun link Strava inventato dove l'API non dà strava_id
+ok   il link Strava c'è ovunque l'API lo dia
+ok   nessuna scheda con meno di 4 statistiche
+ok   testata: kJ = 918.713 (ricalcolato dal payload)
+ok   testata: km = 50.429 (ricalcolato dal payload)
+ok   testata: m D+ = 1.012.260 (ricalcolato dal payload)
+ok   testata: ore = 2.550
+ok   anelli forgiati coerenti col contatore: 9 (kJ/100.000 = 9)
+ok   il buco che copre tutto il 2022 è nel payload (2021-10-18→2023-04-11, 540g)
+ok   il buco è scritto in pagina, non solo nei dati
+ok   il buco è chiamato buco d'archivio, non pausa
+ok   nessuna attività della saga precede l'inizio dell'era (2023-04-11) — nessun grafico attraversa il vuoto
+ok   il carico è dichiarato reale solo dal 2019-06-19, con il perché
+ok   il 2015-2018 è detto non misurato, non vuoto
+ok   nessun id Strava troncato sopravvissuto nella prosa (136 id distinti)
+ok   nessun link smontato lasciato a metà
+ok   signore-dei-kj-weekly.html reindirizza alla mensile
+ok   l'alias dichiara il canonical
+ok   l'alias è una pagina sottile (4.1 KB)
+ok   CSS --s1 = #b8860b (slot validato)
+ok   CSS --s2 = #8b2e1f (slot validato)
+ok   CSS --paper = #fffdf6 (il fondo su cui è stata validata)
+FAIL ogni riga cieca dice perché lo è e linka a Strava (0/2 nel campione; 18 in tutta la saga)
+```
+
+esito: 1 FALLITI (47 ok)
+
+## 2026-08-10 11:30 — check_signore.cjs
+
+```
+ok   la pagina emette i due <script> attesi (2)
+ok   lo script inline gira senza eccezioni
+ok   window.SIGNORE_VIEW esposto
+ok   payload: 1384 attività inline
+ok   payload: 45 campi per attività
+ok   ogni mese con attività ha il suo <details> in pagina (41/41 su 41 mesi)
+ok   sei grafici montati (6)
+ok   ogni attività del payload è montata in un mese (1384/1384)
+ok   nessun mese con <details> ma senza attività
+ok   anche i mesi senza attività restano in pagina (0 vuoti)
+ok   ogni voce dell'indice ha la sua ancora (41 mesi)
+ok   nessuna coordinata NaN/Infinity negli SVG (572 nodi)
+ok   [kJ per mese] ogni <path> ha un tracciato reale
+ok   [kJ cumulativi] ogni <path> ha un tracciato reale
+ok   [chilometri per mese] ogni <path> ha un tracciato reale
+ok   [dislivello per mese] ogni <path> ha un tracciato reale
+ok   [ore in movimento per mese] ogni <path> ha un tracciato reale
+ok   [carico (TL) per mese] ogni <path> ha un tracciato reale
+ok   nessun segno fuori dal proprio viewBox
+ok   nessuna etichetta y tagliata dalla gronda
+ok   nessuna sovrapposizione fra etichette x
+ok   una tabella di numeri per grafico (6/6)
+ok   ogni tabella riporta tutti i 41 mesi
+ok   217 schede attività aperte a campione
+ok   ogni riga cieca dice perché lo è e linka a Strava (2/2 nel campione; 18 in tutta la saga)
+ok   ogni scheda linka a intervals.icu con un id vero
+ok   nessun link Strava inventato dove l'API non dà strava_id
+ok   il link Strava c'è ovunque l'API lo dia
+ok   nessuna scheda con meno di 4 statistiche
+ok   testata: kJ = 918.713 (ricalcolato dal payload)
+ok   testata: km = 50.429 (ricalcolato dal payload)
+ok   testata: m D+ = 1.012.260 (ricalcolato dal payload)
+ok   testata: ore = 2.550
+ok   anelli forgiati coerenti col contatore: 9 (kJ/100.000 = 9)
+ok   il buco che copre tutto il 2022 è nel payload (2021-10-18→2023-04-11, 540g)
+ok   il buco è scritto in pagina, non solo nei dati
+ok   il buco è chiamato buco d'archivio, non pausa
+ok   nessuna attività della saga precede l'inizio dell'era (2023-04-11) — nessun grafico attraversa il vuoto
+ok   il carico è dichiarato reale solo dal 2019-06-19, con il perché
+ok   il 2015-2018 è detto non misurato, non vuoto
+ok   nessun id Strava troncato sopravvissuto nella prosa (136 id distinti)
+ok   nessun link smontato lasciato a metà
+ok   signore-dei-kj-weekly.html reindirizza alla mensile
+ok   l'alias dichiara il canonical
+ok   l'alias è una pagina sottile (4.1 KB)
+ok   CSS --s1 = #b8860b (slot validato)
+ok   CSS --s2 = #8b2e1f (slot validato)
+ok   CSS --paper = #fffdf6 (il fondo su cui è stata validata)
+```
+
+esito: tutti passati (48 ok)
+
+## 2026-08-10 11:30 — check_signore.cjs
+
+```
+ok   la pagina emette i due <script> attesi (2)
+ok   lo script inline gira senza eccezioni
+ok   window.SIGNORE_VIEW esposto
+ok   payload: 1384 attività inline
+ok   payload: 45 campi per attività
+ok   ogni mese con attività ha il suo <details> in pagina (41/41 su 41 mesi)
+ok   sei grafici montati (6)
+ok   ogni attività del payload è montata in un mese (1384/1384)
+ok   nessun mese con <details> ma senza attività
+ok   anche i mesi senza attività restano in pagina (0 vuoti)
+ok   ogni voce dell'indice ha la sua ancora (41 mesi)
+ok   nessuna coordinata NaN/Infinity negli SVG (572 nodi)
+ok   [kJ per mese] ogni <path> ha un tracciato reale
+ok   [kJ cumulativi] ogni <path> ha un tracciato reale
+ok   [chilometri per mese] ogni <path> ha un tracciato reale
+ok   [dislivello per mese] ogni <path> ha un tracciato reale
+ok   [ore in movimento per mese] ogni <path> ha un tracciato reale
+ok   [carico (TL) per mese] ogni <path> ha un tracciato reale
+ok   nessun segno fuori dal proprio viewBox
+ok   nessuna etichetta y tagliata dalla gronda
+ok   nessuna sovrapposizione fra etichette x
+ok   una tabella di numeri per grafico (6/6)
+ok   ogni tabella riporta tutti i 41 mesi
+ok   1384 schede attività aperte a campione
+ok   ogni riga cieca dice perché lo è e linka a Strava (18/18 nel campione; 18 in tutta la saga)
+ok   ogni scheda linka a intervals.icu con un id vero
+ok   nessun link Strava inventato dove l'API non dà strava_id
+ok   il link Strava c'è ovunque l'API lo dia
+ok   nessuna scheda con meno di 4 statistiche
+ok   testata: kJ = 918.713 (ricalcolato dal payload)
+ok   testata: km = 50.429 (ricalcolato dal payload)
+ok   testata: m D+ = 1.012.260 (ricalcolato dal payload)
+ok   testata: ore = 2.550
+ok   anelli forgiati coerenti col contatore: 9 (kJ/100.000 = 9)
+ok   il buco che copre tutto il 2022 è nel payload (2021-10-18→2023-04-11, 540g)
+ok   il buco è scritto in pagina, non solo nei dati
+ok   il buco è chiamato buco d'archivio, non pausa
+ok   nessuna attività della saga precede l'inizio dell'era (2023-04-11) — nessun grafico attraversa il vuoto
+ok   il carico è dichiarato reale solo dal 2019-06-19, con il perché
+ok   il 2015-2018 è detto non misurato, non vuoto
+ok   nessun id Strava troncato sopravvissuto nella prosa (136 id distinti)
+ok   nessun link smontato lasciato a metà
+ok   signore-dei-kj-weekly.html reindirizza alla mensile
+ok   l'alias dichiara il canonical
+ok   l'alias è una pagina sottile (4.1 KB)
+ok   CSS --s1 = #b8860b (slot validato)
+ok   CSS --s2 = #8b2e1f (slot validato)
+ok   CSS --paper = #fffdf6 (il fondo su cui è stata validata)
+```
+
+esito: tutti passati (48 ok)
+
+## 2026-08-10 11:31 — check_signore.cjs
+
+```
+ok   la pagina emette i due <script> attesi (2)
+ok   lo script inline gira senza eccezioni
+ok   window.SIGNORE_VIEW esposto
+ok   payload: 1384 attività inline
+ok   payload: 45 campi per attività
+ok   ogni mese con attività ha il suo <details> in pagina (41/41 su 41 mesi)
+ok   sei grafici montati (6)
+ok   ogni attività del payload è montata in un mese (1384/1384)
+ok   nessun mese con <details> ma senza attività
+ok   anche i mesi senza attività restano in pagina (0 vuoti)
+ok   ogni voce dell'indice ha la sua ancora (41 mesi)
+ok   nessuna coordinata NaN/Infinity negli SVG (572 nodi)
+ok   [kJ per mese] ogni <path> ha un tracciato reale
+ok   [kJ cumulativi] ogni <path> ha un tracciato reale
+ok   [chilometri per mese] ogni <path> ha un tracciato reale
+ok   [dislivello per mese] ogni <path> ha un tracciato reale
+ok   [ore in movimento per mese] ogni <path> ha un tracciato reale
+ok   [carico (TL) per mese] ogni <path> ha un tracciato reale
+ok   nessun segno fuori dal proprio viewBox
+ok   nessuna etichetta y tagliata dalla gronda
+ok   nessuna sovrapposizione fra etichette x
+ok   una tabella di numeri per grafico (6/6)
+ok   ogni tabella riporta tutti i 41 mesi
+ok   1384 schede attività aperte, tutte
+ok   ogni riga cieca dice perché lo è e linka a Strava (18/18; 18 in tutta la saga)
+ok   ogni scheda linka a intervals.icu con un id vero
+ok   nessun link Strava inventato dove l'API non dà strava_id
+ok   il link Strava c'è ovunque l'API lo dia
+ok   nessuna scheda con meno di 4 statistiche
+ok   testata: kJ = 918.713 (ricalcolato dal payload)
+ok   testata: km = 50.429 (ricalcolato dal payload)
+ok   testata: m D+ = 1.012.260 (ricalcolato dal payload)
+ok   testata: ore = 2.550
+ok   anelli forgiati coerenti col contatore: 9 (kJ/100.000 = 9)
+ok   il buco che copre tutto il 2022 è nel payload (2021-10-18→2023-04-11, 540g)
+ok   il buco è scritto in pagina, non solo nei dati
+ok   il buco è chiamato buco d'archivio, non pausa
+ok   nessuna attività della saga precede l'inizio dell'era (2023-04-11) — nessun grafico attraversa il vuoto
+ok   il carico è dichiarato reale solo dal 2019-06-19, con il perché
+ok   il 2015-2018 è detto non misurato, non vuoto
+ok   nessun id Strava troncato sopravvissuto nella prosa (136 id distinti)
+ok   nessun link smontato lasciato a metà
+ok   signore-dei-kj-weekly.html reindirizza alla mensile
+ok   l'alias dichiara il canonical
+ok   l'alias è una pagina sottile (4.1 KB)
+ok   CSS --s1 = #b8860b (slot validato)
+ok   CSS --s2 = #8b2e1f (slot validato)
+ok   CSS --paper = #fffdf6 (il fondo su cui è stata validata)
+```
+
+esito: tutti passati (48 ok)
+
+## 2026-08-10 11:33 — check_signore.cjs
+
+```
+ok   la pagina emette i due <script> attesi (2)
+ok   lo script inline gira senza eccezioni
+ok   window.SIGNORE_VIEW esposto
+ok   payload: 1384 attività inline
+ok   payload: 45 campi per attività
+ok   ogni mese con attività ha il suo <details> in pagina (41/41 su 41 mesi)
+ok   sei grafici montati (6)
+ok   ogni attività del payload è montata in un mese (1384/1384)
+ok   nessun mese con <details> ma senza attività
+ok   anche i mesi senza attività restano in pagina (0 vuoti)
+ok   ogni voce dell'indice ha la sua ancora (41 mesi)
+ok   nessuna coordinata NaN/Infinity negli SVG (572 nodi)
+ok   [kJ per mese] ogni <path> ha un tracciato reale
+ok   [kJ cumulativi] ogni <path> ha un tracciato reale
+ok   [chilometri per mese] ogni <path> ha un tracciato reale
+ok   [dislivello per mese] ogni <path> ha un tracciato reale
+ok   [ore in movimento per mese] ogni <path> ha un tracciato reale
+ok   [carico (TL) per mese] ogni <path> ha un tracciato reale
+ok   nessun segno fuori dal proprio viewBox
+ok   nessuna etichetta y tagliata dalla gronda
+ok   nessuna sovrapposizione fra etichette x
+ok   una tabella di numeri per grafico (6/6)
+ok   ogni tabella riporta tutti i 41 mesi
+ok   1384 schede attività aperte, tutte
+ok   ogni riga cieca dice perché lo è e linka a Strava (18/18; 18 in tutta la saga)
+ok   ogni scheda linka a intervals.icu con un id vero
+ok   nessun link Strava inventato dove l'API non dà strava_id
+ok   il link Strava c'è ovunque l'API lo dia
+ok   nessuna scheda con meno di 4 statistiche
+ok   testata: kJ = 918.713 (ricalcolato dal payload)
+ok   testata: km = 50.429 (ricalcolato dal payload)
+ok   testata: m D+ = 1.012.260 (ricalcolato dal payload)
+ok   testata: ore = 2.550
+ok   anelli forgiati coerenti col contatore: 9 (kJ/100.000 = 9)
+ok   il buco che copre tutto il 2022 è nel payload (2021-10-18→2023-04-11, 540g)
+ok   il buco è scritto in pagina, non solo nei dati
+ok   il buco è chiamato buco d'archivio, non pausa
+ok   nessuna attività della saga precede l'inizio dell'era (2023-04-11) — nessun grafico attraversa il vuoto
+ok   il carico è dichiarato reale solo dal 2019-06-19, con il perché
+ok   il 2015-2018 è detto non misurato, non vuoto
+ok   nessun id Strava troncato sopravvissuto nella prosa (136 id distinti)
+ok   nessun link smontato lasciato a metà
+ok   signore-dei-kj-weekly.html reindirizza alla mensile
+ok   l'alias dichiara il canonical
+ok   l'alias è una pagina sottile (4.1 KB)
+ok   CSS --s1 = #b8860b (slot validato)
+ok   CSS --s2 = #8b2e1f (slot validato)
+ok   CSS --paper = #fffdf6 (il fondo su cui è stata validata)
+```
+
+esito: tutti passati (48 ok)
+
+## 2026-08-10 11:36 — check_signore.cjs
+
+```
+ok   la pagina emette i due <script> attesi (2)
+ok   lo script inline gira senza eccezioni
+ok   window.SIGNORE_VIEW esposto
+ok   payload: 1384 attività inline
+ok   payload: 45 campi per attività
+ok   ogni mese con attività ha il suo <details> in pagina (41/41 su 41 mesi)
+ok   sei grafici montati (6)
+ok   ogni attività del payload è montata in un mese (1384/1384)
+ok   nessun mese con <details> ma senza attività
+ok   anche i mesi senza attività restano in pagina (0 vuoti)
+ok   ogni voce dell'indice ha la sua ancora (41 mesi)
+ok   nessuna coordinata NaN/Infinity negli SVG (572 nodi)
+ok   [kJ per mese] ogni <path> ha un tracciato reale
+ok   [kJ cumulativi] ogni <path> ha un tracciato reale
+ok   [chilometri per mese] ogni <path> ha un tracciato reale
+ok   [dislivello per mese] ogni <path> ha un tracciato reale
+ok   [ore in movimento per mese] ogni <path> ha un tracciato reale
+ok   [carico (TL) per mese] ogni <path> ha un tracciato reale
+ok   nessun segno fuori dal proprio viewBox
+ok   nessuna etichetta y tagliata dalla gronda
+ok   nessuna sovrapposizione fra etichette x
+ok   una tabella di numeri per grafico (6/6)
+ok   ogni tabella riporta tutti i 41 mesi
+ok   1384 schede attività aperte, tutte
+ok   ogni riga cieca dice perché lo è e linka a Strava (18/18; 18 in tutta la saga)
+ok   ogni scheda linka a intervals.icu con un id vero
+ok   nessun link Strava inventato dove l'API non dà strava_id
+ok   il link Strava c'è ovunque l'API lo dia
+ok   nessuna scheda con meno di 4 statistiche
+ok   testata: kJ = 918.713 (ricalcolato dal payload)
+ok   testata: km = 50.429 (ricalcolato dal payload)
+ok   testata: m D+ = 1.012.260 (ricalcolato dal payload)
+ok   testata: ore = 2.550
+ok   anelli forgiati coerenti col contatore: 9 (kJ/100.000 = 9)
+ok   il buco che copre tutto il 2022 è nel payload (2021-10-18→2023-04-11, 540g)
+ok   il buco è scritto in pagina, non solo nei dati
+ok   il buco è chiamato buco d'archivio, non pausa
+ok   nessuna attività della saga precede l'inizio dell'era (2023-04-11) — nessun grafico attraversa il vuoto
+ok   il carico è dichiarato reale solo dal 2019-06-19, con il perché
+ok   il 2015-2018 è detto non misurato, non vuoto
+ok   nessun id Strava troncato sopravvissuto nella prosa (136 id distinti)
+ok   nessun link smontato lasciato a metà
+ok   signore-dei-kj-weekly.html reindirizza alla mensile
+ok   l'alias dichiara il canonical
+ok   l'alias è una pagina sottile (4.1 KB)
+ok   CSS --s1 = #b8860b (slot validato)
+ok   CSS --s2 = #8b2e1f (slot validato)
+ok   CSS --paper = #fffdf6 (il fondo su cui è stata validata)
+```
+
+esito: tutti passati (48 ok)
+
+## 2026-08-10 11:36 — check_signore.cjs
+
+```
+ok   la pagina emette i due <script> attesi (2)
+ok   lo script inline gira senza eccezioni
+ok   window.SIGNORE_VIEW esposto
+ok   payload: 1384 attività inline
+ok   payload: 45 campi per attività
+ok   ogni mese con attività ha il suo <details> in pagina (41/41 su 41 mesi)
+ok   sei grafici montati (6)
+ok   ogni attività del payload è montata in un mese (1384/1384)
+ok   nessun mese con <details> ma senza attività
+ok   anche i mesi senza attività restano in pagina (0 vuoti)
+ok   ogni voce dell'indice ha la sua ancora (41 mesi)
+ok   nessuna coordinata NaN/Infinity negli SVG (572 nodi)
+ok   [kJ per mese] ogni <path> ha un tracciato reale
+ok   [kJ cumulativi] ogni <path> ha un tracciato reale
+ok   [chilometri per mese] ogni <path> ha un tracciato reale
+ok   [dislivello per mese] ogni <path> ha un tracciato reale
+ok   [ore in movimento per mese] ogni <path> ha un tracciato reale
+ok   [carico (TL) per mese] ogni <path> ha un tracciato reale
+ok   nessun segno fuori dal proprio viewBox
+ok   nessuna etichetta y tagliata dalla gronda
+ok   nessuna sovrapposizione fra etichette x
+ok   una tabella di numeri per grafico (6/6)
+ok   ogni tabella riporta tutti i 41 mesi
+ok   1384 schede attività aperte, tutte
+ok   ogni riga cieca dice perché lo è e linka a Strava (18/18; 18 in tutta la saga)
+ok   ogni scheda linka a intervals.icu con un id vero
+ok   nessun link Strava inventato dove l'API non dà strava_id
+ok   il link Strava c'è ovunque l'API lo dia
+ok   nessuna scheda con meno di 4 statistiche
+ok   testata: kJ = 918.713 (ricalcolato dal payload)
+ok   testata: km = 50.429 (ricalcolato dal payload)
+ok   testata: m D+ = 1.012.260 (ricalcolato dal payload)
+ok   testata: ore = 2.550
+ok   anelli forgiati coerenti col contatore: 9 (kJ/100.000 = 9)
+ok   il buco che copre tutto il 2022 è nel payload (2021-10-18→2023-04-11, 540g)
+ok   il buco è scritto in pagina, non solo nei dati
+ok   il buco è chiamato buco d'archivio, non pausa
+ok   nessuna attività della saga precede l'inizio dell'era (2023-04-11) — nessun grafico attraversa il vuoto
+ok   il carico è dichiarato reale solo dal 2019-06-19, con il perché
+ok   il 2015-2018 è detto non misurato, non vuoto
+ok   nessun id Strava troncato sopravvissuto nella prosa (136 id distinti)
+ok   nessun link smontato lasciato a metà
+ok   signore-dei-kj-weekly.html reindirizza alla mensile
+ok   l'alias dichiara il canonical
+ok   l'alias è una pagina sottile (4.1 KB)
+ok   CSS --s1 = #b8860b (slot validato)
+ok   CSS --s2 = #8b2e1f (slot validato)
+ok   CSS --paper = #fffdf6 (il fondo su cui è stata validata)
+```
+
+esito: tutti passati (48 ok)
+
+## 2026-08-10 11:36 — check_signore.cjs
+
+```
+ok   la pagina emette i due <script> attesi (2)
+ok   lo script inline gira senza eccezioni
+ok   window.SIGNORE_VIEW esposto
+ok   payload: 1384 attività inline
+ok   payload: 45 campi per attività
+ok   ogni mese con attività ha il suo <details> in pagina (41/41 su 41 mesi)
+ok   sei grafici montati (6)
+ok   ogni attività del payload è montata in un mese (1384/1384)
+ok   nessun mese con <details> ma senza attività
+ok   anche i mesi senza attività restano in pagina (0 vuoti)
+ok   ogni voce dell'indice ha la sua ancora (41 mesi)
+ok   nessuna coordinata NaN/Infinity negli SVG (572 nodi)
+ok   [kJ per mese] ogni <path> ha un tracciato reale
+ok   [kJ cumulativi] ogni <path> ha un tracciato reale
+ok   [chilometri per mese] ogni <path> ha un tracciato reale
+ok   [dislivello per mese] ogni <path> ha un tracciato reale
+ok   [ore in movimento per mese] ogni <path> ha un tracciato reale
+ok   [carico (TL) per mese] ogni <path> ha un tracciato reale
+ok   nessun segno fuori dal proprio viewBox
+ok   nessuna etichetta y tagliata dalla gronda
+ok   nessuna sovrapposizione fra etichette x
+ok   una tabella di numeri per grafico (6/6)
+ok   ogni tabella riporta tutti i 41 mesi
+ok   1384 schede attività aperte, tutte
+ok   ogni riga cieca dice perché lo è e linka a Strava (18/18; 18 in tutta la saga)
+ok   ogni scheda linka a intervals.icu con un id vero
+ok   nessun link Strava inventato dove l'API non dà strava_id
+ok   il link Strava c'è ovunque l'API lo dia
+ok   nessuna scheda con meno di 4 statistiche
+ok   testata: kJ = 918.713 (ricalcolato dal payload)
+ok   testata: km = 50.429 (ricalcolato dal payload)
+ok   testata: m D+ = 1.012.260 (ricalcolato dal payload)
+ok   testata: ore = 2.550
+ok   anelli forgiati coerenti col contatore: 9 (kJ/100.000 = 9)
+ok   il buco che copre tutto il 2022 è nel payload (2021-10-18→2023-04-11, 540g)
+ok   il buco è scritto in pagina, non solo nei dati
+ok   il buco è chiamato buco d'archivio, non pausa
+ok   nessuna attività della saga precede l'inizio dell'era (2023-04-11) — nessun grafico attraversa il vuoto
+ok   il carico è dichiarato reale solo dal 2019-06-19, con il perché
+ok   il 2015-2018 è detto non misurato, non vuoto
+ok   nessun id Strava troncato sopravvissuto nella prosa (136 id distinti)
+ok   nessun link smontato lasciato a metà
+ok   signore-dei-kj-weekly.html reindirizza alla mensile
+ok   l'alias dichiara il canonical
+ok   l'alias è una pagina sottile (4.1 KB)
+ok   CSS --s1 = #b8860b (slot validato)
+ok   CSS --s2 = #8b2e1f (slot validato)
+ok   CSS --paper = #fffdf6 (il fondo su cui è stata validata)
+```
+
+esito: tutti passati (48 ok)
