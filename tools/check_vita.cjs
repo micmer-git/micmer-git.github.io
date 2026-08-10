@@ -284,6 +284,53 @@ for (const [k, v] of Object.entries(PAL)) {
 }
 ok(/--paper:#211d16/.test(html), "CSS --paper = #211d16 (il fondo su cui la tavolozza e' stata validata)");
 
+/* --------------------------------------------- 5b. i due valori MISURATI
+   Il laboratorio di stile (2026-08-10) ha trovato due difetti nel sistema di
+   colore, e li ha trovati misurando, non guardando. Qui si rimisurano a ogni run,
+   perche' un colore lo si cambia "solo un pelo" molto piu' facilmente di quanto
+   si rifaccia il conto:
+     - il testo muted deve stare sopra 4,5:1 sulla scheda (e' testo piccolo, quindi
+       vale la soglia normale, non quella del testo grande);
+     - l'accento del sito deve stare a ΔE >= 15 da OGNI slot dei grafici, o smette
+       di leggersi come accento e comincia a leggersi come una serie.
+   Contrasto WCAG 2.x e ΔE in OKLab, le stesse formule del validatore. */
+const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255);
+const lin = c => c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+const relLum = h => { const [r, g, b] = hex(h).map(lin);
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+const ratio = (a, b) => { const [hi, lo] = [relLum(a), relLum(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05); };
+const oklab = h => {
+  const [r, g, b] = hex(h).map(lin);
+  const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+  const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+  const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+  return [0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s,
+          1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s,
+          0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s];
+};
+const dE = (a, b) => { const p = oklab(a), q = oklab(b);
+  return 100 * Math.hypot(p[0] - q[0], p[1] - q[1], p[2] - q[2]); };
+
+const pick = name => (html.match(new RegExp(name + ":\\s*(#[0-9a-f]{6})", "i")) || [])[1];
+const paper = pick("--paper"), muted = pick("--muted"), gold = pick("--gold");
+if (muted && paper) {
+  const r = ratio(muted, paper);
+  ok(r >= 4.5, `--muted ${muted} su ${paper}: ${r.toFixed(2)}:1 (minimo 4,5 per il testo piccolo)`);
+}
+if (gold && paper) {
+  const r = ratio(gold, paper);
+  ok(r >= 4.5, `--gold ${gold} su ${paper}: ${r.toFixed(2)}:1`);
+  let worst = null;
+  for (const [k, v] of Object.entries(PAL)) {
+    const d = dE(gold, v);
+    if (!worst || d < worst[1]) worst = [k, d];
+  }
+  ok(worst[1] >= 15,
+    `--gold ${gold} contro gli slot dei grafici: peggiore ${worst[0]} ΔE ${worst[1].toFixed(1)} ` +
+    `(minimo 15, o l'accento si spaccia per una serie)`);
+}
+
 /* --------------------------------------------------------------- --verbose
    Cosa dice davvero la pagina, riquadro per riquadro: il numero in testa e la riga
    di piede con finestra, n e correlazioni. Serve a leggere il contenuto senza

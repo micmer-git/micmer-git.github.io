@@ -433,9 +433,19 @@ TEMPLATE = r"""<!DOCTYPE html>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
 <style>
   :root{
+    /* Due valori qui dentro sono MISURATI, non scelti (laboratorio di stile,
+       2026-08-10) — cambiarli a occhio rimette i difetti che sistemano, e il
+       check li rimisura a ogni run:
+         --muted  era #8a7d62 = 4,15:1 sulla scheda, sotto il minimo di 4,5:1 per
+                  il testo normale — ed e' il colore di OGNI piede, didascalia,
+                  etichetta d'asse e intestazione di tabella della pagina.
+                  #9a8d70 sta a 5,13:1: margine vero, e resta recessivo.
+         --gold   era #c89a3f, a ΔE 5,2 dallo slot 4 dei grafici (#c98500) sulla
+                  stessa scheda: l'accento del sito si spacciava per una serie di
+                  dati. #e2c98f sta a ΔE 18,6 da quello slot, contrasto 10,4:1. */
     --bg:#17150f; --paper:#211d16; --paper-2:#2a2519;
-    --ink:#ece3cd; --ink-soft:#c6b997; --muted:#8a7d62;
-    --gold:#c89a3f; --rule:rgba(200,154,63,.22);
+    --ink:#ece3cd; --ink-soft:#c6b997; --muted:#9a8d70;
+    --gold:#e2c98f; --rule:rgba(200,154,63,.22);
     --grid:rgba(236,227,205,.09); --axis:rgba(236,227,205,.20);
     /* categorical slots 1-4, dark steps, validated against --paper */
     --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --neg:#e66767;
@@ -715,7 +725,6 @@ calorie qui sotto sono un minimo, non un totale.</p>
   <a href="../top-20/">Venti giorni su 2.923</a>
   <a href="../bike-to-work/">Al lavoro in bici</a>
   <a href="../signore-dei-kj.html">Il Signore dei kJ</a>
-  <a href="../signore-dei-kj-weekly.html">…settimanale</a>
   <a href="../viaggi/">Viaggi</a>
   <a href="../league-of-strava/">League of Strava</a>
   <a href="../">Profilo</a>
