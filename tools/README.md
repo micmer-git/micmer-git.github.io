@@ -1,6 +1,6 @@
 # tools/
 
-Eleven scripts. The sync/build ones need nothing beyond the Python standard
+Ten scripts. The sync/build ones need nothing beyond the Python standard
 library; the three that make images (`build_top20_gif.py`, `build_top20_reel.py`,
 `basemap.py`) want Pillow, and `build_top20_video.py` additionally wants OpenCV,
 which is the only thing here that can write a video. Every one takes `--dry-run`
@@ -10,9 +10,8 @@ and backs up what it overwrites to `*.bak`.
 python tools/sync_intervals.py --config tools/gazzaniga-orezzo.json   # new efforts -> _data.js
 python tools/sync_sogni.py                                            # new weeks   -> data.json + load.json
 python tools/sync_diario.py                                           # refresh the monthly chapter numbers
-python tools/build_cruscotto.py                                       # rebuild /vita/cruscotto from Intervals
-node   tools/check_cruscotto.cjs                                      # smoke-test it, no browser needed
-python tools/build_vita.py                                            # rebuild /vita from all of the above
+python tools/build_vita.py                                            # rebuild /vita: tracker + 31 grafici
+node   tools/check_vita.cjs                                           # smoke-test it, no browser needed
 python tools/build_top20.py                                           # rebuild /top-20 data from Intervals
 python tools/build_top20_gif.py                                       # the twenty square cards
 python tools/build_top20_reel.py                                      # the one reel, on a real map
@@ -21,9 +20,8 @@ python tools/gifweigh.py <file.gif>                                   # dove son
 node   tools/check_top20_page.cjs                                     # smoke-test /top-20 without a browser
 ```
 
-The weekly GitHub Action (`.github/workflows/weekly-vita.yml`) runs the three syncs
-plus both builds on Monday morning, smoke-tests the cruscotto, and commits whatever
-moved. It needs the repo secret
+The weekly GitHub Action (`.github/workflows/weekly-vita.yml`) runs the three syncs,
+rebuilds `/vita`, smoke-tests it, and commits whatever moved. It needs the repo secret
 **`INTERVALS_API_KEY`** (Intervals.icu ▸ Settings ▸ Developer ▸ API key). Locally the
 scripts read `INTERVALS_API_KEY`, `--api-key`, or `tools/.intervals_key` (gitignored).
 
@@ -116,10 +114,12 @@ more than 15 of the 25 published ranges, so any generated range would be a guess
 
 ---
 
-## build_vita.py
+## vita_trackers.py
 
-Regenerates `/vita`, the hub over every tracker, reading each tracker's *own*
-published data so the hub can't drift from the pages it links to:
+Non genera niente: espone i loader dei tre tracker e il changelog, che
+`build_vita.py` mette in cima a `/vita`. Ogni loader legge il dato **pubblicato**
+dalla pagina del tracker, non un database a parte, cosi' l'hub non puo' andare
+alla deriva rispetto alle pagine a cui punta:
 
 | source | what comes out |
 |---|---|
@@ -128,29 +128,19 @@ published data so the hub can't drift from the pages it links to:
 | `sogni-di-un-unno/data.json` | weeks tracked, mean sleep, weekly hours |
 | `git log` | the "Cronaca" changelog, newest 5 per tracker |
 
-Everything is inlined into `vita/index.html` — one self-contained file, no runtime
-fetch. `--check` reports what it found and writes nothing.
+`--check` stampa cosa ha trovato. I tre accenti sono gli slot 1-3 della tavolozza
+di riferimento dataviz, passo scuro; il colore non porta mai l'identita' da solo —
+ogni scheda sta accanto al nome del suo tracker.
 
-Each card carries one single-series plot (bars for counts, a line for weekly hours),
-so the card title names the series and no legend is needed. The three accents are
-categorical slots 1–3 of the dataviz reference palette stepped for a dark surface;
-that trio passes lightness, chroma, CVD, normal-vision and contrast on all pairs.
-Colour never carries identity on its own — every chip and card sits next to the
-tracker's name.
-
-**Adding a tracker:** write a `load_*()` returning the same dict shape, add it to
-the list in `main()` and to `TRACKED` (for the changelog), and give it an accent —
-re-validate the set if you go past three.
-
-The hub also carries the band linking to `/vita/cruscotto`. That band lives in
-`build_vita.py`, not in the generated HTML — editing `vita/index.html` by hand gets
-it wiped by the next Monday run.
+**Aggiungere un tracker:** scrivi un `load_*()` che torna lo stesso dict, aggiungilo
+alla lista in `highlights()` dentro `build_vita.py` e a `TRACKED` (per il
+changelog), e dagli un accento — se si va oltre tre, la terna va rivalidata.
 
 ---
 
-## build_cruscotto.py
+## build_vita.py
 
-Builds `/vita/cruscotto`: 22 compact charts over everything Intervals.icu holds.
+Builds `/vita`: i tre tracker in cima e 31 grafici in colonna over everything Intervals.icu holds.
 Unlike the rest of `tools/`, it does **not** read a published page — it pulls the
 whole wellness history and the whole activity list straight from the API, packs
 them into one payload and inlines it. The page is a flat 320 KB file with no runtime
@@ -192,9 +182,29 @@ which is a different colour and would have passed things that fail here. Adjacen
 worst CVD ΔE 8.4, normal-vision 19.3, all four ≥3:1 on the card. The one scatter
 with more than one group carries **two** of them: four hues cannot clear the
 all-pairs floor, and yellow beside orange is exactly the failing pair — which is why
-"distanza contro dislivello" plots bike and run only. `check_cruscotto.cjs` asserts
+"distanza contro dislivello" plots bike and run only. `check_vita.cjs` asserts
 the four hexes are still in the CSS, so a casual re-colour trips a test instead of
 silently shipping.
+
+**La sezione Tavola arriva da un'altra repo.** `vita/_nutrition.csv` e' esportato da
+`~/health-log` con `python scripts/build_nutrition_series.py --export <qui>`, ed e'
+committato perche' la GitHub Action non ha accesso a quella repo. Contiene **solo
+aggregati giornalieri** — kcal, macro, magnesio, potassio, indici di vitamine e
+minerali, piante distinte su 7 giorni, fabbisogno di carboidrati stimato dal TSS,
+indice microbiota. Il diario dei pasti, con dentro dove e con chi ha mangiato, non
+esce da health-log. Se il file manca, `nutriTiles()` torna una lista vuota e la
+sezione sparisce invece di riempirsi di riquadri vuoti.
+
+Due cose vanno dette ogni volta che si guarda quella sezione:
+
+- **e' una ricostruzione.** I pasti raccontati coprono ~38 % delle calorie; il resto
+  lo mette lo schema abituale (colazione fissa, 2 avocado toast e 2 dahl a
+  settimana) da `scripts/fill_defaults.py`, che scrive in un file separato apposta
+  per non sporcare il diario vero. Il primo riquadro della sezione e' proprio la
+  quota osservata, ed e' li' per essere letto prima degli altri.
+- **`microbiome` non e' una misura.** E' una combinazione pesata di diversita'
+  vegetale, fibra, fermentati e penalita' ultra-processati, con i pesi in chiaro
+  nel sorgente. Vale la tendenza.
 
 **The y-axis gutter is computed, not fixed.** A five-figure tick ("50.000") needs
 38px where a two-figure one needs 20; a fixed 34px either clips the big numbers or
@@ -203,9 +213,9 @@ wastes a tenth of a 320px tile. Both axes size themselves from the widest label 
 
 ---
 
-## check_cruscotto.cjs
+## check_vita.cjs
 
-The cruscotto's smoke test, and the substitute for a pair of eyes: there is no
+The /vita smoke test, and the substitute for a pair of eyes: there is no
 browser on this machine and jsdom does not install through the proxy, so the DOM
 here is a fifty-line shim. It works because the page builds its nodes one at a time
 and keeps a reference to each, instead of writing `innerHTML` and querying it back —
@@ -225,7 +235,7 @@ the captions get checked against the numbers instead of against expectations. It
 earned its keep immediately: a caption asserting VO₂max rises with fitness went in
 before the fit was run, and the actual r is **0.00**.
 
-Every run appends to `tools/cruscotto_tests.md`, alongside what each build found.
+Every run appends to `tools/vita_tests.md`, alongside what each build found.
 
 ---
 

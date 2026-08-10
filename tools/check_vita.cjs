@@ -1,4 +1,4 @@
-/* Smoke test per vita/cruscotto/index.html — senza browser e senza dipendenze.
+/* Smoke test per vita/index.html — senza browser e senza dipendenze.
  *
  * jsdom non si installa da questa rete, e comunque il resto di tools/ gira in sola
  * stdlib: qui il DOM e' uno shim di poche decine di righe. Regge perche' la pagina
@@ -19,17 +19,17 @@
  *   6. il buco 2021-2023 e' dichiarato fra i gaps: le zone "nessun dato" dipendono
  *      da quello, e senza si tornerebbe a disegnare una linea attraverso il vuoto.
  *
- *   node tools/check_cruscotto.cjs
+ *   node tools/check_vita.cjs
  *
- * L'esito viene appeso a tools/cruscotto_tests.md insieme a quello dei build.
+ * L'esito viene appeso a tools/vita_tests.md insieme a quello dei build.
  */
 const fs = require("fs");
 const path = require("path");
 const vm = require("vm");
 
 const ROOT = path.join(__dirname, "..");
-const PAGE = path.join(ROOT, "vita", "cruscotto", "index.html");
-const REPORT = path.join(__dirname, "cruscotto_tests.md");
+const PAGE = path.join(ROOT, "vita", "index.html");
+const REPORT = path.join(__dirname, "vita_tests.md");
 
 const html = fs.readFileSync(PAGE, "utf8");
 const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
@@ -79,7 +79,7 @@ const document = {
 };
 for (const id of ["tip", "totals", "ranges", "range-note",
   "panel-carico", "panel-notte", "panel-recupero", "panel-corpo",
-  "panel-volume", "panel-incroci"]) document.getElementById(id);
+  "panel-volume", "panel-incroci", "panel-tavola", "tracks"]) document.getElementById(id);
 
 const sandbox = {
   document, console,
@@ -93,7 +93,7 @@ sandbox.globalThis = sandbox;
 let ran = true;
 try {
   vm.createContext(sandbox);
-  vm.runInContext(script, sandbox, { filename: "cruscotto-inline.js", timeout: 60000 });
+  vm.runInContext(script, sandbox, { filename: "vita-inline.js", timeout: 60000 });
 } catch (e) {
   ran = false;
   fails.push("FAIL lo script della pagina ha sollevato: " + (e && e.stack || e));
@@ -108,9 +108,9 @@ if (ran) {
   /* -------------------------------------------------- 1. tutti i riquadri */
   ok(K.TILES.length === K.MOUNTED.length,
     `ogni riquadro dichiarato e' montato (${K.MOUNTED.length}/${K.TILES.length})`);
-  ok(K.MOUNTED.length >= 20, `almeno 20 riquadri (${K.MOUNTED.length})`);
+  ok(K.MOUNTED.length >= 30, `almeno 30 riquadri (${K.MOUNTED.length})`);
 
-  for (const r of ["sempre", "12m", "ytd", "90g"]) {
+  for (const r of ["2a", "1a", "3m", "sempre"]) {
     let threw = 0, empty = [];
     try { K.setRange(r); } catch (e) { fails.push(`FAIL setRange(${r}): ${e && e.stack || e}`); }
     K.MOUNTED.forEach(([n, t]) => {
@@ -269,9 +269,9 @@ console.log(body);
 console.log(fails.length ? `\n${fails.length} CONTROLLI FALLITI` : "\ntutto a posto");
 
 const head = fs.existsSync(REPORT) ? "" :
-  "# /vita/cruscotto — report cumulativo dei build\n";
+  "# /vita — report cumulativo dei build\n";
 fs.appendFileSync(REPORT,
-  `${head}\n## ${stamp} — check_cruscotto.cjs\n\n\`\`\`\n${body}\n\`\`\`\n\n` +
+  `${head}\n## ${stamp} — check_vita.cjs\n\n\`\`\`\n${body}\n\`\`\`\n\n` +
   `esito: ${fails.length ? fails.length + " FALLITI" : "tutti passati"} ` +
   `(${notes.length} ok)\n`, "utf8");
 

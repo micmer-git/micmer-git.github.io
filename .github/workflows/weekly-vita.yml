@@ -48,27 +48,26 @@ jobs:
           echo "::group::Diario di un Unno"
           python tools/sync_diario.py || rc=1
           echo "::endgroup::"
-          # The dashboard is rebuilt from scratch each week rather than appended to:
-          # it holds no state of its own, every number in it comes from the pull.
-          echo "::group::Cruscotto"
-          python tools/build_cruscotto.py || rc=1
-          echo "::endgroup::"
           exit $rc
 
+      # /vita is rebuilt from scratch each week rather than appended to: it holds no
+      # state of its own, every number in it comes from the pull. The food series
+      # come from vita/_nutrition.csv, exported from the private health-log repo and
+      # committed here — if it is absent the Tavola section simply does not render.
       - name: Rebuild /vita
         run: python tools/build_vita.py
 
-      # Cheap, no network, and it is the only thing standing between a broken chart
-      # and a week of it being live: the page ships as one flat file, so nothing
-      # else would notice.
-      - name: Smoke-test /vita/cruscotto
-        run: node tools/check_cruscotto.cjs
+      # Cheap, no network, and the only thing standing between a broken chart and a
+      # week of it being live: the page ships as one flat file, so nothing else
+      # would notice.
+      - name: Smoke-test /vita
+        run: node tools/check_vita.cjs
 
       - name: Commit if anything moved
         run: |
           git config user.name  "vita-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A gazzaniga-orezzo sogni-di-un-unno diario-di-un-unno vita tools/cruscotto_tests.md
+          git add -A gazzaniga-orezzo sogni-di-un-unno diario-di-un-unno vita tools/vita_tests.md
           if git diff --cached --quiet; then
             echo "nothing changed this week"
           else
