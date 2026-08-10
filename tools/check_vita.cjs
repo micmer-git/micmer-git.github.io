@@ -178,11 +178,11 @@ if (ran) {
      ogni segno dentro il proprio viewBox, ogni etichetta dell'asse y dentro la sua
      gronda (il modo in cui "50.000" finisce tagliato a meta'), e nessuna coppia di
      etichette sull'asse x che si sovrappone. La larghezza di un glifo IBM Plex Mono
-     a font-size 10 e' ~6.05px: **la stessa costante che usa la pagina** (TICKW) per
+     a font-size 8 e' ~4.85px: **la stessa costante che usa la pagina** (TICKW) per
      dimensionare la gronda, quindi il controllo misura la stessa cosa che il disegno
      assume. Se la' cambia il corpo del testo, va cambiata anche qui, o il check
      smette di vedere le sovrapposizioni invece di segnalarle. */
-  const GLYPH = 6.05;
+  const GLYPH = 4.85;
   const outside = [], clipped = [], collide = [];
   for (const [n, t] of K.MOUNTED) {
     const svg = n.box._kids.find(c => c.tagName === "svg");
@@ -376,7 +376,7 @@ if (ran && process.argv.includes("--verbose")) {
   for (const [n, t] of K.MOUNTED) {
     const now = strip(n.now.innerHTML);
     console.log(`\n  ${t.title}${now ? "  [" + now + "]" : ""}`);
-    console.log(`    ${strip(n.sum.textContent)}`);
+    console.log(`    ${strip(n.foot.innerHTML)}`);
   }
 }
 

@@ -949,25 +949,22 @@ const nice = (lo, hi) => {
    Mono glyph is ~4.85px wide, so a five-figure tick ("50.000") needs 38px where a
    two-figure one needs 20 — a fixed gutter either clips the big numbers or wastes a
    tenth of a 320px tile on the small ones. Every axis below sizes its own. */
-const TICKW = 6.05;   /* IBM Plex Mono a font-size 10 */
+const TICKW = 4.85;
 const yTicks = (yd, fmt) => {
   const out = [];
   for (let v = yd.lo; v <= yd.hi + 1e-9; v += yd.step) out.push([v, String(fmt(v))]);
   return out;
 };
-const padFor = ticks => Math.min(74, Math.max(28,
-  Math.ceil(Math.max(...ticks.map(t => t[1].length)) * TICKW) + 10));
-/* font-size 10, non 8: a 8 le etichette degli assi non si leggono su nessuno
-   schermo reale, e un asse illeggibile e' un asse assente. Costa qualche pixel di
-   gronda, che padFor() ricalcola da solo. */
+const padFor = ticks => Math.min(62, Math.max(24,
+  Math.ceil(Math.max(...ticks.map(t => t[1].length)) * TICKW) + 9));
 const axisText = (x, y, s, anchor) => el("text", { x, y, "text-anchor":anchor,
-  fill:"var(--muted)", "font-size":"10", "font-family":"'IBM Plex Mono',monospace" });
+  fill:"var(--muted)", "font-size":"8", "font-family":"'IBM Plex Mono',monospace" });
 function yAxis(svg, ticks, Y, l, right) {
   for (const [v, lab] of ticks) {
     const y = Y(v);
     svg.appendChild(el("line", { x1:l, x2:right, y1:y, y2:y,
       stroke:v === 0 ? "var(--axis)" : "var(--grid)", "stroke-width":1 }));
-    const t = axisText(l - 6, y + 3.5, lab, "end");
+    const t = axisText(l - 5, y + 3, lab, "end");
     t.textContent = lab; svg.appendChild(t);
   }
 }
@@ -987,7 +984,7 @@ addEventListener("scroll", hideTip, { passive:true });
 function frame(svg, W, H, xdom, ydom, opts = {}) {
   const yd = nice(ydom[0], ydom[1]);
   const ticks = yTicks(yd, opts.ytick || (v => nf(v, yd.step < 1 ? 1 : 0)));
-  const P = { l:padFor(ticks), r:8, t:9, b:20 };
+  const P = { l:padFor(ticks), r:6, t:8, b:16 };
   const iw = W - P.l - P.r, ih = H - P.t - P.b;
   const [x0, x1] = xdom;
   const X = v => P.l + (x1 === x0 ? iw / 2 : (v - x0) / (x1 - x0) * iw);
@@ -1013,14 +1010,14 @@ function frame(svg, W, H, xdom, ydom, opts = {}) {
   yAxis(svg, ticks, Y, P.l, W - P.r);
   /* x ticks: 3-5 dates across the window, never overlapping */
   if (opts.xticks !== false) {
-    const kmax = iw < 300 ? 3 : iw < 520 ? 4 : 5;
+    const kmax = iw < 260 ? 3 : iw < 420 ? 4 : 5;
     for (let k = 0; k < kmax; k++) {
       const v = x0 + (x1 - x0) * k / (kmax - 1), d = dayDate(Math.round(v));
       const span = x1 - x0;
       const lab = span > 900 ? String(d.getFullYear())
         : span > 150 ? MON[d.getMonth()] + " " + String(d.getFullYear()).slice(2)
         : d.getDate() + " " + MON[d.getMonth()];
-      const t = axisText(X(v), H - 5, lab,
+      const t = axisText(X(v), H - 4, lab,
         k === 0 ? "start" : k === kmax - 1 ? "end" : "middle");
       t.textContent = lab; svg.appendChild(t);
     }
@@ -1237,28 +1234,19 @@ function rBars(svg, W, H, t, from, to) {
   if (!b.length) return null;
   const hi = Math.max(...b.map(o => o.v));
   const g = frame(svg, W, H, [from, to], [0, hi], { ytick:t.ytick });
-  /* Linea + punti, come ogni altro grafico della pagina: una colonna di riquadri
-     tutti nella stessa forma si legge scendendo, una che alterna barre e linee
-     costringe a ri-tarare l'occhio a ogni riquadro. Sotto la linea resta un velo
-     d'area, che e' quello che le barre dicevano davvero (una quantita' sommata). */
-  const pts = b.map(o => [o.i, o.v]);
-  const d = pathOf(pts, g.X, g.Y);
-  if (d) {
-    const base = g.Y(Math.max(g.yd.lo, 0));
-    svg.appendChild(el("path", { d:`${d} L${g.X(pts[pts.length - 1][0])} ${base} L${g.X(pts[0][0])} ${base} Z`,
-      fill:t.col, opacity:".12" }));
-    svg.appendChild(el("path", { d, fill:"none", stroke:t.col, "stroke-width":2.2,
-      "stroke-linejoin":"round", "stroke-linecap":"round" }));
-  }
-  const rr = b.length > 90 ? 1.6 : b.length > 40 ? 2.2 : 3;
+  /* Barre. Una quantita' sommata su un intervallo e' un'area, non un punto: la
+     barra dice "in questa settimana, tanto", la linea direbbe "in questo istante,
+     tanto" — che di una somma non e' vero. */
+  const bw = Math.max(1.2, Math.min(22, g.iw / b.length - 1.6));
   for (const o of b) {
-    const c = el("circle", { cx:g.X(o.i), cy:g.Y(o.v), r:rr, fill:t.col,
-      stroke:"var(--paper)", "stroke-width":.8, style:"cursor:pointer" });
-    c.addEventListener("pointerenter", ev => showTip(ev.clientX, ev.clientY,
+    const x = g.X(o.i) - bw / 2, y = g.Y(o.v);
+    const r = el("rect", { x, y, width:bw, height:Math.max(.8, g.Y(0) - y),
+      rx:Math.min(2, bw / 2), fill:t.col, style:"cursor:pointer" });
+    r.addEventListener("pointerenter", ev => showTip(ev.clientX, ev.clientY,
       `<span class="d">${bucketLabel(o.k, plan.step)}</span><br>${t.name} <span class="v">${(t.fmt || FMT.num0)(o.v)}</span>`));
-    c.addEventListener("pointerleave", hideTip);
-    c.addEventListener("click", () => openDay(o.i));
-    svg.appendChild(c);
+    r.addEventListener("pointerleave", hideTip);
+    r.addEventListener("click", () => openDay(o.i));
+    svg.appendChild(r);
   }
   return { stats:stats(b.map(o => o.v)), plan,
     table:`<tr><th>${plan.label}</th><th>${t.name}</th></tr>` +
@@ -1274,30 +1262,33 @@ function rStack(svg, W, H, t, from, to) {
   if (!keys.length) return null;
   const rows = keys.map((k, j) => ({ k, i:per[0][j].i,
     parts:per.map(p => (t.scale ? t.scale(p[j].v) : p[j].v) || 0) }));
-  const hi = Math.max(...rows.flatMap(r => r.parts));
+  const hi = Math.max(...rows.map(r => r.parts.reduce((a, b) => a + b, 0)));
   if (!(hi > 0)) return null;
   const g = frame(svg, W, H, [from, to], [0, hi], { ytick:t.ytick });
-  /* Non piu' impilate: una linea per serie, con i punti. Impilare nascondeva la
-     forma di ogni singola serie dentro la somma — e la domanda qui e' come si
-     muove ognuna, non quanto fanno insieme. */
-  cols.forEach((col, si) => {
-    const pts = rows.map(r => [r.i, r.parts[si]]);
-    const d = pathOf(pts, g.X, g.Y);
-    if (d) svg.appendChild(el("path", { d, fill:"none", stroke:col, "stroke-width":2,
-      "stroke-linejoin":"round", "stroke-linecap":"round" }));
-    const rr = rows.length > 90 ? 1.5 : rows.length > 40 ? 2 : 2.8;
-    for (const r of rows) {
-      if (!(r.parts[si] > 0)) continue;
-      const c = el("circle", { cx:g.X(r.i), cy:g.Y(r.parts[si]), r:rr, fill:col,
-        stroke:"var(--paper)", "stroke-width":.8, style:"cursor:pointer" });
-      c.addEventListener("pointerenter", ev => showTip(ev.clientX, ev.clientY,
+  /* Impilate: la domanda qui e' una composizione — quanto fa il totale e come si
+     divide — e impilare e' l'unica forma che risponde a tutte e due insieme.
+     2px di superficie fra un segmento e l'altro, o due colori adiacenti si
+     fondono in una banda sola. */
+  const bw = Math.max(1.6, Math.min(26, g.iw / rows.length - 1.8));
+  for (const r of rows) {
+    let acc = 0;
+    const total = r.parts.reduce((a, b) => a + b, 0);
+    r.parts.forEach((v, si) => {
+      if (!(v > 0)) return;
+      const yTop = g.Y(acc + v), yBot = g.Y(acc);
+      const h = Math.max(.8, yBot - yTop - (acc > 0 ? 2 : 0));
+      const rect = el("rect", { x:g.X(r.i) - bw / 2, y:yTop, width:bw, height:h,
+        rx:Math.min(2, bw / 2), fill:cols[si], style:"cursor:pointer" });
+      rect.addEventListener("pointerenter", ev => showTip(ev.clientX, ev.clientY,
         `<span class="d">${bucketLabel(r.k, plan.step)}</span><br>` +
-        r.parts.map((p, k) => p > 0 ? `<i style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${cols[k]};margin-right:5px"></i>${names[k]} <span class="v">${(t.fmt || FMT.num1)(p)}</span>` : null).filter(Boolean).join("<br>")));
-      c.addEventListener("pointerleave", hideTip);
-      c.addEventListener("click", () => openDay(r.i));
-      svg.appendChild(c);
-    }
-  });
+        r.parts.map((p, k) => p > 0 ? `<i style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${cols[k]};margin-right:5px"></i>${names[k]} <span class="v">${(t.fmt || FMT.num1)(p)}</span>` : null).filter(Boolean).join("<br>") +
+        `<br><span class="d">totale ${(t.fmt || FMT.num1)(total)}</span>`));
+      rect.addEventListener("pointerleave", hideTip);
+      rect.addEventListener("click", () => openDay(r.i));
+      svg.appendChild(rect);
+      acc += v;
+    });
+  }
   return { stats:stats(rows.map(r => r.parts.reduce((a, b) => a + b, 0))), plan,
     table:`<tr><th>${plan.label}</th>${names.map(n => `<th>${n}</th>`).join("")}</tr>` +
       rows.slice(-30).reverse().map(r => `<tr><td>${bucketLabel(r.k, plan.step)}</td>${r.parts.map(p => `<td>${(t.fmt || FMT.num1)(p)}</td>`).join("")}</tr>`).join("") };
@@ -1404,7 +1395,7 @@ function rXY(svg, W, H, t, from, to) {
   const xs = all.map(p => p[0]), ys = all.map(p => p[1]);
   const xd = nice(Math.min(...xs), Math.max(...xs)), yd = nice(Math.min(...ys), Math.max(...ys));
   const ticks = yTicks(yd, t.ytick || (v => nf(v, yd.step < 1 ? 1 : 0)));
-  const P = { l:padFor(ticks), r:9, t:9, b:24 };
+  const P = { l:padFor(ticks), r:8, t:8, b:20 };
   const iw = W - P.l - P.r, ih = H - P.t - P.b;
   const X = v => P.l + (v - xd.lo) / (xd.hi - xd.lo) * iw;
   const Y = v => P.t + ih - (v - yd.lo) / (yd.hi - yd.lo) * ih;
@@ -1418,7 +1409,7 @@ function rXY(svg, W, H, t, from, to) {
     const half = lab.length * TICKW / 2;
     if (X(v) - half < lastRight + 6 || X(v) + half > W) continue;
     lastRight = X(v) + half;
-    const tx = axisText(X(v), H - 7, lab, "middle");
+    const tx = axisText(X(v), H - 6, lab, "middle");
     tx.textContent = lab; svg.appendChild(tx);
   }
   groups.forEach(gr => {
@@ -1461,7 +1452,7 @@ function rDow(svg, W, H, t, from, to) {
   const hi = Math.max(...st.filter(Boolean).map(s => s.max));
   const yd = nice(lo, hi);
   const ticks = yTicks(yd, t.ytick || (v => nf(v, 0)));
-  const P = { l:padFor(ticks), r:9, t:9, b:20 }, iw = W - P.l - P.r, ih = H - P.t - P.b;
+  const P = { l:padFor(ticks), r:8, t:8, b:16 }, iw = W - P.l - P.r, ih = H - P.t - P.b;
   const Y = v => P.t + ih - (v - yd.lo) / (yd.hi - yd.lo) * ih;
   yAxis(svg, ticks, Y, P.l, W - P.r);
   const slot = iw / 7, bw = Math.min(26, slot * .52);
@@ -1477,7 +1468,7 @@ function rDow(svg, W, H, t, from, to) {
       `<br><span class="d">da ${(t.fmt || FMT.num0)(s.min)} a ${(t.fmt || FMT.num0)(s.max)}</span>`));
     r.addEventListener("pointerleave", hideTip);
     svg.appendChild(r);
-    const tx = axisText(cx, H - 5, DOW[k], "middle");
+    const tx = axisText(cx, H - 4, DOW[k], "middle");
     tx.textContent = DOW[k]; svg.appendChild(tx);
   });
   const best = st.map((s, k) => s ? [s.mean, k] : null).filter(Boolean).sort((a, b) => b[0] - a[0])[0];
@@ -1620,7 +1611,7 @@ function rSlope(svg, W, H, t, from, to) {
       svg.appendChild(el("circle", { cx:x, cy:Y(v), r:3, fill:col,
         stroke:"var(--paper)", "stroke-width":1 }));
     const lab = el("text", { x:xb + 8, y:it._ly + 3.5, fill:"var(--ink-soft)",
-      "font-size":"10", "font-family":"'IBM Plex Mono',monospace" });
+      "font-size":"9", "font-family":"'IBM Plex Mono',monospace" });
     lab.textContent = `${it.emoji} ${it.name} ${(it.b - it.a >= 0 ? "+" : "")}${(it.b - it.a).toFixed(1)}`;
     svg.appendChild(lab);
     svg.appendChild(el("line", { x1:xb + 3, y1:Y(it.b), x2:xb + 6, y2:it._ly,
@@ -1719,17 +1710,17 @@ const TILES = [
       get:(a, b) => { const o = []; for (let i = a; i <= b; i++) o.push([i, D.ctl[i] === null || D.atl[i] === null ? null : D.ctl[i] - D.atl[i]]); return o; } },
     foot:"Blu credito, rosso debito." },
 
-  { panel:"carico", h:180, first:"load", title:"Carico", cap:"TSS sommato",
+  { panel:"carico", h:170, first:"load", title:"Carico", cap:"TSS sommato",
     now:() => D.load.slice(N - 7).reduce((a, b) => a + (b || 0), 0), nowFmt:FMT.num0, nowUnit:"TSS ultimi 7 gg",
     kind:rBars, spec:{ name:"Carico", arr:D.load, how:"sum", col:"var(--s1)", fmt:FMT.tss } },
 
-  { panel:"carico", h:180, first:"act", title:"Ore", cap:"tempo in movimento",
+  { panel:"carico", h:170, first:"act", title:"Ore", cap:"tempo in movimento",
     now:() => secsOf.secs.slice(N - 7).reduce((a, b) => a + b, 0) / 3600, nowFmt:FMT.num1, nowUnit:"ore ultimi 7 gg",
     kind:rBars, spec:{ name:"Ore", arr:secsOf.secs, how:"sum", scale:v => v / 3600,
       col:"var(--s3)", fmt:FMT.hours } },
 
   /* ---- Notte ---- */
-  { panel:"notte", cls:"half", h:190, first:"sleep",
+  { panel:"notte", cls:"half", h:180, first:"sleep",
     title:"Durata del sonno", cap:"ogni notte · media mobile 7 giorni",
     now:() => { const r = rolling(D.sleep, N - 7, N - 1, 7); return r[r.length - 1]; },
     nowFmt:FMT.hhmm, nowUnit:"media 7 notti",
@@ -1743,7 +1734,7 @@ const TILES = [
     nowFmt:FMT.num0, nowUnit:"media 14 notti",
     kind:rCloud, spec:{ name:"Punteggio", arr:D.score, col:"var(--s3)", fmt:FMT.num0, win:14 } },
 
-  { panel:"notte", h:190, first:"sleep", title:"Sonno per giorno della settimana",
+  { panel:"notte", h:180, first:"sleep", title:"Sonno per giorno della settimana",
     cap:"media · il baffo è l'escursione fra la notte più corta e la più lunga",
     kind:rDow, spec:{ name:"Sonno", arr:D.sleep, col:"var(--s4)", fmt:FMT.hhmm,
       ytick:v => (v / 60).toFixed(0) + "h" } },
@@ -1792,17 +1783,17 @@ const TILES = [
       points:(a, b) => [{ name:"Massa grassa", col:"var(--s4)", pts:sparsePts(D.bodyfat, a, b) }] } },
 
   /* ---- Volume ---- */
-  { panel:"volume", cls:"half", h:180, first:"act", title:"Mix per sport",
+  { panel:"volume", cls:"half", h:170, first:"act", title:"Mix per sport",
     cap:"ore, impilate", legend:S.map((s, i) => [s, SCH[i]]),
     kind:rStack, spec:{ arrs:secsOf.bySport, names:S, cols:SC, scale:v => v / 3600,
       fmt:FMT.hours } },
 
-  { panel:"volume", h:180, first:"act", title:"Chilometri", cap:"distanza sommata",
+  { panel:"volume", h:170, first:"act", title:"Chilometri", cap:"distanza sommata",
     now:() => secsOf.dist.reduce((a, b) => a + b, 0) / 1000, nowFmt:FMT.num0, nowUnit:"km in tutto",
     kind:rBars, spec:{ name:"Distanza", arr:secsOf.dist, how:"sum", scale:v => v / 1000,
       col:"var(--s2)", fmt:FMT.km } },
 
-  { panel:"volume", h:180, first:"act", title:"Dislivello", cap:"metri di salita sommati",
+  { panel:"volume", h:170, first:"act", title:"Dislivello", cap:"metri di salita sommati",
     now:() => secsOf.gain.reduce((a, b) => a + b, 0), nowFmt:FMT.num0, nowUnit:"m in tutto",
     kind:rBars, spec:{ name:"Dislivello", arr:secsOf.gain, how:"sum", col:"var(--s4)",
       fmt:FMT.m, ytick:v => v >= 1000 ? (v / 1000) + "k" : String(v) } },
@@ -1817,7 +1808,7 @@ const TILES = [
     foot:"Solo bici e corsa: gli altri sport non hanno questo asse." },
 
   /* ---- Incroci ---- */
-  { panel:"incroci", h:190, first:"sleep", title:"Sonno contro carico del giorno prima",
+  { panel:"incroci", h:180, first:"sleep", title:"Sonno contro carico del giorno prima",
     cap:"TSS di ieri → ore dormite stanotte",
     kind:rXY, spec:{ xname:"TSS di ieri", yname:"Sonno", xfmt:FMT.tss, yfmt:FMT.hhmm, r:2.8,
       points:(a, b) => [{ name:"notti", col:"var(--s1)",
@@ -1864,7 +1855,7 @@ function nutriTiles() {
   const has = k => Array.isArray(N_[k]);
   const t = [];
 
-  t.push({ panel:"tavola", h:132, first:"n_kcal", title:"Quanto è raccontato",
+  t.push({ panel:"tavola", h:118, first:"n_kcal", title:"Quanto è raccontato",
     cap:"kcal osservate contro ricostruite · i piatti dichiarati sono ~75 % della dieta", legend:[["Osservate", SCH[2]], ["Ricostruite", SCH[3]]],
     now:() => { const a = N_.kcal_observed, b = N_.kcal_assumed; let o = 0, s = 0;
       for (let i = 0; i < N; i++) if (a[i] !== null) { o += a[i]; s += a[i] + (b[i] || 0); }
@@ -1874,21 +1865,21 @@ function nutriTiles() {
       names:["Osservate", "Ricostruite"], cols:["var(--s3)", "var(--s4)"], fmt:FMT.num0 },
     foot:"Osservato = un pasto raccontato. Ricostruito = lo schema mensile dichiarato, che copre circa tre quarti della dieta." });
 
-  t.push({ panel:"tavola", h:132, first:"n_kcal", title:"Energia",
+  t.push({ panel:"tavola", h:118, first:"n_kcal", title:"Energia",
     cap:"kcal al giorno · media mobile 7 giorni",
     now:() => lastMean(N_.kcal, 7),
     nowFmt:FMT.num0, nowUnit:"kcal, media 7 gg",
     kind:rCloud, spec:{ name:"Energia", arr:N_.kcal, col:"var(--s2)", fmt:FMT.num0,
       zero:true, win:7 } });
 
-  t.push({ panel:"tavola", h:132, first:"n_fiber_g", title:"Fibre",
+  t.push({ panel:"tavola", h:118, first:"n_fiber_g", title:"Fibre",
     cap:"grammi al giorno · la fascia è l'obiettivo, 30 g",
     now:() => lastMean(N_.fiber_g, 7),
     nowFmt:FMT.num1, nowUnit:"g, media 7 gg",
     kind:rCloud, spec:{ name:"Fibre", arr:N_.fiber_g, col:"var(--s3)", fmt:v => nf(v, 1) + " g",
       band:[30, 45], zero:true, win:7 } });
 
-  if (has("plants_7d")) t.push({ panel:"tavola", h:132, first:"n_plants_7d",
+  if (has("plants_7d")) t.push({ panel:"tavola", h:118, first:"n_plants_7d",
     title:"Piante diverse", cap:"specie vegetali distinte negli ultimi 7 giorni · obiettivo 30",
     now:() => { for (let i = N - 1; i >= 0; i--) if (N_.plants_7d[i] !== null) return N_.plants_7d[i]; return null; },
     nowFmt:FMT.num0, nowUnit:"su 30",
@@ -1896,7 +1887,7 @@ function nutriTiles() {
       band:[30, 30], zero:true, win:14 },
     foot:"Cereali, legumi, frutta secca, erbe e spezie contano." });
 
-  t.push({ panel:"tavola", h:132, first:"n_carb_g", title:"Carboidrati contro fabbisogno",
+  t.push({ panel:"tavola", h:118, first:"n_carb_g", title:"Carboidrati contro fabbisogno",
     cap:"ingeriti e stimati dal TSS del giorno",
     legend:[["Ingeriti", SCH[0]], ["Stimati dal carico", SCH[1]]],
     now:() => lastMean(N_.carb_gap_g, 7),
@@ -1907,14 +1898,14 @@ function nutriTiles() {
     ] },
     foot:"Stima: 3 g/kg da fermo, ~6 a TSS 100, fino a 10." });
 
-  t.push({ panel:"tavola", h:132, first:"n_sugar_g", title:"Zuccheri",
+  t.push({ panel:"tavola", h:118, first:"n_sugar_g", title:"Zuccheri",
     cap:"grammi al giorno · media mobile 7 giorni",
     now:() => lastMean(N_.sugar_g, 7),
     nowFmt:FMT.num1, nowUnit:"g, media 7 gg",
     kind:rCloud, spec:{ name:"Zuccheri", arr:N_.sugar_g, col:"var(--s4)",
       fmt:v => nf(v, 1) + " g", zero:true, win:7 } });
 
-  t.push({ panel:"tavola", h:132, first:"n_magnesium_mg", title:"Magnesio e potassio",
+  t.push({ panel:"tavola", h:118, first:"n_magnesium_mg", title:"Magnesio e potassio",
     cap:"% del fabbisogno coperta", legend:[["Magnesio", SCH[2]], ["Potassio", SCH[0]]],
     now:() => { const v = lastMean(N_.magnesium_mg, 7); return v === null ? null : 100 * v / 350; },
     nowFmt:v => nf(v, 0) + " %", nowUnit:"magnesio, 7 gg",
@@ -1924,7 +1915,7 @@ function nutriTiles() {
     ] },
     foot:"100 % = fabbisogno coperto." });
 
-  t.push({ panel:"tavola", h:132, first:"n_vit_index", title:"Vitamine e minerali",
+  t.push({ panel:"tavola", h:118, first:"n_vit_index", title:"Vitamine e minerali",
     cap:"indice 0-100 · media delle coperture, ognuna tagliata a 100",
     legend:[["Vitamine", SCH[1]], ["Minerali", SCH[2]]],
     now:() => lastMean(N_.vit_index, 7),
@@ -1935,7 +1926,7 @@ function nutriTiles() {
     ] },
     foot:"Ogni nutriente tagliato al 100 % prima della media." });
 
-  if (has("microbiome")) t.push({ panel:"tavola", h:132, first:"n_microbiome",
+  if (has("microbiome")) t.push({ panel:"tavola", h:118, first:"n_microbiome",
     title:"Indice microbiota", cap:"proxy 0-100 dal diario, non una misura",
     now:() => lastMean(N_.microbiome, 14),
     nowFmt:FMT.num0, nowUnit:"su 100, 14 gg",
@@ -2046,6 +2037,7 @@ function tileNode(t) {
       `<span><i style="background:${c}"></i>${n}</span>`).join("");
   }
   const box = mk("div", "figbox", art);
+  const foot = mk("div", "t-foot", art);
   const det = mk("details", "data", art);
   const sum = mk("summary", null, det, "dati");
   const tbl = mk("table", "fallback", det);
@@ -2053,7 +2045,7 @@ function tileNode(t) {
   /* si tiene il riferimento, non lo si ricerca: `children` nel browser e' una
      HTMLCollection e non ha .find() — cercarlo li' uccideva l'intero script, cioe'
      la pagina senza nemmeno un grafico */
-  return { art, now, box, sum, tbody, shift };
+  return { art, now, box, foot, sum, tbody, shift };
 }
 
 function drawTile(n, t) {
@@ -2091,21 +2083,21 @@ function drawTile(n, t) {
      mai cambiato una decisione. Restano il passo di aggregazione quando non è
      ovvio, la correlazione, e i punti lasciati fuori scala, che è l'unica cosa
      che il disegno tace davvero. */
-  /* Niente piede. Restava una riga di prosa sotto ogni riquadro e l'utente l'ha
-     chiesta via ("remove also the lines 7 fuori scala · Proxy: piante 40 %…").
-     Quello che diceva non si perde: il conteggio dei punti fuori scala e la nota
-     del metodo finiscono nell'etichetta del <details> coi dati, dove chi vuole
-     controllare va a cercarli e chi legge il grafico non li trova fra i piedi. */
-  const notes = [];
+  /* Il piede torna sotto il riquadro (2026-08-10: "in genere precedente versione
+     era meglio"). Dice quello che il disegno tace: il passo di aggregazione, la
+     correlazione, i punti lasciati fuori scala, e la nota di metodo. */
+  const bits = [];
   if (res) {
-    if (res.plan && res.plan.step !== "d") notes.push(res.plan.label);
-    if (res.fit) notes.push(`r ${res.fit.r.toFixed(2)}`);
-    if (res.best2) notes.push(res.best2);
-    if (res.best) notes.push(`più alta ${res.best}`);
-    if (res.outside) notes.push(`${res.outside} punti fuori scala`);
+    bits.push(`${fmtDate(from)} → ${fmtDate(to)}`);
+    if (res.plan) bits.push(res.plan.label);
+    if (res.stats) bits.push(`n ${nf(res.stats.n)}`);
+    if (res.fit) bits.push(`r ${res.fit.r.toFixed(2)}`);
+    if (res.best2) bits.push(res.best2);
+    if (res.best) bits.push(`più alta ${res.best}`);
+    if (res.outside) bits.push(`${res.outside} fuori scala`);
   }
-  if (t.foot) notes.push(t.foot);
-  n.sum.textContent = notes.length ? `dati · ${notes.join(" · ")}` : "dati";
+  n.foot.innerHTML = bits.join(" · ") + (t.foot ? `<br>${t.foot}` : "");
+  n.sum.textContent = "dati";
   n.tbody.innerHTML = res ? res.table : "";
 }
 
