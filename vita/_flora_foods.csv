@@ -1,0 +1,23 @@
+food_id,name,kcal,share_pct,Faecalibacterium,Bacteroides,Prevotella,Bifidobacterium,Roseburia,Blautia,Ruminococcus,Eubacterium,Akkermansia,Lactobacillus
+avena_fiocchi,Fiocchi d'avena,146915,10.85,12.47,-2.66,13.21,5.025,9.66,6.655,7.935,7.688,11.339,0.0
+pane_integrale,Pane integrale,120845,8.92,10.471,-2.276,11.051,10.545,8.121,5.533,6.663,6.47,9.414,10.708
+lenticchie_secche,Lenticchie secche,101961,7.53,12.422,-3.388,12.422,6.399,9.787,5.646,7.905,7.905,9.411,0.0
+banana,Banana media,77575,5.73,6.801,-1.494,7.163,2.821,5.278,3.573,4.328,4.208,6.076,0.0
+pizza_margherita,Pizza margherita intera,73100,5.4,3.807,-0.343,4.502,4.426,2.845,2.658,2.423,2.191,4.661,6.477
+burro_arachidi_sgrassato,Burro di arachidi sgrassato in polvere,69466,5.13,4.409,-0.626,7.62,0.784,4.074,3.581,4.764,3.181,2.422,-1.795
+uovo_intero,Uovo intero medio,65832,4.86,0.0,4.132,-3.889,0.0,0.0,0.972,0.0,0.0,0.0,0.0
+patate_dolci,Patate dolci,64879,4.79,6.311,-1.504,6.529,2.841,4.924,3.158,4.016,3.944,5.336,0.0
+cioccolato_fondente_50,Cioccolato fondente 50%,56464,4.17,0.84,0.613,3.824,1.435,1.066,2.162,2.126,0.715,0.846,3.544
+cornetto_crema,Cornetto/pasticcino con crema,50560,3.73,0.147,0.797,2.901,-1.795,0.46,1.771,1.519,0.227,0.51,-1.307
+avocado,Avocado,33920,2.5,3.685,-0.944,3.746,1.783,2.89,1.756,2.345,2.325,2.948,0.0
+torta_semplice,"Torta da forno (crostata, ciambella)",31461,2.32,0.097,0.494,1.81,-1.113,0.29,1.103,0.949,0.145,0.319,-0.813
+latte_intero,Latte intero,31262,2.31,0.0,1.962,-1.847,0.0,0.0,0.462,0.0,0.0,0.0,0.0
+pasta_semola,Pasta di semola secca,25898,1.91,1.415,-0.148,1.652,0.28,1.062,0.96,0.9,0.821,1.678,0.0
+cacao_100,Cacao amaro 100%,25324,1.87,3.085,-0.841,3.085,2.898,2.431,1.402,1.963,1.963,2.337,2.244
+ceci_scatola,Ceci in scatola sgocciolati,22335,1.65,2.578,-0.683,2.597,1.291,2.027,1.198,1.64,1.634,2.003,0.0
+sformato_verdure,Sformato salato di verdure,22196,1.64,1.595,-0.284,1.746,0.536,1.223,0.927,1.015,0.964,1.595,0.0
+farro_perlato,Farro perlato crudo,21889,1.62,1.6,-0.291,1.746,0.55,1.228,0.921,1.018,0.97,1.584,0.0
+riso_bianco,Riso bianco crudo,17136,1.27,0.796,-0.041,0.973,0.078,0.588,0.597,0.507,0.448,1.053,0.0
+pasta_integrale,Pasta integrale secca,16078,1.19,1.283,-0.258,1.375,0.487,0.991,0.706,0.817,0.786,1.208,0.0
+zuppa_vellutata,Vellutata di verdure,15555,1.15,1.551,-0.376,1.598,0.71,1.211,0.767,0.987,0.971,1.295,0.0
+pane_segale,Pane di segale scuro,14955,1.1,1.151,-0.223,1.243,1.193,0.887,0.645,0.733,0.702,1.106,1.325

@@ -75,6 +75,10 @@ DAYS = os.path.join(OUT_DIR, "_days.json")
 # Il MODELLO della flora (scripts/microbiome_model.py). Non e' una misura: nessuno
 # ha sequenziato niente, e la pagina lo dice a caratteri grandi.
 MICROBES = os.path.join(OUT_DIR, "_microbiome.csv")
+# Matrice alimento x genere: il modello della flora letto al contrario, cioe'
+# quali cibi davvero mangiati muovono quali generi. Non e' una misura in piu',
+# e' il cablaggio del modello reso visibile.
+FLORA_FOODS = os.path.join(OUT_DIR, "_flora_foods.csv")
 
 # The athlete. Intervals.icu also accepts "0" for "whoever owns the key", but the
 # explicit id keeps the CI logs readable when a key is swapped.
@@ -298,6 +302,15 @@ def build_payload(raw):
             microbe_first[c] = i0
         print(f"  flora (modello): {len(mrows)} giorni, {len(microbes)} serie")
 
+    flora_foods = []
+    if os.path.exists(FLORA_FOODS):
+        import csv as _csv
+        with open(FLORA_FOODS, encoding="utf-8", newline="") as fh:
+            for r in _csv.DictReader(fh):
+                flora_foods.append({k: (float(v) if k not in ("food_id", "name") else v)
+                                    for k, v in r.items()})
+        print(f"  flora x alimenti: {len(flora_foods)} alimenti")
+
     days_detail = {}
     if os.path.exists(DAYS):
         with open(DAYS, encoding="utf-8") as fh:
@@ -308,6 +321,7 @@ def build_payload(raw):
         "built": date.today().isoformat(),
         "nutri": nutri,
         "microbes": microbes,
+        "floraFoods": flora_foods,
         "days": days_detail,
         "pulled": raw["pulled"],
         "d0": d0.isoformat(),
@@ -1653,6 +1667,72 @@ function rHeat(svg, W, H, t, from, to) {
   };
 }
 
+/* Griglia generica: righe × colonne, un valore per cella, colore = valore.
+   La usano la matrice alimenti × generi e la striscia temporale. Il colore e'
+   divergente quando il valore ha un segno (blu sopra zero, rosso sotto, grigio in
+   mezzo) e sequenziale a una tinta sola quando e' solo una grandezza — mai un
+   arcobaleno, e mai una tinta al centro di una divergente. */
+function rGrid(svg, W, H, t, from, to) {
+  const rows = t.rows, cols = t.cols;
+  if (!rows.length || !cols.length) return null;
+  const labL = Math.min(t.labMax || 118, Math.max(46, Math.ceil(
+    Math.max(...rows.map(r => r.name.length)) * TICKW) + 8));
+  const labB = t.labB ?? 56, pad = 1.2, top = 6;
+  const cw = (W - labL - 8) / cols.length;
+  const ch = (H - labB - top) / rows.length;
+  if (cw < 8 || ch < 9) return null;
+
+  let hottest = null;
+  const cells = [];
+  rows.forEach((r, i) => {
+    cols.forEach((c, j) => {
+      const cell = t.cell(i, j);
+      const x = labL + j * cw, y = top + i * ch;
+      let fill = "rgba(236,227,205,.035)";
+      if (cell && cell.v !== null && cell.v !== undefined) {
+        const g = Math.min(1, Math.abs(cell.v) / (t.vmax || 1));
+        fill = t.diverging === false
+          ? `rgba(57,135,229,${(g * .80).toFixed(3)})`
+          : (cell.v >= 0 ? `rgba(57,135,229,${(g * .80).toFixed(3)}`
+                         : `rgba(230,103,103,${(g * .80).toFixed(3)}`) + ")";
+        if (!hottest || Math.abs(cell.v) > Math.abs(hottest.v)) hottest = { ...cell, i, j };
+        cells.push([r.name, c.name, cell]);
+      }
+      const rect = el("rect", { x:x + pad, y:y + pad, width:Math.max(1, cw - pad * 2),
+        height:Math.max(1, ch - pad * 2), rx:2, fill,
+        stroke:"rgba(236,227,205,.07)", "stroke-width":1 });
+      if (cell && cell.tip) {
+        rect.setAttribute("style", "cursor:pointer");
+        rect.addEventListener("pointerenter", ev => showTip(ev.clientX, ev.clientY, cell.tip));
+        rect.addEventListener("pointerleave", hideTip);
+        if (cell.day !== undefined) rect.addEventListener("click", () => openDay(cell.day));
+      }
+      svg.appendChild(rect);
+      if (cell && cell.txt && cw >= 26 && ch >= 15) {
+        const tx = el("text", { x:x + cw / 2, y:y + ch / 2 + 3, "text-anchor":"middle",
+          "font-size":"8", "font-family":"'IBM Plex Mono',monospace",
+          fill:Math.abs(cell.v) / (t.vmax || 1) > .55 ? "var(--ink)" : "var(--muted)" });
+        tx.textContent = cell.txt; svg.appendChild(tx);
+      }
+    });
+    const ty = axisText(labL - 5, top + i * ch + ch / 2 + 3, r.name, "end");
+    ty.textContent = r.name; svg.appendChild(ty);
+  });
+  /* etichette di colonna ruotate: a orizzontale si sovrappongono, ed e' il
+     difetto classico di ogni heatmap con piu' di cinque colonne */
+  const every = Math.max(1, Math.ceil(cols.length / (t.maxColLabels || 14)));
+  cols.forEach((c, j) => {
+    if (j % every) return;
+    const cx = labL + j * cw + cw / 2, cy = top + rows.length * ch + 7;
+    const tx = el("text", { x:cx, y:cy, "text-anchor":"end", "font-size":"8",
+      "font-family":"'IBM Plex Mono',monospace", fill:"var(--muted)",
+      transform:`rotate(-52 ${cx.toFixed(1)} ${cy.toFixed(1)})` });
+    tx.textContent = c.name; svg.appendChild(tx);
+  });
+  return { best2:t.summary ? t.summary(hottest, cells) : null,
+           table:t.table ? t.table(cells) : "" };
+}
+
 /* Slope chart: ogni genere e' una linea con due punti, da com'era a com'e'.
    E' la forma giusta per "distribuzione + come e' cambiata": la y resta la quota,
    quindi si legge la composizione, e la pendenza e' il cambiamento. Dieci linee
@@ -1946,6 +2026,11 @@ function nutriTiles() {
   if (!N_.kcal) return [];
   const has = k => Array.isArray(N_[k]);
   const t = [];
+  const MICR = D.microbes || {};
+  const GEN = [["Faecalibacterium", "🌾"], ["Bacteroides", "🥩"], ["Prevotella", "🌱"],
+               ["Bifidobacterium", "🍶"], ["Roseburia", "🌾"], ["Blautia", "🌱"],
+               ["Ruminococcus", "🥔"], ["Eubacterium", "🌾"], ["Akkermansia", "🫐"],
+               ["Lactobacillus", "🍶"]].filter(([g]) => Array.isArray(MICR[g]));
 
   t.push({ panel:"tavola", h:118, first:"n_kcal", title:"Quanto è raccontato",
     cap:"kcal osservate contro ricostruite · i piatti dichiarati sono ~75 % della dieta", legend:[["Osservate", SCH[2]], ["Ricostruite", SCH[3]]],
@@ -2071,11 +2156,7 @@ function nutriTiles() {
      didascalia lo ripete: qui non c'è nessun campione, nessuna sequenza, nessuna
      misura — solo le associazioni direzionali fra dieta e abbondanza relativa
      fatte girare su un modello log-lineare i cui pesi stanno nel sorgente. */
-  const MICR = D.microbes || {};
-  const GEN = [["Faecalibacterium", "🌾"], ["Bacteroides", "🥩"], ["Prevotella", "🌱"],
-               ["Bifidobacterium", "🍶"], ["Roseburia", "🌾"], ["Blautia", "🌱"],
-               ["Ruminococcus", "🥔"], ["Eubacterium", "🌾"], ["Akkermansia", "🫐"],
-               ["Lactobacillus", "🍶"]].filter(([g]) => Array.isArray(MICR[g]));
+
   if (GEN.length >= 5) t.push({ panel:"tavola", h:300, first:"m_Faecalibacterium",
     title:"Flora intestinale — modello, non una misura",
     cap:"dieci generi noti · quota stimata da come si è mangiato",
@@ -2087,6 +2168,86 @@ function nutriTiles() {
        dei dati, dove non sta fra i piedi ma non sparisce nemmeno. */
     noFoot:true,
     dataNote:"Modello, non una misura: associazioni direzionali da letteratura su un modello log-lineare, pesi nel sorgente. È una composizione: qualcuno sale solo se qualcun altro scende." });
+
+  /* ---- quote settimanali: vegetale, latticini, ultra-processato ---------- */
+  if (has("pct_plant")) t.push({ panel:"tavola", h:170, first:"n_pct_plant",
+    title:"Da dove arrivano le calorie", cap:"% delle kcal · quote sovrapposte, non una torta",
+    legend:[["Vegetale", SCH[2]], ["Latticini", SCH[0]], ["Ultra-processato", SCH[3]]],
+    now:() => lastMean(N_.pct_plant, 7), nowFmt:v => nf(v, 0) + " %", nowUnit:"vegetale, 7 gg",
+    kind:rLines, spec:{ zero:true, fmt:v => nf(v, 0) + " %", series:[
+      { name:"Vegetale", col:SCH[2], area:true, get:(a, b) => rolling(N_.pct_plant, a, b, 7).map((v, k) => [a + k, v]) },
+      { name:"Latticini", col:SCH[0], get:(a, b) => rolling(N_.pct_dairy, a, b, 7).map((v, k) => [a + k, v]) },
+      { name:"Ultra-processato", col:SCH[3], get:(a, b) => rolling(N_.pct_upf, a, b, 7).map((v, k) => [a + k, v]) },
+    ] },
+    foot:"Un alimento può contare in più quote: il latte è latticino e animale, un cornetto è vegetale (frumento) e ultra-processato. Per questo non sommano a cento." });
+
+  /* ---- quali cibi muovono la flora: heatmap alimenti × generi ------------ */
+  const FF = D.floraFoods || [];
+  if (FF.length && GEN.length >= 5) {
+    const gens = GEN.map(([g, e]) => ({ name:`${e} ${g.slice(0, 9)}`, key:g }));
+    const items = FF.slice(0, 16).map(f => ({ name:f.name.length > 20 ? f.name.slice(0, 19) + "…" : f.name, f }));
+    const vmax = Math.max(...items.flatMap(it => gens.map(g => Math.abs(it.f[g.key] || 0)))) || 1;
+    t.push({ panel:"tavola", h:430, first:"m_Faecalibacterium",
+      title:"Quali cibi muovono la flora", cap:"il modello letto al contrario · spinta di ogni alimento su ogni genere",
+      kind:rGrid, spec:{ rows:items, cols:gens, vmax, labMax:150, labB:74,
+        cell:(i, j) => { const v = items[i].f[gens[j].key];
+          if (v === undefined) return null;
+          return { v, txt:Math.abs(v) >= 1 ? v.toFixed(0) : "",
+            tip:`${items[i].f.name}<br>${gens[j].key} <span class="v">${v >= 0 ? "+" : ""}${v.toFixed(2)}</span>` +
+                `<br><span class="d">${items[i].f.share_pct.toFixed(1)} % delle kcal</span>` }; },
+        summary:h => h && `spinge di più ${items[h.i].f.name} su ${gens[h.j].key}`,
+        table:cells => `<tr><th>alimento</th><th>genere</th><th>spinta</th></tr>` +
+          cells.filter(c => Math.abs(c[2].v) > .3).sort((a, b) => Math.abs(b[2].v) - Math.abs(a[2].v))
+            .slice(0, 30).map(c => `<tr><td>${c[0]}</td><td>${c[1]}</td><td>${c[2].v >= 0 ? "+" : ""}${c[2].v.toFixed(2)}</td></tr>`).join("") },
+      foot:"La spinta è quanto quell'alimento preme sul genere <em>per come pesa nella tua dieta</em>: un cibo ottimo ma mangiato di rado conta poco, ed è giusto così. Resta il modello, non una misura." });
+  }
+
+  /* ---- striscia temporale: molte serie, una riga ciascuna ---------------- */
+  const STRIP = [
+    ["Fibre", N_.fiber_g], ["Piante", N_.plants_7d], ["Vegetale %", N_.pct_plant],
+    ["Ultra-proc. %", N_.pct_upf], ["Zuccheri", N_.sugar_g], ["Energia", N_.kcal],
+    ["Microbiota", N_.microbiome], ["Sonno", D.sleep], ["HRV", D.hrv],
+    ["FC riposo", D.rhr], ["Carico", D.load],
+  ].filter(([, a]) => Array.isArray(a));
+  if (STRIP.length >= 6) t.push({ panel:"tavola", h:300, first:"n_fiber_g",
+    title:"Tutto, nel tempo", cap:"una riga per serie · il passo si adatta allo spazio: settimane, mesi, anni",
+    kind:(svg, W, H, spec, a, b) => {
+      /* Ogni riga ha unita' sue — grammi, ore, battiti — quindi il colore non puo'
+         essere il valore: e' il PERCENTILE dentro la storia di quella riga. Cosi'
+         le righe si possono confrontare fra loro, e si vede in che settimane tutto
+         si muoveva insieme. */
+      /* Il passo si sceglie dalla larghezza che c'e', non si spera che ci stia:
+         con 104 settimane in una scheda stretta le colonne sarebbero da 2 px e il
+         riquadro spariva. Settimane finche' ci stanno, poi mesi, poi anni. */
+      const room = Math.max(6, Math.floor((W - 96 - 8) / 9));
+      let step = "w";
+      for (const s_ of ["w", "m", "y"]) {
+        step = s_;
+        if (aggregate(STRIP[0][1], a, b, "mean", s_).length <= room) break;
+      }
+      const weeks = aggregate(STRIP[0][1], a, b, "mean", step).map(o => o.i);
+      if (weeks.length < 4) return null;
+      const rowsData = STRIP.map(([name, arr]) => {
+        const agg = aggregate(arr, a, b, "mean", step);
+        const byI = new Map(agg.map(o => [o.i, o.v]));
+        const vals = agg.map(o => o.v).filter(v => v !== null && isFinite(v)).sort((x, y) => x - y);
+        return { name, byI, vals, arr };
+      });
+      return rGrid(svg, W, H, {
+        rows:rowsData, cols:weeks.map(i => ({ name:bucketLabel(i, step).replace("sett. del ", "") })),
+        vmax:1, diverging:false, labMax:96, labB:70, maxColLabels:10,
+        cell:(i, j) => { const r = rowsData[i], v = r.byI.get(weeks[j]);
+          if (v === null || v === undefined || !r.vals.length) return null;
+          const pos = r.vals.filter(x => x <= v).length / r.vals.length;
+          return { v:pos, day:weeks[j],
+            tip:`<span class="d">${bucketLabel(weeks[j], step)}</span><br>${r.name} <span class="v">${nf(v, 1)}</span>` +
+                `<br><span class="d">${nf(pos * 100, 0)}° percentile della sua storia</span>` }; },
+        summary:() => `${rowsData.length} serie · ${weeks.length} ${step === "w" ? "settimane" : step === "m" ? "mesi" : "anni"}`,
+        table:() => `<tr><th>serie</th><th>min</th><th>mediana</th><th>max</th></tr>` +
+          rowsData.filter(r => r.vals.length).map(r => `<tr><td>${r.name}</td><td>${nf(r.vals[0], 1)}</td><td>${nf(r.vals[Math.floor(r.vals.length / 2)], 1)}</td><td>${nf(r.vals[r.vals.length - 1], 1)}</td></tr>`).join(""),
+      }, a, b);
+    }, spec:{},
+    foot:"Il colore è il percentile dentro la <em>propria</em> riga, non il valore: righe con unità diverse diventano confrontabili, e si vedono le settimane in cui tutto si muoveva insieme. Chiaro = basso per quella serie, acceso = alto." });
 
   /* i conteggi: quante volte è entrato in casa un certo alimento */
   const TAL = [["cnt_avocado", "avocado", "🥑"], ["cnt_lenticchie", "porzioni di lenticchie", "🫘"],
