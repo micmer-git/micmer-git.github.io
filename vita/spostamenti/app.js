@@ -7,8 +7,8 @@ let navLockUntil = 0;
 const prefersReduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 Promise.all([
-  fetch("data/travel.json").then(r => r.json()),
-  fetch("data/countries-110m.json").then(r => r.json())
+  fetch("data/travel.json?v=20260811b").then(r => r.json()),
+  fetch("data/countries-110m.json?v=20260811b").then(r => r.json())
 ]).then(([data, world]) => {
   DATA = data; WORLD = world;
   renderTotals(); renderTrips(); renderYearRail(); renderHeatmap(); renderBars();
