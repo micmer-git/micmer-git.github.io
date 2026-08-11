@@ -35,7 +35,11 @@ Il globo usa `data/countries-110m.json`, una copia di world-atlas/Natural Earth.
 
 ## Privacy
 
-`Timeline.json`, casa, lavoro, Place ID e percorsi GPS non vengono pubblicati. Le
-coordinate in `travel.json` sono città o aeroporti pubblici e sono arrotondate a
-due decimali. Il manifest conserva hash, dimensione e copertura del file sorgente
-senza esporne il contenuto.
+`Timeline.json`, casa, lavoro, Place ID e percorsi GPS non vengono pubblicati in
+chiaro. Le coordinate in `travel.json` sono città o aeroporti pubblici e sono
+arrotondate a due decimali. Il manifest conserva hash, dimensione e copertura del
+file sorgente senza esporne il contenuto.
+
+Per la collaborazione è disponibile anche una copia dell'export originale
+compressa e cifrata in `data/private/`. La password non è nel repository; le
+istruzioni di decifratura sono nel README della cartella privata.
