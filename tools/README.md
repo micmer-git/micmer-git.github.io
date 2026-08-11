@@ -195,7 +195,7 @@ silently shipping.
 esiste — quindi non era pubblicabile, la GitHub Action non poteva rigenerare niente,
 e i CSV sotto `vita/` erano copie committate a mano: due superfici destinate a
 divergere senza che nessuno se ne accorgesse. Ora la sorgente sta in **`tools/food/`**,
-una copia sola, e `python tools/build_food.py` rifa tutto. `vita/_nutrition.csv`
+una copia sola, e `python tools/build_food.py` rifa tutto. `vita/cibo/data/nutrition.csv`
 contiene **solo aggregati giornalieri** — kcal, macro, magnesio, potassio, indici di vitamine e
 minerali, piante distinte su 7 giorni, fabbisogno di carboidrati stimato dal TSS,
 indice microbiota. Se il file manca, `nutriTiles()` torna una lista vuota e la
@@ -227,7 +227,7 @@ HRV, FC a riposo, passi, peso, fitness e forma; le attivita' con il link a
 Intervals (`intervals.icu/activities/<id>`) e a Strava dove c'e' `strava_id`; i
 pasti alimento per alimento, con le righe ricostruite in grigio; e le coperture dei
 fabbisogni a barre, con i tetti (sodio, saturi, zuccheri) che virano al rosso quando
-si sfonda. Il dettaglio sta in `vita/_days.json`, esportato da health-log con
+si sfonda. Il dettaglio sta in `vita/cibo/data/days.json`, esportato con
 `--export-days`. **Il bottone di chiusura e' un nodo vero appeso dopo l'innerHTML,
 non un pezzo della stringa**: interrogare all'indietro l'HTML appena scritto e'
 proprio cio' che renderebbe la pagina impilotabile da `check_vita.cjs` — e infatti

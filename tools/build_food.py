@@ -17,10 +17,10 @@ Cosa gira, in ordine, e perche' quest'ordine:
                             **Non tocca `food_log.csv`**: il diario resta quello
                             che l'utente ha davvero raccontato.
   2. `build_nutrition_series.py` — somma diario + ricostruzione in una serie
-                            giornaliera, e la esporta in `vita/_nutrition.csv`
-                            (aggregati) e `vita/_days.json` (dettaglio per il popup).
+                            giornaliera, e la esporta in `vita/cibo/data/nutrition.csv`
+                            (aggregati) e `vita/cibo/data/days.json` (dettaglio popup).
   3. `microbiome_model.py` — il modello della flora e la matrice alimento x genere,
-                            in `vita/_microbiome.csv` e `vita/_flora_foods.csv`.
+                            in `vita/cibo/data/microbiome.csv` e `flora_foods.csv`.
                             Va per ultimo: legge la serie prodotta al passo 2.
 
 I quattro file sotto `vita/` sono **generati**: si rigenerano da qui, non si
@@ -37,6 +37,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 FOOD = os.path.join(HERE, "food")
 VITA = os.path.join(os.path.dirname(HERE), "vita")
+DATA = os.path.join(VITA, "cibo", "data")
 
 for _s in (sys.stdout, sys.stderr):
     if hasattr(_s, "reconfigure"):
@@ -63,23 +64,27 @@ def main():
     args = ap.parse_args()
 
     if args.check:
-        run("fill_defaults.py", "--check")
-        run("build_nutrition_series.py", "--check")
+        # The microbiome check consumes the two derived files from the earlier
+        # stages. They are gitignored build cache, so regenerate them while still
+        # guaranteeing that --check never touches the published vita/cibo/data.
+        run("fill_defaults.py")
+        run("build_nutrition_series.py")
         run("microbiome_model.py", "--check")
-        print("\n(--check: niente scritto)")
+        print("\n(--check: nessun file pubblico scritto; cache derived rigenerata)")
         return
 
     run("fill_defaults.py")
+    os.makedirs(DATA, exist_ok=True)
     run("build_nutrition_series.py",
-        "--export", os.path.join(VITA, "_nutrition.csv"),
-        "--export-days", os.path.join(VITA, "_days.json"))
+        "--export", os.path.join(DATA, "nutrition.csv"),
+        "--export-days", os.path.join(DATA, "days.json"))
     run("microbiome_model.py",
-        "--export", os.path.join(VITA, "_microbiome.csv"),
-        "--export-foods", os.path.join(VITA, "_flora_foods.csv"))
+        "--export", os.path.join(DATA, "microbiome.csv"),
+        "--export-foods", os.path.join(DATA, "flora_foods.csv"))
 
-    print("\nfile pubblicati in vita/:")
-    for f in ("_nutrition.csv", "_days.json", "_microbiome.csv", "_flora_foods.csv"):
-        p = os.path.join(VITA, f)
+    print("\nfile pubblicati in vita/cibo/data/:")
+    for f in ("nutrition.csv", "days.json", "microbiome.csv", "flora_foods.csv"):
+        p = os.path.join(DATA, f)
         print(f"  {f:<18} {os.path.getsize(p) // 1024:5d} KB" if os.path.exists(p)
               else f"  {f:<18} MANCANTE")
     print("\nora: python tools/build_vita.py  (per inlinarli nella pagina)")

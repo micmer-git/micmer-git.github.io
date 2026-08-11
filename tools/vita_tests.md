@@ -3923,3 +3923,55 @@ ok   --gold #e2c98f contro gli slot dei grafici: peggiore --s4 ΔE 18.6 (minimo 
 ```
 
 esito: tutti passati (45 ok)
+
+## 2026-08-11 09:31 — check_vita.cjs
+
+```
+ok   un solo blocco <script> (aperti 1, chiusi 1) — nessun "</script" nel payload
+ok   lo script arriva in fondo (789 KB, chiude su drawAll)
+ok   lo script inline gira senza eccezioni
+ok   window.CRUSCOTTO esposto
+ok   ogni riquadro dichiarato e' montato (38/38)
+ok   almeno 32 riquadri (38)
+ok   finestra "2a": nessun renderer solleva eccezioni
+info  finestra "2a": 0 riquadri senza dati
+ok   finestra "1a": nessun renderer solleva eccezioni
+info  finestra "1a": 0 riquadri senza dati
+ok   finestra "3m": nessun renderer solleva eccezioni
+info  finestra "3m": 2 riquadri senza dati (Peso, Massa grassa)
+ok   finestra "sempre": nessun renderer solleva eccezioni
+ok   finestra "sempre": nessun riquadro vuoto
+ok   nessuna coordinata NaN/Infinity negli SVG (85638 nodi controllati)
+ok   ogni <path> ha un tracciato reale (192 path)
+ok   nessun segno fuori dal proprio viewBox
+ok   nessuna etichetta dell'asse y tagliata dalla gronda
+ok   nessuna sovrapposizione fra etichette dell'asse x
+ok   testata: attività = 2257 (ricalcolato dal payload)
+ok   testata: chilometri = 76.437 (ricalcolato dal payload)
+ok   testata: ore in movimento = 3868 (ricalcolato dal payload)
+ok   testata: notti misurate = 549 (ricalcolato dal payload)
+ok   dislivello totale plausibile: 1.484.881 m
+ok   ogni riquadro ha la tabella di ripiego
+ok   ogni riquadro multi-serie ha la legenda (9 riquadri)
+ok   openDay() esiste
+ok   il dettaglio giornaliero e' inlineato (731 giorni)
+ok   il popup si riempie su tutti i giorni provati (40/40, veri + ricostruiti)
+ok   il popup mostra la sezione "corpo" su almeno un giorno
+ok   il popup mostra la sezione "allenamento" su almeno un giorno
+ok   il popup mostra la sezione "tavola" su almeno un giorno
+ok   il popup mostra la sezione "micro" su almeno un giorno
+ok   openDay() regge un giorno senza diario alimentare
+ok   almeno un'attivita' nel popup linka a intervals.icu con un id vero
+ok   il buco che copre tutto il 2022 e' dichiarato (2021-10-18→2023-04-09)
+ok   6 buchi ≥45 giorni dichiarati: 2015-03-29→2015-09-21, 2015-09-23→2016-02-02, 2016-08-17→2017-01-27, 2017-12-03→2018-02-15, 2018-11-20→2019-01-13, 2021-10-18→2023-04-09
+ok   CSS --s1 = #3987e5 (slot validato)
+ok   CSS --s2 = #d95926 (slot validato)
+ok   CSS --s3 = #199e70 (slot validato)
+ok   CSS --s4 = #c98500 (slot validato)
+ok   CSS --paper = #211d16 (il fondo su cui la tavolozza e' stata validata)
+ok   --muted #9a8d70 su #211d16: 5.13:1 (minimo 4,5 per il testo piccolo)
+ok   --gold #e2c98f su #211d16: 10.37:1
+ok   --gold #e2c98f contro gli slot dei grafici: peggiore --s4 ΔE 18.6 (minimo 15, o l'accento si spaccia per una serie)
+```
+
+esito: tutti passati (45 ok)

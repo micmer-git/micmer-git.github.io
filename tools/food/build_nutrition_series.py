@@ -38,7 +38,7 @@ ultra-processate. Serve a vedere una tendenza, e va letto solo come tale.
 
     python scripts/build_nutrition_series.py
     python scripts/build_nutrition_series.py --check
-    python scripts/build_nutrition_series.py --export ../micmer.../vita/_nutrition.csv
+    python scripts/build_nutrition_series.py --export ../micmer.../vita/cibo/data/nutrition.csv
 """
 import argparse
 import csv
