@@ -39,6 +39,7 @@ ACCENT = {
     "gazzaniga": "#d95926",   # ember — echoes the climb page
     "diario": "#199e70",      # aqua
     "sogni": "#3987e5",       # blue — echoes the night page
+    "spostamenti": "#8b7cf6", # violet — geography
 }
 
 MESI = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno",
@@ -184,6 +185,29 @@ def load_sogni():
     }
 
 
+# ----------------------------------------------------------- spostamenti
+
+def load_spostamenti():
+    data = json.loads(read("vita/spostamenti/data/travel.json"))
+    totals = data["totals"]
+    return {
+        "key": "spostamenti",
+        "href": "spostamenti/",
+        "eyebrow": "la geografia",
+        "title": "Spostamenti",
+        "blurb": "Dodici anni di città, voli, strada e luoghi che ritornano — "
+                 "su un globo da scorrere.",
+        "accent": ACCENT["spostamenti"],
+        "stats": [
+            {"v": it(totals["trips"]), "l": "viaggi"},
+            {"v": it(totals["countries"]), "l": "paesi esteri"},
+            {"v": it(totals["co2T"], 1) + " t", "l": "CO₂e voli"},
+        ],
+        "chart": {"kind": "none", "unit": "", "caption": "", "points": []},
+        "last": data["meta"]["built"],
+    }
+
+
 # --------------------------------------------------------------- git / meta
 
 def git(*args):
@@ -203,6 +227,7 @@ TRACKED = {
     "gazzaniga-orezzo": ("gazzaniga", "Gazzaniga → Orezzo"),
     "diario-di-un-unno": ("diario", "Diario di un Unno"),
     "sogni-di-un-unno": ("sogni", "Sogni di un Unno"),
+    "vita/spostamenti": ("spostamenti", "Spostamenti"),
     "vita": (None, "Vita"),
 }
 
@@ -248,7 +273,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true", help="riporta e basta")
     ap.parse_args()
-    trackers = [load_gazzaniga(), load_diario(), load_sogni()]
+    trackers = [load_gazzaniga(), load_diario(), load_sogni(), load_spostamenti()]
     for t in trackers:
         print(f"  {t['title']:<24} last {t['last']}  "
               f"{len(t['chart']['points'])} punti  "

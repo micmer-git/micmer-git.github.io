@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Dodici anni di spostamenti: città, voli, CO₂, strada, mezze maratone e luoghi che ritornano.">
+  <meta property="og:title" content="Spostamenti — Michele Merelli">
+  <meta property="og:description" content="Una geografia personale dal 2014 a oggi, su un globo da scorrere.">
+  <meta property="og:url" content="https://micmer-git.github.io/vita/spostamenti/">
+  <title>Spostamenti — Michele Merelli</title>
+  <link rel="icon" href="../../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,650&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip" href="#racconto">Vai al racconto</a>
+  <header class="hero">
+    <nav class="crumbs" aria-label="Percorso">
+      <a href="../../">micmer</a><span>/</span><a href="../">vita</a><span>/</span><b>spostamenti</b>
+    </nav>
+    <p class="kicker">Una geografia personale · 2014—2026</p>
+    <h1>Spostamenti</h1>
+    <p class="lede">Le città in cui sono arrivato, la strada fatta per raggiungerle e il peso invisibile dei voli. Il globo non è un menu: <em>si muove mentre scorri.</em></p>
+    <div class="totals" id="totals" aria-label="Numeri principali"></div>
+    <p class="source-note" id="source-note"></p>
+  </header>
+
+  <main>
+    <section class="story" id="racconto" aria-labelledby="story-title">
+      <div class="map-stage">
+        <div class="map-head">
+          <div>
+            <p class="eyebrow">Adesso sul globo</p>
+            <h2 id="map-place">Caricamento…</h2>
+          </div>
+          <p id="map-date"></p>
+        </div>
+        <div class="globe-wrap">
+          <svg id="globe" role="img" aria-label="Globo con la rotta del viaggio selezionato"></svg>
+          <div class="globe-glow"></div>
+        </div>
+        <div class="legend">
+          <span><i class="dot home"></i>Bergamo, origine approssimata</span>
+          <span><i class="dot route"></i>rotta</span>
+          <span><i class="dot place"></i>città</span>
+        </div>
+        <p class="gesture">scorri le città <span aria-hidden="true">↓</span></p>
+      </div>
+
+      <div class="chronicle">
+        <div class="chronicle-head">
+          <div>
+            <p class="eyebrow">Cronologia</p>
+            <h2 id="story-title">Un viaggio alla volta</h2>
+          </div>
+          <div class="filters" role="group" aria-label="Filtra gli spostamenti">
+            <button class="active" data-filter="tutti">tutti</button>
+            <button data-filter="volo">volo</button>
+            <button data-filter="terra">terra</button>
+          </div>
+        </div>
+        <div id="trip-list" class="trip-list"></div>
+      </div>
+      <aside class="year-rail" id="year-rail" aria-label="Vai all'anno">
+        <span class="rail-label">scorri</span>
+      </aside>
+    </section>
+
+    <section class="after" aria-labelledby="traces-title">
+      <p class="kicker">Tracce che ritornano</p>
+      <h2 id="traces-title">Non soltanto partenze</h2>
+      <p class="section-lede">Ci sono distanze che diventano abitudine: ventuno chilometri, la macchina, un tavolo preciso ad Albino.</p>
+
+      <article class="feature half-feature">
+        <div class="feature-copy">
+          <p class="eyebrow">Corsa · fonte Intervals/Strava</p>
+          <h3><span id="half-total">—</span> volte oltre i 21 km</h3>
+          <p>Non significa necessariamente gara ufficiale: è il numero di attività di corsa da almeno <strong>21,0 km</strong>. Ogni quadratino è un mese; più è acceso, più mezze o distanze superiori ci sono state.</p>
+        </div>
+        <div class="heatmap-wrap" id="half-heatmap" aria-label="Mezze maratone equivalenti per mese"></div>
+      </article>
+
+      <div class="feature-grid">
+        <article class="feature movement-feature">
+          <div class="feature-copy">
+            <p class="eyebrow">Strada · Google Timeline validato</p>
+            <h3><span id="car-total">—</span> km in auto</h3>
+            <p>Solo segmenti compatibili con durata, velocità e distanza tra gli estremi. Gli errori GPS impossibili non entrano nel totale.</p>
+          </div>
+          <div class="year-bars" id="car-bars" aria-label="Chilometri in auto per anno"></div>
+        </article>
+
+        <article class="feature sorsi-feature">
+          <div class="feature-copy">
+            <p class="eyebrow">Luogo speciale · Albino</p>
+            <h3><span id="sorsi-total">—</span> volte da Sorsi e Bocconi</h3>
+            <p>Visite distinte riconosciute dallo stesso luogo GPS/Place ID, non semplici passaggi nelle vicinanze.</p>
+          </div>
+          <div class="year-bars purple" id="sorsi-bars" aria-label="Visite a Sorsi e Bocconi per anno"></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="method" id="metodo" aria-labelledby="method-title">
+      <div>
+        <p class="eyebrow">Come leggere i numeri</p>
+        <h2 id="method-title">Stime dichiarate, non precisione finta</h2>
+      </div>
+      <div class="method-grid">
+        <div><b>Voli</b><p>Le tratte sono quelle osservate da Google Timeline; alcune gambe mancanti restano mancanti. La CO₂e è per un passeggero medio e include il radiative forcing.</p></div>
+        <div><b>Auto</b><p>Il contachilometri non è disponibile. È una somma GPS validata: utile come ordine di grandezza, non come lettura fiscale.</p></div>
+        <div><b>Città</b><p>Le visite sono ricondotte alla città più plausibile. I punti pubblicati sono arrotondati e non includono casa, lavoro o tracce grezze.</p></div>
+      </div>
+      <p class="sources">Fonti: <a id="co2-source" href="#">UK Government GHG Conversion Factors 2026</a> · <a href="https://ourairports.com/data/">OurAirports</a> · <a href="https://github.com/topojson/world-atlas">Natural Earth / world-atlas</a> · Google Timeline Takeout · Intervals.icu/Strava.</p>
+    </section>
+  </main>
+
+  <footer>
+    <a href="../">← Tutta Vita</a>
+    <span>Costruito dai dati, con le coordinate private lasciate fuori.</span>
+  </footer>
+
+  <div class="tooltip" id="tooltip" role="status"></div>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

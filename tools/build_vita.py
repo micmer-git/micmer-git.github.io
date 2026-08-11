@@ -62,23 +62,24 @@ CACHE = os.path.join(HERE, ".cruscotto_cache.json")
 OUT_DIR = os.path.join(ROOT, "vita")
 OUT = os.path.join(OUT_DIR, "index.html")
 REPORT = os.path.join(HERE, "vita_tests.md")
+FOOD_DATA = os.path.join(OUT_DIR, "cibo", "data")
 
 # Aggregati giornalieri di alimentazione, esportati da ~/health-log con
 # `scripts/build_nutrition_series.py --export`. Vive qui perche' la GitHub Action
 # non ha accesso a quella repo — e perche' quello che esce sono **solo** i totali
 # del giorno: il diario dei pasti, con dentro dove e con chi ha mangiato, resta
 # privato di la'.
-NUTRITION = os.path.join(OUT_DIR, "_nutrition.csv")
+NUTRITION = os.path.join(FOOD_DATA, "nutrition.csv")
 # Dettaglio giorno per giorno per il popup: pasti, alimenti, % dei fabbisogni.
 # Stesso esportatore, flag `--export-days`.
-DAYS = os.path.join(OUT_DIR, "_days.json")
+DAYS = os.path.join(FOOD_DATA, "days.json")
 # Il MODELLO della flora (scripts/microbiome_model.py). Non e' una misura: nessuno
 # ha sequenziato niente, e la pagina lo dice a caratteri grandi.
-MICROBES = os.path.join(OUT_DIR, "_microbiome.csv")
+MICROBES = os.path.join(FOOD_DATA, "microbiome.csv")
 # Matrice alimento x genere: il modello della flora letto al contrario, cioe'
 # quali cibi davvero mangiati muovono quali generi. Non e' una misura in piu',
 # e' il cablaggio del modello reso visibile.
-FLORA_FOODS = os.path.join(OUT_DIR, "_flora_foods.csv")
+FLORA_FOODS = os.path.join(FOOD_DATA, "flora_foods.csv")
 
 # The athlete. Intervals.icu also accepts "0" for "whoever owns the key", but the
 # explicit id keeps the CI logs readable when a key is swapped.
@@ -411,7 +412,7 @@ def highlights():
     indice deve stare in poche righe."""
     out = []
     for t in (vita_trackers.load_gazzaniga(), vita_trackers.load_diario(),
-              vita_trackers.load_sogni()):
+              vita_trackers.load_sogni(), vita_trackers.load_spostamenti()):
         out.append({
             "key": t["key"], "title": t["title"], "href": t["href"],
             "eyebrow": t["eyebrow"], "blurb": t["blurb"], "accent": t["accent"],
@@ -758,7 +759,7 @@ mattino sa dire cosa è successo il giorno prima. Le nuvole sono qui apposta —
 correlazione nulla si vede solo se la si disegna.</p>
 <main class="panel" id="panel-incroci"></main>
 
-<h2 class="band">Tavola</h2>
+<h2 class="band" id="cibo">Tavola</h2>
 <p class="band-sub">Cosa entra, contro cosa serve. Queste serie sono una
 <strong>ricostruzione</strong>, non un diario: due anni di giornate rimesse insieme
 da quello che Michele ha dichiarato di mangiare — la colazione fissa, due avocado
