@@ -72,7 +72,7 @@ date,meal,food_id,qty,note,source
 2026-05-24,cena,petto_pollo,120,,foto
 2026-05-24,cena,edamame,80,,foto
 2026-05-27,pranzo,pomodorini,150,caprese,foto
-2026-05-27,pranzo,mozzarella,125,,foto
+2026-05-27,pranzo,mozzarella_proteica,125,"proteica, dichiarato",foto
 2026-05-27,pranzo,basilico,5,,foto
 2026-05-27,pranzo,piadina,120,pane piatto grande,foto
 2026-05-29,pranzo,pane_integrale,100,,foto
@@ -288,3 +288,27 @@ date,meal,food_id,qty,note,source
 2026-07-31,cena,sformato_verdure,250,,foto
 2026-07-31,cena,spinaci,100,,foto
 2026-07-31,cena,patate_dolci,150,,foto
+2026-08-02,colazione,cornetto_crema,1,"cinnamon roll, panetteria",foto
+2026-08-02,colazione,caffe_espresso,1,,foto
+2026-08-03,spuntino,torta_cioccolato,120,"pane dolce scuro tipo babka, piu' fette",foto
+2026-08-04,pranzo,insalata_mista,120,bowl,foto
+2026-08-04,pranzo,ceci_scatola,200,,foto
+2026-08-04,pranzo,avocado,80,guacamole,foto
+2026-08-04,pranzo,uovo_intero,1,sodo,foto
+2026-08-04,pranzo,patate_dolci,200,"a fette, arrosto",foto
+2026-08-04,pranzo,rucola,30,,foto
+2026-08-06,pranzo,sformato_verdure,240,torta salata,foto
+2026-08-06,pranzo,pomodorini,180,insalata di pomodori rossi e gialli,foto
+2026-08-06,pranzo,basilico,5,,foto
+2026-08-06,cena,patate,350,teglia di patate al forno,foto
+2026-08-06,cena,cipolla,60,,foto
+2026-08-08,pranzo,fagioli_cannellini,250,stufato di legumi in sugo,foto
+2026-08-08,pranzo,passata_pomodoro,180,,foto
+2026-08-08,pranzo,pane_integrale,90,pagnotta rustica a lievitazione,foto
+2026-08-08,spuntino,torta_semplice,110,fetta di torta al bar in quota,foto
+2026-08-08,spuntino,cappuccino,1,,foto
+2026-08-09,colazione,cornetto_crema,1,pasticceria al bar,foto
+2026-08-09,colazione,cappuccino,1,,foto
+2026-08-10,cena,pizza_base,1,pizza in teglia con ananas: non la sua solita,foto
+2026-08-10,cena,mozzarella,80,questa aveva mozzarella,foto
+2026-08-10,cena,mango,60,ananas: usato il mango come sostituto piu' vicino,foto

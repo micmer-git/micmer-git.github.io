@@ -211,8 +211,6 @@ penne_integrali_cremose,Penne integrali cremose,1,pasta_integrale,110,piatto men
 penne_integrali_cremose,Penne integrali cremose,1,ricotta_vaccina,70,piatto mensile dichiarato
 penne_integrali_cremose,Penne integrali cremose,1,passata_pomodoro,120,piatto mensile dichiarato
 penne_integrali_cremose,Penne integrali cremose,1,zucchine,90,piatto mensile dichiarato
-pizza_semplice,Pizza,1,pizza_margherita,1,piatto mensile dichiarato
-pizza_semplice,Pizza,1,rucola,25,piatto mensile dichiarato
 pasta_patate_dolci,Pasta e patate dolci,1,pasta_semola,110,piatto mensile dichiarato
 pasta_patate_dolci,Pasta e patate dolci,1,patate_dolci,180,piatto mensile dichiarato
 pasta_patate_dolci,Pasta e patate dolci,1,passata_pomodoro,80,piatto mensile dichiarato
@@ -321,3 +319,7 @@ dolce_yogurt_cacao,"Yogurt, cacao e datteri",1,cacao_100,31.1,piatto mensile dic
 dolce_yogurt_cacao,"Yogurt, cacao e datteri",1,datteri,103.7,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
 torta_semplice_dolce,Torta e caffe',1,torta_semplice,149.3,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
 torta_semplice_dolce,Torta e caffe',1,caffe_espresso,1,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+pizza_semplice,"Pizza bresaola, rucola e grana",1,pizza_base,1,"la sua pizza abituale, dichiarata il 2026-08-11"
+pizza_semplice,"Pizza bresaola, rucola e grana",1,bresaola,70,"la sua pizza abituale, dichiarata il 2026-08-11"
+pizza_semplice,"Pizza bresaola, rucola e grana",1,rucola,30,"la sua pizza abituale, dichiarata il 2026-08-11"
+pizza_semplice,"Pizza bresaola, rucola e grana",1,grana_padano,25,"la sua pizza abituale, dichiarata il 2026-08-11"
