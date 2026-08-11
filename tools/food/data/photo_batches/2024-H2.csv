@@ -1,0 +1,645 @@
+date,meal,food_id,qty,note,source
+2024-07-24,cena,polenta_cotta,300,"piatto di polenta gialla con spezzatino di manzo in salsa scura, al ristorante; porzioni standard assunte",foto
+2024-07-24,cena,carne_macinata_manzo,150,,foto
+2024-07-24,cena,torta_cioccolato,100,fetta di torta scura al cioccolato con glassa; la scatola di brioche accanto e' materiale condiviso e non e' registrata,foto
+2024-07-27,pranzo,pizza_margherita,1,pizza rossa con prosciutto crudo e un ciuffo bianco di mozzarella in centro; porzione standard assunta,foto
+2024-07-27,pranzo,prosciutto_crudo,50,,foto
+2024-07-27,cena,carne_macinata_manzo,150,polpette in salsa di pomodoro con stracciatella bianca e foglie di basilico su piatto singolo al ristorante,foto
+2024-07-27,cena,passata_pomodoro,100,,foto
+2024-07-27,cena,mozzarella,40,,foto
+2024-07-28,colazione,cappuccino,1,tavolino al bar con latte macchiato e un piattino di croissant,foto
+2024-07-28,colazione,croissant_vuoto,1,,foto
+2024-07-28,pranzo,pasta_semola,120,piatto di spaghetti con ragu' di carne,foto
+2024-07-28,pranzo,ragu_carne,130,,foto
+2024-07-30,colazione,strudel_mele,120,fetta di dolce di sfoglia con mele e un bicchierone di bevanda scura con schiuma,foto
+2024-07-30,colazione,cappuccino,1,,foto
+2024-07-31,pranzo,bistecca_manzo,150,"piatto misto: straccetti di carne con funghi e cipolla, pure' bianco, un cereale sbriciolato, carote grattugiate e insalata",foto
+2024-07-31,pranzo,funghi,60,,foto
+2024-07-31,pranzo,patate,150,,foto
+2024-07-31,pranzo,couscous,50,,foto
+2024-07-31,pranzo,carote,50,,foto
+2024-07-31,pranzo,insalata_mista,40,,foto
+2024-08-01,pranzo,panino_farcito,1,hamburger nel panino con patate arrosto a cubetti e insalata,foto
+2024-08-01,pranzo,patate,200,,foto
+2024-08-01,pranzo,insalata_mista,50,,foto
+2024-08-01,spuntino,frutti_di_bosco,200,frullatore pieno di una crema viola di frutti di bosco,foto
+2024-08-01,spuntino,latte_ps,200,,foto
+2024-08-02,cena,recipe:pizza_semplice,1,"pizza rossa con fettine rosa sottili, rucola e formaggio grattugiato, senza mozzarella",foto
+2024-08-03,pranzo,focaccia,150,focaccia col pesto verde nella carta in spiaggia; il pesto non e' registrato perche' manca in foods.csv,foto
+2024-08-03,cena,focaccia,120,trancio di focaccia col pesto verde davanti al tramonto,foto
+2024-08-04,pranzo,focaccia,150,focaccia col pesto verde nella carta in spiaggia,foto
+2024-08-05,pranzo,patate,200,"piatto con patate a cubetti, bocconcini dorati fritti, ceci con prezzemolo, fette di pomodoro e capperi",foto
+2024-08-05,pranzo,polpette_legumi,120,,foto
+2024-08-05,pranzo,ceci_scatola,200,,foto
+2024-08-05,pranzo,pomodorini,50,,foto
+2024-08-05,cena,patate_dolci,250,patate dolci a bastoncini al forno con uova strapazzate e salsa di pomodoro,foto
+2024-08-05,cena,uovo_intero,3,,foto
+2024-08-05,cena,passata_pomodoro,80,,foto
+2024-08-06,colazione,torta_semplice,120,torta scura densa fatta in casa tagliata a fette con marmellata scura,foto
+2024-08-06,colazione,marmellata_fragola,20,,foto
+2024-08-06,cena,recipe:pizza_burrata_crudo,1,"pizza con prosciutto crudo, un ciuffo di burrata e olive nere",foto
+2024-08-06,cena,olive,20,,foto
+2024-08-07,cena,carote,200,piatto di carote arrosto a rondelle con cubetti di tofu e legumi verdi tondi,foto
+2024-08-07,cena,tofu,150,,foto
+2024-08-07,cena,piselli_verdi,200,,foto
+2024-08-08,pranzo,patate_dolci,200,piatto con fette di patata dolce arrosto e ceci con verdure a foglia,foto
+2024-08-08,pranzo,ceci_scatola,200,,foto
+2024-08-08,pranzo,spinaci,100,,foto
+2024-08-08,spuntino,torta_semplice,100,fetta di torta scura farcita di crema bianca e marmellata,foto
+2024-08-08,spuntino,ricotta_vaccina,40,,foto
+2024-08-08,spuntino,marmellata_fragola,20,,foto
+2024-08-09,cena,avena_fiocchi,80,ciotola grande di crema viola ai frutti di bosco con fiocchi; ciotola individuale in una tavolata,foto
+2024-08-09,cena,frutti_di_bosco,200,,foto
+2024-08-09,cena,latte_ps,200,,foto
+2024-08-09,spuntino,croissant_vuoto,1,grande brioche zuccherata con un latte macchiato al bar,foto
+2024-08-09,spuntino,cappuccino,1,,foto
+2024-08-10,colazione,avena_fiocchi,80,ciotola di fiocchi con frutti di bosco e frutta secca,foto
+2024-08-10,colazione,frutti_di_bosco,100,,foto
+2024-08-10,colazione,noci,20,,foto
+2024-08-10,pranzo,panino_farcito,1,hamburger con patatine su vassoio individuale al ristorante,foto
+2024-08-10,pranzo,patate,150,,foto
+2024-08-11,colazione,torta_semplice,120,fetta di torta con cappuccino al bar di montagna,foto
+2024-08-11,colazione,cappuccino,1,,foto
+2024-08-11,pranzo,pane_segale,100,panino di pane scuro tenuto in mano lungo la strada; il ripieno non e' identificabile e non e' registrato,foto
+2024-08-12,cena,patate_dolci,300,patate dolci a spicchi al forno con una montagna di ceci,foto
+2024-08-12,cena,ceci_scatola,250,,foto
+2024-08-13,spuntino,gelato_cono,150,cono gelato in mano accanto alla bici,foto
+2024-08-13,cena,patate_dolci,250,"piatto con patate dolci a spicchi, ceci, verdure a foglia e sugo di pomodoro",foto
+2024-08-13,cena,ceci_scatola,200,,foto
+2024-08-13,cena,spinaci,80,,foto
+2024-08-13,cena,passata_pomodoro,60,,foto
+2024-08-14,pranzo,polenta_cotta,250,piatto di polenta gialla con stufato scuro al tavolo di un rifugio,foto
+2024-08-14,pranzo,carne_macinata_manzo,130,,foto
+2024-08-14,cena,ceci_scatola,250,ciotola di ceci con cubetti di pane tostato,foto
+2024-08-14,cena,pane_integrale,60,,foto
+2024-08-16,pranzo,carne_macinata_manzo,150,torre di carne macinata scura su pure' con un ciuffo di insalata; letto come haggis e servito con macinato di manzo come sostituto,foto
+2024-08-16,pranzo,patate,200,,foto
+2024-08-16,pranzo,insalata_mista,30,,foto
+2024-08-16,spuntino,croissant_vuoto,1,ciambella zuccherata con un cappuccino in aeroporto,foto
+2024-08-16,spuntino,cappuccino,1,,foto
+2024-08-17,colazione,avena_fiocchi,60,ciotola con banana a fette sopra una crema chiara,foto
+2024-08-17,colazione,banana,1,,foto
+2024-08-17,pranzo,carne_macinata_manzo,150,ciotola di spezzatino di manzo in salsa scura con un bicchiere di birra,foto
+2024-08-17,pranzo,birra,330,,foto
+2024-08-17,cena,insalata_mista,100,"insalata con fette di roast beef, formaggio arancione grattugiato, carota, cetriolo e pomodoro",foto
+2024-08-17,cena,bistecca_manzo,100,,foto
+2024-08-17,cena,formaggio_semistagionato,40,,foto
+2024-08-17,cena,carote,50,,foto
+2024-08-17,cena,cetriolo,50,,foto
+2024-08-17,cena,pomodorini,60,,foto
+2024-08-17,spuntino,scone,60,scone con un cappuccino al bancone,foto
+2024-08-17,spuntino,cappuccino,1,,foto
+2024-08-18,pranzo,ceci_scatola,250,ciotola di curry di ceci arancione con pane piatto tondo,foto
+2024-08-18,pranzo,naan,100,,foto
+2024-08-18,pranzo,curry_polvere,5,,foto
+2024-08-19,colazione,pane_integrale,70,"piatto con toast, pure', fagioli stufati in salsa di pomodoro e gallette tonde d'avena; le gallette non sono registrate",foto
+2024-08-19,colazione,patate,150,,foto
+2024-08-19,colazione,fagioli_stufati,200,,foto
+2024-08-19,pranzo,panino_farcito,1,hamburger con una montagna di patatine di patata dolce e una ciotolina di cavolo rosso,foto
+2024-08-19,pranzo,patate_dolci,200,,foto
+2024-08-19,pranzo,cavolo_rosso,60,,foto
+2024-08-19,spuntino,scone,60,scone tagliato con panna e un cappuccino,foto
+2024-08-19,spuntino,panna_montata,30,,foto
+2024-08-19,spuntino,cappuccino,1,,foto
+2024-08-20,spuntino,torta_cioccolato,100,quadrotto di torta scura al cioccolato con un cappuccino,foto
+2024-08-20,spuntino,cappuccino,1,,foto
+2024-08-21,pranzo,sformato_verdure,250,torta salata gialla tonda con pezzi verdi dentro e un bicchiere di birra,foto
+2024-08-21,pranzo,birra,330,,foto
+2024-08-21,cena,noodles_saltati,300,piatto di noodles saltati con verdure,foto
+2024-08-21,spuntino,torta_cioccolato,100,fetta di torta scura con un cappuccino affacciato sul mare,foto
+2024-08-21,spuntino,cappuccino,1,,foto
+2024-08-22,pranzo,noodles_saltati,300,ciotola di noodles saltati,foto
+2024-08-23,pranzo,patate_dolci,250,ciotola di stufato con pezzi arancioni in salsa di pomodoro e una birra; i legumi nel piatto non sono identificabili,foto
+2024-08-23,pranzo,passata_pomodoro,100,,foto
+2024-08-23,pranzo,birra,330,,foto
+2024-08-23,cena,pizza_margherita,1,pizza tonda nel cartone con rucola e ciuffi di formaggio bianco,foto
+2024-08-23,cena,rucola,30,,foto
+2024-08-24,pranzo,panino_farcito,1,hamburger nella stagnola con salsa rosa colante,foto
+2024-08-24,spuntino,cinnamon_roll,1,girella lievitata alla cannella con un cappuccino,foto
+2024-08-24,spuntino,cappuccino,1,,foto
+2024-08-25,colazione,bacon,40,"colazione all'inglese: bacon, uovo fritto, due dischi scuri di black pudding, fagioli stufati, due salsicce, un tortino di patate e pomodoro, piu' cappuccino; il black pudding non e' registrato",foto
+2024-08-25,colazione,uovo_intero,1,,foto
+2024-08-25,colazione,salsiccia,80,,foto
+2024-08-25,colazione,fagioli_stufati,150,,foto
+2024-08-25,colazione,patate,80,,foto
+2024-08-25,colazione,pomodorini,40,,foto
+2024-08-25,colazione,cappuccino,1,,foto
+2024-08-26,pranzo,riso_bianco,120,piatto di riso con insalata da vaschette d'asporto; la salsa gialla accanto non e' identificabile e non e' registrata,foto
+2024-08-26,pranzo,insalata_mista,50,,foto
+2024-08-27,cena,pizza_margherita,1,pizza bianca con macinato di carne e pezzi di patata,foto
+2024-08-27,cena,carne_macinata_manzo,80,,foto
+2024-08-27,cena,patate,60,,foto
+2024-08-30,cena,recipe:pizza_burrata_crudo,1,pizzeria con il gruppo: pizza con prosciutto crudo e burrata e una birra,foto
+2024-08-30,cena,birra,330,,foto
+2024-08-31,cena,bistecca_manzo,150,tagliata di manzo a fette con patate al forno su tagliere in una cena di famiglia; porzione singola assunta da un tagliere condiviso,foto
+2024-08-31,cena,patate,150,,foto
+2024-09-02,pranzo,panino_farcito,1,hamburger al bancone di un bar con una birra,foto
+2024-09-02,pranzo,birra,330,,foto
+2024-09-02,cena,zucca,300,vellutata arancione con crostini e ciuffi bianchi cremosi,foto
+2024-09-02,cena,pane_integrale,40,,foto
+2024-09-02,cena,ricotta_vaccina,40,,foto
+2024-09-02,cena,couscous,100,piatto di cereale in granelli con melanzane a cubetti,foto
+2024-09-02,cena,melanzane,100,,foto
+2024-09-05,pranzo,riso_bianco,120,piatti di riso giallo con verdure in una tavolata di famiglia; porzione standard assunta,foto
+2024-09-05,pranzo,piselli_verdi,60,,foto
+2024-09-07,pranzo,couscous,100,"insalata di cereale in granelli con peperoni, zucchine e ceci",foto
+2024-09-07,pranzo,ceci_scatola,150,,foto
+2024-09-07,pranzo,peperoni,60,,foto
+2024-09-07,pranzo,zucchine,60,,foto
+2024-09-08,spuntino,cornetto_crema,1,cannolo siciliano con ricotta e una ciliegia candita; usato l'alimento del pasticcino con crema,foto
+2024-09-09,pranzo,pasta_uovo,100,"pranzo al ristorante: tagliatelle gialle con lamelle di tartufo, casoncelli con pancetta e formaggio grattugiato, una vellutata di piselli con crostini; il tartufo non e' registrato",foto
+2024-09-09,pranzo,ravioli_ricotta,200,,foto
+2024-09-09,pranzo,bacon,30,,foto
+2024-09-09,pranzo,grana_padano,15,,foto
+2024-09-09,pranzo,piselli_verdi,100,,foto
+2024-09-12,pranzo,couscous,100,piatto di cereale in granelli con patate arrosto,foto
+2024-09-12,pranzo,patate,200,,foto
+2024-09-12,cena,lenticchie_secche,90,lenticchie in umido con spicchi di patata dolce arrosto; peso a crudo assunto,foto
+2024-09-12,cena,patate_dolci,250,,foto
+2024-09-13,cena,pasta_semola,120,penne al pomodoro con dadini di pancetta rosolati in padella,foto
+2024-09-13,cena,passata_pomodoro,120,,foto
+2024-09-13,cena,bacon,60,,foto
+2024-09-13,cena,grana_padano,15,,foto
+2024-09-14,pranzo,ceci_scatola,250,"piatto di ceci con peperoni, zucchine, carote e foglie verdi",foto
+2024-09-14,pranzo,peperoni,80,,foto
+2024-09-14,pranzo,zucchine,80,,foto
+2024-09-14,pranzo,carote,60,,foto
+2024-09-14,pranzo,spinaci,60,,foto
+2024-09-14,spuntino,torta_semplice,100,tortino sbriciolato con un cappuccino,foto
+2024-09-14,spuntino,cappuccino,1,,foto
+2024-09-15,pranzo,carote,150,"piatto di carote e patate arrosto a pezzi grossi, legumi e cavolo rosso marinato",foto
+2024-09-15,pranzo,patate,150,,foto
+2024-09-15,pranzo,ceci_scatola,150,,foto
+2024-09-15,pranzo,cavolo_rosso,80,,foto
+2024-09-16,cena,pasta_integrale,100,"pasta con verdure in crema: broccoli, carote e patate",foto
+2024-09-16,cena,broccoli,100,,foto
+2024-09-16,cena,carote,80,,foto
+2024-09-16,cena,patate,80,,foto
+2024-09-18,pranzo,carne_macinata_manzo,100,carne cruda tritata servita su pane al ristorante,foto
+2024-09-18,pranzo,pane_bianco,50,,foto
+2024-09-18,spuntino,spirulina,5,barattolo con una bevanda verde scuro accanto alle mele,foto
+2024-09-18,cena,couscous,100,piatto di cereale in granelli con cavolo rosso e ceci,foto
+2024-09-18,cena,cavolo_rosso,80,,foto
+2024-09-18,cena,ceci_scatola,150,,foto
+2024-09-18,cena,caffe_espresso,1,,foto
+2024-09-23,pranzo,recipe:tagliatelle_ragu,1,tagliatelle al ragu' in trattoria,foto
+2024-09-23,cena,patate,200,piatto con patate e carote a pezzi e un macinato scuro,foto
+2024-09-23,cena,carote,100,,foto
+2024-09-23,cena,lenticchie_secche,80,,foto
+2024-09-23,spuntino,pane_segale,100,fette di pane scuro con una crema verde spalmata sopra e fettine di bresaola con pomodorini,foto
+2024-09-23,spuntino,avocado,60,,foto
+2024-09-23,spuntino,bresaola,60,,foto
+2024-09-23,spuntino,pomodorini,60,,foto
+2024-09-24,cena,riso_bianco,100,cena di gruppo al ristorante: ciotole di stufato con riso bianco e uovo sodo; il contenuto degli stufati non e' identificabile e non e' registrato,foto
+2024-09-24,cena,uovo_intero,1,,foto
+2024-09-24,spuntino,kebab_wrap,1,kebab arrotolato nella carta con una lattina di cola in aeroporto,foto
+2024-09-25,pranzo,riso_bianco,100,"poke bowl con salmone a cubetti, avocado, chicchi di melagrana e insalata",foto
+2024-09-25,pranzo,salmone,100,,foto
+2024-09-25,pranzo,avocado,60,,foto
+2024-09-25,pranzo,melagrana,40,,foto
+2024-09-27,pranzo,lenticchie_secche,90,piatto di lenticchie in umido con mezza patata dolce arrosto; peso a crudo assunto,foto
+2024-09-27,pranzo,patate_dolci,150,,foto
+2024-09-27,cena,ceci_scatola,250,stufato di ceci con pezzi di patata dolce,foto
+2024-09-27,cena,patate_dolci,150,,foto
+2024-09-28,colazione,spirulina,5,tazza con una bevanda verde scuro e cubetti di ghiaccio,foto
+2024-09-28,colazione,pane_integrale,80,pagnotta scura a lievitazione naturale fatta in casa,foto
+2024-09-28,cena,pizza_base,1,"pizza rossa con foglie verdi scure, fettine di bresaola e cipolla rossa, senza mozzarella",foto
+2024-09-28,cena,bresaola,60,,foto
+2024-09-28,cena,cavolo_nero,40,,foto
+2024-09-28,cena,cipolla,30,,foto
+2024-09-28,spuntino,crostata_frutta,100,fetta di crostata,foto
+2024-09-29,pranzo,petto_pollo,120,cotoletta impanata dorata con fagioli in salsa di pomodoro; la carne e' letta come pollo ma la panatura non lascia vedere,foto
+2024-09-29,pranzo,fagioli_cannellini,150,,foto
+2024-09-29,pranzo,passata_pomodoro,80,,foto
+2024-09-29,cena,ceci_scatola,200,piatto di ceci con pezzi di patata dolce,foto
+2024-09-29,cena,patate_dolci,150,,foto
+2024-09-29,spuntino,pizza_base,0.5,tranci di pizza al taglio da cartoni condivisi; mezza pizza assunta,foto
+2024-09-30,pranzo,recipe:piadina_crudo_rucola,1,piadina aperta con prosciutto crudo e rucola sul tavolo di lavoro,foto
+2024-10-01,cena,pane_segale,100,fette di pane scuro con uno stufato di funghi e melanzane,foto
+2024-10-01,cena,funghi,120,,foto
+2024-10-01,cena,melanzane,100,,foto
+2024-10-02,pranzo,pizza_base,0.5,pizze in cartoni condivisi in ufficio; mezza pizza assunta,foto
+2024-10-03,pranzo,pasta_semola,100,piatto di pasta con una crema verde,foto
+2024-10-03,pranzo,piselli_verdi,80,,foto
+2024-10-08,pranzo,zucca,350,pentola di zuppa arancione densa,foto
+2024-10-08,cena,lenticchie_secche,90,legumi in umido con spicchi di patata dolce arrosto; peso a crudo assunto,foto
+2024-10-08,cena,patate_dolci,250,,foto
+2024-10-10,colazione,torta_semplice,120,torta scura densa fatta in casa tagliata a fette,foto
+2024-10-10,cena,recipe:pizza_semplice,1,"pizza rossa con fettine scure, rucola e formaggio grattugiato, con qualche pezzo di verdura arrostita",foto
+2024-10-10,cena,funghi,40,,foto
+2024-10-11,colazione,cacao_100,15,ciotola di crema scura mescolata col cucchiaio; porzioni standard assunte,foto
+2024-10-11,colazione,proteine_whey,30,,foto
+2024-10-11,colazione,latte_ps,200,,foto
+2024-10-13,pranzo,salmone,150,pranzo di festa al ristorante: trancio di salmone in crosta verde di granella con salsa di barbabietola e un piatto di pasta verde; la granella di pistacchi non e' registrata,foto
+2024-10-13,pranzo,pasta_semola,100,,foto
+2024-10-14,cena,recipe:polenta_brasato,1,cena sociale con polenta e stracotto; il dolce enorme di sfoglia era condiviso e non e' registrato,foto
+2024-10-14,spuntino,strudel_mele,150,grande fetta di strudel di mele con zucchero a velo,foto
+2024-10-15,spuntino,crostata_frutta,120,fetta assunta da una crostata di frutta di compleanno tagliata in famiglia,foto
+2024-10-16,pranzo,pasta_semola,100,pasta con verdure in crema,foto
+2024-10-16,pranzo,funghi,60,,foto
+2024-10-16,pranzo,carote,50,,foto
+2024-10-16,pranzo,zucchine,50,,foto
+2024-10-16,cena,recipe:polenta_brasato,1,polenta gialla con spezzatino scuro e funghi,foto
+2024-10-16,cena,funghi,60,,foto
+2024-10-16,cena,piselli_verdi,100,contorno di piselli con mais e olive,foto
+2024-10-16,cena,mais_dolce,80,,foto
+2024-10-16,cena,olive,20,,foto
+2024-10-16,spuntino,cacao_100,15,vasetto di crema scura montata; porzioni standard assunte,foto
+2024-10-16,spuntino,proteine_whey,30,,foto
+2024-10-16,spuntino,latte_ps,150,,foto
+2024-10-17,colazione,cereali_colazione,60,ciotola di muesli con frutta secca,foto
+2024-10-17,colazione,noci,20,,foto
+2024-10-18,pranzo,polpette_legumi,200,bocconcini dorati con una massa gialla sbriciolata e glassa di aceto balsamico,foto
+2024-10-18,pranzo,polenta_cotta,200,,foto
+2024-10-19,colazione,cereali_colazione,60,"ciotola con granella, mirtilli, lamponi e chicchi di melagrana",foto
+2024-10-19,colazione,mirtilli,60,,foto
+2024-10-19,colazione,frutti_di_bosco,50,,foto
+2024-10-19,colazione,melagrana,40,,foto
+2024-10-19,pranzo,panino_farcito,1,hamburger nel panino lucido con salsa verde e pomodoro al ristorante,foto
+2024-10-19,cena,pane_segale,100,fette di pane scuro con un ragu' rosso di legumi e peperoni,foto
+2024-10-19,cena,lenticchie_secche,80,,foto
+2024-10-19,cena,peperoni,60,,foto
+2024-10-22,pranzo,panino_farcito,1,hamburger in un panino integrale con semi,foto
+2024-10-22,cena,riso_bianco,100,riso pilaf con carne sfilacciata e ravioli con panna acida e pezzetti rossi al ristorante,foto
+2024-10-22,cena,carne_macinata_manzo,100,,foto
+2024-10-22,cena,ravioli_ricotta,200,,foto
+2024-10-22,cena,panna_montata,20,,foto
+2024-10-23,colazione,torta_semplice,100,fetta di torta con un bicchiere di succo d'arancia al bar,foto
+2024-10-23,colazione,succo_frutta,200,,foto
+2024-10-23,pranzo,panino_farcito,1,hamburger in un panino rosa con patate arrosto a spicchi,foto
+2024-10-23,pranzo,patate,200,,foto
+2024-10-24,pranzo,ceci_scatola,250,curry di ceci con pane piatto tondo e una scodella di zuppa gialla di lenticchie,foto
+2024-10-24,pranzo,chapati,80,,foto
+2024-10-24,pranzo,dal_cotto,250,,foto
+2024-10-25,cena,dal_cotto,300,zuppa densa di lenticchie con spicchi di patata dolce,foto
+2024-10-25,cena,patate_dolci,150,,foto
+2024-10-26,colazione,pane_integrale,100,pane farcito con noci tagliato a fette,foto
+2024-10-26,colazione,noci,20,,foto
+2024-10-26,pranzo,riso_carnaroli,100,ciotola di crema bianca di riso mescolata in pentola,foto
+2024-10-26,cena,burrito,1,involtino di piadina farcito con salsa rossa a lato,foto
+2024-10-26,cena,ceci_scatola,250,stufato di ceci con verdure a pezzi,foto
+2024-10-26,cena,peperoni,60,,foto
+2024-10-26,cena,cavolfiore,80,,foto
+2024-10-26,spuntino,strudel_mele,120,fetta di strudel con un caffe',foto
+2024-10-26,spuntino,caffe_espresso,1,,foto
+2024-10-27,pranzo,recipe:tagliatelle_ragu,1,piatto di tagliatelle al ragu',foto
+2024-10-28,colazione,cacao_100,15,vasetto di crema scura montata; porzioni standard assunte,foto
+2024-10-28,colazione,proteine_whey,30,,foto
+2024-10-28,colazione,latte_ps,150,,foto
+2024-10-29,colazione,cacao_100,15,vasetto di crema scura montata; porzioni standard assunte,foto
+2024-10-29,colazione,proteine_whey,30,,foto
+2024-10-29,colazione,latte_ps,150,,foto
+2024-10-30,pranzo,ceci_scatola,250,piatto di ceci in umido con mais,foto
+2024-10-30,pranzo,mais_dolce,100,,foto
+2024-11-01,pranzo,pizza_margherita,1,pizza con fettine rosa e rucola sopra,foto
+2024-11-01,pranzo,prosciutto_crudo,50,,foto
+2024-11-01,pranzo,rucola,30,,foto
+2024-11-01,cena,mais_dolce,100,piatto di mais e legumi in umido con un ciuffo bianco cremoso,foto
+2024-11-01,cena,ceci_scatola,200,,foto
+2024-11-01,cena,ricotta_vaccina,60,,foto
+2024-11-02,cena,pasta_semola,120,piatto di pasta lunga al pomodoro con foglie di basilico,foto
+2024-11-02,cena,passata_pomodoro,120,,foto
+2024-11-03,pranzo,piadina,120,fajitas al ristorante: tortillas con straccetti di carne e peperoni,foto
+2024-11-03,pranzo,bistecca_manzo,150,,foto
+2024-11-03,pranzo,peperoni,80,,foto
+2024-11-03,cena,riso_bianco,120,ciotola di riso con fagioli neri e ananas a pezzi; l'ananas non e' registrato perche' manca in foods.csv,foto
+2024-11-03,cena,fagioli_neri_scatola,200,,foto
+2024-11-04,pranzo,riso_carnaroli,100,piatto di riso cremoso con erbe tritate,foto
+2024-11-04,spuntino,crostata_frutta,100,"fetta di crostata, un mandarino e una tazza di crema scura",foto
+2024-11-04,spuntino,mandarino,1,,foto
+2024-11-04,spuntino,cacao_100,10,,foto
+2024-11-05,colazione,gallette_riso,40,gallette tonde impilate con marmellata rossa sopra,foto
+2024-11-05,colazione,marmellata_fragola,30,,foto
+2024-11-06,cena,recipe:pizza_semplice,1,"pizza rossa con fettine rosa, rucola e formaggio grattugiato",foto
+2024-11-06,spuntino,torta_semplice,120,fetta di torta di mele caramellata,foto
+2024-11-07,pranzo,pizza_margherita,1,pizza con prosciutto cotto e foglie di basilico,foto
+2024-11-07,pranzo,prosciutto_cotto,50,,foto
+2024-11-07,cena,lenticchie_secche,90,lenticchie con fette tonde di patata dolce e un ciuffo bianco cremoso; peso a crudo assunto,foto
+2024-11-07,cena,patate_dolci,200,,foto
+2024-11-07,cena,ricotta_vaccina,50,,foto
+2024-11-08,pranzo,pane_segale,120,fetta spessa di pane scuro con un ragu' rosso di legumi e mais sopra,foto
+2024-11-08,pranzo,lenticchie_secche,80,,foto
+2024-11-08,pranzo,mais_dolce,100,,foto
+2024-11-08,cena,pizza_margherita,1,pizza con prosciutto cotto; l'altra pizza con pomodorini nella stessa serie non e' registrata perche' e' di un'altra persona,foto
+2024-11-08,cena,prosciutto_cotto,60,,foto
+2024-11-09,colazione,yogurt_greco_0,150,"ciotola di crema rosa con fragole, mirtilli e granella",foto
+2024-11-09,colazione,fragole,80,,foto
+2024-11-09,colazione,mirtilli,40,,foto
+2024-11-09,colazione,cereali_colazione,40,,foto
+2024-11-09,pranzo,panzerotto,1,calzone chiuso ripieno di carne,foto
+2024-11-09,cena,lenticchie_secche,80,"piatto con legumi, patate arrosto e peperoni gialli con glassa di aceto",foto
+2024-11-09,cena,patate,200,,foto
+2024-11-09,cena,peperoni,100,,foto
+2024-11-10,colazione,pane_segale,120,"pane scuro con uova strapazzate, avocado schiacciato e fettine di bresaola",foto
+2024-11-10,colazione,uovo_intero,3,,foto
+2024-11-10,colazione,avocado,80,,foto
+2024-11-10,colazione,bresaola,50,,foto
+2024-11-10,pranzo,recipe:tagliatelle_ragu,1,tagliatelle con ragu' di carne sfilacciata,foto
+2024-11-10,cena,pizza_margherita,1,pizza margherita con strisce di formaggio,foto
+2024-11-10,spuntino,babka_mandorle,100,fetta di dolce lievitato arrotolato con cioccolato,foto
+2024-11-11,pranzo,pasta_uovo,100,pasta lunga con una crema bianca,foto
+2024-11-11,pranzo,ricotta_vaccina,60,,foto
+2024-11-11,cena,ceci_scatola,200,piatto di ceci e piselli in umido con spicchi di zucca arrosto,foto
+2024-11-11,cena,piselli_verdi,100,,foto
+2024-11-11,cena,zucca,200,,foto
+2024-11-11,spuntino,torta_cioccolato,50,piattino con un pezzo di torta scura e un pezzo di torta gialla,foto
+2024-11-11,spuntino,torta_semplice,50,,foto
+2024-11-12,colazione,yogurt_bianco_intero,150,vasetto di yogurt con spicchi d'arancia,foto
+2024-11-12,colazione,arancia,1,,foto
+2024-11-12,pranzo,polenta_cotta,250,polenta gialla con uno stufato scuro di funghi,foto
+2024-11-12,pranzo,funghi,150,,foto
+2024-11-12,cena,ravioli_ricotta,200,ravioli con sugo di pomodoro e legumi,foto
+2024-11-12,cena,passata_pomodoro,100,,foto
+2024-11-12,cena,lenticchie_secche,80,piatto di lenticchie con una crema verde,foto
+2024-11-13,colazione,cacao_100,15,ciotola di crema scura con fiocchi,foto
+2024-11-13,colazione,avena_fiocchi,50,,foto
+2024-11-13,colazione,latte_ps,150,,foto
+2024-11-14,colazione,uovo_intero,3,uova strapazzate con fette di pane scuro e avocado a cubetti,foto
+2024-11-14,colazione,pane_segale,100,,foto
+2024-11-14,colazione,avocado,80,,foto
+2024-11-14,pranzo,pane_segale,100,fette di pane scuro con crema bianca e prosciutto crudo,foto
+2024-11-14,pranzo,ricotta_vaccina,60,,foto
+2024-11-14,pranzo,prosciutto_crudo,50,,foto
+2024-11-14,cena,patate_dolci,200,"piatto con patata dolce a fette, cubetti di pane scuro, mais e cubetti chiari di tofu",foto
+2024-11-14,cena,pane_segale,60,,foto
+2024-11-14,cena,mais_dolce,80,,foto
+2024-11-14,cena,tofu,100,,foto
+2024-11-14,spuntino,cappuccino,1,cappuccino con un pasticcino ripieno,foto
+2024-11-14,spuntino,cornetto_crema,1,,foto
+2024-11-15,colazione,spirulina,5,bicchiere con una bevanda verde scuro e ghiaccio,foto
+2024-11-15,pranzo,mela,1,ciotoline con mela a pezzi e frutta secca accanto a una tazza di te',foto
+2024-11-15,pranzo,noci,20,,foto
+2024-11-15,cena,patate_dolci,200,"piatto con patata dolce, peperone rosso e una frittata gialla",foto
+2024-11-15,cena,peperoni,80,,foto
+2024-11-15,cena,uovo_intero,2,,foto
+2024-11-15,cena,ceci_scatola,250,ciotola di zuppa di ceci con un filo d'olio e formaggio grattugiato,foto
+2024-11-15,cena,olio_evo,10,,foto
+2024-11-15,cena,grana_padano,15,,foto
+2024-11-15,spuntino,cacao_100,15,tazza di crema scura al cioccolato; porzioni standard assunte,foto
+2024-11-15,spuntino,proteine_whey,30,,foto
+2024-11-16,colazione,pane_segale,80,fetta di pane scuro ai semi con foglie verdi,foto
+2024-11-16,pranzo,riso_carnaroli,100,piatto di risotto,foto
+2024-11-16,spuntino,torta_semplice,120,fetta di dolce a strati con crema bianca e marmellata,foto
+2024-11-17,colazione,torta_semplice,150,pancake alto e soffice con zucchero a velo e un caffe' al bar,foto
+2024-11-17,colazione,caffe_espresso,1,,foto
+2024-11-17,pranzo,patate,200,"piatto con patate, melanzane e un ragu' di lenticchie con glassa di aceto",foto
+2024-11-17,pranzo,melanzane,100,,foto
+2024-11-17,pranzo,lenticchie_secche,80,,foto
+2024-11-17,spuntino,torta_semplice,100,fetta di torta nella stagnola con un frappe',foto
+2024-11-18,pranzo,pasta_semola,100,pasta con una crema bianca,foto
+2024-11-18,pranzo,ricotta_vaccina,60,,foto
+2024-11-18,cena,polenta_cotta,200,polenta con un crumble scuro di legumi sopra,foto
+2024-11-18,cena,lenticchie_secche,80,,foto
+2024-11-18,spuntino,cinnamon_roll,1,girella lievitata alla cannella con una tazza di cioccolata calda; la torta di compleanno dei bambini era condivisa e non e' registrata,foto
+2024-11-18,spuntino,cacao_100,10,,foto
+2024-11-18,spuntino,latte_ps,200,,foto
+2024-11-19,colazione,uovo_intero,3,uova strapazzate su pane scuro con una crema verde di avocado in albergo,foto
+2024-11-19,colazione,pane_segale,100,,foto
+2024-11-19,colazione,avocado,80,,foto
+2024-11-19,pranzo,fagiolini,150,stufato con fagiolini e patate,foto
+2024-11-19,pranzo,patate,100,,foto
+2024-11-19,spuntino,crostata_frutta,100,crostatina di frutta con spicchi d'arancia e una tazza di crema scura,foto
+2024-11-19,spuntino,arancia,1,,foto
+2024-11-19,spuntino,cacao_100,15,,foto
+2024-11-20,pranzo,fagioli_cannellini,200,piatto di fagioli rossi in umido con un cereale; usato l'alimento dei cannellini in scatola,foto
+2024-11-20,pranzo,farro_perlato,60,,foto
+2024-11-20,cena,farro_perlato,100,piatto di farro con verdure a cubetti,foto
+2024-11-20,cena,zucchine,80,,foto
+2024-11-20,cena,carote,60,,foto
+2024-11-20,spuntino,cornetto_crema,1,pasticcino con un caffe',foto
+2024-11-20,spuntino,caffe_espresso,1,,foto
+2024-11-21,cena,farro_perlato,100,ciotola di cereale con fagioli neri e mais; i bocconcini in salsa di pomodoro della stessa serie non sono registrati perche' non distinguo pollo da tofu,foto
+2024-11-21,cena,fagioli_neri_scatola,150,,foto
+2024-11-21,cena,mais_dolce,80,,foto
+2024-11-23,pranzo,lenticchie_secche,90,lenticchie con spicchi di patata dolce e glassa di aceto; peso a crudo assunto,foto
+2024-11-23,pranzo,patate_dolci,250,,foto
+2024-11-23,cena,pane_segale,100,"pane scuro con uova strapazzate, avocado e pomodoro a pezzi",foto
+2024-11-23,cena,uovo_intero,2,,foto
+2024-11-23,cena,avocado,60,,foto
+2024-11-23,cena,pomodorini,60,,foto
+2024-11-23,cena,ceci_scatola,200,padella di ceci con peperoni gialli e cipolla,foto
+2024-11-23,cena,peperoni,100,,foto
+2024-11-23,cena,cipolla,60,,foto
+2024-11-24,pranzo,ceci_scatola,150,piatto di legumi e cereale con bocconcini di carne scura; birra e spicchi d'arancia a lato,foto
+2024-11-24,pranzo,carne_macinata_manzo,100,,foto
+2024-11-24,pranzo,birra,330,,foto
+2024-11-24,pranzo,arancia,1,,foto
+2024-11-24,spuntino,crostata_frutta,100,fetta di crostata alla marmellata mangiata al traguardo di una corsa,foto
+2024-11-24,cena,pizza_margherita,1,pizza margherita con basilico,foto
+2024-11-25,colazione,uovo_intero,3,uova strapazzate con avocado a cubetti su pane scuro,foto
+2024-11-25,colazione,avocado,80,,foto
+2024-11-25,colazione,pane_segale,100,,foto
+2024-11-25,pranzo,carne_macinata_manzo,150,"piatto con svizzere di carne, bastoncini di patata dolce, peperoni gialli grigliati e funghi",foto
+2024-11-25,pranzo,patate_dolci,250,,foto
+2024-11-25,pranzo,peperoni,100,,foto
+2024-11-25,pranzo,funghi,60,,foto
+2024-11-26,colazione,uovo_intero,3,uova strapazzate su pane scuro,foto
+2024-11-26,colazione,pane_segale,100,,foto
+2024-11-26,pranzo,soia_granulare,60,macinato fine color arancio in salsa di pomodoro con pane scuro; letto come soia granulare in umido,foto
+2024-11-26,pranzo,passata_pomodoro,100,,foto
+2024-11-26,pranzo,pane_segale,80,,foto
+2024-11-27,pranzo,pasta_uovo,100,tagliatelle con funghi,foto
+2024-11-27,pranzo,funghi,120,,foto
+2024-11-27,spuntino,cacao_100,15,ciotola di crema scura montata con marmellata scura sopra; porzioni standard assunte,foto
+2024-11-27,spuntino,proteine_whey,30,,foto
+2024-11-27,spuntino,latte_ps,150,,foto
+2024-11-27,spuntino,marmellata_fragola,20,,foto
+2024-11-28,pranzo,focaccia,150,panino di focaccia con formaggio e zucca in gastronomia,foto
+2024-11-28,pranzo,formaggio_semistagionato,50,,foto
+2024-11-28,pranzo,zucca,80,,foto
+2024-11-28,spuntino,cornetto_crema,1,pasticcini con un cappuccino,foto
+2024-11-28,spuntino,cappuccino,1,,foto
+2024-11-29,pranzo,lenticchie_secche,80,ragu' di legumi con bastoncini di patata dolce e glassa di aceto; peso a crudo assunto,foto
+2024-11-29,pranzo,patate_dolci,250,,foto
+2024-11-29,cena,recipe:pizza_semplice,1,"pizza rossa con fettine rosa, rucola e formaggio grattugiato in trattoria",foto
+2024-11-29,spuntino,cacao_100,15,bicchiere di crema scura con un biscotto,foto
+2024-11-29,spuntino,proteine_whey,30,,foto
+2024-11-29,spuntino,latte_ps,150,,foto
+2024-11-29,spuntino,biscotto,1,,foto
+2024-11-30,colazione,cereali_colazione,60,ciotola di cereali con latte,foto
+2024-11-30,colazione,latte_ps,200,,foto
+2024-11-30,pranzo,carne_macinata_manzo,150,piatto di carne in umido con salsa scura al ristorante,foto
+2024-11-30,spuntino,torta_semplice,100,fette di torta con bicchieri di latte,foto
+2024-11-30,spuntino,latte_ps,250,,foto
+2024-12-01,cena,injera,200,ristorante eritreo: injera con stufati scuri e verdure,foto
+2024-12-01,cena,carne_macinata_manzo,120,,foto
+2024-12-01,cena,spinaci,80,,foto
+2024-12-01,cena,lenticchie_secche,60,,foto
+2024-12-02,pranzo,riso_bianco,100,"vaschetta da asporto con cereale, mais, edamame e carote a julienne",foto
+2024-12-02,pranzo,mais_dolce,60,,foto
+2024-12-02,pranzo,edamame,80,,foto
+2024-12-02,pranzo,carote,60,,foto
+2024-12-03,pranzo,couscous,100,piatto con cereale in granelli, verdure e cavolo rosso marinato,foto
+2024-12-03,pranzo,zucchine,60,,foto
+2024-12-03,pranzo,carote,60,,foto
+2024-12-03,pranzo,cavolo_rosso,60,,foto
+2024-12-03,spuntino,panino_farcito,1,panino con carne sfilacciata e cavolo rosso,foto
+2024-12-03,spuntino,cavolo_rosso,60,,foto
+2024-12-03,cena,carne_maiale,150,cena di gala: cotoletta impanata con insalata di patate e una salsa rossa di frutti di bosco,foto
+2024-12-03,cena,pane_bianco,20,,foto
+2024-12-03,cena,patate,200,,foto
+2024-12-03,cena,marmellata_fragola,20,,foto
+2024-12-04,pranzo,ravioli_ricotta,200,tortelli verdi con una crema gialla di zucca al ristorante,foto
+2024-12-04,pranzo,zucca,100,,foto
+2024-12-04,cena,couscous,100,"piatto da buffet con cereale in granelli, insalata, carne e frutta",foto
+2024-12-04,cena,insalata_mista,80,,foto
+2024-12-04,cena,carne_macinata_manzo,100,,foto
+2024-12-04,cena,melone,100,,foto
+2024-12-04,cena,lenticchie_secche,80,piatto con zuppa di legumi, pure' e pane croccante,foto
+2024-12-04,cena,patate,150,,foto
+2024-12-05,pranzo,pizza_base,0.5,tranci di pizza con burrata e prosciutto crudo,foto
+2024-12-05,pranzo,burrata,60,,foto
+2024-12-05,pranzo,prosciutto_crudo,40,,foto
+2024-12-06,cena,pizza_margherita,1,pizza con prosciutto cotto e pezzi arancioni di zucca,foto
+2024-12-06,cena,prosciutto_cotto,50,,foto
+2024-12-06,cena,zucca,80,,foto
+2024-12-07,cena,patate_dolci,200,"piatto con patata dolce a fette, mezze pere arrosto, legumi e glassa di aceto",foto
+2024-12-07,cena,pera,1,,foto
+2024-12-07,cena,ceci_scatola,200,,foto
+2024-12-07,spuntino,torta_semplice,120,torta sbriciolata di mele appena sfornata,foto
+2024-12-07,spuntino,panna_montata,40,coppette natalizie con crema bianca, cialde a stella e frutti rossi,foto
+2024-12-07,spuntino,biscotto,2,,foto
+2024-12-07,spuntino,frutti_di_bosco,40,,foto
+2024-12-08,colazione,pane_segale,100,pane scuro con avocado a pezzi e uova strapazzate,foto
+2024-12-08,colazione,avocado,80,,foto
+2024-12-08,colazione,uovo_intero,3,,foto
+2024-12-08,pranzo,riso_bianco,120,piatto di riso giallo speziato con curry di verdure e mezzo pane piatto a una fiera,foto
+2024-12-08,pranzo,curry_polvere,5,,foto
+2024-12-08,pranzo,naan,80,,foto
+2024-12-08,spuntino,arrosticini,150,mazzo di spiedini di carne alla brace nella carta,foto
+2024-12-09,colazione,pane_integrale,80,fetta di pane a lievitazione naturale con burro,foto
+2024-12-09,colazione,burro,10,,foto
+2024-12-09,cena,pane_segale,100,pane scuro con ricotta sbriciolata e pezzi rossi di pomodoro,foto
+2024-12-09,cena,ricotta_vaccina,80,,foto
+2024-12-09,cena,pomodorini,60,,foto
+2024-12-10,colazione,uovo_intero,3,uova strapazzate con avocado schiacciato su pane scuro,foto
+2024-12-10,colazione,avocado,80,,foto
+2024-12-10,colazione,pane_segale,100,,foto
+2024-12-10,cena,focaccia,200,focaccia fatta in casa in teglia con pomodorini, cipolla e rosmarino,foto
+2024-12-10,cena,pomodorini,80,,foto
+2024-12-10,cena,cipolla,40,,foto
+2024-12-11,colazione,frutti_di_bosco,200,ciotola di frutti di bosco con una polvere proteica sopra,foto
+2024-12-11,colazione,proteine_whey,30,,foto
+2024-12-11,pranzo,lenticchie_secche,90,padella di lenticchie con verdure; peso a crudo assunto,foto
+2024-12-11,pranzo,carote,60,,foto
+2024-12-11,pranzo,spinaci,60,,foto
+2024-12-11,cena,pane_segale,100,pane scuro con avocado e cimette verdi sopra,foto
+2024-12-11,cena,avocado,60,,foto
+2024-12-11,cena,broccoli,80,,foto
+2024-12-11,spuntino,frutti_di_bosco,100,bicchiere di frullato rosa,foto
+2024-12-11,spuntino,latte_ps,200,,foto
+2024-12-12,colazione,avena_fiocchi,60,ciotola di fiocchi con banana a fette e cacao,foto
+2024-12-12,colazione,banana,1,,foto
+2024-12-12,colazione,cacao_100,10,,foto
+2024-12-12,pranzo,piselli_verdi,200,piatto di piselli in umido,foto
+2024-12-12,cena,fagioli_cannellini,200,scodella di zuppa toscana di legumi e cereali,foto
+2024-12-12,cena,farro_perlato,60,,foto
+2024-12-12,spuntino,frutti_di_bosco,200,ciotola di frutti di bosco con granella,foto
+2024-12-12,spuntino,mandorle,20,,foto
+2024-12-13,pranzo,sformato_verdure,250,tortino salato giallo tondo con verdure scure dentro,foto
+2024-12-13,cena,mais_dolce,60,"ciotola da asporto con bocconcini chiari, mais, carote a julienne, olive e barbabietola; i bocconcini sono letti come pollo",foto
+2024-12-13,cena,petto_pollo,120,,foto
+2024-12-13,cena,carote,60,,foto
+2024-12-13,cena,olive,20,,foto
+2024-12-14,colazione,pane_integrale,120,fette di pane a lievitazione naturale con uova strapazzate e avocado schiacciato; un bicchiere di birra a lato,foto
+2024-12-14,colazione,uovo_intero,3,,foto
+2024-12-14,colazione,avocado,80,,foto
+2024-12-14,colazione,birra,330,,foto
+2024-12-14,pranzo,pasta_semola,120,tavolata con piatti di pasta lunga in crema chiara con funghi,foto
+2024-12-14,pranzo,funghi,80,,foto
+2024-12-14,pranzo,ricotta_vaccina,50,,foto
+2024-12-14,spuntino,torta_semplice,120,torta tonda bassa con marmellata rossa sopra,foto
+2024-12-14,spuntino,marmellata_fragola,20,,foto
+2024-12-15,colazione,avena_fiocchi,70,ciotola di crema al cacao con banana a fette,foto
+2024-12-15,colazione,cacao_100,15,,foto
+2024-12-15,colazione,banana,1,,foto
+2024-12-15,pranzo,panino_bianco,1,tapas al bancone: un hot dog con ketchup e formaggio e piattini di stuzzichini,foto
+2024-12-15,pranzo,salsiccia,80,,foto
+2024-12-15,spuntino,pane_bianco,50,fetta di pane con prosciutto crudo tenuta in mano,foto
+2024-12-15,spuntino,prosciutto_crudo,40,,foto
+2024-12-16,colazione,pane_bianco,100,"pane tostato strofinato col pomodoro, uova strapazzate, avocado a cubetti e prosciutto crudo",foto
+2024-12-16,colazione,pomodorini,40,,foto
+2024-12-16,colazione,uovo_intero,3,,foto
+2024-12-16,colazione,avocado,80,,foto
+2024-12-16,colazione,prosciutto_crudo,50,,foto
+2024-12-16,pranzo,carne_maiale,180,"taverna: costine di maiale glassate con patate a pezzi, crocchette e un piatto di cereale con uovo fritto",foto
+2024-12-16,pranzo,patate,200,,foto
+2024-12-16,pranzo,uovo_intero,1,,foto
+2024-12-17,colazione,fagioli_stufati,150,"colazione a buffet: fagioli stufati, uova strapazzate, crocchette, una fetta di tortilla di patate, un'arancia e un caffe'",foto
+2024-12-17,colazione,uovo_intero,2,,foto
+2024-12-17,colazione,patate,100,,foto
+2024-12-17,colazione,arancia,1,,foto
+2024-12-17,colazione,caffe_espresso,1,,foto
+2024-12-18,colazione,uovo_intero,3,uova strapazzate con pane scuro e avocado a cubetti; la cena di gruppo della stessa giornata era in teglie condivise e non e' registrata,foto
+2024-12-18,colazione,pane_segale,100,,foto
+2024-12-18,colazione,avocado,80,,foto
+2024-12-19,pranzo,cavolfiore,300,piatto di cavolfiore sbriciolato,foto
+2024-12-19,cena,polenta_cotta,250,cena sociale: polenta scura con spezzatino e un piatto di casoncelli col ragu',foto
+2024-12-19,cena,carne_macinata_manzo,150,,foto
+2024-12-19,cena,ravioli_ricotta,150,,foto
+2024-12-20,pranzo,patate,200,piatto di patate con uno stufato di funghi e legumi,foto
+2024-12-20,pranzo,funghi,100,,foto
+2024-12-20,pranzo,lenticchie_secche,70,,foto
+2024-12-20,cena,pizza_margherita,1,"pizza con prosciutto crudo, rucola, formaggio grattugiato, ciuffi di mozzarella e pomodorini",foto
+2024-12-20,cena,prosciutto_crudo,50,,foto
+2024-12-20,cena,rucola,30,,foto
+2024-12-20,cena,grana_padano,20,,foto
+2024-12-21,pranzo,patate,250,pentolone di patate a cubetti in crema di formaggio servito in piatti individuali,foto
+2024-12-21,pranzo,formaggio_semistagionato,60,,foto
+2024-12-21,cena,polenta_cotta,250,polenta con spezzatino scuro e verdure grigliate al rifugio,foto
+2024-12-21,cena,carne_macinata_manzo,130,,foto
+2024-12-21,cena,zucchine,60,,foto
+2024-12-21,cena,peperoni,60,,foto
+2024-12-21,spuntino,strudel_mele,130,fetta di strudel con un ciuffo di panna,foto
+2024-12-21,spuntino,panna_montata,30,,foto
+2024-12-22,colazione,uovo_intero,3,"uova strapazzate con salame, ricotta e un pane piatto",foto
+2024-12-22,colazione,salame,40,,foto
+2024-12-22,colazione,ricotta_vaccina,60,,foto
+2024-12-22,colazione,piadina,100,,foto
+2024-12-22,pranzo,bresaola,80,"insalatona con fettine di carne salata, rucola, scaglie di formaggio e legumi",foto
+2024-12-22,pranzo,rucola,60,,foto
+2024-12-22,pranzo,grana_padano,25,,foto
+2024-12-22,pranzo,ceci_scatola,100,,foto
+2024-12-22,spuntino,torta_semplice,120,fetta di torta sbriciolata con un caffe' al rifugio,foto
+2024-12-22,spuntino,caffe_espresso,1,,foto
+2024-12-23,colazione,cappuccino,1,tazza di crema chiara spolverata di cannella,foto
+2024-12-23,pranzo,polenta_cotta,250,polenta taragna con spezzatino scuro e radicchio,foto
+2024-12-23,pranzo,carne_macinata_manzo,150,,foto
+2024-12-23,pranzo,insalata_mista,40,,foto
+2024-12-24,pranzo,pizza_margherita,1,calzone gonfio ripieno di prosciutto cotto e formaggio al rifugio,foto
+2024-12-24,pranzo,prosciutto_cotto,50,,foto
+2024-12-24,cena,avocado,100,insalata di avocado a cubetti e pomodoro,foto
+2024-12-24,cena,pomodorini,100,,foto
+2024-12-24,spuntino,strudel_mele,130,fetta di strudel di mele al ristorante di montagna,foto
+2024-12-24,spuntino,cacao_100,15,ciotola di crema scura con marmellata e banana a fette; porzioni standard assunte,foto
+2024-12-24,spuntino,proteine_whey,30,,foto
+2024-12-24,spuntino,banana,1,,foto
+2024-12-24,spuntino,marmellata_fragola,20,,foto
+2024-12-25,pranzo,patate_dolci,200,pentola di stufato con pezzi di patata dolce servito a Natale,foto
+2024-12-25,pranzo,carne_macinata_manzo,120,,foto
+2024-12-25,spuntino,panettone,100,fetta di panettone e una ciotola di crema scura,foto
+2024-12-25,spuntino,cacao_100,15,,foto
+2024-12-25,spuntino,proteine_whey,30,,foto
+2024-12-26,spuntino,panettone,120,fetta di panettone con frutti rossi sopra e un bicchiere di bevanda scura,foto
+2024-12-26,spuntino,frutti_di_bosco,60,,foto
+2024-12-28,colazione,crostata_frutta,120,crostata alla marmellata con le tazze sul tavolo,foto
+2024-12-28,pranzo,pasta_uovo,100,tagliatelle in crema chiara con funghi al ristorante,foto
+2024-12-28,pranzo,funghi,60,,foto
+2024-12-28,cena,ravioli_ricotta,200,casoncelli in crema con pezzi di patata,foto
+2024-12-28,cena,patate,80,,foto
+2024-12-28,spuntino,crostata_frutta,100,fetta di crostata mangiata sulla neve,foto
+2024-12-29,pranzo,panino_farcito,1,"hamburger con uovo fritto colante, patatine fritte e insalata di cavolo",foto
+2024-12-29,pranzo,uovo_intero,1,,foto
+2024-12-29,pranzo,patate,150,,foto
+2024-12-29,pranzo,cavolo_rosso,50,,foto
+2024-12-30,spuntino,polenta_cotta,150,fette di polenta abbrustolita con prosciutto crudo sopra a un aperitivo,foto
+2024-12-30,spuntino,prosciutto_crudo,50,,foto
+2024-12-31,colazione,panettone,100,coppa di vetro con cubetti di dolce lievitato, crema e scaglie scure, con un caffe',foto
+2024-12-31,colazione,panna_montata,40,,foto
+2024-12-31,colazione,caffe_espresso,1,,foto
+2024-12-31,pranzo,patate,250,tortino di patate grattugiate con radicchio e formaggio filante,foto
+2024-12-31,pranzo,uovo_intero,2,,foto
+2024-12-31,pranzo,formaggio_semistagionato,40,,foto
+2024-12-31,pranzo,insalata_mista,40,,foto
+2024-12-31,cena,focaccia,150,trancio di focaccia alta con rucola sopra,foto
+2024-12-31,cena,rucola,40,,foto
