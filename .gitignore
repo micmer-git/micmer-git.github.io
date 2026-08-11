@@ -38,3 +38,12 @@ top-20/*.mp4
 
 # il racconto v5 in h264 e' un deliverable della pagina, non un file di lavoro
 !top-20/top-20-reel-v5.mp4
+
+# Il Timeline in CHIARO non entra mai nel repo. L'archivio cifrato si', il suo
+# contenuto no: sono posizioni GPS grezze, casa e lavoro compresi, e questo
+# repository e' PUBBLICO. Senza queste righe basta un `git add -A` dopo un
+# decrypt per pubblicare tutto senza accorgersene.
+Timeline.json
+Timeline*.json
+*Timeline*.json
+!vita/spostamenti/data/private/Timeline.json.gz.aes256gcm

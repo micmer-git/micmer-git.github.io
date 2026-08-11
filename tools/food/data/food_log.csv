@@ -1,4 +1,21 @@
 date,meal,food_id,qty,note,source
+2026-04-23,pranzo,riso_bianco,100,poke bowl,foto
+2026-04-23,pranzo,edamame,80,,foto
+2026-04-23,pranzo,carote,60,,foto
+2026-04-23,pranzo,carne_macinata_manzo,120,carne sopra il bowl,foto
+2026-04-23,pranzo,mandorle,15,mandorle a lamelle,foto
+2026-04-23,cena,ravioli_ricotta,200,"ravioli al ristorante, con pomodorini confit",foto
+2026-04-23,cena,pomodorini,60,,foto
+2026-04-23,cena,prezzemolo,5,salsa verde sotto,foto
+2026-04-24,colazione,caffe_espresso,1,tazza grande,foto
+2026-04-24,colazione,gallette_riso,20,,foto
+2026-04-24,colazione,banana,1,,foto
+2026-04-24,colazione,burro_arachidi_sgrassato,20,sulla banana,foto
+2026-04-24,pranzo,lenticchie_secche,90,lenticchie con verdure a foglia,foto
+2026-04-24,pranzo,spinaci,150,,foto
+2026-04-24,pranzo,carote,70,,foto
+2026-04-24,cena,pomodorini,150,pomodoro e feta nel piatto verde,foto
+2026-04-24,cena,feta,60,,foto
 2026-05-01,colazione,panino_bianco,2,panini con salume,foto
 2026-05-01,colazione,prosciutto_crudo,60,,foto
 2026-05-01,pranzo,fagioli_cannellini,200,shakshuka di fagioli,foto
