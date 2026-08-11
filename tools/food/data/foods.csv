@@ -123,3 +123,13 @@ bresaola,Bresaola,proteine,g,100,151,33.1,0.4,0.4,0,2.0,0.8,0.03,1600,500,15,2.4
 mozzarella_proteica,Mozzarella proteica (light),latticini,g,100,150,24.0,1.5,1.5,0,6.0,4.0,0.1,400,90,480,0.2,20,3.0,0,60,0.2,1.0,7,medium,"alta in proteine, meno grassa della vaccina",,1,0
 gelato_cono,Gelato artigianale in cono,dolci,g,100,215,3.5,26.0,24.0,0.8,10.5,6.5,0.05,60,180,120,0.4,18,0.5,1,90,0.2,0.3,8,medium,"due gusti, cono compreso ~150 g",,1,0
 guanciale,Guanciale,proteine,g,100,655,8.0,0,0,0,69.0,25.0,0.3,1200,150,10,0.6,8,1.2,0,0,0.5,0.6,2,medium,,,1,1
+polpette_legumi,Polpette/burger di legumi fatti in casa,legumi,g,100,175,9.5,20.0,2.0,6.0,5.5,0.80,0.15,240,380,55,2.6,50,1.4,3,60,0,0,110,low,"composito: legumi + verdure, cotto in padella",legume_misto,0,0
+chapati,Chapati / roti integrale,cereali,g,100,297,9.0,55.0,1.5,7.0,4.0,0.90,0.06,220,220,40,3.0,90,1.5,0,0,0,0,25,medium,pane piatto indiano di farina integrale,frumento,0,0
+momo_nepalese,Momo nepalesi al vapore,cereali,g,100,200,8.0,26.0,1.5,1.8,7.0,2.50,0.05,420,190,30,1.6,22,1.0,3,25,0.1,0.4,20,low,"ravioli al vapore, ripieno misto verdure/carne",frumento,0,0
+noodles_saltati,Noodles saltati con verdure (chow mein),cereali,g,100,180,5.5,26.0,2.0,2.0,6.0,1.00,0.05,480,160,25,1.4,25,0.6,8,120,0,0,30,low,peso da cotto,frumento,0,1
+masala_chai,Masala chai (te' al latte zuccherato),bevande,ml,100,60,1.8,9.0,8.5,0,1.8,1.10,0.01,25,90,65,0.1,8,0.2,0,18,0.05,0.25,3,low,te' nero con latte e zucchero,te,1,0
+fave,Fave sgusciate,legumi,g,100,88,7.6,11.7,1.8,5.4,0.7,0.11,0.03,25,250,22,1.9,33,0.9,5,15,0,0,100,medium,"fresche o surgelate, sgusciate",fava,0,0
+babka_mandorle,Babka / girella lievitata cioccolato e mandorle,dolci,g,100,400,7.0,45.0,20.0,2.5,21.0,10.00,0.10,260,190,60,1.8,40,0.8,0,130,0.5,0.2,30,low,"dolce da pasticceria, stima",frumento,1,1
+arancia,Arancia media,frutta,unit,1,62,1.2,15.4,12.2,3.1,0.2,0.02,0.01,0,237,52,0.1,13,0.1,70,11,0,0,39,high,~130 g edibili,arancia,0,0
+broccoli,Broccoli,verdura,g,100,35,2.4,7.2,1.4,3.3,0.4,0.04,0.13,41,293,40,0.7,21,0.4,65,63,0,0,108,high,cotti al vapore,broccolo,0,0
+piselli_verdi,Piselli verdi lessati/surgelati,verdura,g,100,81,5.4,14.5,5.7,5.1,0.4,0.07,0.04,5,244,25,1.5,33,1.2,20,38,0,0,65,high,peso da cotti,pisello,0,0

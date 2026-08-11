@@ -1,0 +1,447 @@
+date,meal,food_id,qty,note,source
+2026-01-01,pranzo,chapati,90,"thali in una bettola: pane piatto, dal, curry di patate e verdure; porzione standard assunta",foto
+2026-01-01,pranzo,lenticchie_secche,80,,foto
+2026-01-01,pranzo,patate,150,,foto
+2026-01-01,pranzo,carote,100,,foto
+2026-01-01,cena,chapati,90,pane piatto con curry di verdure a foglia; porzione standard assunta,foto
+2026-01-01,cena,spinaci,120,,foto
+2026-01-02,colazione,uovo_intero,2,colazione in hotel: uova e pane,foto
+2026-01-02,colazione,pane_bianco,60,,foto
+2026-01-02,colazione,caffe_espresso,1,,foto
+2026-01-02,pranzo,riso_bianco,120,"thali: riso, pane piatto, verdure a foglia e curry di legumi; porzione standard assunta",foto
+2026-01-02,pranzo,chapati,90,,foto
+2026-01-02,pranzo,spinaci,100,,foto
+2026-01-02,pranzo,ceci_scatola,150,,foto
+2026-01-03,colazione,caffe_espresso,1,caffe' e un piatto con polpetta di carne e uovo,foto
+2026-01-03,colazione,carne_macinata_manzo,100,porzione standard assunta,foto
+2026-01-03,colazione,uovo_intero,1,,foto
+2026-01-03,pranzo,pane_integrale,120,quattro crostini di avocado toast con semi; porzione standard assunta,foto
+2026-01-03,pranzo,avocado,120,,foto
+2026-01-03,cena,ceci_scatola,200,curry di ceci con riso speziato; il dosa a fianco non e' registrato,foto
+2026-01-03,cena,riso_bianco,100,porzione standard assunta,foto
+2026-01-04,colazione,riso_bianco,100,colazione in hotel: riso speziato e caffe',foto
+2026-01-04,colazione,caffe_espresso,1,,foto
+2026-01-04,pranzo,riso_bianco,150,riso pilaf con yogurt; porzione standard assunta,foto
+2026-01-04,pranzo,yogurt_bianco_intero,80,,foto
+2026-01-04,cena,carne_macinata_manzo,120,polpette di carne macinata speziata con pane piatto; porzione standard assunta,foto
+2026-01-04,cena,chapati,90,,foto
+2026-01-05,pranzo,riso_bianco,120,"thali: riso, dal e curry; porzione standard assunta",foto
+2026-01-05,pranzo,lenticchie_secche,80,,foto
+2026-01-05,pranzo,chapati,90,,foto
+2026-01-05,cena,spinaci,200,curry verde di spinaci con cubetti di formaggio fresco e pane piatto; porzione standard assunta,foto
+2026-01-05,cena,mozzarella,60,paneer,foto
+2026-01-05,cena,chapati,90,,foto
+2026-01-06,colazione,cappuccino,1,cappuccino al bar,foto
+2026-01-06,pranzo,chapati,90,"thali: pane piatto, dal, verdure a foglia e curry di patate; porzione standard assunta",foto
+2026-01-06,pranzo,lenticchie_secche,80,,foto
+2026-01-06,pranzo,spinaci,120,,foto
+2026-01-06,pranzo,patate,150,,foto
+2026-01-06,spuntino,torta_cioccolato,100,fetta di torta al cioccolato; porzione standard assunta,foto
+2026-01-07,colazione,uovo_intero,2,colazione: omelette con pane piatto e caffe',foto
+2026-01-07,colazione,chapati,80,porzione standard assunta,foto
+2026-01-07,colazione,caffe_espresso,1,,foto
+2026-01-07,pranzo,ceci_scatola,250,pentolone di curry di ceci servito con riso e dal; il dosa nella stessa serie non e' registrato,foto
+2026-01-07,pranzo,riso_bianco,120,porzione standard assunta,foto
+2026-01-07,pranzo,lenticchie_secche,70,,foto
+2026-01-07,spuntino,biscotto,4,dolcetti da forno con caffe'; porzione standard assunta,foto
+2026-01-07,spuntino,caffe_espresso,1,,foto
+2026-01-08,pranzo,noodles_saltati,250,noodles saltati con verdure a foglia e una ciotola di curry di patate; porzione standard assunta,foto
+2026-01-08,pranzo,spinaci,80,,foto
+2026-01-08,pranzo,patate,150,,foto
+2026-01-08,spuntino,masala_chai,200,te' al latte,foto
+2026-01-08,cena,momo_nepalese,250,piatto di momo al vapore con ciotola di salsa; porzione standard assunta,foto
+2026-01-09,colazione,uovo_intero,2,"colazione: uovo, melone, un dolce lievitato e caffe'",foto
+2026-01-09,colazione,melone,150,,foto
+2026-01-09,colazione,croissant_vuoto,1,,foto
+2026-01-09,colazione,caffe_espresso,1,,foto
+2026-01-09,pranzo,riso_bianco,150,"thali: riso, dal, verdure e curry di patate; porzione standard assunta",foto
+2026-01-09,pranzo,lenticchie_secche,80,,foto
+2026-01-09,pranzo,spinaci,80,,foto
+2026-01-09,pranzo,patate,120,,foto
+2026-01-09,cena,pizza_margherita,1,"pizzeria a Kathmandu, pizza rossa con mozzarella",foto
+2026-01-10,colazione,pane_bianco,70,"colazione: toast, uovo e caffe'",foto
+2026-01-10,colazione,uovo_intero,1,,foto
+2026-01-10,colazione,caffe_espresso,1,,foto
+2026-01-10,pranzo,riso_bianco,150,"thali nepalese (dal bhat): riso, dal di lenticchie, verdure a foglia e curry di patate; porzione standard assunta",foto
+2026-01-10,pranzo,lenticchie_secche,80,,foto
+2026-01-10,pranzo,spinaci,100,,foto
+2026-01-10,pranzo,patate,150,,foto
+2026-01-10,cena,momo_nepalese,200,piatto di momo al vapore con salsa; porzione standard assunta,foto
+2026-01-11,pranzo,patate,300,ciotola di curry giallo di patate in una locanda; porzione standard assunta,foto
+2026-01-11,pranzo,curry_polvere,5,,foto
+2026-01-11,spuntino,masala_chai,200,te' al latte in bicchiere,foto
+2026-01-12,colazione,uovo_intero,2,colazione in hotel: uova e un croissant,foto
+2026-01-12,colazione,croissant_vuoto,1,,foto
+2026-01-12,colazione,caffe_espresso,1,,foto
+2026-01-12,cena,riso_bianco,120,"ristorante centroasiatico: stufato in coccio con legumi e carote, riso e pane piatto; porzione standard assunta",foto
+2026-01-12,cena,ceci_scatola,150,,foto
+2026-01-12,cena,carote,100,,foto
+2026-01-12,cena,chapati,90,,foto
+2026-01-13,colazione,uovo_intero,3,uova strapazzate con avocado e pane nero,foto
+2026-01-13,colazione,avocado,100,,foto
+2026-01-13,colazione,pane_segale,80,porzione standard assunta,foto
+2026-01-13,pranzo,lenticchie_secche,90,legumi in umido con verdure a foglia e spicchi di piadina; porzione standard assunta,foto
+2026-01-13,pranzo,spinaci,120,,foto
+2026-01-13,pranzo,piadina,1,,foto
+2026-01-14,colazione,uovo_intero,3,uova strapazzate con avocado e pane nero,foto
+2026-01-14,colazione,avocado,100,,foto
+2026-01-14,colazione,pane_segale,80,porzione standard assunta,foto
+2026-01-15,pranzo,recipe:aloo_palak_ceci,1,"stufato verde di spinaci, patate e ceci con pane nero e limone",foto
+2026-01-15,pranzo,pane_segale,80,porzione standard assunta,foto
+2026-01-15,pranzo,limone,15,,foto
+2026-01-16,pranzo,broccoli,200,broccoli e curry giallo di patate; porzione standard assunta,foto
+2026-01-16,pranzo,patate,200,,foto
+2026-01-16,pranzo,curry_polvere,5,,foto
+2026-01-17,pranzo,soia_granulare,70,macinato rosso alla pizzaiola con pane nero; l'hamburger a fianco non e' identificabile,foto
+2026-01-17,pranzo,passata_pomodoro,100,,foto
+2026-01-17,pranzo,pane_segale,80,porzione standard assunta,foto
+2026-01-17,spuntino,banana,1,banana mangiata in bici,foto
+2026-01-18,pranzo,lenticchie_secche,90,stufato di lenticchie e verdure con limone e pane nero; porzione standard assunta,foto
+2026-01-18,pranzo,carote,100,,foto
+2026-01-18,pranzo,spinaci,100,,foto
+2026-01-18,pranzo,pane_segale,80,,foto
+2026-01-18,spuntino,torta_cioccolato,110,plumcake al cioccolato molto scuro; porzione standard assunta,foto
+2026-01-19,colazione,uovo_intero,3,uova strapazzate con avocado su una base scura,foto
+2026-01-19,colazione,avocado,100,,foto
+2026-01-19,colazione,pane_segale,70,porzione standard assunta,foto
+2026-01-20,spuntino,cioccolato_fondente_50,30,scatola di cioccolatini Pierre Marcolini; porzione standard assunta,foto
+2026-01-21,pranzo,lenticchie_secche,90,"lenticchie con peperoni, fagioli rossi e verdure a foglia; porzione standard assunta",foto
+2026-01-21,pranzo,peperoni,120,,foto
+2026-01-21,pranzo,fagioli_neri_scatola,150,in foto sono fagioli rossi,foto
+2026-01-21,pranzo,spinaci,80,,foto
+2026-01-21,spuntino,yogurt_greco_0,200,ciotola di crema bianca; porzione standard assunta,foto
+2026-01-22,cena,pizza_margherita,1,pizza con prosciutto cotto e mozzarella al ristorante,foto
+2026-01-22,cena,prosciutto_cotto,50,porzione standard assunta,foto
+2026-01-23,pranzo,lenticchie_secche,90,zuppa di legumi con limone e focaccia con pomodorini e cipolla; porzione standard assunta,foto
+2026-01-23,pranzo,limone,15,,foto
+2026-01-23,pranzo,focaccia,120,,foto
+2026-01-23,cena,zuppa_vellutata,300,"vellutata rosa di pomodoro, poi un piatto di couscous con verdure a foglia",foto
+2026-01-23,cena,couscous,90,porzione standard assunta,foto
+2026-01-23,cena,spinaci,100,,foto
+2026-01-24,colazione,pane_segale,80,pane nero con banana e granella di cioccolato,foto
+2026-01-24,colazione,banana,1,,foto
+2026-01-24,colazione,cioccolato_fondente_85,15,porzione standard assunta,foto
+2026-01-24,spuntino,torta_semplice,120,fetta di strudel in rifugio con caffe'; porzione standard assunta,foto
+2026-01-24,spuntino,caffe_espresso,1,,foto
+2026-01-25,colazione,babka_mandorle,120,girella lievitata al cioccolato e mandorle con cappuccino; porzione standard assunta,foto
+2026-01-25,colazione,cappuccino,1,,foto
+2026-01-25,pranzo,couscous,90,"couscous con funghi trifolati, una bistecca, avocado, rucola, pane nero e limone; porzione standard assunta",foto
+2026-01-25,pranzo,funghi,120,,foto
+2026-01-25,pranzo,bistecca_manzo,150,,foto
+2026-01-25,pranzo,avocado,80,,foto
+2026-01-25,pranzo,rucola,40,,foto
+2026-01-25,pranzo,pane_segale,80,,foto
+2026-01-26,cena,pasta_semola,110,cena al ristorante: pizzoccheri con patate e formaggio; porzione standard assunta,foto
+2026-01-26,cena,patate,100,,foto
+2026-01-26,cena,formaggio_semistagionato,50,,foto
+2026-01-26,cena,burro,15,,foto
+2026-01-27,pranzo,fagioli_neri_scatola,250,fagioli rossi in umido con zucchine al curry e una cucchiaiata di crema bianca; in foto la latta da 410 g,foto
+2026-01-27,pranzo,zucchine,200,,foto
+2026-01-27,pranzo,curry_polvere,5,,foto
+2026-01-27,pranzo,yogurt_greco_0,60,,foto
+2026-01-27,spuntino,torta_cioccolato,110,torta al cioccolato molto scura; porzione standard assunta,foto
+2026-01-27,cena,piadina,1,piadina/pane piatto,foto
+2026-01-28,colazione,uovo_intero,2,uova all'occhio di bue e caffe',foto
+2026-01-28,colazione,caffe_espresso,1,,foto
+2026-01-28,pranzo,pasta_integrale,110,spaghetti integrali saltati con peperoni e carote; porzione standard assunta,foto
+2026-01-28,pranzo,peperoni,120,,foto
+2026-01-28,pranzo,carote,100,,foto
+2026-01-29,pranzo,uovo_intero,3,uova al tegamino cotte insieme ai ceci con salvia,foto
+2026-01-29,pranzo,ceci_scatola,250,porzione standard assunta,foto
+2026-01-30,pranzo,ceci_scatola,250,ceci e patate in umido al pomodoro con pane nero; porzione standard assunta,foto
+2026-01-30,pranzo,patate,200,,foto
+2026-01-30,pranzo,passata_pomodoro,80,,foto
+2026-01-30,pranzo,pane_segale,80,,foto
+2026-01-30,spuntino,caffe_espresso,1,caffe' e un dolce in rifugio,foto
+2026-01-30,spuntino,torta_semplice,100,porzione standard assunta,foto
+2026-01-31,pranzo,pizza_base,0.5,"due tranci di pizza in teglia, uno rosso e uno con verdure a foglia e ricotta",foto
+2026-01-31,pranzo,passata_pomodoro,60,,foto
+2026-01-31,pranzo,spinaci,60,,foto
+2026-01-31,pranzo,ricotta_vaccina,50,porzione standard assunta,foto
+2026-01-31,spuntino,torta_semplice,130,"fetta di torta farcita di marmellata in rifugio, con latte macchiato; porzione standard assunta",foto
+2026-01-31,spuntino,cappuccino,1,,foto
+2026-01-31,cena,pomodorini,250,"ciotola di pomodorini con mozzarelline e olive, pane nero a fianco",foto
+2026-01-31,cena,mozzarella_proteica,100,porzione standard assunta,foto
+2026-01-31,cena,olive,30,,foto
+2026-01-31,cena,pane_segale,80,,foto
+2026-02-01,colazione,avena_fiocchi,80,"pancake grande di grano saraceno con banana, marmellata scura, burro d'arachidi e noci; porzione standard assunta",foto
+2026-02-01,colazione,banana,1,,foto
+2026-02-01,colazione,marmellata_fragola,30,marmellata scura ai mirtilli,foto
+2026-02-01,colazione,burro_arachidi_sgrassato,25,,foto
+2026-02-01,colazione,noci,15,,foto
+2026-02-01,pranzo,couscous,90,couscous con piselli e crema bianca; porzione standard assunta,foto
+2026-02-01,pranzo,piselli_verdi,150,,foto
+2026-02-01,pranzo,ricotta_vaccina,100,,foto
+2026-02-02,pranzo,soia_granulare,70,"macinato vegetale con carote e spinaci, e una teglia di couscous con verdure; porzione standard assunta",foto
+2026-02-02,pranzo,carote,100,,foto
+2026-02-02,pranzo,spinaci,120,,foto
+2026-02-02,pranzo,couscous,90,,foto
+2026-02-03,colazione,uovo_intero,3,uova strapazzate con avocado e pane nero,foto
+2026-02-03,colazione,avocado,100,,foto
+2026-02-03,colazione,pane_segale,80,porzione standard assunta,foto
+2026-02-04,colazione,uovo_intero,3,frittata sottile con avocado schiacciato e pane nero,foto
+2026-02-04,colazione,avocado,100,,foto
+2026-02-04,colazione,pane_segale,80,porzione standard assunta,foto
+2026-02-04,pranzo,pane_bianco,80,due fette di pane con ceci sopra,foto
+2026-02-04,pranzo,ceci_scatola,200,porzione standard assunta,foto
+2026-02-05,pranzo,uovo_intero,3,"frittata di patate con broccoli, avocado, spinaci, limone e pane",foto
+2026-02-05,pranzo,patate,200,porzione standard assunta,foto
+2026-02-05,pranzo,broccoli,150,,foto
+2026-02-05,pranzo,avocado,80,,foto
+2026-02-05,pranzo,spinaci,100,,foto
+2026-02-05,pranzo,pane_integrale,70,,foto
+2026-02-05,cena,recipe:pizza_burrata_crudo,1,"pizza con crudo, rucola e burrata al ristorante Genesi",foto
+2026-02-06,pranzo,lenticchie_secche,90,"zuppa densa di legumi con semi sopra, pane ai semi e focaccia a fianco; porzione standard assunta",foto
+2026-02-06,pranzo,pane_segale,80,,foto
+2026-02-06,pranzo,focaccia,60,,foto
+2026-02-07,colazione,pane_integrale,80,avocado toast con uovo,foto
+2026-02-07,colazione,avocado,100,,foto
+2026-02-07,colazione,uovo_intero,2,,foto
+2026-02-07,pranzo,farina_ceci,120,farinata di ceci in padella con funghi; porzione standard assunta,foto
+2026-02-07,pranzo,funghi,100,,foto
+2026-02-07,pranzo,olio_evo,10,,foto
+2026-02-07,spuntino,cornetto_crema,1,sfogliatella con zucchero,foto
+2026-02-08,cena,recipe:pizza_semplice,1,"pizza con affettato rosso e rucola, senza mozzarella",foto
+2026-02-11,pranzo,pane_bianco,80,pane con sopra un crumble di ceci schiacciati e crema bianca; porzione standard assunta,foto
+2026-02-11,pranzo,ceci_scatola,200,,foto
+2026-02-11,pranzo,ricotta_vaccina,60,,foto
+2026-02-12,colazione,avena_fiocchi,60,pancake grande scuro con marmellata e crema bianca; anche una fetta di pane bianco; porzione standard assunta,foto
+2026-02-12,colazione,ricotta_vaccina,80,,foto
+2026-02-12,colazione,marmellata_fragola,40,,foto
+2026-02-12,colazione,pane_bianco,70,,foto
+2026-02-13,pranzo,ceci_scatola,250,ceci con verdure a foglia e pane; porzione standard assunta,foto
+2026-02-13,pranzo,spinaci,150,,foto
+2026-02-13,pranzo,pane_bianco,70,,foto
+2026-02-13,cena,pane_integrale,80,pane con avocado e mozzarelline,foto
+2026-02-13,cena,avocado,100,,foto
+2026-02-13,cena,mozzarella,60,porzione standard assunta,foto
+2026-02-14,colazione,babka_mandorle,120,girella lievitata al cioccolato e mandorle; porzione standard assunta,foto
+2026-02-14,pranzo,ceci_scatola,250,"ceci con spinaci, funghi e limone, pane nero a fianco; porzione standard assunta",foto
+2026-02-14,pranzo,spinaci,150,,foto
+2026-02-14,pranzo,funghi,100,,foto
+2026-02-14,pranzo,pane_segale,80,,foto
+2026-02-14,spuntino,torta_cioccolato,110,torta al cioccolato molto scura fatta in casa; porzione standard assunta,foto
+2026-02-14,cena,uovo_intero,3,uova strapazzate con avocado e pane nero,foto
+2026-02-14,cena,avocado,100,,foto
+2026-02-14,cena,pane_segale,80,,foto
+2026-02-15,pranzo,lenticchie_secche,90,stufato di lenticchie in coccio con patate e peperoni; porzione standard assunta,foto
+2026-02-15,pranzo,patate,180,,foto
+2026-02-15,pranzo,peperoni,100,,foto
+2026-02-15,pranzo,cipolla,60,,foto
+2026-02-15,spuntino,torta_cioccolato,110,porzione standard assunta,foto
+2026-02-15,cena,pizza_base,0.5,"pinsa in teglia con prosciutto cotto, mozzarella e zucca",foto
+2026-02-15,cena,prosciutto_cotto,50,porzione standard assunta,foto
+2026-02-15,cena,mozzarella,60,,foto
+2026-02-16,pranzo,ceci_scatola,250,ceci con fagiolini e pesto di erbe; porzione standard assunta,foto
+2026-02-16,pranzo,fagiolini,150,,foto
+2026-02-16,pranzo,basilico,10,,foto
+2026-02-16,spuntino,frutti_di_bosco,250,"ciotola di frutti di bosco misti, poi frullati con crema bianca",foto
+2026-02-16,spuntino,fragole,80,,foto
+2026-02-16,spuntino,yogurt_greco_0,150,porzione standard assunta,foto
+2026-02-17,pranzo,pane_integrale,90,avocado toast con fette di arancia,foto
+2026-02-17,pranzo,avocado,100,,foto
+2026-02-17,pranzo,arancia,1,,foto
+2026-02-17,spuntino,crostata_frutta,120,"crostatina ai frutti rossi, pasticceria Agass; porzione standard assunta",foto
+2026-02-18,pranzo,pasta_piselli,100,fusilli verdi di legumi con ceci; porzione standard assunta,foto
+2026-02-18,pranzo,ceci_scatola,150,,foto
+2026-02-18,cena,pizza_margherita,0.5,festa di compleanno: pizze in teglia e torta,foto
+2026-02-18,cena,torta_semplice,120,porzione standard assunta,foto
+2026-02-20,colazione,gallette_riso,30,gallette di riso con crema bianca e un budino al cacao,foto
+2026-02-20,colazione,ricotta_vaccina,80,porzione standard assunta,foto
+2026-02-20,colazione,cacao_100,10,,foto
+2026-02-20,pranzo,ceci_scatola,250,curry di ceci con verdure a foglia; porzione standard assunta,foto
+2026-02-20,pranzo,spinaci,120,,foto
+2026-02-20,pranzo,patate_dolci,100,,foto
+2026-02-20,pranzo,curry_polvere,5,,foto
+2026-02-20,spuntino,sformato_verdure,180,torta salata con verdure a foglia scure; porzione standard assunta,foto
+2026-02-20,cena,recipe:pizza_semplice,1,"pizza con affettato rosso, rucola e cipolla, senza mozzarella",foto
+2026-02-21,colazione,cappuccino,1,cappuccino e brioche al bar,foto
+2026-02-21,colazione,cornetto_crema,1,,foto
+2026-02-21,pranzo,pasta_uovo,110,"pranzo di cerimonia: casoncelli conditi, poi rigatoni al sugo e cestini di pane; porzione standard assunta",foto
+2026-02-21,pranzo,burro,10,,foto
+2026-02-21,pranzo,grana_padano,20,,foto
+2026-02-21,pranzo,pasta_semola,110,,foto
+2026-02-21,pranzo,passata_pomodoro,120,,foto
+2026-02-21,pranzo,pane_bianco,60,,foto
+2026-02-22,colazione,pane_segale,80,pane nero con macinato vegetale scuro e fettine di avocado,foto
+2026-02-22,colazione,soia_granulare,70,porzione standard assunta,foto
+2026-02-22,colazione,avocado,80,,foto
+2026-02-22,pranzo,panino_farcito,1,toast con formaggio fuso e speck,foto
+2026-02-22,spuntino,cappuccino,1,"al bar: cappuccino, un trancio di pizzetta e un cornetto",foto
+2026-02-22,spuntino,pizza_base,0.25,,foto
+2026-02-22,spuntino,cornetto_crema,1,,foto
+2026-02-23,colazione,pane_segale,80,pane nero con avocado schiacciato,foto
+2026-02-23,colazione,avocado,100,,foto
+2026-02-23,colazione,caffe_espresso,1,,foto
+2026-02-23,pranzo,panino_farcito,1,panino imbottito su tagliere,foto
+2026-02-23,spuntino,yogurt_greco_0,200,budino scuro al cacao con banana; porzione standard assunta,foto
+2026-02-23,spuntino,cacao_100,10,,foto
+2026-02-23,spuntino,banana,1,,foto
+2026-02-24,cena,riso_carnaroli,100,cena al ristorante: risotto giallo mantecato; porzione standard assunta,foto
+2026-02-24,cena,burro,12,,foto
+2026-02-24,cena,grana_padano,25,,foto
+2026-02-24,cena,carne_macinata_manzo,120,tartare di manzo con bocconcini di formaggio fresco; porzione standard assunta,foto
+2026-02-24,cena,mozzarella,40,,foto
+2026-02-24,cena,bistecca_manzo,140,guancia brasata al vino con spinaci; porzione standard assunta,foto
+2026-02-24,cena,spinaci,120,,foto
+2026-02-25,pranzo,couscous,100,couscous con verdure e una ciotola di spinaci; porzione standard assunta,foto
+2026-02-25,pranzo,spinaci,150,,foto
+2026-02-25,spuntino,arancia,1,,foto
+2026-02-25,spuntino,cappuccino,1,cappuccino con una tartina in pasticceria,foto
+2026-02-25,cena,lenticchie_secche,90,teglia grande di dahl di lenticchie scuro; porzione standard assunta,foto
+2026-02-26,colazione,cornetto_crema,1,girella farcita in pasticceria,foto
+2026-02-26,colazione,cappuccino,1,,foto
+2026-02-27,colazione,avena_fiocchi,60,ciotola di porridge al cacao con frutti di bosco; porzione standard assunta,foto
+2026-02-27,colazione,cacao_100,10,,foto
+2026-02-27,colazione,latte_ps,150,,foto
+2026-02-27,colazione,frutti_di_bosco,50,,foto
+2026-02-27,pranzo,soia_granulare,70,macinato rosso alla pizzaiola con polenta e zucchine; il vassoio della mensa nella stessa serie non e' leggibile,foto
+2026-02-27,pranzo,passata_pomodoro,100,,foto
+2026-02-27,pranzo,polenta_cotta,200,porzione standard assunta,foto
+2026-02-27,pranzo,zucchine,120,,foto
+2026-02-27,spuntino,biscotto,3,pacchetto di biscotti secchi Parle-G; porzione standard assunta,foto
+2026-02-27,spuntino,banana,1,,foto
+2026-02-28,pranzo,riso_bianco,100,"riso con macinato vegetale, cubetti di zucca/patata dolce al forno e grana grattugiato; porzione standard assunta",foto
+2026-02-28,pranzo,soia_granulare,70,,foto
+2026-02-28,pranzo,patate_dolci,150,,foto
+2026-02-28,pranzo,grana_padano,20,,foto
+2026-02-28,cena,ceci_scatola,250,ciotola di ceci con spinaci e mezza fetta di limone; porzione standard assunta,foto
+2026-02-28,cena,spinaci,150,,foto
+2026-02-28,cena,limone,15,,foto
+2026-03-01,colazione,uovo_intero,3,uova strapazzate con avocado e pane nero,foto
+2026-03-01,colazione,avocado,100,,foto
+2026-03-01,colazione,pane_segale,80,porzione standard assunta,foto
+2026-03-01,spuntino,torta_cioccolato,110,due quadrotti di torta al cioccolato molto scura; porzione standard assunta,foto
+2026-03-01,spuntino,crostata_frutta,130,crostata con fragole intere in pasticceria; porzione standard assunta,foto
+2026-03-02,colazione,pane_segale,80,pane nero con banana a fette,foto
+2026-03-02,colazione,banana,1,,foto
+2026-03-02,pranzo,sformato_verdure,250,"grande strudel salato ripieno, tagliato a fette; a tavola anche una piadina arrotolata e olive; porzione standard assunta",foto
+2026-03-02,pranzo,piadina,1,,foto
+2026-03-02,pranzo,olive,30,,foto
+2026-03-02,cena,pane_bianco,80,"pane tostato con pomodorini e formaggio fresco, poi uova all'occhio di bue",foto
+2026-03-02,cena,pomodorini,150,,foto
+2026-03-02,cena,mozzarella,50,porzione standard assunta,foto
+2026-03-02,cena,uovo_intero,2,,foto
+2026-03-03,pranzo,piadina,1,"due piadine arrotolate con verdure a foglia, patate viola e fragole nel piatto",foto
+2026-03-03,pranzo,spinaci,150,,foto
+2026-03-03,pranzo,patate,150,patate viola,foto
+2026-03-03,pranzo,fragole,100,,foto
+2026-03-04,pranzo,piadina,1,piadina con verdure a foglia e ceci,foto
+2026-03-04,pranzo,spinaci,180,,foto
+2026-03-04,pranzo,ceci_scatola,150,porzione standard assunta,foto
+2026-03-04,cena,soia_granulare,70,padellata di macinato vegetale con patate viola e insalata; porzione standard assunta,foto
+2026-03-04,cena,patate,180,patate viola,foto
+2026-03-04,cena,insalata_mista,80,,foto
+2026-03-05,pranzo,spinaci,150,"piatto con strapazzata di verdure a foglia, mango e una fetta scura",foto
+2026-03-05,pranzo,mango,120,,foto
+2026-03-05,pranzo,pane_segale,80,porzione standard assunta,foto
+2026-03-05,spuntino,piadina,1,piadina farcita tagliata a meta',foto
+2026-03-05,cena,pasta_semola,110,fusilli al pomodoro con uovo all'occhio di bue e fagiolini; porzione standard assunta,foto
+2026-03-05,cena,passata_pomodoro,120,,foto
+2026-03-05,cena,uovo_intero,1,,foto
+2026-03-05,cena,fagiolini,100,,foto
+2026-03-06,pranzo,lenticchie_secche,90,legumi/macinato scuro con mango e limone; porzione standard assunta,foto
+2026-03-06,pranzo,mango,150,,foto
+2026-03-06,pranzo,limone,15,,foto
+2026-03-07,colazione,pane_segale,80,pane nero con burro d'arachidi e banana a fette,foto
+2026-03-07,colazione,burro_arachidi_sgrassato,25,porzione standard assunta,foto
+2026-03-07,colazione,banana,1,,foto
+2026-03-07,pranzo,sformato_verdure,180,"torta salata di sfoglia con prosciutto e formaggio, in rifugio",foto
+2026-03-07,pranzo,cappuccino,1,latte macchiato,foto
+2026-03-07,spuntino,fragole,150,fragole con crema bianca,foto
+2026-03-07,spuntino,panna_montata,40,porzione standard assunta,foto
+2026-03-07,cena,pizza_margherita,1,pizza al ristorante con prosciutto cotto e rucola,foto
+2026-03-07,cena,prosciutto_cotto,50,porzione standard assunta,foto
+2026-03-07,cena,rucola,30,,foto
+2026-03-08,colazione,babka_mandorle,120,"brioche grande con granella di zucchero, da asporto; porzione standard assunta",foto
+2026-03-08,pranzo,polenta_cotta,250,polenta con un bocconcino scuro e una ciotolina di curry giallo; porzione standard assunta,foto
+2026-03-08,pranzo,ceci_scatola,200,curry giallo nella ciotolina,foto
+2026-03-08,pranzo,curry_polvere,5,,foto
+2026-03-09,pranzo,pomodorini,250,grande ciotola di pomodorini con mozzarelline,foto
+2026-03-09,pranzo,mozzarella_proteica,100,porzione standard assunta,foto
+2026-03-09,spuntino,caffe_espresso,1,caffe' al bar con un dolcetto,foto
+2026-03-09,cena,ceci_scatola,250,teglia di ceci schiacciati con lo schiacciapatate; porzione standard assunta,foto
+2026-03-10,colazione,caffe_espresso,1,caffe' filtro al bar,foto
+2026-03-10,pranzo,couscous,100,couscous con piselli e patate a cubetti; porzione standard assunta,foto
+2026-03-10,pranzo,piselli_verdi,80,,foto
+2026-03-10,pranzo,patate,120,,foto
+2026-03-10,spuntino,torta_semplice,130,fetta di torta ai mirtilli con zucchero a velo; porzione standard assunta,foto
+2026-03-10,spuntino,cappuccino,1,,foto
+2026-03-11,pranzo,soia_granulare,70,"macinato vegetale con due contorni di verdure stufate, zucchine e carote; porzione standard assunta",foto
+2026-03-11,pranzo,zucchine,120,,foto
+2026-03-11,pranzo,carote,100,,foto
+2026-03-11,spuntino,torta_semplice,130,"fetta di torta di mele zuccherata, pasticceria Italo Resoldi; porzione standard assunta",foto
+2026-03-11,spuntino,cappuccino,1,,foto
+2026-03-12,colazione,yogurt_greco_0,200,ciotola di crema bianca con mango a cubetti; porzione standard assunta,foto
+2026-03-12,colazione,mango,100,,foto
+2026-03-12,pranzo,pasta_integrale,110,"bowl di fusilli integrali con mango, rucola, fave e pomodorini; la proteina bruna sul bordo non e' identificabile",foto
+2026-03-12,pranzo,mango,120,,foto
+2026-03-12,pranzo,rucola,40,,foto
+2026-03-12,pranzo,fave,120,,foto
+2026-03-12,pranzo,pomodorini,60,,foto
+2026-03-13,pranzo,soia_granulare,75,"padellata di bocconcini di soia con fagioli borlotti, patate, peperone e cipolla; porzione standard assunta",foto
+2026-03-13,pranzo,fagioli_cannellini,200,in foto sono borlotti in scatola,foto
+2026-03-13,pranzo,patate,150,,foto
+2026-03-13,pranzo,peperoni,100,,foto
+2026-03-13,pranzo,cipolla,60,,foto
+2026-03-14,colazione,babka_mandorle,120,girella lievitata al cioccolato e mandorle al bar; porzione standard assunta,foto
+2026-03-14,colazione,cappuccino,1,,foto
+2026-03-14,pranzo,uovo_intero,3,uova strapazzate con avocado e pane a lievitazione naturale,foto
+2026-03-14,pranzo,avocado,100,,foto
+2026-03-14,pranzo,pane_segale,80,porzione standard assunta,foto
+2026-03-14,cena,polpette_legumi,200,"tre polpette/burger di legumi cotti in padella, fotografati anche crudi; porzione standard assunta",foto
+2026-03-14,cena,pane_segale,80,,foto
+2026-03-14,cena,mango,150,,foto
+2026-03-16,pranzo,farro_perlato,80,zuppa di cereali e legumi con una fetta di pane tostato sopra; porzione standard assunta,foto
+2026-03-16,pranzo,fagioli_cannellini,150,,foto
+2026-03-16,pranzo,pane_bianco,70,,foto
+2026-03-16,cena,zuppa_vellutata,300,tazza di vellutata con pane; gli altri due bocconi nel piatto non sono identificabili,foto
+2026-03-16,cena,pane_integrale,60,,foto
+2026-03-17,pranzo,couscous,90,"couscous con macinato vegetale e fagiolini, patate dolci al forno; porzione standard assunta",foto
+2026-03-17,pranzo,soia_granulare,60,,foto
+2026-03-17,pranzo,fagiolini,120,,foto
+2026-03-17,pranzo,patate_dolci,200,,foto
+2026-03-17,spuntino,pizza_base,0.3,"trancio di pizza in teglia con pomodoro, basilico, peperoni e olive",foto
+2026-03-17,spuntino,mozzarella,40,cubetti bianchi sul trancio; porzione standard assunta,foto
+2026-03-17,spuntino,peperoni,40,,foto
+2026-03-17,spuntino,olive,10,,foto
+2026-03-17,cena,riso_bianco,90,riso bianco con patata dolce; il contorno verde saltato non e' identificabile e non e' registrato,foto
+2026-03-17,cena,patate_dolci,120,,foto
+2026-03-18,pranzo,soia_granulare,70,"macinato vegetale, patata dolce al forno, fagiolini, peperone, mango e limone; porzione standard assunta",foto
+2026-03-18,pranzo,patate_dolci,200,,foto
+2026-03-18,pranzo,fagiolini,120,,foto
+2026-03-18,pranzo,peperoni,60,,foto
+2026-03-18,pranzo,mango,120,,foto
+2026-03-19,pranzo,piadina,1,piadina farcita con strapazzato chiaro (tofu) e peperoni,foto
+2026-03-19,pranzo,tofu,150,porzione standard assunta,foto
+2026-03-19,pranzo,peperoni,100,,foto
+2026-03-19,spuntino,sformato_verdure,150,trancio di torta salata alle verdure in carta,foto
+2026-03-19,cena,piadina,1,seconda piadina con prosciutto cotto e peperone arrosto,foto
+2026-03-19,cena,prosciutto_cotto,50,porzione standard assunta,foto
+2026-03-20,pranzo,uovo_intero,3,uova strapazzate con una frittata arrotolata dorata,foto
+2026-03-20,pranzo,avocado,100,avocado schiacciato,foto
+2026-03-20,pranzo,pane_segale,80,porzione standard assunta,foto
+2026-03-23,colazione,cappuccino,1,pasticceria: cappuccino con dolci in carta,foto
+2026-03-23,colazione,crostata_frutta,130,tortina tonda ripiena; porzione standard assunta,foto
+2026-03-26,colazione,pane_integrale,80,fetta di pane ai semi con marmellata scura; porzione standard assunta,foto
+2026-03-26,colazione,marmellata_fragola,30,marmellata scura ai frutti di bosco,foto
+2026-03-26,pranzo,ceci_scatola,250,ceci e patate in umido con prezzemolo e limone; porzione standard assunta,foto
+2026-03-26,pranzo,patate,200,,foto
+2026-03-26,pranzo,passata_pomodoro,80,,foto
+2026-03-26,pranzo,prezzemolo,5,,foto
+2026-03-26,pranzo,limone,20,mezza fetta,foto
+2026-03-26,pranzo,pane_segale,80,porzione standard assunta,foto
+2026-03-27,pranzo,focaccia,150,panino di focaccia con rucola e verdure grigliate; porzione standard assunta,foto
+2026-03-27,pranzo,rucola,30,,foto
+2026-03-27,cena,recipe:pizza_semplice,1,"pizza con affettato rosso, rucola e grana, senza mozzarella",foto
+2026-03-28,pranzo,piadina,1,piadina arrotolata a fianco di un chili di macinato vegetale e fagioli,foto
+2026-03-28,pranzo,soia_granulare,70,porzione standard assunta,foto
+2026-03-28,pranzo,passata_pomodoro,100,,foto
+2026-03-28,spuntino,recipe:super_protein_pudding,1,"ciotola di crema al cacao con fragole, lamponi e mirtilli",foto
+2026-03-28,spuntino,fragole,60,,foto
+2026-03-28,spuntino,frutti_di_bosco,80,,foto
+2026-03-29,pranzo,soia_granulare,70,brunch fuori: stufato di macinato vegetale al pomodoro; porzione standard assunta,foto
+2026-03-29,pranzo,passata_pomodoro,80,,foto
+2026-03-29,pranzo,patate_dolci,200,spicchi di patata dolce al forno,foto
+2026-03-29,pranzo,pane_segale,80,due fette di pane nero; porzione standard assunta,foto
+2026-03-29,spuntino,caffe_espresso,1,caffe' lungo in bicchiere al bar,foto
