@@ -201,7 +201,7 @@ def load_spostamenti():
         "stats": [
             {"v": it(totals["trips"]), "l": "viaggi"},
             {"v": it(totals["countries"]), "l": "paesi esteri"},
-            {"v": it(totals["co2T"], 1) + " t", "l": "CO₂e voli"},
+            {"v": it(totals.get("transportCo2T", totals["co2T"]), 1) + " t", "l": "CO₂e mobilità"},
         ],
         "chart": {"kind": "none", "unit": "", "caption": "", "points": []},
         "last": data["meta"]["built"],

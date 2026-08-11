@@ -22,7 +22,7 @@
     </nav>
     <p class="kicker">Una geografia personale · 2014—2026</p>
     <h1>Spostamenti</h1>
-    <p class="lede">Le città in cui sono arrivato, la strada fatta per raggiungerle e il peso invisibile dei voli. Il globo non è un menu: <em>si muove mentre scorri.</em></p>
+    <p class="lede">Le città in cui sono arrivato, la strada fatta per raggiungerle e il peso invisibile dei voli e dell’auto. Il globo si muove mentre scorri; <em>i punti caldi portano al viaggio.</em></p>
     <div class="totals" id="totals" aria-label="Numeri principali"></div>
     <p class="source-note" id="source-note"></p>
   </header>
@@ -38,11 +38,12 @@
           <p id="map-date"></p>
         </div>
         <div class="globe-wrap">
-          <svg id="globe" role="img" aria-label="Globo con la rotta del viaggio selezionato"></svg>
+          <svg id="globe" role="img" aria-label="Globo interattivo con densità dei luoghi visitati e rotta del viaggio selezionato"></svg>
           <div class="globe-glow"></div>
         </div>
         <div class="legend">
           <span><i class="dot home"></i>Bergamo, origine approssimata</span>
+          <span><i class="dot heat"></i>densità · clicca</span>
           <span><i class="dot route"></i>rotta</span>
           <span><i class="dot place"></i>città</span>
         </div>
@@ -87,7 +88,7 @@
           <div class="feature-copy">
             <p class="eyebrow">Strada · Google Timeline validato</p>
             <h3><span id="car-total">—</span> km in auto</h3>
-            <p>Solo segmenti compatibili con durata, velocità e distanza tra gli estremi. Gli errori GPS impossibili non entrano nel totale.</p>
+            <p><strong><span id="car-co2-total">—</span> t CO₂e stimate.</strong> Solo segmenti compatibili con durata, velocità e distanza tra gli estremi; gli errori GPS impossibili non entrano nel totale.</p>
           </div>
           <div class="year-bars" id="car-bars" aria-label="Chilometri in auto per anno"></div>
         </article>
@@ -110,10 +111,10 @@
       </div>
       <div class="method-grid">
         <div><b>Voli</b><p>Le tratte sono quelle osservate da Google Timeline; alcune gambe mancanti restano mancanti. La CO₂e è per un passeggero medio e include il radiative forcing.</p></div>
-        <div><b>Auto</b><p>Il contachilometri non è disponibile. È una somma GPS validata: utile come ordine di grandezza, non come lettura fiscale.</p></div>
-        <div><b>Città</b><p>Le visite sono ricondotte alla città più plausibile. I punti pubblicati sono arrotondati e non includono casa, lavoro o tracce grezze.</p></div>
+        <div><b>Auto</b><p>Il contachilometri non è disponibile. La CO₂e usa 0,20990 kg/km: auto media a carburante ignoto, emissioni dirette più produzione del carburante. È un ordine di grandezza, non una lettura fiscale.</p></div>
+        <div><b>Città e heatmap</b><p>Le visite sono ricondotte alla città più plausibile. Intensità e dimensione indicano quante occasioni di viaggio sono associate al luogo; un clic apre il viaggio più recente. Le coordinate pubblicate sono arrotondate.</p></div>
       </div>
-      <p class="sources">Fonti: <a id="co2-source" href="#">UK Government GHG Conversion Factors 2026</a> · <a href="https://ourairports.com/data/">OurAirports</a> · <a href="https://github.com/topojson/world-atlas">Natural Earth / world-atlas</a> · Google Timeline Takeout · Intervals.icu/Strava.</p>
+      <p class="sources">Fonti: <a id="co2-source" href="#">UK Government GHG Conversion Factors 2026</a> · <a href="https://ourairports.com/data/">OurAirports</a> · <a href="https://github.com/topojson/world-atlas">Natural Earth / world-atlas</a> · Google Timeline Takeout · Intervals.icu/Strava. Dati pubblici: <a href="data/travel.json">export aggregato</a> · <a href="data/source-manifest.json">manifest della fonte privata</a>.</p>
     </section>
   </main>
 

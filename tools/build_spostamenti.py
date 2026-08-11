@@ -15,10 +15,12 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import math
 import os
 import re
+import unicodedata
 from collections import Counter, defaultdict
 from datetime import date, datetime, timedelta
 from pathlib import Path
@@ -36,6 +38,9 @@ HOME = (45.70, 9.67)
 SORSI = (45.7572403, 9.7916211)
 HOME_AIRPORTS = {"LIME", "LIMC", "LIML"}  # Bergamo, Malpensa, Linate
 CO2_KG_PER_PKM = 0.14253
+# UK Government 2026, average car with unknown fuel: direct emissions plus
+# well-to-tank. Timeline identifies a passenger-vehicle movement, not its fuel.
+CAR_CO2_KG_PER_KM = 0.16591 + 0.04399
 CO2_SOURCE = (
     "https://www.gov.uk/government/publications/"
     "greenhouse-gas-reporting-conversion-factors-2026"
@@ -61,7 +66,7 @@ CITY_IT = {
     "Athens": "Atene", "Bucharest": "Bucarest", "Copenhagen": "Copenaghen",
     "Edinburgh": "Edimburgo", "Florence": "Firenze", "Frankfurt am Main": "Francoforte",
     "Gent": "Gand", "Lisbon": "Lisbona", "Naples": "Napoli",
-    "New York City": "New York", "Padua": "Padova", "Sevilla": "Siviglia",
+    "Havana": "L'Avana", "New York City": "New York", "Padua": "Padova", "Sevilla": "Siviglia",
     "The Hague": "L'Aia", "Turin": "Torino", "Zürich": "Zurigo",
 }
 TRIP_FOCUS = {
@@ -95,6 +100,11 @@ def month_range(first: date, last: date):
     while (y, m) <= (last.year, last.month):
         yield f"{y:04d}-{m:02d}"
         y, m = (y + 1, 1) if m == 12 else (y, m + 1)
+
+
+def slugify(value: str):
+    plain = unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode()
+    return re.sub(r"[^a-z0-9]+", "-", plain.lower()).strip("-")
 
 
 class Gazetteer:
@@ -205,6 +215,7 @@ def visit_index(segments):
 
 def trip_places(start, end, visits, gazetteer):
     durations = defaultdict(float)
+    counts = Counter()
     points = {}
     for v in visits:
         if v["end"] < start or v["start"] > end:
@@ -214,9 +225,11 @@ def trip_places(start, end, visits, gazetteer):
         g = gazetteer.nearest(v["point"])
         key = (g["city"], g["country"], g["cc"])
         durations[key] += max(5, (v["end"] - v["start"]).total_seconds() / 60)
+        counts[key] += 1
         points[key] = g
     ranked = sorted(durations, key=lambda k: durations[k], reverse=True)
-    return [points[k] for k in ranked[:5]]
+    return [{**points[k], "visits": counts[k], "minutes": round(durations[k])}
+            for k in ranked[:8]]
 
 
 def trip_record(start, end, distance, places, legs, fallback, kind="memory"):
@@ -227,6 +240,19 @@ def trip_record(start, end, distance, places, legs, fallback, kind="memory"):
     if alias:
         city, country, cc, lat, lon = alias
         focus = {"city": city, "country": country, "cc": cc, "lat": lat, "lon": lon}
+    clean_places = []
+    seen_places = set()
+    for p in [focus, *places]:
+        key = (p["city"], p["country"])
+        if key in seen_places:
+            continue
+        seen_places.add(key)
+        clean_places.append({
+            "city": p["city"], "country": p["country"], "cc": p["cc"],
+            "lat": round(p["lat"], 2), "lon": round(p["lon"], 2),
+            "visits": int(p.get("visits", 0)), "minutes": int(p.get("minutes", 0)),
+        })
+    places = clean_places
     km = sum(f["km"] for f in legs)
     co2 = km * CO2_KG_PER_PKM
     cities = [focus["city"]]
@@ -238,11 +264,11 @@ def trip_record(start, end, distance, places, legs, fallback, kind="memory"):
     if not routes:
         routes = [{"a": [9.67, 45.70], "b": [focus["lon"], focus["lat"]]}]
     return {
-        "id": f"{start:%Y%m%d}-{focus['city'].lower().replace(' ', '-')}",
+        "id": f"{start:%Y%m%d}-{slugify(focus['city'])}",
         "start": start.date().isoformat(), "end": end.date().isoformat(),
         "year": start.year, "city": focus["city"], "country": focus["country"],
         "cc": focus["cc"], "lat": focus["lat"], "lon": focus["lon"],
-        "cities": cities, "distanceFromHomeKm": round(distance),
+        "cities": cities, "places": places, "distanceFromHomeKm": round(distance),
         "flightKm": round(km), "co2Kg": round(co2),
         "mode": "volo" if legs else "terra", "routes": routes, "kind": kind,
     }
@@ -318,8 +344,27 @@ def validated_car(segments):
             continue
         accepted += 1; total += value; years[s["startTime"][:4]] += value
     return round(total), accepted, rejected, [
-        {"year": int(y), "km": round(v)} for y, v in sorted(years.items())
+        {"year": int(y), "km": round(v), "co2Kg": round(v * CAR_CO2_KG_PER_KM)}
+        for y, v in sorted(years.items())
     ]
+
+
+def location_heatmap(trips):
+    grouped = {}
+    for trip in trips:  # newest first; the first id is the click target
+        for place in trip["places"]:
+            key = (place["city"], place["country"])
+            item = grouped.setdefault(key, {
+                "city": place["city"], "country": place["country"],
+                "lat": place["lat"], "lon": place["lon"], "visits": 0,
+                "tripIds": [],
+            })
+            item["visits"] += place.get("visits", 0)
+            if trip["id"] not in item["tripIds"]:
+                item["tripIds"].append(trip["id"])
+    return [{**item, "trips": len(item["tripIds"]),
+             "latestTripId": item["tripIds"][0]}
+            for item in sorted(grouped.values(), key=lambda x: (-len(x["tripIds"]), x["city"]))]
 
 
 def half_marathons(vita_path: Path):
@@ -372,7 +417,7 @@ def update_vita_track(vita_path: Path, totals):
         "stats": [
             {"v": str(totals["trips"]), "l": "viaggi"},
             {"v": str(totals["countries"]), "l": "paesi esteri"},
-            {"v": f"{totals['co2T']:.1f}".replace(".", ",") + " t", "l": "CO₂e voli"},
+            {"v": f"{totals['transportCo2T']:.1f}".replace(".", ",") + " t", "l": "CO₂e mobilità"},
         ],
     }
     data["tracks"] = [x for x in data.get("tracks", []) if x.get("key") != "spostamenti"] + [track]
@@ -386,6 +431,8 @@ def main():
     ap.add_argument("--airports", required=True, type=Path)
     ap.add_argument("--output", type=Path, default=OUT)
     ap.add_argument("--vita", type=Path, default=VITA)
+    ap.add_argument("--manifest", type=Path,
+                    default=OUT.parent / "source-manifest.json")
     args = ap.parse_args()
 
     raw = json.loads(args.timeline.read_text(encoding="utf-8"))
@@ -404,13 +451,17 @@ def main():
     car_km, car_ok, car_bad, car_years = validated_car(segments)
     runs, half_monthly = half_marathons(args.vita)
     sorsi = special_place(segments)
-    countries = sorted({t["country"] for t in trips if t["cc"] != "IT"})
-    cities = sorted({t["city"] for t in trips})
+    countries = sorted({p["country"] for t in trips for p in t["places"] if p["cc"] != "IT"})
+    cities = sorted({(p["city"], p["country"]) for t in trips for p in t["places"]})
     flight_km = round(sum(f["km"] for f in flights))
+    flight_co2_t = round(flight_km * CO2_KG_PER_PKM / 1000, 2)
+    car_co2_t = round(car_km * CAR_CO2_KG_PER_KM / 1000, 2)
     totals = {
         "trips": len(trips), "countries": len(countries), "cities": len(cities),
         "flightLegs": len(flights), "flightKm": flight_km,
-        "co2T": round(flight_km * CO2_KG_PER_PKM / 1000, 2),
+        "co2T": flight_co2_t, "flightCo2T": flight_co2_t,
+        "carCo2T": car_co2_t,
+        "transportCo2T": round(flight_co2_t + car_co2_t, 2),
         "carKm": car_km, "halfMarathons": len(runs), "sorsi": sorsi["count"],
     }
     payload = {
@@ -419,6 +470,7 @@ def main():
                  "to": max(s["endTime"] for s in segments)[:10],
                  "privacy": "GPS grezzo, casa e lavoro non sono pubblicati."},
         "totals": totals, "countries": countries, "trips": trips,
+        "heatmap": location_heatmap(trips),
         "flightByYear": [{"year": int(y), "km": round(v)} for y, v in sorted(
             ((y, sum(f["km"] for f in flights if f["start"].year == y))
              for y in sorted({f["start"].year for f in flights})))],
@@ -428,6 +480,8 @@ def main():
         "method": {
             "co2KgPerPassengerKm": CO2_KG_PER_PKM, "co2Source": CO2_SOURCE,
             "co2Label": "UK Government 2026 · international average passenger · with RF",
+            "carCo2KgPerKm": CAR_CO2_KG_PER_KM,
+            "carCo2Label": "UK Government 2026 · average car, fuel unknown · direct + well-to-tank",
             "carAcceptedSegments": car_ok, "carRejectedSegments": car_bad,
             "airportsSource": "https://ourairports.com/data/",
             "mapSource": "https://github.com/topojson/world-atlas",
@@ -435,6 +489,17 @@ def main():
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    digest = hashlib.sha256(args.timeline.read_bytes()).hexdigest()
+    source_manifest = {
+        "source": args.timeline.name, "sha256": digest,
+        "bytes": args.timeline.stat().st_size, "semanticSegments": len(segments),
+        "coverage": {"from": payload["meta"]["from"], "to": payload["meta"]["to"]},
+        "publishedInstead": args.output.name,
+        "omitted": ["raw GPS", "home", "work", "precise paths", "place IDs"],
+        "reason": "The source export is intentionally kept local because this repository is public.",
+    }
+    args.manifest.write_text(json.dumps(source_manifest, ensure_ascii=False, indent=2) + "\n",
+                             encoding="utf-8")
     update_vita_track(args.vita, totals)
     print(json.dumps(totals, ensure_ascii=False, indent=2))
     print(f"wrote {args.output} ({args.output.stat().st_size // 1024} KB)")
