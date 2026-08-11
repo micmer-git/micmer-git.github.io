@@ -21,9 +21,19 @@ Cosa gira, in ordine, e perche' quest'ordine:
                             (aggregati) e `vita/cibo/data/days.json` (dettaglio popup).
   3. `microbiome_model.py` — il modello della flora e la matrice alimento x genere,
                             in `vita/cibo/data/microbiome.csv` e `flora_foods.csv`.
-                            Va per ultimo: legge la serie prodotta al passo 2.
+                            Va dopo il passo 2: legge la serie che produce.
+  4. `metabolismo.py`     — temperatura delle uscite (misurata), FatMax (modello)
+                            e "momento metabolico" (indice composito), in
+                            `vita/cibo/data/metabolismo.csv`. Legge la serie del
+                            passo 2 e la cache di Intervals `tools/.cruscotto_cache.json`.
 
-I quattro file sotto `vita/` sono **generati**: si rigenerano da qui, non si
+**Il passo 4 non fa rete, mai.** Legge solo la cache gia' scaricata. Se la cache
+non c'e' viene SALTATO con un avviso, invece di far fallire tutta la build: chi
+clona il repo senza la cache (che e' un artefatto locale, non versionato) deve
+poter rigenerare comunque nutrizione e flora. La cache si rinfresca a parte, con
+`tools/sync_intervals.py`, che la rete la usa.
+
+I file sotto `vita/cibo/data/` sono **generati**: si rigenerano da qui, non si
 modificano a mano.
 
     python tools/build_food.py
@@ -44,7 +54,16 @@ for _s in (sys.stdout, sys.stderr):
         _s.reconfigure(encoding="utf-8", errors="replace")
 
 
-def run(script, *args):
+CACHE = os.path.join(HERE, ".cruscotto_cache.json")
+
+
+def run(script, *args, optional=False):
+    """`optional=True` = se lo script fallisce si prosegue invece di uscire.
+
+    Serve solo a metabolismo.py, che dipende dalla cache di Intervals: la cache
+    e' un artefatto locale non versionato, e la sua assenza non deve impedire di
+    rigenerare nutrizione e flora, che non ne hanno bisogno.
+    """
     cmd = [sys.executable, os.path.join(FOOD, script), *args]
     print(f"\n· {script} {' '.join(args)}")
     r = subprocess.run(cmd, cwd=FOOD, capture_output=True, text=True,
@@ -53,6 +72,10 @@ def run(script, *args):
     if out:
         print("\n".join("  " + l for l in out.splitlines()))
     if r.returncode != 0:
+        if optional:
+            print("  SALTATO: " + (r.stderr or "").strip().splitlines()[0]
+                  if (r.stderr or "").strip() else "  SALTATO")
+            return None
         sys.stderr.write((r.stderr or "")[-2000:])
         sys.exit(f"\n{script} è uscito con {r.returncode}")
     return out
@@ -70,6 +93,7 @@ def main():
         run("fill_defaults.py")
         run("build_nutrition_series.py")
         run("microbiome_model.py", "--check")
+        run("metabolismo.py", "--check", optional=True)
         print("\n(--check: nessun file pubblico scritto; cache derived rigenerata)")
         return
 
@@ -81,9 +105,16 @@ def main():
     run("microbiome_model.py",
         "--export", os.path.join(DATA, "microbiome.csv"),
         "--export-foods", os.path.join(DATA, "flora_foods.csv"))
+    if os.path.exists(CACHE):
+        run("metabolismo.py", "--export", os.path.join(DATA, "metabolismo.csv"),
+            optional=True)
+    else:
+        print(f"\n· metabolismo.py SALTATO: manca {CACHE}"
+              f"\n  (rigenerala con tools/sync_intervals.py — quella la rete la usa)")
 
     print("\nfile pubblicati in vita/cibo/data/:")
-    for f in ("nutrition.csv", "days.json", "microbiome.csv", "flora_foods.csv"):
+    for f in ("nutrition.csv", "days.json", "microbiome.csv", "flora_foods.csv",
+              "metabolismo.csv"):
         p = os.path.join(DATA, f)
         print(f"  {f:<18} {os.path.getsize(p) // 1024:5d} KB" if os.path.exists(p)
               else f"  {f:<18} MANCANTE")

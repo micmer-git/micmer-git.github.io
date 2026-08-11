@@ -308,11 +308,11 @@ tiene la **sorgente** — `data/foods.csv` (119 alimenti x 19 nutrienti, piu' le
 colonne `plant`/`fermented`/`upf`), `data/recipes.csv` (92 ricette, di cui 46 sono i
 piatti del mese), `data/food_log.csv` (il diario vero, append-only),
 `data/monthly_patterns.csv` (mese -> piatti ricorrenti + fascia kcal), `profile.json`
-(peso, fabbisogni, tetti) — e i tre script che la macinano. `data/derived/` e'
+(peso, fabbisogni, tetti) — e i quattro script che la macinano. `data/derived/` e'
 gitignorato: si rigenera.
 
-`build_food.py` li lancia in ordine, e **l'ordine conta**: `microbiome_model.py`
-legge la serie che `build_nutrition_series.py` ha appena scritto.
+`build_food.py` li lancia in ordine, e **l'ordine conta**: `microbiome_model.py` e
+`metabolismo.py` leggono la serie che `build_nutrition_series.py` ha appena scritto.
 
 Tre cose da sapere prima di toccare qualcosa qui:
 
@@ -327,6 +327,103 @@ Tre cose da sapere prima di toccare qualcosa qui:
   associazioni direzionali da letteratura su un modello log-lineare con i pesi in
   chiaro nel sorgente. La matrice alimento x genere e' lo stesso modello letto al
   contrario — dice cosa il modello assume, non cosa fa un intestino.
+
+### metabolismo.py — temperatura, FatMax, "momento metabolico"
+
+Quarto passo di `build_food.py`, scrive `vita/cibo/data/metabolismo.csv` (4.154
+giorni, 2015-03-29 → oggi). **Non fa rete**: legge la cache gia' scaricata
+`tools/.cruscotto_cache.json` (2.257 attivita' + 4.153 giorni di wellness). Se la
+cache manca il passo viene **saltato con un avviso**, non fa fallire la build —
+la cache e' un artefatto locale non versionato, e nutrizione e flora non ne hanno
+bisogno. Si rinfresca con `sync_intervals.py`, che la rete la usa.
+
+Le tre cose dentro **non hanno lo stesso statuto**, e il CSV mescola misure e
+modello nelle stesse righe, quindi va saputo prima:
+
+| blocco | colonne | cos'e' |
+|---|---|---|
+| temperatura | `temp_c`, `temp_min_c`, `temp_max_c`, `temp_n` | **misurata** (sensore, con un bias noto) |
+| FatMax | `fatmax_hr`, `fatmax_lo_hr`, `fatmax_hi_hr`, `fatmax_shift_bpm`, `mfo_g_min`, `fat_g_est`, `cho_g_est`, `fatmax_min`, `cho_pct_60d` | **modello**, da letteratura pubblicata |
+| momento metabolico | `mm`, `mm_n`, `mm_*` | **indice composito inventato qui**, pesi in chiaro |
+
+**1. Temperatura — copertura reale, ed e' il numero che evita un grafico falso.**
+L'API Intervals espone due famiglie di campi. Quella meteo —
+`average_weather_temp`, `min/max_weather_temp`, `*_feels_like` — e' **vuota su
+2.257 attivita' su 2.257**, `has_weather` e' `False` ovunque: il meteo non e' mai
+stato agganciato. Non ci si puo' fare niente, e va detto invece che scoprirlo a
+grafico fatto. Il sensore del dispositivo invece c'e', copertura per anno
+(outdoor, esclusi rulli e virtuali):
+
+| anno | 2015 | 2016 | 2017 | 2018 | 2019 | 2020 | 2021 | 2022 | 2023 | 2024 | 2025 | 2026 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| attivita' outdoor | 3 | 33 | 39 | 44 | 100 | 316 | 269 | — | 246 | 350 | 427 | 245 |
+| con temperatura | 67 % | 45 % | 85 % | 25 % | 69 % | 90 % | 84 % | — | 99 % | 99 % | 97 % | 98 % |
+
+2022 e' vuoto perche' e' dentro il buco d'archivio (2021-10-18 → 2023-04-09), che
+**non e' una pausa**. Il 2018 al 25 % e il 2016 al 45 % sono gli anni Strava.
+Dal 2023 la copertura e' sostanzialmente totale.
+
+Il limite vero non e' la copertura ma **cosa** misura: e' il termometro di un
+orologio da polso, legge l'aria vicino a un corpo che scalda. **Legge
+sistematicamente piu' caldo dell'aria** — la mediana di gennaio su questo
+archivio e' 14 °C, che in Bergamasca all'alba non e' l'aria. Serve per confronti
+relativi e per il ciclo stagionale, **non come dato meteo**.
+
+**2. FatMax — modello, con le fonti nel sorgente.** Nessuna calorimetria
+indiretta e' mai stata fatta: non esiste VCO2, quindi le equazioni di Frayn (1983)
+sono citate nel sorgente per dire cosa *non* si ha. Si parte da Achten, Gleeson &
+Jeukendrup 2002 (PMID 11782653, coorte allenata: FatMax 74 %FCmax, banda 68-79 %),
+si lavora in %FCmax e non in %VO2max perche' Chávez-Guevara 2023 (PMID 37584843,
+~7.474 partecipanti) mostra che la FC al FatMax e' molto piu' stabile fra soggetti
+(CV 8.8 % contro 17.2 %), e i carboidrati abituali del diario spostano il FatMax
+con le pendenze interne allo studio FASTER (Volek 2016). **Lo stato di
+allenamento non muove il FatMax** — Stisen 2006, Lima-Silva 2010, Maunder 2018
+sono concordi — quindi il modello non lo muove.
+
+Tre cose da sapere:
+
+- Il modello ha **una verifica interna che `--check` ristampa ogni volta**: la
+  parabola calibrata sulla larghezza di banda si annulla a 172 bpm e il Fatmin
+  misurato da Achten sta a 170 bpm. Un grado di liberta', due punti indipendenti
+  dello stesso studio, scarto 1.8 bpm. Se un giorno smette di tornare, e' rotto.
+- **`fat_g_est` ha un'incertezza dell'ordine del ±40 %**: vale la sua variazione
+  nel tempo, non il valore assoluto. Il confronto con `carbs_used` di Intervals in
+  `--check` **non e' una validazione** ed e' etichettato come tale — entrambe le
+  stime partono dallo stesso campo `calories`, quindi l'accordo e' semi-circolare.
+- **L'effetto acuto del pasto pre-uscita non e' modellato**, pur essendo il piu'
+  documentato (−30 % di MFO dopo 75 g di glucosio), perche' il diario registra il
+  pasto ma **non l'ora**. Prima del **2024-08-11** non c'e' diario:
+  `fatmax_shift_bpm` e' 0 *per costruzione*, non perche' la dieta fosse neutra.
+
+**3. "Momento metabolico" — e cosa c'e' davvero dietro Hume.** Cercato: lo
+**"User Gain" del Hume Band non esiste**. E' una riga di marketing con un refuso
+("Hume Band User Gain an average 2 years 5 days of extra life"), non compare nel
+catalogo ufficiale delle 25 metriche Hume. La metrica vera si chiama **"Metabolic
+Momentum"**, scala −20..+20, e **non ha niente di pubblicato dietro**: metodologia
+dichiarata proprietaria, copertura stampa da comunicati a pagamento, cifre di
+longevita' da un **sondaggio interno n=60 di efficacia auto-percepita**. L'unico
+studio serio dell'ecosistema (Tinsley 2026, medRxiv) valida **la bilancia Hume
+Pod, non il Band**, ed e' un preprint. E **"metabolic momentum" non e' un termine
+scientifico**: PubMed sulla frase esatta risponde *"Quoted phrase not found in
+phrase index"*. Da non confondere con *metabolic memory* / legacy effect
+(DCCT/EDIC), che invece e' pubblicato e riguarda tutt'altro.
+
+Resta buona **l'idea sotto** — guardare la derivata invece del livello — che
+pero' non e' di Hume: e' il ramp rate del CTL, che l'allenamento guarda da sempre.
+Quindi `mm` e' un indice costruito qui, sulla stessa scala −20..+20 per rendere
+esplicito il debito, con **sei componenti e i pesi in chiaro in `PESI`**: forma
+(CTL) +0.22, sonno +0.20, fatica (ATL/CTL) −0.16, dieta +0.16, HRV +0.14, FC a
+riposo −0.12. Ogni componente e' uno z-score di (media 7 giorni − media 28), cioe'
+una derivata normalizzata.
+
+**La copertura qui e' tutto il problema**, e la colonna `mm_n` dice sempre quante
+componenti sono entrate: un −8 con `mm_n=3` e un −8 con `mm_n=6` non sono lo
+stesso numero. Sonno, HRV e FC a riposo esistono **solo dal 2025-01-20**; la dieta
+**dal 2024-08-11**; il carico e' reale **dal 2019-06-19**. Il composito si emette
+solo con almeno 3 componenti su 6, quindi **`mm` esiste solo dal 2024-08-11** —
+731 giorni sui 4.154 dell'archivio, di cui 568 con tutte e sei. Prima ci sono solo
+carico e fatica, e due non bastano: un "momento metabolico" fatto di solo CTL e
+ATL sarebbe il ramp rate con un altro nome e l'aria di dire molto di piu'.
 
 ## build_spostamenti.py + /vita/spostamenti
 
