@@ -123,8 +123,12 @@
   </footer>
 
   <div class="tooltip" id="tooltip" role="status"></div>
-  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+  <!-- d3 e topojson stanno in locale, non su un CDN: ogni pagina di questo sito
+       si apre anche da file:// e senza rete, e un globo che non disegna perche'
+       jsdelivr non risponde e' un guasto invisibile — la pagina resterebbe li',
+       vuota e senza un errore in vista. Aggiornarle = riscaricarle in vendor/. -->
+  <script src="vendor/d3.v7.min.js"></script>
+  <script src="vendor/topojson-client.v3.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

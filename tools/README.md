@@ -274,6 +274,31 @@ Tre cose da sapere prima di toccare qualcosa qui:
   chiaro nel sorgente. La matrice alimento x genere e' lo stesso modello letto al
   contrario — dice cosa il modello assume, non cosa fa un intestino.
 
+## build_spostamenti.py + /vita/spostamenti
+
+Arrivata col PR #35 (collaboratore, 2026-08-11): timeline e globo degli spostamenti,
+19 paesi, 96 viaggi, 133.016 km di volo. **Verificata: la CO2 torna** — 133.016 km x
+0,14253 kg/passeggero-km (UK Government 2026, media internazionale, con RF) = 18,96 t,
+esattamente il totale dichiarato. I km per anno sommano a 1 km dal totale, che e'
+arrotondamento.
+
+Due cose la distinguono da tutto il resto di `tools/`, e vanno sapute:
+
+- **Non e' stdlib.** Vuole `geonamescache` (`pip install -r
+  vita/spostamenti/requirements.txt`). E' l'unica eccezione nel repo; pip funziona su
+  questa macchina, npm no.
+- **Non si rigenera da sola.** Vuole `--timeline` (un export Google Timeline) e
+  `--airports` (il CSV di OurAirports), che non stanno qui. Ogni altro script in
+  `tools/` si rifa da un'API; questo no, quindi `vita/spostamenti/data/travel.json`
+  e' un artefatto committato che invecchia in silenzio finche' qualcuno non rifa
+  l'export. Se le date in cima alla pagina sembrano vecchie, e' questo.
+
+**d3 e topojson stanno in `vita/spostamenti/vendor/`, non su un CDN** (corretto
+2026-08-11). Arrivavano da jsdelivr, e ogni altra pagina di questo sito si apre da
+`file://` e senza rete: un globo che non disegna perche' un CDN non risponde e' un
+guasto invisibile — la pagina resta li', vuota, senza un errore in vista. Per
+aggiornarle si riscaricano in `vendor/`.
+
 ## check_vita.cjs
 
 The /vita smoke test, and the substitute for a pair of eyes: there is no
