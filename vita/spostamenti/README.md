@@ -13,13 +13,17 @@ pip install -r vita/spostamenti/requirements.txt
 python tools/build_spostamenti.py --timeline C:\percorso\Timeline.json --airports C:\percorso\airports.csv
 ```
 
-Il comando scrive `data/travel.json` e aggiorna la tessera nell'indice `/vita/`.
+Il comando scrive `data/travel.json`, il manifest di provenienza
+`data/source-manifest.json` e aggiorna la tessera nell'indice `/vita/`.
 Il globo usa `data/countries-110m.json`, una copia di world-atlas/Natural Earth.
 
 ## Definizioni
 
 - **CO₂e voli:** km delle tratte Timeline × 0,14253 kg CO₂e/passeggero-km,
   fattore UK Government 2026 “international average passenger, with RF”.
+- **CO₂e auto:** km validati × 0,20990 kg CO₂e/km. È la somma del fattore
+  diretto per auto media a carburante ignoto (0,16591) e del well-to-tank
+  (0,04399), UK Government 2026.
 - **Auto:** soli segmenti `IN_PASSENGER_VEHICLE` compatibili con durata,
   velocità e distanza tra gli estremi; gli errori impossibili sono scartati.
 - **Mezze:** attività Intervals/Strava di corsa da almeno 21,0 km e non oltre
@@ -31,5 +35,7 @@ Il globo usa `data/countries-110m.json`, una copia di world-atlas/Natural Earth.
 
 ## Privacy
 
-`Timeline.json`, casa, lavoro e percorsi GPS non vengono pubblicati. Le coordinate
-in `travel.json` sono città o aeroporti pubblici e sono arrotondate a due decimali.
+`Timeline.json`, casa, lavoro, Place ID e percorsi GPS non vengono pubblicati. Le
+coordinate in `travel.json` sono città o aeroporti pubblici e sono arrotondate a
+due decimali. Il manifest conserva hash, dimensione e copertura del file sorgente
+senza esporne il contenuto.

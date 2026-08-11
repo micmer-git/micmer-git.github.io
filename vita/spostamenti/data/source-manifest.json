@@ -1,0 +1,19 @@
+{
+  "source": "Timeline.json",
+  "sha256": "e998966dff77d4411a936c660a9a7436db1df062e0fb40c408e6ff141ba88fb0",
+  "bytes": 56304093,
+  "semanticSegments": 48259,
+  "coverage": {
+    "from": "2014-12-02",
+    "to": "2026-08-11"
+  },
+  "publishedInstead": "travel.json",
+  "omitted": [
+    "raw GPS",
+    "home",
+    "work",
+    "precise paths",
+    "place IDs"
+  ],
+  "reason": "The source export is intentionally kept local because this repository is public."
+}
