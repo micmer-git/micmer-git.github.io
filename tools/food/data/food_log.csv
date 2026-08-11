@@ -1,4 +1,30 @@
 date,meal,food_id,qty,note,source
+2026-03-21,pranzo,pasta_semola,110,pasta al ristorante Da Fortunato,foto
+2026-03-21,pranzo,passata_pomodoro,100,,foto
+2026-03-21,pranzo,caffe_espresso,1,,foto
+2026-03-22,colazione,cornetto_crema,2,"brioche allo zucchero, pasticceria Martinucci",foto
+2026-03-22,colazione,banana,1,,foto
+2026-03-22,colazione,cappuccino,1,,foto
+2026-03-22,pranzo,pasta_semola,110,carbonara al ristorante,foto
+2026-03-22,pranzo,uovo_intero,2,,foto
+2026-03-22,pranzo,guanciale,50,,foto
+2026-03-22,pranzo,grana_padano,30,pecorino,foto
+2026-03-22,spuntino,gelato_cono,150,cono due gusti,foto
+2026-03-30,pranzo,lenticchie_secche,90,lenticchie con verdure a foglia,foto
+2026-03-30,pranzo,spinaci,130,,foto
+2026-03-30,pranzo,pizza_base,0.3,trancio di focaccia al pomodoro nel piatto,foto
+2026-03-30,pranzo,pane_segale,70,,foto
+2026-03-30,spuntino,caffe_espresso,1,caffe' con pizzetta fuori,foto
+2026-03-30,spuntino,pizza_base,0.25,,foto
+2026-03-31,pranzo,soia_granulare,70,ragu' di soia con peperoni,foto
+2026-03-31,pranzo,peperoni,110,,foto
+2026-03-31,pranzo,melanzane,130,stufato di melanzane,foto
+2026-03-31,pranzo,fagiolini,130,,foto
+2026-03-31,pranzo,riso_bianco,90,riso integrale,foto
+2026-03-31,pranzo,tofu,90,cubetti,foto
+2026-03-31,cena,farro_perlato,90,teglia con pomodorini e feta,foto
+2026-03-31,cena,pomodorini,160,,foto
+2026-03-31,cena,feta,70,,foto
 2026-04-08,cena,pasta_uovo,110,tagliatelle in padella grande,foto
 2026-04-08,cena,ricotta_vaccina,70,sugo bianco cremoso,foto
 2026-04-08,cena,spinaci,120,,foto

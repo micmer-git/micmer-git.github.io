@@ -121,3 +121,5 @@ panino_farcito,Panino farcito (bar),cereali,unit,1,420,18.0,45.0,4.0,3.0,18.0,7.
 pizza_base,Pizza rossa senza mozzarella (base),cereali,unit,1,700,22.0,110.0,8.0,6.5,20.0,3.5,0.2,1700,520,120,4.2,85,2.2,10,90,0,0,85,low,"~330 g, base + pomodoro + filo d'olio",frumento,1,0
 bresaola,Bresaola,proteine,g,100,151,33.1,0.4,0.4,0,2.0,0.8,0.03,1600,500,15,2.4,30,3.7,0,0,0.5,1.6,4,high,,,1,1
 mozzarella_proteica,Mozzarella proteica (light),latticini,g,100,150,24.0,1.5,1.5,0,6.0,4.0,0.1,400,90,480,0.2,20,3.0,0,60,0.2,1.0,7,medium,"alta in proteine, meno grassa della vaccina",,1,0
+gelato_cono,Gelato artigianale in cono,dolci,g,100,215,3.5,26.0,24.0,0.8,10.5,6.5,0.05,60,180,120,0.4,18,0.5,1,90,0.2,0.3,8,medium,"due gusti, cono compreso ~150 g",,1,0
+guanciale,Guanciale,proteine,g,100,655,8.0,0,0,0,69.0,25.0,0.3,1200,150,10,0.6,8,1.2,0,0,0.5,0.6,2,medium,,,1,1
