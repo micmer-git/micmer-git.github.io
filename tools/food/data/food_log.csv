@@ -1,4 +1,26 @@
 date,meal,food_id,qty,note,source
+2026-04-08,cena,pasta_uovo,110,tagliatelle in padella grande,foto
+2026-04-08,cena,ricotta_vaccina,70,sugo bianco cremoso,foto
+2026-04-08,cena,spinaci,120,,foto
+2026-04-08,spuntino,cornetto_crema,1,cinnamon roll,foto
+2026-04-08,spuntino,cappuccino,1,,foto
+2026-04-10,pranzo,gnocchi_patate,250,gnocchi al sugo,foto
+2026-04-10,pranzo,passata_pomodoro,130,,foto
+2026-04-10,pranzo,peperoni,70,,foto
+2026-04-10,pranzo,prosciutto_crudo,40,,foto
+2026-04-10,spuntino,pane_integrale,70,"fetta con marmellata, in bici al passo di Zambla",foto
+2026-04-10,spuntino,marmellata_fragola,25,,foto
+2026-04-15,pranzo,gnocchi_patate,250,gnocchi con sugo di pomodoro e legumi,foto
+2026-04-15,pranzo,passata_pomodoro,120,,foto
+2026-04-15,pranzo,fagioli_cannellini,120,,foto
+2026-04-15,cena,pomodorini,150,insalata di pomodori nel piatto verde,foto
+2026-04-15,cena,pane_segale,90,due fette scure,foto
+2026-04-15,cena,hummus,80,crema di ceci in pentola,foto
+2026-04-19,colazione,caffe_espresso,1,tazza in terrazza,foto
+2026-04-19,pranzo,farina_ceci,90,zuppa gialla di ceci in coccio,foto
+2026-04-19,pranzo,pane_integrale,90,"pagnotta a lievitazione, fette",foto
+2026-04-19,cena,avocado,80,tagliere con avocado e insalata,foto
+2026-04-19,cena,insalata_mista,80,,foto
 2026-04-23,pranzo,riso_bianco,100,poke bowl,foto
 2026-04-23,pranzo,edamame,80,,foto
 2026-04-23,pranzo,carote,60,,foto
@@ -16,6 +38,26 @@ date,meal,food_id,qty,note,source
 2026-04-24,pranzo,carote,70,,foto
 2026-04-24,cena,pomodorini,150,pomodoro e feta nel piatto verde,foto
 2026-04-24,cena,feta,60,,foto
+2026-04-25,spuntino,torta_cioccolato,130,"torta densa al cioccolato, piu' fette",foto
+2026-04-25,spuntino,caffe_espresso,1,caffe' freddo al lago,foto
+2026-04-26,pranzo,ceci_scatola,250,"ceci in salsa bianca cremosa, padella grande",foto
+2026-04-26,pranzo,pomodorini,120,,foto
+2026-04-26,pranzo,ricotta_vaccina,70,la parte cremosa,foto
+2026-04-26,cena,recipe:pizza_semplice,1,pizza da asporto,foto
+2026-04-27,pranzo,pasta_uovo,110,tagliatelle,foto
+2026-04-27,pranzo,ragu_carne,140,,foto
+2026-04-27,spuntino,cornetto_crema,1,dolce incartato col caffe',foto
+2026-04-27,spuntino,caffe_espresso,1,,foto
+2026-04-27,cena,piselli_secchi,90,zuppa densa di legumi spezzati,foto
+2026-04-27,cena,cipolla,50,,foto
+2026-04-28,pranzo,sformato_verdure,240,torta salata,foto
+2026-04-28,pranzo,gallette_riso,20,,foto
+2026-04-29,pranzo,patate_dolci,280,spicchi al forno,foto
+2026-04-29,pranzo,fagioli_cannellini,200,stufato di legumi e peperoni,foto
+2026-04-29,pranzo,peperoni,100,,foto
+2026-04-29,cena,pasta_semola,100,pasta corta con piselli,foto
+2026-04-29,cena,piselli_secchi,60,,foto
+2026-04-30,cena,recipe:pizza_semplice,1,pizza con rucola sopra,foto
 2026-05-01,colazione,panino_bianco,2,panini con salume,foto
 2026-05-01,colazione,prosciutto_crudo,60,,foto
 2026-05-01,pranzo,fagioli_cannellini,200,shakshuka di fagioli,foto
