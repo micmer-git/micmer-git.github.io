@@ -123,9 +123,35 @@ def load_recipes():
     return recipes
 
 
+PHOTO_BATCHES = DATA / "photo_batches"
+
+
 def load_food_log():
+    """Il diario, piu' i lotti letti dagli screenshot.
+
+    `data/photo_batches/*.csv` esiste perche' la lettura delle ~400 schermate di
+    Google Photos e' un lavoro parallelo: piu' agenti leggono mesi diversi e ognuno
+    scrive il PROPRIO file. Se scrivessero tutti in food_log.csv si sovrascriverebbero
+    a vicenda, e il modo in cui se ne accorgerebbe qualcuno sarebbe un diario con
+    dei buchi. Stessa identica intestazione, stessa semantica: sono righe osservate.
+    """
+    rows = []
     with FOOD_LOG_CSV.open(encoding="utf-8", newline="") as fh:
-        return [row for row in csv.DictReader(fh) if row.get("date")]
+        rows += [row for row in csv.DictReader(fh) if row.get("date")]
+    if PHOTO_BATCHES.exists():
+        seen = {(r["date"], r["meal"], r["food_id"]) for r in rows}
+        for p in sorted(PHOTO_BATCHES.glob("*.csv")):
+            with p.open(encoding="utf-8", newline="") as fh:
+                for row in csv.DictReader(fh):
+                    if not row.get("date"):
+                        continue
+                    k = (row["date"], row.get("meal", ""), row.get("food_id", ""))
+                    if k in seen:          # stesso pasto letto due volte: si tiene uno
+                        continue
+                    seen.add(k)
+                    row.setdefault("source", "foto")
+                    rows.append(row)
+    return rows
 
 
 def expand_log(rows, recipes):

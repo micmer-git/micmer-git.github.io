@@ -1,0 +1,16 @@
+date,meal,food_id,qty,note,source
+2025-08-23,colazione,pane_bianco,80,"colazione al rifugio: pane, affettato, marmellata, succo",foto
+2025-08-23,colazione,prosciutto_cotto,50,,foto
+2025-08-23,colazione,marmellata_fragola,30,,foto
+2025-08-23,colazione,succo_frutta,200,,foto
+2025-08-23,colazione,cereali_colazione,40,,foto
+2025-08-23,pranzo,ravioli_ricotta,200,ravioli di zucca,foto
+2025-08-23,pranzo,ricotta_vaccina,120,grossa cucchiaiata a fianco,foto
+2025-08-23,pranzo,pane_segale,90,pane scuro a fette,foto
+2025-08-23,spuntino,gallette_riso,20,gallette con ricotta e confettura di mirtilli,foto
+2025-08-23,spuntino,ricotta_vaccina,80,,foto
+2025-08-23,spuntino,frutti_di_bosco,60,,foto
+2025-08-23,spuntino,pesca,1,al lago,foto
+2025-08-23,cena,melone,180,melone e pomodoro col tortino salato,foto
+2025-08-23,cena,pomodorini,120,,foto
+2025-08-23,cena,sformato_verdure,200,,foto
