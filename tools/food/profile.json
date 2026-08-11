@@ -1,0 +1,39 @@
+{
+  "sex": "M",
+  "age": null,
+  "height_cm": null,
+  "weight_kg": 71.29,
+  "body_fat_pct": 12,
+  "neat_factor": 1.35,
+  "reference_kcal": 2600,
+  "protein_g_per_kg": 1.6,
+  "rda": {
+    "fiber_g": 30,
+    "omega3_g": 2.0,
+    "potassium_mg": 3500,
+    "calcium_mg": 1000,
+    "iron_mg": 10,
+    "magnesium_mg": 350,
+    "zinc_mg": 11,
+    "vitc_mg": 105,
+    "vita_ug": 900,
+    "vitd_ug": 15,
+    "b12_ug": 2.4,
+    "folate_ug": 400
+  },
+  "limits": {
+    "sodium_mg": 2000,
+    "satfat_pct_kcal": 10,
+    "sugar_pct_kcal": 10
+  },
+  "_note": [
+    "reference_kcal e' la dieta di riferimento dello score di densita' nutrizionale:",
+    "  score = (% fabbisogno soddisfatto) / (% kcal sul fabbisogno).",
+    "  Su 2600 kcal, 100 kcal valgono il 3,85% -> un alimento che copre il 3,85% di un",
+    "  nutriente ha score 1 (densita' media). Il doppio -> score 2.",
+    "protein_g_per_kg moltiplica weight_kg per ottenere il fabbisogno proteico (1,6 g/kg da endurance).",
+    "rda: LARN/EFSA per maschio adulto. limits: tetti, non obiettivi - piu' basso e' meglio.",
+    "age/height_cm non sono impostati su intervals.icu: finche' restano null il BMR usa",
+    "  Katch-McArdle con body_fat_pct ASSUNTO, invece di Mifflin-St Jeor."
+  ]
+}

@@ -11,6 +11,11 @@ tools/.cache_streams/
 # build_cruscotto.py: la pull grezza di wellness + attivita' (si riscarica da sola,
 # e comunque la pagina generata la contiene gia' in forma compatta)
 tools/.cruscotto_cache.json
+# build_food.py: i derivati della pipeline alimentare si rigenerano da soli.
+# La SORGENTE (foods, recipes, food_log, monthly_patterns) invece si committa:
+# e' l'unica copia che esiste.
+tools/food/data/derived/
+tools/food/__pycache__/
 # build_signore.py: stessa cosa, la pull grezza delle attivita' (--offline la rilegge).
 # tools/signore.json invece SI' committa: e' la prosa, non e' rigenerabile.
 tools/.signore_cache.json

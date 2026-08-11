@@ -1,0 +1,290 @@
+date,meal,food_id,qty,note,source
+2026-05-01,colazione,panino_bianco,2,panini con salume,foto
+2026-05-01,colazione,prosciutto_crudo,60,,foto
+2026-05-01,pranzo,fagioli_cannellini,200,shakshuka di fagioli,foto
+2026-05-01,pranzo,passata_pomodoro,200,,foto
+2026-05-01,pranzo,uovo_intero,2,,foto
+2026-05-01,pranzo,pane_segale,70,,foto
+2026-05-01,cena,ragu_carne,200,base di sugo rosso,foto
+2026-05-01,cena,mango,150,frutto giallo a cubetti: mango o papaya,foto
+2026-05-02,pranzo,passata_pomodoro,200,,foto
+2026-05-02,pranzo,peperoni,150,,foto
+2026-05-02,pranzo,insalata_mista,50,,foto
+2026-05-02,pranzo,pane_integrale,70,,foto
+2026-05-03,pranzo,petto_pollo,175,dichiarato 150-200 g,foto
+2026-05-03,pranzo,fagioli_cannellini,175,dichiarato 150-200 g,foto
+2026-05-03,pranzo,passata_pomodoro,100,,foto
+2026-05-03,pranzo,funghi,100,,foto
+2026-05-03,pranzo,rucola,40,,foto
+2026-05-03,pranzo,pane_segale,70,,foto
+2026-05-09,pranzo,carne_maiale,175,dichiarato 150-200 g,foto
+2026-05-09,pranzo,fagioli_cannellini,175,dichiarato 150-200 g,foto
+2026-05-09,pranzo,passata_pomodoro,100,,foto
+2026-05-09,pranzo,rucola,40,,foto
+2026-05-09,pranzo,pane_segale,70,,foto
+2026-05-09,pranzo,limone,10,spicchio,foto
+2026-05-11,cena,petto_pollo,120,piatto pronto,foto
+2026-05-11,cena,riso_bianco,80,cereale non identificato: riso o quinoa,foto
+2026-05-11,cena,fagiolini,125,dichiarato 100-150 g,foto
+2026-05-11,cena,banana,1,,foto
+2026-05-11,cena,caffe_espresso,1,,foto
+2026-05-12,cena,pasta_semola,100,"penne, ~200 g cotte",foto
+2026-05-12,cena,passata_pomodoro,150,,foto
+2026-05-12,cena,zucchine,100,dichiarato ~100 g,foto
+2026-05-12,cena,sformato_verdure,225,"torta salata, dichiarato 200-250 g",foto
+2026-05-12,cena,insalata_mista,80,,foto
+2026-05-17,colazione,pizza_margherita,0.5,fette di pizza,foto
+2026-05-17,colazione,melanzane,80,verdure stufate sopra,foto
+2026-05-17,colazione,peperoni,60,,foto
+2026-05-17,colazione,olive,20,,foto
+2026-05-18,cena,ceci_scatola,250,stufato di ceci,foto
+2026-05-18,cena,spinaci,200,,foto
+2026-05-18,cena,cipolla,100,,foto
+2026-05-18,cena,curry_polvere,5,,foto
+2026-05-19,pranzo,pasta_semola,100,spaghetti,foto
+2026-05-19,pranzo,passata_pomodoro,150,,foto
+2026-05-19,pranzo,pomodorini,100,,foto
+2026-05-19,pranzo,olive,30,,foto
+2026-05-19,pranzo,pane_segale,140,2 fette,foto
+2026-05-21,colazione,fagioli_cannellini,200,,foto
+2026-05-21,colazione,passata_pomodoro,150,,foto
+2026-05-21,colazione,uovo_intero,1,,foto
+2026-05-21,colazione,pane_segale,70,,foto
+2026-05-21,pranzo,sformato_verdure,175,dichiarato 150-200 g,foto
+2026-05-21,pranzo,fagiolini,125,dichiarato 100-150 g,foto
+2026-05-21,pranzo,pomodorini,60,dichiarato 50-70 g,foto
+2026-05-21,pranzo,melone,125,dichiarato 100-150 g,foto
+2026-05-22,pranzo,pasta_semola,100,penne,foto
+2026-05-22,pranzo,passata_pomodoro,120,,foto
+2026-05-22,pranzo,ricotta_vaccina,60,la parte cremosa,foto
+2026-05-22,pranzo,pomodorini,100,,foto
+2026-05-22,pranzo,basilico,5,,foto
+2026-05-23,colazione,crostata_frutta,200,due fette,foto
+2026-05-23,cena,riso_bianco,80,,foto
+2026-05-23,cena,mirtilli,100,bacche scure,foto
+2026-05-23,cena,ricotta_vaccina,90,la parte bianca cremosa,foto
+2026-05-24,pranzo,pasta_semola,150,insalata di pasta + penne al sugo,foto
+2026-05-24,pranzo,passata_pomodoro,100,,foto
+2026-05-24,pranzo,sformato_verdure,150,torta salata,foto
+2026-05-24,pranzo,patate,200,al forno,foto
+2026-05-24,pranzo,salsiccia,80,,foto
+2026-05-24,cena,riso_bianco,100,bowl da asporto,foto
+2026-05-24,cena,petto_pollo,120,,foto
+2026-05-24,cena,edamame,80,,foto
+2026-05-27,pranzo,pomodorini,150,caprese,foto
+2026-05-27,pranzo,mozzarella,125,,foto
+2026-05-27,pranzo,basilico,5,,foto
+2026-05-27,pranzo,piadina,120,pane piatto grande,foto
+2026-05-29,pranzo,pane_integrale,100,,foto
+2026-05-29,pranzo,formaggio_semistagionato,40,possibile ripieno,foto
+2026-05-29,cena,couscous,80,insalata di couscous pronta,foto
+2026-05-29,cena,peperoni,150,grigliati,foto
+2026-05-30,cena,salsiccia,150,,foto
+2026-05-30,cena,couscous,80,cereale: couscous o riso,foto
+2026-05-30,cena,fagiolini,150,,foto
+2026-05-30,cena,patate_dolci,200,al forno,foto
+2026-05-31,pranzo,pasta_semola,100,penne,foto
+2026-05-31,pranzo,ricotta_vaccina,80,sugo rosa cremoso,foto
+2026-05-31,pranzo,passata_pomodoro,80,,foto
+2026-05-31,pranzo,pomodorini,80,,foto
+2026-05-31,pranzo,spinaci,80,,foto
+2026-06-01,pranzo,fagioli_cannellini,200,"'macinato o fagioli': scelti i fagioli, sei plant-forward",foto
+2026-06-01,pranzo,zucchine,100,,foto
+2026-06-01,pranzo,passata_pomodoro,100,,foto
+2026-06-01,pranzo,piadina,100,,foto
+2026-06-02,pranzo,gnocchi_patate,250,pasta o gnocchi,foto
+2026-06-02,pranzo,passata_pomodoro,120,,foto
+2026-06-02,pranzo,pomodorini,100,,foto
+2026-06-03,pranzo,focaccia,150,focaccia barese,foto
+2026-06-03,pranzo,sformato_verdure,200,due terrine salate,foto
+2026-06-03,pranzo,passata_pomodoro,50,,foto
+2026-06-04,pranzo,insalata_mista,100,,foto
+2026-06-04,pranzo,carne_maiale,150,,foto
+2026-06-04,pranzo,zucchine,100,,foto
+2026-06-04,pranzo,panino_bianco,2,,foto
+2026-06-04,pranzo,melone,150,,foto
+2026-06-05,pranzo,carne_macinata_manzo,150,,foto
+2026-06-05,pranzo,pomodorini,120,,foto
+2026-06-05,pranzo,zucchine,120,,foto
+2026-06-05,pranzo,patate_dolci,150,a fette,foto
+2026-06-07,pranzo,pasta_semola,100,penne al sugo,foto
+2026-06-07,pranzo,passata_pomodoro,150,,foto
+2026-06-07,pranzo,pane_integrale,70,,foto
+2026-06-07,spuntino,panino_bianco,1,panino con formaggio,foto
+2026-06-07,spuntino,formaggio_semistagionato,40,,foto
+2026-06-07,spuntino,caffe_espresso,1,,foto
+2026-06-07,spuntino,crostata_frutta,120,,foto
+2026-06-07,spuntino,banana,2,,foto
+2026-06-07,spuntino,cornetto_crema,2,panini dolci ripieni,foto
+2026-06-08,pranzo,sformato_verdure,250,,foto
+2026-06-08,pranzo,spinaci,100,,foto
+2026-06-08,pranzo,gallette_riso,20,,foto
+2026-06-09,pranzo,pizza_margherita,1,,foto
+2026-06-09,pranzo,prosciutto_cotto,50,,foto
+2026-06-09,pranzo,pomodorini,60,,foto
+2026-06-09,pranzo,uovo_intero,3,grande frittata,foto
+2026-06-13,pranzo,pasta_semola,100,,foto
+2026-06-13,pranzo,ricotta_vaccina,70,sugo rosa cremoso,foto
+2026-06-13,pranzo,passata_pomodoro,80,,foto
+2026-06-13,pranzo,zucchine,100,,foto
+2026-06-13,cena,fagioli_cannellini,200,stufato scuro,foto
+2026-06-13,cena,passata_pomodoro,120,,foto
+2026-06-13,cena,carote,100,,foto
+2026-06-14,spuntino,crostata_frutta,120,pasticcini quadrati alla frutta,foto
+2026-06-15,pranzo,pasta_semola,100,,foto
+2026-06-15,pranzo,ricotta_vaccina,80,sugo cremoso,foto
+2026-06-15,pranzo,carote,120,,foto
+2026-06-16,pranzo,carne_macinata_manzo,150,,foto
+2026-06-16,pranzo,pomodorini,150,,foto
+2026-06-16,pranzo,insalata_mista,80,,foto
+2026-06-17,pranzo,riso_bianco,100,,foto
+2026-06-17,pranzo,ceci_scatola,200,,foto
+2026-06-17,pranzo,pane_integrale,70,,foto
+2026-06-17,cena,pomodorini,150,,foto
+2026-06-17,cena,ricotta_vaccina,100,,foto
+2026-06-17,cena,prezzemolo,5,erbe,foto
+2026-06-18,cena,ceci_scatola,250,,foto
+2026-06-18,cena,spinaci,200,,foto
+2026-06-18,cena,pomodorini,100,,foto
+2026-06-19,colazione,cornetto_crema,1,tipo cinnamon roll,foto
+2026-06-19,colazione,caffe_espresso,1,,foto
+2026-06-19,colazione,latte_intero,50,,foto
+2026-06-20,colazione,pizza_margherita,0.5,pizzetta,foto
+2026-06-20,colazione,pomodorini,50,,foto
+2026-06-20,colazione,olive,25,,foto
+2026-06-21,colazione,melone,150,,foto
+2026-06-21,colazione,avocado,100,,foto
+2026-06-21,colazione,uovo_intero,2,sode,foto
+2026-06-21,colazione,pane_integrale,70,,foto
+2026-06-21,colazione,caffe_espresso,1,,foto
+2026-06-21,colazione,yogurt_bianco_intero,100,yogurt o panna,foto
+2026-06-21,cena,pizza_margherita,2,,foto
+2026-06-21,cena,prosciutto_cotto,50,,foto
+2026-06-21,cena,funghi,60,,foto
+2026-06-21,cena,peperoni,60,,foto
+2026-06-21,cena,zucchine,60,,foto
+2026-06-23,spuntino,pesca,2,,foto
+2026-06-23,spuntino,fragole,150,,foto
+2026-06-23,spuntino,yogurt_bianco_intero,150,,foto
+2026-06-23,spuntino,succo_frutta,200,,foto
+2026-06-24,pranzo,uovo_intero,3,frittata,foto
+2026-06-24,pranzo,pomodorini,120,,foto
+2026-06-24,pranzo,cipolla,40,,foto
+2026-06-24,pranzo,pane_integrale,70,,foto
+2026-06-25,colazione,croissant_vuoto,1,,foto
+2026-06-25,colazione,latte_intero,150,bevanda al latte,foto
+2026-06-25,cena,melanzane,200,fritte,foto
+2026-06-25,cena,passata_pomodoro,120,,foto
+2026-06-25,cena,ceci_scatola,200,,foto
+2026-06-25,cena,spinaci,150,,foto
+2026-06-25,cena,pane_integrale,70,,foto
+2026-06-26,pranzo,insalata_mista,120,,foto
+2026-06-26,pranzo,avocado,100,,foto
+2026-06-26,pranzo,pane_integrale,70,,foto
+2026-06-26,cena,pizza_margherita,1,,foto
+2026-06-26,cena,prosciutto_crudo,40,,foto
+2026-06-26,cena,rucola,30,,foto
+2026-06-27,pranzo,carne_maiale,180,fritta,foto
+2026-06-27,pranzo,patate,250,,foto
+2026-06-27,pranzo,uovo_intero,1,sodo,foto
+2026-06-27,pranzo,prezzemolo,15,salsa verde,foto
+2026-06-28,pranzo,insalata_mista,150,bowl,foto
+2026-06-28,pranzo,pomodorini,80,,foto
+2026-06-28,pranzo,cetriolo,60,,foto
+2026-06-28,pranzo,mais_dolce,60,,foto
+2026-06-28,pranzo,pane_integrale,70,,foto
+2026-06-29,colazione,cornetto_crema,1,pasticceria Kuntz,foto
+2026-06-29,pranzo,prosciutto_crudo,60,picnic,foto
+2026-06-29,pranzo,pane_integrale,100,,foto
+2026-06-29,pranzo,formaggio_semistagionato,50,,foto
+2026-06-29,pranzo,insalata_mista,100,,foto
+2026-06-29,pranzo,tonno_scatola,80,,foto
+2026-06-30,colazione,pane_bianco,80,,foto
+2026-06-30,colazione,prosciutto_cotto,50,,foto
+2026-06-30,colazione,melone,150,frutta,foto
+2026-06-30,colazione,cereali_colazione,50,,foto
+2026-06-30,colazione,torta_cioccolato,60,dolcetto,foto
+2026-07-04,colazione,pane_bianco,80,,foto
+2026-07-04,colazione,prosciutto_cotto,50,,foto
+2026-07-04,colazione,formaggio_semistagionato,40,,foto
+2026-07-04,colazione,melone,100,frutta,foto
+2026-07-04,colazione,cereali_colazione,50,,foto
+2026-07-04,pranzo,pasta_uovo,100,tagliatelle,foto
+2026-07-04,pranzo,ragu_carne,150,,foto
+2026-07-04,cena,pasta_semola,80,,foto
+2026-07-04,cena,ricotta_vaccina,60,sugo giallo cremoso,foto
+2026-07-08,pranzo,mais_dolce,150,,foto
+2026-07-08,pranzo,rucola,60,,foto
+2026-07-08,pranzo,melone,200,,foto
+2026-07-10,pranzo,ceci_scatola,250,,foto
+2026-07-10,pranzo,spinaci,200,,foto
+2026-07-10,pranzo,piadina,100,,foto
+2026-07-10,pranzo,limone,10,,foto
+2026-07-10,cena,uovo_intero,3,,foto
+2026-07-10,cena,patate,250,,foto
+2026-07-10,cena,cipolla,80,,foto
+2026-07-12,pranzo,pizza_margherita,2,,foto
+2026-07-12,pranzo,burrata,80,,foto
+2026-07-12,pranzo,pomodori_secchi,30,,foto
+2026-07-12,pranzo,basilico,5,,foto
+2026-07-12,pranzo,prosciutto_crudo,40,,foto
+2026-07-12,pranzo,rucola,30,,foto
+2026-07-12,spuntino,crostata_frutta,120,,foto
+2026-07-12,spuntino,caffe_espresso,1,,foto
+2026-07-15,pranzo,ceci_scatola,250,,foto
+2026-07-15,pranzo,carote,150,,foto
+2026-07-15,pranzo,pane_integrale,70,,foto
+2026-07-16,pranzo,pasta_semola,120,a un evento,foto
+2026-07-16,pranzo,ragu_carne,150,,foto
+2026-07-17,cena,patate,350,teglia di patate e cipolle,foto
+2026-07-17,cena,cipolla,100,,foto
+2026-07-18,spuntino,biscotto,2,,foto
+2026-07-18,spuntino,caffe_espresso,1,,foto
+2026-07-19,cena,sformato_verdure,250,,foto
+2026-07-19,cena,spinaci,100,,foto
+2026-07-19,cena,patate_dolci,150,,foto
+2026-07-20,pranzo,burrito,1,,foto
+2026-07-20,pranzo,mais_dolce,80,,foto
+2026-07-20,pranzo,peperoni,80,,foto
+2026-07-21,pranzo,ceci_scatola,220,,foto
+2026-07-21,pranzo,funghi,150,,foto
+2026-07-21,cena,sformato_verdure,200,,foto
+2026-07-21,spuntino,cheesecake,120,con copertura all'arancia,foto
+2026-07-22,colazione,avena_fiocchi,60,porridge,dichiarato
+2026-07-22,colazione,cacao_100,10,porridge,dichiarato
+2026-07-22,colazione,latte_ps,50,porridge,dichiarato
+2026-07-22,colazione,banana,1,porridge,dichiarato
+2026-07-22,colazione,burro_arachidi_sgrassato,25,"porridge - dichiarato ""20-30 g""",dichiarato
+2026-07-22,non_specificato,uovo_intero,3,,dichiarato
+2026-07-22,non_specificato,sugo_verdure,200,,dichiarato
+2026-07-22,non_specificato,pane_integrale,140,2 fette da ~70 g,dichiarato
+2026-07-22,spuntino,croissant_vuoto,1.5,,dichiarato
+2026-07-22,spuntino,banana,2,,dichiarato
+2026-07-22,spuntino,pesca,2,"dichiarato ""un paio""",dichiarato
+2026-07-23,colazione,cornetto_crema,1,sfoglia con pesche,foto
+2026-07-23,colazione,pesca,1,,foto
+2026-07-23,colazione,panna_montata,30,,foto
+2026-07-23,colazione,caffe_espresso,1,,foto
+2026-07-23,spuntino,banana,1,,foto
+2026-07-23,spuntino,avena_fiocchi,60,porridge con banana,foto
+2026-07-23,spuntino,banana,1,,foto
+2026-07-23,pranzo,farro_perlato,100,,foto
+2026-07-23,pranzo,mais_dolce,80,,foto
+2026-07-23,pranzo,pomodorini,100,,foto
+2026-07-23,cena,torta_cioccolato,80,torta scura e densa,foto
+2026-07-25,cena,sformato_verdure,250,,foto
+2026-07-26,spuntino,cornetto_crema,2,,foto
+2026-07-26,spuntino,frutti_di_bosco,60,,foto
+2026-07-26,spuntino,panna_montata,30,,foto
+2026-07-27,colazione,uovo_intero,3,strapazzate,foto
+2026-07-27,colazione,pane_integrale,70,,foto
+2026-07-27,colazione,ricotta_vaccina,80,,foto
+2026-07-27,colazione,fagioli_cannellini,200,,foto
+2026-07-28,pranzo,patate_dolci,250,,foto
+2026-07-28,pranzo,mais_dolce,100,,foto
+2026-07-28,pranzo,peperoni,120,,foto
+2026-07-29,pranzo,farro_perlato,100,,foto
+2026-07-29,pranzo,ricotta_vaccina,80,copertura cremosa,foto
+2026-07-31,cena,sformato_verdure,250,,foto
+2026-07-31,cena,spinaci,100,,foto
+2026-07-31,cena,patate_dolci,150,,foto

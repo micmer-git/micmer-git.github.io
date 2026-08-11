@@ -10,7 +10,8 @@ and backs up what it overwrites to `*.bak`.
 python tools/sync_intervals.py --config tools/gazzaniga-orezzo.json   # new efforts -> _data.js
 python tools/sync_sogni.py                                            # new weeks   -> data.json + load.json
 python tools/sync_diario.py                                           # refresh the monthly chapter numbers
-python tools/build_vita.py                                            # rebuild /vita: tracker + 31 grafici
+python tools/build_food.py                                            # rigenera i dati dell'alimentazione -> vita/_*.csv|json
+python tools/build_vita.py                                            # rebuild /vita: tracker + 38 grafici
 node   tools/check_vita.cjs                                           # smoke-test it, no browser needed
 python tools/build_signore.py                                         # /signore-dei-kj: la saga, mese per mese
 node   tools/check_signore.cjs                                        # smoke-test it, no browser needed
@@ -189,13 +190,15 @@ all-pairs floor, and yellow beside orange is exactly the failing pair — which 
 the four hexes are still in the CSS, so a casual re-colour trips a test instead of
 silently shipping.
 
-**La sezione Tavola arriva da un'altra repo.** `vita/_nutrition.csv` e' esportato da
-`~/health-log` con `python scripts/build_nutrition_series.py --export <qui>`, ed e'
-committato perche' la GitHub Action non ha accesso a quella repo. Contiene **solo
-aggregati giornalieri** — kcal, macro, magnesio, potassio, indici di vitamine e
+**La sezione Tavola si rigenera da qui.** Fino al 2026-08-10 la pipeline viveva in
+`~/health-log`, che ha il remote su `pweurope/mangiafortissimo` — un repo che non
+esiste — quindi non era pubblicabile, la GitHub Action non poteva rigenerare niente,
+e i CSV sotto `vita/` erano copie committate a mano: due superfici destinate a
+divergere senza che nessuno se ne accorgesse. Ora la sorgente sta in **`tools/food/`**,
+una copia sola, e `python tools/build_food.py` rifa tutto. `vita/_nutrition.csv`
+contiene **solo aggregati giornalieri** — kcal, macro, magnesio, potassio, indici di vitamine e
 minerali, piante distinte su 7 giorni, fabbisogno di carboidrati stimato dal TSS,
-indice microbiota. Il diario dei pasti, con dentro dove e con chi ha mangiato, non
-esce da health-log. Se il file manca, `nutriTiles()` torna una lista vuota e la
+indice microbiota. Se il file manca, `nutriTiles()` torna una lista vuota e la
 sezione sparisce invece di riempirsi di riquadri vuoti.
 
 Due cose vanno dette ogni volta che si guarda quella sezione:
@@ -243,6 +246,33 @@ wastes a tenth of a 320px tile. Both axes size themselves from the widest label 
 ~4.85px per mono glyph, and the check measures with the same constant.
 
 ---
+
+## build_food.py + tools/food/
+
+La pipeline dell'alimentazione, in sola stdlib come tutto il resto. `tools/food/`
+tiene la **sorgente** — `data/foods.csv` (119 alimenti x 19 nutrienti, piu' le tre
+colonne `plant`/`fermented`/`upf`), `data/recipes.csv` (92 ricette, di cui 46 sono i
+piatti del mese), `data/food_log.csv` (il diario vero, append-only),
+`data/monthly_patterns.csv` (mese -> piatti ricorrenti + fascia kcal), `profile.json`
+(peso, fabbisogni, tetti) — e i tre script che la macinano. `data/derived/` e'
+gitignorato: si rigenera.
+
+`build_food.py` li lancia in ordine, e **l'ordine conta**: `microbiome_model.py`
+legge la serie che `build_nutrition_series.py` ha appena scritto.
+
+Tre cose da sapere prima di toccare qualcosa qui:
+
+- **`food_log.csv` e' quello che l'utente ha davvero raccontato; la ricostruzione
+  sta altrove.** `fill_defaults.py` scrive in `data/derived/assumed_log.csv`, mai
+  nel diario. La distinzione e' il punto: chi legge una serie deve poter chiedere
+  quanta parte e' osservata — oggi il **4 %** delle calorie, quindi le kcal sono una
+  base e non un totale, e la pagina lo dice nel primo riquadro della sezione.
+- **Un alimento nuovo va classificato anche su `plant`/`fermented`/`upf`**, o sparisce
+  dal conteggio delle piante e dall'indice microbiota senza dare errore.
+- **`microbiome.csv` non e' una misura.** Nessun campione, nessun sequenziamento:
+  associazioni direzionali da letteratura su un modello log-lineare con i pesi in
+  chiaro nel sorgente. La matrice alimento x genere e' lo stesso modello letto al
+  contrario — dice cosa il modello assume, non cosa fa un intestino.
 
 ## check_vita.cjs
 

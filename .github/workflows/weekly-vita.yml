@@ -50,10 +50,16 @@ jobs:
           echo "::endgroup::"
           exit $rc
 
+      # Il cibo prima di /vita: build_vita.py inlina i CSV che questo produce.
+      # La sorgente (alimenti, ricette, diario, piatti del mese) sta in tools/food/,
+      # dentro questo repo — prima viveva in una repo non pubblicabile e i CSV in
+      # vita/ erano copie committate a mano, cioe' due superfici destinate a
+      # divergere senza che nessuno se ne accorgesse.
+      - name: Rebuild i dati dell'alimentazione
+        run: python tools/build_food.py
+
       # /vita is rebuilt from scratch each week rather than appended to: it holds no
-      # state of its own, every number in it comes from the pull. The food series
-      # come from vita/_nutrition.csv, exported from the private health-log repo and
-      # committed here — if it is absent the Tavola section simply does not render.
+      # state of its own, every number in it comes from the pull.
       - name: Rebuild /vita
         run: python tools/build_vita.py
 
@@ -67,7 +73,7 @@ jobs:
         run: |
           git config user.name  "vita-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A gazzaniga-orezzo sogni-di-un-unno diario-di-un-unno vita tools/vita_tests.md
+          git add -A gazzaniga-orezzo sogni-di-un-unno diario-di-un-unno vita tools/vita_tests.md tools/food/data
           if git diff --cached --quiet; then
             echo "nothing changed this week"
           else

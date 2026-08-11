@@ -1,0 +1,323 @@
+recipe_id,name,servings,food_id,qty,note
+aloo_palak_ceci,Aloo Palak and Chickpeas,1,patate,400,
+aloo_palak_ceci,Aloo Palak and Chickpeas,1,spinaci,300,
+aloo_palak_ceci,Aloo Palak and Chickpeas,1,ceci_scatola,400,
+aloo_palak_ceci,Aloo Palak and Chickpeas,1,cipolla,100,
+aloo_palak_ceci,Aloo Palak and Chickpeas,1,olio_evo,15,
+soia_messicana_fagioli_patate,Soia messicana con fagioli e patate dolci,1,soia_granulare,75,
+soia_messicana_fagioli_patate,Soia messicana con fagioli e patate dolci,1,fagioli_neri_scatola,200,
+soia_messicana_fagioli_patate,Soia messicana con fagioli e patate dolci,1,patate_dolci,400,
+soia_messicana_fagioli_patate,Soia messicana con fagioli e patate dolci,1,passata_pomodoro,150,
+soia_messicana_fagioli_patate,Soia messicana con fagioli e patate dolci,1,cipolla,80,
+soia_messicana_fagioli_patate,Soia messicana con fagioli e patate dolci,1,olio_evo,10,
+pasta_piselli_ricotta_spinaci,Pasta di piselli con ricotta e spinaci,1,pasta_piselli,100,
+pasta_piselli_ricotta_spinaci,Pasta di piselli con ricotta e spinaci,1,ricotta_vaccina,100,
+pasta_piselli_ricotta_spinaci,Pasta di piselli con ricotta e spinaci,1,spinaci,200,
+pasta_piselli_ricotta_spinaci,Pasta di piselli con ricotta e spinaci,1,olio_evo,10,
+ceci_curry_polenta,Chickpeas curry e polenta,1,ceci_scatola,400,
+ceci_curry_polenta,Chickpeas curry e polenta,1,polenta_mais,100,
+ceci_curry_polenta,Chickpeas curry e polenta,1,passata_pomodoro,150,
+ceci_curry_polenta,Chickpeas curry e polenta,1,cipolla,80,
+ceci_curry_polenta,Chickpeas curry e polenta,1,olio_evo,10,
+farinata_lievito_spinaci,Farinata lievito nutrizionale e spinaci,1,farina_ceci,120,
+farinata_lievito_spinaci,Farinata lievito nutrizionale e spinaci,1,lievito_nutrizionale,10,
+farinata_lievito_spinaci,Farinata lievito nutrizionale e spinaci,1,spinaci,150,
+farinata_lievito_spinaci,Farinata lievito nutrizionale e spinaci,1,olio_evo,10,
+farinata_rosmarino_cipolla,Farinata rosmarino e cipolla,1,farina_ceci,120,
+farinata_rosmarino_cipolla,Farinata rosmarino e cipolla,1,cipolla,100,
+farinata_rosmarino_cipolla,Farinata rosmarino e cipolla,1,olio_evo,10,quantita' dichiarata da te
+muffin_datteri_proteici,Datteri protein bread homemade muffin,1,avena_fiocchi,60,
+muffin_datteri_proteici,Datteri protein bread homemade muffin,1,datteri,50,
+muffin_datteri_proteici,Datteri protein bread homemade muffin,1,proteine_whey,30,
+muffin_datteri_proteici,Datteri protein bread homemade muffin,1,uovo_intero,1,
+muffin_datteri_proteici,Datteri protein bread homemade muffin,1,latte_ps,100,
+torta_cioccolato_tofu_ceci,Torta cioccolato tofu e ceci,1,tofu,200,
+torta_cioccolato_tofu_ceci,Torta cioccolato tofu e ceci,1,ceci_scatola,200,
+torta_cioccolato_tofu_ceci,Torta cioccolato tofu e ceci,1,cacao_100,30,
+torta_cioccolato_tofu_ceci,Torta cioccolato tofu e ceci,1,datteri,100,
+torta_cioccolato_tofu_ceci,Torta cioccolato tofu e ceci,1,avena_fiocchi,50,
+hummus_ceci_curry,Hummus ceci e curry,1,ceci_scatola,300,
+hummus_ceci_curry,Hummus ceci e curry,1,olio_evo,15,
+pudding_gallette_cioccolato_greco,Pudding gallette cioccolato greco protein,1,gallette_riso,30,
+pudding_gallette_cioccolato_greco,Pudding gallette cioccolato greco protein,1,cacao_100,10,
+pudding_gallette_cioccolato_greco,Pudding gallette cioccolato greco protein,1,yogurt_greco_0,200,
+pudding_gallette_cioccolato_greco,Pudding gallette cioccolato greco protein,1,proteine_whey,30,
+smoothie_frutti_bosco_proteico,Smoothie proteico ai frutti di bosco,1,frutti_di_bosco,200,
+smoothie_frutti_bosco_proteico,Smoothie proteico ai frutti di bosco,1,proteine_whey,30,
+smoothie_frutti_bosco_proteico,Smoothie proteico ai frutti di bosco,1,latte_ps,250,
+soia_saltata_carote_cipolle_spinaci,Soia saltata con carote cipolle e spinaci,1,soia_granulare,75,
+soia_saltata_carote_cipolle_spinaci,Soia saltata con carote cipolle e spinaci,1,carote,150,
+soia_saltata_carote_cipolle_spinaci,Soia saltata con carote cipolle e spinaci,1,cipolla,100,
+soia_saltata_carote_cipolle_spinaci,Soia saltata con carote cipolle e spinaci,1,spinaci,200,
+soia_saltata_carote_cipolle_spinaci,Soia saltata con carote cipolle e spinaci,1,olio_evo,10,
+soia_saltata_carote_cipolle_spinaci,Soia saltata con carote cipolle e spinaci,1,polenta_mais,80,
+soia_saltata_carote_cipolle_spinaci,Soia saltata con carote cipolle e spinaci,1,pane_integrale,100,
+lentils_dahl_curry,Lentils dahl curry,1,lenticchie_secche,200,
+lentils_dahl_curry,Lentils dahl curry,1,cipolla,100,
+lentils_dahl_curry,Lentils dahl curry,1,passata_pomodoro,100,
+lentils_dahl_curry,Lentils dahl curry,1,olio_evo,10,
+latte_cioccolato_proteico,Latte cioccolato proteico,1,latte_ps,300,
+latte_cioccolato_proteico,Latte cioccolato proteico,1,cacao_100,15,
+latte_cioccolato_proteico,Latte cioccolato proteico,1,proteine_whey,30,
+pane_marmellata,Pane e marmellata di fragola,1,pane_integrale,140,
+pane_marmellata,Pane e marmellata di fragola,1,marmellata_fragola,40,
+polpette_ceci_carote_curry,Polpette ceci e carote al curry,1,ceci_scatola,400,
+polpette_ceci_carote_curry,Polpette ceci e carote al curry,1,carote,150,
+polpette_ceci_carote_curry,Polpette ceci e carote al curry,1,cipolla,80,
+polpette_ceci_carote_curry,Polpette ceci e carote al curry,1,olio_evo,10,
+overnight_bran_greco,Overnight bran greek protein,1,crusca_avena,60,
+overnight_bran_greco,Overnight bran greek protein,1,yogurt_greco_0,200,
+overnight_bran_greco,Overnight bran greek protein,1,latte_ps,150,
+overnight_bran_greco,Overnight bran greek protein,1,proteine_whey,20,
+torta_carote_proteica,Torta carote proteica,1,carote,200,
+torta_carote_proteica,Torta carote proteica,1,avena_fiocchi,100,
+torta_carote_proteica,Torta carote proteica,1,proteine_whey,40,
+torta_carote_proteica,Torta carote proteica,1,uovo_intero,2,
+torta_carote_proteica,Torta carote proteica,1,datteri,60,
+lenticchie_melanzane_pizzaiola,Lenticchie e melanzane alla pizzaiola,1,lenticchie_secche,150,
+lenticchie_melanzane_pizzaiola,Lenticchie e melanzane alla pizzaiola,1,melanzane,300,
+lenticchie_melanzane_pizzaiola,Lenticchie e melanzane alla pizzaiola,1,passata_pomodoro,200,
+lenticchie_melanzane_pizzaiola,Lenticchie e melanzane alla pizzaiola,1,olio_evo,10,
+oat_proteico_cioccolatoso,Oat proteico cioccolatoso,1,avena_fiocchi,80,
+oat_proteico_cioccolatoso,Oat proteico cioccolatoso,1,cacao_100,15,
+oat_proteico_cioccolatoso,Oat proteico cioccolatoso,1,proteine_whey,30,
+oat_proteico_cioccolatoso,Oat proteico cioccolatoso,1,latte_ps,200,
+oat_proteico_cioccolatoso,Oat proteico cioccolatoso,1,banana,1,
+soia_pizzaiola_patate_dolci,Soia alla pizzaiola e patate dolci,1,soia_granulare,75,quantita' dichiarata da te
+soia_pizzaiola_patate_dolci,Soia alla pizzaiola e patate dolci,1,passata_pomodoro,200,
+soia_pizzaiola_patate_dolci,Soia alla pizzaiola e patate dolci,1,patate_dolci,400,quantita' dichiarata da te
+soia_pizzaiola_patate_dolci,Soia alla pizzaiola e patate dolci,1,olio_evo,10,
+granita_frutti_bosco_rucola,Granita frutti di bosco e rucola,1,frutti_di_bosco,200,
+granita_frutti_bosco_rucola,Granita frutti di bosco e rucola,1,rucola,50,
+super_protein_pudding,Super protein pudding,1,yogurt_greco_0,250,
+super_protein_pudding,Super protein pudding,1,proteine_whey,40,
+super_protein_pudding,Super protein pudding,1,cacao_100,10,
+pasta_integrale_messicana_soia,Pasta integrale alla messicana con soia,1,pasta_integrale,150,
+pasta_integrale_messicana_soia,Pasta integrale alla messicana con soia,1,soia_granulare,60,
+pasta_integrale_messicana_soia,Pasta integrale alla messicana con soia,1,fagioli_neri_scatola,150,
+pasta_integrale_messicana_soia,Pasta integrale alla messicana con soia,1,passata_pomodoro,150,
+pasta_integrale_messicana_soia,Pasta integrale alla messicana con soia,1,olio_evo,10,
+pasta_tofu_rucola,Pasta tofu e rucola,1,pasta_integrale,150,
+pasta_tofu_rucola,Pasta tofu e rucola,1,tofu,200,
+pasta_tofu_rucola,Pasta tofu e rucola,1,rucola,80,
+pasta_tofu_rucola,Pasta tofu e rucola,1,olio_evo,10,
+pasta_pomodoro_olio_grana,Pasta al pomodoro con olio e grana,1,pasta_semola,150,
+pasta_pomodoro_olio_grana,Pasta al pomodoro con olio e grana,1,passata_pomodoro,200,
+pasta_pomodoro_olio_grana,Pasta al pomodoro con olio e grana,1,olio_evo,15,
+pasta_pomodoro_olio_grana,Pasta al pomodoro con olio e grana,1,grana_padano,20,
+soia_messicana,Soia alla messicana,1,soia_granulare,75,
+soia_messicana,Soia alla messicana,1,passata_pomodoro,200,
+soia_messicana,Soia alla messicana,1,fagioli_neri_scatola,150,
+soia_messicana,Soia alla messicana,1,cipolla,80,
+soia_messicana,Soia alla messicana,1,peperoni,150,
+soia_messicana,Soia alla messicana,1,olio_evo,10,
+polpette_lenticchie_peperoni_carote,Polpette di lenticchie peperoni e carote,1,lenticchie_secche,150,
+polpette_lenticchie_peperoni_carote,Polpette di lenticchie peperoni e carote,1,peperoni,150,
+polpette_lenticchie_peperoni_carote,Polpette di lenticchie peperoni e carote,1,carote,150,
+polpette_lenticchie_peperoni_carote,Polpette di lenticchie peperoni e carote,1,olio_evo,10,
+pudding_proteico_frutti_bosco,Pudding proteico ai frutti di bosco,1,yogurt_greco_0,200,
+pudding_proteico_frutti_bosco,Pudding proteico ai frutti di bosco,1,proteine_whey,30,
+pudding_proteico_frutti_bosco,Pudding proteico ai frutti di bosco,1,frutti_di_bosco,150,
+polpette_lenticchie_mediterranee,Polpette di lenticchie mediterranee,1,lenticchie_secche,150,
+polpette_lenticchie_mediterranee,Polpette di lenticchie mediterranee,1,passata_pomodoro,100,
+polpette_lenticchie_mediterranee,Polpette di lenticchie mediterranee,1,cipolla,80,
+polpette_lenticchie_mediterranee,Polpette di lenticchie mediterranee,1,olio_evo,10,
+polpette_lenticchie,Polpette di lenticchie,1,lenticchie_secche,150,
+polpette_lenticchie,Polpette di lenticchie,1,cipolla,80,
+polpette_lenticchie,Polpette di lenticchie,1,olio_evo,10,
+stuffed_sweet_potato_avo_ceci,Stuffed sweet potato with avo-ceci,1,patate_dolci,500,
+stuffed_sweet_potato_avo_ceci,Stuffed sweet potato with avo-ceci,1,avocado,100,
+stuffed_sweet_potato_avo_ceci,Stuffed sweet potato with avo-ceci,1,ceci_scatola,200,
+pudding_muller_antiossidante,Muller pudding proteico antiossidante e frutta secca,1,yogurt_greco_0,200,
+pudding_muller_antiossidante,Muller pudding proteico antiossidante e frutta secca,1,frutti_di_bosco,150,
+pudding_muller_antiossidante,Muller pudding proteico antiossidante e frutta secca,1,mandorle,30,
+pudding_muller_antiossidante,Muller pudding proteico antiossidante e frutta secca,1,noci,20,
+avocado_toast,Avocado toast,1,pane_integrale,140,quantita' dichiarata da te: 2 fette
+avocado_toast,Avocado toast,1,uovo_intero,3,quantita' dichiarata da te
+avocado_toast,Avocado toast,1,avocado,100,
+panino_peanut_marmellata,Panino peanut e marmellata,1,pane_integrale,140,
+panino_peanut_marmellata,Panino peanut e marmellata,1,burro_arachidi_sgrassato,30,
+panino_peanut_marmellata,Panino peanut e marmellata,1,marmellata_fragola,30,
+tofu_pizzaiola,Tofu alla pizzaiola,1,tofu,300,
+tofu_pizzaiola,Tofu alla pizzaiola,1,passata_pomodoro,200,
+tofu_pizzaiola,Tofu alla pizzaiola,1,olio_evo,10,
+latte_soia_proteine_crusca,Latte di soia proteine e crusca,1,latte_soia,300,
+latte_soia_proteine_crusca,Latte di soia proteine e crusca,1,proteine_whey,30,
+latte_soia_proteine_crusca,Latte di soia proteine e crusca,1,crusca_avena,50,
+farro_mediterranea_fiocchi,Farro alla mediterranea con fiocchi,1,farro_perlato,120,
+farro_mediterranea_fiocchi,Farro alla mediterranea con fiocchi,1,passata_pomodoro,150,
+farro_mediterranea_fiocchi,Farro alla mediterranea con fiocchi,1,avena_fiocchi,30,
+farro_mediterranea_fiocchi,Farro alla mediterranea con fiocchi,1,olio_evo,10,
+smoothie_frutti_bosco,Smoothie frutti di bosco,1,frutti_di_bosco,250,
+smoothie_frutti_bosco,Smoothie frutti di bosco,1,latte_ps,200,
+smoothie_frutti_bosco,Smoothie frutti di bosco,1,banana,1,
+porridge_banana_cioccolato_peanut,Porridge banana cioccolato peanut,1,avena_fiocchi,60,il tuo porridge abituale
+porridge_banana_cioccolato_peanut,Porridge banana cioccolato peanut,1,cacao_100,10,
+porridge_banana_cioccolato_peanut,Porridge banana cioccolato peanut,1,latte_ps,50,
+porridge_banana_cioccolato_peanut,Porridge banana cioccolato peanut,1,banana,1,
+porridge_banana_cioccolato_peanut,Porridge banana cioccolato peanut,1,burro_arachidi_sgrassato,25,
+riso_di_zanghi,Riso di Zanghi',1,,,DA DEFINIRE: dimmi ingredienti e grammature
+vitality_mix,Vitality mix,1,,,DA DEFINIRE: dimmi ingredienti e grammature
+pasta_vs_potato,Pasta vs Potato,1,,,DA DEFINIRE: sembra un confronto piu' che una ricetta
+random,Random,1,,,DA DEFINIRE: dimmi ingredienti e grammature
+dahl_lenticchie_patate_dolci,Dahl lenticchie e patate dolci,3,lenticchie_secche,300,"per 3 zuppe, dichiarato da te"
+dahl_lenticchie_patate_dolci,Dahl lenticchie e patate dolci,3,cipolla,200,2 cipolle
+dahl_lenticchie_patate_dolci,Dahl lenticchie e patate dolci,3,patate_dolci,800,dichiarato da te
+dahl_lenticchie_patate_dolci,Dahl lenticchie e patate dolci,3,cumino_semi,4,
+dahl_lenticchie_patate_dolci,Dahl lenticchie e patate dolci,3,curry_polvere,6,
+dahl_lenticchie_patate_dolci,Dahl lenticchie e patate dolci,3,latte_intero,80,dichiarato da te
+colazione_standard,Colazione standard,1,avena_fiocchi,50,la colazione di default
+colazione_standard,Colazione standard,1,cacao_100,15,
+colazione_standard,Colazione standard,1,cioccolato_fondente_50,15,
+colazione_standard,Colazione standard,1,burro_arachidi_sgrassato,25,
+colazione_standard,Colazione standard,1,banana,1,
+colazione_standard,Colazione standard,1,latte_intero,60,nell'avena
+stufato_fagioli_pane,Stufato di fagioli e pane,1,fagioli_cannellini,250,piatto mensile dichiarato
+stufato_fagioli_pane,Stufato di fagioli e pane,1,passata_pomodoro,180,piatto mensile dichiarato
+stufato_fagioli_pane,Stufato di fagioli e pane,1,cipolla,60,piatto mensile dichiarato
+stufato_fagioli_pane,Stufato di fagioli e pane,1,pane_integrale,80,piatto mensile dichiarato
+insalata_pomodori,Insalata di pomodori,1,pomodorini,606.6,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+insalata_pomodori,Insalata di pomodori,1,cipolla,82.7,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+insalata_pomodori,Insalata di pomodori,1,basilico,13.8,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+insalata_pomodori,Insalata di pomodori,1,pane_integrale,137.9,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+torta_salata_frittata,Torta salata / frittata,1,sformato_verdure,360.1,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+torta_salata_frittata,Torta salata / frittata,1,insalata_mista,105.0,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+crostata_dolce,Crostata e caffe',1,crostata_frutta,146.5,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+crostata_dolce,Crostata e caffe',1,caffe_espresso,1,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+lenticchie_verdure_melone,"Lenticchie, verdure e melone",1,lenticchie_secche,98.0,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+lenticchie_verdure_melone,"Lenticchie, verdure e melone",1,spinaci,163.4,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+lenticchie_verdure_melone,"Lenticchie, verdure e melone",1,carote,87.1,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+lenticchie_verdure_melone,"Lenticchie, verdure e melone",1,melone,196.1,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+patate_dolci_forno,Patate dolci al forno,1,patate_dolci,507.9,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+patate_dolci_forno,Patate dolci al forno,1,peperoni,158.7,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+frittata_verdure,Frittata di verdure,1,uovo_intero,3,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+frittata_verdure,Frittata di verdure,1,zucchine,159.7,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+frittata_verdure,Frittata di verdure,1,cipolla,57.0,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+frittata_verdure,Frittata di verdure,1,pane_integrale,68.5,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+bowl_cereali_insalata,Bowl di cereali e insalata,1,farro_perlato,90,piatto mensile dichiarato
+bowl_cereali_insalata,Bowl di cereali e insalata,1,insalata_mista,100,piatto mensile dichiarato
+bowl_cereali_insalata,Bowl di cereali e insalata,1,pomodorini,100,piatto mensile dichiarato
+bowl_cereali_insalata,Bowl di cereali e insalata,1,ceci_scatola,150,piatto mensile dichiarato
+pasto_bar_ciclismo,Pasto al bar in bici,1,panino_farcito,1,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+pasto_bar_ciclismo,Pasto al bar in bici,1,cappuccino,1,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+pasto_bar_ciclismo,Pasto al bar in bici,1,crostata_frutta,55,per stare nella fascia dichiarata
+pizza_burrata_crudo,Pizza burrata e crudo,1,pizza_margherita,1,piatto mensile dichiarato
+pizza_burrata_crudo,Pizza burrata e crudo,1,burrata,70,piatto mensile dichiarato
+pizza_burrata_crudo,Pizza burrata e crudo,1,prosciutto_crudo,40,piatto mensile dichiarato
+pizza_burrata_crudo,Pizza burrata e crudo,1,rucola,30,piatto mensile dichiarato
+dolce_pasticceria,Pasticceria e cappuccino,1,cornetto_crema,2,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+dolce_pasticceria,Pasticceria e cappuccino,1,cappuccino,1,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+penne_integrali_cremose,Penne integrali cremose,1,pasta_integrale,110,piatto mensile dichiarato
+penne_integrali_cremose,Penne integrali cremose,1,ricotta_vaccina,70,piatto mensile dichiarato
+penne_integrali_cremose,Penne integrali cremose,1,passata_pomodoro,120,piatto mensile dichiarato
+penne_integrali_cremose,Penne integrali cremose,1,zucchine,90,piatto mensile dichiarato
+pizza_semplice,Pizza,1,pizza_margherita,1,piatto mensile dichiarato
+pizza_semplice,Pizza,1,rucola,25,piatto mensile dichiarato
+pasta_patate_dolci,Pasta e patate dolci,1,pasta_semola,110,piatto mensile dichiarato
+pasta_patate_dolci,Pasta e patate dolci,1,patate_dolci,180,piatto mensile dichiarato
+pasta_patate_dolci,Pasta e patate dolci,1,passata_pomodoro,80,piatto mensile dichiarato
+toast_uova_legumi,"Toast, uova e legumi",1,pane_integrale,90,piatto mensile dichiarato
+toast_uova_legumi,"Toast, uova e legumi",1,uovo_intero,2,piatto mensile dichiarato
+toast_uova_legumi,"Toast, uova e legumi",1,fagioli_cannellini,150,piatto mensile dichiarato
+lenticchie_cereali_verdure,"Lenticchie, cereali e verdure",1,lenticchie_secche,90,piatto mensile dichiarato
+lenticchie_cereali_verdure,"Lenticchie, cereali e verdure",1,farro_perlato,70,piatto mensile dichiarato
+lenticchie_cereali_verdure,"Lenticchie, cereali e verdure",1,spinaci,150,piatto mensile dichiarato
+insalata_pomodori_feta,Insalata pomodori e feta,1,pomodorini,221.7,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+insalata_pomodori_feta,Insalata pomodori e feta,1,feta,77.6,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+insalata_pomodori_feta,Insalata pomodori e feta,1,pane_segale,77.6,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+insalata_pomodori_feta,Insalata pomodori e feta,1,olive,27.7,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+uova_pane_zuppa,"Uova, pane e zuppa",1,uovo_intero,2,piatto mensile dichiarato
+uova_pane_zuppa,"Uova, pane e zuppa",1,pane_segale,70,piatto mensile dichiarato
+uova_pane_zuppa,"Uova, pane e zuppa",1,zuppa_vellutata,300,piatto mensile dichiarato
+bowl_riso_stufato,Riso con stufato,1,riso_bianco,100,piatto mensile dichiarato
+bowl_riso_stufato,Riso con stufato,1,ceci_scatola,180,piatto mensile dichiarato
+bowl_riso_stufato,Riso con stufato,1,passata_pomodoro,100,piatto mensile dichiarato
+bowl_riso_stufato,Riso con stufato,1,spinaci,100,piatto mensile dichiarato
+zuppa_lenticchie,Zuppa di lenticchie,1,lenticchie_secche,100,piatto mensile dichiarato
+zuppa_lenticchie,Zuppa di lenticchie,1,carote,90,piatto mensile dichiarato
+zuppa_lenticchie,Zuppa di lenticchie,1,cipolla,60,piatto mensile dichiarato
+zuppa_lenticchie,Zuppa di lenticchie,1,pane_integrale,70,piatto mensile dichiarato
+polenta_brasato,Polenta e brasato,1,polenta_cotta,320,piatto mensile dichiarato
+polenta_brasato,Polenta e brasato,1,carne_macinata_manzo,150,piatto mensile dichiarato
+polenta_brasato,Polenta e brasato,1,passata_pomodoro,80,piatto mensile dichiarato
+ristorante_festivo,Pranzo di festa al ristorante,1,pasta_uovo,81.1,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+ristorante_festivo,Pranzo di festa al ristorante,1,ragu_carne,105.4,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+ristorante_festivo,Pranzo di festa al ristorante,1,bistecca_manzo,113.6,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+ristorante_festivo,Pranzo di festa al ristorante,1,patate,146.0,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+ristorante_festivo,Pranzo di festa al ristorante,1,torta_semplice,89.2,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+ravioli,Ravioli,1,ravioli_ricotta,230,piatto mensile dichiarato
+ravioli,Ravioli,1,grana_padano,20,piatto mensile dichiarato
+ravioli,Ravioli,1,burro,10,piatto mensile dichiarato
+risotto,Risotto,1,riso_carnaroli,100,piatto mensile dichiarato
+risotto,Risotto,1,grana_padano,25,piatto mensile dichiarato
+risotto,Risotto,1,burro,12,piatto mensile dichiarato
+risotto,Risotto,1,funghi,120,piatto mensile dichiarato
+bistecca_patate,Bistecca e patate,1,bistecca_manzo,196.6,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+bistecca_patate,Bistecca e patate,1,patate,273.0,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+bistecca_patate,Bistecca e patate,1,insalata_mista,76.5,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+uova_strapazzate_pane,Uova strapazzate e pane,1,uovo_intero,3,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+uova_strapazzate_pane,Uova strapazzate e pane,1,pane_integrale,86.8,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+uova_strapazzate_pane,Uova strapazzate e pane,1,pomodorini,97.7,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+formaggi_dolci_bar,Formaggi e dolce al bar,1,formaggio_semistagionato,60,piatto mensile dichiarato
+formaggi_dolci_bar,Formaggi e dolce al bar,1,pane_integrale,70,piatto mensile dichiarato
+formaggi_dolci_bar,Formaggi e dolce al bar,1,cornetto_crema,1,piatto mensile dichiarato
+curry_verdure,Curry di verdure,1,ceci_scatola,200,piatto mensile dichiarato
+curry_verdure,Curry di verdure,1,patate_dolci,180,piatto mensile dichiarato
+curry_verdure,Curry di verdure,1,spinaci,120,piatto mensile dichiarato
+curry_verdure,Curry di verdure,1,curry_polvere,6,piatto mensile dichiarato
+panino_bar,Panino al bar,1,panino_farcito,1,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+panino_bar,Panino al bar,1,insalata_mista,67.8,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+vellutata_pane,Vellutata e pane,1,zuppa_vellutata,465.5,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+vellutata_pane,Vellutata e pane,1,pane_integrale,93.1,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+insalata_uova_segale,"Insalata, uova e pane di segale",1,uovo_intero,3,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+insalata_uova_segale,"Insalata, uova e pane di segale",1,insalata_mista,173.3,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+insalata_uova_segale,"Insalata, uova e pane di segale",1,pomodorini,130.0,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+insalata_uova_segale,"Insalata, uova e pane di segale",1,pane_segale,101.1,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+arrosticini_pane,Arrosticini e pane,1,arrosticini,200,piatto mensile dichiarato
+arrosticini_pane,Arrosticini e pane,1,pane_integrale,80,piatto mensile dichiarato
+arrosticini_pane,Arrosticini e pane,1,insalata_mista,70,piatto mensile dichiarato
+pesce_contorno,Pesce con contorno,1,pesce_bianco,306.8,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+pesce_contorno,Pesce con contorno,1,patate,306.8,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+pesce_contorno,Pesce con contorno,1,zucchine,184.1,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+insalata_pasta,Insalata di pasta,1,pasta_semola,119.5,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+insalata_pasta,Insalata di pasta,1,pomodorini,143.4,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+insalata_pasta,Insalata di pasta,1,mais_dolce,83.6,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+insalata_pasta,Insalata di pasta,1,tonno_scatola,83.6,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+colazione_alpina,Colazione alpina,1,pane_bianco,90,piatto mensile dichiarato
+colazione_alpina,Colazione alpina,1,prosciutto_cotto,50,piatto mensile dichiarato
+colazione_alpina,Colazione alpina,1,formaggio_semistagionato,40,piatto mensile dichiarato
+colazione_alpina,Colazione alpina,1,melone,120,piatto mensile dichiarato
+colazione_alpina,Colazione alpina,1,cereali_colazione,40,piatto mensile dichiarato
+salumi_insalata,Salumi e insalata,1,prosciutto_crudo,121.2,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+salumi_insalata,Salumi e insalata,1,insalata_mista,207.7,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+salumi_insalata,Salumi e insalata,1,pane_integrale,138.5,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+tagliatelle_ragu,Tagliatelle al ragu',1,pasta_uovo,110,piatto mensile dichiarato
+tagliatelle_ragu,Tagliatelle al ragu',1,ragu_carne,150,piatto mensile dichiarato
+tagliatelle_ragu,Tagliatelle al ragu',1,grana_padano,15,piatto mensile dichiarato
+quinoa_legumi_patate,"Quinoa, legumi e patate dolci",1,quinoa,90,piatto mensile dichiarato
+quinoa_legumi_patate,"Quinoa, legumi e patate dolci",1,fagioli_cannellini,160,piatto mensile dichiarato
+quinoa_legumi_patate,"Quinoa, legumi e patate dolci",1,patate_dolci,160,piatto mensile dichiarato
+lasagne_verdure,Lasagne di verdure,1,pasta_semola,116.7,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+lasagne_verdure,Lasagne di verdure,1,zucchine,168.5,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+lasagne_verdure,Lasagne di verdure,1,passata_pomodoro,168.5,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+lasagne_verdure,Lasagne di verdure,1,ricotta_vaccina,90.8,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+cereali_ceci,Cereali e ceci,1,farro_perlato,104.1,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+cereali_ceci,Cereali e ceci,1,ceci_scatola,197.3,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+cereali_ceci,Cereali e ceci,1,pomodorini,109.6,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+riso_carne,Riso con carne,1,riso_bianco,100,piatto mensile dichiarato
+riso_carne,Riso con carne,1,carne_macinata_manzo,140,piatto mensile dichiarato
+riso_carne,Riso con carne,1,peperoni,100,piatto mensile dichiarato
+piadina_crudo_rucola,Piadina crudo e rucola,1,piadina,155.1,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+piadina_crudo_rucola,Piadina crudo e rucola,1,prosciutto_crudo,64.6,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+piadina_crudo_rucola,Piadina crudo e rucola,1,rucola,38.8,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+oat_frutti_bosco,Oat bowl ai frutti di bosco,1,avena_fiocchi,94.6,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+oat_frutti_bosco,Oat bowl ai frutti di bosco,1,frutti_di_bosco,162.2,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+oat_frutti_bosco,Oat bowl ai frutti di bosco,1,yogurt_bianco_intero,162.2,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+patate_verdure,Patate e verdure,1,patate,600.9,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+patate_verdure,Patate e verdure,1,peperoni,257.5,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+patate_verdure,Patate e verdure,1,cipolla,128.8,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+dolce_yogurt_cacao,"Yogurt, cacao e datteri",1,yogurt_bianco_intero,466.6,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+dolce_yogurt_cacao,"Yogurt, cacao e datteri",1,cacao_100,31.1,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+dolce_yogurt_cacao,"Yogurt, cacao e datteri",1,datteri,103.7,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+torta_semplice_dolce,Torta e caffe',1,torta_semplice,149.3,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
+torta_semplice_dolce,Torta e caffe',1,caffe_espresso,1,piatto mensile dichiarato · porzione scalata alla fascia dichiarata
