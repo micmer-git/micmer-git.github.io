@@ -5421,3 +5421,88 @@ ok   --gold #e2c98f contro gli slot dei grafici: peggiore --s4 ΔE 18.6 (minimo 
 ```
 
 esito: tutti passati (78 ok)
+
+## 2026-08-11 11:49 — check_vita.cjs
+
+```
+ok   un solo blocco <script> (aperti 1, chiusi 1) — nessun "</script" nel payload
+ok   lo script arriva in fondo (855 KB, chiude su drawAll)
+ok   lo script inline gira senza eccezioni
+ok   window.CRUSCOTTO esposto
+ok   ogni riquadro dichiarato e' montato (38/38)
+ok   almeno 32 riquadri (38)
+ok   finestra "2a": nessun renderer solleva eccezioni
+info  finestra "2a": 0 riquadri senza dati
+ok   finestra "1a": nessun renderer solleva eccezioni
+info  finestra "1a": 0 riquadri senza dati
+ok   finestra "3m": nessun renderer solleva eccezioni
+info  finestra "3m": 2 riquadri senza dati (Peso, Massa grassa)
+ok   finestra "sempre": nessun renderer solleva eccezioni
+ok   finestra "sempre": nessun riquadro vuoto
+ok   nessuna coordinata NaN/Infinity negli SVG (85676 nodi controllati)
+ok   ogni <path> ha un tracciato reale (192 path)
+ok   nessun segno fuori dal proprio viewBox
+ok   nessuna etichetta dell'asse y tagliata dalla gronda
+ok   nessuna sovrapposizione fra etichette dell'asse x
+ok   testata: attività = 2.257 (ricalcolato dal payload)
+ok   testata: chilometri = 76.437 (ricalcolato dal payload)
+ok   testata: ore in movimento = 3.868 (ricalcolato dal payload)
+ok   testata: notti misurate = 549 (ricalcolato dal payload)
+ok   dislivello totale plausibile: 1.484.881 m
+ok   ogni riquadro ha la tabella di ripiego
+ok   ogni riquadro multi-serie ha la legenda (9 riquadri)
+ok   window.CRUSCOTTO.compact esposto
+ok   l'interruttore di vista e' in pagina (#viewsw)
+ok   l'interruttore ha due posizioni (2)
+ok   senza preferenza salvata si parte dalla vista estesa
+ok   24 serie dichiarate per la ridgeline
+ok   setView(compatta) commuta la vista e marca il body (e' cio' che il CSS legge)
+ok   la scelta della vista finisce in localStorage
+ok   una sola posizione dell'interruttore risulta premuta
+ok   la pagina dichiara che ogni corsia e' riscalata sulla propria storia
+ok   compatta: nessuna coordinata NaN/Infinity
+ok   compatta: nessun segno fuori dal viewBox, tracciati compresi
+ok   compatta: nessuna etichetta sovrapposta sulla stessa riga
+info  compatta su 1040 px, finestra "sempre": 24 corsie, alto 2056 px
+ok   compatta: almeno sette corsie in colonna (24)
+ok   compatta: ogni corsia mostrata ha il proprio nome scritto sulla linea
+ok   pin(ctl) congela la serie
+ok   la corsia congelata resta nella ridgeline principale (non viene spostata via)
+ok   la corsia congelata e' marcata nel DOM (data-pinned)
+ok   e compare nella striscia appiccicata in cima
+ok   piu' serie congelabili insieme (2)
+ok   anche nella striscia il nome sta sulla linea
+ok   le congelate finiscono in localStorage
+ok   sganciandole spariscono dalla striscia e la striscia si chiude
+ok   un interruttore per serie (24/24)
+ok   gli interruttori sono raggruppati per sezione (Carico, Notte, Recupero, Corpo, Volume, Tavola)
+ok   spegnere un interruttore toglie una corsia dal disegno (24 → 23)
+ok   "Fitness (CTL)" non e' piu' fra le corsie disegnate
+ok   e la sua etichetta e' sparita dall'SVG
+ok   la serie spenta finisce in localStorage
+ok   riaccendendolo la corsia torna
+ok   si torna alla vista estesa
+ok   tornando all'estesa nessun riquadro solleva
+ok   tornando all'estesa nessun riquadro resta vuoto
+ok   openDay() esiste
+ok   il dettaglio giornaliero e' inlineato (731 giorni)
+ok   il popup si riempie su tutti i giorni provati (40/40, veri + ricostruiti)
+ok   il popup mostra la sezione "corpo" su almeno un giorno
+ok   il popup mostra la sezione "allenamento" su almeno un giorno
+ok   il popup mostra la sezione "tavola" su almeno un giorno
+ok   il popup mostra la sezione "micro" su almeno un giorno
+ok   openDay() regge un giorno senza diario alimentare
+ok   almeno un'attivita' nel popup linka a intervals.icu con un id vero
+ok   il buco che copre tutto il 2022 e' dichiarato (2021-10-18→2023-04-09)
+ok   6 buchi ≥45 giorni dichiarati: 2015-03-29→2015-09-21, 2015-09-23→2016-02-02, 2016-08-17→2017-01-27, 2017-12-03→2018-02-15, 2018-11-20→2019-01-13, 2021-10-18→2023-04-09
+ok   CSS --s1 = #3987e5 (slot validato)
+ok   CSS --s2 = #d95926 (slot validato)
+ok   CSS --s3 = #199e70 (slot validato)
+ok   CSS --s4 = #c98500 (slot validato)
+ok   CSS --paper = #211d16 (il fondo su cui la tavolozza e' stata validata)
+ok   --muted #9a8d70 su #211d16: 5.13:1 (minimo 4,5 per il testo piccolo)
+ok   --gold #e2c98f su #211d16: 10.37:1
+ok   --gold #e2c98f contro gli slot dei grafici: peggiore --s4 ΔE 18.6 (minimo 15, o l'accento si spaccia per una serie)
+```
+
+esito: tutti passati (78 ok)
