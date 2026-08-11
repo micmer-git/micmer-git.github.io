@@ -119,7 +119,7 @@ const document = {
   addEventListener() {},
 };
 for (const id of ["tip", "totals", "ranges", "viewsw", "range-note", "compact",
-  "panel-carico", "panel-notte", "panel-recupero", "panel-corpo",
+  "panel-carico", "panel-notte", "panel-recupero", "panel-corpo", "panel-metabolismo",
   "panel-volume", "panel-incroci", "panel-tavola", "tracks", "sheet", "sheet-in"]) document.getElementById(id);
 
 /* localStorage finto: la pagina ci salva la forma della vista e quali serie sono
@@ -284,6 +284,57 @@ if (ran) {
   ok(noLegend.length === 0, `ogni riquadro multi-serie ha la legenda (${multi.length} riquadri)` +
     (noLegend.length ? ` — mancano: ${noLegend.join(", ")}` : ""));
 
+  /* ------------------- 4a. i riquadri nuovi: presenti, pieni, e dichiarati
+     Cinque vengono dal modello metabolico e due dalla lista delle attivita'. Non
+     basta che esistano: quattro di loro sono numeri COSTRUITI (heat strain, FatMax,
+     momento metabolico) o un sensore letto fuori dal suo mestiere (la temperatura al
+     polso, che non e' il meteo), e su un grafico un numero costruito e un numero
+     misurato hanno lo stesso aspetto. Quindi ognuno deve portare in chiaro la propria
+     natura: se un giorno qualcuno accorcia una didascalia, il check se ne accorge. */
+  const NEW_TILES = [
+    ["Temperatura", /non è il meteo/i],
+    ["Heat strain", /indice costruito/i],
+    ["FatMax", /è un modello/i],
+    ["Minuti dentro la banda", /modello/i],
+    ["Momento metabolico", /componenti/i],
+    ["Mezze maratone", /21,0975/],
+    ["Salite lunghe", /mediana/i],
+  ];
+  const strip0 = s => String(s).replace(/<[^>]+>/g, "");
+  for (const [title, must] of NEW_TILES) {
+    const m = K.MOUNTED.find(([, t]) => t.title === title);
+    ok(!!m, `il riquadro "${title}" è in pagina`);
+    if (!m) continue;
+    const [n, t] = m;
+    ok(!n.art.dataset.err, `"${title}" non solleva` + (n.art.dataset.err ? `: ${n.art.dataset.err}` : ""));
+    ok(!n.art.dataset.empty, `"${title}" disegna qualcosa (non è un riquadro vuoto)`);
+    ok(n.tbody.innerHTML.includes("<tr"), `"${title}" ha la sua tabella di ripiego`);
+    ok(must.test(strip0(n.foot.innerHTML)),
+      `"${title}" dichiara cosa è nel piede (cerco ${must})`);
+    ok(/\S/.test(String(n.now.innerHTML)), `"${title}" ha il suo numero di testa`);
+  }
+
+  /* il momento metabolico non si disegna sotto la soglia di componenti: e' la
+     differenza fra "questo giorno vale −8" e "questo giorno varrebbe −8 se avessi
+     tre delle sei cose che servono per dirlo" */
+  const mm = K.mm;
+  ok(!!mm, "il momento metabolico è arrivato in pagina");
+  if (mm) {
+    const cnt = (D.metab || {}).mm_n;
+    let sotto = 0, sopra = 0;
+    for (let i = 0; i < D.n; i++) {
+      if (mm.arr[i] === null || mm.arr[i] === undefined) continue;
+      if (!(cnt && cnt[i] !== null && cnt[i] >= K.mmMin)) sotto++; else sopra++;
+    }
+    ok(sotto === 0,
+      `nessun giorno disegnato poggia su meno di ${K.mmMin} componenti (${sotto} violazioni)`);
+    ok(mm.dropped > 0 && sopra === mm.drawn,
+      `${mm.drawn} giorni disegnati, ${mm.dropped} scartati sotto soglia`);
+    const t = K.MOUNTED.find(([, x]) => x.title === "Momento metabolico");
+    ok(t && String(t[1].cap).includes(String(K.mmMin)),
+      "e la didascalia dice qual è la soglia");
+  }
+
   /* --------------------------------------- 4b. la vista compatta (ridgeline)
      La vista estesa si controlla riquadro per riquadro; questa ha un solo disegno e
      venti corsie dentro, quindi i controlli sono diversi: che l'identita' ci sia
@@ -372,8 +423,13 @@ if (ran) {
           counts.push(`${C.lanes().length} corsie`);
           heights.push(`alto ${C.svg().attrs.viewBox.split(/\s+/)[3]} px`);
         }
+        /* L'etichetta non e' piu' solo il nome: puo' portare il fiocco delle
+           congelate e il marchio "· rada". Si confronta con quello che la corsia
+           DICE di aver scritto (labelText) e si pretende che il nome ci sia dentro,
+           invece di inseguire i decori uno per uno con una replace(). */
         const noLab = C.lanes().filter(L => !L.label ||
-          String(L.label.textContent).replace("❄ ", "") !== L.name);
+          String(L.label.textContent) !== L.labelText ||
+          !String(L.labelText).includes(L.name));
         if (noLab.length) fails.push(`FAIL [${w}px/${r}] ${noLab.length} corsie senza il proprio nome sulla linea`);
       }
       C.unpin(C.series[0].key);
@@ -390,7 +446,8 @@ if (ran) {
     K.setRange("sempre");
     const lanes0 = C.lanes();
     ok(lanes0.length >= 7, `compatta: almeno sette corsie in colonna (${lanes0.length})`);
-    ok(lanes0.every(L => L.label && String(L.label.textContent).replace("❄ ", "") === L.name),
+    ok(lanes0.every(L => L.label && String(L.label.textContent) === L.labelText &&
+      String(L.labelText).includes(L.name)),
       "compatta: ogni corsia mostrata ha il proprio nome scritto sulla linea");
 
     /* ---- congelamento: marca la serie e la lascia dov'era ---- */
@@ -413,7 +470,9 @@ if (ran) {
       "sganciandole spariscono dalla striscia e la striscia si chiude");
 
     /* ---- interruttori laterali: cambiano davvero il disegno ---- */
-    const railBtns = C.rail.descendants().filter(n => n.tagName === "button");
+    /* solo gli interruttori di serie: in cima alla colonna ci sono anche "tutte" e
+       "somma", che sono comandi, non serie */
+    const railBtns = C.rail.descendants().filter(n => n.className === "cx-sw");
     ok(railBtns.length === C.series.length,
       `un interruttore per serie (${railBtns.length}/${C.series.length})`);
     const heads = C.rail.descendants().filter(n => n.className === "cx-grp-h")
@@ -434,6 +493,142 @@ if (ran) {
     ok(LS["vita:off"] === kOff, "la serie spenta finisce in localStorage");
     C.toggle(kOff);
     ok(C.lanes().length === before, "riaccendendolo la corsia torna");
+
+    /* ---- 4c. selezione a isolamento -----------------------------------------
+       Un click su una voce laterale ISOLA quella serie; un click su un'altra
+       sposta l'isolamento; lo stesso una seconda volta rimette tutto. Piu' serie
+       insieme si accendono col modificatore o col modo "somma". Si prova
+       railClick(), cioe' esattamente la funzione che il bottone chiama: provare la
+       regola sotto verificherebbe la regola e non il cablaggio. */
+    const kA = C.series[0].key, kB = C.series[1].key;
+    C.showAll();
+    ok(C.enabled().length === C.series.length && C.isolated() === null,
+      `"tutte" riaccende ogni serie (${C.enabled().length})`);
+
+    C.railClick(kA, {});
+    ok(C.isolated() === kA && C.enabled().length === 1 && C.enabled()[0] === kA,
+      `un click isola "${C.series[0].name}": resta disegnata solo lei`);
+    ok(C.lanes().length === 1 && C.lanes()[0].key === kA,
+      "e nella ridgeline c'e' davvero una corsia sola");
+    ok(LS["vita:iso"] === kA, "l'isolamento finisce in localStorage");
+    ok(C.series[0]._btn && C.series[0]._btn.dataset.iso === "1",
+      "l'interruttore isolato e' marcato (data-iso), non solo premuto");
+
+    C.railClick(kB, {});
+    ok(C.isolated() === kB && C.enabled().length === 1 && C.enabled()[0] === kB,
+      `un click su un'altra voce sposta l'isolamento su "${C.series[1].name}"`);
+    ok(C.series[0]._btn.dataset.iso !== "1", "e la precedente smette di essere marcata");
+
+    C.railClick(kB, {});
+    ok(C.isolated() === null && C.enabled().length === C.series.length,
+      "la stessa voce una seconda volta rimette tutto");
+
+    /* piu' serie insieme: col modificatore... */
+    C.railClick(kA, {});
+    C.railClick(kB, { metaKey: true });
+    ok(C.isolated() === null && C.enabled().length === 2 &&
+      C.enabled().includes(kA) && C.enabled().includes(kB),
+      "⌘/Ctrl-click ne accende una seconda senza sciogliere la selezione");
+    C.railClick(kB, { ctrlKey: true });
+    ok(C.enabled().length === 1 && C.enabled()[0] === kA,
+      "e un secondo modificato la rispegne");
+
+    /* ...e col modo dedicato, che e' il gemello raggiungibile da tastiera */
+    C.showAll(); C.setMulti(true);
+    ok(C.multi() === true && C.multiBtn.attrs["aria-pressed"] === "true",
+      "il modo \"somma\" si accende e lo dichiara (aria-pressed)");
+    C.railClick(kA, {});
+    ok(C.isolated() === null && C.enabled().length === C.series.length - 1 &&
+      !C.enabled().includes(kA),
+      "in modo somma un click semplice spegne una voce sola invece di isolare");
+    C.setMulti(false); C.showAll();
+    ok(C.multi() === false && C.enabled().length === C.series.length,
+      "spegnendo il modo somma e riaccendendo tutto si torna al punto di partenza");
+
+    /* un'interazione che non si annuncia non esiste: deve stare scritta in pagina */
+    const note = C.note.innerHTML;
+    ok(/isola/i.test(note), "la pagina dichiara che un click isola");
+    ok(/Ctrl/.test(note) && /somma/.test(note),
+      "la pagina dichiara come accenderne piu' di una (modificatore e modo somma)");
+    ok(!!C.allBtn && !!C.multiBtn, "i due comandi \"tutte\" e \"somma\" sono in pagina");
+
+    /* ---- 4d. il vuoto di una corsia e' disegnato, non lasciato bianco ---------
+       Misurato il 2026-08-11: in finestra "sempre", a 1040 px, NESSUNA corsia si
+       ferma a meta' — ogni tracciato arriva al bordo destro. Quello che manca e'
+       l'INIZIO: il carico attacca al 37 % della larghezza, sonno e HRV all'86 %, la
+       tavola all'82 %, e la temperatura al polso si spezza in sette tratti perche'
+       esiste solo nei giorni con un'uscita. Quei vuoti si leggevano come un grafico
+       rotto. Adesso ogni vuoto porta il suo tratteggio e ogni inizio il suo
+       trattino, e questo controllo tiene che sia cosi'. */
+    K.setRange("sempre");
+    /* si misura contro la geometria che il disegno ha DAVVERO usato (voidPx,
+       startGapPx), non contro una regola riscritta qui: due copie della stessa
+       soglia divergono al primo ritocco, e questo controllo comincerebbe a
+       promuovere corsie che non hanno un vuoto visibile */
+    const withVoid = C.lanes().filter(L => L.voidPx > 0);
+    const lateStart = C.lanes().filter(L => L.i0 !== null && L.startGapPx > 12);
+    ok(withVoid.length >= 5,
+      `${withVoid.length} corsie su ${C.lanes().length} hanno del vuoto da dichiarare`);
+    ok(lateStart.length >= 5,
+      `${lateStart.length} corsie cominciano visibilmente dopo il bordo sinistro`);
+    const dashOf = L => L.g.descendants().filter(c => c.tagName === "line" &&
+      c.attrs["stroke-dasharray"]);
+    const noDash = withVoid.filter(L => dashOf(L).length === 0);
+    ok(noDash.length === 0, "ogni corsia con del vuoto lo dichiara con un tratteggio" +
+      (noDash.length ? ` — senza: ${noDash.map(L => L.name).join(", ")}` : ""));
+    const tickOf = L => L.g.descendants().filter(c => c.tagName === "line" &&
+      !c.attrs["stroke-dasharray"] && Math.abs(parseFloat(c.attrs.x1) - parseFloat(c.attrs.x2)) < .01);
+    const noTick = lateStart.filter(L => tickOf(L).length === 0);
+    ok(noTick.length === 0, "e il giorno in cui comincia porta il suo trattino verticale" +
+      (noTick.length ? ` — senza: ${noTick.map(L => L.name).join(", ")}` : ""));
+    /* i buchi IN MEZZO valgono come quelli in testa: la temperatura al polso esiste
+       solo nei giorni con un'uscita e si spezza in piu' tratti */
+    const spezzate = C.lanes().filter(L =>
+      L.g.descendants().filter(c => c.tagName === "path" && c.attrs.fill === "none").length > 1);
+    ok(spezzate.length === 0 || spezzate.every(L => dashOf(L).length >= 2),
+      `anche i buchi in mezzo sono tratteggiati (${spezzate.length} corsie spezzate: ` +
+      `${spezzate.map(L => L.name).join(", ") || "nessuna"})`);
+
+    /* le serie rade: poche misure vere unite da una media mobile. La linea e'
+       continua, il dato no, e l'etichetta lo deve dire. */
+    const rade = C.lanes().filter(L => L.sparse);
+    ok(rade.length >= 1, `almeno una corsia e' marcata come rada (${rade.map(L => L.name).join(", ") || "nessuna"})`);
+    ok(rade.every(L => /rada/.test(L.labelText)),
+      "ogni corsia rada lo scrive nella propria etichetta");
+    ok(C.lanes().filter(L => !L.sparse).every(L => !/rada/.test(L.labelText)),
+      "e nessuna corsia densa se lo prende");
+
+    /* ---- 4e. trasparenza: la corsia occlude meno, e la congelata si marca col
+       tratto invece che con un riquadro. I due numeri sono decisioni misurate
+       (l'occlusore stava a .88 e si leggeva come una scatola), quindi si fissano
+       qui: una deriva "solo di un pelo" non deve poter passare inosservata. */
+    const occl = C.svg().descendants().filter(c => c.tagName === "path" &&
+      c.attrs.fill === "var(--paper)").map(c => Number(c.attrs.opacity));
+    ok(occl.length > 0, `le corsie hanno il loro occlusore (${occl.length} riempimenti)`);
+    ok(occl.length > 0 && Math.max(...occl) <= .70,
+      `l'occlusione e' scesa sotto .70 (max ${Math.max(...occl)}) — era .88, la "scatola"`);
+    ok(occl.length > 0 && Math.min(...occl) >= .50,
+      `ma non sotto .50 (min ${Math.min(...occl)}): piu' in basso le due corsie ` +
+      `sovrapposte pesano uguale e la sovrapposizione perde il davanti`);
+
+    C.pin(kA);
+    const pinG = C.lanes().find(L => L.key === kA);
+    const otherG = C.lanes().find(L => L.key !== kA);
+    const strokesOf = L => L.g.descendants().filter(c => c.tagName === "path" &&
+      c.attrs.fill === "none");
+    ok(pinG && strokesOf(pinG).some(p => Number(p.attrs["stroke-width"]) >= 2.5),
+      "la corsia congelata si marca ingrossando il tratto");
+    ok(pinG && strokesOf(pinG).some(p => Number(p.attrs["stroke-width"]) >= 6 &&
+      Number(p.attrs.opacity) < .4), "e prende un alone trasparente, non un bordo");
+    ok(otherG && strokesOf(otherG).every(p => Number(p.attrs.opacity) < .9),
+      "mentre le altre si ritirano — il congelamento e' contrasto, non un riquadro");
+    /* dentro il gruppo di una corsia l'unico rettangolo ammesso e' la zona sensibile,
+       che e' trasparente: se ne comparisse uno pieno saremmo tornati alla scatola */
+    const boxes = C.lanes().flatMap(L => L.g.descendants()
+      .filter(c => c.tagName === "rect" && c.attrs.fill !== "transparent"));
+    ok(boxes.length === 0,
+      "e dentro una corsia non c'e' nessun rettangolo pieno: congelare non aggiunge riquadri");
+    C.unpin(kA);
 
     /* ---- e la vista estesa e' rimasta quella di prima ---- */
     C.setView("estesa");

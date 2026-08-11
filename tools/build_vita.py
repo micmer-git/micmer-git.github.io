@@ -80,6 +80,17 @@ MICROBES = os.path.join(FOOD_DATA, "microbiome.csv")
 # quali cibi davvero mangiati muovono quali generi. Non e' una misura in piu',
 # e' il cablaggio del modello reso visibile.
 FLORA_FOODS = os.path.join(FOOD_DATA, "flora_foods.csv")
+# Il modello metabolico: temperatura al polso durante l'uscita, banda FatMax,
+# stime di ossidazione, e il "momento metabolico". Come la flora, e' in gran parte
+# MODELLO e non misura — la temperatura invece e' un sensore vero, solo non del
+# meteo. Ogni riquadro che ne esce lo dichiara nella propria didascalia.
+METAB = os.path.join(FOOD_DATA, "metabolismo.csv")
+# Le sole colonne che la pagina disegna. Il CSV ne ha 24 su undici anni: spedirle
+# tutte costava 385 KB a ogni visita per serie che nessun riquadro guarda. Quando
+# nasce un riquadro nuovo si aggiunge la sua colonna qui — non il contrario.
+METAB_COLS = ("temp_c", "temp_min_c", "temp_max_c",
+              "fatmax_hr", "fatmax_lo_hr", "fatmax_hi_hr", "fatmax_min",
+              "mm", "mm_n")
 
 # The athlete. Intervals.icu also accepts "0" for "whoever owns the key", but the
 # explicit id keeps the CI logs readable when a key is swapped.
@@ -147,6 +158,61 @@ def r1(v):
 
 def ri(v):
     return None if v is None else int(round(float(v)))
+
+
+def csv_blocks(path, idx, n, label, keep=None):
+    """A date-keyed CSV -> one series per column, on the shared daily index, each one
+    squeezed to its contiguous block.
+
+    Three files land here (alimentazione, flora, metabolismo) and they all cover a
+    slice of a calendar that is eleven years long. Kept as full arrays they would
+    ship tens of thousands of `null` — the page grew from 322 to 761 KB the one time
+    it was done that way. Each column goes out as `{i0, v}` and the page re-expands
+    it, so every consumer still indexes it by day and knows nothing about the
+    compression.
+
+    `keep`, when given, is the whitelist of columns to ship. A column nothing draws
+    is not free: metabolismo.csv has 24 of them over eleven years, and sending all
+    24 instead of the 9 the page reads cost 385 KB on every single visit. What is
+    not drawn does not travel.
+
+    Returns (blocks, first, last, rows) — `first`/`last` are the day indices where a
+    column actually starts and stops, which is what keeps a tile from drawing an
+    axis wider than its own coverage.
+    """
+    if not os.path.exists(path):
+        print(f"  {label}: nessun {os.path.basename(path)}, riquadri saltati")
+        return {}, {}, {}, 0
+    import csv as _csv
+    with open(path, encoding="utf-8", newline="") as fh:
+        rows = [r for r in _csv.DictReader(fh) if r.get("date")]
+    cols = [c for c in (rows[0].keys() if rows else []) if c != "date"
+            and (keep is None or c in keep)]
+    tmp = {c: [None] * n for c in cols}
+    for r in rows:
+        i = idx.get(r["date"])
+        if i is None:
+            continue                       # giorno fuori dal calendario wellness
+        for c in cols:
+            v = r.get(c)
+            if v in (None, ""):
+                continue
+            # `137.0` e `137` disegnano lo stesso pixel e occupano due caratteri di
+            # differenza per ognuno dei quattromila giorni di ognuna delle serie.
+            f = round(float(v), 2)
+            tmp[c][i] = int(f) if f == int(f) else f
+    out, first, last = {}, {}, {}
+    for c in cols:
+        a = tmp[c]
+        i0 = next((i for i, v in enumerate(a) if v is not None), None)
+        if i0 is None:
+            continue                       # colonna interamente vuota: non si spedisce
+        i1 = len(a) - 1 - next(i for i, v in enumerate(reversed(a)) if v is not None)
+        out[c] = {"i0": i0, "v": a[i0:i1 + 1]}
+        first[c] = i0
+        last[c] = i1
+    print(f"  {label}: {len(rows)} giorni, {len(out)} serie")
+    return out, first, last, len(rows)
 
 
 def build_payload(raw):
@@ -245,63 +311,17 @@ def build_payload(raw):
     # cosi' una serie di cibo e una di allenamento si possono incrociare senza
     # riallineare niente. Se il file manca, i riquadri del cibo semplicemente non
     # compaiono: meglio nessun grafico che un grafico vuoto.
-    nutri, nutri_first, nutri_last = {}, {}, {}
-    if os.path.exists(NUTRITION):
-        import csv as _csv
-        with open(NUTRITION, encoding="utf-8", newline="") as fh:
-            nrows = [r for r in _csv.DictReader(fh) if r.get("date")]
-        cols = [c for c in (nrows[0].keys() if nrows else []) if c != "date"]
-        for c in cols:
-            nutri[c] = [None] * n
-        for r in nrows:
-            i = idx.get(r["date"])
-            if i is None:
-                continue                       # giorno fuori dal calendario wellness
-            for c in cols:
-                v = r.get(c)
-                if v not in (None, ""):
-                    nutri[c][i] = round(float(v), 2)
-        # Il diario copre 92 giorni su 4.152: tenere array interi vorrebbe dire
-        # spedire ~87.000 `null` (la pagina passava da 322 a 761 KB). Ogni serie
-        # esce come blocco contiguo {i0, v} e la pagina la ridistende al volo.
-        for c in cols:
-            a = nutri[c]
-            i0 = next((i for i, v in enumerate(a) if v is not None), None)
-            if i0 is None:
-                nutri[c] = None
-                continue
-            i1 = len(a) - 1 - next(i for i, v in enumerate(reversed(a)) if v is not None)
-            nutri[c] = {"i0": i0, "v": a[i0:i1 + 1]}
-            nutri_first[c] = i0
-            nutri_last[c] = i1
-        nutri = {c: b for c, b in nutri.items() if b}
-        print(f"  alimentazione: {len(nrows)} giorni, {len(nutri)} serie")
-    else:
-        print(f"  alimentazione: nessun {os.path.basename(NUTRITION)}, riquadri saltati")
+    nutri, nutri_first, nutri_last, _ = csv_blocks(NUTRITION, idx, n, "alimentazione")
 
     # il modello della flora: stesse colonne -> stesse serie sull'indice giornaliero
-    microbes, microbe_first = {}, {}
-    if os.path.exists(MICROBES):
-        import csv as _csv
-        with open(MICROBES, encoding="utf-8", newline="") as fh:
-            mrows = [r for r in _csv.DictReader(fh) if r.get("date")]
-        mcols = [c for c in (mrows[0].keys() if mrows else []) if c != "date"]
-        tmp = {c: [None] * n for c in mcols}
-        for r in mrows:
-            i = idx.get(r["date"])
-            if i is None:
-                continue
-            for c in mcols:
-                if r.get(c) not in (None, ""):
-                    tmp[c][i] = round(float(r[c]), 2)
-        for c in mcols:
-            i0 = next((i for i, v in enumerate(tmp[c]) if v is not None), None)
-            if i0 is None:
-                continue
-            i1 = len(tmp[c]) - 1 - next(i for i, v in enumerate(reversed(tmp[c])) if v is not None)
-            microbes[c] = {"i0": i0, "v": tmp[c][i0:i1 + 1]}
-            microbe_first[c] = i0
-        print(f"  flora (modello): {len(mrows)} giorni, {len(microbes)} serie")
+    microbes, microbe_first, _, _ = csv_blocks(MICROBES, idx, n, "flora (modello)")
+
+    # il modello metabolico: temperatura al polso, banda FatMax, momento metabolico.
+    # Copre l'archivio intero (2015 →) ma a densita' molto diverse per colonna — la
+    # temperatura esiste solo nei giorni con un'uscita, `mm` solo dal 2024-08-11 —
+    # quindi ogni colonna porta il proprio first/last e ogni riquadro parte da li'.
+    metab, metab_first, metab_last, _ = csv_blocks(
+        METAB, idx, n, "metabolismo", keep=METAB_COLS)
 
     flora_foods = []
     if os.path.exists(FLORA_FOODS):
@@ -322,6 +342,7 @@ def build_payload(raw):
         "built": date.today().isoformat(),
         "nutri": nutri,
         "microbes": microbes,
+        "metab": metab,
         "floraFoods": flora_foods,
         "days": days_detail,
         "pulled": raw["pulled"],
@@ -342,11 +363,13 @@ def build_payload(raw):
             "weight": first(weight), "bodyfat": first(bodyfat),
             **{f"n_{c}": i for c, i in nutri_first.items() if i is not None},
             **{f"m_{c}": i for c, i in microbe_first.items()},
+            **{f"mb_{c}": i for c, i in metab_first.items()},
         },
         # dove ogni serie del cibo SMETTE. Il diario si ferma prima di oggi, e un
         # asse che arriva comunque a oggi disegna una settimana di vuoto che si
         # legge come "non ha mangiato" invece che "non l'ha raccontato".
-        "last": {f"n_{c}": i for c, i in nutri_last.items()},
+        "last": {**{f"n_{c}": i for c, i in nutri_last.items()},
+                 **{f"mb_{c}": i for c, i in metab_last.items()}},
     }
     return payload
 
@@ -372,6 +395,18 @@ def coverage(p):
         i0 = 0 if f == "ctl" else p["first"].get(f)
         since = (d0 + timedelta(days=i0)).isoformat() if i0 is not None else "—"
         lines.append(f"  {f:9s} {len(vals):5d} valori ({len(nz)} non nulli)  dal {since}")
+    # le colonne del metabolismo hanno densita' molto diverse fra loro (la temperatura
+    # esiste solo nei giorni con un'uscita, `mm` solo dal 2024-08): riportarle una per
+    # una e' l'unico modo di accorgersi che una si e' svuotata alla sorgente.
+    for c in ("temp_c", "fatmax_hr", "fatmax_min", "mm", "mm_n"):
+        b = (p.get("metab") or {}).get(c)
+        if not b:
+            lines.append(f"  metab.{c:11s}     — assente")
+            continue
+        vals = [v for v in b["v"] if v is not None]
+        lines.append(f"  metab.{c:11s} {len(vals):5d} valori  "
+                     f"dal {(d0 + timedelta(days=b['i0'])).isoformat()} "
+                     f"al {(d0 + timedelta(days=b['i0'] + len(b['v']) - 1)).isoformat()}")
     lines.append(f"  {'acts':9s} {len(p['acts']):5d} attività")
     by = defaultdict(int)
     for a in p["acts"]:
@@ -573,13 +608,21 @@ TEMPLATE = r"""<!DOCTYPE html>
     border-radius:7px; padding:0 13px 9px}
   /* Le corsie congelate restano appiccicate in cima al pannello mentre il resto
      scorre: e' l'unico modo per confrontare una serie con una che sta ottocento
-     pixel piu' in basso senza tenerla a memoria. */
-  .cx-pin{position:sticky; top:0; z-index:4; background:var(--paper);
-    border-bottom:1px solid var(--rule); margin:0 -13px; padding:7px 13px 6px}
+     pixel piu' in basso senza tenerla a memoria.
+     Ma la striscia NON deve leggersi come un riquadro dentro il riquadro
+     (2026-08-11: "maybe a little more transparent not big box"): niente bordo,
+     niente intestazione su una riga propria, fondo velato invece che pieno e una
+     sfumatura al posto del filetto. Il fondo resta comunque quasi opaco — sotto ci
+     scorrono le corsie, e una striscia appiccicata trasparente sopra un disegno in
+     movimento non e' leggera, e' illeggibile. */
+  .cx-pin{position:sticky; top:0; z-index:4; background:rgba(33,29,22,.93);
+    -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px);
+    box-shadow:0 7px 10px -9px rgba(0,0,0,.75); margin:0 -13px; padding:5px 13px 4px}
   .cx-pin.off{display:none}
-  .cx-pin-h{font-family:'IBM Plex Mono',monospace; font-size:.53rem; letter-spacing:.16em;
-    text-transform:uppercase; color:var(--gold)}
-  .cx-chips{display:flex; gap:6px; flex-wrap:wrap; margin:5px 0 2px}
+  .cx-pin-top{display:flex; align-items:center; gap:9px; flex-wrap:wrap}
+  .cx-pin-h{font-family:'IBM Plex Mono',monospace; font-size:.5rem; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--gold); opacity:.85}
+  .cx-chips{display:flex; gap:5px; flex-wrap:wrap}
   .cx-chip{font-family:'IBM Plex Mono',monospace; font-size:.55rem; letter-spacing:.08em;
     padding:3px 9px; border-radius:999px; cursor:pointer; background:transparent;
     border:1px solid var(--rule); color:var(--ink-soft)}
@@ -593,9 +636,23 @@ TEMPLATE = r"""<!DOCTYPE html>
   .cx-rail{position:sticky; top:8px; max-height:calc(100vh - 20px); overflow:auto;
     background:var(--paper); border:1px solid var(--rule); border-radius:7px;
     padding:9px 10px 11px}
+  /* I due comandi che governano gli interruttori stanno SOPRA gli interruttori, non
+     in una didascalia: "somma" cambia cosa fa il click successivo, e un modo che non
+     si vede mentre si clicca non esiste. */
+  .cx-rail-h{display:flex; gap:5px; margin-bottom:8px}
+  .cx-rail-h button{flex:1; font-family:'IBM Plex Mono',monospace; font-size:.55rem;
+    letter-spacing:.08em; padding:3px 6px; border-radius:4px; cursor:pointer;
+    background:transparent; border:1px solid var(--rule); color:var(--ink-soft)}
+  .cx-rail-h button:hover{border-color:var(--gold); color:var(--ink)}
+  .cx-rail-h button[aria-pressed="true"]{border-color:var(--gold); background:var(--gold);
+    color:var(--bg); font-weight:600}
+  .cx-rail-h button:focus-visible{outline:2px solid var(--gold); outline-offset:2px}
   .cx-grp{margin-bottom:9px}
   .cx-grp-h{font-family:'Cinzel',serif; font-size:.6rem; letter-spacing:.18em;
     text-transform:uppercase; color:var(--gold); margin-bottom:4px}
+  /* la voce isolata e' l'unica accesa: si marca, o "isola" e "ho spento tutto il
+     resto a mano" hanno lo stesso aspetto */
+  .cx-sw[data-iso="1"]{border-color:var(--gold); color:var(--ink)}
   .cx-sw{display:flex; align-items:center; gap:6px; width:100%; text-align:left;
     font-family:'IBM Plex Mono',monospace; font-size:.6rem; letter-spacing:.03em;
     padding:3px 5px; border-radius:4px; cursor:pointer; background:transparent;
@@ -614,6 +671,8 @@ TEMPLATE = r"""<!DOCTYPE html>
     .cx-wrap{grid-template-columns:1fr}
     .cx-rail{position:static; order:-1; max-height:none; display:flex; gap:6px;
       flex-wrap:nowrap; overflow-x:auto; padding:8px 9px}
+    .cx-rail-h{margin:0; flex:none}
+    .cx-rail-h button{flex:none; white-space:nowrap; border-radius:999px}
     .cx-grp{margin:0; display:flex; align-items:center; gap:5px; flex:none}
     .cx-grp-h{margin:0 3px 0 0; white-space:nowrap}
     .cx-sw{width:auto; white-space:nowrap; border-color:var(--rule);
@@ -829,6 +888,15 @@ TEMPLATE = r"""<!DOCTYPE html>
 <p class="band-sub">Poche misure, prese di rado: nuvole di punti con la loro tendenza.</p>
 <main class="panel" id="panel-corpo"></main>
 
+<h2 class="band">Metabolismo</h2>
+<p class="band-sub">Un sensore vero letto nel posto sbagliato, e tre modelli.
+La temperatura è quella dell'<strong>orologio al polso durante l'uscita</strong>: aria
+scaldata da un corpo, non meteo. FatMax, heat strain e momento metabolico sono
+<strong>costruiti</strong> — ognuno dichiara la propria formula o la propria fonte, perché
+su un grafico un numero misurato e un numero calcolato hanno esattamente lo stesso
+aspetto.</p>
+<main class="panel" id="panel-metabolismo"></main>
+
 <h2 class="band">Volume</h2>
 <p class="band-sub">Le ore, i chilometri, il dislivello — e come si dividono.</p>
 <main class="panel" id="panel-volume"></main>
@@ -895,6 +963,7 @@ const D = __DATA__;
   };
   D.nutri = wide(D.nutri);
   D.microbes = wide(D.microbes);
+  D.metab = wide(D.metab);
 })();
 
 /* ------------------------------------------------------------------ time */
@@ -1473,6 +1542,59 @@ function rCloud(svg, W, H, t, from, to) {
     table:tableOf([{ name:t.name, vals:pts }], from, to, t.fmt, true) };
 }
 
+/* Una BANDA e la sua mediana: due serie che sono un intervallo, non due linee.
+   Serve dove il dato nasce gia' come "da qui a qui" — il minimo e il massimo letti
+   dal sensore in un'uscita, il basso e l'alto della finestra FatMax. Disegnarle come
+   due tracciati separati direbbe "due misure"; disegnarle come un nastro dice
+   "l'intervallo", che e' quello che sono, e lascia la linea centrale a portare la
+   tendenza. Il nastro e' liscio come le linee (stessa finestra mobile) o il bordo
+   superiore ballerebbe di giorno in giorno mentre la mediana e' calma, e la banda
+   sembrerebbe rumore invece che ampiezza. */
+function rBand(svg, W, H, t, from, to) {
+  const w = t.win || 30;
+  const mid = rolling(t.mid, from, to, w);
+  const lo = rolling(t.lo, from, to, w);
+  const hi = rolling(t.hi, from, to, w);
+  const nums = mid.concat(lo, hi).filter(v => v !== null && isFinite(v));
+  if (nums.length < 4) return null;
+  const g = frame(svg, W, H, [from, to], [Math.min(...nums), Math.max(...nums)],
+    { ytick:t.ytick });
+
+  /* il nastro si chiude solo sui tratti in cui ESISTONO tutte e tre le serie: dove
+     una manca il nastro si interrompe, invece di chiudersi attraverso il buco */
+  let run = [];
+  const flush = () => {
+    if (run.length >= 2) {
+      const up = run.map((p, j) => (j ? "L" : "M") + g.X(p[0]).toFixed(1) + " " + g.Y(p[2]).toFixed(1)).join(" ");
+      const dn = [...run].reverse().map(p => "L" + g.X(p[0]).toFixed(1) + " " + g.Y(p[1]).toFixed(1)).join(" ");
+      svg.appendChild(el("path", { d:up + " " + dn + " Z", fill:t.col, opacity:".16" }));
+    }
+    run = [];
+  };
+  for (let k = 0; k < mid.length; k++) {
+    const a = lo[k], b = hi[k];
+    if (a === null || b === null || !isFinite(a) || !isFinite(b)) { flush(); continue; }
+    run.push([from + k, a, b]);
+  }
+  flush();
+  svg.appendChild(el("path", { d:pathOf(mid.map((v, k) => [from + k, v]), g.X, g.Y),
+    fill:"none", stroke:t.col, "stroke-width":2.2, "stroke-linejoin":"round",
+    "stroke-linecap":"round" }));
+
+  crosshair(svg, g, W, H, from, to, i => {
+    const k = i - from, m = mid[k], a = lo[k], b = hi[k];
+    if (m === null && a === null) return null;
+    const f = t.fmt || FMT.num0;
+    return `${t.name} <span class="v">${f(m)}</span><br>` +
+      `<span class="d">banda ${f(a)} → ${f(b)} · media ${w} gg</span>`;
+  });
+  const pts = mid.map((v, k) => [from + k, v]);
+  return { stats:stats(mid), plan:{ label:`media mobile ${w} giorni` },
+    table:tableOf([{ name:t.name, vals:pts },
+      { name:"basso", vals:lo.map((v, k) => [from + k, v]) },
+      { name:"alto", vals:hi.map((v, k) => [from + k, v]) }], from, to, t.fmt) };
+}
+
 /* A step line: VO2max moves in plateaus, so joining the estimates with a slope would
    invent a smoothness the estimate does not have. */
 function rStep(svg, W, H, t, from, to) {
@@ -1961,6 +2083,93 @@ const S = D.sports;
 const SC = ["var(--s1)", "var(--s2)", "var(--s3)", "var(--s4)"];
 const SCH = [C_POS, "#d95926", "#199e70", "#c98500"];
 
+/* ------------------------------------------------- due conteggi e un indice
+   Non esistono come serie da nessuna parte: si costruiscono qui, una volta, dalla
+   lista delle attivita' e dal modello metabolico, perche' li leggono piu' riquadri.
+   Le soglie stanno in costanti con un nome, non sepolte in un `if`: sono scelte, e
+   una scelta che non si vede non si puo' discutere. */
+
+/* Una mezza maratona misura 21,0975 km. Una traccia GPS della stessa gara cade fra
+   20,5 e 22: sotto e' un lungo, sopra ha smesso di essere una mezza. Con questa
+   forbice l'archivio ne conta 51, dal 2019 a oggi. */
+const HALF_LO = 20500, HALF_HI = 22000;
+/* "Salita lunga": oltre un'ora, e dislivello importante. Importante rispetto a COSA
+   e' la domanda vera, e la risposta viene dai dati: la mediana del dislivello di
+   un'uscita oltre l'ora, in questo archivio, e' 648 m — cioe' 648 m e' l'ordinario,
+   non un indicatore di sforzo. La soglia va sopra l'ordinario, e 1.000 m e' il primo
+   numero leggibile che ci sta: seleziona 541 uscite su 1.603, circa una a settimana,
+   che e' abbastanza fitto perche' un conteggio mensile sia un grafico e non una
+   sequenza di zeri e uni. */
+const CLIMB_SECS = 3600, CLIMB_GAIN = 1000;
+const feats = (() => {
+  const half = new Array(N).fill(0), climb = new Array(N).fill(0);
+  for (const [i, sp, s, m, up] of D.acts) {
+    if (sp === 1 && m >= HALF_LO && m <= HALF_HI) half[i] += 1;
+    if (s > CLIMB_SECS && up >= CLIMB_GAIN) climb[i] += 1;
+  }
+  return { half, climb };
+})();
+
+/* Heat strain. Non e' una misura: nessuno ha mai preso la temperatura interna di
+   Michele. E' un INDICE costruito, e i pesi sono qui in chiaro apposta —
+   c'e' gia' il precedente di microbiome_model.py, e la regola e' la stessa: un
+   numero costruito si pubblica solo insieme alla sua formula.
+
+       HS = (T − 22 °C)⁺ × ore in movimento × TSS del giorno / 100
+
+   I due pesi. 22 °C: la temperatura e' quella del SENSORE AL POLSO durante
+   l'uscita, non dell'aria — la mediana sull'archivio e' 19,7 °C e 22 taglia il
+   terzo piu' caldo (37 % dei giorni misurati). TSS/100: cento e' una giornata di
+   allenamento piena, quindi il fattore vale 1 su una giornata normale e scala di
+   li'. Il prodotto sono gradi-ora di caldo pesati per quanto si stava lavorando
+   dentro: due ore a 30 °C con 100 TSS fanno 16, quattro ore a 26 °C con 200 ne
+   fanno 32.
+
+   Prima del 2019-06-19 il carico non esiste (Strava senza HR ne' potenza): li' il
+   prodotto verrebbe zero per assenza, non per freddo, quindi resta nullo. */
+const HS_SOGLIA_C = 22, HS_TSS_RIF = 100;
+const heat = (() => {
+  const T = (D.metab || {}).temp_c;
+  if (!Array.isArray(T)) return null;
+  const load0 = daysOf("load");
+  const o = new Array(N).fill(null);
+  for (let i = load0; i < N; i++) {
+    const t = T[i];
+    if (t === null || t === undefined) continue;   /* niente sensore, niente indice */
+    o[i] = Math.max(0, t - HS_SOGLIA_C) * (secsOf.secs[i] / 3600) *
+           ((D.load[i] || 0) / HS_TSS_RIF);
+  }
+  return o;
+})();
+
+/* Momento metabolico: una scala −20..+20 che poggia su un massimo di sei componenti,
+   e `mm_n` dice su quante poggia davvero quel giorno. Un −8 costruito su tre
+   componenti e uno costruito su sei non sono lo stesso numero, e disegnarli con lo
+   stesso tratto sarebbe la bugia piu' economica di tutta la pagina. Sotto quattro
+   componenti non si disegna: meglio un pezzo di serie mancante che un pezzo di serie
+   che finge. Il taglio cade in un punto solo — i giorni sotto soglia sono un blocco
+   unico, dall'inizio del diario al giorno in cui e' arrivato l'orologio — quindi la
+   linea non si sbriciola, comincia piu' tardi. */
+const MM_MIN_COMP = 4;
+const mmDraw = (() => {
+  const M = (D.metab || {}).mm, C_ = (D.metab || {}).mm_n;
+  if (!Array.isArray(M)) return null;
+  const arr = new Array(N).fill(null);
+  let drawn = 0, dropped = 0, i0 = null;
+  for (let i = 0; i < N; i++) {
+    const v = M[i];
+    if (v === null || v === undefined) continue;
+    if (!(C_ && C_[i] !== null && C_[i] >= MM_MIN_COMP)) { dropped++; continue; }
+    arr[i] = v; drawn++;
+    if (i0 === null) i0 = i;
+  }
+  if (!drawn) return null;
+  /* il riquadro deve partire da dove la serie DISEGNATA comincia, non da dove
+     comincia la colonna: altrimenti l'asse dichiara mezzo anno che non si vede */
+  D.first.mm_drawn = i0;
+  return { arr, drawn, dropped, i0 };
+})();
+
 const TILES = [
   /* ---- Carico ---- */
   { panel:"carico", cls:"wide", h:190, first:"load",
@@ -2077,6 +2286,23 @@ const TILES = [
           .map(x => [x[3] / 1000, x[4], x[0]]) })) },
     foot:"Solo bici e corsa: gli altri sport non hanno questo asse." },
 
+  { panel:"volume", h:170, first:"act", title:"Mezze maratone",
+    cap:`corse fra ${nf(HALF_LO / 1000, 1)} e ${nf(HALF_HI / 1000, 0)} km · quante al mese`,
+    now:() => feats.half.reduce((a, b) => a + b, 0), nowFmt:FMT.num0, nowUnit:"in tutto",
+    kind:rBars, spec:{ name:"Mezze", arr:feats.half, how:"sum", col:"var(--s2)",
+      fmt:v => nf(v, 0) + (v === 1 ? " mezza" : " mezze") },
+    foot:`La distanza vera è 21,0975 km: la forbice ${nf(HALF_LO / 1000, 1)}–${nf(HALF_HI / 1000, 0)} km ` +
+      "tiene dentro la stessa gara misurata da GPS diversi e lascia fuori il lungo da venti e il trentino." },
+
+  { panel:"volume", h:170, first:"act", title:"Salite lunghe",
+    cap:`oltre un'ora e almeno ${nf(CLIMB_GAIN, 0)} m di dislivello · quante al mese`,
+    now:() => feats.climb.reduce((a, b) => a + b, 0), nowFmt:FMT.num0, nowUnit:"uscite in tutto",
+    kind:rBars, spec:{ name:"Salite lunghe", arr:feats.climb, how:"sum", col:"var(--s4)",
+      fmt:v => nf(v, 0) + (v === 1 ? " uscita" : " uscite") },
+    foot:`La soglia è misurata, non scelta a occhio: la <strong>mediana</strong> del dislivello di ` +
+      `un'uscita oltre l'ora, qui dentro, è 648 m — l'ordinario. ${nf(CLIMB_GAIN, 0)} m sta sopra ` +
+      "l'ordinario e seleziona 541 uscite su 1.603, circa una a settimana." },
+
   /* ---- Incroci ---- */
   { panel:"incroci", h:180, first:"sleep", title:"Sonno contro carico del giorno prima",
     cap:"TSS di ieri → ore dormite stanotte",
@@ -2111,9 +2337,101 @@ const TILES = [
         pts:pairPts(i => D.ctl[i], i => D.vo2[i], a, b) }] },
     foot:"Fra fitness 90 e 190 la stima non si sposta." },
 
+  /* ---- Metabolismo: presenti solo se metabolismo.csv era sul disco al build ---- */
+  ...metabTiles(),
+
   /* ---- Tavola: presenti solo se _nutrition.csv era sul disco al build ---- */
   ...nutriTiles(),
 ];
+
+/* Stessa regola dei riquadri della tavola: se il CSV non c'era al build, la sezione
+   non esiste invece di comparire vuota. Qui in piu' ogni riquadro deve dichiarare
+   che cos'e' — la temperatura e' un sensore vero letto nel posto sbagliato, la
+   banda FatMax e l'heat strain sono modelli — perche' un numero costruito e un
+   numero misurato hanno lo stesso aspetto su un grafico. */
+function metabTiles() {
+  const M = D.metab || {};
+  const has = k => Array.isArray(M[k]);
+  const t = [];
+
+  if (has("temp_c") && has("temp_min_c") && has("temp_max_c")) {
+    t.push({ panel:"metabolismo", cls:"wide", h:190, first:"mb_temp_c",
+      title:"Temperatura", cap:"sensore al polso durante l'uscita · banda min–max del giorno, media mobile 30 giorni",
+      legend:[["Media dell'uscita", SCH[1]], ["Fra minimo e massimo", "rgba(217,89,38,.35)"]],
+      now:() => lastMean(M.temp_c, 30), nowFmt:v => nf(v, 1) + " °C", nowUnit:"media 30 gg",
+      kind:rBand, spec:{ name:"Temperatura", mid:M.temp_c, lo:M.temp_min_c, hi:M.temp_max_c,
+        col:SCH[1], win:30, fmt:v => nf(v, 1) + " °C" },
+      dataNote:"solo i giorni con un'uscita",
+      foot:"<strong>Non è il meteo.</strong> I campi meteo dell'API sono vuoti su tutte e 2.257 " +
+        "le attività: questo è l'orologio, cioè l'aria a un centimetro da un corpo che " +
+        "scalda. La mediana di gennaio è 13,8 °C, che in Bergamasca all'alba non è " +
+        "l'aria di gennaio. Serve per il ciclo stagionale e per i confronti relativi — " +
+        "luglio sta 12 °C sopra gennaio — e non serve a niente come temperatura esterna. " +
+        "Esiste solo nei giorni in cui l'orologio era acceso a misurare qualcosa." });
+  }
+
+  if (heat) {
+    t.push({ panel:"metabolismo", h:170, first:"load", title:"Heat strain",
+      cap:`indice costruito · gradi-ora sopra ${HS_SOGLIA_C} °C pesati per il carico · sommati al mese`,
+      now:() => heat.reduce((a, b) => a + (b || 0), 0), nowFmt:FMT.num0, nowUnit:"indice, in tutto",
+      kind:rBars, spec:{ name:"Heat strain", arr:heat, how:"sum", col:"var(--s2)",
+        fmt:v => nf(v, 0) },
+      dataNote:"indice, non una misura",
+      foot:`<strong>Indice costruito, non una misura fisiologica</strong>: nessuno ha mai preso ` +
+        `la temperatura interna. La formula, pesi compresi, è <span class="mono">(T − ` +
+        `${HS_SOGLIA_C} °C)⁺ × ore in movimento × TSS / ${HS_TSS_RIF}</span>. ` +
+        `${HS_SOGLIA_C} °C perché taglia il terzo più caldo dei giorni misurati (mediana 19,7 °C) ` +
+        `e ${HS_TSS_RIF} TSS perché è una giornata piena, quindi il fattore vale 1 su una ` +
+        "giornata normale. Prima del giugno 2019 il carico non è registrato e l'indice resta vuoto: " +
+        "uno zero lì sarebbe assenza di dati travestita da assenza di caldo." });
+  }
+
+  if (has("fatmax_hr") && has("fatmax_lo_hr") && has("fatmax_hi_hr")) {
+    t.push({ panel:"metabolismo", cls:"wide", h:180, first:"mb_fatmax_hr",
+      title:"FatMax", cap:"battiti al minuto · la banda in cui il modello mette il massimo consumo di grassi",
+      legend:[["FatMax", SCH[2]], ["Banda", "rgba(25,158,112,.35)"]],
+      now:() => lastMean(M.fatmax_hr, 45), nowFmt:FMT.num0, nowUnit:"bpm, media 45 gg",
+      kind:rBand, spec:{ name:"FatMax", mid:M.fatmax_hr, lo:M.fatmax_lo_hr, hi:M.fatmax_hi_hr,
+        col:SCH[2], win:45, fmt:FMT.bpm },
+      dataNote:"modello, non un test da laboratorio",
+      foot:"<strong>È un modello</strong>, ancorato ad Achten e Jeukendrup (2002) su una coorte " +
+        "allenata: il FatMax vero si misura con una prova a gradini e l'analisi dei gas, e " +
+        "quella prova non è mai stata fatta. Resta piatto a 137 bpm fino al 2024 perché fino a " +
+        "lì il modello non aveva abbastanza dati per spostarsi dal valore della coorte: la " +
+        "discesa verso 132 è la sola parte che dice qualcosa su Michele e non sulla letteratura." });
+  }
+
+  if (has("fatmax_min")) {
+    t.push({ panel:"metabolismo", h:170, first:"mb_fatmax_min",
+      title:"Minuti dentro la banda", cap:"tempo passato fra i due estremi del FatMax · sommato al mese",
+      now:() => M.fatmax_min.reduce((a, b) => a + (b || 0), 0), nowFmt:v => nf(v / 60, 0),
+      nowUnit:"ore in tutto",
+      kind:rBars, spec:{ name:"Nella banda", arr:M.fatmax_min, how:"sum",
+        col:"var(--s3)", fmt:FMT.hhmm, ytick:v => nf(v / 60, 0) + "h" },
+      foot:"Conta i minuti in cui la frequenza stava fra <span class=\"mono\">fatmax_lo</span> e " +
+        "<span class=\"mono\">fatmax_hi</span>, quindi eredita per intero l'incertezza del modello " +
+        "qui sopra. Il 2022 è vuoto perché mancano le attività, non perché si andasse forte." });
+  }
+
+  if (mmDraw) {
+    t.push({ panel:"metabolismo", cls:"wide", h:170, first:"mm_drawn",
+      title:"Momento metabolico",
+      cap:`scala −20 → +20 · disegnato solo dove poggia su almeno ${MM_MIN_COMP} componenti su 6`,
+      now:() => lastMean(mmDraw.arr, 14), nowFmt:FMT.num1, nowUnit:"momento, media 14 gg",
+      kind:rDiverge, spec:{ name:"Momento", fmt:FMT.num1,
+        get:(a, b) => mmDraw.arr.slice(a, b + 1).map((v, k) => [a + k, v]) },
+      dataNote:`${nf(mmDraw.drawn)} giorni disegnati, ${nf(mmDraw.dropped)} scartati`,
+      foot:`Poggia su sei componenti — forma, fatica, sonno, HRV, frequenza a riposo, dieta — e ` +
+        `<span class="mono">mm_n</span> dice su quante poggia davvero. Un −8 costruito su tre ` +
+        `componenti e uno costruito su sei non sono lo stesso numero, quindi sotto ` +
+        `${MM_MIN_COMP} non si disegna: ${nf(mmDraw.dropped)} giorni restano fuori, e sono un ` +
+        `blocco solo — dall'inizio del diario al 20 gennaio 2025, cioè fino al giorno in cui ` +
+        `l'orologio ha portato sonno, HRV e frequenza a riposo. La linea non comincia tardi ` +
+        `per caso: comincia quando ha di che reggersi.` });
+  }
+
+  return t;
+}
 
 /* Le serie del cibo arrivano da una repo privata come aggregati giornalieri, e
    possono benissimo non esserci. Costruire i riquadri da una funzione, invece che
@@ -2402,7 +2720,7 @@ function pairPts(fx, fy, a, b, keepX) {
    ((900 − 100,8) / 84 + 1 = 10,5), nove tenendo conto della riga di congelate. */
 const RIDGE_STEP = 84;
 const RIDGE_OVER = 1.2;
-const RIDGE_PIN_STEP = 52;      /* la striscia appiccicata sta piu' stretta: e' un promemoria */
+const RIDGE_PIN_STEP = 46;      /* la striscia appiccicata sta piu' stretta: e' un promemoria */
 
 /* Le somme giornaliere (ore, km, dislivello, TSS) valgono zero anche nei giorni in
    cui la serie non esisteva ancora: uno zero vero e uno zero per assenza si
@@ -2446,7 +2764,7 @@ function ridgeSmooth(arr, w) {
 }
 
 const RIDGE = (() => {
-  const NU = D.nutri || {};
+  const NU = D.nutri || {}, MB = D.metab || {};
   const out = [];
   /* il colore raggruppa per sezione, mai per serie: quattro slot validati non
      possono identificare venti linee, e fingere che lo facciano sarebbe peggio che
@@ -2485,6 +2803,16 @@ const RIDGE = (() => {
   add("Tavola", "var(--s3)", "magn", "Magnesio", NU.magnesium_mg, 7, v => nf(v, 0) + " mg");
   add("Tavola", "var(--s3)", "pota", "Potassio", NU.potassium_mg, 7, v => nf(v, 0) + " mg");
   add("Tavola", "var(--s3)", "micro", "Microbiota", NU.microbiome, 14, FMT.num0);
+  /* Del metabolismo passano di qui solo le tre serie che hanno una FORMA nel tempo.
+     La banda FatMax no: resta piatta a 137 bpm per nove anni e poi si muove di sei
+     battiti, e la normalizzazione per corsia trasformerebbe quei sei battiti in
+     un'escursione a tutta altezza — vera per costruzione, e illeggibile come segnale.
+     Sta nella vista estesa, dove ha un asse che dice quanto vale. */
+  add("Metabolismo", "var(--s2)", "temp", "Temperatura", MB.temp_c, 30,
+      v => nf(v, 1) + " °C");
+  add("Metabolismo", "var(--s2)", "heat", "Heat strain", heat, 30, FMT.num1);
+  add("Metabolismo", "var(--s2)", "mm", "Momento metabolico",
+      mmDraw && mmDraw.arr, 14, FMT.num1);
   return out;
 })();
 
@@ -2556,6 +2884,22 @@ function drawRidge(lanes, W, from, to, step, showAxis, pinnedSet) {
       `ognuna riscalata sulla propria storia` });
 
   const refs = [];
+  /* Quanto una corsia copre quella sotto. Era .88, ed e' il numero che l'utente ha
+     visto come "scatola": a quel valore ogni corsia e' praticamente un foglio
+     opaco appoggiato sopra il disegno, e la vista si legge come venti riquadri
+     impilati invece che come un rilievo.
+     Il pavimento non e' estetico, e' geometrico. Con RIDGE_OVER = 1.2 una corsia
+     sale 1,2 passi mentre le basi ne distano 1: sconfina di 0,2 passi, e SOLO in
+     quella immediatamente sopra (1,2 < 2, quindi non arriva mai alla seconda).
+     Quindi in nessun punto si sommano piu' di DUE riempimenti — la "nebbia da
+     ventiquattro velature" che l'88 % doveva evitare non e' mai stata possibile con
+     questa geometria. A .62 lo stack piu' profondo lascia passare 1 − .62² ≈ 14 %
+     del fondo, il tracciato di dietro traspare abbastanza da dire "sto dietro" e
+     non abbastanza da confondersi con quello davanti. Sotto .5 le due linee
+     cominciano a pesare uguale e la sovrapposizione smette di avere un davanti:
+     e' li' che si e' fermata, non piu' in basso. */
+  const OCCL = .62;
+  const anyPin = lanes.some(L => pinnedSet.has(L.s.key));
   /* dall'alto verso il basso: ogni corsia viene disegnata DOPO quella che le sta
      sopra, quindi la copre — e' cosi' che una sovrapposizione si legge come
      profondita' invece che come due tracciati che si accavallano */
@@ -2566,46 +2910,116 @@ function drawRidge(lanes, W, from, to, step, showAxis, pinnedSet) {
     g.dataset.series = s.key;
     g.dataset.pinned = pinnedSet.has(s.key) ? "1" : "";
     const on = pinnedSet.has(s.key);
+    /* congelata = piu' contrasto, non un riquadro. Le altre si ritirano di un passo
+       (piu' sottili, piu' trasparenti) e quella congelata prende un alone: e'
+       l'evidenziazione che non aggiunge bordi al disegno. */
+    const dim = anyPin && !on;
 
-    for (const run of ridgeRuns(L.pts)) {
-      if (run.length < 2) continue;
+    /* dove la corsia comincia e dove finisce DAVVERO. Serve perche' quasi nessuna
+       serie copre tutta la finestra: in "sempre" il carico parte al 37 % della
+       larghezza, sonno e HRV all'86 %, la tavola all'82 %. Senza un segno, quei due
+       terzi vuoti si leggono come un grafico che si e' rotto — ed e' esattamente il
+       reclamo da cui nasce tutto questo ("some graphs stop in the middle"). */
+    const runs = ridgeRuns(L.pts).filter(r => r.length >= 2);
+    const i0 = runs.length ? runs[0][0][0] : null;
+    const i1 = runs.length ? runs[runs.length - 1][runs[runs.length - 1].length - 1][0] : null;
+
+    /* la linea di base attraversa TUTTA la corsia, tratteggiata dove non c'e' nulla:
+       il vuoto smette di essere assenza di disegno e diventa disegno dell'assenza.
+       Vale per i tre vuoti diversi, che a occhio erano lo stesso niente: prima che
+       la serie cominci, dopo che ha smesso, e i buchi in mezzo — la temperatura al
+       polso esiste solo nei giorni con un'uscita, quindi in "sempre" si spezza in
+       sette tratti, ed erano proprio quelli a leggersi come un grafico interrotto. */
+    const voids = [];
+    let cur = from;
+    for (const run of runs) { voids.push([cur, run[0][0]]); cur = run[run.length - 1][0]; }
+    voids.push([cur, to]);
+    let voidPx = 0;
+    for (const [a, b] of voids) {
+      if (X(b) - X(a) < 3) continue;   /* sotto i 3 px il tratteggio e' un puntino */
+      voidPx += X(b) - X(a);
+      g.appendChild(el("line", { x1:X(a), x2:X(b), y1:base, y2:base,
+        stroke:"var(--muted)", "stroke-width":1, opacity:".28",
+        "stroke-dasharray":"1 5" }));
+    }
+    const startGapPx = i0 === null ? X(to) - X(from) : X(i0) - X(from);
+
+    for (const run of runs) {
       const d = run.map((p, j) => (j ? "L" : "M") + X(p[0]).toFixed(1) + " " +
         Y(p[1]).toFixed(1)).join(" ");
       const closed = d + " L" + X(run[run.length - 1][0]).toFixed(1) + " " +
         base.toFixed(1) + " L" + X(run[0][0]).toFixed(1) + " " + base.toFixed(1) + " Z";
-      /* due riempimenti: uno opaco all'88 % che fa da occlusore (senza, le corsie
-         si sommerebbero in una nebbia e la sovrapposizione non direbbe piu' chi sta
-         davanti), e sopra una velatura del colore della sezione. Il 12 % che resta
-         lascia trasparire le bande "nessun dato": coprirle sarebbe cancellarle. */
-      g.appendChild(el("path", { d:closed, fill:"var(--paper)", opacity:".88" }));
-      g.appendChild(el("path", { d:closed, fill:s.col, opacity:on ? ".26" : ".15" }));
+      /* due riempimenti: l'occlusore, che decide quanto la corsia copre quella di
+         sotto, e sopra una velatura del colore della sezione. Quello che l'occlusore
+         lascia passare vale anche per le bande "nessun dato": coprirle sarebbe
+         cancellarle, e con OCCL piu' basso adesso si vedono meglio di prima. */
+      g.appendChild(el("path", { d:closed, fill:"var(--paper)", opacity:String(OCCL) }));
+      g.appendChild(el("path", { d:closed, fill:s.col,
+        opacity:on ? ".30" : dim ? ".07" : ".13" }));
+      if (on) {
+        /* l'alone: lo stesso tracciato, largo e trasparente, sotto quello vero */
+        g.appendChild(el("path", { d, fill:"none", stroke:s.col, "stroke-width":7,
+          "stroke-linejoin":"round", "stroke-linecap":"round", opacity:".22" }));
+      }
       g.appendChild(el("path", { d, fill:"none", stroke:s.col,
-        "stroke-width":on ? 2.6 : 1.7, "stroke-linejoin":"round",
-        "stroke-linecap":"round", opacity:on ? "1" : ".92" }));
+        "stroke-width":on ? 2.8 : dim ? 1.3 : 1.7, "stroke-linejoin":"round",
+        "stroke-linecap":"round", opacity:on ? "1" : dim ? ".45" : ".92" }));
     }
+
+    /* una serie RADA: pochi punti veri distribuiti su tanti giorni, che la media
+       mobile centrata unisce in una linea continua. La linea non e' falsa — e' una
+       media — ma sembra una misura quotidiana, e non lo e': il peso sono 65 pesate
+       in due anni. La parola sull'etichetta e' il modo piu' economico di dirlo. */
+    let nRaw = 0;
+    for (let i = from; i <= to; i++) {
+      const v = s.arr[i]; if (v !== null && v !== undefined) nRaw++;
+    }
+    const cover = i0 === null ? 0 : (i1 - i0 + 1);
+    const sparse = nRaw > 0 && cover > 30 && nRaw < cover * .33;
 
     /* l'etichetta sta SULLA linea, con un alone del colore della scheda sotto le
        lettere: e' l'unica identita' che la corsia ha, quindi deve restare leggibile
        anche quando la linea le passa attraverso */
-    const label = el("text", { x:P.l + 7, y:base - 5, fill:on ? "var(--gold)" : "var(--ink)",
+    const labText = (on ? "❄ " : "") + s.name + (sparse ? " · rada" : "");
+    const label = el("text", { x:P.l + 7, y:base - 5,
+      fill:on ? "var(--gold)" : dim ? "var(--muted)" : "var(--ink)",
       "font-size":"10.5", "font-family":"'IBM Plex Mono',monospace",
       "letter-spacing":".03em", stroke:"var(--paper)", "stroke-width":"3.4",
       "paint-order":"stroke", "pointer-events":"none" });
-    label.textContent = (on ? "❄ " : "") + s.name;
+    label.textContent = labText;
     g.appendChild(label);
+    const labRight = P.l + 7 + labText.length * TICKW * 1.28;
 
     /* la scala della corsia, scritta sulla corsia: e' l'unico posto in cui questa
        vista puo' dire quanto vale un'altezza, e senza sarebbe una forma senza unita' */
+    let rngLeft = W - P.r;
     if (s._min !== null) {
       const rng = `${s.fmt(s._lo)} → ${s.fmt(s._hi)}`;
-      const wLab = ((on ? 2 : 0) + s.name.length) * TICKW * 1.28;
       const wRng = rng.length * TICKW;
-      if (P.l + 7 + wLab + 14 < W - P.r - wRng) {
+      if (labRight + 14 < W - P.r - wRng) {
+        rngLeft = W - P.r - wRng;
         const t = el("text", { x:W - P.r, y:base - 5, "text-anchor":"end",
           fill:"var(--muted)", "font-size":"8", "font-family":"'IBM Plex Mono',monospace",
           stroke:"var(--paper)", "stroke-width":"3", "paint-order":"stroke",
           "pointer-events":"none" });
         t.textContent = rng; g.appendChild(t);
+      }
+    }
+
+    /* il segno di inizio corsia: un trattino verticale sul primo giorno misurato, e
+       l'anno accanto se ci sta fra il nome e l'escursione. Va messo solo quando c'e'
+       davvero del vuoto prima, o su una corsia piena sarebbe una tacca senza motivo. */
+    if (i0 !== null && startGapPx > 12) {
+      g.appendChild(el("line", { x1:X(i0), x2:X(i0), y1:base, y2:base - 9,
+        stroke:"var(--muted)", "stroke-width":1, opacity:".6" }));
+      const lab = String(dayDate(Math.round(i0)).getFullYear());
+      const w = lab.length * TICKW;
+      if (X(i0) - 4 - w > labRight + 8 && X(i0) - 4 < rngLeft - 8) {
+        const t = el("text", { x:X(i0) - 4, y:base - 5, "text-anchor":"end",
+          fill:"var(--muted)", "font-size":"8", "font-family":"'IBM Plex Mono',monospace",
+          stroke:"var(--paper)", "stroke-width":"3", "paint-order":"stroke",
+          "pointer-events":"none" });
+        t.textContent = lab; g.appendChild(t);
       }
     }
 
@@ -2631,15 +3045,19 @@ function drawRidge(lanes, W, from, to, step, showAxis, pinnedSet) {
       showTip(ev.clientX, ev.clientY,
         `<span class="d">${fmtDate(Math.round(best[0]))}</span><br>` +
         `${s.name} <span class="v">${s.fmt(best[2])}</span><br>` +
-        `<span class="d">${nf(best[1] * 100, 0)} % della sua escursione · ` +
-        `${pinnedSet.has(s.key) ? "clicca per sganciarla" : "clicca per congelarla"}</span>`);
+        `<span class="d">${nf(best[1] * 100, 0)} % della sua escursione` +
+        (sparse ? ` · serie rada: ${nf(nRaw)} misure in ${nf(cover)} giorni, ` +
+                  `la linea è la loro media mobile` : "") +
+        `<br>${pinnedSet.has(s.key) ? "clicca per sganciarla" : "clicca per congelarla"}` +
+        `</span>`);
     });
     hit.addEventListener("pointerleave", hideTip);
     hit.addEventListener("click", () => togglePin(s.key));
     g.appendChild(hit);
 
     svg.appendChild(g);
-    refs.push({ key:s.key, name:s.name, g, label, base, pinned:on });
+    refs.push({ key:s.key, name:s.name, labelText:labText, sparse, nRaw,
+      i0, i1, voidPx, startGapPx, g, label, base, pinned:on });
   });
   /* Le bande "nessun dato" vanno SOPRA le corsie, non sotto come nei riquadri
      estesi: qui i riempimenti sono opachi all'88 % e una banda sotto ventiquattro
@@ -2771,7 +3189,8 @@ const drawAll = () => {
   if (view === "compatta") drawCompact();
   else for (const [n, t] of MOUNTED) drawTile(n, t);
 };
-window.CRUSCOTTO = { D, TILES, MOUNTED, drawAll, setRange:k => { range = k; drawAll(); } };
+window.CRUSCOTTO = { D, TILES, MOUNTED, drawAll, mm:mmDraw, mmMin:MM_MIN_COMP,
+  setRange:k => { range = k; drawAll(); } };
 window.openDay = openDay;   /* il check lo chiama per verificare il popup */
 
 /* ------------------------------------------- il pannello della vista compatta */
@@ -2782,14 +3201,25 @@ cxNote.innerHTML = "Una corsia per serie, impilate con una sovrapposizione di un
   "98° percentile della sua media mobile su tutto l'archivio, non da zero: " +
   "<strong>due corsie alte uguali non valgono uguale</strong>, dicono solo «ognuna al " +
   "suo massimo». Qui si confrontano le forme e i tempi, mai i valori; per i valori " +
-  "c'è la vista estesa, che ha gli assi. Clicca una corsia per congelarla in cima, " +
-  "gli interruttori a lato scelgono cosa disegnare.";
+  "c'è la vista estesa, che ha gli assi." +
+  "<br>Un click sul <strong>nome a lato isola</strong> quella serie; un click su un " +
+  "altro nome isola quello; lo stesso nome una seconda volta rimette tutto. Per " +
+  "accenderne e spegnerne <strong>più di una</strong>: ⌘ o Ctrl-click, oppure il " +
+  "modo <strong>somma</strong> in cima alla colonna, che fa la stessa cosa senza " +
+  "modificatore. <strong>Tutte</strong> rimette tutto. Un click <em>sul grafico</em> " +
+  "invece <strong>congela</strong> la corsia: resta in cima mentre il resto scorre, e " +
+  "nel disegno si distingue perché è più marcata, non perché sia in un riquadro." +
+  "<br>Dove una corsia è vuota resta il suo <strong>tratteggio</strong>: la serie non " +
+  "era ancora misurata. Il trattino verticale con l'anno segna il giorno in cui " +
+  "comincia — quasi nessuna comincia a sinistra. «Rada» accanto al nome vuol dire " +
+  "poche misure vere unite da una media mobile: la linea è continua, il dato no.";
 const cxWrap = mk("div", "cx-wrap", cxHost);
 const cxMain = mk("div", "cx-main", cxWrap);
 const cxPinBox = mk("div", "cx-pin", cxMain);
 cxPinBox.classList.add("off");
-mk("div", "cx-pin-h", cxPinBox, "congelate — restano qui mentre il resto scorre");
-const cxChips = mk("div", "cx-chips", cxPinBox);
+const cxPinTop = mk("div", "cx-pin-top", cxPinBox);
+mk("div", "cx-pin-h", cxPinTop, "congelate");
+const cxChips = mk("div", "cx-chips", cxPinTop);
 const cxPinPlot = mk("div", "cx-pin-plot", cxPinBox);
 const cxPlot = mk("div", "cx-plot", cxMain);
 const cxFoot = mk("div", "cx-foot", cxMain);
@@ -2797,12 +3227,38 @@ const cxRail = mk("aside", "cx-rail", cxWrap);
 
 const OFF = new Set((store.get("vita:off", "") || "").split(",").filter(Boolean));
 const PIN = new Set((store.get("vita:pin", "") || "").split(",").filter(Boolean));
+/* La serie ISOLATA: quella su cui un click ha spento tutte le altre. Si tiene a
+   parte da OFF perche' "isolata" e "ho spento a mano tutto il resto" sono lo stesso
+   insieme ma non lo stesso stato — solo la prima torna indietro al click successivo.
+   Ripescandola da localStorage si verifica che il mondo la confermi ancora: se le
+   serie sono cambiate fra una visita e l'altra, l'isolamento decade invece di
+   lasciare una pagina con una corsia sola e nessuna spiegazione. */
+let ISO = store.get("vita:iso", "") || null;
+if (ISO && !(RIDGE.some(s => s.key === ISO) && !OFF.has(ISO) &&
+             OFF.size === RIDGE.length - 1)) ISO = null;
+/* Modo "somma": quando e' acceso ogni click accende/spegne una voce sola invece di
+   isolarla. E' il gemello raggiungibile da tastiera di ⌘/Ctrl-click — un modificatore
+   col mouse non esiste per chi naviga a tab, e mezza interazione non e' interazione. */
+let MULTI = false;
 let cxLast = null, cxPinLast = null;
 
 /* Gli interruttori si costruiscono una volta sola e si tiene il riferimento a
    ognuno: cosi' un interruttore mosso via API (il check) e uno mosso col dito
    aggiornano lo stesso nodo, e nessuno deve ricercarlo nel documento. */
+let cxAllBtn = null, cxMultiBtn = null;
 (function buildRail() {
+  const head = mk("div", "cx-rail-h", cxRail);
+  cxAllBtn = mk("button", null, head, "tutte");
+  cxAllBtn.type = "button";
+  cxAllBtn.setAttribute("aria-label", "Mostra tutte le serie");
+  cxAllBtn.addEventListener("click", showAll);
+  cxMultiBtn = mk("button", null, head, "somma");
+  cxMultiBtn.type = "button";
+  cxMultiBtn.setAttribute("aria-pressed", "false");
+  cxMultiBtn.setAttribute("aria-label",
+    "Selezione a somma: ogni click accende o spegne una serie invece di isolarla");
+  cxMultiBtn.addEventListener("click", () => setMulti(!MULTI));
+
   const groups = [];
   for (const s of RIDGE) {
     let g = groups.find(x => x.name === s.sec);
@@ -2816,19 +3272,56 @@ let cxLast = null, cxPinLast = null;
       const b = mk("button", "cx-sw", box, s.name);
       b.type = "button";
       b.setAttribute("aria-pressed", String(!OFF.has(s.key)));
+      /* anche al primo disegno, non solo dopo un click: un isolamento ripescato da
+         localStorage deve arrivare gia' marcato, o alla riapertura la pagina mostra
+         una corsia sola e nessun bottone che spieghi perche' */
+      b.dataset.iso = ISO === s.key ? "1" : "";
       b.style.setProperty("--c", s.col);
-      b.addEventListener("click", () => setSeries(s.key, OFF.has(s.key)));
+      b.addEventListener("click", ev => railClick(s.key, ev));
       s._btn = b;
     }
   }
 })();
 
+/* L'unico posto che tocca OFF/ISO. Tutto il resto passa di qui, quindi non esiste
+   un cammino che cambia le serie accese e si dimentica di aggiornare i bottoni o
+   di salvare — che e' il modo in cui una selezione comincia a mentire. */
+function syncRail() {
+  for (const s of RIDGE) {
+    if (!s._btn) continue;
+    s._btn.setAttribute("aria-pressed", String(!OFF.has(s.key)));
+    s._btn.dataset.iso = ISO === s.key ? "1" : "";
+  }
+  if (cxMultiBtn) cxMultiBtn.setAttribute("aria-pressed", String(MULTI));
+  store.set("vita:off", [...OFF].join(","));
+  store.set("vita:iso", ISO || "");
+  if (view === "compatta") drawCompact();
+}
+
+/* Click semplice: ISOLA. Click su una voce gia' isolata: torna tutto.
+   Click su un'altra voce: isola quella. Con il modificatore (o in modo "somma"):
+   accende e spegne una voce sola, e l'isolamento decade — perche' da li' in poi
+   l'insieme non e' piu' "quella serie", e' "quelle che ho scelto". */
+/* Il cammino vero di un click su un interruttore: il modificatore si legge
+   dall'evento e non dallo stato, cosi' ⌘/Ctrl-click funziona anche quando il modo
+   "somma" e' spento — che e' il caso normale. Sta in una funzione con un nome
+   perche' e' esattamente questa che il check deve poter chiamare: verificare
+   selectSeries() direttamente proverebbe la regola e non il cablaggio. */
+function railClick(key, ev) {
+  selectSeries(key, MULTI || !!(ev && (ev.metaKey || ev.ctrlKey || ev.shiftKey)));
+}
+function selectSeries(key, additive) {
+  if (additive) { ISO = null; setSeries(key, OFF.has(key)); return; }
+  if (ISO === key) { ISO = null; OFF.clear(); }
+  else { ISO = key; OFF.clear(); for (const s of RIDGE) if (s.key !== key) OFF.add(s.key); }
+  syncRail();
+}
+function showAll() { ISO = null; OFF.clear(); syncRail(); }
+function setMulti(on) { MULTI = !!on; syncRail(); }
 function setSeries(key, on) {
   if (on) OFF.delete(key); else OFF.add(key);
-  const s = RIDGE.find(x => x.key === key);
-  if (s && s._btn) s._btn.setAttribute("aria-pressed", String(on));
-  store.set("vita:off", [...OFF].join(","));
-  if (view === "compatta") drawCompact();
+  ISO = null;                 /* una voce mossa a mano scioglie l'isolamento */
+  syncRail();
 }
 function togglePin(key) { setPin(key, !PIN.has(key)); }
 function setPin(key, on) {
@@ -2884,10 +3377,15 @@ function drawCompact() {
     cxPinLast = null;
   }
 
+  const isoName = ISO ? (RIDGE.find(s => s.key === ISO) || {}).name : null;
+  const rada = (cxLast ? cxLast.refs : []).filter(L => L.sparse).map(L => L.name);
   cxFoot.innerHTML = [
     `${fmtDate(from)} → ${fmtDate(to)}`,
     `${lanes.length} corsie su ${RIDGE.length}`,
+    isoName ? `isolata: ${isoName}` : null,
+    MULTI ? "modo somma acceso" : null,
     pinned.length ? `${pinned.length} congelate` : null,
+    rada.length ? `rade: ${rada.join(", ")}` : null,
     mute.length ? `senza dati in questa finestra: ${mute.join(", ")}` : null,
   ].filter(Boolean).join(" · ") +
     "<br>Il numero a destra di ogni corsia è la sua escursione: quanto vale il fondo " +
@@ -2898,6 +3396,9 @@ function drawCompact() {
 window.CRUSCOTTO.compact = {
   series:RIDGE, setView, view:() => view,
   toggle:key => setSeries(key, OFF.has(key)),
+  railClick, isolated:() => ISO, showAll,
+  setMulti, multi:() => MULTI,
+  allBtn:cxAllBtn, multiBtn:cxMultiBtn,
   enabled:() => RIDGE.filter(s => !OFF.has(s.key)).map(s => s.key),
   pin:key => setPin(key, true), unpin:key => setPin(key, false),
   pinned:() => [...PIN],

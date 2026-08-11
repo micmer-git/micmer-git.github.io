@@ -11,7 +11,7 @@ python tools/sync_intervals.py --config tools/gazzaniga-orezzo.json   # new effo
 python tools/sync_sogni.py                                            # new weeks   -> data.json + load.json
 python tools/sync_diario.py                                           # refresh the monthly chapter numbers
 python tools/build_food.py                                            # rigenera i dati dell'alimentazione -> vita/_*.csv|json
-python tools/build_vita.py                                            # rebuild /vita: tracker + 38 grafici (+ vista compatta)
+python tools/build_vita.py                                            # rebuild /vita: tracker + 45 grafici (+ vista compatta)
 node   tools/check_vita.cjs                                           # smoke-test it, no browser needed
 node   tools/check_vita.cjs --ridge                                   # la vista compatta letta a parole, corsia per corsia
 python tools/build_signore.py                                         # /signore-dei-kj: la saga, mese per mese
@@ -145,7 +145,7 @@ changelog), e dagli un accento — se si va oltre tre, la terna va rivalidata.
 
 ## build_vita.py
 
-Builds `/vita`: i tre tracker in cima e 31 grafici in colonna over everything Intervals.icu holds.
+Builds `/vita`: i tre tracker in cima e 45 grafici in colonna over everything Intervals.icu holds.
 Unlike the rest of `tools/`, it does **not** read a published page — it pulls the
 whole wellness history and the whole activity list straight from the API, packs
 them into one payload and inlines it. The page is a flat 320 KB file with no runtime
@@ -180,6 +180,53 @@ if ignored:
 - **Sleep and HRV are 18 months of a page that otherwise spans eleven years.** Each
   tile resolves "sempre" against *its own* first day, so no tile can imply coverage
   it doesn't have, and its footer prints the window it actually drew.
+
+**La sezione Metabolismo, e i numeri costruiti.** `vita/cibo/data/metabolismo.csv`
+entra nel payload come le altre serie del cibo — blocchi `{i0, v}` sull'indice
+giornaliero, via `csv_blocks()`, che ora e' un helper solo e non tre copie. Ne
+escono cinque riquadri, e ognuno deve dichiarare cosa e', perche' su un grafico un
+numero misurato e un numero calcolato hanno esattamente lo stesso aspetto:
+
+- **Temperatura** — l'unica misura vera del gruppo, e letta fuori dal suo mestiere.
+  E' il **sensore al polso durante l'uscita**: i campi meteo dell'API sono vuoti su
+  tutte e 2.257 le attivita', e questi 1.650 giorni esistono **solo** dove c'era
+  un'uscita. Mediana di gennaio 13,8 °C contro 25,8 di luglio: il ciclo stagionale
+  e i confronti relativi reggono, la lettura assoluta no — 14 °C in Bergamasca
+  all'alba non e' l'aria, e' un braccio caldo. La didascalia lo dice per esteso.
+- **Heat strain** — non esiste come colonna, e' **costruito**:
+  `(T − 22 °C)⁺ × ore in movimento × TSS / 100`. I due pesi sono costanti con un
+  nome (`HS_SOGLIA_C`, `HS_TSS_RIF`) e stanno anche nella didascalia: 22 °C perche'
+  taglia il terzo piu' caldo dei giorni misurati (mediana 19,7), 100 TSS perche' e'
+  una giornata piena e li' il fattore vale 1. **Nullo prima del 2019-06-19**: senza
+  carico registrato il prodotto verrebbe zero per assenza, cioe' un giorno freddo.
+- **FatMax** — banda `fatmax_lo/hi` con `fatmax_hr` in mezzo, disegnata come **un
+  nastro** (`rBand`) e non come due linee, perche' e' un intervallo. E' un
+  **modello** ancorato ad Achten/Jeukendrup 2002 su coorte allenata; il test vero
+  non e' mai stato fatto. Resta piatto a 137 bpm fino al 2024 — il valore della
+  coorte — e solo la discesa verso 132 dice qualcosa su Michele.
+- **Minuti dentro la banda** — eredita per intero l'incertezza del modello sopra.
+- **Momento metabolico** — scala −20..+20 su sei componenti, e `mm_n` dice su
+  quante poggia davvero. **Sotto `MM_MIN_COMP` = 4 non si disegna**: un −8 con tre
+  componenti e uno con sei non sono lo stesso numero. Sono 162 giorni scartati su
+  730, e sono un **blocco solo** — dall'inizio del diario al 2025-01-20, cioe' fino
+  a quando l'orologio ha portato sonno, HRV e frequenza a riposo — quindi la linea
+  non si sbriciola, comincia piu' tardi. Il check verifica giorno per giorno che
+  nessun punto disegnato poggi su meno di quattro componenti.
+
+**`METAB_COLS`: quello che non si disegna non viaggia.** Il CSV ha 24 colonne su
+undici anni; spedirle tutte costava **385 KB a ogni visita** per serie che nessun
+riquadro guarda. Ne partono nove, quelle lette davvero. Quando nasce un riquadro
+nuovo si aggiunge la sua colonna a quella tupla — non il contrario.
+
+**Due conteggi dalla lista delle attivita', con le soglie misurate.**
+`HALF_LO/HALF_HI` = 20,5–22 km su `sportIdx 1`: la mezza vera e' 21,0975 km, la
+forbice tiene dentro la stessa gara letta da GPS diversi e lascia fuori il lungo da
+venti — ne trova 51. `CLIMB_SECS/CLIMB_GAIN` = oltre un'ora e ≥1.000 m: la soglia
+non e' a occhio, viene dai dati. La **mediana** del dislivello di un'uscita oltre
+l'ora, in questo archivio, e' **648 m** — cioe' 648 m e' l'ordinario, non uno
+sforzo notevole. 1.000 m sta sopra l'ordinario e seleziona 541 uscite su 1.603,
+circa una a settimana: abbastanza fitto perche' un conteggio mensile sia un grafico
+e non una fila di zeri e uni. Entrambe le soglie sono in didascalia.
 
 **Colour.** Slots 1-4 of the dataviz reference palette, dark steps, validated as a
 set against this page's card surface `#211d16` — not against the reference surface,
@@ -263,14 +310,50 @@ Quattro cose vanno sapute prima di toccarla:
   numeri dentro gli attributi `d` dei tracciati. L'escursione in cifre e' scritta a
   destra di ogni corsia, e solo se ci sta: e' l'unico posto in cui questa vista puo'
   dire quanto vale un'altezza.
-- **La geometria.** Linee di base a `RIDGE_STEP` = 84 px, escursione `× 1.2` = 100,8
-  px: ogni corsia sconfina di un quinto di passo in quella sopra, che e' la
-  sovrapposizione. Le corsie si disegnano **dall'alto in basso**, ognuna con un
-  riempimento opaco all'88 % che copre quella precedente — senza, ventiquattro
-  velature si sommerebbero in una nebbia. In una schermata alta 900 px ci stanno
-  **10 corsie intere** (9 con la striscia delle congelate in cima). Sotto i 430 px
-  il passo scende a 62. Le bande "nessun dato" vanno **sopra** le corsie, non sotto
-  come nei riquadri estesi: sotto sarebbero cancellate da ventiquattro riempimenti.
+- **La geometria, e dove sta il pavimento dell'occlusione.** Linee di base a
+  `RIDGE_STEP` = 84 px, escursione `× 1.2` = 100,8 px: ogni corsia sconfina di un
+  quinto di passo in quella sopra, che e' la sovrapposizione. Le corsie si disegnano
+  **dall'alto in basso**, ognuna con un riempimento `var(--paper)` che copre quella
+  precedente. Quel riempimento stava a **.88**, ed e' il numero che l'utente ha
+  visto come «big box»: a quel valore ogni corsia e' un foglio opaco appoggiato sul
+  disegno, e la vista si legge come ventiquattro riquadri impilati invece che come
+  un rilievo. Ora sta a **`OCCL` = .62**, e il pavimento non e' estetico, e'
+  geometrico: con `RIDGE_OVER` = 1.2 < 2 una corsia sconfina **solo** in quella
+  immediatamente sopra, quindi in nessun punto si sommano piu' di **due**
+  riempimenti — la "nebbia da ventiquattro velature" che l'88 % doveva evitare non
+  e' mai stata possibile con questa geometria. A .62 lo stack piu' profondo lascia
+  passare `1 − .62²` ≈ 14 % del fondo: il tracciato di dietro traspare abbastanza da
+  dire *sto dietro* e non abbastanza da confondersi con quello davanti. **Sotto .5
+  le due linee cominciano a pesare uguale e la sovrapposizione perde il davanti**:
+  e' li' il limite, e il check lo fissa a entrambi i capi (`max ≤ .70`, `min ≥ .50`)
+  rileggendo l'`opacity` dai riempimenti veri, perche' un valore del genere si
+  ritocca "solo di un pelo" molto piu' facilmente di quanto si rifaccia il conto.
+  In una schermata alta 900 px ci stanno **10 corsie intere**. Sotto i 430 px il
+  passo scende a 62. Le bande "nessun dato" vanno **sopra** le corsie, non sotto
+  come nei riquadri estesi — e con l'occlusione piu' bassa si vedono meglio di prima.
+
+- **«Some graphs stop in the middle» — misurato, e non era quello.** A 1040 px, in
+  finestra `sempre` e in `2a`, **nessuna corsia si ferma prima del bordo destro**:
+  tutte e 27 arrivano al 100 % della larghezza. Quello che manca e' l'**inizio**. In
+  `sempre` il carico attacca al **37 %** della larghezza, sonno/HRV/passi all'**86
+  %**, la tavola all'**82 %**, la massa grassa all'**89 %**; in `2a` la massa grassa
+  parte comunque al **36 %**. E la temperatura al polso, che esiste solo nei giorni
+  con un'uscita, si spezza in **sette tratti** con sei buchi in mezzo. Tutto
+  corretto, e tutto indistinguibile da un disegno rotto, perche' il vuoto era
+  *assenza di disegno*. Ora ogni corsia porta la sua **linea di base tratteggiata**
+  su tutti e tre i vuoti — prima che la serie cominci, dopo che ha smesso, e nei
+  buchi in mezzo — piu' un **trattino verticale con l'anno** sul primo giorno
+  misurato, quando c'e' abbastanza vuoto prima da giustificarlo (`startGapPx > 12`).
+  Il vuoto smette di essere assenza di disegno e diventa disegno dell'assenza.
+  Il check misura contro `voidPx`/`startGapPx`, cioe' la geometria che il disegno
+  ha davvero usato, e non contro una copia della soglia riscritta li'.
+
+- **Corsie «rade».** Il peso sono 65 pesate in due anni, e `ridgeSmooth` e' una
+  media mobile centrata con soglia bassa: le unisce in **una linea continua**. La
+  linea non e' falsa — e' una media — ma sembra una misura quotidiana. Una corsia
+  con meno di un terzo dei giorni coperti da una misura vera si marca **`· rada`**
+  nell'etichetta, e il tooltip dice quante misure e su quanti giorni. Oggi sono
+  Peso e Massa grassa.
 - **La media mobile e' CENTRATA** (`ridgeSmooth`), non trascinata come `rolling()`.
   Qui si confrontano i tempi fra corsie, e due medie trascinate con finestre diverse
   (7 giorni per l'HRV, 120 per il peso) sposterebbero i picchi di quantita' diverse:
@@ -278,15 +361,43 @@ Quattro cose vanno sapute prima di toccarla:
   **somme prefisse**, non con una finestra che scorre sommando e sottraendo:
   undicimila addizioni di fila lasciavano un residuo in virgola mobile che faceva
   scrivere "escursione −0 → 174" a una serie che vale zero esatto.
-- **Congelare e accendere.** Un click su una corsia la **congela**: resta dov'era,
-  marcata con `data-pinned` e con il fiocco nell'etichetta, e in piu' compare in una
-  striscia `position:sticky` in cima al pannello che resta visibile mentre il resto
-  scorre. Piu' serie insieme, si sganciano dalla chip o ricliccando. Gli
-  interruttori laterali (colonna a destra, riga di chip sopra il pannello sotto i
+- **Congelare = contrasto, non un riquadro.** Un click **sul grafico** congela la
+  corsia: resta dov'era, marcata con `data-pinned` e col fiocco nell'etichetta. La
+  marcatura e' tutta nel disegno — tratto a 2,8 px, opacita' piena, **un alone** (lo
+  stesso tracciato largo 7 px al 22 %) — e tutte le altre si **ritirano** di un
+  passo (1,3 px, opacita' .45, velatura .07). Nessun rettangolo compare dentro il
+  gruppo di una corsia, e il check lo verifica: l'unico `rect` ammesso li' dentro e'
+  la zona sensibile, che e' trasparente. La striscia `position:sticky` in cima
+  rimane — e' l'unico modo di confrontare una serie con una che sta ottocento pixel
+  piu' in basso — ma ha perso la scatola: niente bordo, niente intestazione su una
+  riga propria, fondo `rgba(33,29,22,.93)` con `backdrop-filter` e una sfumatura al
+  posto del filetto. Quasi opaco e non trasparente per un motivo pratico: sotto ci
+  scorrono le corsie, e una striscia appiccicata trasparente sopra un disegno in
+  movimento non e' leggera, e' illeggibile.
+
+- **La selezione laterale ISOLA.** Un click su una voce della colonna mostra **solo
+  quella**; un click su un'altra sposta l'isolamento; **la stessa una seconda volta
+  rimette tutto**. Per accenderne piu' di una: **⌘/Ctrl/⇧-click**, oppure il modo
+  **`somma`** in cima alla colonna — che e' il gemello raggiungibile da tastiera,
+  perche' un modificatore col mouse non esiste per chi naviga a tab, e mezza
+  interazione non e' interazione. `tutte` rimette tutto. **Tutto questo e' scritto
+  in pagina**, nella nota sopra il grafico: un'interazione che non si annuncia non
+  esiste, e il check pretende che le parole ci siano. Lo stato isolato vive in
+  `ISO`, separato da `OFF`, perche' «isolata» e «ho spento a mano tutto il resto»
+  sono lo stesso insieme ma **non lo stesso stato** — solo il primo torna indietro
+  al click successivo. Ripescato da `localStorage` decade se il mondo non lo
+  conferma piu', invece di lasciare una pagina con una corsia sola e nessuna
+  spiegazione. Un'unica funzione (`syncRail()`) tocca `OFF`/`ISO`, aggiorna ogni
+  bottone e salva: non esiste un cammino che cambia le serie accese e si dimentica
+  di uno dei tre.
+
+- **Gli interruttori** (colonna a destra, riga di chip sopra il pannello sotto i
   720 px) sono raggruppati per sezione e costruiti **una volta sola tenendone il
   riferimento**: un interruttore mosso col dito e uno mosso via
   `CRUSCOTTO.compact.toggle()` aggiornano lo stesso nodo, e nessuno deve ricercarlo
-  nel documento.
+  nel documento. Il check guida `railClick()`, cioe' **la funzione che il bottone
+  chiama davvero**: provare `selectSeries()` sotto verificherebbe la regola e non il
+  cablaggio.
 
 `node tools/check_vita.cjs --ridge` stampa la ridgeline a parole — una riga per
 corsia, con la quota della sua linea di base, l'escursione e quante ne stanno in una
@@ -465,6 +576,18 @@ of ~36.000 SVG attributes; nothing drawn outside its viewBox; no y label clipped
 its gutter; no two x labels overlapping; the headline totals re-derived from the
 payload independently; a data table under every tile and a legend on every
 multi-series one; the palette still in the CSS; and the 2022 hole still declared.
+
+Sulla vista compatta pretende anche, dal 2026-08-11: che un click laterale **isoli**
+e che il secondo sullo stesso rimetta tutto; che ⌘/Ctrl-click e il modo `somma`
+accendano piu' serie; che le parole «isola», «Ctrl» e «somma» siano **scritte in
+pagina**; che ogni corsia con del vuoto porti il suo tratteggio e ogni inizio
+ritardato il suo trattino; che l'occlusione stia fra .50 e .70 (rileggendola dagli
+`opacity` veri); che il congelamento si veda in **tratto e alone** e **nessun `rect`
+pieno** compaia dentro una corsia. Sui riquadri nuovi pretende che esistano, che non
+siano vuoti, che abbiano tabella e numero di testa, e che il piede **dichiari cosa
+sono** — «indice costruito», «è un modello», «non è il meteo». Sul momento
+metabolico ricontrolla giorno per giorno che **nessun punto disegnato** poggi su
+meno di quattro componenti.
 
 `--verbose` prints what each tile *says* — its headline figure and its footer, with
 window, n and correlation. That is how you read the page without opening it, and how
