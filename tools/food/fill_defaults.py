@@ -153,6 +153,56 @@ def main():
                 added.append({"date": k, "meal": slot, "food_id": fid, "qty": 1,
                               "note": "piatto del mese, ricostruito", "source": "assunto"})
 
+    # ---- merenda di tutti i giorni ----------------------------------------
+    # Dichiarata il 2026-08-11: 200 g di yogurt greco, un frutto a rotazione e
+    # una-due gallette di farro. E' l'unico pasto davvero quotidiano dopo la
+    # colazione, quindi va nella ricostruzione di ogni giorno che non ne ha gia'
+    # uno raccontato.
+    FRUTTA = ["banana", "mela", "arancia", "kiwi", "pesca", "mandarino"]
+    for d in daterange(d0, d1):
+        k = d.isoformat()
+        if "merenda" in taken[k] or "spuntino" in taken[k]:
+            continue
+        taken[k].add("merenda")
+        # rotazione deterministica sul giorno: una pagina statica non puo'
+        # cambiare la frutta a ogni rigenerazione
+        frutto = FRUTTA[d.toordinal() % len(FRUTTA)]
+        for fid, qty in (("yogurt_greco_0", 200), (frutto, 1), ("gallette_farro", 18)):
+            added.append({"date": k, "meal": "merenda", "food_id": fid, "qty": qty,
+                          "note": "merenda di tutti i giorni, dichiarata", "source": "assunto"})
+
+    # ---- il panino delle uscite lunghe -------------------------------------
+    # Dichiarato il 2026-08-11: in bici oltre l'ora, **un panino integrale da 60 g
+    # con marmellata ai frutti di bosco e un cucchiaino di burro d'arachidi per
+    # ogni ora**. Non e' una stima: e' una regola che l'utente segue, quindi si
+    # applica alle uscite vere, non a un giorno tipo.
+    ride_h = defaultdict(float)
+    if common.ACTIVITIES_CSV.exists():
+        with common.ACTIVITIES_CSV.open(encoding="utf-8", newline="") as fh:
+            for r in csv.DictReader(fh):
+                t = (r.get("type") or "")
+                if t not in ("Ride", "VirtualRide", "GravelRide", "MountainBikeRide", "EBikeRide"):
+                    continue
+                dd = (r.get("date") or "")[:10]
+                if dd:
+                    ride_h[dd] += float(r.get("moving_time_s") or 0) / 3600.0
+
+    n_panini = 0
+    for d in daterange(d0, d1):
+        k = d.isoformat()
+        h = ride_h.get(k, 0.0)
+        if h < 1.0:
+            continue
+        # un panino per ora piena; una uscita da 2h50 ne vale 3, da 1h10 ne vale 1
+        n = max(1, round(h))
+        n_panini += n
+        for fid, qty in (("pane_integrale", 60 * n),
+                         ("marmellata_fragola", 20 * n),
+                         ("burro_arachidi_sgrassato", 6 * n)):
+            added.append({"date": k, "meal": "spuntino", "food_id": fid, "qty": qty,
+                          "note": f"{n} panino/i in bici ({h:.1f} h di uscita), dichiarato",
+                          "source": "assunto"})
+
     added.sort(key=lambda r: (r["date"], r["meal"]))
 
     n_days = (d1 - d0).days + 1
@@ -163,6 +213,7 @@ def main():
     for fid, n in sorted(by_kind.items()):
         print(f"  +{n:4d}  {fid}")
     print(f"  totale {len(added)} righe assunte")
+    print(f"  panini da bici distribuiti: {n_panini}")
 
     if args.check:
         print("\n(--check: niente scritto)")
