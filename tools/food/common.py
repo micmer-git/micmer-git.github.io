@@ -75,8 +75,19 @@ def load_profile():
 def load_foods():
     """foods.csv -> {id: {...}} con i nutrienti normalizzati a 1 unita' di misura."""
     foods = {}
+    seen = set()
     with FOODS_CSV.open(encoding="utf-8", newline="") as fh:
         for row in csv.DictReader(fh):
+            # Due id uguali: il dizionario terrebbe l'ultimo e l'altro sparirebbe
+            # senza un rumore. E' successo il 2026-08-11, con due agenti che
+            # leggevano mesi diversi e hanno definito `arancia` e `broccoli`
+            # tutti e due. Qui si ferma tutto, che e' l'unico modo di accorgersene.
+            if row["id"] in seen:
+                raise SystemExit(
+                    f"foods.csv: id duplicato '{row['id']}'. Due definizioni dello "
+                    f"stesso alimento: tienine una sola, o una delle due sparisce "
+                    f"in silenzio dai conti.")
+            seen.add(row["id"])
             ref = float(row["ref_qty"])
             foods[row["id"]] = {
                 "id": row["id"],

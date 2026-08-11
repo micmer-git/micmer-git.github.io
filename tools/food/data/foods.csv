@@ -130,20 +130,18 @@ noodles_saltati,Noodles saltati con verdure (chow mein),cereali,g,100,180,5.5,26
 masala_chai,Masala chai (te' al latte zuccherato),bevande,ml,100,60,1.8,9.0,8.5,0,1.8,1.10,0.01,25,90,65,0.1,8,0.2,0,18,0.05,0.25,3,low,te' nero con latte e zucchero,te,1,0
 fave,Fave sgusciate,legumi,g,100,88,7.6,11.7,1.8,5.4,0.7,0.11,0.03,25,250,22,1.9,33,0.9,5,15,0,0,100,medium,"fresche o surgelate, sgusciate",fava,0,0
 babka_mandorle,Babka / girella lievitata cioccolato e mandorle,dolci,g,100,400,7.0,45.0,20.0,2.5,21.0,10.00,0.10,260,190,60,1.8,40,0.8,0,130,0.5,0.2,30,low,"dolce da pasticceria, stima",frumento,1,1
-arancia,Arancia media,frutta,unit,1,62,1.2,15.4,12.2,3.1,0.2,0.02,0.01,0,237,52,0.1,13,0.1,70,11,0,0,39,high,~130 g edibili,arancia,0,0
-broccoli,Broccoli,verdura,g,100,35,2.4,7.2,1.4,3.3,0.4,0.04,0.13,41,293,40,0.7,21,0.4,65,63,0,0,108,high,cotti al vapore,broccolo,0,0
+arancia,Arancia media,frutta,unit,1,62,1.2,15.4,12.2,3.1,0.2,0.02,0.01,0,237,52,0.1,13,0.1,70,11,0,0,39,high,~130 g edibili · ~140 g edibili,arancia,0,0
+broccoli,Broccoli,verdura,g,100,35,2.4,7.2,1.4,3.3,0.4,0.04,0.13,41,293,40,0.7,21,0.4,65,63,0,0,108,high,cotti al vapore · vale anche per i cavolini di Bruxelles,broccolo,0,0
 piselli_verdi,Piselli verdi lessati/surgelati,verdura,g,100,81,5.4,14.5,5.7,5.1,0.4,0.07,0.04,5,244,25,1.5,33,1.2,20,38,0,0,65,high,peso da cotti,pisello,0,0
 panettone,Panettone,dolci,g,100,370,7.0,52.0,25.0,2.0,15.0,8.5,0.05,250,220,60,1.5,20,0.8,0,150,0.6,0.3,30,low,con uvetta e canditi,frumento,1,1
 dal_cotto,Dal indiano cotto,legumi,g,100,120,6.0,15.0,1.5,5.0,3.5,0.60,0.05,300,300,30,2.2,40,1.0,2,20,0,0,90,low,zuppa di lenticchie speziata gia' cotta,lenticchia,0,0
 naan,Pane piatto indiano (naan/chapati/puri),cereali,g,100,310,8.5,50.0,3.5,2.2,8.0,2.50,0.05,480,130,80,2.5,25,0.9,0,0,0,0,60,medium,vale per naan roti chapati e puri,frumento,1,0
 dosa,Dosa / idli (riso e lenticchie fermentati),cereali,g,100,165,4.0,30.0,0.8,1.5,3.0,0.60,0.02,250,90,20,1.2,25,0.6,0,0,0,0,20,low,pastella fermentata di riso e lenticchie,riso,1,0
 mandarino,Mandarino,frutta,unit,1,42,0.6,10.4,8.4,1.4,0.2,0.03,0.01,2,133,30,0.1,9,0.06,21,27,0,0,13,high,~80 g edibili,mandarino,0,0
-arancia,Arancia,frutta,unit,1,66,1.3,16.5,13.1,3.4,0.2,0.02,0.01,0,250,56,0.1,14,0.10,74,15,0,0,42,high,~140 g edibili,arancia,0,0
 melagrana,Melagrana (chicchi),frutta,g,100,83,1.7,18.7,13.7,4.0,1.2,0.12,0.00,3,236,10,0.3,12,0.35,10.2,0,0,0,38,high,solo gli arilli,melograno,0,0
 mela,Mela,frutta,unit,1,78,0.4,20.6,15.5,3.6,0.3,0.04,0.01,2,161,9,0.2,8,0.06,7,5,0,0,5,high,~150 g,mela,0,0
 kiwi,Kiwi,frutta,g,100,61,1.1,14.7,9.0,3.0,0.5,0.03,0.04,3,312,34,0.3,17,0.14,92.7,4,0,0,25,high,,kiwi,0,0
 zucca,Zucca,verdura,g,100,26,1.0,6.5,2.8,0.5,0.1,0.05,0.01,1,340,21,0.8,12,0.32,9,426,0,0,16,high,,zucca,0,0
-broccoli,Broccoli,verdura,g,100,34,2.8,6.6,1.7,2.6,0.4,0.04,0.13,33,316,47,0.7,21,0.40,89,31,0,0,63,high,vale anche per i cavolini di Bruxelles,broccolo,0,0
 miele,Miele,dolci,g,100,304,0.3,82.4,82.1,0.2,0.0,0.00,0.00,4,52,6,0.4,2,0.22,0.5,0,0,0,2,high,,,0,0
 salame,Salame,proteine,g,100,390,25.0,1.0,0.5,0,32.0,12.0,0.30,1800,380,12,1.4,20,3.0,0,0,0.6,1.5,2,medium,,,1,1
 salmone_affumicato,Salmone affumicato,proteine,g,100,117,18.3,0,0,0,4.3,0.90,1.40,1880,175,11,0.9,18,0.30,0,26,17.1,3.3,2,high,,,0,1

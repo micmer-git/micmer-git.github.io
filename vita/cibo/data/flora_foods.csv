@@ -1,14 +1,14 @@
 food_id,name,kcal,share_pct,Faecalibacterium,Bacteroides,Prevotella,Bifidobacterium,Roseburia,Blautia,Ruminococcus,Eubacterium,Akkermansia,Lactobacillus
-avena_fiocchi,Fiocchi d'avena,132639,9.78,11.241,-2.398,11.908,4.53,8.708,5.999,7.153,6.931,10.222,0.0
+avena_fiocchi,Fiocchi d'avena,132639,9.78,11.241,-2.398,11.909,4.53,8.708,6.0,7.153,6.931,10.222,0.0
 pane_integrale,Pane integrale,105634,7.79,9.139,-1.986,9.645,9.204,7.088,4.829,5.816,5.647,8.217,9.346
 lenticchie_secche,Lenticchie secche,99313,7.32,12.082,-3.295,12.082,6.224,9.519,5.492,7.688,7.688,9.153,0.0
-banana,Banana media,70085,5.17,6.135,-1.347,6.461,2.545,4.762,3.223,3.904,3.796,5.481,0.0
+banana,Banana media,70085,5.17,6.136,-1.347,6.462,2.545,4.762,3.224,3.904,3.796,5.481,0.0
 uovo_intero,Uovo intero medio,68484,5.05,0.0,4.292,-4.039,0.0,0.0,1.01,0.0,0.0,0.0,0.0
 patate_dolci,Patate dolci,66043,4.87,6.415,-1.529,6.636,2.888,5.005,3.21,4.082,4.009,5.424,0.0
-burro_arachidi_sgrassato,Burro di arachidi sgrassato in polvere,61862,4.56,3.92,-0.557,6.775,0.697,3.622,3.184,4.236,2.828,2.153,-1.596
+burro_arachidi_sgrassato,Burro di arachidi sgrassato in polvere,61862,4.56,3.92,-0.557,6.776,0.697,3.622,3.184,4.236,2.829,2.153,-1.596
 cioccolato_fondente_50,Cioccolato fondente 50%,50059,3.69,0.743,0.543,3.385,1.271,0.944,1.914,1.882,0.633,0.749,3.137
 cornetto_crema,Cornetto/pasticcino con crema,46080,3.4,0.134,0.725,2.64,-1.634,0.418,1.612,1.382,0.207,0.464,-1.189
-pizza_base,Pizza rossa senza mozzarella (base),38570,2.84,2.145,-0.238,2.492,2.439,1.613,1.438,1.365,1.249,2.513,3.412
+pizza_base,Pizza rossa senza mozzarella (base),38570,2.84,2.145,-0.238,2.492,2.44,1.613,1.438,1.365,1.249,2.513,3.412
 avocado,Avocado,37040,2.73,4.018,-1.029,4.084,1.944,3.151,1.915,2.557,2.535,3.214,0.0
 torta_semplice,"Torta da forno (crostata, ciambella)",31404,2.32,0.096,0.492,1.804,-1.109,0.289,1.1,0.945,0.145,0.318,-0.81
 pizza_margherita,Pizza margherita intera,30600,2.26,1.591,-0.143,1.882,1.85,1.189,1.111,1.013,0.916,1.948,2.707
