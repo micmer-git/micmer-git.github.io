@@ -1,0 +1,473 @@
+date,meal,food_id,qty,note,source
+2025-01-01,pranzo,riso_bianco,150,"pentola di riso con salsiccia e funghi, pranzo di Capodanno; porzione standard assunta",foto
+2025-01-01,pranzo,salsiccia,90,,foto
+2025-01-01,pranzo,funghi,100,,foto
+2025-01-01,cena,uovo_intero,3,"piatti con uova strapazzate e patate arrosto a cubetti",foto
+2025-01-01,cena,patate,220,,foto
+2025-01-01,spuntino,panettone,100,"fetta di panettone accanto a una ciotola di crema al cacao",foto
+2025-01-02,colazione,avena_fiocchi,70,"porridge scuro con fette di banana e pezzi di cioccolato",foto
+2025-01-02,colazione,cacao_100,15,,foto
+2025-01-02,colazione,banana,1,,foto
+2025-01-02,colazione,latte_ps,250,,foto
+2025-01-02,pranzo,riso_carnaroli,110,"risotto cremoso ai funghi in pentola; porzione standard assunta",foto
+2025-01-02,pranzo,funghi,120,,foto
+2025-01-02,cena,patate_dolci,250,"patate dolci arrosto con un contorno di legumi",foto
+2025-01-02,cena,lenticchie_secche,70,,foto
+2025-01-03,pranzo,pizza_base,1,"pizza con crudo, burrata, olive e basilico",foto
+2025-01-03,pranzo,prosciutto_crudo,60,,foto
+2025-01-03,pranzo,burrata,100,,foto
+2025-01-03,pranzo,olive,30,,foto
+2025-01-03,cena,patate_dolci,250,"spicchi di patata dolce con bocconcini di pollo al curry e piselli",foto
+2025-01-03,cena,petto_pollo,150,,foto
+2025-01-03,cena,piselli_verdi,120,,foto
+2025-01-03,spuntino,fagioli_cannellini,200,"cannellini in umido con pomodoro, funghi e basilico",foto
+2025-01-03,spuntino,passata_pomodoro,120,,foto
+2025-01-04,colazione,avena_fiocchi,60,"porridge con burro d'arachidi accanto a una ciotola di macedonia",foto
+2025-01-04,colazione,burro_arachidi_sgrassato,20,,foto
+2025-01-04,colazione,frutti_di_bosco,120,,foto
+2025-01-04,pranzo,lenticchie_secche,80,"lenticchie in umido con bastoncini di carota e una fetta di pane",foto
+2025-01-04,pranzo,carote,120,,foto
+2025-01-04,pranzo,pane_integrale,80,,foto
+2025-01-04,cena,pomodorini,180,"insalata di pomodori con feta e basilico",foto
+2025-01-04,cena,feta,80,,foto
+2025-01-04,spuntino,cornetto_crema,1,"cruffin al cioccolato con cappuccino",foto
+2025-01-04,spuntino,cappuccino,1,,foto
+2025-01-04,spuntino,torta_semplice,110,"fetta di torta red velvet a una festa di compleanno",foto
+2025-01-05,pranzo,couscous,90,"couscous giallo con fagioli e spicchi di patata dolce",foto
+2025-01-05,pranzo,fagioli_cannellini,150,,foto
+2025-01-05,pranzo,patate_dolci,200,,foto
+2025-01-05,spuntino,torta_semplice,110,"fetta di torta con cappuccino in un locale con vista sulle montagne",foto
+2025-01-05,spuntino,cappuccino,1,,foto
+2025-01-06,pranzo,lenticchie_secche,80,"zuppa di lenticchie e verdure con pane a lievitazione naturale",foto
+2025-01-06,pranzo,carote,120,,foto
+2025-01-06,pranzo,cipolla,60,,foto
+2025-01-06,pranzo,pane_integrale,90,,foto
+2025-01-06,colazione,pane_integrale,80,"pane casereccio con marmellata rossa dal vasetto",foto
+2025-01-06,colazione,marmellata_fragola,30,,foto
+2025-01-08,colazione,uovo_intero,3,"uova strapazzate con una fetta di pane scuro",foto
+2025-01-08,colazione,pane_segale,80,,foto
+2025-01-08,pranzo,petto_pollo,150,"bocconcini di pollo con pomodori a pezzi",foto
+2025-01-08,pranzo,pomodorini,150,,foto
+2025-01-08,cena,farina_ceci,120,"farinata in teglia di vetro con cipolla rossa",foto
+2025-01-08,cena,cipolla,80,,foto
+2025-01-08,spuntino,avocado,70,"insalata con avocado e cipolla rossa",foto
+2025-01-09,cena,pizza_margherita,1,"pizza con pomodoro, mozzarella, cipolla rossa e prosciutto cotto",foto
+2025-01-09,cena,prosciutto_cotto,60,,foto
+2025-01-09,cena,cipolla,50,,foto
+2025-01-09,spuntino,latte_ps,250,"bicchiere di frullato al cacao",foto
+2025-01-09,spuntino,cacao_100,15,,foto
+2025-01-09,spuntino,proteine_whey,30,,foto
+2025-01-10,pranzo,patate_dolci,250,"patate dolci con pezzi di pollo",foto
+2025-01-10,pranzo,petto_pollo,150,,foto
+2025-01-10,cena,pasta_uovo,110,"tagliatelle con funghi in crema",foto
+2025-01-10,cena,funghi,120,,foto
+2025-01-10,spuntino,torta_cioccolato,110,"dolce al cioccolato con panna",foto
+2025-01-11,pranzo,pizza_base,1,"pizza tonda con prosciutto crudo, burrata e peperoncino verde",foto
+2025-01-11,pranzo,prosciutto_crudo,60,,foto
+2025-01-11,pranzo,burrata,100,,foto
+2025-01-11,colazione,cinnamon_roll,1,"girella alla cannella con cappuccino",foto
+2025-01-11,colazione,cappuccino,1,,foto
+2025-01-11,spuntino,frutti_di_bosco,150,"ciotola di macedonia",foto
+2025-01-11,spuntino,pane_segale,80,"fetta di pane scuro all'aperto",foto
+2025-01-12,pranzo,patatine_fritte,180,"patatine fritte con spezzatino di carne al ristorante",foto
+2025-01-12,pranzo,carne_macinata_manzo,160,,foto
+2025-01-12,spuntino,latte_ps,250,"frullato in un rifugio con la finestra innevata",foto
+2025-01-12,spuntino,torta_semplice,110,"fetta di dolce nel piatto bianco",foto
+2025-01-13,colazione,panettone,90,"fetta di panettone con il caffè",foto
+2025-01-13,colazione,caffe_espresso,1,,foto
+2025-01-13,pranzo,couscous,90,"couscous con pezzi di carne",foto
+2025-01-13,pranzo,carne_macinata_manzo,140,,foto
+2025-01-13,spuntino,pane_integrale,70,"pane tostato con marmellata",foto
+2025-01-13,spuntino,marmellata_fragola,25,,foto
+2025-01-14,pranzo,pizza_base,1,"fette di pizza con verdure scure e patate",foto
+2025-01-14,cena,salsiccia,110,"salsicce con patate in padella",foto
+2025-01-14,cena,patate,220,,foto
+2025-01-14,spuntino,mango,150,"contenitore con cubetti di frutta gialla",foto
+2025-01-15,pranzo,pizza_base,1,"pizza bianca con patate, cime di rapa e mozzarella",foto
+2025-01-15,pranzo,patate,150,,foto
+2025-01-15,pranzo,broccoli,150,"le cime di rapa sono registrate come broccoli, l'alimento piu' vicino in tabella",foto
+2025-01-15,pranzo,mozzarella,80,,foto
+2025-01-16,pranzo,pizza_base,1,"pizza con bresaola, rucola e grana",foto
+2025-01-16,pranzo,bresaola,60,,foto
+2025-01-16,pranzo,rucola,40,,foto
+2025-01-16,pranzo,grana_padano,25,,foto
+2025-01-16,spuntino,ricotta_vaccina,120,"ricotta con frutti di bosco e caffe'",foto
+2025-01-16,spuntino,frutti_di_bosco,100,,foto
+2025-01-16,spuntino,caffe_espresso,1,,foto
+2025-01-17,cena,carne_macinata_manzo,180,"piatto con spezzatino e funghi a una cena di gruppo",foto
+2025-01-17,cena,funghi,120,,foto
+2025-01-18,pranzo,patate_dolci,250,"patate dolci con crema verde di avocado e fagioli neri con salsa piccante",foto
+2025-01-18,pranzo,avocado,70,,foto
+2025-01-18,pranzo,fagioli_neri_scatola,200,,foto
+2025-01-18,cena,lenticchie_secche,80,"lenticchie in padella con funghi",foto
+2025-01-18,cena,funghi,120,,foto
+2025-01-18,spuntino,latte_ps,250,"bicchiere di frullato al cioccolato con una frittella",foto
+2025-01-18,spuntino,cacao_100,15,,foto
+2025-01-18,spuntino,cornetto_crema,1,,foto
+2025-01-19,pranzo,ceci_scatola,250,"ciotola con ceci, mais, cubetti di tofu e chicchi di melagrana",foto
+2025-01-19,pranzo,mais_dolce,100,,foto
+2025-01-19,pranzo,tofu,120,,foto
+2025-01-19,pranzo,melagrana,60,,foto
+2025-01-19,spuntino,succo_frutta,250,"bicchiere di succo d'arancia",foto
+2025-01-20,colazione,uovo_intero,3,"uova strapazzate con pane scuro e verdura verde",foto
+2025-01-20,colazione,pane_segale,80,,foto
+2025-01-20,colazione,broccoli,150,,foto
+2025-01-20,pranzo,lenticchie_secche,80,"lenticchie con zucca arrosto",foto
+2025-01-20,pranzo,zucca,200,,foto
+2025-01-20,cena,farina_ceci,120,"farinata con un morso tolto",foto
+2025-01-21,pranzo,patate_dolci,250,"patata dolce con lenticchie e una fetta di torta salata di ceci",foto
+2025-01-21,pranzo,lenticchie_secche,80,,foto
+2025-01-21,pranzo,farina_ceci,100,,foto
+2025-01-21,cena,zucca,200,"cereale arancione con lenticchie nel piatto",foto
+2025-01-21,cena,lenticchie_secche,70,,foto
+2025-01-22,pranzo,patate_dolci,250,"patate dolci con farro e funghi",foto
+2025-01-22,pranzo,farro_perlato,90,,foto
+2025-01-22,pranzo,funghi,120,,foto
+2025-01-22,colazione,yogurt_greco_0,170,"yogurt con mango e semi",foto
+2025-01-22,colazione,mango,150,,foto
+2025-01-23,cena,pizza_margherita,1,"pizza con mozzarella, cipolla rossa e pomodoro",foto
+2025-01-23,cena,cipolla,50,,foto
+2025-01-24,pranzo,couscous,90,"couscous con pane di segale e una crema verde",foto
+2025-01-24,pranzo,pane_segale,80,,foto
+2025-01-24,pranzo,avocado,70,,foto
+2025-01-24,cena,lenticchie_secche,80,"lenticchie con spicchi di patata dolce e striscioline di pollo",foto
+2025-01-24,cena,patate_dolci,220,,foto
+2025-01-24,cena,petto_pollo,140,,foto
+2025-01-25,pranzo,pizza_base,1,"focaccia aperta con bresaola, avocado e radicchio",foto
+2025-01-25,pranzo,bresaola,60,,foto
+2025-01-25,pranzo,avocado,70,,foto
+2025-01-25,pranzo,insalata_mista,60,"il radicchio e' registrato come insalata mista",foto
+2025-01-25,spuntino,torta_cioccolato,110,"fetta di torta al cioccolato e nocciole con cappuccino, locale in montagna",foto
+2025-01-25,spuntino,cappuccino,1,,foto
+2025-01-26,pranzo,panino_bianco,1,"hamburger con funghi e insalata al pub",foto
+2025-01-26,pranzo,carne_macinata_manzo,150,,foto
+2025-01-26,pranzo,funghi,100,,foto
+2025-01-26,pranzo,insalata_mista,80,,foto
+2025-01-26,colazione,succo_frutta,250,"spremuta di arance rosse",foto
+2025-01-26,colazione,cinnamon_roll,1,"girella alla cannella e caffe'",foto
+2025-01-26,colazione,caffe_espresso,1,,foto
+2025-01-26,cena,lenticchie_secche,80,"lenticchie con fette di arrosto di maiale",foto
+2025-01-26,cena,carne_maiale,140,,foto
+2025-01-27,pranzo,riso_carnaroli,110,"risotto con tartare di manzo cruda al ristorante",foto
+2025-01-27,pranzo,bistecca_manzo,120,"la carne e' cruda, battuta al coltello",foto
+2025-01-27,cena,ravioli_ricotta,200,"tortelli con grana croccante e guanciale",foto
+2025-01-27,cena,grana_padano,25,,foto
+2025-01-27,cena,guanciale,40,,foto
+2025-01-27,spuntino,yogurt_greco_0,180,"vasetto di yogurt proteico",foto
+2025-01-28,pranzo,patate_dolci,250,"patate dolci con lenticchie in umido e carote",foto
+2025-01-28,pranzo,lenticchie_secche,80,,foto
+2025-01-28,pranzo,carote,120,,foto
+2025-01-28,colazione,uovo_intero,3,"uova strapazzate con avocado e pane di segale",foto
+2025-01-28,colazione,avocado,70,,foto
+2025-01-28,colazione,pane_segale,80,,foto
+2025-01-28,spuntino,gelato_cono,90,"stecco gelato alla fragola e yogurt",foto
+2025-01-29,pranzo,pizza_base,1,"pizza con prosciutto crudo, rucola e mozzarella",foto
+2025-01-29,pranzo,prosciutto_crudo,60,,foto
+2025-01-29,pranzo,rucola,40,,foto
+2025-01-29,pranzo,mozzarella,80,,foto
+2025-01-29,colazione,uovo_intero,3,"uova con avocado su pane scuro",foto
+2025-01-29,colazione,avocado,70,,foto
+2025-01-29,colazione,pane_segale,80,,foto
+2025-01-29,cena,patate,250,"cubetti di patate arrosto con yogurt",foto
+2025-01-29,cena,yogurt_greco_0,120,,foto
+2025-01-30,pranzo,riso_bianco,150,"vassoio del volo Lufthansa: riso con pollo in salsa scura, insalata e pane",foto
+2025-01-30,pranzo,petto_pollo,120,,foto
+2025-01-30,pranzo,insalata_mista,60,,foto
+2025-01-30,pranzo,pane_bianco,50,,foto
+2025-01-30,colazione,uovo_intero,3,"uova strapazzate con avocado e pane di segale",foto
+2025-01-30,colazione,avocado,70,,foto
+2025-01-30,colazione,pane_segale,80,,foto
+2025-01-30,spuntino,cinnamon_roll,1,"girella alla cannella con cappuccino",foto
+2025-01-30,spuntino,cappuccino,1,,foto
+2025-01-31,cena,riso_bianco,200,"riso in pentola di coccio con manzo a fette e uovo, street food a Hong Kong; porzione standard assunta",foto
+2025-01-31,cena,bistecca_manzo,120,,foto
+2025-01-31,cena,uovo_intero,1,,foto
+2025-02-01,colazione,uovo_intero,3,"colazione in hotel a Hong Kong: uova strapazzate, panini al vapore e fagioli",foto
+2025-02-01,colazione,panino_bianco,1,,foto
+2025-02-01,colazione,fagioli_cannellini,150,,foto
+2025-02-01,colazione,caffe_espresso,1,,foto
+2025-02-01,spuntino,cornetto_crema,1,"pasticcino da forno (egg tart) con un latte",foto
+2025-02-01,spuntino,cappuccino,1,,foto
+2025-02-02,pranzo,riso_bianco,200,"riso saltato con verdure e un uovo sodo",foto
+2025-02-02,pranzo,uovo_intero,1,,foto
+2025-02-02,pranzo,broccoli,150,,foto
+2025-02-02,cena,noodles_saltati,220,"ciotola di noodles con curry e verdure",foto
+2025-02-02,spuntino,panino_bianco,1,"panini bianchi al vapore in una scatola da asporto",foto
+2025-02-03,pranzo,momo_nepalese,220,"dim sum al vapore in cestelli di bambu'; registrati come ravioli ripieni al vapore, l'alimento piu' vicino in tabella",foto
+2025-02-03,pranzo,masala_chai,200,"te' cinese servito al tavolo, registrato come te' caldo",foto
+2025-02-03,spuntino,panino_bianco,1,"panino dolce tipo pineapple bun",foto
+2025-02-04,pranzo,pizza_base,1,"pizza con prosciutto crudo e rucola",foto
+2025-02-04,pranzo,prosciutto_crudo,60,,foto
+2025-02-04,pranzo,rucola,40,,foto
+2025-02-04,colazione,uovo_intero,2,"brunch con uova, salmone e cavolo rosso",foto
+2025-02-04,colazione,salmone_affumicato,80,,foto
+2025-02-04,colazione,cavolo_rosso,100,,foto
+2025-02-05,pranzo,noodles_saltati,250,"noodles spessi con spezzatino di manzo",foto
+2025-02-05,pranzo,bistecca_manzo,120,,foto
+2025-02-05,spuntino,croissant_vuoto,1,"pasticcino da forno con un caffe'",foto
+2025-02-05,spuntino,caffe_espresso,1,,foto
+2025-02-06,pranzo,noodles_saltati,250,"noodles saltati con manzo e un involtino primavera",foto
+2025-02-06,pranzo,bistecca_manzo,100,,foto
+2025-02-06,cena,naan,120,"cena indiana a Hong Kong: curry, naan e lassi al mango",foto
+2025-02-06,cena,ceci_scatola,250,,foto
+2025-02-06,cena,curry_polvere,8,,foto
+2025-02-06,cena,mango,150,,foto
+2025-02-06,colazione,riso_bianco,180,"vassoio della colazione con riso saltato, un panino e un succo",foto
+2025-02-06,colazione,succo_frutta,200,,foto
+2025-02-07,pranzo,ceci_scatola,250,"curry di ceci con riso al ristorante indiano, con spremuta d'arancia",foto
+2025-02-07,pranzo,riso_bianco,180,,foto
+2025-02-07,pranzo,succo_frutta,250,,foto
+2025-02-07,spuntino,pane_bianco,80,"tramezzino triangolare confezionato",foto
+2025-02-08,pranzo,riso_bianco,180,"curry giallo con riso",foto
+2025-02-08,pranzo,curry_polvere,8,,foto
+2025-02-08,spuntino,mango,180,"dolce al mango con gelato",foto
+2025-02-08,spuntino,gelato_cono,90,,foto
+2025-02-08,spuntino,caffe_espresso,1,,foto
+2025-02-09,cena,pizza_base,1,"pizza con rucola, grana e olive",foto
+2025-02-09,cena,rucola,40,,foto
+2025-02-09,cena,grana_padano,25,,foto
+2025-02-09,cena,olive,30,,foto
+2025-02-10,spuntino,gallette_riso,25,"galletta di riso su stecco",foto
+2025-02-12,pranzo,pasta_uovo,110,"tagliatelle ai funghi al ristorante",foto
+2025-02-12,pranzo,funghi,120,,foto
+2025-02-13,pranzo,patate_dolci,250,"patate dolci con ceci",foto
+2025-02-13,pranzo,ceci_scatola,250,,foto
+2025-02-13,spuntino,mango,150,"cubetti di mango",foto
+2025-02-14,pranzo,couscous,90,"couscous con fagioli neri e patata dolce arrosto",foto
+2025-02-14,pranzo,fagioli_neri_scatola,200,,foto
+2025-02-14,pranzo,patate_dolci,220,,foto
+2025-02-15,pranzo,lenticchie_secche,80,"lenticchie e ceci in crema con pane di segale",foto
+2025-02-15,pranzo,ceci_scatola,200,,foto
+2025-02-15,pranzo,pane_segale,80,,foto
+2025-02-15,cena,polenta_cotta,250,"pentola di polenta gialla",foto
+2025-02-16,pranzo,pizza_base,1,"pizza con pomodoro, rucola e formaggio grattugiato",foto
+2025-02-16,pranzo,rucola,40,,foto
+2025-02-16,pranzo,grana_padano,25,,foto
+2025-02-16,spuntino,pane_integrale,80,"bruschetta con una crema densa e pomodoro",foto
+2025-02-16,spuntino,ricotta_vaccina,100,,foto
+2025-02-16,colazione,cornetto_crema,1,"pasticcino alla crema (tipo pastel de nata) con cappuccino",foto
+2025-02-16,colazione,cappuccino,1,,foto
+2025-02-17,pranzo,panino_bianco,1,"hamburger a un beach bar",foto
+2025-02-17,pranzo,carne_macinata_manzo,150,,foto
+2025-02-17,cena,farro_perlato,90,"farro con lenticchie e pane di segale",foto
+2025-02-17,cena,lenticchie_secche,70,,foto
+2025-02-17,cena,pane_segale,80,,foto
+2025-02-18,colazione,uovo_intero,3,"uova strapazzate con avocado su pane di segale",foto
+2025-02-18,colazione,avocado,70,,foto
+2025-02-18,colazione,pane_segale,80,,foto
+2025-02-18,cena,farina_ceci,120,"farinata in teglia di vetro",foto
+2025-02-18,spuntino,pane_segale,70,"pane scuro con marmellata e una cioccolata calda",foto
+2025-02-18,spuntino,marmellata_fragola,25,,foto
+2025-02-18,spuntino,cacao_100,15,,foto
+2025-02-18,spuntino,latte_ps,200,,foto
+2025-02-20,cena,farina_ceci,120,"fette di farinata con pezzi scuri",foto
+2025-02-21,cena,lenticchie_secche,80,"zuppa di lenticchie e carote in pentola",foto
+2025-02-21,cena,carote,120,,foto
+2025-02-24,pranzo,farro_perlato,90,"farro con lenticchie e pane di segale, accanto una ciotola di yogurt",foto
+2025-02-24,pranzo,lenticchie_secche,70,,foto
+2025-02-24,pranzo,pane_segale,80,,foto
+2025-02-24,pranzo,yogurt_greco_0,150,,foto
+2025-03-01,spuntino,torta_semplice,100,"dolce da forno in piazza",foto
+2025-03-02,pranzo,couscous,90,"purea di couscous e verdure nel piatto",foto
+2025-03-03,pranzo,focaccia,150,"focaccia con pomodoro e cipolla",foto
+2025-03-03,pranzo,cipolla,50,,foto
+2025-03-03,cena,focaccia,120,"focaccia fatta in casa con fette di salame",foto
+2025-03-03,cena,salame,50,,foto
+2025-03-03,colazione,pane_segale,80,"pane scuro con avocado e ricotta",foto
+2025-03-03,colazione,avocado,70,,foto
+2025-03-03,colazione,ricotta_vaccina,100,,foto
+2025-03-04,pranzo,polenta_cotta,250,"polenta con chili di fagioli e mais",foto
+2025-03-04,pranzo,fagioli_neri_scatola,200,,foto
+2025-03-04,pranzo,mais_dolce,100,,foto
+2025-03-04,cena,ceci_scatola,250,"ceci con pomodoro e verdure",foto
+2025-03-04,cena,passata_pomodoro,120,,foto
+2025-03-05,pranzo,pizza_base,1,"pizza con bresaola, rucola e grana",foto
+2025-03-05,pranzo,bresaola,60,,foto
+2025-03-05,pranzo,rucola,40,,foto
+2025-03-05,pranzo,grana_padano,25,,foto
+2025-03-05,colazione,uovo_intero,3,"uova strapazzate su pane scuro",foto
+2025-03-05,colazione,pane_segale,80,,foto
+2025-03-06,pranzo,patate_dolci,250,"fette di patata dolce con chili di mais, fagioli rossi e macinato",foto
+2025-03-06,pranzo,carne_macinata_manzo,140,,foto
+2025-03-06,pranzo,mais_dolce,100,,foto
+2025-03-06,pranzo,fagioli_neri_scatola,150,,foto
+2025-03-06,cena,lenticchie_secche,80,"lenticchie in umido con pane a lievitazione naturale",foto
+2025-03-06,cena,pane_integrale,90,,foto
+2025-03-06,colazione,avena_fiocchi,70,"porridge al cioccolato con banana",foto
+2025-03-06,colazione,cacao_100,15,,foto
+2025-03-06,colazione,banana,1,,foto
+2025-03-06,colazione,latte_ps,250,,foto
+2025-03-06,spuntino,caffe_espresso,1,"caffe' al bar",foto
+2025-03-07,pranzo,pizza_base,1,"pizza bianca con patate, mozzarella e prosciutto cotto",foto
+2025-03-07,pranzo,patate,150,,foto
+2025-03-07,pranzo,mozzarella,80,,foto
+2025-03-07,pranzo,prosciutto_cotto,60,,foto
+2025-03-07,cena,lenticchie_secche,80,"lenticchie con mais e verdure",foto
+2025-03-07,cena,mais_dolce,100,,foto
+2025-03-07,colazione,pane_integrale,80,"pane con marmellata",foto
+2025-03-07,colazione,marmellata_fragola,25,,foto
+2025-03-08,pranzo,pasta_uovo,110,"tagliatelle con salsa verde, fagiolini e patate, pranzo in famiglia",foto
+2025-03-08,pranzo,fagiolini,120,,foto
+2025-03-08,pranzo,patate,150,,foto
+2025-03-08,cena,patate_dolci,220,"patate dolci con chili di fagioli e sfoglie di polenta",foto
+2025-03-08,cena,fagioli_neri_scatola,180,,foto
+2025-03-08,cena,polenta_cotta,150,,foto
+2025-03-08,spuntino,cappuccino,1,"cappuccino al bar",foto
+2025-03-09,pranzo,couscous,90,"couscous con pane scuro e una crema verde",foto
+2025-03-09,pranzo,pane_segale,80,,foto
+2025-03-09,pranzo,avocado,70,,foto
+2025-03-09,cena,ceci_scatola,250,"ceci con pomodoro e uno spicchio di farinata",foto
+2025-03-09,cena,passata_pomodoro,120,,foto
+2025-03-09,cena,farina_ceci,80,,foto
+2025-03-09,colazione,pane_segale,80,"pane scuro con fette di arancia rossa e una cioccolata",foto
+2025-03-09,colazione,arancia,1,,foto
+2025-03-09,colazione,cacao_100,15,,foto
+2025-03-09,spuntino,crostata_frutta,110,"crostatina alle fragole con cappuccino",foto
+2025-03-09,spuntino,cappuccino,1,,foto
+2025-03-10,pranzo,panino_farcito,1,"panino con verdure grigliate e formaggio",foto
+2025-03-10,cena,farro_perlato,90,"farro con lenticchie e funghi",foto
+2025-03-10,cena,lenticchie_secche,70,,foto
+2025-03-10,cena,funghi,120,,foto
+2025-03-10,colazione,caffe_espresso,1,"caffe' con pane scuro",foto
+2025-03-10,colazione,pane_segale,80,,foto
+2025-03-11,cena,panino_bianco,1,"hamburger doppio con formaggio e insalata di cavolo",foto
+2025-03-11,cena,carne_macinata_manzo,200,,foto
+2025-03-11,cena,cavolo_rosso,80,,foto
+2025-03-11,pranzo,bistecca_manzo,120,"tartare di manzo cruda con rucola",foto
+2025-03-11,pranzo,rucola,40,,foto
+2025-03-11,pranzo,patate_dolci,200,"patate dolci a bastoncini",foto
+2025-03-12,pranzo,lenticchie_secche,80,"zuppa di lenticchie e verdure",foto
+2025-03-12,pranzo,carote,120,,foto
+2025-03-12,pranzo,zucchine,120,,foto
+2025-03-13,pranzo,patate,250,"patate lesse con macinato e lenticchie",foto
+2025-03-13,pranzo,carne_macinata_manzo,140,,foto
+2025-03-13,pranzo,lenticchie_secche,60,,foto
+2025-03-13,cena,zucca,200,"verdure arrosto: patate, carote e zucca",foto
+2025-03-13,cena,carote,120,,foto
+2025-03-13,spuntino,yogurt_greco_0,170,"yogurt con miele e noci",foto
+2025-03-13,spuntino,miele,15,,foto
+2025-03-13,spuntino,noci,20,,foto
+2025-03-14,pranzo,pizza_base,1,"pizza con patate, prosciutto cotto, funghi e uovo",foto
+2025-03-14,pranzo,patate,150,,foto
+2025-03-14,pranzo,prosciutto_cotto,50,,foto
+2025-03-14,pranzo,funghi,80,,foto
+2025-03-14,pranzo,uovo_intero,1,,foto
+2025-03-14,cena,farro_perlato,90,"farro con fagiolini e pane di segale",foto
+2025-03-14,cena,fagiolini,120,,foto
+2025-03-14,cena,pane_segale,80,,foto
+2025-03-14,spuntino,mandarino,2,"spicchi di agrume",foto
+2025-03-14,spuntino,panino_bianco,1,"panino durante un giro in bici",foto
+2025-03-15,colazione,uovo_intero,3,"uova strapazzate con zucca su pane scuro",foto
+2025-03-15,colazione,zucca,150,,foto
+2025-03-15,colazione,pane_segale,80,,foto
+2025-03-15,pranzo,piadina,120,"piadina",foto
+2025-03-15,cena,panino_farcito,1,"brioche salata ripiena di carne in umido",foto
+2025-03-15,spuntino,cappuccino,1,"cappuccino al bar",foto
+2025-03-16,spuntino,torta_semplice,110,"fetta di torta",foto
+2025-03-16,pranzo,panino_farcito,1,"panino avvolto nella stagnola",foto
+2025-03-16,spuntino,caffe_espresso,1,"caffe' freddo",foto
+2025-03-16,spuntino,banana,1,"banana durante un giro in bici",foto
+2025-03-16,cena,farro_perlato,90,"farro con lenticchie",foto
+2025-03-16,cena,lenticchie_secche,70,,foto
+2025-03-17,pranzo,bistecca_manzo,180,"bistecca alla griglia con patate e carote arrosto e limone",foto
+2025-03-17,pranzo,patate,220,,foto
+2025-03-17,pranzo,carote,120,,foto
+2025-03-17,cena,lenticchie_secche,80,"ciotola di lenticchie",foto
+2025-03-18,pranzo,ceci_scatola,250,"ceci con mais e pomodoro",foto
+2025-03-18,pranzo,mais_dolce,100,,foto
+2025-03-18,pranzo,passata_pomodoro,100,,foto
+2025-03-18,cena,pomodorini,180,"pomodori con mozzarella e insalata",foto
+2025-03-18,cena,mozzarella,100,,foto
+2025-03-18,colazione,pane_segale,80,"pane scuro con pomodori e feta",foto
+2025-03-18,colazione,feta,60,,foto
+2025-03-19,spuntino,torta_semplice,110,"torta a una festa del gruppo di corsa",foto
+2025-03-19,colazione,croissant_vuoto,1,"buffet con cornetti, panini e banane",foto
+2025-03-19,colazione,banana,1,,foto
+2025-03-19,cena,lenticchie_secche,80,"lenticchie in umido su pane",foto
+2025-03-19,cena,pane_integrale,80,,foto
+2025-03-20,pranzo,pizza_base,1,"pizza con prosciutto crudo e rucola",foto
+2025-03-20,pranzo,prosciutto_crudo,60,,foto
+2025-03-20,pranzo,rucola,40,,foto
+2025-03-20,cena,lenticchie_secche,80,"lenticchie con cavolo rosso e pane di segale",foto
+2025-03-20,cena,cavolo_rosso,120,,foto
+2025-03-20,cena,pane_segale,80,,foto
+2025-03-21,cena,pizza_base,1,"pizzeria con gli amici, ognuno la sua pizza",foto
+2025-03-21,pranzo,lenticchie_secche,80,"lenticchie in umido",foto
+2025-03-22,pranzo,lenticchie_secche,80,"lenticchie con una piadina di mais",foto
+2025-03-22,pranzo,piadina,100,,foto
+2025-03-22,colazione,croissant_vuoto,1,"brioche con cappuccino",foto
+2025-03-22,colazione,cappuccino,1,,foto
+2025-03-23,pranzo,farro_perlato,90,"farro con cavolo nero e carote e pane di segale",foto
+2025-03-23,pranzo,cavolo_nero,150,,foto
+2025-03-23,pranzo,carote,120,,foto
+2025-03-23,pranzo,pane_segale,80,,foto
+2025-03-23,cena,ceci_scatola,250,"ciotola con ceci, rucola, cubetti di tofu e guacamole",foto
+2025-03-23,cena,rucola,40,,foto
+2025-03-23,cena,tofu,120,,foto
+2025-03-23,cena,avocado,70,,foto
+2025-03-23,colazione,pane_integrale,80,"pane con marmellata",foto
+2025-03-23,colazione,marmellata_fragola,25,,foto
+2025-03-23,spuntino,caffe_espresso,1,"caffe' freddo",foto
+2025-03-24,pranzo,riso_carnaroli,110,"risotto con salume rosa e formaggio",foto
+2025-03-24,pranzo,bresaola,50,,foto
+2025-03-24,pranzo,grana_padano,25,,foto
+2025-03-24,cena,zucca,220,"stufato di zucca e lenticchie",foto
+2025-03-24,cena,lenticchie_secche,80,,foto
+2025-03-25,pranzo,focaccia,150,"focaccia con funghi, olive e verdure",foto
+2025-03-25,pranzo,funghi,100,,foto
+2025-03-25,pranzo,olive,30,,foto
+2025-03-25,cena,pasta_semola,110,"pasta al pomodoro con pangrattato",foto
+2025-03-25,cena,passata_pomodoro,150,,foto
+2025-03-25,spuntino,fagioli_cannellini,200,"ciotola con fagioli, pomodoro, crostini e verdura",foto
+2025-03-25,spuntino,pane_integrale,50,,foto
+2025-03-25,colazione,pane_integrale,80,"pane con marmellata e caffe' freddo",foto
+2025-03-25,colazione,marmellata_fragola,25,,foto
+2025-03-25,colazione,caffe_espresso,1,,foto
+2025-03-26,colazione,pane_segale,80,"pane scuro con pomodori e ricotta",foto
+2025-03-26,colazione,pomodorini,120,,foto
+2025-03-26,colazione,ricotta_vaccina,100,,foto
+2025-03-26,cena,polpette_legumi,180,"polpette al forno con un frullato all'arancia",foto
+2025-03-26,cena,succo_frutta,250,,foto
+2025-03-26,spuntino,cacao_100,15,"pane con marmellata e cioccolata calda",foto
+2025-03-26,spuntino,latte_ps,200,,foto
+2025-03-27,pranzo,pizza_base,1,"pizza con prosciutto cotto, rucola e uovo",foto
+2025-03-27,pranzo,prosciutto_cotto,60,,foto
+2025-03-27,pranzo,rucola,40,,foto
+2025-03-27,pranzo,uovo_intero,1,,foto
+2025-03-27,spuntino,ricotta_vaccina,150,"ciotola grande di crema al cacao e ricotta",foto
+2025-03-27,spuntino,cacao_100,20,,foto
+2025-03-27,colazione,pane_integrale,80,"pane con marmellata e caffe'",foto
+2025-03-27,colazione,marmellata_fragola,25,,foto
+2025-03-27,colazione,caffe_espresso,1,,foto
+2025-03-28,cena,cavolfiore,250,"cimette di cavolfiore arrosto",foto
+2025-03-28,pranzo,farina_ceci,120,"fette di torta salata verde agli spinaci",foto
+2025-03-28,pranzo,spinaci,180,,foto
+2025-03-28,colazione,uovo_intero,3,"uova strapazzate con una salsa rossa e pane scuro",foto
+2025-03-28,colazione,pane_segale,80,,foto
+2025-03-28,spuntino,ricotta_vaccina,150,"ciotola di crema al cacao",foto
+2025-03-28,spuntino,cacao_100,20,,foto
+2025-03-29,pranzo,pizza_base,1,"pizza bianca con formaggio e prosciutto crudo",foto
+2025-03-29,pranzo,prosciutto_crudo,60,,foto
+2025-03-29,pranzo,mozzarella,80,,foto
+2025-03-29,cena,couscous,90,"couscous con verdure, spinaci e spicchi di patata dolce",foto
+2025-03-29,cena,spinaci,180,,foto
+2025-03-29,cena,patate_dolci,220,,foto
+2025-03-29,colazione,cappuccino,1,"cappuccino con una brioche zuccherata",foto
+2025-03-29,colazione,croissant_vuoto,1,,foto
+2025-03-30,pranzo,couscous,90,"couscous con fagioli neri e spinaci in salsa verde",foto
+2025-03-30,pranzo,fagioli_neri_scatola,200,,foto
+2025-03-30,pranzo,spinaci,180,,foto
+2025-03-30,cena,couscous,90,"couscous con zucca e grana",foto
+2025-03-30,cena,zucca,200,,foto
+2025-03-30,cena,grana_padano,25,,foto
+2025-03-30,colazione,cacao_100,15,"cioccolata calda con una brioche",foto
+2025-03-30,colazione,latte_ps,200,,foto
+2025-03-30,colazione,croissant_vuoto,1,,foto
+2025-03-30,spuntino,lenticchie_secche,60,"zuppa di lenticchie con cracker di segale",foto
+2025-03-30,spuntino,pane_segale,40,,foto
+2025-03-31,pranzo,couscous,90,"couscous con fagioli neri e cipolla, con patate dolci a bastoncini",foto
+2025-03-31,pranzo,fagioli_neri_scatola,200,,foto
+2025-03-31,pranzo,patate_dolci,200,,foto
+2025-03-31,spuntino,biscotto,2,"cialda caramellata comprata per strada (stroopwafel), registrata come biscotti",foto
+2025-03-31,cena,lenticchie_secche,80,"zuppa di lenticchie e verdure con cracker di segale",foto
+2025-03-31,cena,pane_segale,40,,foto
