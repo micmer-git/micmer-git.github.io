@@ -15,6 +15,12 @@
  *   3. i totali in testata rifatti a mano dal payload coincidono con quelli scritti;
  *   4. ogni riquadro ha la sua tabella di ripiego, e ogni riquadro con piu' di una
  *      serie ha la legenda (l'identita' non puo' stare nel solo colore);
+ *   4b. la vista compatta (ridgeline): l'interruttore esiste e ricorda la scelta,
+ *      ogni corsia disegnata ha il proprio nome scritto SULLA linea (li' l'identita'
+ *      non ha nessun altro posto dove stare), niente esce dal viewBox — nemmeno i
+ *      tracciati, che e' il punto: le corsie sono tagliate ai bordi apposta —,
+ *      congelare una serie la marca e la lascia nella ridgeline principale, e gli
+ *      interruttori laterali cambiano davvero cosa viene disegnato;
  *   5. la tavolozza nel CSS e' ancora quella validata contro il fondo della scheda;
  *   6. il buco 2021-2023 e' dichiarato fra i gaps: le zone "nessun dato" dipendono
  *      da quello, e senza si tornerebbe a disegnare una linea attraverso il vuoto.
@@ -55,6 +61,12 @@ const ok = (cond, msg) => { (cond ? notes : fails).push((cond ? "ok   " : "FAIL 
 }
 
 /* ----------------------------------------------------------------- DOM shim */
+/* La larghezza che il finto DOM dichiara. E' una variabile e non una costante
+   perche' mezza impaginazione dipende da quanto spazio c'e': la ridgeline scrive
+   l'escursione di ogni corsia a destra del nome solo se ci sta, e una regola del
+   genere si verifica soltanto misurandola a piu' larghezze. 360 e' la colonna di un
+   telefono, 1040 il pannello su un portatile. */
+let SHIM_W = 360;
 const ALL = [];
 class Node {
   constructor(tag, ns) {
@@ -92,8 +104,8 @@ class Node {
     return col;
   }
   addEventListener() {}
-  getBoundingClientRect() { return { width: 360, height: 180, top: 0, left: 0, right: 360, bottom: 180 }; }
-  get clientWidth() { return 360; }
+  getBoundingClientRect() { return { width: SHIM_W, height: 180, top: 0, left: 0, right: SHIM_W, bottom: 180 }; }
+  get clientWidth() { return SHIM_W; }
   /* the only descendant walk the page does is over ranges' direct children */
   descendants() { return this._kids.flatMap(c => [c, ...c.descendants()]); }
 }
@@ -106,12 +118,23 @@ const document = {
   body: new Node("body"),
   addEventListener() {},
 };
-for (const id of ["tip", "totals", "ranges", "range-note",
+for (const id of ["tip", "totals", "ranges", "viewsw", "range-note", "compact",
   "panel-carico", "panel-notte", "panel-recupero", "panel-corpo",
   "panel-volume", "panel-incroci", "panel-tavola", "tracks", "sheet", "sheet-in"]) document.getElementById(id);
 
+/* localStorage finto: la pagina ci salva la forma della vista e quali serie sono
+   accese, ed e' l'unico stato che sopravvive alla visita — quindi va verificato che
+   ci finisca davvero, non solo che la pagina non esploda senza. Parte vuoto, cosi'
+   i default che il check misura sono quelli di una prima visita. */
+const LS = {};
+const localStorage = {
+  getItem: k => (k in LS ? LS[k] : null),
+  setItem: (k, v) => { LS[k] = String(v); },
+  removeItem: k => { delete LS[k]; },
+};
+
 const sandbox = {
-  document, console,
+  document, console, localStorage,
   window: {}, innerWidth: 1200, innerHeight: 900,
   setTimeout: () => 0, clearTimeout() {}, addEventListener() {},
   Math, Date, JSON, Number, String, Array, Object, Map, Set, isFinite, parseFloat, parseInt,
@@ -261,6 +284,169 @@ if (ran) {
   ok(noLegend.length === 0, `ogni riquadro multi-serie ha la legenda (${multi.length} riquadri)` +
     (noLegend.length ? ` — mancano: ${noLegend.join(", ")}` : ""));
 
+  /* --------------------------------------- 4b. la vista compatta (ridgeline)
+     La vista estesa si controlla riquadro per riquadro; questa ha un solo disegno e
+     venti corsie dentro, quindi i controlli sono diversi: che l'identita' ci sia
+     (il nome sulla linea, perche' qui non c'e' ne' legenda ne' colonna laterale),
+     che niente sfori il viewBox — TRACCIATI COMPRESI, perche' la normalizzazione per
+     corsia funziona tagliando ai bordi e se il taglio salta la corsia invade quella
+     sopra —, e che i tre comandi (vista, congelamento, interruttori) cambino davvero
+     il DOM invece di limitarsi a cambiare una variabile. */
+  const C = K.compact;
+  ok(!!C, "window.CRUSCOTTO.compact esposto");
+  if (C) {
+    ok(/id="viewsw"/.test(html), "l'interruttore di vista e' in pagina (#viewsw)");
+    const sw = document.getElementById("viewsw");
+    ok(sw._kids.length === 2, `l'interruttore ha due posizioni (${sw._kids.length})`);
+    ok(C.view() === "estesa", "senza preferenza salvata si parte dalla vista estesa");
+    ok(C.series.length >= 15, `${C.series.length} serie dichiarate per la ridgeline`);
+
+    C.setView("compatta");
+    ok(C.view() === "compatta" && document.body.dataset.view === "compatta",
+      "setView(compatta) commuta la vista e marca il body (e' cio' che il CSS legge)");
+    ok(LS["vita:view"] === "compatta", "la scelta della vista finisce in localStorage");
+    ok(sw._kids.filter(b => b.attrs["aria-pressed"] === "true").length === 1,
+      "una sola posizione dell'interruttore risulta premuta");
+    ok(/propria/.test(C.note.innerHTML) && /percentile/.test(C.note.innerHTML),
+      "la pagina dichiara che ogni corsia e' riscalata sulla propria storia");
+
+    /* geometria della ridgeline, su tutte e quattro le finestre */
+    const scan = tag => {
+      const svgs = [C.svg(), C.pinSvg()].filter(Boolean);
+      const out = [], nan = [], coll = [];
+      for (const svg of svgs) {
+        const [, , W, H] = svg.attrs.viewBox.split(/\s+/).map(Number);
+        const kids = svg.descendants();
+        for (const c of kids) {
+          for (const [k, v] of Object.entries(c.attrs)) {
+            if (/NaN|Infinity|undefined/.test(v)) nan.push(`<${c.tagName} ${k}="${v.slice(0, 50)}">`);
+          }
+          const num = k => c.attrs[k] === undefined ? null : parseFloat(c.attrs[k]);
+          const pts = [];
+          if (c.tagName === "circle") pts.push([num("cx"), num("cy")]);
+          if (c.tagName === "rect") pts.push([num("x"), num("y")],
+            [num("x") + num("width"), num("y") + num("height")]);
+          if (c.tagName === "line") pts.push([num("x1"), num("y1")], [num("x2"), num("y2")]);
+          if (c.tagName === "path") {
+            /* i tracciati usano solo M/L/Z, quindi ogni numero e' una coordinata */
+            const n = (c.attrs.d.match(/-?\d+(?:\.\d+)?/g) || []).map(Number);
+            for (let i = 0; i + 1 < n.length; i += 2) pts.push([n[i], n[i + 1]]);
+          }
+          for (const [x, y] of pts) {
+            if (x < -0.6 || x > W + 0.6 || y < -0.6 || y > H + 0.6) {
+              out.push(`[${tag}] <${c.tagName}> a ${x.toFixed(1)},${y.toFixed(1)} fuori da ${W}×${H}`);
+              break;
+            }
+          }
+        }
+        /* etichette sulla stessa riga: il nome a sinistra e l'escursione a destra
+           non si devono toccare, o la corsia perde l'uno o l'altra */
+        const byRow = {};
+        for (const c of kids.filter(c => c.tagName === "text")) {
+          const w = (c.textContent || "").length * GLYPH, x = parseFloat(c.attrs.x);
+          const a = c.attrs["text-anchor"];
+          const l = a === "end" ? x - w : a === "middle" ? x - w / 2 : x;
+          (byRow[c.attrs.y] = byRow[c.attrs.y] || []).push({ l, r: l + w, s: c.textContent });
+        }
+        for (const y of Object.keys(byRow)) {
+          const row = byRow[y].sort((a, b) => a.l - b.l);
+          for (let i = 1; i < row.length; i++) {
+            if (row[i].l < row[i - 1].r + 1) coll.push(`[${tag}] "${row[i - 1].s}" e "${row[i].s}"`);
+          }
+        }
+      }
+      return { out, nan, coll };
+    };
+
+    const gOut = [], gNan = [], gColl = [], counts = [], heights = [];
+    for (const w of [360, 1040]) {
+      SHIM_W = w;
+      /* una corsia congelata per volta: la striscia appiccicata e' un secondo SVG
+         con la sua geometria, e non verrebbe mai misurata se non ce ne fosse una */
+      C.pin(C.series[0].key);
+      for (const r of ["2a", "1a", "3m", "sempre"]) {
+        try { K.setRange(r); } catch (e) { fails.push(`FAIL compatta setRange(${r}): ${e && e.stack || e}`); }
+        const s = scan(`${w}px/${r}`);
+        gOut.push(...s.out); gNan.push(...s.nan); gColl.push(...s.coll);
+        if (w === 1040 && r === "sempre") {
+          counts.push(`${C.lanes().length} corsie`);
+          heights.push(`alto ${C.svg().attrs.viewBox.split(/\s+/)[3]} px`);
+        }
+        const noLab = C.lanes().filter(L => !L.label ||
+          String(L.label.textContent).replace("❄ ", "") !== L.name);
+        if (noLab.length) fails.push(`FAIL [${w}px/${r}] ${noLab.length} corsie senza il proprio nome sulla linea`);
+      }
+      C.unpin(C.series[0].key);
+    }
+    SHIM_W = 360;
+    ok(gNan.length === 0, "compatta: nessuna coordinata NaN/Infinity" +
+      (gNan.length ? ` — ${gNan.length}, es. ${gNan[0]}` : ""));
+    ok(gOut.length === 0, "compatta: nessun segno fuori dal viewBox, tracciati compresi" +
+      (gOut.length ? ` — ${gOut.length}, es. ${gOut[0]}` : ""));
+    ok(gColl.length === 0, "compatta: nessuna etichetta sovrapposta sulla stessa riga" +
+      (gColl.length ? ` — ${gColl.length}, es. ${gColl[0]}` : ""));
+    notes.push(`info  compatta su 1040 px, finestra "sempre": ${counts.join(", ")}, ${heights.join(", ")}`);
+
+    K.setRange("sempre");
+    const lanes0 = C.lanes();
+    ok(lanes0.length >= 7, `compatta: almeno sette corsie in colonna (${lanes0.length})`);
+    ok(lanes0.every(L => L.label && String(L.label.textContent).replace("❄ ", "") === L.name),
+      "compatta: ogni corsia mostrata ha il proprio nome scritto sulla linea");
+
+    /* ---- congelamento: marca la serie e la lascia dov'era ---- */
+    const k1 = lanes0[0].key, k2 = lanes0[1].key;
+    C.pin(k1);
+    ok(C.pinned().includes(k1), `pin(${k1}) congela la serie`);
+    const still = C.lanes().find(L => L.key === k1);
+    ok(!!still, "la corsia congelata resta nella ridgeline principale (non viene spostata via)");
+    ok(still && still.g.dataset.pinned === "1", "la corsia congelata e' marcata nel DOM (data-pinned)");
+    ok(C.pinLanes().some(L => L.key === k1), "e compare nella striscia appiccicata in cima");
+    C.pin(k2);
+    ok(C.pinLanes().length === 2, `piu' serie congelabili insieme (${C.pinLanes().length})`);
+    ok(C.pinLanes().every(L => L.label &&
+      String(L.label.textContent).replace("❄ ", "") === L.name),
+      "anche nella striscia il nome sta sulla linea");
+    ok(LS["vita:pin"] && LS["vita:pin"].split(",").length === 2,
+      "le congelate finiscono in localStorage");
+    C.unpin(k1); C.unpin(k2);
+    ok(C.pinned().length === 0 && C.pinLanes().length === 0,
+      "sganciandole spariscono dalla striscia e la striscia si chiude");
+
+    /* ---- interruttori laterali: cambiano davvero il disegno ---- */
+    const railBtns = C.rail.descendants().filter(n => n.tagName === "button");
+    ok(railBtns.length === C.series.length,
+      `un interruttore per serie (${railBtns.length}/${C.series.length})`);
+    const heads = C.rail.descendants().filter(n => n.className === "cx-grp-h")
+      .map(n => n.textContent);
+    const secs = [...new Set(C.series.map(s => s.sec))];
+    ok(secs.every(s => heads.includes(s)),
+      `gli interruttori sono raggruppati per sezione (${heads.join(", ")})`);
+
+    const before = C.lanes().length, kOff = lanes0[0].key, nOff = lanes0[0].name;
+    C.toggle(kOff);
+    const after = C.lanes();
+    ok(after.length === before - 1,
+      `spegnere un interruttore toglie una corsia dal disegno (${before} → ${after.length})`);
+    ok(!after.some(L => L.key === kOff), `"${nOff}" non e' piu' fra le corsie disegnate`);
+    ok(!C.svg().descendants().some(c => c.tagName === "text" &&
+      String(c.textContent).replace("❄ ", "") === nOff),
+      `e la sua etichetta e' sparita dall'SVG`);
+    ok(LS["vita:off"] === kOff, "la serie spenta finisce in localStorage");
+    C.toggle(kOff);
+    ok(C.lanes().length === before, "riaccendendolo la corsia torna");
+
+    /* ---- e la vista estesa e' rimasta quella di prima ---- */
+    C.setView("estesa");
+    ok(C.view() === "estesa" && document.body.dataset.view === "estesa",
+      "si torna alla vista estesa");
+    const backErr = K.MOUNTED.filter(([n]) => n.art.dataset.err).map(([, t]) => t.title);
+    const backEmpty = K.MOUNTED.filter(([n]) => n.art.dataset.empty).map(([, t]) => t.title);
+    ok(backErr.length === 0, "tornando all'estesa nessun riquadro solleva" +
+      (backErr.length ? ` — ${backErr.join(", ")}` : ""));
+    ok(backEmpty.length === 0, "tornando all'estesa nessun riquadro resta vuoto" +
+      (backEmpty.length ? ` — ${backEmpty.join(", ")}` : ""));
+  }
+
   /* ------------------------------- 5b. il popup della giornata si apre davvero
      E' l'unica parte della pagina che non si vede finche' non ci si clicca sopra,
      quindi e' anche l'unica che puo' rompersi senza che nessuno se ne accorga. */
@@ -378,6 +564,33 @@ if (ran && process.argv.includes("--verbose")) {
     console.log(`\n  ${t.title}${now ? "  [" + now + "]" : ""}`);
     console.log(`    ${strip(n.foot.innerHTML)}`);
   }
+}
+
+/* --ridge: la vista compatta letta a parole — una riga per corsia, con la quota a
+   cui sta la sua linea di base, l'escursione che si e' data e quanto sconfina in
+   quella sopra. E' l'unico modo, da qui, di rispondere a "quante ne vedo insieme". */
+if (ran && process.argv.includes("--ridge")) {
+  const C = sandbox.CRUSCOTTO.compact;
+  SHIM_W = 1040;
+  C.setView("compatta"); sandbox.CRUSCOTTO.setRange("sempre");
+  const svg = C.svg(), H = Number(svg.attrs.viewBox.split(/\s+/)[3]);
+  const L = C.lanes();
+  console.log(`\n--- ridgeline, 1040 px, finestra "sempre": ${L.length} corsie, alta ${H} px ---`);
+  let prev = null;
+  for (const l of L) {
+    const rng = l.g._kids.filter(c => c.tagName === "text" && c.attrs["text-anchor"] === "end")
+      .map(c => c.textContent)[0] || "—";
+    const seg = l.g._kids.filter(c => c.tagName === "path" && c.attrs.fill === "none").length;
+    console.log(`  y ${String(Math.round(l.base)).padStart(5)}  ${l.name.padEnd(20)} ` +
+      `escursione ${rng.padEnd(24)} ${seg} tratti` +
+      (prev === null ? "" : `  passo ${Math.round(l.base - prev)}`));
+    prev = l.base;
+  }
+  const vh = 900;
+  const amp = L.length > 1 ? L[1].base - L[0].base : 0;
+  const fit = Math.floor((vh - (L[0].base - 5)) / (amp || 1)) + 1;
+  console.log(`  → in una schermata alta ${vh} px ci stanno ${fit} corsie intere`);
+  C.setView("estesa"); SHIM_W = 360;
 }
 
 /* --table <titolo>: stampa la tabella dati di un riquadro. Serve a leggere i

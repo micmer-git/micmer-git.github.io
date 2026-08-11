@@ -11,8 +11,9 @@ python tools/sync_intervals.py --config tools/gazzaniga-orezzo.json   # new effo
 python tools/sync_sogni.py                                            # new weeks   -> data.json + load.json
 python tools/sync_diario.py                                           # refresh the monthly chapter numbers
 python tools/build_food.py                                            # rigenera i dati dell'alimentazione -> vita/_*.csv|json
-python tools/build_vita.py                                            # rebuild /vita: tracker + 38 grafici
+python tools/build_vita.py                                            # rebuild /vita: tracker + 38 grafici (+ vista compatta)
 node   tools/check_vita.cjs                                           # smoke-test it, no browser needed
+node   tools/check_vita.cjs --ridge                                   # la vista compatta letta a parole, corsia per corsia
 python tools/build_signore.py                                         # /signore-dei-kj: la saga, mese per mese
 node   tools/check_signore.cjs                                        # smoke-test it, no browser needed
 python tools/build_top20.py                                           # rebuild /top-20 data from Intervals
@@ -239,6 +240,59 @@ insieme: mostrarne una sola sarebbe scegliere il risultato dopo aver visto i dat
 Il fondo della cella colora |r| con una divergente blu/rosso, il grigio centrale e'
 la maggioranza dei casi ed e' giusto che lo sia — la piu' forte oggi e' HRV ↔ fibre
 a **r +0,14** su 90 giorni.
+
+### La vista compatta (ridgeline), 2026-08-11
+
+Accanto ai pulsanti della finestra temporale c'e' un secondo interruttore,
+**estesa / compatta**, e la scelta resta in `localStorage` (`vita:view`, piu'
+`vita:off` e `vita:pin`). La compatta **non sostituisce** niente: nasconde le
+colonne di riquadri e mostra `#compact`, una ridgeline con una corsia per serie —
+24 serie, dichiarate una per una nella costante `RIDGE`. Serve a una domanda che la
+colonna estesa non sa fare: *cosa si muoveva insieme, e quando*. Per "quanto vale
+questa serie" resta l'estesa, che ha gli assi.
+
+Quattro cose vanno sapute prima di toccarla:
+
+- **Ogni corsia e' normalizzata sulla propria storia, e la pagina lo dice.** Grammi,
+  ore, battiti e kcal non stanno sulla stessa scala: il fondo corsia e' il 2°
+  percentile della sua media mobile su **tutto l'archivio**, la cima il 98°.
+  Percentili e non estremi, o una notte da tre ore si prende tutta l'escursione;
+  su tutto l'archivio e non sulla finestra mostrata, o un trimestre basso si
+  riespanderebbe a piena altezza e mentirebbe. Quello che esce **viene tagliato al
+  bordo** della corsia, mai spostato altrove, e il check lo verifica leggendo i
+  numeri dentro gli attributi `d` dei tracciati. L'escursione in cifre e' scritta a
+  destra di ogni corsia, e solo se ci sta: e' l'unico posto in cui questa vista puo'
+  dire quanto vale un'altezza.
+- **La geometria.** Linee di base a `RIDGE_STEP` = 84 px, escursione `× 1.2` = 100,8
+  px: ogni corsia sconfina di un quinto di passo in quella sopra, che e' la
+  sovrapposizione. Le corsie si disegnano **dall'alto in basso**, ognuna con un
+  riempimento opaco all'88 % che copre quella precedente — senza, ventiquattro
+  velature si sommerebbero in una nebbia. In una schermata alta 900 px ci stanno
+  **10 corsie intere** (9 con la striscia delle congelate in cima). Sotto i 430 px
+  il passo scende a 62. Le bande "nessun dato" vanno **sopra** le corsie, non sotto
+  come nei riquadri estesi: sotto sarebbero cancellate da ventiquattro riempimenti.
+- **La media mobile e' CENTRATA** (`ridgeSmooth`), non trascinata come `rolling()`.
+  Qui si confrontano i tempi fra corsie, e due medie trascinate con finestre diverse
+  (7 giorni per l'HRV, 120 per il peso) sposterebbero i picchi di quantita' diverse:
+  "si muovono insieme?" riceverebbe una risposta costruita dal filtro. E' fatta con
+  **somme prefisse**, non con una finestra che scorre sommando e sottraendo:
+  undicimila addizioni di fila lasciavano un residuo in virgola mobile che faceva
+  scrivere "escursione −0 → 174" a una serie che vale zero esatto.
+- **Congelare e accendere.** Un click su una corsia la **congela**: resta dov'era,
+  marcata con `data-pinned` e con il fiocco nell'etichetta, e in piu' compare in una
+  striscia `position:sticky` in cima al pannello che resta visibile mentre il resto
+  scorre. Piu' serie insieme, si sganciano dalla chip o ricliccando. Gli
+  interruttori laterali (colonna a destra, riga di chip sopra il pannello sotto i
+  720 px) sono raggruppati per sezione e costruiti **una volta sola tenendone il
+  riferimento**: un interruttore mosso col dito e uno mosso via
+  `CRUSCOTTO.compact.toggle()` aggiornano lo stesso nodo, e nessuno deve ricercarlo
+  nel documento.
+
+`node tools/check_vita.cjs --ridge` stampa la ridgeline a parole — una riga per
+corsia, con la quota della sua linea di base, l'escursione e quante ne stanno in una
+schermata. Da questa macchina non c'e' un browser, ed e' l'unico modo di guardarla.
+Il check la misura a **due larghezze** (360 e 1040 px) perche' meta' di queste
+regole dipende da quanto spazio c'e'.
 
 **The y-axis gutter is computed, not fixed.** A five-figure tick ("50.000") needs
 38px where a two-figure one needs 20; a fixed 34px either clips the big numbers or

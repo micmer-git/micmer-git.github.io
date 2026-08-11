@@ -71,6 +71,14 @@
     text-transform:uppercase; color:var(--muted); margin-top:4px}
 
   /* ---------- range control ---------- */
+  /* Due gruppi di comandi sulla stessa riga: la finestra temporale e la forma
+     della vista. Stessa classe di bottone perche' sono la stessa cosa — due scelte
+     che ridisegnano tutto — e due stili diversi avrebbero solo insinuato che una
+     conta meno dell'altra. */
+  .controls{display:flex; gap:8px 20px; justify-content:center; align-items:center;
+    flex-wrap:wrap; margin:30px 0 6px}
+  .controls .ranges{margin:0}
+  .viewsw{border-left:1px solid var(--rule); padding-left:20px}
   .ranges{display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:30px 0 6px}
   .ranges button{
     font-family:'IBM Plex Mono',monospace; font-size:.66rem; letter-spacing:.14em;
@@ -84,6 +92,72 @@
   .ranges button:focus-visible{outline:2px solid var(--gold); outline-offset:3px}
   .range-note{text-align:center; color:var(--muted); font-size:.82rem; font-style:italic;
     margin-top:8px}
+
+  /* ---------- vista compatta: ridgeline ----------
+     La colonna estesa e' nascosta, non smontata: la compatta e' un modo in piu' di
+     leggere le stesse serie, non un'altra pagina. Il fondo di default (nessun
+     data-view sul body) e' la vista estesa, cosi' se lo script non parte resta in
+     piedi quella che c'era prima invece di una sezione vuota. */
+  #compact{display:none}
+  body[data-view="compatta"] #compact{display:block}
+  body[data-view="compatta"] .panel,
+  body[data-view="compatta"] h2.band,
+  body[data-view="compatta"] .band-sub{display:none}
+  .cx-note{text-align:center; color:var(--muted); font-size:.8rem; font-style:italic;
+    max-width:56em; margin:16px auto 0; line-height:1.55}
+  .cx-note strong{color:var(--ink-soft); font-weight:500}
+  .cx-wrap{display:grid; grid-template-columns:minmax(0,1fr) 214px; gap:14px;
+    align-items:start; margin-top:14px}
+  .cx-main{min-width:0; background:var(--paper); border:1px solid var(--rule);
+    border-radius:7px; padding:0 13px 9px}
+  /* Le corsie congelate restano appiccicate in cima al pannello mentre il resto
+     scorre: e' l'unico modo per confrontare una serie con una che sta ottocento
+     pixel piu' in basso senza tenerla a memoria. */
+  .cx-pin{position:sticky; top:0; z-index:4; background:var(--paper);
+    border-bottom:1px solid var(--rule); margin:0 -13px; padding:7px 13px 6px}
+  .cx-pin.off{display:none}
+  .cx-pin-h{font-family:'IBM Plex Mono',monospace; font-size:.53rem; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--gold)}
+  .cx-chips{display:flex; gap:6px; flex-wrap:wrap; margin:5px 0 2px}
+  .cx-chip{font-family:'IBM Plex Mono',monospace; font-size:.55rem; letter-spacing:.08em;
+    padding:3px 9px; border-radius:999px; cursor:pointer; background:transparent;
+    border:1px solid var(--rule); color:var(--ink-soft)}
+  .cx-chip:hover{border-color:var(--gold); color:var(--ink)}
+  .cx-chip:focus-visible{outline:2px solid var(--gold); outline-offset:2px}
+  .cx-plot{padding-top:9px}
+  .cx-plot rect:focus-visible,.cx-pin-plot rect:focus-visible{outline:2px solid var(--gold);
+    outline-offset:-2px}
+  .cx-foot{font-family:'IBM Plex Mono',monospace; font-size:.53rem; letter-spacing:.06em;
+    color:var(--muted); margin-top:5px; line-height:1.5}
+  .cx-rail{position:sticky; top:8px; max-height:calc(100vh - 20px); overflow:auto;
+    background:var(--paper); border:1px solid var(--rule); border-radius:7px;
+    padding:9px 10px 11px}
+  .cx-grp{margin-bottom:9px}
+  .cx-grp-h{font-family:'Cinzel',serif; font-size:.6rem; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--gold); margin-bottom:4px}
+  .cx-sw{display:flex; align-items:center; gap:6px; width:100%; text-align:left;
+    font-family:'IBM Plex Mono',monospace; font-size:.6rem; letter-spacing:.03em;
+    padding:3px 5px; border-radius:4px; cursor:pointer; background:transparent;
+    border:1px solid transparent; color:var(--ink-soft);
+    transition:color .15s,border-color .15s}
+  .cx-sw::before{content:""; width:9px; height:9px; border-radius:2px; flex:none;
+    background:var(--c,var(--muted))}
+  .cx-sw[aria-pressed="false"]{color:var(--muted)}
+  .cx-sw[aria-pressed="false"]::before{background:transparent;
+    box-shadow:inset 0 0 0 1px var(--muted)}
+  .cx-sw:hover{border-color:var(--rule); color:var(--ink)}
+  .cx-sw:focus-visible{outline:2px solid var(--gold); outline-offset:2px}
+  /* Sotto i 720px la colonna di interruttori non ci sta accanto al grafico: diventa
+     una riga di chip sopra il pannello, scorrevole in orizzontale. */
+  @media(max-width:720px){
+    .cx-wrap{grid-template-columns:1fr}
+    .cx-rail{position:static; order:-1; max-height:none; display:flex; gap:6px;
+      flex-wrap:nowrap; overflow-x:auto; padding:8px 9px}
+    .cx-grp{margin:0; display:flex; align-items:center; gap:5px; flex:none}
+    .cx-grp-h{margin:0 3px 0 0; white-space:nowrap}
+    .cx-sw{width:auto; white-space:nowrap; border-color:var(--rule);
+      border-radius:999px; padding:3px 9px}
+  }
 
   /* ---------- la colonna di grafici ----------
      Uno sopra l'altro, non a griglia: cosi' tutti condividono lo stesso asse x e
@@ -250,6 +324,9 @@
     .total .n{font-size:1.25rem}
     .ranges{gap:6px}
     .ranges button{padding:6px 12px; font-size:.62rem}
+    /* i due gruppi vanno a capo: il filetto di separazione, in verticale, taglierebbe
+       la riga sbagliata */
+    .viewsw{border-left:0; padding-left:0}
   }
 </style>
 </head>
@@ -267,8 +344,13 @@
 
 <nav class="tracks" id="tracks" aria-label="Le pagine"></nav>
 
-<div class="ranges" id="ranges" role="group" aria-label="Finestra temporale"></div>
+<div class="controls">
+  <div class="ranges" id="ranges" role="group" aria-label="Finestra temporale"></div>
+  <div class="ranges viewsw" id="viewsw" role="group" aria-label="Forma della vista"></div>
+</div>
 <p class="range-note" id="range-note"></p>
+
+<section class="compact" id="compact" aria-label="Vista compatta"></section>
 
 <h2 class="band">Carico</h2>
 <p class="band-sub">Quanto lavoro c'è addosso, e quanto ne è già stato smaltito.</p>
@@ -397,8 +479,12 @@ function lastMean(arr, w) {
 /* ------------------------------------------------------- number formatting */
 const nf = (v, d = 0) => v === null || v === undefined || !isFinite(v) ? "—"
   : v.toLocaleString("it-IT", { minimumFractionDigits:d, maximumFractionDigits:d });
-const hhmm = m => m === null || m === undefined ? "—"
-  : Math.floor(m / 60) + "h " + String(Math.round(m % 60)).padStart(2, "0") + "'";
+/* Si arrotondano i MINUTI, poi si divide. Arrotondando i minuti residui dopo la
+   divisione, 299,7 minuti diventavano "4h 60'" — un orologio che non esiste, e che
+   compariva ovunque ci fosse una media di durate. */
+const hhmm = m => { if (m === null || m === undefined || !isFinite(m)) return "—";
+  const t = Math.round(m);
+  return Math.floor(t / 60) + "h " + String(t % 60).padStart(2, "0") + "'"; };
 const FMT = {
   num0:v => nf(v,0), num1:v => nf(v,1), hhmm,
   hours:v => nf(v,1) + " h", km:v => nf(v,0) + " km", m:v => nf(v,0) + " m",
@@ -533,6 +619,45 @@ function showTip(x, y, html) {
 const hideTip = () => tip.classList.remove("on");
 addEventListener("scroll", hideTip, { passive:true });
 
+/* Le bande "nessun dato" e le date sull'asse x sono le uniche due cose che la vista
+   compatta condivide con i riquadri estesi: la ridgeline non ha assi y, ma ha lo
+   stesso asse x e gli stessi buchi d'archivio. Stanno qui fuori da frame() perche'
+   due copie della stessa regola sarebbero derivate al primo ritocco — e un buco del
+   2022 disegnato in una vista e non nell'altra e' esattamente il modo in cui una
+   pagina comincia a mentire in una sola delle sue forme. */
+function gapBands(svg, X, x0, x1, top, ih) {
+  for (const [a, b] of D.gaps) {
+    if (b < x0 || a > x1) continue;
+    const xa = X(Math.max(a, x0)), xb = X(Math.min(b, x1));
+    if (xb - xa < 1.5) continue;
+    svg.appendChild(el("rect", { x:xa, y:top, width:xb - xa, height:ih,
+      fill:"rgba(236,227,205,.05)" }));
+    svg.appendChild(el("rect", { x:xa, y:top, width:xb - xa, height:ih,
+      fill:"none", stroke:"rgba(236,227,205,.16)", "stroke-width":1,
+      "stroke-dasharray":"2 3" }));
+    if (xb - xa > 46) {
+      const t = el("text", { x:(xa + xb) / 2, y:top + 10, "text-anchor":"middle",
+        fill:"var(--muted)", "font-size":"7.5", "letter-spacing":".08em",
+        "font-family":"'IBM Plex Mono',monospace" });
+      t.textContent = "nessun dato"; svg.appendChild(t);
+    }
+  }
+}
+/* x ticks: 3-5 dates across the window, never overlapping */
+function xDates(svg, X, W, H, x0, x1, iw) {
+  const kmax = iw < 260 ? 3 : iw < 420 ? 4 : 5;
+  for (let k = 0; k < kmax; k++) {
+    const v = x0 + (x1 - x0) * k / (kmax - 1), d = dayDate(Math.round(v));
+    const span = x1 - x0;
+    const lab = span > 900 ? String(d.getFullYear())
+      : span > 150 ? MON[d.getMonth()] + " " + String(d.getFullYear()).slice(2)
+      : d.getDate() + " " + MON[d.getMonth()];
+    const t = axisText(X(v), H - 4, lab,
+      k === 0 ? "start" : k === kmax - 1 ? "end" : "middle");
+    t.textContent = lab; svg.appendChild(t);
+  }
+}
+
 /* A chart frame: axes, gridlines, the shaded no-data bands, and the scales. Every
    renderer below draws into one of these, so they cannot drift apart. */
 function frame(svg, W, H, xdom, ydom, opts = {}) {
@@ -545,37 +670,9 @@ function frame(svg, W, H, xdom, ydom, opts = {}) {
   const Y = v => P.t + ih - (v - yd.lo) / (yd.hi - yd.lo) * ih;
 
   /* no-data bands first, under everything */
-  if (opts.gaps !== false) for (const [a, b] of D.gaps) {
-    if (b < x0 || a > x1) continue;
-    const xa = X(Math.max(a, x0)), xb = X(Math.min(b, x1));
-    if (xb - xa < 1.5) continue;
-    svg.appendChild(el("rect", { x:xa, y:P.t, width:xb - xa, height:ih,
-      fill:"rgba(236,227,205,.05)" }));
-    svg.appendChild(el("rect", { x:xa, y:P.t, width:xb - xa, height:ih,
-      fill:"none", stroke:"rgba(236,227,205,.16)", "stroke-width":1,
-      "stroke-dasharray":"2 3" }));
-    if (xb - xa > 46) {
-      const t = el("text", { x:(xa + xb) / 2, y:P.t + 10, "text-anchor":"middle",
-        fill:"var(--muted)", "font-size":"7.5", "letter-spacing":".08em",
-        "font-family":"'IBM Plex Mono',monospace" });
-      t.textContent = "nessun dato"; svg.appendChild(t);
-    }
-  }
+  if (opts.gaps !== false) gapBands(svg, X, x0, x1, P.t, ih);
   yAxis(svg, ticks, Y, P.l, W - P.r);
-  /* x ticks: 3-5 dates across the window, never overlapping */
-  if (opts.xticks !== false) {
-    const kmax = iw < 260 ? 3 : iw < 420 ? 4 : 5;
-    for (let k = 0; k < kmax; k++) {
-      const v = x0 + (x1 - x0) * k / (kmax - 1), d = dayDate(Math.round(v));
-      const span = x1 - x0;
-      const lab = span > 900 ? String(d.getFullYear())
-        : span > 150 ? MON[d.getMonth()] + " " + String(d.getFullYear()).slice(2)
-        : d.getDate() + " " + MON[d.getMonth()];
-      const t = axisText(X(v), H - 4, lab,
-        k === 0 ? "start" : k === kmax - 1 ? "end" : "middle");
-      t.textContent = lab; svg.appendChild(t);
-    }
-  }
+  if (opts.xticks !== false) xDates(svg, X, W, H, x0, x1, iw);
   return { X, Y, P, iw, ih, yd };
 }
 
@@ -1823,6 +1920,276 @@ function pairPts(fx, fy, a, b, keepX) {
   return o;
 }
 
+/* ============================================================ vista compatta
+   La colonna estesa risponde a "quanto vale questa serie". Questa risponde a una
+   domanda diversa — "cosa si muoveva insieme, e quando" — e per quella gli assi
+   sono un costo: venti riquadri con venti gronde di etichette fanno tre schermate,
+   e la forma di una serie non si ricorda fino alla successiva.
+   Qui ogni serie e' UNA linea, l'identita' e' scritta sopra la linea (niente
+   colonna laterale, niente legenda: con venti corsie il colore non puo' portare
+   l'identita' comunque), e le corsie si sovrappongono.
+
+   Il prezzo e' dichiarato in pagina e non e' negoziabile: grammi, ore, battiti e
+   kcal non stanno sulla stessa scala, quindi OGNI corsia e' normalizzata sulla
+   propria storia. Due corsie alte uguali non dicono valori uguali — dicono
+   "ognuna al suo massimo". Si confrontano le forme e i tempi, mai i valori. */
+
+/* Geometria. Le linee di base distano RIDGE_STEP; una corsia puo' salire fino a
+   RIDGE_OVER passi, cioe' un quinto in piu' del passo — e quel quinto e' esattamente
+   quanto una corsia sconfina in quella sopra. Con 84 px di passo e 100,8 px di
+   escursione, in una schermata alta 900 px ci stanno dieci corsie intere
+   ((900 − 100,8) / 84 + 1 = 10,5), nove tenendo conto della riga di congelate. */
+const RIDGE_STEP = 84;
+const RIDGE_OVER = 1.2;
+const RIDGE_PIN_STEP = 52;      /* la striscia appiccicata sta piu' stretta: e' un promemoria */
+
+/* Le somme giornaliere (ore, km, dislivello, TSS) valgono zero anche nei giorni in
+   cui la serie non esisteva ancora: uno zero vero e uno zero per assenza si
+   disegnano identici, e sarebbero quattro anni di linea piatta mai misurata. */
+function maskBefore(arr, firstKey) {
+  const f = daysOf(firstKey);
+  if (!f) return arr;
+  const o = arr.slice();
+  for (let i = 0; i < f && i < o.length; i++) o[i] = null;
+  return o;
+}
+
+/* Media mobile CENTRATA, con una soglia bassa di punti.
+   Centrata perche' qui si confrontano i TEMPI fra corsie: due medie trascinate con
+   finestre diverse (7 giorni per l'HRV, 120 per il peso) sposterebbero i picchi di
+   quantita' diverse, e la domanda "si muovono insieme?" riceverebbe una risposta
+   costruita dal filtro invece che dai dati. La soglia e' bassa per le serie rade:
+   il peso ha sessantacinque pesate in undici anni, e con la soglia di rolling()
+   (un terzo della finestra piena) non disegnerebbe un solo segmento.
+   Una finestra tutta vuota resta null, quindi il buco del 2022 resta un buco.
+   Somme prefisse e non una finestra che scorre sommando e sottraendo: con undicimila
+   addizioni e sottrazioni di fila l'errore in virgola mobile si accumula, e una
+   corsia che vale esattamente zero per quattro anni (le ore prima della prima
+   attivita') finiva a −1e−13 — cioe' scriveva "escursione −0 → 174". La differenza
+   fra due somme prefisse su un tratto di zeri e' zero esatto. */
+function ridgeSmooth(arr, w) {
+  const h = Math.floor(w / 2);
+  const ps = new Array(N + 1).fill(0), pc = new Array(N + 1).fill(0);
+  for (let i = 0; i < N; i++) {
+    const v = arr[i], g = v !== null && v !== undefined && isFinite(v);
+    ps[i + 1] = ps[i] + (g ? v : 0);
+    pc[i + 1] = pc[i] + (g ? 1 : 0);
+  }
+  const out = new Array(N).fill(null);
+  for (let i = 0; i < N; i++) {
+    const a = Math.max(0, i - h), b = Math.min(N - 1, i + h);
+    const n = pc[b + 1] - pc[a];
+    out[i] = n > 0 ? (ps[b + 1] - ps[a]) / n : null;
+  }
+  return out;
+}
+
+const RIDGE = (() => {
+  const NU = D.nutri || {};
+  const out = [];
+  /* il colore raggruppa per sezione, mai per serie: quattro slot validati non
+     possono identificare venti linee, e fingere che lo facciano sarebbe peggio che
+     non colorarle affatto. L'identita' sta nell'etichetta sulla linea. */
+  const add = (sec, col, key, name, arr, win, fmt, first) => {
+    if (!Array.isArray(arr)) return;
+    out.push({ sec, col, key, name, win, fmt: fmt || FMT.num0,
+      arr: first ? maskBefore(arr, first) : arr });
+  };
+  const forma = D.ctl.map((v, i) =>
+    v === null || v === undefined || D.atl[i] === null || D.atl[i] === undefined
+      ? null : v - D.atl[i]);
+  add("Carico", "var(--s1)", "ctl", "Fitness (CTL)", D.ctl, 7, FMT.num0, "load");
+  add("Carico", "var(--s1)", "atl", "Fatica (ATL)", D.atl, 7, FMT.num0, "load");
+  add("Carico", "var(--s1)", "forma", "Forma", forma, 7, FMT.num0, "load");
+  add("Carico", "var(--s1)", "load", "Carico (TSS)", D.load, 14, FMT.tss, "load");
+  add("Notte", "var(--s3)", "sleep", "Sonno", D.sleep, 7, FMT.hhmm);
+  add("Notte", "var(--s3)", "score", "Punteggio del sonno", D.score, 14, FMT.num0);
+  add("Recupero", "var(--s2)", "hrv", "HRV", D.hrv, 7, FMT.ms);
+  add("Recupero", "var(--s2)", "rhr", "FC a riposo", D.rhr, 7, FMT.bpm);
+  add("Recupero", "var(--s2)", "vo2", "VO₂max", D.vo2, 45, FMT.num1);
+  add("Recupero", "var(--s2)", "steps", "Passi", D.steps, 7, FMT.num0);
+  add("Corpo", "var(--s4)", "weight", "Peso", D.weight, 120, FMT.kg);
+  add("Corpo", "var(--s4)", "bodyfat", "Massa grassa", D.bodyfat, 120, FMT.pct);
+  add("Volume", "var(--s1)", "hours", "Ore", secsOf.secs.map(v => v / 3600), 14,
+      FMT.hours, "act");
+  add("Volume", "var(--s1)", "km", "Chilometri", secsOf.dist.map(v => v / 1000), 14,
+      FMT.km, "act");
+  add("Volume", "var(--s1)", "gain", "Dislivello", secsOf.gain, 14, FMT.m, "act");
+  add("Tavola", "var(--s3)", "kcal", "Energia", NU.kcal, 7, FMT.num0);
+  add("Tavola", "var(--s3)", "fiber", "Fibre", NU.fiber_g, 7, v => nf(v, 1) + " g");
+  add("Tavola", "var(--s3)", "plants", "Piante diverse", NU.plants_7d, 7, FMT.num0);
+  add("Tavola", "var(--s3)", "sugar", "Zuccheri", NU.sugar_g, 7, v => nf(v, 1) + " g");
+  add("Tavola", "var(--s3)", "plant", "Vegetale %", NU.pct_plant, 7, FMT.pct);
+  add("Tavola", "var(--s3)", "upf", "Ultra-processato %", NU.pct_upf, 7, FMT.pct);
+  add("Tavola", "var(--s3)", "magn", "Magnesio", NU.magnesium_mg, 7, v => nf(v, 0) + " mg");
+  add("Tavola", "var(--s3)", "pota", "Potassio", NU.potassium_mg, 7, v => nf(v, 0) + " mg");
+  add("Tavola", "var(--s3)", "micro", "Microbiota", NU.microbiome, 14, FMT.num0);
+  return out;
+})();
+
+/* La scala di una corsia: dal 2° al 98° percentile della sua media mobile su TUTTO
+   l'archivio, non sulla finestra mostrata. Su tutto l'archivio perche' cosi' la
+   forma non cambia quando si cambia finestra — un trimestre basso resta basso
+   invece di riespandersi a piena altezza e mentire. Percentili e non estremi perche'
+   una notte da tre ore o un giorno da trentamila passi si prenderebbe tutta
+   l'escursione e schiaccerebbe il resto in una riga piatta; quello che esce fuori
+   viene tagliato ai bordi della corsia, non disegnato altrove. */
+function ridgePrep(s) {
+  if (s._sm) return s;
+  s._sm = ridgeSmooth(s.arr, s.win);
+  const v = s._sm.filter(x => x !== null && isFinite(x)).sort((a, b) => a - b);
+  s._n = v.length;
+  if (!v.length) { s._lo = 0; s._hi = 1; s._min = null; s._max = null; return s; }
+  const q = p => v[Math.max(0, Math.min(v.length - 1, Math.round(p * (v.length - 1))))];
+  let lo = q(.02), hi = q(.98);
+  if (!(hi > lo)) { lo = v[0]; hi = v[v.length - 1]; }
+  if (!(hi > lo)) { hi = lo + (Math.abs(lo) || 1); }
+  s._lo = lo; s._hi = hi; s._min = v[0]; s._max = v[v.length - 1];
+  return s;
+}
+
+/* Punti di una corsia, gia' normalizzati in [0,1] e diradati.
+   Diradati perche' "sempre" sono oltre quattromila giorni: quattromila comandi per
+   corsia per venti corsie e' un tracciato che il browser disegna e nessuno vede —
+   la media e' gia' calcolata, la finestra e' gia' lisciata, e piu' di due punti per
+   pixel non aggiungono un segno. */
+function ridgePts(s, from, to, iw) {
+  const span = to - from + 1;
+  const k = Math.max(1, Math.ceil(span / Math.max(60, iw * 2)));
+  const out = [];
+  for (let i = from; i <= to; i += k) {
+    let acc = 0, n = 0;
+    for (let j = i; j < Math.min(i + k, to + 1); j++) {
+      const v = s._sm[j]; if (v !== null && isFinite(v)) { acc += v; n++; }
+    }
+    const raw = n ? acc / n : null;
+    const u = raw === null ? null
+      : Math.max(0, Math.min(1, (raw - s._lo) / (s._hi - s._lo)));
+    out.push([Math.min(to, i + (k - 1) / 2), u, raw]);
+  }
+  return out;
+}
+
+/* Segmenti contigui: una corsia con un buco non va chiusa attraverso il buco, o il
+   riempimento salterebbe il 2022 come se fosse pieno. */
+function ridgeRuns(pts) {
+  const out = []; let cur = null;
+  for (const p of pts) {
+    if (p[1] === null) { cur = null; continue; }
+    if (!cur) { cur = []; out.push(cur); }
+    cur.push(p);
+  }
+  return out;
+}
+
+/* Disegna la ridgeline e restituisce l'SVG piu' i riferimenti a ogni corsia: il
+   chiamante non deve ricercare niente nel documento che ha appena costruito. */
+function drawRidge(lanes, W, from, to, step, showAxis, pinnedSet) {
+  const amp = step * RIDGE_OVER;
+  const P = { l:10, r:10, t:5, b:showAxis ? 18 : 6 };
+  const iw = Math.max(40, W - P.l - P.r);
+  const H = Math.round(P.t + amp + Math.max(0, lanes.length - 1) * step + P.b);
+  const X = v => P.l + (to === from ? iw / 2 : (v - from) / (to - from) * iw);
+  const svg = el("svg", { class:"plot", viewBox:`0 0 ${W} ${H}`, role:"img",
+    "aria-label":`Vista compatta: ${lanes.length} serie, una corsia ciascuna, ` +
+      `ognuna riscalata sulla propria storia` });
+
+  const refs = [];
+  /* dall'alto verso il basso: ogni corsia viene disegnata DOPO quella che le sta
+     sopra, quindi la copre — e' cosi' che una sovrapposizione si legge come
+     profondita' invece che come due tracciati che si accavallano */
+  lanes.forEach((L, k) => {
+    const s = L.s, base = P.t + amp + k * step;
+    const Y = u => base - u * amp;
+    const g = el("g", {});
+    g.dataset.series = s.key;
+    g.dataset.pinned = pinnedSet.has(s.key) ? "1" : "";
+    const on = pinnedSet.has(s.key);
+
+    for (const run of ridgeRuns(L.pts)) {
+      if (run.length < 2) continue;
+      const d = run.map((p, j) => (j ? "L" : "M") + X(p[0]).toFixed(1) + " " +
+        Y(p[1]).toFixed(1)).join(" ");
+      const closed = d + " L" + X(run[run.length - 1][0]).toFixed(1) + " " +
+        base.toFixed(1) + " L" + X(run[0][0]).toFixed(1) + " " + base.toFixed(1) + " Z";
+      /* due riempimenti: uno opaco all'88 % che fa da occlusore (senza, le corsie
+         si sommerebbero in una nebbia e la sovrapposizione non direbbe piu' chi sta
+         davanti), e sopra una velatura del colore della sezione. Il 12 % che resta
+         lascia trasparire le bande "nessun dato": coprirle sarebbe cancellarle. */
+      g.appendChild(el("path", { d:closed, fill:"var(--paper)", opacity:".88" }));
+      g.appendChild(el("path", { d:closed, fill:s.col, opacity:on ? ".26" : ".15" }));
+      g.appendChild(el("path", { d, fill:"none", stroke:s.col,
+        "stroke-width":on ? 2.6 : 1.7, "stroke-linejoin":"round",
+        "stroke-linecap":"round", opacity:on ? "1" : ".92" }));
+    }
+
+    /* l'etichetta sta SULLA linea, con un alone del colore della scheda sotto le
+       lettere: e' l'unica identita' che la corsia ha, quindi deve restare leggibile
+       anche quando la linea le passa attraverso */
+    const label = el("text", { x:P.l + 7, y:base - 5, fill:on ? "var(--gold)" : "var(--ink)",
+      "font-size":"10.5", "font-family":"'IBM Plex Mono',monospace",
+      "letter-spacing":".03em", stroke:"var(--paper)", "stroke-width":"3.4",
+      "paint-order":"stroke", "pointer-events":"none" });
+    label.textContent = (on ? "❄ " : "") + s.name;
+    g.appendChild(label);
+
+    /* la scala della corsia, scritta sulla corsia: e' l'unico posto in cui questa
+       vista puo' dire quanto vale un'altezza, e senza sarebbe una forma senza unita' */
+    if (s._min !== null) {
+      const rng = `${s.fmt(s._lo)} → ${s.fmt(s._hi)}`;
+      const wLab = ((on ? 2 : 0) + s.name.length) * TICKW * 1.28;
+      const wRng = rng.length * TICKW;
+      if (P.l + 7 + wLab + 14 < W - P.r - wRng) {
+        const t = el("text", { x:W - P.r, y:base - 5, "text-anchor":"end",
+          fill:"var(--muted)", "font-size":"8", "font-family":"'IBM Plex Mono',monospace",
+          stroke:"var(--paper)", "stroke-width":"3", "paint-order":"stroke",
+          "pointer-events":"none" });
+        t.textContent = rng; g.appendChild(t);
+      }
+    }
+
+    /* la zona sensibile e' la fascia della corsia, non il tracciato: cliccare una
+       linea alta due pixel non e' un bersaglio. E' raggiungibile da tastiera perche'
+       congelare e' un comando vero: gli interruttori laterali sono bottoni e si
+       tabulano, e lasciare l'altro comando della vista solo al mouse avrebbe fatto
+       una meta' di pagina pilotabile e una no. */
+    const hit = el("rect", { x:P.l, y:base - step, width:iw, height:step,
+      fill:"transparent", style:"cursor:pointer", tabindex:"0", role:"button",
+      "aria-label":(on ? "Sgancia " : "Congela ") + s.name });
+    hit.addEventListener("keydown", ev => {
+      if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); togglePin(s.key); }
+    });
+    hit.addEventListener("pointermove", ev => {
+      const r = svg.getBoundingClientRect();
+      const px = (ev.clientX - r.left) / r.width * W;
+      const i = Math.round(from + (px - P.l) / iw * (to - from));
+      let best = null;
+      for (const p of L.pts) if (p[1] !== null &&
+        (!best || Math.abs(p[0] - i) < Math.abs(best[0] - i))) best = p;
+      if (!best) { hideTip(); return; }
+      showTip(ev.clientX, ev.clientY,
+        `<span class="d">${fmtDate(Math.round(best[0]))}</span><br>` +
+        `${s.name} <span class="v">${s.fmt(best[2])}</span><br>` +
+        `<span class="d">${nf(best[1] * 100, 0)} % della sua escursione · ` +
+        `${pinnedSet.has(s.key) ? "clicca per sganciarla" : "clicca per congelarla"}</span>`);
+    });
+    hit.addEventListener("pointerleave", hideTip);
+    hit.addEventListener("click", () => togglePin(s.key));
+    g.appendChild(hit);
+
+    svg.appendChild(g);
+    refs.push({ key:s.key, name:s.name, g, label, base, pinned:on });
+  });
+  /* Le bande "nessun dato" vanno SOPRA le corsie, non sotto come nei riquadri
+     estesi: qui i riempimenti sono opachi all'88 % e una banda sotto ventiquattro
+     corsie sarebbe stata cancellata da tutte tranne la prima. Sopra, il 5 % di
+     bianco schiarisce appena la colonna del 2022 lungo tutta l'altezza — che e'
+     esattamente quello che quella colonna deve dire. */
+  gapBands(svg, X, from, to, P.t, H - P.t - P.b);
+  if (showAxis) xDates(svg, X, W, H, from, to, iw);
+  return { svg, H, refs };
+}
+
 /* ------------------------------------------------------------------ render */
 /* Built node by node rather than from an innerHTML blob, and every part kept on a
    reference: nothing here has to query the document back for something it just
@@ -1922,9 +2289,163 @@ for (const t of TILES) {
   host.appendChild(n.art);
   MOUNTED.push([n, t]);
 }
-const drawAll = () => { for (const [n, t] of MOUNTED) drawTile(n, t); };
+
+/* La scelta di vista sopravvive alla visita: chi legge questa pagina la apre cento
+   volte, e ricominciare ogni volta dalla forma che non ha scelto e' un piccolo
+   insulto ripetuto. In un contesto senza localStorage (il check gira in node) tutto
+   torna al valore di default invece di sollevare. */
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : v; }
+              catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
+};
+let view = store.get("vita:view", "estesa") === "compatta" ? "compatta" : "estesa";
+document.body.dataset.view = view;
+
+/* Si disegna solo quello che si vede. Un riquadro esteso ridisegnato mentre la sua
+   colonna e' display:none misura larghezza zero e si ridisegna a 240 px: tornando
+   alla vista estesa si troverebbe una colonna di grafici stretti finche' non si
+   ridimensiona la finestra. */
+const drawAll = () => {
+  if (view === "compatta") drawCompact();
+  else for (const [n, t] of MOUNTED) drawTile(n, t);
+};
 window.CRUSCOTTO = { D, TILES, MOUNTED, drawAll, setRange:k => { range = k; drawAll(); } };
 window.openDay = openDay;   /* il check lo chiama per verificare il popup */
+
+/* ------------------------------------------- il pannello della vista compatta */
+const cxHost = document.getElementById("compact");
+const cxNote = mk("p", "cx-note", cxHost);
+cxNote.innerHTML = "Una corsia per serie, impilate con una sovrapposizione di un " +
+  "quinto. Ogni corsia è riscalata sulla <strong>propria</strong> storia — dal 2° al " +
+  "98° percentile della sua media mobile su tutto l'archivio, non da zero: " +
+  "<strong>due corsie alte uguali non valgono uguale</strong>, dicono solo «ognuna al " +
+  "suo massimo». Qui si confrontano le forme e i tempi, mai i valori; per i valori " +
+  "c'è la vista estesa, che ha gli assi. Clicca una corsia per congelarla in cima, " +
+  "gli interruttori a lato scelgono cosa disegnare.";
+const cxWrap = mk("div", "cx-wrap", cxHost);
+const cxMain = mk("div", "cx-main", cxWrap);
+const cxPinBox = mk("div", "cx-pin", cxMain);
+cxPinBox.classList.add("off");
+mk("div", "cx-pin-h", cxPinBox, "congelate — restano qui mentre il resto scorre");
+const cxChips = mk("div", "cx-chips", cxPinBox);
+const cxPinPlot = mk("div", "cx-pin-plot", cxPinBox);
+const cxPlot = mk("div", "cx-plot", cxMain);
+const cxFoot = mk("div", "cx-foot", cxMain);
+const cxRail = mk("aside", "cx-rail", cxWrap);
+
+const OFF = new Set((store.get("vita:off", "") || "").split(",").filter(Boolean));
+const PIN = new Set((store.get("vita:pin", "") || "").split(",").filter(Boolean));
+let cxLast = null, cxPinLast = null;
+
+/* Gli interruttori si costruiscono una volta sola e si tiene il riferimento a
+   ognuno: cosi' un interruttore mosso via API (il check) e uno mosso col dito
+   aggiornano lo stesso nodo, e nessuno deve ricercarlo nel documento. */
+(function buildRail() {
+  const groups = [];
+  for (const s of RIDGE) {
+    let g = groups.find(x => x.name === s.sec);
+    if (!g) { g = { name:s.sec, items:[] }; groups.push(g); }
+    g.items.push(s);
+  }
+  for (const g of groups) {
+    const box = mk("div", "cx-grp", cxRail);
+    mk("div", "cx-grp-h", box, g.name);
+    for (const s of g.items) {
+      const b = mk("button", "cx-sw", box, s.name);
+      b.type = "button";
+      b.setAttribute("aria-pressed", String(!OFF.has(s.key)));
+      b.style.setProperty("--c", s.col);
+      b.addEventListener("click", () => setSeries(s.key, OFF.has(s.key)));
+      s._btn = b;
+    }
+  }
+})();
+
+function setSeries(key, on) {
+  if (on) OFF.delete(key); else OFF.add(key);
+  const s = RIDGE.find(x => x.key === key);
+  if (s && s._btn) s._btn.setAttribute("aria-pressed", String(on));
+  store.set("vita:off", [...OFF].join(","));
+  if (view === "compatta") drawCompact();
+}
+function togglePin(key) { setPin(key, !PIN.has(key)); }
+function setPin(key, on) {
+  if (on) PIN.add(key); else PIN.delete(key);
+  store.set("vita:pin", [...PIN].join(","));
+  if (view === "compatta") drawCompact();
+}
+function setView(v) {
+  view = v === "compatta" ? "compatta" : "estesa";
+  document.body.dataset.view = view;
+  store.set("vita:view", view);
+  for (const b of viewswEl.children) b.setAttribute("aria-pressed",
+    String(b.dataset.view === view));
+  drawAll();
+}
+
+function drawCompact() {
+  const [from, to] = windowFor(0);
+  const W = Math.max(280, cxPlot.clientWidth || 720);
+  /* su schermo stretto il passo si accorcia: 84 px per corsia su un telefono
+     farebbero venti corsie e cinque schermate di scorrimento */
+  const step = W < 430 ? 62 : RIDGE_STEP;
+  const iw = Math.max(40, W - 20);
+  const all = RIDGE.filter(s => !OFF.has(s.key)).map(ridgePrep)
+    .map(s => ({ s, pts:ridgePts(s, from, to, iw) }));
+  const lanes = all.filter(L => L.pts.some(p => p[1] !== null));
+  const mute = all.filter(L => !lanes.includes(L)).map(L => L.s.name);
+
+  cxPlot.innerHTML = "";
+  if (lanes.length) {
+    cxLast = drawRidge(lanes, W, from, to, step, true, PIN);
+    cxPlot.appendChild(cxLast.svg);
+  } else {
+    cxLast = null;
+    mk("p", "t-empty", cxPlot, "Nessuna serie da mostrare in questa finestra.");
+  }
+
+  const pinned = lanes.filter(L => PIN.has(L.s.key));
+  cxPinPlot.innerHTML = "";
+  cxChips.innerHTML = "";
+  if (pinned.length) {
+    cxPinBox.classList.remove("off");
+    cxPinLast = drawRidge(pinned, W, from, to, RIDGE_PIN_STEP, false, PIN);
+    cxPinPlot.appendChild(cxPinLast.svg);
+    for (const L of pinned) {
+      const c = mk("button", "cx-chip", cxChips, "✕ " + L.s.name);
+      c.type = "button";
+      c.setAttribute("aria-label", "Sgancia " + L.s.name);
+      c.addEventListener("click", () => setPin(L.s.key, false));
+    }
+  } else {
+    cxPinBox.classList.add("off");
+    cxPinLast = null;
+  }
+
+  cxFoot.innerHTML = [
+    `${fmtDate(from)} → ${fmtDate(to)}`,
+    `${lanes.length} corsie su ${RIDGE.length}`,
+    pinned.length ? `${pinned.length} congelate` : null,
+    mute.length ? `senza dati in questa finestra: ${mute.join(", ")}` : null,
+  ].filter(Boolean).join(" · ") +
+    "<br>Il numero a destra di ogni corsia è la sua escursione: quanto vale il fondo " +
+    "corsia e quanto la cima. Fuori da quell'intervallo la linea viene tagliata al " +
+    "bordo, non spostata altrove.";
+}
+
+window.CRUSCOTTO.compact = {
+  series:RIDGE, setView, view:() => view,
+  toggle:key => setSeries(key, OFF.has(key)),
+  enabled:() => RIDGE.filter(s => !OFF.has(s.key)).map(s => s.key),
+  pin:key => setPin(key, true), unpin:key => setPin(key, false),
+  pinned:() => [...PIN],
+  lanes:() => cxLast ? cxLast.refs : [],
+  pinLanes:() => cxPinLast ? cxPinLast.refs : [],
+  svg:() => cxLast && cxLast.svg,
+  pinSvg:() => cxPinLast && cxPinLast.svg,
+  rail:cxRail, note:cxNote, foot:cxFoot,
+};
 
 /* ---------------------------------------------------------- range control */
 const rangesEl = document.getElementById("ranges");
@@ -1940,6 +2461,17 @@ for (const r of RANGES) {
   });
   rangesEl.appendChild(b);
 }
+/* ----------------------------------------------------------- forma della vista */
+const viewswEl = document.getElementById("viewsw");
+for (const v of [["estesa", "estesa"], ["compatta", "compatta"]]) {
+  const b = document.createElement("button");
+  b.textContent = v[1]; b.type = "button";
+  b.dataset.view = v[0];
+  b.setAttribute("aria-pressed", String(v[0] === view));
+  b.addEventListener("click", () => setView(v[0]));
+  viewswEl.appendChild(b);
+}
+
 const noteEl = document.getElementById("range-note");
 function noteFor() {
   return range === "sempre"
