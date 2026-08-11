@@ -8,6 +8,12 @@
     "to": "2026-08-11"
   },
   "publishedInstead": "travel.json",
+  "encryptedArchive": {
+    "path": "private/Timeline.json.gz.aes256gcm",
+    "format": "gzip + scrypt + AES-256-GCM",
+    "bytes": 4071841,
+    "sha256": "825cb9840464a3d82d5f97252e5addd2de91c4dc6e7be05be16985b4afed58fa"
+  },
   "omitted": [
     "raw GPS",
     "home",
@@ -15,5 +21,5 @@
     "precise paths",
     "place IDs"
   ],
-  "reason": "The source export is intentionally kept local because this repository is public."
+  "reason": "The source export is never published in clear text because this repository is public."
 }
