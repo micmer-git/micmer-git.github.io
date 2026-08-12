@@ -2989,7 +2989,7 @@ document.getElementById("tracks").innerHTML = (D.tracks || []).map(t => `
     const line=x=>`<div class="bar"><u>${x.label}</u><div></div><b>${x.fmt(x.now)} · ${fd(x.d)}</b></div>`;
     const last=D.last&&D.last.n_kcal!=null?new Date(D0.getTime()+D.last.n_kcal*DAY).toLocaleDateString("it-IT"):"—";
     sheetIn.innerHTML=`<button class="x" type="button" aria-label="Chiudi">×</button><div class="when">ultimi 14 giorni vs 14 precedenti</div><h3>La tavola, in due settimane</h3><div style="margin-top:16px">${all.map(line).join("")}</div><p class="t-foot">Diario aggiornato al ${last}. Le giornate ricostruite e quelle derivate da scontrino sono stime dichiarate, non pasti osservati.</p>`;
-    sheet.classList.add("on");sheetIn.querySelector(".x").onclick=closeSheet;
+    sheet.classList.add("on");sheetIn.querySelector(".x").onclick=closeDay;
   }
   document.getElementById("totals").onclick=e=>{if(e.target.closest&&e.target.closest("[data-food]"))insights();};
 })();
