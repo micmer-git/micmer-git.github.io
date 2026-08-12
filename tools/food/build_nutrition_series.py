@@ -324,6 +324,38 @@ def main():
                 for i in rec["ingredients"] if i["food_id"] in foods]
 
         days = {"_t": template}
+
+        # Inventario delle ultime due settimane per il popup delle medie. Le righe
+        # sono gia' espanse dalle ricette: lo stesso food_id viene quindi davvero
+        # sommato anche quando arriva da pasti/ricette diversi. Quantita' e numero
+        # di occasioni osservate restano separati dalle ricostruzioni, per non
+        # presentare una stima automatica come qualcosa che Michele ha raccontato.
+        recent_start = d1 - timedelta(days=13)
+        recent = {}
+        for item in rows:
+            item_day = date.fromisoformat(item["date"])
+            if not recent_start <= item_day <= d1:
+                continue
+            food = foods.get(item["food_id"])
+            if food is None:
+                continue
+            bucket = "assumed" if item.get("source") == "assunto" else "observed"
+            rec = recent.setdefault(item["food_id"], {
+                "id": item["food_id"], "name": food["name"], "unit": food["unit"],
+                "qty_observed": 0.0, "qty_assumed": 0.0,
+                "occ_observed": set(), "occ_assumed": set(),
+            })
+            rec[f"qty_{bucket}"] += float(item["qty"])
+            rec[f"occ_{bucket}"].add((item["date"], item.get("meal") or ""))
+        days["_14foods"] = [{
+            "id": rec["id"], "name": rec["name"], "unit": rec["unit"],
+            "qty_observed": round(rec["qty_observed"], 2),
+            "qty_assumed": round(rec["qty_assumed"], 2),
+            "occ_observed": len(rec["occ_observed"]),
+            "occ_assumed": len(rec["occ_assumed"]),
+        } for rec in sorted(recent.values(),
+                            key=lambda x: (-(len(x["occ_observed"]) +
+                                             len(x["occ_assumed"])), x["name"]))]
         profiles = {}
         for r in out:
             k = r["date"]

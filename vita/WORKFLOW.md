@@ -18,6 +18,11 @@ This file is the durable handoff for every agent working on `/vita`.
   rebuilding, keep their original provenance, and never convert a planned meal
   ("stasera") into an observed one until the user confirms eating it.
 - Never publish API keys or raw private health exports.
+- The clickable 14-day food averages are a provenance-aware view: every metric
+  shows its mean against the target/limit from `tools/food/profile.json`, while
+  `days.json._14foods` groups equal food IDs across the latest 14 days. Keep grams,
+  millilitres and units distinct; show total quantity and eating occasions, and
+  always separate observed from reconstructed intake.
 
 ## Receipt estimates
 

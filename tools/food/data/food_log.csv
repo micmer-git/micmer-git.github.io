@@ -410,7 +410,8 @@ date,meal,food_id,qty,note,source
 2026-08-12,pranzo,peperoni,150,peperone giallo; quantita stimata dalla foto in altra chat,foto
 2026-08-12,pranzo,melone,300,2 fette dichiarate in altra chat,dichiarato
 2026-08-12,pranzo,pesca,1,dichiarata in altra chat,dichiarato
-2026-08-12,merenda,latte_ps,250,latte scremato ora; 250 ml stimati e voce PS usata come proxy,dichiarato
+2026-08-12,merenda,latte_ps,100,latte scremato; 100 ml confermati e voce PS usata come proxy,dichiarato
 2026-08-12,merenda,pane_integrale,60,panino con marmellata ora; quantita standard stimata,dichiarato
 2026-08-12,merenda,marmellata_fragola,20,panino con marmellata ora; quantita standard stimata,dichiarato
+2026-08-12,merenda,burro_arachidi_sgrassato,10,peanut butter nel panino; 10 g confermati,dichiarato
 2026-08-12,merenda,pesca,1,un'altra pesca dichiarata ora,dichiarato

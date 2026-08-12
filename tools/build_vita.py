@@ -77,6 +77,7 @@ NUTRITION = os.path.join(FOOD_DATA, "nutrition.csv")
 # Dettaglio giorno per giorno per il popup: pasti, alimenti, % dei fabbisogni.
 # Stesso esportatore, flag `--export-days`.
 DAYS = os.path.join(FOOD_DATA, "days.json")
+FOOD_PROFILE = os.path.join(HERE, "food", "profile.json")
 # Il MODELLO della flora (scripts/microbiome_model.py). Non e' una misura: nessuno
 # ha sequenziato niente, e la pagina lo dice a caratteri grandi.
 MICROBES = os.path.join(FOOD_DATA, "microbiome.csv")
@@ -388,6 +389,16 @@ def build_payload(raw):
             days_detail = json.load(fh)
         print(f"  dettaglio giornaliero: {len(days_detail)} giorni")
 
+    food_profile = {}
+    if os.path.exists(FOOD_PROFILE):
+        with open(FOOD_PROFILE, encoding="utf-8") as fh:
+            source_profile = json.load(fh)
+        # Solo i valori necessari alle barre: niente note o configurazione privata
+        # superflua nel payload pubblico.
+        food_profile = {k: source_profile.get(k) for k in
+                        ("weight_kg", "reference_kcal", "protein_g_per_kg",
+                         "rda", "limits")}
+
     payload = {
         "built": date.today().isoformat(),
         "nutri": nutri,
@@ -395,6 +406,7 @@ def build_payload(raw):
         "metab": metab,
         "floraFoods": flora_foods,
         "days": days_detail,
+        "foodProfile": food_profile,
         "pulled": raw["pulled"],
         "d0": d0.isoformat(),
         "n": n,
@@ -871,9 +883,15 @@ TEMPLATE = r"""<!DOCTYPE html>
   .bar b{text-align:right; color:var(--ink); font-variant-numeric:tabular-nums;
     font-weight:500}
   .insight-list .bar{grid-template-columns:minmax(0,1fr) auto; border-bottom:1px solid rgba(200,154,63,.12);
-    padding:7px 0; gap:12px}
-  .insight-list .bar>div{display:none}
+    padding:7px 0; gap:4px 12px}
   .insight-list .bar b{min-width:118px; white-space:nowrap}
+  .insight-list .bar .target-track{display:block; position:relative; grid-column:1/-1;
+    width:100%; height:9px; overflow:visible; background:rgba(236,227,205,.09)}
+  .insight-list .bar .target-track i{transition:width .18s ease}
+  .insight-list .bar .target-track mark{position:absolute; top:-3px; bottom:-3px; width:2px;
+    padding:0; background:var(--ink); box-shadow:0 0 0 1px rgba(10,9,6,.52)}
+  .insight-list .bar small{grid-column:1/-1; color:var(--muted); font-size:.52rem;
+    letter-spacing:.04em; text-align:right}
   .insight-list .bar.sel{background:rgba(226,201,143,.07); margin:0 -9px;
     padding-left:9px; padding-right:9px; border-left:2px solid var(--gold)}
   .insight-chart{margin:13px 0 8px; border:1px solid var(--rule); border-radius:7px;
@@ -881,6 +899,15 @@ TEMPLATE = r"""<!DOCTYPE html>
   .insight-chart svg{display:block; width:100%; height:auto; overflow:hidden}
   .insight-chart .legend{display:flex; justify-content:space-between; gap:12px;
     font:500 .52rem 'IBM Plex Mono',monospace; letter-spacing:.08em; color:var(--muted)}
+  .food-intake{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:5px 14px}
+  .food-intake .food-row{display:grid; grid-template-columns:minmax(0,1fr) auto;
+    gap:1px 9px; padding:6px 0; border-bottom:1px solid rgba(200,154,63,.12)}
+  .food-intake .food-row span{min-width:0; color:var(--ink-soft); font-size:.78rem;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .food-intake .food-row b{font:600 .67rem 'IBM Plex Mono',monospace; color:var(--ink);
+    white-space:nowrap; font-variant-numeric:tabular-nums}
+  .food-intake .food-row small{grid-column:1/-1; font:500 .49rem 'IBM Plex Mono',monospace;
+    color:var(--muted); letter-spacing:.04em}
   .hint{font-family:'IBM Plex Mono',monospace; font-size:.53rem; letter-spacing:.09em;
     color:var(--muted); text-align:center; margin-top:9px}
 
@@ -960,8 +987,9 @@ TEMPLATE = r"""<!DOCTYPE html>
       border-radius:13px 13px 0 0; padding:18px 15px calc(20px + env(safe-area-inset-bottom))}
     .sheet h3{font-size:1.22rem; line-height:1.2; padding-right:32px}
     .sheet .when{padding-right:34px; font-size:.54rem}
-    .insight-list .bar{grid-template-columns:minmax(0,1fr) minmax(96px,auto); gap:8px}
+    .insight-list .bar{grid-template-columns:minmax(0,1fr) minmax(96px,auto); gap:4px 8px}
     .insight-list .bar b{text-align:right; min-width:0; white-space:normal; font-size:.58rem}
+    .food-intake{grid-template-columns:1fr}
   }
 </style>
 </head>
@@ -3692,8 +3720,31 @@ document.getElementById("tracks").innerHTML = (D.tracks || []).map(t => `
     const all=items.filter(x=>x.food).concat(extra.map(([label,arr,fmt])=>{const now=mean(arr,N-14,N-1),prior=mean(arr,N-28,N-15);return{label,arr,now,prior,d:delta(now,prior),fmt,food:1};}).filter(x=>x.now!=null));
     const observed=mean(F.kcal_observed,N-14,N-1), total=mean(F.kcal,N-14,N-1);
     if(observed!=null&&total){const arr=(F.kcal||[]).map((v,i)=>v&&F.kcal_observed?100*(F.kcal_observed[i]||0)/v:null);all.push({label:"quota osservata",arr,now:100*observed/total,prior:null,d:null,fmt:v=>nf(v,0)+"%",food:1});}
+    const P=D.foodProfile||{},rda=P.rda||{},limits=P.limits||{};
+    const targetByLabel={
+      "kcal":P.reference_kcal,
+      "proteine":P.weight_kg&&P.protein_g_per_kg?P.weight_kg*P.protein_g_per_kg:null,
+      "carboidrati":mean(F.carb_target_g,N-14,N-1),
+      "fibre":rda.fiber_g,
+      "zuccheri":P.reference_kcal&&limits.sugar_pct_kcal?P.reference_kcal*limits.sugar_pct_kcal/400:null,
+      "magnesio":rda.magnesium_mg,"potassio":rda.potassium_mg,"sodio":limits.sodium_mg,
+      "indice vitamine":100,"indice minerali":100,"piante / 7 giorni":30,
+      "indice microbiota":100,"quota osservata":100
+    };
+    const ceiling=new Set(["zuccheri","sodio"]);
+    all.forEach(x=>{x.target=Number.isFinite(targetByLabel[x.label])?targetByLabel[x.label]:null;x.ceiling=ceiling.has(x.label);});
     const selected=all.find(x=>x.label===wanted)||all[0];
-    const line=x=>`<div class="bar ${x===selected?'sel':''}"><u>${x.label}</u><div></div><b>${x.fmt(x.now)} · ${fd(x.d)}</b></div>`;
+    const line=x=>{
+      const scale=x.target==null?100:Math.max(x.target*1.25,x.now||0.01),
+        fill=Math.max(0,Math.min(100,100*x.now/scale)),
+        marker=x.target==null?null:Math.max(0,Math.min(100,100*x.target/scale)),
+        ratio=x.target?x.now/x.target:null,
+        col=x.target==null?'var(--s1)':x.ceiling?(ratio<=1?'var(--s3)':'var(--neg)'):
+          (ratio>=1?'var(--s3)':ratio>=.8?'var(--s1)':'var(--gold)'),
+        target=x.target==null?'nessun target definito':`${x.ceiling?'limite':'target'} ${x.fmt(x.target)} · ${nf(100*ratio,0)}%`;
+      return `<div class="bar ${x===selected?'sel':''}"><u>${x.label}</u><b>${x.fmt(x.now)} · ${fd(x.d)}</b>`+
+        `<div class="target-track"><i style="width:${fill}%;background:${col}"></i>${marker==null?'':`<mark style="left:${marker}%" title="${target}"></mark>`}</div><small>${target}</small></div>`;
+    };
     function chart(x){
       const vals=(x.arr||[]).slice(Math.max(0,N-28),N).map(v=>v==null||!isFinite(v)?null:Number(v));
       const good=vals.filter(v=>v!=null);if(good.length<4)return"";
@@ -3706,9 +3757,13 @@ document.getElementById("tracks").innerHTML = (D.tracks || []).map(t => `
         `<line x1="${X(13.5)}" x2="${X(13.5)}" y1="0" y2="${H}" stroke="var(--rule)"/>${meanLine(p,0,13,'var(--muted)')}${meanLine(n,14,27,'var(--gold)')}${segments(0,13,'var(--muted)')}${segments(14,27,'var(--gold)')}</svg>`+
         `<div class="legend"><span>14 precedenti · media ${x.fmt(p)}</span><span>ultimi 14 · media ${x.fmt(n)}</span></div></div>`;
     }
+    const qty=f=>{const q=(f.qty_observed||0)+(f.qty_assumed||0),u=f.unit==='unit'?'×':` ${f.unit}`;return `${nf(q,q<10?1:0)}${u}`;};
+    const recent=(D.days&&D.days._14foods||[]).map(f=>{const no=f.occ_observed||0,na=f.occ_assumed||0,n=no+na;
+      return `<div class="food-row" title="${f.name}"><span>${f.name}</span><b>${n} ${n===1?'consumo':'consumi'} · ${qty(f)}</b>`+
+        `<small>${no} osservati${na?` · ${na} ricostruiti`:''}</small></div>`;}).join("");
     const last=D.last&&D.last.n_kcal!=null?new Date(D0.getTime()+D.last.n_kcal*DAY).toLocaleDateString("it-IT"):"—";
-    sheetIn.innerHTML=`<button class="sheet-x" type="button" aria-label="Chiudi">×</button><div class="when">ultimi 14 giorni vs 14 precedenti</div><h3>${selected.label.charAt(0).toUpperCase()+selected.label.slice(1)}</h3>${chart(selected)}<div class="insight-list">${all.map(line).join("")}</div><p class="t-foot">Diario aggiornato al ${last}. Le giornate ricostruite e quelle derivate da scontrino sono stime dichiarate, non pasti osservati.</p>`;
-    sheet.classList.add("on");sheetIn.querySelector(".sheet-x").onclick=closeDay;
+    sheetIn.innerHTML=`<button class="sheet-x" type="button" aria-label="Chiudi" onclick="closeDay()">×</button><div class="when">ultimi 14 giorni vs 14 precedenti</div><h3>${selected.label.charAt(0).toUpperCase()+selected.label.slice(1)}</h3>${chart(selected)}<div class="insight-list">${all.map(line).join("")}</div>${recent?`<h4>Alimenti · ultime due settimane</h4><div class="food-intake">${recent}</div>`:''}<p class="t-foot">Diario aggiornato al ${last}. I totali sommano gli alimenti uguali; latte in ml e frutti in unità restano nelle loro unità reali. Le giornate ricostruite e quelle derivate da scontrino sono stime dichiarate, non pasti osservati.</p>`;
+    sheet.classList.add("on");
   }
   document.getElementById("totals").onclick=e=>{const b=e.target.closest&&e.target.closest("[data-food]");if(b)insights(b.dataset.food);};
 })();

@@ -266,6 +266,22 @@ if (ran) {
   }
   ok(totalsHtml.includes("vs prima"), "ogni media dichiara il confronto con i 14 giorni precedenti");
   ok(totalsHtml.includes('data-food="kcal"'), "le metriche alimentari aprono gli insight");
+  const totals = document.getElementById("totals"), insightSheet = document.getElementById("sheet-in");
+  try {
+    totals.onclick({ target: { closest: () => ({ dataset: { food: "kcal" } }) } });
+    ok(insightSheet.innerHTML.includes('class="target-track"'),
+      "il popup delle medie mostra le barre colorate rispetto al target");
+    ok(D.foodProfile && D.foodProfile.reference_kcal === 2600 &&
+       insightSheet.innerHTML.includes("target"),
+      "la barra delle kcal usa e dichiara il target del profilo");
+    ok(insightSheet.innerHTML.includes("Alimenti · ultime due settimane"),
+      "il popup elenca gli alimenti aggregati delle ultime due settimane");
+    ok(insightSheet.innerHTML.includes("Burro di arachidi sgrassato in polvere") &&
+       insightSheet.innerHTML.includes("Latte parzialmente scremato"),
+      "l'inventario recente contiene peanut butter e latte corretti");
+    ok(insightSheet.innerHTML.includes("osservati") && insightSheet.innerHTML.includes("ricostruiti"),
+      "i conteggi separano consumi osservati e ricostruiti");
+  } catch (e) { fails.push(`FAIL popup delle medie: ${e && e.stack || e}`); }
   ok(K.compare && K.compare.series.length >= 20,
     "il correlatore offre almeno venti serie selezionabili");
   ok(Array.from(document.getElementById("compare-plot").children).some(n => n.tagName === "svg"),
