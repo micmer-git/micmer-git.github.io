@@ -35,6 +35,7 @@ Usage
     set INTERVALS_API_KEY=...          (or --api-key, or tools/.intervals_key)
 
     python tools/build_vita.py --check      # report coverage, write nothing
+    python tools/build_vita.py --sync-source # pull cache + attività per il cibo
     python tools/build_vita.py              # pull + rebuild the page
     python tools/build_vita.py --offline    # rebuild from the cached pull
 
@@ -43,6 +44,8 @@ while working on the page costs nothing and cannot be rate-limited. `--dry-run` 
 everything except write. The previous page is copied to `index.html.bak` first.
 """
 import argparse
+import csv
+import io
 import json
 import math
 import os
@@ -63,6 +66,7 @@ OUT_DIR = os.path.join(ROOT, "vita")
 OUT = os.path.join(OUT_DIR, "index.html")
 REPORT = os.path.join(HERE, "vita_tests.md")
 FOOD_DATA = os.path.join(OUT_DIR, "cibo", "data")
+FOOD_ACTIVITIES = os.path.join(HERE, "food", "data", "activities.csv")
 
 # Aggregati giornalieri di alimentazione, esportati da ~/health-log con
 # `scripts/build_nutrition_series.py --export`. Vive qui perche' la GitHub Action
@@ -148,6 +152,52 @@ def pull(key, use_cache=False):
     print(f"  cached {len(wellness)} giorni · {len(acts)} attività → "
           f"{os.path.basename(CACHE)}")
     return raw
+
+
+def export_food_activities(raw):
+    """Allinea il carico usato dal modello alimentare allo stesso pull di /vita.
+
+    Il target carboidrati legge questo CSV. Se resta indietro, un allenamento appena
+    arrivato su Intervals compare nei grafici ma vale zero nel modello del cibo: due
+    verità diverse nella stessa pagina. Scriviamo solo se il contenuto cambia.
+    """
+    fields = ["date", "name", "type", "moving_time_s", "elapsed_time_s", "distance_m",
+              "elevation_m", "calories", "training_load", "intensity", "avg_hr",
+              "max_hr", "avg_power_w", "np_w"]
+    rows = []
+    for a in sorted(raw.get("activities") or [],
+                    key=lambda x: (x.get("start_date_local") or "", str(x.get("id") or ""))):
+        day = (a.get("start_date_local") or "")[:10]
+        if not day:
+            continue
+        rows.append({
+            "date": day, "name": a.get("name") or "", "type": a.get("type") or "",
+            "moving_time_s": a.get("moving_time"), "elapsed_time_s": a.get("elapsed_time"),
+            "distance_m": a.get("distance"), "elevation_m": a.get("total_elevation_gain"),
+            "calories": a.get("calories"), "training_load": a.get("icu_training_load"),
+            "intensity": a.get("icu_intensity"), "avg_hr": a.get("average_heartrate"),
+            "max_hr": a.get("max_heartrate"),
+            "avg_power_w": a.get("icu_average_watts") or a.get("average_watts"),
+            "np_w": (a.get("icu_weighted_avg_watts") or a.get("weighted_average_watts")
+                     or a.get("normalized_power")),
+        })
+    buf = io.StringIO(newline="")
+    writer = csv.DictWriter(buf, fieldnames=fields, lineterminator="\n")
+    writer.writeheader()
+    for row in rows:
+        writer.writerow({k: "" if v is None else v for k, v in row.items()})
+    new = buf.getvalue()
+    old = ""
+    if os.path.exists(FOOD_ACTIVITIES):
+        with open(FOOD_ACTIVITIES, encoding="utf-8", newline="") as fh:
+            old = fh.read()
+    if new != old:
+        os.makedirs(os.path.dirname(FOOD_ACTIVITIES), exist_ok=True)
+        with open(FOOD_ACTIVITIES, "w", encoding="utf-8", newline="") as fh:
+            fh.write(new)
+        print(f"  attività cibo: {len(rows)} righe → {os.path.relpath(FOOD_ACTIVITIES, ROOT)}")
+    else:
+        print(f"  attività cibo: già allineate ({len(rows)} righe)")
 
 
 # ---------------------------------------------------------------- shaping
@@ -467,12 +517,17 @@ def main():
     ap.add_argument("--api-key")
     ap.add_argument("--offline", action="store_true",
                     help="rebuild from tools/.cruscotto_cache.json, no network")
+    ap.add_argument("--sync-source", action="store_true",
+                    help="pull cache + export food activities, then stop")
     ap.add_argument("--check", action="store_true", help="report only, write nothing")
     ap.add_argument("--dry-run", action="store_true", help="build but do not write")
     args = ap.parse_args()
 
     key = None if args.offline else get_api_key(args.api_key)
     raw = pull(key, use_cache=args.offline)
+    if args.sync_source:
+        export_food_activities(raw)
+        return
     p = build_payload(raw)
     p["tracks"] = highlights()
     print()
@@ -483,6 +538,7 @@ def main():
         print(f"\n(niente scritto; report → {os.path.basename(REPORT)})")
         return
 
+    export_food_activities(raw)
     html = build_html(p)
     os.makedirs(OUT_DIR, exist_ok=True)
     if os.path.exists(OUT):
@@ -558,8 +614,13 @@ TEMPLATE = r"""<!DOCTYPE html>
     font-size:1.02rem}
 
   /* ---------- headline numbers ---------- */
+  .headline-stats{max-width:1000px; margin:30px auto 0; display:grid; gap:16px}
+  .headline-group{border-top:1px solid var(--rule); padding-top:10px}
+  .headline-label{font-family:'IBM Plex Mono',monospace; font-size:.56rem;
+    letter-spacing:.17em; text-transform:uppercase; color:var(--gold); text-align:center;
+    margin-bottom:10px}
   .totals{display:grid; grid-template-columns:repeat(auto-fit,minmax(112px,1fr));
-    gap:16px 10px; margin:30px auto 0; max-width:1000px}
+    gap:16px 10px; max-width:1000px}
   .total{text-align:center}
   .total .n{font-family:'Cinzel',serif; font-size:1.5rem; font-weight:700; color:var(--gold);
     font-variant-numeric:tabular-nums; line-height:1.1}
@@ -571,6 +632,29 @@ TEMPLATE = r"""<!DOCTYPE html>
   .total .d{font-family:'IBM Plex Mono',monospace;font-size:.55rem;margin-top:3px;color:var(--ink-soft)}
   .total .d.up{color:var(--s3)} .total .d.down{color:var(--neg)}
   .fortnight{margin:15px auto 0;max-width:900px;text-align:center;color:var(--muted);font-size:.78rem}
+
+  /* ---------- correlatore libero ---------- */
+  .compare{max-width:1000px; margin:18px auto 22px; border:1px solid var(--rule);
+    border-radius:9px; background:var(--paper); padding:16px 18px 13px}
+  .compare-controls{display:flex; align-items:end; justify-content:center; flex-wrap:wrap;
+    gap:10px 14px}
+  .compare-controls label{display:grid; gap:4px; font-family:'IBM Plex Mono',monospace;
+    font-size:.54rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+  .compare-controls select{min-width:180px; max-width:280px; border:1px solid var(--rule);
+    border-radius:6px; background:var(--paper-2); color:var(--ink); padding:7px 28px 7px 9px;
+    font:500 .72rem 'IBM Plex Mono',monospace}
+  .compare-controls select:focus-visible{outline:2px solid var(--gold); outline-offset:2px}
+  .compare-body{display:grid; grid-template-columns:minmax(0,1fr) 160px; gap:14px;
+    align-items:center; margin-top:14px}
+  .compare-plot{min-height:280px}
+  .compare-plot svg{display:block; width:100%; height:280px; overflow:visible}
+  .compare-result{border-left:1px solid var(--rule); padding-left:14px}
+  .compare-result b{display:block; font:700 1.8rem 'Cinzel',serif; color:var(--gold)}
+  .compare-result span{display:block; font:500 .59rem 'IBM Plex Mono',monospace;
+    color:var(--ink-soft); margin:3px 0}
+  .compare-result p{font-size:.75rem; line-height:1.45; color:var(--muted); margin-top:10px}
+  .compare-note{font-size:.72rem; line-height:1.5; color:var(--muted); margin-top:9px;
+    text-align:center}
 
   /* ---------- range control ---------- */
   /* Due gruppi di comandi sulla stessa riga: la finestra temporale e la forma
@@ -786,6 +870,10 @@ TEMPLATE = r"""<!DOCTYPE html>
   .bar div i{display:block; height:100%; border-radius:99px}
   .bar b{text-align:right; color:var(--ink); font-variant-numeric:tabular-nums;
     font-weight:500}
+  .insight-list .bar{grid-template-columns:minmax(0,1fr) auto; border-bottom:1px solid rgba(200,154,63,.12);
+    padding:7px 0; gap:12px}
+  .insight-list .bar>div{display:none}
+  .insight-list .bar b{min-width:118px; white-space:nowrap}
   .hint{font-family:'IBM Plex Mono',monospace; font-size:.53rem; letter-spacing:.09em;
     color:var(--muted); text-align:center; margin-top:9px}
 
@@ -853,6 +941,14 @@ TEMPLATE = r"""<!DOCTYPE html>
     /* i due gruppi vanno a capo: il filetto di separazione, in verticale, taglierebbe
        la riga sbagliata */
     .viewsw{border-left:0; padding-left:0}
+    .compare{padding:13px 11px 11px}
+    .compare-controls label,.compare-controls select{width:100%; max-width:none}
+    .compare-body{grid-template-columns:1fr}
+    .compare-result{border-left:0; border-top:1px solid var(--rule); padding:10px 0 0;
+      display:grid; grid-template-columns:auto 1fr; column-gap:12px; align-items:baseline}
+    .compare-result p{grid-column:1/-1}
+    .insight-list .bar{grid-template-columns:1fr}
+    .insight-list .bar b{text-align:left; min-width:0}
   }
 </style>
 </head>
@@ -866,7 +962,16 @@ TEMPLATE = r"""<!DOCTYPE html>
   generata: nessuna chiamata, nessun dato che esce di qui.</p>
 </header>
 
-<div class="totals" id="totals"></div>
+<div class="headline-stats" id="totals">
+  <section class="headline-group" aria-labelledby="headline-recovery-label">
+    <div class="headline-label" id="headline-recovery-label">Sonno &amp; attività</div>
+    <div class="totals" id="totals-recovery"></div>
+  </section>
+  <section class="headline-group" aria-labelledby="headline-food-label">
+    <div class="headline-label" id="headline-food-label">Alimentazione</div>
+    <div class="totals" id="totals-food"></div>
+  </section>
+</div>
 <p class="fortnight">Medie giornaliere degli ultimi 14 giorni · variazione rispetto ai 14 precedenti. Tocca una voce della tavola per gli insight.</p>
 
 <nav class="tracks" id="tracks" aria-label="Le pagine"></nav>
@@ -914,6 +1019,23 @@ quadrati e <em>r</em> è la correlazione. Il risultato onesto di questa sezione 
 sono <strong>tutte vicine a zero</strong>: niente di quello che l'orologio misura al
 mattino sa dire cosa è successo il giorno prima. Le nuvole sono qui apposta — una
 correlazione nulla si vede solo se la si disegna.</p>
+<section class="compare" aria-label="Confronta due misure">
+  <div class="compare-controls">
+    <label>Asse X<select id="compare-x"></select></label>
+    <label>Asse Y<select id="compare-y"></select></label>
+    <label>Tempo<select id="compare-lag">
+      <option value="0">stesso giorno</option>
+      <option value="1">Y il giorno dopo</option>
+    </select></label>
+  </div>
+  <div class="compare-body">
+    <div class="compare-plot" id="compare-plot"></div>
+    <div class="compare-result" id="compare-result"></div>
+  </div>
+  <p class="compare-note">Ogni punto è un giorno con entrambe le misure. La retta e <em>r</em>
+  descrivono l'associazione, non una causa. Le serie alimentari ricostruite possono
+  mostrare soprattutto le regole usate per ricostruirle.</p>
+</section>
 <main class="panel" id="panel-incroci"></main>
 
 <h2 class="band" id="cibo">Tavola</h2>
@@ -3195,6 +3317,7 @@ document.body.dataset.view = view;
 const drawAll = () => {
   if (view === "compatta") drawCompact();
   else for (const [n, t] of MOUNTED) drawTile(n, t);
+  drawCompare();
 };
 window.CRUSCOTTO = { D, TILES, MOUNTED, drawAll, mm:mmDraw, mmMin:MM_MIN_COMP,
   setRange:k => { range = k; drawAll(); } };
@@ -3449,6 +3572,78 @@ function noteFor() {
 }
 noteEl.textContent = noteFor();
 
+/* ------------------------------------------------------ confronto selezionabile
+   Usa i valori giornalieri non smussati. Il ritardo di un giorno serve soprattutto
+   per domande sensate come "carico o carboidrati oggi contro recupero domani". */
+const compareX = document.getElementById("compare-x");
+const compareY = document.getElementById("compare-y");
+const compareLag = document.getElementById("compare-lag");
+const comparePlot = document.getElementById("compare-plot");
+const compareResult = document.getElementById("compare-result");
+const CF = D.nutri || {};
+const compareSeries = [
+  ["sleep","Notte","Sonno",D.sleep,FMT.hhmm],
+  ["score","Notte","Qualità del sonno",D.score,FMT.num0],
+  ["hrv","Recupero","HRV",D.hrv,FMT.ms],
+  ["rhr","Recupero","FC a riposo",D.rhr,FMT.bpm],
+  ["steps","Attività","Passi",D.steps,FMT.num0],
+  ["load","Attività","Carico (TSS)",D.load,FMT.tss],
+  ["ctl","Attività","Fitness (CTL)",D.ctl,FMT.num0],
+  ["atl","Attività","Fatica (ATL)",D.atl,FMT.num0],
+  ["hours","Attività","Ore di allenamento",secsOf.secs.map(v=>v/3600),FMT.hours],
+  ["km","Attività","Chilometri",secsOf.dist.map(v=>v/1000),FMT.km],
+  ["vo2","Corpo","VO₂max",D.vo2,FMT.num1],
+  ["weight","Corpo","Peso",D.weight,FMT.kg],
+  ["bodyfat","Corpo","Massa grassa",D.bodyfat,FMT.pct],
+  ["kcal","Cibo","Energia",CF.kcal,FMT.num0],
+  ["protein","Cibo","Proteine",CF.protein_g,v=>nf(v,0)+" g"],
+  ["carb","Cibo","Carboidrati",CF.carb_g,v=>nf(v,0)+" g"],
+  ["fiber","Cibo","Fibre",CF.fiber_g,v=>nf(v,1)+" g"],
+  ["sugar","Cibo","Zuccheri",CF.sugar_g,v=>nf(v,1)+" g"],
+  ["magnesium","Cibo","Magnesio",CF.magnesium_mg,v=>nf(v,0)+" mg"],
+  ["potassium","Cibo","Potassio",CF.potassium_mg,v=>nf(v,0)+" mg"],
+  ["sodium","Cibo","Sodio",CF.sodium_mg,v=>nf(v,0)+" mg"],
+  ["plants","Cibo","Piante diverse / 7 giorni",CF.plants_7d,FMT.num1],
+  ["plantpct","Cibo","Quota vegetale",CF.pct_plant,FMT.pct],
+  ["microbiome","Cibo","Indice microbiota",CF.microbiome,FMT.num0],
+].filter(s=>Array.isArray(s[3]));
+const compareByKey = new Map(compareSeries.map(s=>[s[0],s]));
+const compareOptions = compareSeries.map(s=>`<option value="${s[0]}">${s[1]} · ${s[2]}</option>`).join("");
+compareX.innerHTML = compareOptions; compareY.innerHTML = compareOptions;
+compareX.value = compareByKey.has("sleep") ? "sleep" : compareSeries[0][0];
+compareY.value = compareByKey.has("hrv") ? "hrv" : compareSeries[Math.min(1,compareSeries.length-1)][0];
+
+function drawCompare(){
+  if(!compareSeries.length) return;
+  const sx=compareByKey.get(compareX.value), sy=compareByKey.get(compareY.value);
+  const lag=Number(compareLag.value)||0, [from,to]=windowFor(0), pts=[];
+  for(let i=from;i<=to-lag;i++){
+    const x=sx[3][i], y=sy[3][i+lag];
+    if(x===null||x===undefined||y===null||y===undefined||!isFinite(x)||!isFinite(y))continue;
+    pts.push([x,y,i+lag]);
+  }
+  comparePlot.innerHTML="";
+  if(pts.length<4){
+    comparePlot.innerHTML='<p class="t-empty">Meno di quattro giorni in comune in questa finestra.</p>';
+    compareResult.innerHTML='<b>r = —</b><span>campione insufficiente</span>';
+    return;
+  }
+  const W=Math.max(280,comparePlot.clientWidth||720),H=280;
+  const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,role:"img",
+    "aria-label":`${sx[2]} contro ${sy[2]}`});
+  comparePlot.appendChild(svg);
+  const rendered=rXY(svg,W,H,{xname:sx[2],yname:sy[2],xfmt:sx[4],yfmt:sy[4],r:3,
+    points:()=>[{name:lag?"Y il giorno dopo":"stesso giorno",col:"var(--s1)",pts}]},from,to);
+  const f=rendered&&rendered.fit;
+  if(!f){compareResult.innerHTML='<b>r = —</b><span>varianza insufficiente</span>';return;}
+  const a=Math.abs(f.r), strength=a<.2?"molto debole":a<.4?"debole":a<.6?"moderata":a<.8?"forte":"molto forte";
+  compareResult.innerHTML=`<b>r = ${nf(f.r,2)}</b><span>${f.n} giorni in comune</span>`+
+    `<span>R² = ${nf(f.r*f.r,2)}</span><p>Associazione ${strength}${f.r<0?", inversa":""}. `+
+    `${lag?"X è il giorno precedente a Y.":"Le misure sono dello stesso giorno."}</p>`;
+}
+[compareX,compareY,compareLag].forEach(x=>x.addEventListener("change",drawCompare));
+window.CRUSCOTTO.compare={series:compareSeries,draw:drawCompare,x:compareX,y:compareY,lag:compareLag};
+
 /* --------------------------------------------------- le tre pagine in cima */
 document.getElementById("tracks").innerHTML = (D.tracks || []).map(t => `
   <a class="track" href="${t.href}" style="--a:${t.accent}">
@@ -3473,7 +3668,9 @@ document.getElementById("tracks").innerHTML = (D.tracks || []).map(t => `
     ["proteine",F.protein_g,v=>nf(v,0)+" g",0,1],["carboidrati",F.carb_g,v=>nf(v,0)+" g",0,1],
     ["fibre",F.fiber_g,v=>nf(v,1)+" g",0,1],["vegetale",F.pct_plant,v=>nf(v,0)+"%",0,1]];
   const items=defs.map(([label,arr,fmt,invert,food])=>{const now=mean(arr,N-14,N-1),prior=mean(arr,N-28,N-15);return{label,now,prior,d:delta(now,prior),fmt,invert,food};}).filter(x=>x.now!=null);
-  document.getElementById("totals").innerHTML=items.map(x=>{const good=x.d!=null&&(x.invert?x.d<0:x.d>0),tag=x.food?"button":"div";return `<${tag} class="total" ${x.food?'type="button" data-food="1"':''}><div class="n">${x.fmt(x.now)}</div><div class="l">${x.label}</div><div class="d ${x.d==null?'':good?'up':'down'}">${fd(x.d)} vs prima</div></${tag}>`;}).join("");
+  const render=xs=>xs.map(x=>{const good=x.d!=null&&(x.invert?x.d<0:x.d>0),tag=x.food?"button":"div";return `<${tag} class="total" ${x.food?'type="button" data-food="1"':''}><div class="n">${x.fmt(x.now)}</div><div class="l">${x.label}</div><div class="d ${x.d==null?'':good?'up':'down'}">${fd(x.d)} vs prima</div></${tag}>`;}).join("");
+  document.getElementById("totals-recovery").innerHTML=render(items.filter(x=>!x.food));
+  document.getElementById("totals-food").innerHTML=render(items.filter(x=>x.food));
   function insights(){
     const extra=[["zuccheri",F.sugar_g,v=>nf(v,0)+" g"],["magnesio",F.magnesium_mg,v=>nf(v,0)+" mg"],
       ["potassio",F.potassium_mg,v=>nf(v,0)+" mg"],["sodio",F.sodium_mg,v=>nf(v,0)+" mg"],
@@ -3484,8 +3681,8 @@ document.getElementById("tracks").innerHTML = (D.tracks || []).map(t => `
     if(observed!=null&&total) all.push({label:"quota osservata",now:100*observed/total,d:null,fmt:v=>nf(v,0)+"%",food:1});
     const line=x=>`<div class="bar"><u>${x.label}</u><div></div><b>${x.fmt(x.now)} · ${fd(x.d)}</b></div>`;
     const last=D.last&&D.last.n_kcal!=null?new Date(D0.getTime()+D.last.n_kcal*DAY).toLocaleDateString("it-IT"):"—";
-    sheetIn.innerHTML=`<button class="x" type="button" aria-label="Chiudi">×</button><div class="when">ultimi 14 giorni vs 14 precedenti</div><h3>La tavola, in due settimane</h3><div style="margin-top:16px">${all.map(line).join("")}</div><p class="t-foot">Diario aggiornato al ${last}. Le giornate ricostruite e quelle derivate da scontrino sono stime dichiarate, non pasti osservati.</p>`;
-    sheet.classList.add("on");sheetIn.querySelector(".x").onclick=closeDay;
+    sheetIn.innerHTML=`<button class="sheet-x" type="button" aria-label="Chiudi">×</button><div class="when">ultimi 14 giorni vs 14 precedenti</div><h3>La tavola, in due settimane</h3><div class="insight-list" style="margin-top:16px">${all.map(line).join("")}</div><p class="t-foot">Diario aggiornato al ${last}. Le giornate ricostruite e quelle derivate da scontrino sono stime dichiarate, non pasti osservati.</p>`;
+    sheet.classList.add("on");sheetIn.querySelector(".sheet-x").onclick=closeDay;
   }
   document.getElementById("totals").onclick=e=>{if(e.target.closest&&e.target.closest("[data-food]"))insights();};
 })();

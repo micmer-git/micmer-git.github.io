@@ -7,6 +7,10 @@ This file is the durable handoff for every agent working on `/vita`.
 - Intervals.icu supplies activities and wellness (sleep, HRV, resting HR, steps,
   weight, CTL/ATL). `.github/workflows/weekly-vita.yml` refreshes the dashboard
   hourly; the historic filename is retained to avoid breaking workflow links.
+- The hourly order is strict: `build_vita.py --sync-source` refreshes the raw cache
+  and `tools/food/data/activities.csv`; `build_food.py` recalculates nutrition and
+  carbohydrate targets from that current load; `build_vita.py --offline` composes
+  the final page; `check_vita.cjs` verifies it. Do not move food before source sync.
 - `tools/food/data/food_log.csv` is the food source of truth. Generated public
   aggregates live under `vita/cibo/data/`.
 - Never publish API keys or raw private health exports.
@@ -34,3 +38,15 @@ baseline and consider training load, upcoming/recent sessions, sleep, HRV, resti
 HR, energy, carbohydrates, protein, fibre, micronutrient coverage, hydration/sodium,
 and data confidence. Output one concise summary and one realistic next action.
 It is decision support, not diagnosis or medical treatment.
+
+## Exploratory relationships
+
+- The free comparator in the Incroci section uses raw daily values, never smoothed
+  lines. It reports the Pearson `r`, sample size and `R²`, with either same-day
+  alignment or X today against Y tomorrow.
+- Correlation is not causation. Treat food relationships as especially tentative:
+  most nutrition days are reconstructed, and correlations between a nutrient and
+  an index built from that nutrient merely reveal model wiring.
+- Always surface provenance/observed share beside a nutrition inference. Prefer
+  repeated effects, sensible lags and adequate overlap over the largest absolute
+  `r` found by searching many pairs.

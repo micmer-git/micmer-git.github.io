@@ -50,6 +50,14 @@ jobs:
           echo "::endgroup::"
           exit $rc
 
+      # Lo stesso pull alimenta /vita e il CSV attività letto dal modello del cibo.
+      # La prima fase rinnova cache + attività senza comporre la pagina; dopo il
+      # rebuild del cibo, la build offline compone il risultato senza un'altra GET.
+      - name: Refresh Vita source data
+        env:
+          INTERVALS_API_KEY: ${{ secrets.INTERVALS_API_KEY }}
+        run: python tools/build_vita.py --api-key "$INTERVALS_API_KEY" --sync-source
+
       # Il cibo prima di /vita: build_vita.py inlina i CSV che questo produce.
       # La sorgente (alimenti, ricette, diario, piatti del mese) sta in tools/food/,
       # dentro questo repo — prima viveva in una repo non pubblicabile e i CSV in
@@ -61,7 +69,7 @@ jobs:
       # /vita is rebuilt from scratch each week rather than appended to: it holds no
       # state of its own, every number in it comes from the pull.
       - name: Rebuild /vita
-        run: python tools/build_vita.py
+        run: python tools/build_vita.py --offline
 
       # Cheap, no network, and the only thing standing between a broken chart and a
       # week of it being live: the page ships as one flat file, so nothing else

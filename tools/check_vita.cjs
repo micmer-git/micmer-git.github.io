@@ -257,7 +257,8 @@ if (ran) {
   const N = D.n;
   let secs = 0, dist = 0, gain = 0;
   for (const [, , s, m, up] of D.acts) { secs += s; dist += m; gain += up; }
-  const totalsHtml = document.getElementById("totals").innerHTML;
+  const totalsHtml = ["totals-recovery", "totals-food"]
+    .map(id => document.getElementById(id).innerHTML).join("");
   const it = v => v.toLocaleString("it-IT");
   for (const label of ["sonno", "HRV", "FC riposo", "allenamento", "chilometri",
                         "kcal", "proteine", "carboidrati", "fibre", "vegetale"]) {
@@ -265,6 +266,12 @@ if (ran) {
   }
   ok(totalsHtml.includes("vs prima"), "ogni media dichiara il confronto con i 14 giorni precedenti");
   ok(totalsHtml.includes('data-food="1"'), "le metriche alimentari aprono gli insight");
+  ok(K.compare && K.compare.series.length >= 20,
+    "il correlatore offre almeno venti serie selezionabili");
+  ok(Array.from(document.getElementById("compare-plot").children).some(n => n.tagName === "svg"),
+    "il correlatore disegna la nuvola di punti iniziale");
+  ok(document.getElementById("compare-result").innerHTML.includes("r ="),
+    "il correlatore dichiara r");
   ok(Math.round(gain / 1000) > 1000, `dislivello totale plausibile: ${it(Math.round(gain))} m`);
 
   /* --------------------------------- 4. ripiego tabellare + legende */
