@@ -2978,7 +2978,19 @@ document.getElementById("tracks").innerHTML = (D.tracks || []).map(t => `
     ["fibre",F.fiber_g,v=>nf(v,1)+" g",0,1],["vegetale",F.pct_plant,v=>nf(v,0)+"%",0,1]];
   const items=defs.map(([label,arr,fmt,invert,food])=>{const now=mean(arr,N-14,N-1),prior=mean(arr,N-28,N-15);return{label,now,prior,d:delta(now,prior),fmt,invert,food};}).filter(x=>x.now!=null);
   document.getElementById("totals").innerHTML=items.map(x=>{const good=x.d!=null&&(x.invert?x.d<0:x.d>0),tag=x.food?"button":"div";return `<${tag} class="total" ${x.food?'type="button" data-food="1"':''}><div class="n">${x.fmt(x.now)}</div><div class="l">${x.label}</div><div class="d ${x.d==null?'':good?'up':'down'}">${fd(x.d)} vs prima</div></${tag}>`;}).join("");
-  function insights(){const food=items.filter(x=>x.food),line=x=>`${x.label}: <strong>${x.fmt(x.now)}</strong> al giorno (${fd(x.d)}).`;const last=D.last&&D.last.n_kcal!=null?dateAt(D.last.n_kcal).toLocaleDateString("it-IT"):"—";sheetIn.innerHTML=`<button class="x" type="button" aria-label="Chiudi">×</button><div class="when">ultimi 14 giorni vs 14 precedenti</div><h3>La tavola, in due settimane</h3>${food.map(x=>`<p>${line(x)}</p>`).join("")}<p class="t-foot">Diario aggiornato al ${last}. Le giornate ricostruite sono stime dichiarate, non misure.</p>`;sheet.classList.add("on");sheetIn.querySelector(".x").onclick=closeSheet;}
+  function insights(){
+    const extra=[["zuccheri",F.sugar_g,v=>nf(v,0)+" g"],["magnesio",F.magnesium_mg,v=>nf(v,0)+" mg"],
+      ["potassio",F.potassium_mg,v=>nf(v,0)+" mg"],["sodio",F.sodium_mg,v=>nf(v,0)+" mg"],
+      ["indice vitamine",F.vit_index,v=>nf(v,0)+"%"],["indice minerali",F.min_index,v=>nf(v,0)+"%"],
+      ["piante / 7 giorni",F.plants_7d,v=>nf(v,1)],["indice microbiota",F.microbiome,v=>nf(v,0)+"/100"]];
+    const all=items.filter(x=>x.food).concat(extra.map(([label,arr,fmt])=>{const now=mean(arr,N-14,N-1),prior=mean(arr,N-28,N-15);return{label,now,d:delta(now,prior),fmt,food:1};}).filter(x=>x.now!=null));
+    const observed=mean(F.kcal_observed,N-14,N-1), total=mean(F.kcal,N-14,N-1);
+    if(observed!=null&&total) all.push({label:"quota osservata",now:100*observed/total,d:null,fmt:v=>nf(v,0)+"%",food:1});
+    const line=x=>`<div class="bar"><u>${x.label}</u><div></div><b>${x.fmt(x.now)} · ${fd(x.d)}</b></div>`;
+    const last=D.last&&D.last.n_kcal!=null?new Date(D0.getTime()+D.last.n_kcal*DAY).toLocaleDateString("it-IT"):"—";
+    sheetIn.innerHTML=`<button class="x" type="button" aria-label="Chiudi">×</button><div class="when">ultimi 14 giorni vs 14 precedenti</div><h3>La tavola, in due settimane</h3><div style="margin-top:16px">${all.map(line).join("")}</div><p class="t-foot">Diario aggiornato al ${last}. Le giornate ricostruite e quelle derivate da scontrino sono stime dichiarate, non pasti osservati.</p>`;
+    sheet.classList.add("on");sheetIn.querySelector(".x").onclick=closeSheet;
+  }
   document.getElementById("totals").onclick=e=>{if(e.target.closest&&e.target.closest("[data-food]"))insights();};
 })();
 
