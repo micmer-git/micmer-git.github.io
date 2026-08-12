@@ -565,6 +565,12 @@ TEMPLATE = r"""<!DOCTYPE html>
     font-variant-numeric:tabular-nums; line-height:1.1}
   .total .l{font-family:'IBM Plex Mono',monospace; font-size:.58rem; letter-spacing:.13em;
     text-transform:uppercase; color:var(--muted); margin-top:4px}
+  .total{border:0;background:transparent;color:inherit;font:inherit;padding:5px;min-width:0}
+  button.total{cursor:pointer;border-radius:7px}
+  button.total:hover{background:var(--paper);outline:1px solid var(--rule)}
+  .total .d{font-family:'IBM Plex Mono',monospace;font-size:.55rem;margin-top:3px;color:var(--ink-soft)}
+  .total .d.up{color:var(--s3)} .total .d.down{color:var(--neg)}
+  .fortnight{margin:15px auto 0;max-width:900px;text-align:center;color:var(--muted);font-size:.78rem}
 
   /* ---------- range control ---------- */
   /* Due gruppi di comandi sulla stessa riga: la finestra temporale e la forma
@@ -861,6 +867,7 @@ TEMPLATE = r"""<!DOCTYPE html>
 </header>
 
 <div class="totals" id="totals"></div>
+<p class="fortnight">Medie giornaliere degli ultimi 14 giorni · variazione rispetto ai 14 precedenti. Tocca una voce della tavola per gli insight.</p>
 
 <nav class="tracks" id="tracks" aria-label="Le pagine"></nav>
 
@@ -3454,25 +3461,21 @@ document.getElementById("tracks").innerHTML = (D.tracks || []).map(t => `
 
 /* ------------------------------------------------------------- headline */
 (function totals() {
-  const secs = secsOf.secs.reduce((a, b) => a + b, 0);
-  const km = secsOf.dist.reduce((a, b) => a + b, 0) / 1000;
-  const up = secsOf.gain.reduce((a, b) => a + b, 0);
-  const nights = D.sleep.filter(v => v !== null).length;
-  const sl = rolling(D.sleep, N - 30, N - 1, 30);
-  const hv = rolling(D.hrv, N - 30, N - 1, 30);
-  const items = [
-    [nf(D.acts.length), "attività"],
-    [nf(Math.round(km)), "chilometri"],
-    [nf(Math.round(up / 1000)) + "k", "metri di salita"],
-    [nf(Math.round(secs / 3600)), "ore in movimento"],
-    [nf(Math.round(D.ctl[N - 1])), "fitness (CTL)"],
-    [nf(Math.round(D.ctl[N - 1] - D.atl[N - 1])), "forma"],
-    [nf(nights), "notti misurate"],
-    [hhmm(sl[sl.length - 1]), "sonno, 30 gg"],
-    [nf(Math.round(hv[hv.length - 1])), "HRV, 30 gg"],
-  ];
-  document.getElementById("totals").innerHTML = items.map(([n, l]) =>
-    `<div class="total"><div class="n">${n}</div><div class="l">${l}</div></div>`).join("");
+  const F=D.nutri||{}, mean=(a,lo,hi)=>{const s=stats((a||[]).slice(Math.max(0,lo),hi+1));return s?s.mean:null;};
+  const delta=(a,b)=>a==null||b==null||b===0?null:100*(a-b)/Math.abs(b);
+  const fd=d=>d==null?"—":`${d>=0?"+":""}${nf(d,0)}%`;
+  const km=new Array(N).fill(0), mins=new Array(N).fill(0), tss=new Array(N).fill(0);
+  D.acts.forEach(a=>{if(a[0]>=0&&a[0]<N){mins[a[0]]+=(a[2]||0)/60;km[a[0]]+=(a[3]||0)/1000;tss[a[0]]+=a[5]||0;}});
+  const defs=[["sonno",D.sleep,hhmm,0,0],["HRV",D.hrv,v=>nf(v,0)+" ms",0,0],
+    ["FC riposo",D.rhr,v=>nf(v,0)+" bpm",1,0],["passi",D.steps,v=>nf(v,0),0,0],
+    ["allenamento",mins,v=>nf(v,0)+" min/g",0,0],["chilometri",km,v=>nf(v,1)+" km/g",0,0],
+    ["carico",tss,v=>nf(v,0)+" TSS/g",0,0],["kcal",F.kcal,v=>nf(v,0),0,1],
+    ["proteine",F.protein_g,v=>nf(v,0)+" g",0,1],["carboidrati",F.carb_g,v=>nf(v,0)+" g",0,1],
+    ["fibre",F.fiber_g,v=>nf(v,1)+" g",0,1],["vegetale",F.pct_plant,v=>nf(v,0)+"%",0,1]];
+  const items=defs.map(([label,arr,fmt,invert,food])=>{const now=mean(arr,N-14,N-1),prior=mean(arr,N-28,N-15);return{label,now,prior,d:delta(now,prior),fmt,invert,food};}).filter(x=>x.now!=null);
+  document.getElementById("totals").innerHTML=items.map(x=>{const good=x.d!=null&&(x.invert?x.d<0:x.d>0),tag=x.food?"button":"div";return `<${tag} class="total" ${x.food?'type="button" data-food="1"':''}><div class="n">${x.fmt(x.now)}</div><div class="l">${x.label}</div><div class="d ${x.d==null?'':good?'up':'down'}">${fd(x.d)} vs prima</div></${tag}>`;}).join("");
+  function insights(){const food=items.filter(x=>x.food),line=x=>`${x.label}: <strong>${x.fmt(x.now)}</strong> al giorno (${fd(x.d)}).`;const last=D.last&&D.last.n_kcal!=null?dateAt(D.last.n_kcal).toLocaleDateString("it-IT"):"—";sheetIn.innerHTML=`<button class="x" type="button" aria-label="Chiudi">×</button><div class="when">ultimi 14 giorni vs 14 precedenti</div><h3>La tavola, in due settimane</h3>${food.map(x=>`<p>${line(x)}</p>`).join("")}<p class="t-foot">Diario aggiornato al ${last}. Le giornate ricostruite sono stime dichiarate, non misure.</p>`;sheet.classList.add("on");sheetIn.querySelector(".x").onclick=closeSheet;}
+  document.getElementById("totals").onclick=e=>{if(e.target.closest&&e.target.closest("[data-food]"))insights();};
 })();
 
 drawAll();

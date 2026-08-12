@@ -253,22 +253,18 @@ if (ran) {
   ok(collide.length === 0, `nessuna sovrapposizione fra etichette dell'asse x` +
     (collide.length ? ` — ${collide.length}, es. ${collide[0]}` : ""));
 
-  /* ------------------------------------------------ 3. totali ricalcolati */
+  /* --------------------------------------- 3. medie delle ultime due settimane */
   const N = D.n;
   let secs = 0, dist = 0, gain = 0;
   for (const [, , s, m, up] of D.acts) { secs += s; dist += m; gain += up; }
   const totalsHtml = document.getElementById("totals").innerHTML;
   const it = v => v.toLocaleString("it-IT");
-  const expect = [
-    [it(D.acts.length), "attività"],
-    [it(Math.round(dist / 1000)), "chilometri"],
-    [it(Math.round(secs / 3600)), "ore in movimento"],
-    [it(D.sleep.filter(v => v !== null).length), "notti misurate"],
-  ];
-  for (const [v, label] of expect) {
-    ok(totalsHtml.includes(`>${v}<`),
-      `testata: ${label} = ${v} (ricalcolato dal payload)`);
+  for (const label of ["sonno", "HRV", "FC riposo", "allenamento", "chilometri",
+                        "kcal", "proteine", "carboidrati", "fibre", "vegetale"]) {
+    ok(totalsHtml.includes(`>${label}<`), `testata 14 giorni: ${label}`);
   }
+  ok(totalsHtml.includes("vs prima"), "ogni media dichiara il confronto con i 14 giorni precedenti");
+  ok(totalsHtml.includes('data-food="1"'), "le metriche alimentari aprono gli insight");
   ok(Math.round(gain / 1000) > 1000, `dislivello totale plausibile: ${it(Math.round(gain))} m`);
 
   /* --------------------------------- 4. ripiego tabellare + legende */

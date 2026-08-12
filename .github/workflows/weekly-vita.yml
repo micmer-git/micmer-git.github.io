@@ -1,17 +1,17 @@
-name: Weekly tracker sync
+name: Hourly Vita sync
 
 # Monday morning: pull whatever landed on Intervals.icu during the week into the
 # climb data, then rebuild /vita so the hub reflects it. Also runnable by hand.
 on:
   schedule:
-    - cron: "0 5 * * 1"        # 05:00 UTC Monday = 07:00 Europe/Rome in summer
+    - cron: "17 * * * *"       # offset from the busy top of the hour
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: weekly-vita
+  group: hourly-vita
   cancel-in-progress: false
 
 jobs:
@@ -75,8 +75,8 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A gazzaniga-orezzo sogni-di-un-unno diario-di-un-unno vita tools/vita_tests.md tools/food/data
           if git diff --cached --quiet; then
-            echo "nothing changed this week"
+            echo "nothing changed this hour"
           else
-            git commit -m "weekly: sync intervals.icu + rebuild /vita"
+            git commit -m "hourly: sync intervals.icu + rebuild /vita"
             git push
           fi
