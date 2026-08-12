@@ -13,6 +13,10 @@ This file is the durable handoff for every agent working on `/vita`.
   the final page; `check_vita.cjs` verifies it. Do not move food before source sync.
 - `tools/food/data/food_log.csv` is the food source of truth. Generated public
   aggregates live under `vita/cibo/data/`.
+- Food statements may arrive in other Codex/ChatGPT tasks or in the private
+  `micmer-git/agents` day-by-day diary. Reconcile those into `food_log.csv` before
+  rebuilding, keep their original provenance, and never convert a planned meal
+  ("stasera") into an observed one until the user confirms eating it.
 - Never publish API keys or raw private health exports.
 
 ## Receipt estimates
@@ -30,6 +34,10 @@ When Michele attaches a receipt:
 4. Every derived row must carry provenance `receipt_estimate`, confidence, receipt
    identifier, and the assumption used. It must never appear as observed food.
 5. Avoid double counting when a meal/photo/log already covers the same food and day.
+
+The same rule applies to cycling fuel: an explicit note containing the observed
+panini in bici suppresses the automatic hourly bread/jam/PB reconstruction for that
+day. An ordinary bread-and-jam snack at home does not suppress it.
 
 ## Review policy
 

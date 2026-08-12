@@ -586,12 +586,12 @@ TEMPLATE = r"""<!DOCTYPE html>
     --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --neg:#e66767;
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  html{scroll-behavior:smooth}
+  html{scroll-behavior:smooth;max-width:100%;overflow-x:hidden;overflow-x:clip}
   body{
     background:var(--bg); color:var(--ink);
     font-family:'EB Garamond',Georgia,serif; font-size:18px; line-height:1.6;
     max-width:1280px; margin:0 auto; padding:44px 20px 90px;
-    -webkit-text-size-adjust:100%;
+    -webkit-text-size-adjust:100%; width:100%; overflow-x:hidden; overflow-x:clip;
   }
   body::before{
     content:""; position:fixed; inset:0; pointer-events:none; z-index:-1;
@@ -625,7 +625,7 @@ TEMPLATE = r"""<!DOCTYPE html>
   .total .n{font-family:'Cinzel',serif; font-size:1.5rem; font-weight:700; color:var(--gold);
     font-variant-numeric:tabular-nums; line-height:1.1}
   .total .l{font-family:'IBM Plex Mono',monospace; font-size:.58rem; letter-spacing:.13em;
-    text-transform:uppercase; color:var(--muted); margin-top:4px}
+    text-transform:uppercase; color:var(--muted); margin-top:4px; overflow-wrap:anywhere}
   .total{border:0;background:transparent;color:inherit;font:inherit;padding:5px;min-width:0}
   button.total{cursor:pointer;border-radius:7px}
   button.total:hover{background:var(--paper);outline:1px solid var(--rule)}
@@ -647,7 +647,7 @@ TEMPLATE = r"""<!DOCTYPE html>
   .compare-body{display:grid; grid-template-columns:minmax(0,1fr) 160px; gap:14px;
     align-items:center; margin-top:14px}
   .compare-plot{min-height:280px}
-  .compare-plot svg{display:block; width:100%; height:280px; overflow:visible}
+  .compare-plot svg{display:block; width:100%; height:280px; overflow:hidden}
   .compare-result{border-left:1px solid var(--rule); padding-left:14px}
   .compare-result b{display:block; font:700 1.8rem 'Cinzel',serif; color:var(--gold)}
   .compare-result span{display:block; font:500 .59rem 'IBM Plex Mono',monospace;
@@ -801,7 +801,7 @@ TEMPLATE = r"""<!DOCTYPE html>
   /* le leve dell'indice microbiota: l'emoji dice quale, il numero quanto e' tirata */
   .t-shift{display:flex; gap:11px; flex-wrap:wrap; margin-top:5px; font-size:.95rem}
   .t-shift b{font-family:'IBM Plex Mono',monospace; font-size:.68rem; font-weight:600}
-  svg.plot{width:100%; height:auto; display:block; touch-action:pan-y; overflow:visible}
+  svg.plot{width:100%; height:auto; display:block; touch-action:pan-y; overflow:hidden}
   .t-foot{font-family:'IBM Plex Mono',monospace; font-size:.53rem; letter-spacing:.06em;
     color:var(--muted); margin-top:3px; line-height:1.45; grid-column:1/-1}
   .t-empty{font-style:italic; color:var(--muted); font-size:.8rem; padding:14px 0;
@@ -874,6 +874,13 @@ TEMPLATE = r"""<!DOCTYPE html>
     padding:7px 0; gap:12px}
   .insight-list .bar>div{display:none}
   .insight-list .bar b{min-width:118px; white-space:nowrap}
+  .insight-list .bar.sel{background:rgba(226,201,143,.07); margin:0 -9px;
+    padding-left:9px; padding-right:9px; border-left:2px solid var(--gold)}
+  .insight-chart{margin:13px 0 8px; border:1px solid var(--rule); border-radius:7px;
+    background:var(--paper-2); padding:8px 9px 6px; overflow:hidden}
+  .insight-chart svg{display:block; width:100%; height:auto; overflow:hidden}
+  .insight-chart .legend{display:flex; justify-content:space-between; gap:12px;
+    font:500 .52rem 'IBM Plex Mono',monospace; letter-spacing:.08em; color:var(--muted)}
   .hint{font-family:'IBM Plex Mono',monospace; font-size:.53rem; letter-spacing:.09em;
     color:var(--muted); text-align:center; margin-top:9px}
 
@@ -934,7 +941,7 @@ TEMPLATE = r"""<!DOCTYPE html>
   }
   @media(max-width:560px){
     body{padding:26px 11px 64px; font-size:17px}
-    .totals{grid-template-columns:repeat(auto-fit,minmax(92px,1fr)); gap:13px 8px}
+    .totals{grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px 8px}
     .total .n{font-size:1.25rem}
     .ranges{gap:6px}
     .ranges button{padding:6px 12px; font-size:.62rem}
@@ -942,13 +949,19 @@ TEMPLATE = r"""<!DOCTYPE html>
        la riga sbagliata */
     .viewsw{border-left:0; padding-left:0}
     .compare{padding:13px 11px 11px}
-    .compare-controls label,.compare-controls select{width:100%; max-width:none}
+    .compare-controls label,.compare-controls select{width:100%; max-width:none; min-width:0}
     .compare-body{grid-template-columns:1fr}
     .compare-result{border-left:0; border-top:1px solid var(--rule); padding:10px 0 0;
       display:grid; grid-template-columns:auto 1fr; column-gap:12px; align-items:baseline}
     .compare-result p{grid-column:1/-1}
-    .insight-list .bar{grid-template-columns:1fr}
-    .insight-list .bar b{text-align:left; min-width:0}
+    .sheet{padding:8vh 0 0; align-items:flex-end}
+    .sheet.on{display:flex}
+    .sheet-in{width:100%; max-height:92vh; overflow-y:auto; margin:auto 0 0;
+      border-radius:13px 13px 0 0; padding:18px 15px calc(20px + env(safe-area-inset-bottom))}
+    .sheet h3{font-size:1.22rem; line-height:1.2; padding-right:32px}
+    .sheet .when{padding-right:34px; font-size:.54rem}
+    .insight-list .bar{grid-template-columns:minmax(0,1fr) minmax(96px,auto); gap:8px}
+    .insight-list .bar b{text-align:right; min-width:0; white-space:normal; font-size:.58rem}
   }
 </style>
 </head>
@@ -3667,24 +3680,37 @@ document.getElementById("tracks").innerHTML = (D.tracks || []).map(t => `
     ["carico",tss,v=>nf(v,0)+" TSS/g",0,0],["kcal",F.kcal,v=>nf(v,0),0,1],
     ["proteine",F.protein_g,v=>nf(v,0)+" g",0,1],["carboidrati",F.carb_g,v=>nf(v,0)+" g",0,1],
     ["fibre",F.fiber_g,v=>nf(v,1)+" g",0,1],["vegetale",F.pct_plant,v=>nf(v,0)+"%",0,1]];
-  const items=defs.map(([label,arr,fmt,invert,food])=>{const now=mean(arr,N-14,N-1),prior=mean(arr,N-28,N-15);return{label,now,prior,d:delta(now,prior),fmt,invert,food};}).filter(x=>x.now!=null);
-  const render=xs=>xs.map(x=>{const good=x.d!=null&&(x.invert?x.d<0:x.d>0),tag=x.food?"button":"div";return `<${tag} class="total" ${x.food?'type="button" data-food="1"':''}><div class="n">${x.fmt(x.now)}</div><div class="l">${x.label}</div><div class="d ${x.d==null?'':good?'up':'down'}">${fd(x.d)} vs prima</div></${tag}>`;}).join("");
+  const items=defs.map(([label,arr,fmt,invert,food])=>{const now=mean(arr,N-14,N-1),prior=mean(arr,N-28,N-15);return{label,arr,now,prior,d:delta(now,prior),fmt,invert,food};}).filter(x=>x.now!=null);
+  const render=xs=>xs.map(x=>{const good=x.d!=null&&(x.invert?x.d<0:x.d>0),tag=x.food?"button":"div";return `<${tag} class="total" ${x.food?`type="button" data-food="${x.label}"`:''}><div class="n">${x.fmt(x.now)}</div><div class="l">${x.label}</div><div class="d ${x.d==null?'':good?'up':'down'}">${fd(x.d)} vs prima</div></${tag}>`;}).join("");
   document.getElementById("totals-recovery").innerHTML=render(items.filter(x=>!x.food));
   document.getElementById("totals-food").innerHTML=render(items.filter(x=>x.food));
-  function insights(){
+  function insights(wanted){
     const extra=[["zuccheri",F.sugar_g,v=>nf(v,0)+" g"],["magnesio",F.magnesium_mg,v=>nf(v,0)+" mg"],
       ["potassio",F.potassium_mg,v=>nf(v,0)+" mg"],["sodio",F.sodium_mg,v=>nf(v,0)+" mg"],
       ["indice vitamine",F.vit_index,v=>nf(v,0)+"%"],["indice minerali",F.min_index,v=>nf(v,0)+"%"],
       ["piante / 7 giorni",F.plants_7d,v=>nf(v,1)],["indice microbiota",F.microbiome,v=>nf(v,0)+"/100"]];
-    const all=items.filter(x=>x.food).concat(extra.map(([label,arr,fmt])=>{const now=mean(arr,N-14,N-1),prior=mean(arr,N-28,N-15);return{label,now,d:delta(now,prior),fmt,food:1};}).filter(x=>x.now!=null));
+    const all=items.filter(x=>x.food).concat(extra.map(([label,arr,fmt])=>{const now=mean(arr,N-14,N-1),prior=mean(arr,N-28,N-15);return{label,arr,now,prior,d:delta(now,prior),fmt,food:1};}).filter(x=>x.now!=null));
     const observed=mean(F.kcal_observed,N-14,N-1), total=mean(F.kcal,N-14,N-1);
-    if(observed!=null&&total) all.push({label:"quota osservata",now:100*observed/total,d:null,fmt:v=>nf(v,0)+"%",food:1});
-    const line=x=>`<div class="bar"><u>${x.label}</u><div></div><b>${x.fmt(x.now)} · ${fd(x.d)}</b></div>`;
+    if(observed!=null&&total){const arr=(F.kcal||[]).map((v,i)=>v&&F.kcal_observed?100*(F.kcal_observed[i]||0)/v:null);all.push({label:"quota osservata",arr,now:100*observed/total,prior:null,d:null,fmt:v=>nf(v,0)+"%",food:1});}
+    const selected=all.find(x=>x.label===wanted)||all[0];
+    const line=x=>`<div class="bar ${x===selected?'sel':''}"><u>${x.label}</u><div></div><b>${x.fmt(x.now)} · ${fd(x.d)}</b></div>`;
+    function chart(x){
+      const vals=(x.arr||[]).slice(Math.max(0,N-28),N).map(v=>v==null||!isFinite(v)?null:Number(v));
+      const good=vals.filter(v=>v!=null);if(good.length<4)return"";
+      let lo=Math.min(...good),hi=Math.max(...good);if(!(hi>lo)){lo-=1;hi+=1;}const pad=(hi-lo)*.08;lo-=pad;hi+=pad;
+      const W=660,H=112,P=10,X=i=>P+i*(W-2*P)/27,Y=v=>P+(hi-v)*(H-2*P)/(hi-lo);
+      const segments=(a,b,col)=>{let out="",pts=[];for(let i=a;i<=b;i++){if(vals[i]==null){if(pts.length>1)out+=`<polyline points="${pts.join(' ')}"/>`;pts=[];}else pts.push(`${X(i)},${Y(vals[i])}`);}if(pts.length>1)out+=`<polyline points="${pts.join(' ')}"/>`;return `<g fill="none" stroke="${col}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${out}</g>`;};
+      const av=(a,b)=>{const v=vals.slice(a,b+1).filter(v=>v!=null);return v.length?v.reduce((q,z)=>q+z,0)/v.length:null;};
+      const p=av(0,13),n=av(14,27),meanLine=(v,a,b,col)=>v==null?"":`<line x1="${X(a)}" x2="${X(b)}" y1="${Y(v)}" y2="${Y(v)}" stroke="${col}" stroke-width="1.2" stroke-dasharray="5 4"/>`;
+      return `<div class="insight-chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${x.label}, ultimi 28 giorni">`+
+        `<line x1="${X(13.5)}" x2="${X(13.5)}" y1="0" y2="${H}" stroke="var(--rule)"/>${meanLine(p,0,13,'var(--muted)')}${meanLine(n,14,27,'var(--gold)')}${segments(0,13,'var(--muted)')}${segments(14,27,'var(--gold)')}</svg>`+
+        `<div class="legend"><span>14 precedenti · media ${x.fmt(p)}</span><span>ultimi 14 · media ${x.fmt(n)}</span></div></div>`;
+    }
     const last=D.last&&D.last.n_kcal!=null?new Date(D0.getTime()+D.last.n_kcal*DAY).toLocaleDateString("it-IT"):"—";
-    sheetIn.innerHTML=`<button class="sheet-x" type="button" aria-label="Chiudi">×</button><div class="when">ultimi 14 giorni vs 14 precedenti</div><h3>La tavola, in due settimane</h3><div class="insight-list" style="margin-top:16px">${all.map(line).join("")}</div><p class="t-foot">Diario aggiornato al ${last}. Le giornate ricostruite e quelle derivate da scontrino sono stime dichiarate, non pasti osservati.</p>`;
+    sheetIn.innerHTML=`<button class="sheet-x" type="button" aria-label="Chiudi">×</button><div class="when">ultimi 14 giorni vs 14 precedenti</div><h3>${selected.label.charAt(0).toUpperCase()+selected.label.slice(1)}</h3>${chart(selected)}<div class="insight-list">${all.map(line).join("")}</div><p class="t-foot">Diario aggiornato al ${last}. Le giornate ricostruite e quelle derivate da scontrino sono stime dichiarate, non pasti osservati.</p>`;
     sheet.classList.add("on");sheetIn.querySelector(".sheet-x").onclick=closeDay;
   }
-  document.getElementById("totals").onclick=e=>{if(e.target.closest&&e.target.closest("[data-food]"))insights();};
+  document.getElementById("totals").onclick=e=>{const b=e.target.closest&&e.target.closest("[data-food]");if(b)insights(b.dataset.food);};
 })();
 
 drawAll();

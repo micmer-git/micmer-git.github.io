@@ -397,3 +397,20 @@ date,meal,food_id,qty,note,source
 2026-08-10,cena,pizza_base,1,pizza in teglia con ananas: non la sua solita,foto
 2026-08-10,cena,mozzarella,80,questa aveva mozzarella,foto
 2026-08-10,cena,mango,60,ananas: usato il mango come sostituto piu' vicino,foto
+2026-08-12,colazione,cappuccino,1,dichiarato in altra chat,dichiarato
+2026-08-12,colazione,cornetto_crema,1,brioche alla crema dichiarata in altra chat,dichiarato
+2026-08-12,spuntino,pane_integrale,180,3 panini in bici da circa 60 g,dichiarato
+2026-08-12,spuntino,marmellata_fragola,60,3 panini in bici da circa 20 g ciascuno,dichiarato
+2026-08-12,spuntino,burro_arachidi_sgrassato,18,3 panini in bici da circa 6 g ciascuno,dichiarato
+2026-08-12,spuntino,banana,1,dichiarata in altra chat,dichiarato
+2026-08-12,spuntino,pane_integrale,60,panino extra semplice; quantita stimata,dichiarato
+2026-08-12,pranzo,petto_pollo,280,porzione stimata dalla foto in altra chat,foto
+2026-08-12,pranzo,olive,35,olive nere; quantita stimata dalla foto in altra chat,foto
+2026-08-12,pranzo,pomodorini,180,pomodori a fette; quantita stimata dalla foto in altra chat,foto
+2026-08-12,pranzo,peperoni,150,peperone giallo; quantita stimata dalla foto in altra chat,foto
+2026-08-12,pranzo,melone,300,2 fette dichiarate in altra chat,dichiarato
+2026-08-12,pranzo,pesca,1,dichiarata in altra chat,dichiarato
+2026-08-12,merenda,latte_ps,250,latte scremato ora; 250 ml stimati e voce PS usata come proxy,dichiarato
+2026-08-12,merenda,pane_integrale,60,panino con marmellata ora; quantita standard stimata,dichiarato
+2026-08-12,merenda,marmellata_fragola,20,panino con marmellata ora; quantita standard stimata,dichiarato
+2026-08-12,merenda,pesca,1,un'altra pesca dichiarata ora,dichiarato

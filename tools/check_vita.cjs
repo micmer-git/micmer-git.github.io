@@ -265,7 +265,7 @@ if (ran) {
     ok(totalsHtml.includes(`>${label}<`), `testata 14 giorni: ${label}`);
   }
   ok(totalsHtml.includes("vs prima"), "ogni media dichiara il confronto con i 14 giorni precedenti");
-  ok(totalsHtml.includes('data-food="1"'), "le metriche alimentari aprono gli insight");
+  ok(totalsHtml.includes('data-food="kcal"'), "le metriche alimentari aprono gli insight");
   ok(K.compare && K.compare.series.length >= 20,
     "il correlatore offre almeno venti serie selezionabili");
   ok(Array.from(document.getElementById("compare-plot").children).some(n => n.tagName === "svg"),

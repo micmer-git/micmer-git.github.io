@@ -187,11 +187,20 @@ def main():
                 if dd:
                     ride_h[dd] += float(r.get("moving_time_s") or 0) / 3600.0
 
+    # Se il carburante della bici è già stato raccontato, la regola automatica non
+    # deve aggiungerne un'altra versione. La nota esplicita mantiene la distinzione
+    # da un normale pane+marmellata mangiato a casa nello stesso giorno.
+    bike_fuel_observed = {
+        r["date"] for r in log
+        if "panin" in (r.get("note") or "").lower()
+        and "bici" in (r.get("note") or "").lower()
+    }
+
     n_panini = 0
     for d in daterange(d0, d1):
         k = d.isoformat()
         h = ride_h.get(k, 0.0)
-        if h < 1.0:
+        if h < 1.0 or k in bike_fuel_observed:
             continue
         # un panino per ora piena; una uscita da 2h50 ne vale 3, da 1h10 ne vale 1
         n = max(1, round(h))
