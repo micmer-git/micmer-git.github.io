@@ -415,3 +415,10 @@ date,meal,food_id,qty,note,source
 2026-08-12,merenda,marmellata_fragola,20,panino con marmellata ora; quantita standard stimata,dichiarato
 2026-08-12,merenda,burro_arachidi_sgrassato,10,peanut butter nel panino; 10 g confermati,dichiarato
 2026-08-12,merenda,pesca,1,un'altra pesca dichiarata ora,dichiarato
+2026-08-13,colazione,recipe:colazione_standard,1,porridge solito con banana; dichiarato in chat,dichiarato
+2026-08-13,colazione,pesca,1,dichiarata in chat,dichiarato
+2026-08-13,pranzo,recipe:avocado_toast,1,avocado toast solito; dichiarato in chat,dichiarato
+2026-08-13,spuntino,pane_integrale,60,panino di solo pane integrale; grammatura standard stimata,dichiarato
+2026-08-13,spuntino,gelato_cono,120,gelato al cioccolato medio; grammatura stimata,dichiarato
+2026-08-13,spuntino,pera,1.2,pera da 200 g dichiarata; convertita sulla pera media da ~170 g,dichiarato
+2026-08-13,spuntino,yogurt_greco_0,150,yogurt greco; quantita non dichiarata - vasetto standard stimato,dichiarato

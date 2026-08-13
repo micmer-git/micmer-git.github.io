@@ -266,6 +266,79 @@ def csv_blocks(path, idx, n, label, keep=None):
     return out, first, last, len(rows)
 
 
+# --------------------------------------------------------------- il diario
+# Il popup della giornata sa **mostrare** un pasto ma non sa proporne uno: legge
+# `days.json`, che e' gia' cotto. Perche' /vita possa diventare anche il posto in
+# cui si annota cosa si e' mangiato, servono tre cose che nel payload non c'erano:
+# il catalogo degli alimenti (per calcolare le kcal di una riga nuova senza una
+# chiamata), le ricette (perche' "avocado toast" e' una riga sola, non tre), e i
+# preset — che NON sono una lista scelta a mano ma le abitudini vere lette da
+# `food_log.csv`: cosa Michele registra piu' spesso, con la quantita' che usa piu'
+# spesso e nel pasto in cui la mette piu' spesso. Una lista scritta a mano
+# invecchierebbe in silenzio; questa si aggiorna da sola a ogni build.
+FOODS_CSV = os.path.join(HERE, "food", "data", "foods.csv")
+RECIPES_CSV = os.path.join(HERE, "food", "data", "recipes.csv")
+FOOD_LOG_CSV = os.path.join(HERE, "food", "data", "food_log.csv")
+
+# Le colonne che il diario usa davvero: nome, unita', e i macro per la stima al
+# volo. I 24 micronutrienti restano fuori — la pagina non li ricalcola in bozza,
+# li rilegge dalla build vera dopo che le righe sono state commesse.
+CAT_COLS = (("kcal", "k"), ("protein_g", "p"), ("carb_g", "c"),
+            ("fiber_g", "fb"), ("fat_g", "ft"))
+PRESET_N = 28
+
+
+def build_food_catalog():
+    """(catalogo, ricette, preset) per il diario editabile di /vita."""
+    import csv as _csv
+    from collections import Counter, defaultdict
+
+    cat = {}
+    if os.path.exists(FOODS_CSV):
+        with open(FOODS_CSV, encoding="utf-8", newline="") as fh:
+            for r in _csv.DictReader(fh):
+                ref = float(r["ref_qty"] or 1) or 1
+                e = {"n": r["name_it"], "u": r["unit"], "g": r["group"]}
+                for src, dst in CAT_COLS:
+                    # per unita' di misura, non per ref_qty: cosi' la pagina
+                    # moltiplica e basta, senza sapere che il CSV e' per 100 g
+                    e[dst] = round(float(r[src] or 0) / ref, 4)
+                cat[r["id"]] = e
+
+    rec = {}
+    if os.path.exists(RECIPES_CSV):
+        with open(RECIPES_CSV, encoding="utf-8", newline="") as fh:
+            for r in _csv.DictReader(fh):
+                e = rec.setdefault(r["recipe_id"], {"n": r["name"],
+                                                    "s": float(r["servings"] or 1) or 1,
+                                                    "i": []})
+                e["i"].append([r["food_id"], float(r["qty"] or 0)])
+
+    presets = []
+    if os.path.exists(FOOD_LOG_CSV):
+        seen = Counter()
+        qty_of = defaultdict(Counter)
+        meal_of = defaultdict(Counter)
+        with open(FOOD_LOG_CSV, encoding="utf-8", newline="") as fh:
+            for r in _csv.DictReader(fh):
+                fid = r["food_id"]
+                if fid not in cat and fid.removeprefix("recipe:") not in rec:
+                    continue
+                seen[fid] += 1
+                qty_of[fid][r["qty"]] += 1
+                meal_of[fid][r.get("meal") or "spuntino"] += 1
+        for fid, n in seen.most_common(PRESET_N):
+            rid = fid.removeprefix("recipe:")
+            label = rec[rid]["n"] if fid.startswith("recipe:") else cat[fid]["n"]
+            presets.append({"f": fid, "n": label,
+                            "q": float(qty_of[fid].most_common(1)[0][0]),
+                            "m": meal_of[fid].most_common(1)[0][0],
+                            "seen": n})
+
+    print(f"  diario: {len(cat)} alimenti, {len(rec)} ricette, {len(presets)} preset")
+    return cat, rec, presets
+
+
 def build_payload(raw):
     """Daily arrays on one shared index, plus the activity list. Nothing is smoothed
     or filled here — the page does its own rolling means so the range switch can
@@ -389,6 +462,8 @@ def build_payload(raw):
             days_detail = json.load(fh)
         print(f"  dettaglio giornaliero: {len(days_detail)} giorni")
 
+    food_catalog, food_recipes, food_presets = build_food_catalog()
+
     food_profile = {}
     if os.path.exists(FOOD_PROFILE):
         with open(FOOD_PROFILE, encoding="utf-8") as fh:
@@ -407,6 +482,9 @@ def build_payload(raw):
         "floraFoods": flora_foods,
         "days": days_detail,
         "foodProfile": food_profile,
+        "foodCat": food_catalog,
+        "foodRec": food_recipes,
+        "foodPre": food_presets,
         "pulled": raw["pulled"],
         "d0": d0.isoformat(),
         "n": n,
@@ -911,6 +989,66 @@ TEMPLATE = r"""<!DOCTYPE html>
   .hint{font-family:'IBM Plex Mono',monospace; font-size:.53rem; letter-spacing:.09em;
     color:var(--muted); text-align:center; margin-top:9px}
 
+  /* ---------- il diario: la giornata sfogliabile e annotabile ---------- */
+  .diary-open{display:flex; align-items:center; justify-content:center; gap:11px;
+    flex-wrap:wrap; margin:16px 0 0}
+  .diary-open button{font-family:'IBM Plex Mono',monospace; font-size:.62rem;
+    letter-spacing:.15em; text-transform:uppercase; color:var(--ink);
+    background:var(--paper); border:1px solid var(--gold); border-radius:99px;
+    padding:9px 20px; cursor:pointer; transition:background .16s,color .16s}
+  .diary-open button:hover{background:var(--gold); color:#0a0906}
+  .diary-open span{font-family:'IBM Plex Mono',monospace; font-size:.53rem;
+    letter-spacing:.08em; color:var(--muted)}
+  .dnav{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:12px 0 4px}
+  .dnav button,.d-act{font-family:'IBM Plex Mono',monospace; font-size:.6rem;
+    letter-spacing:.1em; color:var(--ink-soft); background:var(--paper-2);
+    border:1px solid var(--rule); border-radius:5px; padding:6px 11px; cursor:pointer}
+  .dnav button:hover,.d-act:hover{border-color:var(--gold); color:var(--ink)}
+  .dnav input[type=date]{font-family:'IBM Plex Mono',monospace; font-size:.68rem;
+    color:var(--ink); background:var(--paper-2); border:1px solid var(--rule);
+    border-radius:5px; padding:5px 8px; color-scheme:dark}
+  .dnav .grow{flex:1 1 auto}
+  /* una riga del pasto: nome, quantita' modificabile, kcal, e il cestino */
+  .d-row{display:grid; grid-template-columns:minmax(0,1fr) 74px 62px 26px; gap:8px;
+    align-items:center; padding:4px 0; border-bottom:1px solid rgba(200,154,63,.1)}
+  .d-row>span{min-width:0; font-size:.84rem; color:var(--ink-soft); overflow:hidden;
+    text-overflow:ellipsis; white-space:nowrap}
+  .d-row input{width:100%; font-family:'IBM Plex Mono',monospace; font-size:.7rem;
+    color:var(--ink); background:var(--paper-2); border:1px solid var(--rule);
+    border-radius:4px; padding:4px 6px; text-align:right}
+  .d-row input:focus{outline:none; border-color:var(--gold)}
+  .d-row em{font-style:normal; font-family:'IBM Plex Mono',monospace; font-size:.66rem;
+    color:var(--muted); text-align:right; font-variant-numeric:tabular-nums}
+  .d-row button{background:none; border:0; color:var(--muted); cursor:pointer;
+    font-size:.95rem; line-height:1; padding:2px}
+  .d-row button:hover{color:var(--neg)}
+  .d-row.asm{opacity:.6}
+  .d-row.gone>span{text-decoration:line-through; color:var(--muted)}
+  .d-row.edit em{color:var(--gold)}
+  .d-row.new>span::after{content:" nuovo"; font-family:'IBM Plex Mono',monospace;
+    font-size:.5rem; letter-spacing:.1em; text-transform:uppercase; color:var(--gold)}
+  .d-pre{display:flex; flex-wrap:wrap; gap:6px; margin:7px 0 2px}
+  .d-pre button{font-family:'IBM Plex Mono',monospace; font-size:.62rem; color:var(--ink-soft);
+    background:var(--paper-2); border:1px solid var(--rule); border-radius:99px;
+    padding:5px 11px; cursor:pointer; white-space:nowrap}
+  .d-pre button:hover{border-color:var(--gold); color:var(--ink)}
+  .d-pre button b{font-weight:500; color:var(--muted); font-size:.56rem; margin-left:5px}
+  .d-search{width:100%; font-family:'IBM Plex Mono',monospace; font-size:.72rem;
+    color:var(--ink); background:var(--paper-2); border:1px solid var(--rule);
+    border-radius:5px; padding:7px 9px; margin-top:8px}
+  .d-search:focus{outline:none; border-color:var(--gold)}
+  .d-out{width:100%; min-height:104px; font-family:'IBM Plex Mono',monospace;
+    font-size:.62rem; line-height:1.6; color:var(--ink-soft); background:#0e0d09;
+    border:1px solid var(--rule); border-radius:5px; padding:9px 10px; margin-top:8px;
+    white-space:pre; overflow:auto; resize:vertical}
+  .d-acts{display:flex; gap:8px; flex-wrap:wrap; margin-top:9px}
+  .d-empty{font-family:'IBM Plex Mono',monospace; font-size:.62rem; color:var(--muted);
+    padding:8px 0}
+  @media (max-width:560px){
+    .d-row{grid-template-columns:minmax(0,1fr) 62px 52px 24px; gap:6px}
+    .d-row>span{white-space:normal}
+  }
+
   /* ---------- tooltip ---------- */
   .tip{position:fixed; z-index:9; pointer-events:none; opacity:0; transition:opacity .1s;
     background:#0e0d09; border:1px solid var(--rule); border-radius:5px; padding:6px 10px;
@@ -1015,6 +1153,11 @@ TEMPLATE = r"""<!DOCTYPE html>
 </div>
 <p class="fortnight">Medie giornaliere degli ultimi 14 giorni · variazione rispetto ai 14 precedenti. Tocca una voce della tavola per gli insight.</p>
 
+<div class="diary-open">
+  <button type="button" id="diary-btn">Apri il diario</button>
+  <span>una giornata alla volta · misure, pasti, e le righe da annotare</span>
+</div>
+
 <nav class="tracks" id="tracks" aria-label="Le pagine"></nav>
 
 <div class="controls">
@@ -1113,6 +1256,10 @@ davvero.</p>
 
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-t">
   <div class="sheet-in" id="sheet-in"></div>
+</div>
+
+<div class="sheet" id="diary" role="dialog" aria-modal="true" aria-labelledby="diary-t">
+  <div class="sheet-in" id="diary-in"></div>
 </div>
 
 <script>
@@ -1412,9 +1559,33 @@ function bar(label, pct, cap) {
   return `<div class="bar"><u>${label}</u><div><i style="width:${w}%;background:${col}"></i></div><b>${nf(pct, 0)}%</b></div>`;
 }
 
+/* La chiave di `days.json` e' una data di calendario, e va scritta con i campi
+   LOCALI. `toISOString()` normalizza a UTC: `D0` e' mezzanotte locale, quindi da
+   Roma (UTC+2) ogni giorno usciva da qui come quello PRIMA — cliccando su oggi si
+   apriva la cena di ieri. Su GitHub Actions, che gira in UTC, il check non poteva
+   vederlo: l'offset era zero. */
+const isoOf = i => {
+  const d = dayDate(i), p = v => String(v).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+};
+
+/* "150 g", "1.2×", "1". La quantita' arriva come numero e l'unita' dal catalogo:
+   la stringa la compone la pagina, cosi' non esiste in due posti che possono
+   allontanarsi. Gli ingredienti dei giorni ricostruiti arrivano invece gia'
+   formattati dal template, e passano di qui senza `f`. */
+const unitOf = fid => {
+  const e = fid ? (D.foodCat || {})[fid] : null;
+  return e ? e.u : "g";
+};
+const qtxt = it => {
+  if (it.q !== undefined) return it.q;
+  const u = unitOf(it.f), q = +(+it.qn).toFixed(4);
+  return u === "unit" ? (q === 1 ? "1" : `${q}×`) : `${q} ${u}`;
+};
+
 function openDay(i) {
   if (i < 0 || i >= N) return;
-  const k = dayDate(i).toISOString().slice(0, 10);
+  const k = isoOf(i);
   /* Il dettaglio arriva in tre forme: un giorno con pasti veri, un puntatore a una
      "forma ricostruita" (le centinaia di giorni identici stanno in _p una volta
      sola), e niente. Le ricette ricostruite si ridistendono da _t, il template. */
@@ -1462,7 +1633,7 @@ function openDay(i) {
     h += `<p class="hint" style="text-align:left;margin:0 0 8px">Di questo giorno non hai raccontato niente: qui sotto c'è lo schema abituale, non un pasto osservato.</p>`;
     for (const rn of day.recipes) {
       h += `<div class="meal"><div class="mname">${rn}</div><ul>` +
-        (tpl[rn] || []).map(it => `<li class="asm"><span>${it.n}</span><i>${it.q} · ${nf(it.kcal)} kcal</i></li>`).join("") +
+        (tpl[rn] || []).map(it => `<li class="asm"><span>${it.n}</span><i>${qtxt(it)} · ${nf(it.kcal)} kcal</i></li>`).join("") +
         `</ul></div>`;
     }
     h += `<h4>Macro e micro, in % del fabbisogno</h4><div class="bars">` +
@@ -1481,7 +1652,7 @@ function openDay(i) {
         `</h4>`;
       for (const m of keys) {
         h += `<div class="meal"><div class="mname">${MEAL_IT[m] || m}</div><ul>` +
-          meals[m].map(it => `<li class="${it.a ? "asm" : ""}"><span>${it.n}${it.r ? ` <u style="color:var(--muted);text-decoration:none">· ${it.r}</u>` : ""}</span><i>${it.q} · ${nf(it.kcal)} kcal</i></li>`).join("") +
+          meals[m].map(it => `<li class="${it.a ? "asm" : ""}"><span>${it.n}${it.r ? ` <u style="color:var(--muted);text-decoration:none">· ${it.r}</u>` : ""}</span><i>${qtxt(it)} · ${nf(it.kcal)} kcal</i></li>`).join("") +
           `</ul></div>`;
       }
       const macro = ["protein_g", "carb_g", "fiber_g", "fat_g"];
@@ -3767,6 +3938,405 @@ document.getElementById("tracks").innerHTML = (D.tracks || []).map(t => `
   }
   document.getElementById("totals").onclick=e=>{const b=e.target.closest&&e.target.closest("[data-food]");if(b)insights(b.dataset.food);};
 })();
+
+/* ============================================================== il diario
+   Il popup della giornata sa mostrare un giorno, ma ci si arriva solo colpendo
+   un punto del grafico giusto: se non sai gia' che giorno cerchi, non lo trovi.
+   Il diario e' la stessa giornata con una porta davanti — si sfoglia con le
+   frecce o con una data — e con una differenza sostanziale: **si annota**.
+
+   Cosa NON fa, e perche' lo dice invece di far finta: questa pagina e' un file
+   statico su GitHub Pages, non ha un server e non ha una credenziale. Non puo'
+   scrivere in `tools/food/data/food_log.csv`, che resta l'unica fonte di verita'.
+   Quindi le modifiche vivono in `localStorage` — su questo dispositivo, in questo
+   browser — e la pagina ne produce le righe CSV gia' pronte da incollare nel
+   repo. Una bozza dichiarata come tale vale piu' di una scrittura che finge di
+   essere andata a segno. */
+const DIARY_KEY = "vita.diario.v1";
+const diaryEl = document.getElementById("diary");
+const diaryIn = document.getElementById("diary-in");
+const MEAL_SORT = ["colazione", "spuntino", "pranzo", "merenda", "cena", "non_specificato"];
+/* i macro che la bozza sa ricalcolare da sola: sono nel catalogo inlineato.
+   I micronutrienti no — quelli tornano dalla build vera, dopo il commit. */
+const DELTA_KEYS = [["k", "kcal"], ["p", "protein_g"], ["c", "carb_g"],
+                    ["fb", "fiber_g"], ["ft", "fat_g"]];
+
+const diaryRead = () => {
+  try { return JSON.parse(localStorage.getItem(DIARY_KEY) || "{}") || {}; }
+  catch (e) { return {}; }
+};
+const diaryWrite = d => {
+  try { localStorage.setItem(DIARY_KEY, JSON.stringify(d)); } catch (e) {}
+};
+let diaryDraft = diaryRead();
+let diaryIdx = null;      /* giorno aperto, in indice di calendario */
+let diaryQuery = "";      /* filtro della ricerca alimenti */
+
+/* Normalizza sempre: una bozza salvata da una versione precedente della pagina
+   puo' non avere tutte e tre le liste, e un `undefined.indexOf` qui dentro
+   toglierebbe la pagina intera, non solo il diario. */
+const diaryDayDraft = k => {
+  const t = diaryDraft[k] || {};
+  if (!Array.isArray(t.add)) t.add = [];
+  if (!t.set || typeof t.set !== "object") t.set = {};
+  if (!Array.isArray(t.del)) t.del = [];
+  return t;
+};
+const diaryTouched = k => {
+  const t = diaryDraft[k];
+  return !!t && (t.add.length || t.del.length || Object.keys(t.set).length);
+};
+const diaryMut = (k, fn) => {
+  const t = diaryDayDraft(k);
+  fn(t);
+  if (t.add.length || t.del.length || Object.keys(t.set).length) diaryDraft[k] = t;
+  else delete diaryDraft[k];
+  diaryWrite(diaryDraft);
+  diaryRender();
+};
+
+/* Il nome e l'unita' di un id, che sia un alimento o una ricetta. */
+function diaryLabel(fid) {
+  if (fid.slice(0, 7) === "recipe:") {
+    const r = (D.foodRec || {})[fid.slice(7)];
+    return { n: r ? r.n : fid, u: "porzione" };
+  }
+  const f = (D.foodCat || {})[fid];
+  return { n: f ? f.n : fid, u: f ? f.u : "g" };
+}
+
+/* I macro di una quantita', per alimento o per ricetta (che si espande nei suoi
+   ingredienti divisi per le porzioni, esattamente come fa `expand_log` in
+   Python: una ricetta non ha valori propri, li ha i suoi ingredienti). */
+function diaryMacros(fid, qty) {
+  const out = { k: 0, p: 0, c: 0, fb: 0, ft: 0 };
+  const add = (f, q) => {
+    const e = (D.foodCat || {})[f];
+    if (!e) return;
+    for (const [key] of DELTA_KEYS) out[key] += (e[key] || 0) * q;
+  };
+  if (fid.slice(0, 7) === "recipe:") {
+    const r = (D.foodRec || {})[fid.slice(7)];
+    if (r) for (const [f, q] of r.i) add(f, q * qty / (r.s || 1));
+  } else add(fid, qty);
+  return out;
+}
+
+/* Le righe del giorno: quelle vere della build, piu' quelle della bozza, ognuna
+   con il proprio stato. Una riga base senza `f` (le giornate interamente
+   ricostruite non lo portano) resta visibile ma non modificabile: non avrebbe una
+   riga di CSV da correggere. */
+function diaryRows(k) {
+  let day = (D.days || {})[k];
+  if (typeof day === "string") day = ((D.days || {})._p || {})[day];
+  const t = diaryDayDraft(k);
+  const rows = [];
+  const meals = (day && day.meals) || {};
+  for (const m of Object.keys(meals)) {
+    (meals[m] || []).forEach((it, j) => {
+      const id = `${m}|${it.f || it.n}|${j}`;
+      const q = t.set[id] !== undefined ? t.set[id] : it.qn;
+      rows.push({ id, meal: m, f: it.f || null, n: it.n, base: it.qn, q,
+                  kcal: it.qn ? Math.round(it.kcal * q / it.qn) : it.kcal,
+                  asm: !!it.a, recipe: it.r || "",
+                  gone: t.del.indexOf(id) >= 0,
+                  edited: t.set[id] !== undefined && t.set[id] !== it.qn,
+                  fresh: false, locked: !it.f });
+    });
+  }
+  t.add.forEach((a, j) => {
+    const lab = diaryLabel(a.f);
+    rows.push({ id: `+|${j}`, meal: a.m, f: a.f, n: lab.n, base: a.q, q: a.q,
+                kcal: Math.round(diaryMacros(a.f, a.q).k), asm: false, recipe: "",
+                gone: false, edited: false, fresh: true, locked: false });
+  });
+  const rank = m => { const i = MEAL_SORT.indexOf(m); return i < 0 ? MEAL_SORT.length : i; };
+  rows.sort((a, b) => rank(a.meal) - rank(b.meal));
+  return { day, rows };
+}
+
+/* Quanto la bozza sposta i totali del giorno. Si lavora per DIFFERENZE e non
+   ricalcolando tutto da capo: i totali veri escono dalla pipeline in Python, con
+   dentro i 24 micronutrienti che il catalogo qui non porta. Sommare una delta a
+   un totale vero e' onesto; rifare il totale con meta' dei dati non lo sarebbe. */
+function diaryDelta(k) {
+  const t = diaryDayDraft(k);
+  const d = { k: 0, p: 0, c: 0, fb: 0, ft: 0 };
+  const acc = (fid, q, sign) => {
+    if (!fid) return;
+    const m = diaryMacros(fid, q);
+    for (const [key] of DELTA_KEYS) d[key] += sign * m[key];
+  };
+  const { rows } = diaryRows(k);
+  for (const r of rows) {
+    if (r.fresh) acc(r.f, r.q, +1);
+    else if (r.gone) acc(r.f, r.base, -1);
+    else if (r.edited) acc(r.f, r.q - r.base, +1);
+  }
+  return d;
+}
+
+function diaryCsv(k) {
+  const t = diaryDayDraft(k);
+  const { rows } = diaryRows(k);
+  const out = [`# vita · diario ${k} — bozza locale, non ancora nel repo`];
+  const adds = rows.filter(r => r.fresh);
+  if (adds.length) {
+    out.push("# righe da aggiungere in coda a tools/food/data/food_log.csv:");
+    for (const r of adds)
+      out.push(`${k},${r.meal},${r.f},${+r.q.toFixed(4)},annotato dal diario di /vita,dichiarato`);
+  }
+  const edits = rows.filter(r => r.edited && !r.gone);
+  if (edits.length) {
+    out.push("# quantita' da correggere su righe che esistono gia':");
+    for (const r of edits)
+      out.push(`# correggi ${k} ${r.meal} ${r.f}: ${+r.base} -> ${+r.q.toFixed(4)}`);
+  }
+  const gone = rows.filter(r => r.gone);
+  if (gone.length) {
+    out.push("# righe da togliere:");
+    for (const r of gone)
+      out.push(`# rimuovi ${k} ${r.meal} ${r.f} (${+r.base})`);
+  }
+  if (out.length === 1) out.push("# nessuna modifica su questo giorno.");
+  return out.join("\n");
+}
+
+function diaryRender() {
+  if (diaryIdx === null) return;
+  const i = diaryIdx, k = isoOf(i);
+  const { day, rows } = diaryRows(k);
+  const dirty = diaryTouched(k);
+  diaryIn.innerHTML = "";
+
+  const x = mk("button", "sheet-x", diaryIn, "×");
+  x.setAttribute("type", "button");
+  x.setAttribute("aria-label", "Chiudi");
+  x.addEventListener("click", closeDiary);
+
+  const hd = mk("div", "sheet-hd", diaryIn);
+  mk("div", "when", hd, DOW[(dayDate(i).getDay() + 6) % 7] + (dirty ? " · bozza aperta" : ""));
+  mk("h3", null, hd, fmtDate(i)).setAttribute("id", "diary-t");
+
+  /* ---- navigazione ---- */
+  const nav = mk("div", "dnav", diaryIn);
+  const step = n => { const j = i + n; if (j >= 0 && j < N) { diaryIdx = j; diaryRender(); } };
+  const prev = mk("button", null, nav, "‹ giorno prima");
+  prev.setAttribute("type", "button");
+  prev.addEventListener("click", () => step(-1));
+  const picker = mk("input", null, nav);
+  picker.setAttribute("type", "date");
+  picker.value = k;
+  picker.addEventListener("change", () => {
+    const j = diaryIdxOf(picker.value);
+    if (j !== null) { diaryIdx = j; diaryRender(); }
+  });
+  const next = mk("button", null, nav, "giorno dopo ›");
+  next.setAttribute("type", "button");
+  next.addEventListener("click", () => step(1));
+  mk("span", "grow", nav);
+  const today = mk("button", null, nav, "ultimo giorno");
+  today.setAttribute("type", "button");
+  today.addEventListener("click", () => { diaryIdx = N - 1; diaryRender(); });
+
+  /* ---- le misure del giorno, le stesse del popup ---- */
+  const kv = [];
+  const push = (v, l) => { if (v !== null && v !== undefined) kv.push([v, l]); };
+  push(D.sleep[i] === null ? null : hhmm(D.sleep[i]), "sonno");
+  push(D.score[i] === null ? null : nf(D.score[i]), "punteggio");
+  push(D.hrv[i] === null ? null : nf(D.hrv[i]) + " ms", "hrv");
+  push(D.rhr[i] === null ? null : nf(D.rhr[i]), "fc riposo");
+  push(D.steps[i] === null ? null : nf(D.steps[i]), "passi");
+  push(D.weight[i] === null ? null : nf(D.weight[i], 1) + " kg", "peso");
+  push(D.ctl[i] === null ? null : nf(D.ctl[i], 0), "fitness");
+  let tss = 0, acts = 0;
+  D.acts.forEach(a => { if (a[0] === i) { acts++; tss += a[5] || 0; } });
+  if (acts) push(nf(tss, 0), acts === 1 ? "tss · 1 uscita" : `tss · ${acts} uscite`);
+  if (kv.length) {
+    mk("h4", null, diaryIn, "Corpo");
+    const box = mk("div", "kv", diaryIn);
+    for (const [v, l] of kv) {
+      const c = mk("div", null, box);
+      mk("b", null, c, v);
+      mk("span", null, c, l);
+    }
+  }
+
+  /* ---- la tavola, riga per riga ---- */
+  const dl = diaryDelta(k);
+  const baseK = day && day.tot ? day.tot.kcal : 0;
+  const head = `Tavola — ${nf(baseK + dl.k)} kcal` +
+    (dirty ? ` · ${dl.k >= 0 ? "+" : ""}${nf(dl.k)} in bozza` : "") +
+    (day && day.asm ? ` · ${nf(Math.round(100 * day.obs / (day.obs + day.asm)))}% osservato` : "");
+  mk("h4", null, diaryIn, head);
+
+  if (!rows.length) {
+    mk("p", "d-empty", diaryIn, "Nessun pasto per questo giorno. Aggiungine uno qui sotto.");
+  } else {
+    let cur = null, ul = null;
+    for (const r of rows) {
+      if (r.meal !== cur) {
+        cur = r.meal;
+        const wrap = mk("div", "meal", diaryIn);
+        mk("div", "mname", wrap, MEAL_IT[cur] || cur);
+        ul = wrap;
+      }
+      const cls = ["d-row", r.asm ? "asm" : "", r.gone ? "gone" : "",
+                   r.edited ? "edit" : "", r.fresh ? "new" : ""].filter(Boolean).join(" ");
+      const row = mk("div", cls, ul);
+      mk("span", null, row, r.n + (r.recipe ? ` · ${r.recipe}` : ""));
+      const inp = mk("input", null, row);
+      inp.setAttribute("type", "number");
+      inp.setAttribute("step", "any");
+      inp.setAttribute("min", "0");
+      inp.setAttribute("aria-label", `Quantità di ${r.n}`);
+      inp.value = String(r.q);
+      if (r.locked || r.gone) inp.setAttribute("disabled", "disabled");
+      inp.addEventListener("change", () => {
+        const v = parseFloat(inp.value);
+        if (!isFinite(v) || v < 0) return;
+        diaryMut(k, t2 => {
+          if (r.fresh) { const j = +r.id.split("|")[1]; if (t2.add[j]) t2.add[j].q = v; }
+          else if (v === r.base) delete t2.set[r.id];
+          else t2.set[r.id] = v;
+        });
+      });
+      const lab = r.f ? diaryLabel(r.f) : { u: "" };
+      mk("em", null, row, `${lab.u === "unit" ? "×" : lab.u} · ${nf(r.kcal)} kcal`);
+      const del = mk("button", null, row, r.gone ? "↺" : "×");
+      del.setAttribute("type", "button");
+      del.setAttribute("aria-label", r.gone ? `Rimetti ${r.n}` : `Togli ${r.n}`);
+      if (r.locked) del.setAttribute("disabled", "disabled");
+      else del.addEventListener("click", () => diaryMut(k, t2 => {
+        if (r.fresh) { const j = +r.id.split("|")[1]; t2.add.splice(j, 1); return; }
+        const at = t2.del.indexOf(r.id);
+        if (at >= 0) t2.del.splice(at, 1); else t2.del.push(r.id);
+      }));
+    }
+  }
+
+  /* ---- i macro, con la bozza gia' dentro ---- */
+  if (day && day.pct) {
+    const P = D.foodProfile || {}, rda = (P.rda || {});
+    const need = { protein_g: P.weight_kg && P.protein_g_per_kg ? P.weight_kg * P.protein_g_per_kg : null,
+                   fiber_g: rda.fiber_g || null };
+    mk("h4", null, diaryIn, "Macro, in % del fabbisogno");
+    const bars = mk("div", "bars", diaryIn);
+    const html = [];
+    for (const [key, nut] of DELTA_KEYS) {
+      if (nut === "kcal" || day.pct[nut] === undefined) continue;
+      const basis = need[nut] || (day.tot[nut] && day.pct[nut]
+        ? day.tot[nut] * 100 / day.pct[nut] : null);
+      const pct = basis ? 100 * ((day.tot[nut] || 0) + dl[key]) / basis : day.pct[nut];
+      html.push(bar(NUTRI_IT[nut] || nut, pct));
+    }
+    bars.innerHTML = html.join("");
+  }
+
+  /* ---- annota ---- */
+  mk("h4", null, diaryIn, "Annota — i tuoi soliti");
+  const pre = mk("div", "d-pre", diaryIn);
+  for (const p of (D.foodPre || []).slice(0, 18)) {
+    const b = mk("button", null, pre);
+    b.setAttribute("type", "button");
+    b.textContent = p.n;
+    mk("b", null, b, `${+p.q}${diaryLabel(p.f).u === "unit" ? "×" : ""}`);
+    b.addEventListener("click", () => diaryMut(k, t2 =>
+      t2.add.push({ f: p.f, q: p.q, m: p.m })));
+  }
+  const search = mk("input", "d-search", diaryIn);
+  search.setAttribute("type", "search");
+  search.setAttribute("placeholder", "…oppure cerca un alimento (mela, salmone, riso)");
+  search.setAttribute("aria-label", "Cerca un alimento");
+  search.value = diaryQuery;
+  search.addEventListener("input", () => { diaryQuery = search.value || ""; diaryRender(); });
+  const q = diaryQuery.trim().toLowerCase();
+  if (q.length >= 2) {
+    const hits = mk("div", "d-pre", diaryIn);
+    const cat = D.foodCat || {};
+    const found = Object.keys(cat).filter(f => cat[f].n.toLowerCase().indexOf(q) >= 0
+      || f.indexOf(q) >= 0).slice(0, 10);
+    if (!found.length) mk("span", "d-empty", hits, "Nessun alimento con questo nome nel catalogo.");
+    for (const f of found) {
+      const b = mk("button", null, hits);
+      b.setAttribute("type", "button");
+      b.textContent = cat[f].n;
+      mk("b", null, b, cat[f].u === "unit" ? "1×" : "100 " + cat[f].u);
+      b.addEventListener("click", () => diaryMut(k, t2 =>
+        t2.add.push({ f, q: cat[f].u === "unit" ? 1 : 100, m: "spuntino" })));
+    }
+  }
+
+  /* ---- cosa portarsi via ---- */
+  mk("h4", null, diaryIn, dirty ? "Le righe da mettere nel repo" : "Righe");
+  const out = mk("textarea", "d-out", diaryIn);
+  out.setAttribute("readonly", "readonly");
+  out.setAttribute("aria-label", "Righe CSV di questa giornata");
+  /* prima il contenuto, poi `value`: su una textarea scrivere `textContent` dopo
+     rimette il valore di default e cancellerebbe quello appena messo */
+  out.textContent = diaryCsv(k);
+  out.value = out.textContent;
+  const acts2 = mk("div", "d-acts", diaryIn);
+  const copy = mk("button", "d-act", acts2, "Copia");
+  copy.setAttribute("type", "button");
+  copy.addEventListener("click", () => {
+    const txt = diaryCsv(k);
+    if (typeof navigator !== "undefined" && navigator.clipboard)
+      navigator.clipboard.writeText(txt).then(() => { copy.textContent = "Copiato"; }, () => {});
+  });
+  if (dirty) {
+    const wipe = mk("button", "d-act", acts2, "Scarta la bozza del giorno");
+    wipe.setAttribute("type", "button");
+    wipe.addEventListener("click", () => diaryMut(k, t2 => {
+      t2.add = []; t2.set = {}; t2.del = [];
+    }));
+  }
+  const days = Object.keys(diaryDraft).length;
+  mk("p", "hint", diaryIn, dirty || days
+    ? `Bozza locale su ${days} giorn${days === 1 ? "o" : "i"}: vive in questo browser, non nel repo. ` +
+      "La fonte di verità resta tools/food/data/food_log.csv — incolla lì le righe qui sopra."
+    : "Questa pagina non scrive nel repo: quello che annoti qui esce come righe CSV da portare in tools/food/data/food_log.csv.");
+}
+
+function diaryIdxOf(iso) {
+  if (!iso || iso.length < 10) return null;
+  const y = +iso.slice(0, 4), m = +iso.slice(5, 7), d = +iso.slice(8, 10);
+  if (!isFinite(y) || !isFinite(m) || !isFinite(d)) return null;
+  const j = Math.round((new Date(y, m - 1, d).getTime() - D0.getTime()) / DAY);
+  return j >= 0 && j < N ? j : null;
+}
+
+/* Si apre sull'ultimo giorno che ha davvero del cibo: aprire su una giornata
+   vuota farebbe sembrare rotto un diario che invece e' solo in pari. */
+function diaryLastWithFood() {
+  for (let i = N - 1; i >= 0 && i > N - 400; i--) {
+    const d = (D.days || {})[isoOf(i)];
+    if (d) return i;
+  }
+  return N - 1;
+}
+
+function openDiary(i) {
+  diaryDraft = diaryRead();
+  diaryIdx = i === undefined || i === null ? diaryLastWithFood() : Math.max(0, Math.min(N - 1, i));
+  diaryRender();
+  diaryEl.classList.add("on");
+  document.body.style.overflow = "hidden";
+}
+function closeDiary() {
+  diaryEl.classList.remove("on");
+  diaryIdx = null;
+  document.body.style.overflow = "";
+}
+diaryEl.addEventListener("click", ev => { if (ev.target === diaryEl) closeDiary(); });
+addEventListener("keydown", ev => { if (ev.key === "Escape" && diaryIdx !== null) closeDiary(); });
+document.getElementById("diary-btn").addEventListener("click", () => openDiary());
+window.openDiary = openDiary;
+window.CRUSCOTTO.diary = { open:openDiary, close:closeDiary, render:diaryRender,
+  rows:diaryRows, csv:diaryCsv, delta:diaryDelta, macros:diaryMacros, idxOf:diaryIdxOf,
+  iso:isoOf, lastWithFood:diaryLastWithFood, node:diaryIn,
+  draft:() => diaryDraft, mut:(k, fn) => diaryMut(k, fn),
+  reset:() => { diaryDraft = {}; diaryWrite(diaryDraft); if (diaryIdx !== null) diaryRender(); } };
 
 drawAll();
 let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawAll, 160); });

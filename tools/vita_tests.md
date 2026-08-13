@@ -14264,3 +14264,29 @@ ok   --gold #e2c98f contro gli slot dei grafici: peggiore --s4 ΔE 18.6 (minimo 
 ```
 
 esito: tutti passati (171 ok)
+
+## 2026-08-13 10:27 — build
+
+```
+span: 2015-03-29 → 2026-08-13  (4156 giorni)
+  ctl        4156 valori (2434 non nulli)  dal 2015-03-29
+  load       4156 valori (1742 non nulli)  dal 2019-06-19
+  sleep       552 valori (552 non nulli)  dal 2025-01-21
+  score       552 valori (552 non nulli)  dal 2025-01-21
+  hrv         552 valori (552 non nulli)  dal 2025-01-21
+  rhr         570 valori (570 non nulli)  dal 2025-01-20
+  steps       570 valori (570 non nulli)  dal 2025-01-20
+  vo2         281 valori (281 non nulli)  dal 2025-01-22
+  weight       65 valori (65 non nulli)  dal 2025-01-21
+  bodyfat      53 valori (53 non nulli)  dal 2025-06-27
+  metab.temp_c       1653 valori  dal 2015-03-29 al 2026-08-13
+  metab.fatmax_hr    4156 valori  dal 2015-03-29 al 2026-08-13
+  metab.fatmax_min   1605 valori  dal 2016-06-05 al 2026-08-13
+  metab.mm            751 valori  dal 2024-07-24 al 2026-08-13
+  metab.mm_n         4156 valori  dal 2015-03-29 al 2026-08-13
+  acts       2260 attività
+  attività per anno: 2015:3 2016:33 2017:39 2018:44 2019:105 2020:349 2021:300 2023:255 2024:378 2025:471 2026:283
+  buchi ≥45 giorni senza attività: 6 → 2015-03-30→2015-09-22, 2015-09-24→2016-02-03, 2016-08-18→2017-01-28, 2017-12-04→2018-02-16, 2018-11-21→2019-01-14, 2021-10-19→2023-04-10
+```
+
+pagina: scritta (2211 KB)

@@ -166,8 +166,15 @@ def main():
         items[d] += 1
         detail[d][r.get("meal") or "non_specificato"].append({
             "n": f["name"],
-            "q": f"{qty:g} {f['unit']}" if f["unit"] != "unit" else
-                 (f"{qty:g}×" if qty != 1 else "1"),
+            # id e quantita' NUMERICA dell'alimento. Prima usciva solo la stringa
+            # gia' formattata ("150 g"), che basta a disegnare un pasto ma non a
+            # rimetterci le mani: il diario di /vita deve saper risalire dalla riga
+            # sullo schermo alla riga di food_log.csv da correggere, e "1.2×" non e'
+            # un numero ne' "Pane integrale" e' un id. La stringa non si emette
+            # piu': la pagina la ricompone da qui e dall'unita' del catalogo, che
+            # ora e' inlineata comunque — un dato solo invece di due che divergono.
+            "f": r["food_id"],
+            "qn": round(qty, 4),
             "kcal": round(kcal),
             "a": 1 if r.get("source") == "assunto" else 0,   # assunto, non osservato
             "r": r.get("recipe", ""),                        # da quale ricetta viene
