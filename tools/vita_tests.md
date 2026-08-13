@@ -17004,3 +17004,243 @@ ok   --gold #e2c98f contro gli slot dei grafici: peggiore --s4 ΔE 18.6 (minimo 
 ```
 
 esito: tutti passati (207 ok)
+
+## 2026-08-13 17:16 — build
+
+```
+span: 2015-03-29 → 2026-08-13  (4156 giorni)
+  ctl        4156 valori (3759 non nulli)  dal 2015-03-29
+  load       4156 valori (2327 non nulli)  dal 2015-08-26
+  sleep       552 valori (552 non nulli)  dal 2025-01-21
+  score       552 valori (552 non nulli)  dal 2025-01-21
+  hrv         552 valori (552 non nulli)  dal 2025-01-21
+  rhr         570 valori (570 non nulli)  dal 2025-01-20
+  steps       570 valori (570 non nulli)  dal 2025-01-20
+  vo2         281 valori (281 non nulli)  dal 2025-01-22
+  weight       65 valori (65 non nulli)  dal 2025-01-21
+  bodyfat      53 valori (53 non nulli)  dal 2025-06-27
+  metab.temp_c       1653 valori  dal 2015-03-29 al 2026-08-13
+  metab.fatmax_hr    4156 valori  dal 2015-03-29 al 2026-08-13
+  metab.fatmax_min   1605 valori  dal 2016-06-05 al 2026-08-13
+  metab.mm            796 valori  dal 2024-06-04 al 2026-08-13
+  metab.mm_n         4156 valori  dal 2015-03-29 al 2026-08-13
+  acts       2969 attività
+  attività per anno: 2015:7 2016:48 2017:75 2018:65 2019:106 2020:354 2021:392 2022:394 2023:365 2024:387 2025:489 2026:287
+  buchi ≥45 giorni senza attività: 4 → 2015-03-30→2015-09-21, 2015-09-26→2016-02-03, 2016-08-18→2017-01-08, 2018-11-21→2019-01-14
+```
+
+pagina: scritta (2422 KB)
+
+## 2026-08-13 17:16 — check_vita.cjs
+
+```
+ok   un solo blocco <script> (aperti 1, chiusi 1) — nessun "</script" nel payload
+ok   lo script arriva in fondo (2383 KB, chiude su drawAll)
+ok   lo script inline gira senza eccezioni
+ok   window.CRUSCOTTO esposto
+ok   ogni riquadro dichiarato e' montato (46/46)
+ok   almeno 32 riquadri (46)
+ok   finestra "2a": nessun renderer solleva eccezioni
+info  finestra "2a": 0 riquadri senza dati
+ok   finestra "1a": nessun renderer solleva eccezioni
+info  finestra "1a": 0 riquadri senza dati
+ok   finestra "3m": nessun renderer solleva eccezioni
+info  finestra "3m": 2 riquadri senza dati (Peso, Massa grassa)
+ok   finestra "sempre": nessun renderer solleva eccezioni
+ok   finestra "sempre": nessun riquadro vuoto
+ok   nessuna coordinata NaN/Infinity negli SVG (87837 nodi controllati)
+ok   ogni <path> ha un tracciato reale (282 path)
+ok   nessun segno fuori dal proprio viewBox
+ok   nessuna etichetta dell'asse y tagliata dalla gronda
+ok   nessuna sovrapposizione fra etichette dell'asse x
+ok   testata 14 giorni: sonno
+ok   testata 14 giorni: HRV
+ok   testata 14 giorni: FC riposo
+ok   testata 14 giorni: allenamento
+ok   testata 14 giorni: chilometri
+ok   testata 14 giorni: kcal
+ok   testata 14 giorni: proteine
+ok   testata 14 giorni: carboidrati
+ok   testata 14 giorni: fibre
+ok   testata 14 giorni: vegetale
+ok   ogni media dichiara il confronto con i 14 giorni precedenti
+ok   le metriche alimentari aprono gli insight
+ok   il popup delle medie mostra le barre colorate rispetto al target
+ok   la barra delle kcal usa e dichiara il target del profilo
+ok   il popup elenca gli alimenti aggregati delle ultime due settimane
+ok   l'inventario recente contiene peanut butter e latte corretti
+ok   i conteggi separano consumi osservati e ricostruiti
+ok   il correlatore offre almeno venti serie selezionabili
+ok   il correlatore disegna la nuvola di punti iniziale
+ok   il correlatore dichiara r
+ok   dislivello totale plausibile: 1.865.911 m
+ok   ogni riquadro ha la tabella di ripiego
+ok   ogni riquadro multi-serie ha la legenda (10 riquadri)
+ok   il riquadro "Temperatura" è in pagina
+ok   "Temperatura" non solleva
+ok   "Temperatura" disegna qualcosa (non è un riquadro vuoto)
+ok   "Temperatura" ha la sua tabella di ripiego
+ok   "Temperatura" dichiara cosa è nel piede (cerco /non è il meteo/i)
+ok   "Temperatura" ha il suo numero di testa
+ok   il riquadro "Heat strain" è in pagina
+ok   "Heat strain" non solleva
+ok   "Heat strain" disegna qualcosa (non è un riquadro vuoto)
+ok   "Heat strain" ha la sua tabella di ripiego
+ok   "Heat strain" dichiara cosa è nel piede (cerco /indice costruito/i)
+ok   "Heat strain" ha il suo numero di testa
+ok   il riquadro "FatMax" è in pagina
+ok   "FatMax" non solleva
+ok   "FatMax" disegna qualcosa (non è un riquadro vuoto)
+ok   "FatMax" ha la sua tabella di ripiego
+ok   "FatMax" dichiara cosa è nel piede (cerco /è un modello/i)
+ok   "FatMax" ha il suo numero di testa
+ok   il riquadro "Minuti dentro la banda" è in pagina
+ok   "Minuti dentro la banda" non solleva
+ok   "Minuti dentro la banda" disegna qualcosa (non è un riquadro vuoto)
+ok   "Minuti dentro la banda" ha la sua tabella di ripiego
+ok   "Minuti dentro la banda" dichiara cosa è nel piede (cerco /modello/i)
+ok   "Minuti dentro la banda" ha il suo numero di testa
+ok   il riquadro "Momento metabolico" è in pagina
+ok   "Momento metabolico" non solleva
+ok   "Momento metabolico" disegna qualcosa (non è un riquadro vuoto)
+ok   "Momento metabolico" ha la sua tabella di ripiego
+ok   "Momento metabolico" dichiara cosa è nel piede (cerco /componenti/i)
+ok   "Momento metabolico" ha il suo numero di testa
+ok   il riquadro "Mezze maratone" è in pagina
+ok   "Mezze maratone" non solleva
+ok   "Mezze maratone" disegna qualcosa (non è un riquadro vuoto)
+ok   "Mezze maratone" ha la sua tabella di ripiego
+ok   "Mezze maratone" dichiara cosa è nel piede (cerco /21,0975/)
+ok   "Mezze maratone" ha il suo numero di testa
+ok   il riquadro "Salite lunghe" è in pagina
+ok   "Salite lunghe" non solleva
+ok   "Salite lunghe" disegna qualcosa (non è un riquadro vuoto)
+ok   "Salite lunghe" ha la sua tabella di ripiego
+ok   "Salite lunghe" dichiara cosa è nel piede (cerco /mediana/i)
+ok   "Salite lunghe" ha il suo numero di testa
+ok   il momento metabolico è arrivato in pagina
+ok   nessun giorno disegnato poggia su meno di 4 componenti (0 violazioni)
+ok   571 giorni disegnati, 225 scartati sotto soglia
+ok   e la didascalia dice qual è la soglia
+ok   window.CRUSCOTTO.compact esposto
+ok   l'interruttore di vista e' in pagina (#viewsw)
+ok   l'interruttore ha due posizioni (2)
+ok   senza preferenza salvata si parte dalla vista estesa
+ok   27 serie dichiarate per la ridgeline
+ok   setView(compatta) commuta la vista e marca il body (e' cio' che il CSS legge)
+ok   la scelta della vista finisce in localStorage
+ok   una sola posizione dell'interruttore risulta premuta
+ok   la pagina dichiara che ogni corsia e' riscalata sulla propria storia
+ok   compatta: nessuna coordinata NaN/Infinity
+ok   compatta: nessun segno fuori dal viewBox, tracciati compresi
+ok   compatta: nessuna etichetta sovrapposta sulla stessa riga
+info  compatta su 1040 px, finestra "sempre": 27 corsie, alto 2308 px
+ok   compatta: almeno sette corsie in colonna (27)
+ok   compatta: ogni corsia mostrata ha il proprio nome scritto sulla linea
+ok   pin(ctl) congela la serie
+ok   la corsia congelata resta nella ridgeline principale (non viene spostata via)
+ok   la corsia congelata e' marcata nel DOM (data-pinned)
+ok   e compare nella striscia appiccicata in cima
+ok   piu' serie congelabili insieme (2)
+ok   anche nella striscia il nome sta sulla linea
+ok   le congelate finiscono in localStorage
+ok   sganciandole spariscono dalla striscia e la striscia si chiude
+ok   un interruttore per serie (27/27)
+ok   gli interruttori sono raggruppati per sezione (Carico, Notte, Recupero, Corpo, Volume, Tavola, Metabolismo)
+ok   spegnere un interruttore toglie una corsia dal disegno (27 → 26)
+ok   "Fitness (CTL)" non e' piu' fra le corsie disegnate
+ok   e la sua etichetta e' sparita dall'SVG
+ok   la serie spenta finisce in localStorage
+ok   riaccendendolo la corsia torna
+ok   "tutte" riaccende ogni serie (27)
+ok   un click isola "Fitness (CTL)": resta disegnata solo lei
+ok   e nella ridgeline c'e' davvero una corsia sola
+ok   l'isolamento finisce in localStorage
+ok   l'interruttore isolato e' marcato (data-iso), non solo premuto
+ok   un click su un'altra voce sposta l'isolamento su "Fatica (ATL)"
+ok   e la precedente smette di essere marcata
+ok   la stessa voce una seconda volta rimette tutto
+ok   ⌘/Ctrl-click ne accende una seconda senza sciogliere la selezione
+ok   e un secondo modificato la rispegne
+ok   il modo "somma" si accende e lo dichiara (aria-pressed)
+ok   in modo somma un click semplice spegne una voce sola invece di isolare
+ok   spegnendo il modo somma e riaccendendo tutto si torna al punto di partenza
+ok   la pagina dichiara che un click isola
+ok   la pagina dichiara come accenderne piu' di una (modificatore e modo somma)
+ok   i due comandi "tutte" e "somma" sono in pagina
+ok   24 corsie su 27 hanno del vuoto da dichiarare
+ok   22 corsie cominciano visibilmente dopo il bordo sinistro
+ok   ogni corsia con del vuoto lo dichiara con un tratteggio
+ok   e il giorno in cui comincia porta il suo trattino verticale
+ok   anche i buchi in mezzo sono tratteggiati (2 corsie spezzate: Temperatura, Heat strain)
+ok   almeno una corsia e' marcata come rada (Peso, Massa grassa)
+ok   ogni corsia rada lo scrive nella propria etichetta
+ok   e nessuna corsia densa se lo prende
+ok   le corsie hanno il loro occlusore (38 riempimenti)
+ok   l'occlusione e' scesa sotto .70 (max 0.62) — era .88, la "scatola"
+ok   ma non sotto .50 (min 0.62): piu' in basso le due corsie sovrapposte pesano uguale e la sovrapposizione perde il davanti
+ok   la corsia congelata si marca ingrossando il tratto
+ok   e prende un alone trasparente, non un bordo
+ok   mentre le altre si ritirano — il congelamento e' contrasto, non un riquadro
+ok   e dentro una corsia non c'e' nessun rettangolo pieno: congelare non aggiunge riquadri
+ok   si torna alla vista estesa
+ok   tornando all'estesa nessun riquadro solleva
+ok   tornando all'estesa nessun riquadro resta vuoto
+ok   openDay() esiste
+ok   il dettaglio giornaliero e' inlineato (784 giorni)
+ok   il popup si riempie su tutti i giorni provati (40/40, veri + ricostruiti)
+ok   il popup mostra la sezione "corpo" su almeno un giorno
+ok   il popup mostra la sezione "allenamento" su almeno un giorno
+ok   il popup mostra la sezione "tavola" su almeno un giorno
+ok   il popup mostra la sezione "micro" su almeno un giorno
+ok   openDay() regge un giorno senza diario alimentare
+ok   almeno un'attivita' nel popup linka a intervals.icu con un id vero
+ok   window.CRUSCOTTO.compare esposto
+ok   ogni corsia della ridgeline si puo' incrociare (43 serie)
+ok   la serie "heat" e' fra quelle confrontabili
+ok   la serie "temp" e' fra quelle confrontabili
+ok   la serie "mm" e' fra quelle confrontabili
+ok   il selettore livelli/variazioni e' in pagina
+ok   r calcolabile sia sui livelli sia sulle variazioni
+ok   livelli e variazioni danno r diversi (0.94 contro 0.97)
+ok   r resta dentro [-1, 1]
+ok   window.CRUSCOTTO.diary esposto
+ok   data → indice → data torna su tutti i 703 giorni con del cibo
+ok   il popup apre il giorno chiesto, non quello prima
+ok   ogni riga di pasto dichiara la propria quantita' (8595 dal diario, 2442 da Cronometer)
+ok   ogni alimento del diario e' nel catalogo (166 voci)
+ok   i giorni Cronometer arrivano nel popup (2442 righe misurate)
+ok   28 preset, tutti su alimenti o ricette che esistono
+ok   il diario si apre senza sollevare
+ok   il diario elenca le righe del giorno (20)
+ok   il diario ha il selettore di data per sfogliare
+ok   senza Worker l'annotazione resta comunque a schermo
+ok   e sposta le kcal del giorno di quanto vale (107 per una banana)
+ok   e la riga per food_log.csv c'e' lo stesso (2026-08-13,spuntino,banana,1,annotato dal diario di /vita,dichiarato)
+ok   ed e' salvata in locale, non persa mentre la pagina dice di averla presa
+ok   azzerando la bozza il giorno torna com'era
+ok   il Worker e' configurato in pagina (https://vita-diario.micmer-recastello.workers.dev)
+ok   il pasto scelto e' marcato nella pulsantiera (Cena)
+ok   i preset sono bottoni veri, premibili
+ok   premere un preset parla col Worker
+ok   e gli manda l'alimento giusto (pomodorini 150)
+ok   nel pasto SCELTO, non in quello abituale del preset (cena, abituale pranzo)
+ok   e nel giorno aperto (2026-08-13)
+ok   con l'intestazione della chiave
+ok   correggere una quantita' manda una correzione, non una riga nuova (set)
+ok   con la row_key nella forma che apply_diary_ops.py sa ritrovare (colazione|avena_fiocchi|0)
+ok   il 2022 non e' piu' un buco: 394 attivita' in pagina
+ok   e il 2022 e' marcato "carico ricostruito" (2021-10-19→2023-04-27)
+ok   e tutte e 394 portano il carico segnato come stimato (394)
+ok   4 buchi ≥45 giorni dichiarati: 2015-03-30→2015-09-21, 2015-09-26→2016-02-03, 2016-08-18→2017-01-08, 2018-11-21→2019-01-14
+ok   CSS --s1 = #3987e5 (slot validato)
+ok   CSS --s2 = #d95926 (slot validato)
+ok   CSS --s3 = #199e70 (slot validato)
+ok   CSS --s4 = #c98500 (slot validato)
+ok   CSS --paper = #211d16 (il fondo su cui la tavolozza e' stata validata)
+ok   --muted #9a8d70 su #211d16: 5.13:1 (minimo 4,5 per il testo piccolo)
+ok   --gold #e2c98f su #211d16: 10.37:1
+ok   --gold #e2c98f contro gli slot dei grafici: peggiore --s4 ΔE 18.6 (minimo 15, o l'accento si spaccia per una serie)
+```
+
+esito: tutti passati (207 ok)
