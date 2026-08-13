@@ -701,13 +701,32 @@ if (ran) {
     ok(anyLink, "almeno un'attivita' nel popup linka a intervals.icu con un id vero");
   }
 
-  /* ------------------------------------------------------ 6. il buco 2022 */
+  /* ------------------------------------------- 6. il 2022, che non e' piu' un buco
+     Fino al 2026-08-13 qui si controllava che il buco lungo un anno FOSSE dichiarato:
+     su Intervals il 2022 ha zero attivita', e disegnarlo pieno sarebbe stato mentire.
+     Adesso le 394 attivita' di quell'anno sono tornate dall'export Strava
+     (tools/strava_backfill.py) e il buco non c'e' piu'. Il controllo si gira, e resta
+     un controllo: il 2022 deve avere attivita' vere, non deve piu' essere fra i buchi,
+     e deve essere marcato come RICOSTRUITO — perche' il suo carico e' stimato da durata
+     e cardio, non misurato. Se un giorno il backfill sparisse, il buco tornerebbe e
+     dovrebbe tornare anche la sua banda: e' il caso che le due righe qui sotto tengono. */
   const d0 = new Date(D.d0 + "T00:00:00");
   const iso = i => new Date(d0.getTime() + i * 86400000).toISOString().slice(0, 10);
   const spans = D.gaps.map(([a, b]) => `${iso(a)}→${iso(b)}`);
   const hole = D.gaps.find(([a, b]) => iso(a) < "2022-01-01" && iso(b) > "2022-12-31");
-  ok(!!hole, `il buco che copre tutto il 2022 e' dichiarato` +
-    (hole ? ` (${iso(hole[0])}→${iso(hole[1])})` : ` — gaps: ${spans.join(", ")}`));
+  const n2022 = D.acts.filter(a => iso(a[0]).startsWith("2022")).length;
+
+  if (n2022 > 0) {
+    ok(!hole, `il 2022 non e' piu' un buco: ${n2022} attivita' in pagina`);
+    const rec = (D.recon || []).find(([a, b]) => iso(a) < "2022-01-01" && iso(b) > "2022-12-31");
+    ok(!!rec, `e il 2022 e' marcato "carico ricostruito"` +
+      (rec ? ` (${iso(rec[0])}→${iso(rec[1])})` : ` — recon: ${(D.recon || []).length} fasce`));
+    const stim = D.acts.filter(a => iso(a[0]).startsWith("2022") && a[6]).length;
+    ok(stim === n2022, `e tutte e ${n2022} portano il carico segnato come stimato (${stim})`);
+  } else {
+    ok(!!hole, `il buco che copre tutto il 2022 e' dichiarato` +
+      (hole ? ` (${iso(hole[0])}→${iso(hole[1])})` : ` — gaps: ${spans.join(", ")}`));
+  }
   ok(D.gaps.length >= 3, `${D.gaps.length} buchi ≥45 giorni dichiarati: ${spans.join(", ")}`);
 }
 

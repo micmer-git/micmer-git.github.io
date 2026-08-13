@@ -1,0 +1,78 @@
+{
+  "built": "2026-08-13",
+  "export": "export_14488475.zip",
+  "strava_activities": 2878,
+  "intervals_activities": 2259,
+  "paired": 2169,
+  "backfilled": 709,
+  "by_year": {
+    "2015": 4,
+    "2016": 15,
+    "2017": 36,
+    "2018": 21,
+    "2019": 1,
+    "2020": 5,
+    "2021": 92,
+    "2022": 394,
+    "2023": 110,
+    "2024": 9,
+    "2025": 18,
+    "2026": 4
+  },
+  "by_method": {
+    "durata": 154,
+    "trimp_hr": 555
+  },
+  "hr_rest": 50.0,
+  "hr_span": 140.0,
+  "model": {
+    "bike": {
+      "n": 900,
+      "trimp": [
+        2.2138,
+        2.959
+      ],
+      "trimp_median_err": 21.2,
+      "trimp_n": 783,
+      "re_ratio": 1.3036,
+      "re_n": 783,
+      "per_hour": 57.44
+    },
+    "run": {
+      "n": 833,
+      "trimp": [
+        2.255,
+        2.7094
+      ],
+      "trimp_median_err": 7.1,
+      "trimp_n": 833,
+      "re_ratio": 0.7826,
+      "re_n": 833,
+      "per_hour": 64.72
+    },
+    "other": {
+      "n": 149,
+      "trimp": [
+        1.1842,
+        4.3395
+      ],
+      "trimp_median_err": 16.6,
+      "trimp_n": 139,
+      "re_ratio": 1.5556,
+      "re_n": 141,
+      "per_hour": 18.21
+    },
+    "swim": {
+      "n": 148,
+      "trimp": [
+        2.2889,
+        2.1717
+      ],
+      "trimp_median_err": 12.3,
+      "trimp_n": 69,
+      "re_ratio": 2.0,
+      "re_n": 69,
+      "per_hour": 60.57
+    }
+  }
+}

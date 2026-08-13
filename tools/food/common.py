@@ -19,6 +19,10 @@ FOODS_CSV = DATA / "foods.csv"
 RECIPES_CSV = DATA / "recipes.csv"
 FOOD_LOG_CSV = DATA / "food_log.csv"
 ACTIVITIES_CSV = DATA / "activities.csv"
+# Le attivita' che Intervals non ha, ricostruite dall'export Strava: vedi
+# tools/strava_backfill.py. File separato perche' activities.csv lo riscrive
+# `build_vita.py --sync-source` a ogni ora.
+ACTIVITIES_BACKFILL_CSV = DATA / "activities_backfill.csv"
 DAILY_NUTRITION_CSV = DERIVED / "daily_nutrition.csv"
 BALANCE_CSV = DERIVED / "energy_balance.csv"
 
@@ -40,6 +44,46 @@ LABELS = {
 }
 UNITS = {n: ("kcal" if n == "kcal" else n.rsplit("_", 1)[1].replace("ug", "µg"))
          for n in NUTRIENTS}
+
+
+def backfill_load_by_day():
+    """{giorno: carico ricostruito} da activities_backfill.csv, {} se non c'e'.
+
+    Sta qui, in comune, perche' la usano due superfici: build_vita.py per la CTL dei
+    grafici e metabolismo.py per la componente "forma" del momento metabolico. Con due
+    copie, il 2022 esisterebbe in un posto e non nell'altro — che e' esattamente il
+    modo in cui questa repo ha gia' divergito una volta (vedi build_food.py).
+    """
+    out = {}
+    if not ACTIVITIES_BACKFILL_CSV.exists():
+        return out
+    with ACTIVITIES_BACKFILL_CSV.open(encoding="utf-8", newline="") as fh:
+        for row in csv.DictReader(fh):
+            d = (row.get("date") or "")[:10]
+            if not d:
+                continue
+            try:
+                out[d] = out.get(d, 0.0) + float(row.get("training_load") or 0)
+            except ValueError:
+                continue
+    return out
+
+
+def recompute_ctl_atl(loads, ctl0=0.0, atl0=0.0, tau_ctl=42.0, tau_atl=7.0):
+    """Media esponenziale di Intervals su una sequenza di carichi giornalieri.
+
+    Che le costanti siano 42 e 7 non e' un'ipotesi: rifacendo i conti dal `ctlLoad`
+    di Intervals si riottengono i loro `ctl` con un errore assoluto mediano di 0,03
+    su una scala attorno a 95, massimo 1,0 su 4.156 giorni. E' la stessa formula.
+    """
+    ctl, atl, c, a = [], [], float(ctl0), float(atl0)
+    for v in loads:
+        v = float(v or 0)
+        c += (v - c) / tau_ctl
+        a += (v - a) / tau_atl
+        ctl.append(c)
+        atl.append(a)
+    return ctl, atl
 
 
 def load_env():

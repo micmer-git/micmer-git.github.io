@@ -54,6 +54,9 @@ for _s in (sys.stdout, sys.stderr):
 
 OUT = common.DERIVED / "nutrition_series.csv"
 ASSUMED = common.DERIVED / "assumed_log.csv"
+# I giorni misurati con Cronometer, preparati da cronometer.py. Dove ci sono, vincono
+# loro: vedi il docstring di quel file per il perche' e per la regola pieno/parziale.
+CRONOMETER = common.DERIVED / "cronometer_days.json"
 
 VITAMINS = ("vitc_mg", "vita_ug", "vitd_ug", "b12_ug", "folate_ug")
 MINERALS = ("potassium_mg", "calcium_mg", "iron_mg", "magnesium_mg", "zinc_mg")
@@ -113,15 +116,21 @@ def load_rows():
 
 
 def load_tss():
-    """TSS per giorno da activities.csv."""
+    """TSS per giorno da activities.csv, piu' il backfill Strava.
+
+    Il backfill (tools/strava_backfill.py) porta le attivita' che Intervals non ha:
+    senza, il fabbisogno di carboidrati di quei giorni si calcola su TSS zero, cioe'
+    3 g/kg da fermo, e il divario esce enorme per il motivo sbagliato.
+    """
     tss = defaultdict(float)
-    if not common.ACTIVITIES_CSV.exists():
-        return tss
-    with common.ACTIVITIES_CSV.open(encoding="utf-8", newline="") as fh:
-        for r in csv.DictReader(fh):
-            d = (r.get("date") or "")[:10]
-            if d:
-                tss[d] += float(r.get("training_load") or 0)
+    for path in (common.ACTIVITIES_CSV, common.ACTIVITIES_BACKFILL_CSV):
+        if not path.exists():
+            continue
+        with path.open(encoding="utf-8", newline="") as fh:
+            for r in csv.DictReader(fh):
+                d = (r.get("date") or "")[:10]
+                if d:
+                    tss[d] += float(r.get("training_load") or 0)
     return tss
 
 
@@ -140,6 +149,21 @@ def main():
     rows = load_rows()
     tss_of = load_tss()
 
+    # ---- Cronometer: dove il cibo e' stato pesato davvero, la ricostruzione esce --
+    # Un giorno PIENO (>=3 pasti, >=1500 kcal) si sostituisce per intero. Un giorno
+    # PARZIALE sostituisce solo le fasce che Cronometer copre — il pranzo vero al
+    # posto del pranzo inventato — e lascia in piedi il resto della ricostruzione,
+    # perche' un solo pasto registrato non e' la prova che il resto non sia stato
+    # mangiato: sono 164 giorni su 265, e presi per giornate intere farebbero sparire
+    # 1.618 kcal mediane di cene vere.
+    cron = {}
+    if CRONOMETER.exists():
+        import json as _json
+        cron = _json.loads(CRONOMETER.read_text(encoding="utf-8"))
+    cron_full = {d for d, v in cron.items() if v.get("full")}
+    cron_slots = {d: set(v.get("slots") or ()) for d, v in cron.items()
+                  if not v.get("full")}
+
     # dettaglio per il popup: per giorno, i pasti con dentro gli alimenti veri
     detail = defaultdict(lambda: defaultdict(list))
     per_day = defaultdict(lambda: {n: 0.0 for n in common.NUTRIENTS})
@@ -153,12 +177,15 @@ def main():
     unknown = set()
 
     for r in rows:
+        d = r["date"]
+        # la riga cade se Cronometer copre tutto il giorno, o copre la sua fascia
+        if d in cron_full or (r.get("meal") or "") in cron_slots.get(d, ()):
+            continue
         f = foods.get(r["food_id"])
         if f is None:
             unknown.add(r["food_id"])
             continue
         qty = float(r["qty"])
-        d = r["date"]
         for n in common.NUTRIENTS:
             per_day[d][n] += f["per_unit"][n] * qty
         kcal = f["per_unit"]["kcal"] * qty
@@ -193,6 +220,45 @@ def main():
 
     if unknown:
         print(f"  ! alimenti sconosciuti, ignorati: {sorted(unknown)}", file=sys.stderr)
+
+    # ---- e adesso entra Cronometer, al posto di quello che si e' appena tolto ----
+    for d, v in cron.items():
+        full = v.get("full")
+        src = v["nutrients"] if full else v["partial_nutrients"]
+        if not src.get("kcal"):
+            continue
+        for n in common.NUTRIENTS:
+            per_day[d][n] = (0.0 if full else per_day[d][n]) + float(src.get(n) or 0.0)
+        kcal = float(src["kcal"])
+        if full:
+            kcal_src[d]["observed"] = kcal
+            kcal_src[d]["assumed"] = 0.0
+            items[d] = v.get("n_items") or 0
+            plants_of[d] = set(v.get("plants") or ())
+            for q in ("plant", "dairy", "animal"):
+                src_kcal[d][q] = float((v.get("shares") or {}).get(q) or 0.0)
+            upf_kcal[d] = float((v.get("shares") or {}).get("upf") or 0.0)
+            detail[d] = {m: list(it) for m, it in (v.get("meals") or {}).items()}
+        else:
+            # parziale: le fasce vere si sommano a quello che resta della ricostruzione,
+            # e le quote/specie si accumulano invece di azzerare quelle rimaste in piedi
+            kcal_src[d]["observed"] += kcal
+            items[d] += v.get("n_items") or 0
+            plants_of[d] |= set(v.get("plants") or ())
+            frac = kcal / (v["nutrients"]["kcal"] or kcal)   # quota del giorno coperta
+            for q in ("plant", "dairy", "animal"):
+                src_kcal[d][q] += float((v.get("shares") or {}).get(q) or 0.0) * frac
+            upf_kcal[d] += float((v.get("shares") or {}).get("upf") or 0.0) * frac
+            for m, it in (v.get("meals") or {}).items():
+                if m in (v.get("slots") or ()) or m == "in bici":
+                    detail[d][m] = list(it)
+        if v.get("fermented"):
+            ferm_days.add(d)
+
+    if cron:
+        n_full = len(cron_full)
+        print(f"  Cronometer: {len(cron)} giorni misurati — {n_full} interi, "
+              f"{len(cron) - n_full} parziali (solo le fasce registrate)")
 
     days = sorted(per_day)
     if not days:
@@ -335,6 +401,12 @@ def main():
         for item in rows:
             item_day = date.fromisoformat(item["date"])
             if not recent_start <= item_day <= d1:
+                continue
+            # stesso taglio fatto sopra: se Cronometer copre il giorno o la fascia,
+            # quella riga della ricostruzione non conta piu' nei totali e non deve
+            # comparire nemmeno nell'inventario di quindici giorni
+            if (item["date"] in cron_full
+                    or (item.get("meal") or "") in cron_slots.get(item["date"], ())):
                 continue
             food = foods.get(item["food_id"])
             if food is None:

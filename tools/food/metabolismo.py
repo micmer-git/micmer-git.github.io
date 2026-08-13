@@ -342,7 +342,12 @@ OUT = common.DERIVED / "metabolismo.csv"
 
 # --- fatti dell'archivio, non ipotesi: servono a marcare i giorni ------------
 LOAD_REAL_FROM = "2019-06-19"   # prima: attivita' Strava senza FC ne' potenza
-GAP_START, GAP_END = "2021-10-18", "2023-04-09"   # buco d'archivio, non riposo
+# Il "buco d'archivio" era il 2022, che su Intervals non esiste. Dal 2026-08-13 non e'
+# piu' un buco: tools/strava_backfill.py ha rimesso dentro le 394 attivita' di quell'anno
+# dall'export Strava, e la CTL di quei giorni si ricalcola invece di decadere a zero.
+# Le due date restano perche' li' la forma e' RICOSTRUITA e non misurata, e per marcarla
+# come tale; il carico pero' c'e', quindi non si esclude piu' dalle componenti.
+GAP_START, GAP_END = "2021-10-18", "2023-04-09"   # ricostruito da Strava, non misurato
 PHYSIO_FROM = "2025-01-20"      # sonno / HRV / FC riposo / VO2max
 DIET_FROM = "2024-08-11"        # inizio del diario alimentare
 
@@ -658,11 +663,28 @@ def build():
         if a.get("carbs_used") is not None and r["cho_g"]:
             checks.append((r["cho_g"], a["carbs_used"]))
 
+    # --- CTL/ATL con dentro il carico ricostruito da Strava -------------------
+    # `well` porta i valori di Intervals, e nel 2022 sono una decrescita verso zero
+    # sopra un anno di allenamenti che Intervals non ha. Rifacendo la media
+    # esponenziale sul carico giornaliero PIU' il backfill, la forma di quell'anno
+    # torna quella vera. Stessa funzione che usa build_vita.py, cosi' la pagina e
+    # questo modello non possono raccontare due 2022 diversi.
+    extra = common.backfill_load_by_day()
+    ctl_of, atl_of = {}, {}
+    if extra:
+        wd = sorted(well)
+        loads = [(well[d].get("ctlLoad") or 0) + extra.get(d, 0.0) for d in wd]
+        seed = next((well[d].get("ctl") for d in wd if well[d].get("ctl") is not None), 0.0)
+        rc, ra = common.recompute_ctl_atl(loads, seed, seed)
+        ctl_of = dict(zip(wd, rc))
+        atl_of = dict(zip(wd, ra))
+
     # --- componenti del momento metabolico ----------------------------------
     comp = {k: {} for k, *_ in PESI}
     for d, w in well.items():
-        ctl, atl = w.get("ctl"), w.get("atl")
-        if ctl is not None and d >= LOAD_REAL_FROM and not (GAP_START <= d <= GAP_END):
+        ctl = ctl_of.get(d, w.get("ctl"))
+        atl = atl_of.get(d, w.get("atl"))
+        if ctl is not None and d >= LOAD_REAL_FROM:
             comp["fitness"][d] = float(ctl)
             if atl is not None and ctl > 0:
                 # rapporto, non differenza: 10 punti di ATL pesano diversamente
@@ -856,8 +878,9 @@ def report(res):
           f"del {PHYSIO_FROM}")
     print("  sonno, HRV e FC a riposo non esistono, quindi resta quasi solo "
           "carico e dieta.")
-    print(f"  buco d'archivio {GAP_START} → {GAP_END}: nessuna attivita', ed e' un")
-    print("  buco, non una pausa. Le componenti di carico li' sono assenti, non zero.")
+    print(f"  {GAP_START} → {GAP_END}: su Intervals non c'e' niente, ma le attivita'")
+    print("  esistono e arrivano dall'export Strava. Il carico li' e' STIMATO da durata")
+    print("  e cardio, e la CTL e' ricalcolata: e' ricostruito, non misurato.")
 
 
 def main():

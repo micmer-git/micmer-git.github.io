@@ -60,6 +60,8 @@ sys.path.insert(0, HERE)
 
 from sync_intervals import api, get_api_key  # noqa: E402  (same folder, shared auth)
 import vita_trackers  # noqa: E402  (i tre tracker in cima alla pagina)
+sys.path.insert(0, os.path.join(HERE, "food"))
+import common as food_common  # noqa: E402  (backfill + ricalcolo CTL, in comune)
 
 CACHE = os.path.join(HERE, ".cruscotto_cache.json")
 OUT_DIR = os.path.join(ROOT, "vita")
@@ -67,6 +69,11 @@ OUT = os.path.join(OUT_DIR, "index.html")
 REPORT = os.path.join(HERE, "vita_tests.md")
 FOOD_DATA = os.path.join(OUT_DIR, "cibo", "data")
 FOOD_ACTIVITIES = os.path.join(HERE, "food", "data", "activities.csv")
+# Le attività che Intervals non ha, riprese dall'export Strava da tools/strava_backfill.py.
+# Il 2022 intero sta qui dentro: su Intervals quell'anno ha zero attività, su Strava 394.
+# Sta in un file SUO e non dentro activities.csv perché quello lo riscrive
+# `--sync-source` a ogni ora, e si porterebbe via il backfill senza dirlo.
+FOOD_BACKFILL = os.path.join(HERE, "food", "data", "activities_backfill.csv")
 
 # Aggregati giornalieri di alimentazione, esportati da ~/health-log con
 # `scripts/build_nutrition_series.py --export`. Vive qui perche' la GitHub Action
@@ -266,12 +273,44 @@ def csv_blocks(path, idx, n, label, keep=None):
     return out, first, last, len(rows)
 
 
+def load_backfill():
+    """Le attività ricostruite da Strava, nella forma in cui le dà Intervals.
+
+    Restituisce una lista vuota se il file non c'è: il backfill è un artefatto che
+    si rigenera da un export scaricato a mano, e chi clona la repo senza deve poter
+    ricostruire la pagina lo stesso — con i buchi veri, che è la vecchia verità.
+    """
+    if not os.path.exists(FOOD_BACKFILL):
+        return []
+    out = []
+    with open(FOOD_BACKFILL, encoding="utf-8", newline="") as fh:
+        for r in csv.DictReader(fh):
+            if not r.get("date"):
+                continue
+
+            def n(k):
+                try:
+                    return float(r[k])
+                except (KeyError, TypeError, ValueError):
+                    return 0.0
+            out.append({
+                "start_date_local": r["date"], "name": r.get("name") or "",
+                "type": r.get("type") or "", "moving_time": n("moving_time_s"),
+                "distance": n("distance_m"), "total_elevation_gain": n("elevation_m"),
+                "icu_training_load": n("training_load"), "id": "",
+                "strava_id": (r.get("strava_id") or "").strip(),
+                "_backfill": True, "_method": r.get("load_method") or "",
+            })
+    print(f"  backfill Strava: {len(out)} attività che Intervals non ha")
+    return out
+
+
 def build_payload(raw):
     """Daily arrays on one shared index, plus the activity list. Nothing is smoothed
     or filled here — the page does its own rolling means so the range switch can
     recompute them over whatever window is on screen."""
     well = sorted(raw["wellness"], key=lambda r: r["id"])
-    acts = raw["activities"]
+    acts = list(raw["activities"]) + load_backfill()
 
     d0 = datetime.strptime(well[0]["id"], "%Y-%m-%d").date()
     dN = datetime.strptime(well[-1]["id"], "%Y-%m-%d").date()
@@ -293,6 +332,58 @@ def build_payload(raw):
     ctl = col("ctl", r1)
     atl = col("atl", r1)
     load = col("ctlLoad", ri)
+
+    # ---- il carico ricostruito rientra nelle serie ---------------------------
+    # `load` viene da Intervals e nel 2022 è zero per 365 giorni di fila, perché su
+    # Intervals quell'anno non c'è. Con le attività di Strava rimesse dentro, il
+    # carico di quei giorni esiste — e allora CTL e ATL vanno RICALCOLATE, se no la
+    # fitness continua a decadere a zero sopra un anno di allenamenti veri.
+    #
+    # Il ricalcolo usa la solita media esponenziale (42 giorni la CTL, 7 l'ATL). Che
+    # sia proprio quella di Intervals non è un'ipotesi: rifacendo i conti dal loro
+    # `ctlLoad` si riottengono i loro `ctl` con un errore assoluto mediano di 0,03 su
+    # una scala che sta attorno a 95, massimo 1,0. È la stessa formula.
+    recon_load = defaultdict(float)
+    for a in acts:
+        if not a.get("_backfill"):
+            continue
+        sd = (a.get("start_date_local") or "")[:10]
+        if sd in idx:
+            recon_load[idx[sd]] += a.get("icu_training_load") or 0.0
+
+    recon_days = sorted(recon_load)
+    if recon_days:
+        for i, extra in recon_load.items():
+            load[i] = int(round((load[i] or 0) + extra))
+        rc, ra = food_common.recompute_ctl_atl(load, ctl[0] or 0.0, atl[0] or 0.0)
+        for i in range(n):
+            ctl[i], atl[i] = r1(rc[i]), r1(ra[i])
+        print(f"  carico ricostruito su {len(recon_days)} giorni → CTL/ATL rifatte "
+              f"dal {(d0 + timedelta(days=recon_days[0])).isoformat()}")
+
+    # Le fasce da marcare in pagina. Prima si uniscono i giorni ricostruiti che
+    # distano meno di 30 giorni, se no un anno diventa novanta etichette.
+    spans = []
+    for i in recon_days:
+        if spans and i - spans[-1][1] <= 30:
+            spans[-1][1] = i
+        else:
+            spans.append([i, i])
+
+    # Poi si tengono solo le fasce dove la ricostruzione è DAVVERO la sostanza del
+    # periodo: almeno 45 giorni (la stessa soglia dei buchi) e più di metà del carico
+    # ricostruito. Senza questo filtro il 2025, che Intervals ha sincronizzato bene e
+    # a cui il backfill aggiunge 18 attività su 489, si prendeva una fascia
+    # "carico ricostruito" larga due mesi: overclaim esattamente speculare al buco
+    # del 2022, e sbagliato nello stesso modo.
+    recon = []
+    for a, b in spans:
+        if b - a + 1 < 45:
+            continue
+        tot = sum(load[i] or 0 for i in range(a, b + 1))
+        rec = sum(recon_load.get(i, 0.0) for i in range(a, b + 1))
+        if tot > 0 and rec / tot >= 0.5:
+            recon.append([a, b])
     sleep = col("sleepSecs", lambda v: int(round(v / 60.0)))   # minutes
     score = col("sleepScore", ri)
     hrv = col("hrv", r1)
@@ -329,6 +420,8 @@ def build_payload(raw):
             int(round(a.get("distance") or 0)),
             int(round(a.get("total_elevation_gain") or 0)),
             int(round(a.get("icu_training_load") or 0)),
+            # 1 = attività ricostruita dall'export Strava, carico stimato non misurato
+            1 if a.get("_backfill") else 0,
         ])
         anames.append([a.get("name") or "", a.get("id") or "",
                        a.get("strava_id") or ""])
@@ -412,6 +505,7 @@ def build_payload(raw):
         "n": n,
         "sports": SPORTS,
         "gaps": gaps,
+        "recon": recon,
         "ctl": ctl, "atl": atl, "load": load,
         "sleep": sleep, "score": score, "hrv": hrv, "rhr": rhr,
         "steps": steps, "vo2": vo2, "weight": weight, "bodyfat": bodyfat,
@@ -1326,22 +1420,29 @@ addEventListener("scroll", hideTip, { passive:true });
    2022 disegnato in una vista e non nell'altra e' esattamente il modo in cui una
    pagina comincia a mentire in una sola delle sue forme. */
 function gapBands(svg, X, x0, x1, top, ih) {
-  for (const [a, b] of D.gaps) {
-    if (b < x0 || a > x1) continue;
+  /* Due bande diverse, e la differenza conta. "nessun dato" e' un buco vero:
+     li' non si sa. "carico ricostruito" e' il 2022 e gli altri tratti ripresi
+     dall'export Strava: li' le attivita' ci sono davvero, ma il loro carico e'
+     STIMATO da durata e cardio, non misurato — e la CTL che ci passa sopra e'
+     ricalcolata. Disegnarle uguali rimetterebbe la bugia dall'altro lato. */
+  const band = (a, b, label, fill, stroke) => {
+    if (b < x0 || a > x1) return;
     const xa = X(Math.max(a, x0)), xb = X(Math.min(b, x1));
-    if (xb - xa < 1.5) continue;
+    if (xb - xa < 1.5) return;
+    svg.appendChild(el("rect", { x:xa, y:top, width:xb - xa, height:ih, fill }));
     svg.appendChild(el("rect", { x:xa, y:top, width:xb - xa, height:ih,
-      fill:"rgba(236,227,205,.05)" }));
-    svg.appendChild(el("rect", { x:xa, y:top, width:xb - xa, height:ih,
-      fill:"none", stroke:"rgba(236,227,205,.16)", "stroke-width":1,
-      "stroke-dasharray":"2 3" }));
+      fill:"none", stroke, "stroke-width":1, "stroke-dasharray":"2 3" }));
     if (xb - xa > 46) {
       const t = el("text", { x:(xa + xb) / 2, y:top + 10, "text-anchor":"middle",
         fill:"var(--muted)", "font-size":"7.5", "letter-spacing":".08em",
         "font-family":"'IBM Plex Mono',monospace" });
-      t.textContent = "nessun dato"; svg.appendChild(t);
+      t.textContent = label; svg.appendChild(t);
     }
-  }
+  };
+  for (const [a, b] of D.gaps)
+    band(a, b, "nessun dato", "rgba(236,227,205,.05)", "rgba(236,227,205,.16)");
+  for (const [a, b] of (D.recon || []))
+    band(a, b, "carico ricostruito", "rgba(201,133,0,.055)", "rgba(201,133,0,.20)");
 }
 /* x ticks: 3-5 dates across the window, never overlapping */
 function xDates(svg, X, W, H, x0, x1, iw) {
@@ -1447,7 +1548,9 @@ function openDay(i) {
       if (a[2]) bits.push(hhmm(a[2] / 60));
       if (a[3]) bits.push(nf(a[3] / 1000, 1) + " km");
       if (a[4]) bits.push(nf(a[4]) + " m");
-      if (a[5]) bits.push(nf(a[5]) + " TSS");
+      /* a[6]: l'attivita' viene dall'export Strava, non da Intervals. Il TSS non e'
+         il loro, e' stimato qui da durata e cardio: si dice, accanto al numero. */
+      if (a[5]) bits.push(nf(a[5]) + (a[6] ? " TSS stim." : " TSS"));
       const links = [];
       if (nm[1]) links.push(`<a href="https://intervals.icu/activities/${nm[1]}" target="_blank" rel="noopener">Intervals</a>`);
       if (nm[2]) links.push(`<a href="https://www.strava.com/activities/${nm[2]}" target="_blank" rel="noopener">Strava</a>`);

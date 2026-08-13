@@ -1,0 +1,710 @@
+date,name,type,moving_time_s,elapsed_time_s,distance_m,elevation_m,calories,training_load,intensity,avg_hr,max_hr,avg_power_w,np_w,source,load_method,strava_id
+2015-09-22,To Rome With Bike / 1,Ride,25265,40239,191897.0,850.0,3636,403,,,,129,,strava_backfill,durata,5080978814
+2015-09-23,Morning Ride,Ride,30632,30632,212885.5,1410.6,3575,489,,,,105,,strava_backfill,durata,19034567662
+2015-09-24,To Rome With Bike / 3,Ride,23507,36516,177189.5,1151.0,3448,375,,,,132,,strava_backfill,durata,5081022631
+2015-09-25,To Rome With Bike / 4,Ride,15129,19368,107130.9,610.0,1969,241,,,,117,,strava_backfill,durata,5081023052
+2016-02-15,Giro dell'ora di pranzo,Ride,5407,6349,45472.0,11.6,0,86,,,,,,strava_backfill,durata,546625004
+2016-02-22,Giro pomeridiano,Ride,5926,7207,42816.5,471.4,0,95,,,,,,strava_backfill,durata,546624429
+2016-03-02,Giro mattutino,Ride,9293,10100,60642.7,871.4,0,148,,,,,,strava_backfill,durata,546625467
+2016-03-19,Giro mattutino,Ride,4941,6079,23607.9,577.9,0,79,,,,,,strava_backfill,durata,546625224
+2016-03-21,Giro mattutino,Ride,9483,9981,61930.5,1412.4,0,151,,,,,,strava_backfill,durata,546626383
+2016-03-24,Giro mattutino,Ride,14728,14898,93163.3,2243.0,0,235,,,,,,strava_backfill,durata,546624176
+2016-03-27,Giro pomeridiano,Ride,8240,8415,56403.2,1065.1,0,131,,,,,,strava_backfill,durata,546623694
+2016-04-10,Giro mattutino,Ride,11194,12524,78757.7,1218.5,0,179,,,,,,strava_backfill,durata,542023294
+2016-04-15,Morning Ride,Ride,13316,13394,109068.0,2095.1,0,212,,,,,,strava_backfill,durata,545904869
+2016-05-03,Zogno - Miragolo - Perello,Ride,8779,9233,39936.7,2099.7,2176,140,,,,222,,strava_backfill,durata,564287763
+2016-05-03,Giro pomeridiano,Ride,4067,4609,34138.6,149.8,675,65,,,,149,,strava_backfill,durata,564376282
+2016-05-07,Orezzo - Col di Paste  (Scarico),Ride,8129,8941,49946.8,660.1,1467,130,,,,162,,strava_backfill,durata,568027315
+2016-05-16,Orezzo - Ghisallo - Orezzo,Ride,23984,26094,174222.0,1789.0,3687,383,,,,138,,strava_backfill,durata,577986000
+2016-05-21,Coppa Asteria,Ride,21149,23389,113554.0,2688.0,3095,337,,,,131,,strava_backfill,durata,583149269
+2016-07-09,Edolo - Gavia - Mortirolo - Edolo,Ride,22686,27401,125672.0,3227.0,3557,362,,,,141,,strava_backfill,durata,635281744
+2017-01-09,Rulli 1,Ride,4800,4800,40000.0,0,0,77,,,,,,strava_backfill,durata,826444814
+2017-01-11,Rulli 2 (Cardio),Ride,5400,5400,45000.0,200.0,0,86,,,,,,strava_backfill,durata,828864157
+2017-01-15,Rulli 3,Ride,7200,7200,60000.0,100.0,0,115,,,,,,strava_backfill,durata,832908681
+2017-01-18,Rulli 4 (cardio),Ride,5400,5400,47500.0,150.0,0,86,,,,,,strava_backfill,durata,836457640
+2017-01-20,Rulli 5,Ride,5400,5400,47300.0,0,0,86,,,,,,strava_backfill,durata,838310589
+2017-01-22,Rulli 6,Ride,6600,6600,60000.0,0,0,105,,,,,,strava_backfill,durata,840716146
+2017-01-24,Rulli 7,Ride,3600,3600,35000.0,0,0,57,,,,,,strava_backfill,durata,842831290
+2017-01-25,Rulli 8 (Cardio),Ride,5340,5340,46000.0,0,0,85,,,,,,strava_backfill,durata,844065686
+2017-01-28,Finally out! (Abbandonato dal Garmin),Ride,7800,7800,66000.0,0,0,124,,,,,,strava_backfill,durata,846820516
+2017-02-01,Rulli 9 (Cardio finale),Ride,9000,9000,75000.0,0,0,144,,,,,,strava_backfill,durata,851784410
+2017-02-05,Rulli 10,Ride,7200,7200,60000.0,0,0,115,,,,,,strava_backfill,durata,856222731
+2017-02-07,Rulli 11,Ride,3600,3600,34000.0,0,0,57,,,,,,strava_backfill,durata,858307778
+2017-02-09,Rulli 12,Ride,5400,5400,47000.0,0,0,86,,,,,,strava_backfill,durata,860609065
+2017-02-11,Rulli 13,Ride,6300,6300,55000.0,0,0,101,,,,,,strava_backfill,durata,862816267
+2017-02-15,Rulli 14 (e poi ci mettiamo anche un po' di squash extra),Ride,8100,8100,70000.0,0,0,129,,,,,,strava_backfill,durata,867627184
+2017-02-20,Rulli 15,Ride,5400,5400,47700.0,0,0,86,,,,,,strava_backfill,durata,873442050
+2017-02-23,Rulli 16,Ride,6600,6600,60000.0,0,0,105,,,,,,strava_backfill,durata,876946030
+2017-02-27,Rulli 17,Ride,5400,5400,47700.0,0,0,86,,,,,,strava_backfill,durata,881761525
+2017-03-01,Rulli 18,Ride,7200,7200,60000.0,0,0,115,,,,,,strava_backfill,durata,883844068
+2017-03-04,Spaak Bianche (si tira in fronte al gruppo!),Ride,12285,13335,97089.2,92.0,1767,196,,,,129,,strava_backfill,durata,887173322
+2017-03-08,Rulli 19,Ride,7200,7200,60000.0,0,0,115,,,,,,strava_backfill,durata,892368223
+2017-03-15,Rulli 20 (when you are busy but Flanders don't really care),Ride,5400,5400,47000.0,0,0,86,,,,,,strava_backfill,durata,901371706
+2017-03-22,Rulli 21,Ride,6300,6300,54250.0,0,0,101,,,,,,strava_backfill,durata,910280572
+2017-04-01,Ronde van Vlaanderen,Ride,31979,35327,240341.0,2009.0,5366,510,,,,150,,strava_backfill,durata,925076229
+2017-05-06,Giro Spaak-a-gambe! (ultimi 20 km al vento),Ride,9396,10330,82700.2,118.0,1844,150,,,,176,,strava_backfill,durata,973173423
+2017-06-02,Sciogligamba pre-Asteria (Italy 1),Ride,8411,11234,55785.3,738.0,1297,134,,,,138,,strava_backfill,durata,1017426291
+2017-06-03,"Coppa Asteria 2017 (Crazy climbs, crazy warmness).",Ride,19057,22581,99613.6,2063.0,2537,304,,,,119,,strava_backfill,durata,1019207779
+2017-07-23,Birthday ride! (Ricognizione Coppa Coppi),Ride,6883,7514,36950.9,1016.0,1190,110,,,,155,,strava_backfill,durata,1097239396
+2017-08-11,Passo della Presolana (Polpacci pelosi are back!),Ride,11520,14667,70696.7,1237.0,1742,184,,,,136,,strava_backfill,durata,1128213742
+2017-08-16,Buca del Corno,Ride,10959,11921,70404.9,928.0,1674,175,,,,137,,strava_backfill,durata,1136743500
+2017-08-23,Val Cava - Direttissima (bis al retrogusto di Coppa Coppi),Ride,17022,20887,109137.0,1760.0,2721,272,,,,143,,strava_backfill,durata,1147851857
+2017-08-30,Cavlera!,Ride,6412,6798,28916.6,1076.0,1115,102,,,,156,,strava_backfill,durata,1159832387
+2017-11-15,Spinning 1,Ride,4800,4800,40000.0,0,0,77,,,,,,strava_backfill,durata,1276571953
+2017-11-23,Spinning 2,Ride,4800,4800,40000.0,0,0,77,,,,,,strava_backfill,durata,1287458894
+2017-12-06,Spinning 3,Ride,5400,5400,45000.0,0,0,86,,,,,,strava_backfill,durata,1304613236
+2017-12-13,Spinning 4 + altri workouts,Ride,4500,4500,37500.0,0,0,72,,,,,,strava_backfill,durata,1312810637
+2018-01-10,"Spinning 5 (New Year, Big Year!))",Ride,6000,6000,45000.0,100.0,0,96,,,,,,strava_backfill,durata,1350391628
+2018-01-11,Spinning 6 (Inizia a farsi dura),Ride,5400,5400,45000.0,1.0,0,86,,,,,,strava_backfill,durata,1352103305
+2018-01-17,Spinning 7,Ride,5400,5400,45000.0,0,0,86,,,,,,strava_backfill,durata,1361250051
+2018-01-18,Giro serale,Ride,6000,6000,50000.0,0,0,96,,,,,,strava_backfill,durata,1363598116
+2018-01-18,Giro serale,Ride,6000,6000,50000.0,0,0,96,,,,,,strava_backfill,durata,1363598122
+2018-01-23,Spinning 8,Ride,4800,4800,40000.0,50.0,0,77,,,,,,strava_backfill,durata,1371701074
+2018-01-26,Spinning 9,Ride,6300,6300,50000.0,0,0,101,,,,,,strava_backfill,durata,1376403859
+2018-01-31,Spinning 10,Ride,6000,6000,50000.0,0,0,96,,,,,,strava_backfill,durata,1384966732
+2018-02-02,Spinning 11,Ride,5400,5400,45000.0,0,0,86,,,,,,strava_backfill,durata,1388093134
+2018-02-04,Buona la prima fredda uscita!,Ride,5400,5400,45000.0,50.0,0,86,,,,,,strava_backfill,durata,1391328705
+2018-02-06,Spinning 12,Ride,5400,5400,45000.0,0,0,86,,,,,,strava_backfill,durata,1395726372
+2018-02-08,Spinning 12,Ride,6300,6300,45000.0,100.0,0,101,,,,,,strava_backfill,durata,1397848487
+2018-02-14,Spinning 13,Ride,5400,5400,45000.0,0,0,86,,,,,,strava_backfill,durata,1406827161
+2018-02-21,Spinning 14,Ride,5400,5400,45000.0,0,0,86,,,,,,strava_backfill,durata,1419085871
+2018-02-27,Spinning 15,Ride,6107,6107,47500.0,0,0,97,,,,,,strava_backfill,durata,1428624734
+2018-03-01,Spinning 16,Ride,5340,5340,45000.0,0,0,85,,,,,,strava_backfill,durata,1431536390
+2018-03-13,Spinning 17,Ride,5100,5100,42500.0,0,0,81,,,,,,strava_backfill,durata,1451092696
+2018-03-15,Fuc*ing wind!,Ride,5931,6009,43647.3,83.9,786,95,,,,119,,strava_backfill,durata,1455498500
+2018-03-17,Last missing part,Ride,2160,2160,15000.0,0,0,34,,,,,,strava_backfill,durata,1457073930
+2018-03-24,Strava sul cellulare mi fa incazzare,Ride,10800,10800,87000.0,0,0,172,,,,,,strava_backfill,durata,1469186078
+2018-04-09,Giro serale,Ride,5880,5880,48000.0,200.0,0,94,,,,,,strava_backfill,durata,1498891230
+2019-12-07,Spinning / 1,VirtualRide,4156,4156,0,0,817,79,,145,173,,,strava_backfill,trimp_hr,2916644448
+2020-03-20,Bike / 25.1 (...),Ride,3338,3338,0,0,610,65,,146,170,,,strava_backfill,trimp_hr,3200212737
+2020-06-03,Evening Activity,Workout,487,487,0,0,12,1,,63,,,,strava_backfill,trimp_hr,3572767887
+2020-06-13,Bike / 59 (The Crocedomini Supremacy),Ride,27671,31233,180814.6,3268.0,4483,442,,,,145,,strava_backfill,durata,3612101767
+2020-12-27,Camminata spensierata,Hike,7373,7753,9536.1,741.0,944,57,,119,,,,strava_backfill,trimp_hr,4523860352
+2020-12-27,Un'altra chiacchierata spensierata,Walk,6782,6846,12904.2,707.6,1245,34,,,,,,strava_backfill,durata,4525532786
+2021-01-02,Skialp / 1 (The Donadoni in-Hospitality),BackcountrySki,10172,15200,10615.0,987.2,1787,51,,,,,,strava_backfill,durata,4554129079
+2021-01-03,Skialp / 2 (Alis and Aviatico),BackcountrySki,5755,7708,7486.3,637.6,722,29,,,,,,strava_backfill,durata,4558961569
+2021-01-04,Skialp / 3 (Vodala Silence),BackcountrySki,2480,2906,1884.6,405.9,439,13,,,,,,strava_backfill,durata,4567677441
+2021-01-06,Skialp / 4 (Aviatico Repeat),BackcountrySki,6102,9020,8835.3,996.2,923,31,,,,,,strava_backfill,durata,4576453766
+2021-03-14,Bike / X (Culminello friggi gambe),Ride,18479,19883,133646.8,2291.7,3862,295,,,,194,,strava_backfill,durata,4946224746
+2021-03-17,Run / X (Garmin del babbo),Run,4052,4299,14260.2,326.6,1456,73,,,,,,strava_backfill,durata,4962594810
+2021-03-21,Bike / 26 (Finito come un 🧦),Ride,17930,19584,125071.4,2307.0,3397,286,,,,170,,strava_backfill,durata,4985124576
+2021-04-27,Bike / X (SFR in chiusura),Ride,4254,4322,23232.8,841.9,772,68,,,,191,,strava_backfill,durata,5203011563
+2021-05-08,Bike / X (Cronoscalata Gazzaniga-Orezzo PP),Ride,841,841,4483.1,290.0,251,31,,177,,336,,strava_backfill,trimp_hr,5260390787
+2021-05-28,Swim / X (Lovely ☀️),Swim,2502,3354,2200.0,0,523,42,,,,,,strava_backfill,durata,5372869264
+2021-06-19,Swim / X (Back to back 🐌),Swim,2315,2844,2025.0,0,486,39,,,,,,strava_backfill,durata,5493766714
+2021-06-29,Bici,Ride,8533,8706,30903.9,971.0,2037,125,,133,,102,,strava_backfill,trimp_hr,7619177652
+2021-07-07,Run / X (Variazioni senza gambe),Run,2323,2323,9001.7,43.0,656,53,,161,,,,strava_backfill,trimp_hr,5590580583
+2021-10-19,Run / X (How not to solve 🪨-hard legs),Run,3738,4090,13010.0,253.0,981,74,,154,,,,strava_backfill,trimp_hr,6136900550
+2021-10-20,Bike / X (FTP stai lì),Ride,3300,3300,35094.3,0,746,53,,,,226,,strava_backfill,durata,6141725662
+2021-10-21,"Bike / X (God, 510W)",Ride,1800,1800,19224.0,0,420,29,,,,234,,strava_backfill,durata,6146214421
+2021-10-21,Run / X (Brickettino),Run,2554,2556,10007.5,25.0,718,53,,156,,,,strava_backfill,trimp_hr,6146477395
+2021-10-22,Swim / X (Friday routine),Swim,2061,2521,2000.0,0,400,21,,134,,,,strava_backfill,trimp_hr,6149390767
+2021-10-23,Run / X (Long Detox 🍸),Run,5008,5282,18023.9,359.0,1271,85,,146,,,,strava_backfill,trimp_hr,6154602362
+2021-10-24,Bike / X (Finirsi nei primi 50 km),Ride,11518,13713,94797.3,1158.0,2432,223,,146,,196,,strava_backfill,trimp_hr,6159375055
+2021-10-26,Bike / X (The Smartworking Comeback 😍),Ride,4386,4448,46200.1,227.0,1244,92,,150,,257,,strava_backfill,trimp_hr,6168627916
+2021-10-27,Run / X (When you need to get out of the bed),Run,2421,2421,10014.0,25.0,732,65,,170,,,,strava_backfill,trimp_hr,6172321651
+2021-10-27,Bike / X (Finito con la Pegeaut),Ride,3755,3832,25432.6,491.0,754,58,,135,,200,,strava_backfill,trimp_hr,6174655028
+2021-10-28,Bike / X (Quando sei finito ma tuo fratello ti vuole tirare il PR sul Selvino),Ride,4425,4591,33943.4,799.0,980,86,,146,,228,,strava_backfill,trimp_hr,6178004789
+2021-10-28,Bike / X (Easy comeback => 🇩🇰),Ride,2595,2686,23800.8,43.0,484,35,,129,,111,,strava_backfill,trimp_hr,6179229159
+2021-10-29,"Run / X (Moscon Mule, Caldarroste e Cristania)",Run,4336,4948,17102.6,38.0,1252,106,,165,,,,strava_backfill,trimp_hr,6181722248
+2021-10-31,"Run / X (Spooky, Starry Night Half Marathon)",Run,6302,6785,24543.8,55.0,1654,116,,150,,,,strava_backfill,trimp_hr,6190977575
+2021-11-02,Bike / X (12 minutes more than Poggy),Ride,3855,3855,27249.4,745.0,973,81,,150,,223,,strava_backfill,trimp_hr,6201068051
+2021-11-03,Run / X (4*500mt uphill),Run,3702,3981,13305.7,252.0,942,71,,152,,,,strava_backfill,trimp_hr,6207148310
+2021-11-04,Run / X (Easy 10k),Run,2743,2844,10323.3,138.0,747,61,,160,,,,strava_backfill,trimp_hr,6210258298
+2021-11-04,Bike / X (3*5*355W-1'),Ride,3722,3722,37728.3,0,754,59,,,,203,,strava_backfill,durata,6213178547
+2021-11-05,Swim / X (How though is to go back!),Swim,2047,2542,2000.0,0,400,20,,133,,,,strava_backfill,trimp_hr,6214603772
+2021-11-06,"Bike / X (Appenzeller Alpenbitter, San Lucio e Forcella)",Ride,11015,12322,77155.8,1889.0,2202,200,,143,,221,,strava_backfill,trimp_hr,6218619267
+2021-11-07,Run / X (Pre-Slayer 📸),Run,4476,5709,7568.6,797.0,842,63,,136,,,,strava_backfill,trimp_hr,6223432375
+2021-11-08,Bike / X (9*(306*2'+226*3')),Ride,3322,3322,36285.9,0,800,53,,,,241,,strava_backfill,durata,6230047267
+2021-11-09,Run / X (The 5*(1.5-0.5) comeback),Run,2610,2617,11011.0,35.0,797,68,,168,,,,strava_backfill,trimp_hr,6233167376
+2021-11-10,Run / X (Coming back on my feet),Run,5339,5421,20011.3,169.0,1457,108,,155,,,,strava_backfill,trimp_hr,6239415939
+2021-11-11,Con Gleno e Liuk ✌️,Run,4970,5105,8031.5,665.0,792,54,,123,,,,strava_backfill,trimp_hr,6243550764
+2021-11-12,Bike / X (Try that with a car!),Ride,2185,2185,23585.3,25.0,458,32,,133,,183,,strava_backfill,trimp_hr,6246074617
+2021-11-12,Swim / X (Ora di libertà e pensieri sott'acqua),Swim,3651,3669,3200.0,0,640,46,,148,,,,strava_backfill,trimp_hr,6248188472
+2021-11-13,Bike / X (Back to Watopia with the Zwift leaving me halfway through),VirtualRide,3744,3744,34267.5,361.0,745,60,,,,209,,strava_backfill,durata,6250325316
+2021-11-13,"Run / X ( In necessitate, virtutem)",Run,2449,2715,9285.5,150.0,668,60,,165,,,,strava_backfill,trimp_hr,6250578669
+2021-11-14,Run / X (Pioggia di foglie),Run,5282,5721,18491.0,671.0,1402,127,,164,,,,strava_backfill,trimp_hr,6257003958
+2021-11-16,Run / X (6x1km of pain),Run,1823,2370,8017.7,30.0,542,35,,152,,,,strava_backfill,trimp_hr,6265066720
+2021-11-17,"Bike / X (Buongiornissimo, Kaffe??1!1)",VirtualRide,3355,3355,31125.7,257.0,684,54,,,,214,,strava_backfill,durata,6268837394
+2021-11-18,Run / X (Post CAE / Vicenza Touristic Randomness),Run,2924,3095,11867.4,34.0,818,59,,155,,,,strava_backfill,trimp_hr,6275613718
+2021-11-19,"Run / X (Ville, Rotonde e Sfinteri in difficoltà)",Run,3187,3691,11059.9,207.0,820,61,,152,,,,strava_backfill,trimp_hr,6277629441
+2021-11-20,Bike / X (I-so-le),Ride,13278,14113,118754.1,1098.0,2496,236,,142,,208,,strava_backfill,trimp_hr,6282479613
+2021-11-21,Run / X (Brotherhood Madness 🥰🔥),Run,11108,12209,19505.9,1511.0,2001,158,,137,,,,strava_backfill,trimp_hr,6287161067
+2021-11-23,"Bike / X (5*2*(2""@290-2""@255))",VirtualRide,3608,3608,36634.2,295.0,834,58,,,,242,,strava_backfill,durata,6296163593
+2021-11-24,Run / X (8*IL_MEDIO_COSA_È?),Run,3755,3791,15377.7,45.0,1120,99,,169,,,,strava_backfill,trimp_hr,6302171969
+2021-11-25,Bike / X (Chill and Varoufakis),VirtualRide,3004,3004,31929.7,0,676,48,,,,225,,strava_backfill,durata,6304102527
+2021-11-26,Run / X (Digestivo),Run,3159,3425,10679.7,166.0,845,73,,162,,,,strava_backfill,trimp_hr,6308242717
+2021-11-26,Swim / X (Emicrania pt.2),Swim,2175,2336,2000.0,0,400,25,,142,,,,strava_backfill,trimp_hr,6308964198
+2021-11-27,Run / X (La compagnia dell'anello),Run,4913,5313,14752.0,513.0,1070,66,,134,,,,strava_backfill,trimp_hr,6312346131
+2021-11-28,Skialp / 12 (La lotteria dei crociati),BackcountrySki,5605,6652,7483.9,666.0,825,41,,117,,,,strava_backfill,trimp_hr,6316297078
+2021-11-28,Bike / X (Vuoi non far girare le gambe?),VirtualRide,3003,3003,31545.7,0,664,48,,,,221,,strava_backfill,durata,6319175698
+2021-11-30,Run / X (Il fratello l'ha scampata...),Run,3463,4437,6556.5,667.0,789,60,,147,,,,strava_backfill,trimp_hr,6325282873
+2021-12-01,Run / X (Half Marathon to Work),Run,5438,5457,21279.1,21.0,1531,131,,164,,,,strava_backfill,trimp_hr,6328693038
+2021-12-01,"(We) Run / X (""Defaticamento"")",Run,2799,4904,9860.6,175.0,750,66,,163,,,,strava_backfill,trimp_hr,6331512807
+2021-12-02,Bike / X (🇳🇱 memories),Ride,4079,4203,41026.6,250.0,571,69,,140,,116,,strava_backfill,trimp_hr,6333729813
+2021-12-03,Afternoon Swim,Swim,3601,4185,3225.0,0,645,30,,121,,,,strava_backfill,trimp_hr,6338864437
+2021-12-04,Run / X (521 a tutta),Run,5245,5850,11115.4,993.0,1231,104,,154,,,,strava_backfill,trimp_hr,6340917919
+2021-12-05,Run / X (Perlustrationi mal calcolate),Run,8643,9448,17738.3,1027.0,1491,106,,129,,,,strava_backfill,trimp_hr,6345937551
+2021-12-06,Bike / X (Scarico e tapering),VirtualRide,3616,3616,33347.0,0,550,58,,,,152,,strava_backfill,durata,6349357868
+2021-12-08,Run / X (Misma Xmas Trail),Run,7481,7491,20028.9,1129.0,1863,170,,161,,,,strava_backfill,trimp_hr,6357894018
+2021-12-09,Skialp / X (Lunch Break Poieto is back),BackcountrySki,3065,3905,4932.4,449.0,404,17,,109,,,,strava_backfill,trimp_hr,6362378641
+2021-12-10,"Bike / X (Girar le gambe, girare i pensieri)",VirtualRide,3483,3483,36574.6,0,751,56,,,,216,,strava_backfill,durata,6367046855
+2021-12-11,Run / X (Babà e Rione Sanità),Run,2671,3000,9672.2,126.0,670,48,,149,,,,strava_backfill,trimp_hr,6371113363
+2021-12-12,Run / X (15 km al sole di Chiaia),Run,4117,4236,15127.7,60.0,1079,79,,152,,,,strava_backfill,trimp_hr,6373246510
+2021-12-13,"Bike / X (Crocchè e 9*(2""@342W+3”@252W))",VirtualRide,3320,3320,37775.5,0,895,53,,,,270,,strava_backfill,durata,6379641114
+2021-12-14,Run / X (Porridge e spicchi d'alba),Run,3968,4406,14069.5,274.0,1089,97,,165,,,,strava_backfill,trimp_hr,6381488798
+2021-12-15,"Bike / X (Il buio, il silenzio, il Natale)",Ride,4028,4049,24723.2,477.0,792,60,,134,,173,,strava_backfill,trimp_hr,6387799592
+2021-12-16,"Run / X (6*2""⬆️+1""⬇️)",Run,2650,2740,9345.3,299.0,756,72,,170,,,,strava_backfill,trimp_hr,6390510379
+2021-12-17,"Bike / X (To work. Flat tire, resisting tire)",Ride,2509,2509,20919.6,33.0,550,39,,136,,75,,strava_backfill,trimp_hr,6393478322
+2021-12-17,Lunch Swim,Swim,2110,2571,2050.0,0,410,23,,140,,,,strava_backfill,trimp_hr,6394221830
+2021-12-18,Bike / X (Congelato a Rovato),Ride,7974,9626,72142.4,285.0,1263,145,,143,,106,,strava_backfill,trimp_hr,6397253953
+2021-12-19,Bike / X (Scoprendo la MTB),Ride,5854,6451,17235.9,831.8,884,93,,,,79,,strava_backfill,durata,6401693778
+2021-12-19,Bike / X (Spuntino di mezzanotte),VirtualRide,3242,3242,33515.7,0,687,52,,,,212,,strava_backfill,durata,6405094548
+2021-12-20,Bike / X (The daylight replica),VirtualRide,3902,3902,40048.6,0,812,62,,,,208,,strava_backfill,durata,6407528659
+2021-12-21,Bike / X (Dalla caverna anche oggi è tutto),VirtualRide,3606,3606,40014.3,0,907,58,,,,252,,strava_backfill,durata,6411558138
+2021-12-22,Afternoon Swim,Swim,2081,2586,2000.0,0,400,21,,133,,,,strava_backfill,trimp_hr,6415565846
+2021-12-23,Run / X (Fonduta di Zola e Amaretti),Run,3817,3896,13444.0,274.0,972,79,,156,,,,strava_backfill,trimp_hr,6417359089
+2021-12-24,Ski / 1 (Sellaronda ski day con Luca),AlpineSki,7510,28064,73188.7,0,603,21,,87,,,,strava_backfill,trimp_hr,6422868307
+2021-12-25,Hike / X (Natale coi cinghiali 🌲),Hike,5279,6207,8207.2,684.0,915,54,,128,,,,strava_backfill,trimp_hr,6424617255
+2021-12-26,Bike / X (Braccia frullate),Ride,7548,8488,22250.0,1076.0,1302,106,,131,,136,,strava_backfill,trimp_hr,6428715613
+2021-12-26,Run / X (Gambe frullate),Run,4077,4245,13281.5,330.0,1063,98,,164,,,,strava_backfill,trimp_hr,6429819718
+2021-12-28,Run / X (2x4km coi panettoni 🦌),Run,2429,2671,10007.6,45.0,674,60,,165,,,,strava_backfill,trimp_hr,6437169114
+2021-12-28,Evening Hike,Hike,7239,16994,9154.6,361.0,1002,45,,112,,,,strava_backfill,trimp_hr,6440840402
+2021-12-29,Run / X (Val de Gru low BPM),Run,4736,5050,14835.0,498.0,1055,77,,144,,,,strava_backfill,trimp_hr,6441831623
+2021-12-30,Bike / X (Morto-rone),Ride,20616,22570,152848.2,2187.0,3539,344,,139,,173,,strava_backfill,trimp_hr,6446793129
+2021-12-31,Hike / X (Merelli's day 🥰),Hike,2818,16878,3484.6,376.0,496,20,,117,,,,strava_backfill,trimp_hr,6451272739
+2022-01-01,"Run / 1 (5, 2, 1... Buon Anno!)",Run,5370,6903,11260.7,963.2,1159,83,,141,,,,strava_backfill,trimp_hr,6454854980
+2022-01-02,Bike / 1 (Avaro di MTB),Ride,9181,12095,26857.4,1227.0,1576,135,,133,,126,,strava_backfill,trimp_hr,6460183766
+2022-01-03,Run / 1 (Lunghetto),Run,4130,4287,14344.7,343.0,1075,90,,159,,,,strava_backfill,trimp_hr,6465631561
+2022-01-04,Hike / X (Meglio di niente),Hike,4113,4218,6356.9,507.0,609,35,,122,,,,strava_backfill,trimp_hr,6471286148
+2022-01-05,Afternoon Ride,VirtualRide,4735,4735,50375.3,0,1087,76,,,,230,,strava_backfill,durata,6476868712
+2022-01-05,Run / 2 (Private Brick),Run,2508,2508,10012.0,32.0,719,68,,170,,,,strava_backfill,trimp_hr,6477113912
+2022-01-06,Run / 3 (BFWCCCFC),Run,8258,8923,27774.7,402.0,2144,211,,167,,,,strava_backfill,trimp_hr,6480269090
+2022-01-07,"Bike / X (Al caldo, Natale sul Nilo)",VirtualRide,6899,6899,72205.5,0,1485,110,,,,215,,strava_backfill,durata,6485185922
+2022-01-08,Run / X (16km variati),Run,3984,4105,16013.6,75.0,992,64,,143,,,,strava_backfill,trimp_hr,6489462378
+2022-01-09,Bike / X (Zig Zag di Pegeaut),Ride,8482,8894,54725.4,964.0,1303,114,,129,,149,,strava_backfill,trimp_hr,6495359519
+2022-01-10,Run / X (Morning easy start),Run,2853,2976,10214.2,161.0,775,70,,165,,,,strava_backfill,trimp_hr,6500026249
+2022-01-10,Bike / X (Random 45 minutes of sauna),VirtualRide,2704,2704,28734.7,0,620,43,,,,229,,strava_backfill,durata,6502437394
+2022-01-11,Run / X (Where did I go?),Run,3471,3531,13561.7,57.0,949,76,,159,,,,strava_backfill,trimp_hr,6505941800
+2022-01-12,Run / X (We 🏃‍♀️ al fresco),Run,2957,5063,10218.7,183.0,782,70,,163,,,,strava_backfill,trimp_hr,6513942172
+2022-01-12,Afternoon Ride,VirtualRide,3600,3600,38572.4,0,825,57,,,,229,,strava_backfill,durata,6514496702
+2022-01-13,Run / X (Speed 🚄),Run,1506,2026,7009.8,26.0,447,34,,160,,,,strava_backfill,trimp_hr,6516402291
+2022-01-14,Lunch Ride,Ride,5207,5277,35248.0,825.0,690,73,,131,,107,,strava_backfill,trimp_hr,6521671189
+2022-01-15,Bike / X (Como con rientro facilitato),Ride,8876,9293,79603.2,613.0,1081,112,,126,,97,,strava_backfill,trimp_hr,6526525785
+2022-01-16,Run / X (Primo cross - Cellatica 2022),Run,2258,2258,9576.5,75.0,663,48,,158,,,,strava_backfill,trimp_hr,6532887731
+2022-01-16,Pre+Defa,Run,1200,1200,3500.0,0,325,22,,,,,,strava_backfill,durata,6533665703
+2022-01-17,Bike / X (Chill or 😴),Ride,4184,4343,24716.7,470.0,835,64,,135,,156,,strava_backfill,trimp_hr,6538920487
+2022-01-18,Run / X (Lento difficoltoso),Run,3030,3034,10018.1,305.0,809,73,,164,,,,strava_backfill,trimp_hr,6542543180
+2022-01-18,Bike / X (In discesa 🥰),Ride,2666,2666,23661.8,30.0,505,35,,128,,89,,strava_backfill,trimp_hr,6543836165
+2022-01-19,"Run / X (2*1km, 1*2km, 1*1km)",Run,2862,3048,11005.4,64.0,780,55,,152,,,,strava_backfill,trimp_hr,6548064900
+2022-01-20,Afternoon Swim,Swim,2641,2857,2325.0,0,465,26,,133,,,,strava_backfill,trimp_hr,6554432458
+2022-01-21,Bike / X (Test del Ganda 😍),Ride,5005,5359,32752.5,813.0,1244,87,,141,,225,,strava_backfill,trimp_hr,6558269656
+2022-01-22,Run / X (Lungo con Galaxy imprevista),Run,6096,6593,20403.8,640.0,1635,149,,165,,,,strava_backfill,trimp_hr,6562199731
+2022-01-23,"Bike / X (Quando il freddo chiama, Tacx risponde)",VirtualRide,4920,4920,51167.7,0,1043,79,,,,212,,strava_backfill,durata,6567469575
+2022-01-23,Bike / X (Da Mimmo a casa),Ride,3905,3980,25311.1,491.0,783,62,,137,,181,,strava_backfill,trimp_hr,6570810637
+2022-01-24,Morning Ride,Ride,2434,2461,23609.8,31.0,571,43,,142,,118,,strava_backfill,trimp_hr,6572772438
+2022-01-24,Run / X (Solo km nelle gambe),Run,3045,3119,10238.1,150.0,806,70,,162,,,,strava_backfill,trimp_hr,6575102826
+2022-01-25,Run / X (12k variati 🙃),Run,2938,2938,12011.5,40.0,848,72,,165,,,,strava_backfill,trimp_hr,6578684503
+2022-01-26,Morning Ride,VirtualRide,3360,3360,36173.5,0,781,54,,,,233,,strava_backfill,durata,6583029458
+2022-01-26,Lunch Swim,Swim,2151,2573,2000.0,0,400,25,,143,,,,strava_backfill,trimp_hr,6584212050
+2022-01-27,Bike / X (Ora di libertà e salite dure in Pegeaut),Ride,3689,3708,22801.1,531.0,612,48,,127,,165,,strava_backfill,trimp_hr,6589401944
+2022-01-28,Run / X (Porticati e San Luca),Run,3585,4037,13007.7,231.0,942,78,,159,,,,strava_backfill,trimp_hr,6593947672
+2022-01-30,Run / X (Val di Mello Winter Trail),Run,3145,3149,10717.0,261.0,835,77,,165,,,,strava_backfill,trimp_hr,6603578848
+2022-01-31,Afternoon Ride,VirtualRide,3579,3579,38131.4,0,822,57,,,,230,,strava_backfill,durata,6610725996
+2022-02-01,Lunch Run,Run,3362,3371,12011.2,35.0,846,58,,147,,,,strava_backfill,trimp_hr,6614212992
+2022-02-02,Lunch Swim,Swim,2122,2546,2000.0,0,400,17,,120,,,,strava_backfill,trimp_hr,6619649239
+2022-02-02,Evening Ride,VirtualRide,3457,3457,37243.0,0,802,55,,,,232,,strava_backfill,durata,6621322946
+2022-02-03,Run / X (Fartlek 15*1'),Run,2324,2324,9441.2,28.0,662,62,,169,,,,strava_backfill,trimp_hr,6624558622
+2022-02-04,Bike / X (Selvino test),Ride,4606,4660,33744.5,847.0,1229,87,,145,,242,,strava_backfill,trimp_hr,6629726098
+2022-02-05,Run / X (The Lodetti Long),Run,6166,6169,23009.6,161.0,1683,148,,164,,,,strava_backfill,trimp_hr,6634011851
+2022-02-06,Bike / X (Il gruppo delle salite tranquille...),Ride,14325,16436,101654.8,2057.0,3195,239,,139,,198,,strava_backfill,trimp_hr,6640025283
+2022-02-07,Morning Run,Run,4058,4275,13615.4,262.0,1006,76,,151,,,,strava_backfill,trimp_hr,6643803318
+2022-02-08,Lunch Run,Run,2404,2450,10013.3,50.0,708,57,,163,,,,strava_backfill,trimp_hr,6649670903
+2022-02-09,Bike / X (Amazing afterwork),Ride,3559,3559,24752.8,484.0,770,61,,140,,202,,strava_backfill,trimp_hr,6656963178
+2022-02-10,Morning Run,Run,3052,3055,10017.0,312.0,802,67,,159,,,,strava_backfill,trimp_hr,6659638406
+2022-02-10,Lunch Ride,Ride,4973,5081,36319.4,799.0,1212,94,,145,,219,,strava_backfill,trimp_hr,6660756386
+2022-02-11,Bike / X (Risvegli selvinesi),Ride,5364,5364,33841.0,803.0,1145,82,,135,,189,,strava_backfill,trimp_hr,6664798270
+2022-02-11,Afternoon Ride,Ride,2544,2624,23636.1,25.0,591,43,,140,,106,,strava_backfill,trimp_hr,6667328257
+2022-02-12,Morning Run,Hike,5858,6515,7822.7,675.6,743,41,,116,,,,strava_backfill,trimp_hr,6670548983
+2022-02-13,Run / X (2° tappa regionale cross),Run,2213,2213,9490.8,74.0,677,63,,173,,,,strava_backfill,trimp_hr,6677505500
+2022-02-14,Swim / X (Tonnaio di Stezzano 🐟),Swim,2945,3247,2525.0,0,512,31,,136,,,,strava_backfill,trimp_hr,6683147812
+2022-02-15,Morning Run,Run,1574,1595,5268.4,146.0,420,34,,158,,,,strava_backfill,trimp_hr,6685806389
+2022-02-15,Run / X (Comeback without Garmin),Run,1560,1560,5200.0,0,482,28,,,,,,strava_backfill,durata,6685935580
+2022-02-16,Bike / X (Tra centrali geotermiche e il Tirli),Ride,21059,24163,180262.1,2322.0,4867,382,,143,,207,,strava_backfill,trimp_hr,6692126216
+2022-02-17,Run / X (Vagare random per bruciare pizza),Run,3229,3616,11098.5,203.0,790,59,,150,,,,strava_backfill,trimp_hr,6695267798
+2022-02-18,"Bike / X (Vetulonnia ""agile"")",Ride,4675,5233,37399.6,674.0,1207,96,,149,,233,,strava_backfill,trimp_hr,6701076023
+2022-02-18,Run / X (Finitudine al vento),Run,3253,3364,12012.8,57.0,855,62,,152,,,,strava_backfill,trimp_hr,6701983122
+2022-02-19,Bike / X (Finalmente a Siena),Ride,25210,29021,192127.0,2994.0,5455,420,,139,,192,,strava_backfill,trimp_hr,6709526851
+2022-02-20,Bike / X (Fight for brioches ()🤤),Ride,6512,8054,45201.3,570.4,1055,104,,,,145,,strava_backfill,durata,6710341597
+2022-02-21,Run / X (1*6km+2*1.5km),Run,2620,2850,11006.6,34.0,754,55,,157,,,,strava_backfill,trimp_hr,6716893067
+2022-02-21,Bike / X (Quando non riesci a dormire perché Putin sta invadendo 🇺🇦),Ride,3717,3717,24377.6,502.0,928,55,,133,,225,,strava_backfill,trimp_hr,6718789375
+2022-02-22,Afternoon Ride,Ride,3043,3394,18617.1,667.0,789,54,,142,,234,,strava_backfill,trimp_hr,6721808377
+2022-02-23,Run / X (Lunghetto mattutino pre work),Run,5614,5678,20696.1,27.0,1517,143,,167,,,,strava_backfill,trimp_hr,6724790814
+2022-02-23,Afternoon Swim,Swim,2526,2713,2200.0,0,440,24,,131,,,,strava_backfill,trimp_hr,6727555198
+2022-02-24,Evening Activity,BackcountrySki,2070,9822,1982.8,436.0,190,7,,91,,,,strava_backfill,trimp_hr,6733405265
+2022-02-25,Bike / X (Test Selvino - Così così),Ride,3318,3374,23759.1,651.0,937,79,,156,,258,,strava_backfill,trimp_hr,6735392718
+2022-02-25,Lunch Ride,Ride,1470,1559,10581.0,184.0,248,21,,131,,143,,strava_backfill,trimp_hr,6735539964
+2022-02-26,Afternoon Run,Run,4241,4346,15039.6,78.0,1060,72,,146,,,,strava_backfill,trimp_hr,6740804925
+2022-02-27,Morning Ride,Ride,12060,13338,81793.6,1289.0,2220,181,,134,,160,,strava_backfill,trimp_hr,6745635720
+2022-02-28,Bike / X (A vent'anni la vita è Oltre il Colle),Ride,16987,18268,116431.7,2496.0,3716,255,,134,,194,,strava_backfill,trimp_hr,6751265876
+2022-03-01,Run / X (Chilling / 1),Run,3008,3144,10018.2,304.6,783,62,,156,,,,strava_backfill,trimp_hr,6755346201
+2022-03-01,"Run / X (Call me Bergamo, WeRunBergamo)",Run,2963,5895,10102.9,183.0,749,58,,153,,,,strava_backfill,trimp_hr,6758574770
+2022-03-02,Lunch Swim,Swim,2172,2619,2000.0,0,400,25,,143,,,,strava_backfill,trimp_hr,6760966583
+2022-03-03,Lunch Run,Run,2587,2896,11011.0,39.0,777,71,,171,,,,strava_backfill,trimp_hr,6766001256
+2022-03-04,Afternoon Ride,Ride,2849,3378,17563.8,536.0,617,52,,143,,183,,strava_backfill,trimp_hr,6772027703
+2022-03-05,Bike / X (A Orezzo c'era la neve),Ride,7666,8056,57037.2,1053.0,1917,142,,144,,225,,strava_backfill,trimp_hr,6775164367
+2022-03-06,"Run / X (Altro giorno, altra sofferenza)",Run,1597,1600,6745.7,44.0,457,35,,159,,,,strava_backfill,trimp_hr,6780913931
+2022-03-06,Afternoon Ride,Ride,5323,5508,33981.3,816.0,1229,83,,136,,206,,strava_backfill,trimp_hr,6782422303
+2022-03-08,Lunch Run,Run,4194,4437,15009.7,225.0,1114,88,,157,,,,strava_backfill,trimp_hr,6791667212
+2022-03-09,Morning Ride,VirtualRide,3441,3441,37750.4,0,845,55,,,,246,,strava_backfill,durata,6795694555
+2022-03-09,Afternoon Run,Run,2274,2284,9381.9,27.0,651,60,,169,,,,strava_backfill,trimp_hr,6798279192
+2022-03-10,Lunch Run,Run,2889,2986,10273.4,157.0,721,49,,146,,,,strava_backfill,trimp_hr,6801876137
+2022-03-10,Bike / X (McK 9*3'*300W),VirtualRide,3224,3224,35210.2,0,782,51,,,,243,,strava_backfill,durata,6803242759
+2022-03-11,Lunch Ride,Ride,4888,5070,32973.8,922.0,1192,75,,135,,219,,strava_backfill,trimp_hr,6806908006
+2022-03-12,Run / X (Finally good feelz 🥰),Run,3391,3391,15014.7,60.7,1020,82,,164,,,,strava_backfill,trimp_hr,6810571796
+2022-03-12,Ski trash ♻️✨,Hike,2384,2683,2107.6,495.2,348,15,,112,,,,strava_backfill,trimp_hr,6815574112
+2022-03-13,"Bike / X (Il sacro trittico, con calma) 🇺🇦",Ride,12821,13568,83647.0,2065.0,2733,201,,136,,188,,strava_backfill,trimp_hr,6816924707
+2022-03-14,Run / X (Hamburger powered),Run,2656,2692,9588.1,30.0,678,47,,148,,,,strava_backfill,trimp_hr,6821205563
+2022-03-14,Lunch Swim,Swim,2226,2372,2000.0,0,400,27,,146,,,,strava_backfill,trimp_hr,6822177895
+2022-03-15,Lunch Run,Run,2286,2286,9315.0,27.0,635,49,,158,,,,strava_backfill,trimp_hr,6827451319
+2022-03-16,Afternoon Ride,Ride,3756,4025,24708.1,470.0,797,58,,135,,187,,strava_backfill,trimp_hr,6834132707
+2022-03-17,Lunch Run,Hike,3540,3593,6015.3,416.6,606,41,,132,,,,strava_backfill,trimp_hr,6837678942
+2022-03-18,Morning Run,Run,2284,2329,7004.3,213.0,534,42,,150,,,,strava_backfill,trimp_hr,6841510975
+2022-03-19,Afternoon Ride,Ride,2652,2652,22428.4,30.0,459,32,,123,,74,,strava_backfill,trimp_hr,6849542858
+2022-03-20,Run / X (Mezza Maratona di Bergamo),Run,4882,4885,21249.8,114.0,1506,154,,178,,,,strava_backfill,trimp_hr,6852352699
+2022-03-21,Lunch Swim,Swim,2381,2541,2100.0,0,420,26,,138,,,,strava_backfill,trimp_hr,6858575561
+2022-03-22,Bike / X (Si torna fuori 🥰),Ride,3874,4025,38467.2,180.0,1013,80,,149,,222,,strava_backfill,trimp_hr,6862626018
+2022-03-22,Lunch Run,Run,2147,2147,8013.8,24.0,578,45,,157,,,,strava_backfill,trimp_hr,6863866941
+2022-03-23,Run / X (Pizzoccheri e San Vigilio),Run,3859,4091,14014.1,261.0,1099,98,,167,,,,strava_backfill,trimp_hr,6868214493
+2022-03-24,Bike / X (Ma che venticello bello bello),Ride,4049,4074,24693.6,478.0,855,66,,138,,160,,strava_backfill,trimp_hr,6873676709
+2022-03-24,Run / X (10*1' di dolore),Run,2640,2881,9608.1,273.0,707,54,,156,,,,strava_backfill,trimp_hr,6874475152
+2022-03-25,Bike / X (Ganda Digestivo),Ride,3009,3464,18645.0,666.0,763,51,,140,,228,,strava_backfill,trimp_hr,6879884590
+2022-03-25,Afternoon Ride,Ride,2706,2828,23780.4,35.0,485,34,,125,,95,,strava_backfill,trimp_hr,6880933398
+2022-03-26,Bike / X (Tutte le salite +1 ✈️),Ride,19673,21394,119543.7,3207.0,4069,314,,137,,182,,strava_backfill,trimp_hr,6885322652
+2022-03-27,Run / X (Scarico chiacchierato),Run,4892,4974,17007.9,57.0,1346,127,,168,,,,strava_backfill,trimp_hr,6889302858
+2022-03-28,Lunch Swim,Swim,2177,2645,2000.0,0,400,18,,122,,,,strava_backfill,trimp_hr,6895716404
+2022-03-29,Bike / X (2*13' frizzanti),Ride,4021,4021,40067.5,107.0,920,71,,142,,226,,strava_backfill,trimp_hr,6900617190
+2022-03-29,Afternoon Run,Run,3410,3492,12500.4,48.0,862,53,,141,,,,strava_backfill,trimp_hr,6902072629
+2022-03-30,Run / X (Variazioni varie svogliate),Run,2683,2690,11010.6,26.0,778,68,,167,,,,strava_backfill,trimp_hr,6907347141
+2022-04-02,Bike / X (Ronde Van Vlaanderen),Ride,29874,32412,256367.8,2300.9,6585,439,,133,,198,,strava_backfill,trimp_hr,6920558951
+2022-04-03,Afternoon Ride,Ride,1909,1973,14166.9,67.0,357,35,,143,,164,,strava_backfill,trimp_hr,6927651204
+2022-04-05,Lunch Run,Run,2989,3132,10035.4,311.0,885,86,,173,,,,strava_backfill,trimp_hr,6934305420
+2022-04-05,Afternoon Ride,Ride,3135,4207,18488.3,666.0,769,55,,141,,222,,strava_backfill,trimp_hr,6935861925
+2022-04-06,Swim / X (Si torna a nuotare decentemente),Swim,2057,2470,2000.0,0,400,18,,124,,,,strava_backfill,trimp_hr,6939472189
+2022-04-06,Evening Run,Run,4259,7112,15007.5,211.0,1095,78,,150,,,,strava_backfill,trimp_hr,6941973399
+2022-04-07,Bike / X (Esplorazioni errate),Ride,4600,5558,46016.8,163.6,827,63,,130,,223,,strava_backfill,trimp_hr,6944377208
+2022-04-08,Lunch Run,Run,3053,3073,11671.8,41.0,863,72,,163,,,,strava_backfill,trimp_hr,6948892762
+2022-04-10,Run / X (Innovation Run),Run,2178,2178,10070.2,39.0,689,51,,163,,,,strava_backfill,trimp_hr,6958566555
+2022-04-11,Morning Swim,Swim,2307,2408,2025.0,0,405,25,,139,,,,strava_backfill,trimp_hr,6963213423
+2022-04-12,Bike / X (Partire presto e arrivare presto),Ride,9137,9777,91033.8,378.4,1879,162,,142,,228,,strava_backfill,trimp_hr,6971199019
+2022-04-13,Morning Run,Run,3567,3879,12398.8,241.0,930,75,,157,,,,strava_backfill,trimp_hr,6973549877
+2022-04-14,Afternoon Run,Run,4704,6438,7794.9,656.0,746,46,,117,,,,strava_backfill,trimp_hr,6981113319
+2022-04-15,Bike X (Passione di Resinelli),Ride,20124,21371,155335.4,2523.0,4431,336,,139,,195,,strava_backfill,trimp_hr,6984850504
+2022-04-16,Bike / X (The PP reunion),Ride,8945,10374,58656.8,1392.0,1891,146,,138,,186,,strava_backfill,trimp_hr,6990108340
+2022-04-17,Run / X (4 volte al medio e si risorge),Run,3393,3458,14001.2,65.0,919,65,,152,,,,strava_backfill,trimp_hr,6994630744
+2022-04-17,Morning Ride,Ride,3149,3725,18436.2,672.0,740,41,,127,,210,,strava_backfill,trimp_hr,6995235458
+2022-04-18,Bike / X (Fight for grigliata),Ride,10516,36901,96053.0,451.0,1732,136,,127,,184,,strava_backfill,trimp_hr,7003247827
+2022-04-19,Afternoon Run,Run,3675,3865,12474.5,243.0,894,50,,135,,,,strava_backfill,trimp_hr,7007786847
+2022-04-20,Morning Swim,Swim,3626,3880,3100.0,0,620,34,,129,,,,strava_backfill,trimp_hr,7010667769
+2022-04-20,Run / X (Sparatina cittadina),Run,2818,3107,10019.6,153.0,714,51,,149,,,,strava_backfill,trimp_hr,7013680168
+2022-04-21,Afternoon Ride,Ride,4734,4875,33806.4,802.0,1179,88,,144,,224,,strava_backfill,trimp_hr,7018556729
+2022-04-22,Lunch Ride,Ride,3446,3446,22649.2,613.0,829,65,,145,,213,,strava_backfill,trimp_hr,7022026914
+2022-04-23,Run / X (Maro'),Run,2461,2461,10011.5,28.0,704,58,,163,,,,strava_backfill,trimp_hr,7026032792
+2022-04-23,Afternoon Swim,Swim,2115,2519,1975.0,0,396,28,,151,,,,strava_backfill,trimp_hr,7027519711
+2022-04-24,Morning Run,Run,5179,5403,17615.4,358.0,1432,127,,165,,,,strava_backfill,trimp_hr,7031806935
+2022-04-25,Bike / X (Obbiettivo 3 ore 🎉✅),Ride,10730,11041,96570.5,1155.0,2835,226,,150,,240,,strava_backfill,trimp_hr,7037441332
+2022-04-26,Bike / X (Crema Tour),Ride,8184,8953,83035.4,350.0,1425,106,,127,,236,,strava_backfill,trimp_hr,7044951795
+2022-04-27,Run / X (Podcast contratto),Run,2850,3091,10011.3,145.0,721,48,,146,,,,strava_backfill,trimp_hr,7050065764
+2022-04-29,Afternoon Run,Run,2182,2570,7159.0,43.0,545,38,,147,,,,strava_backfill,trimp_hr,7060567795
+2022-04-29,Run / X (Ghent Tour ☀️),Run,2545,2774,9243.2,59.0,642,46,,149,,,,strava_backfill,trimp_hr,7060571166
+2022-05-01,Run / X (Modul'air modulato),Run,4304,4352,17011.7,16.0,1217,100,,162,,,,strava_backfill,trimp_hr,7068979721
+2022-05-02,Afternoon Ride,Ride,4124,4670,25391.7,491.0,716,51,,125,,167,,strava_backfill,trimp_hr,7076865636
+2022-05-03,Lunch Run,Run,3250,3369,11633.6,313.0,889,72,,160,,,,strava_backfill,trimp_hr,7080647188
+2022-05-03,Evening Ride,Ride,2615,2615,23419.4,40.0,446,31,,123,,101,,strava_backfill,trimp_hr,7082746393
+2022-05-04,Morning Swim,Swim,2138,2571,2000.0,0,400,16,,115,,,,strava_backfill,trimp_hr,7085027769
+2022-05-04,Bike / X (Brevemente a Brivio),Ride,4859,4908,48031.4,312.3,888,64,,128,,236,,strava_backfill,trimp_hr,7087751126
+2022-05-05,Run / X (Fartlek 18x della Trucca),Run,2622,2661,10859.5,30.0,752,64,,165,,,,strava_backfill,trimp_hr,7091386371
+2022-05-06,Bike / X (9*3'@310W ish),VirtualRide,3010,3010,33384.9,0,762,48,,,,253,,strava_backfill,durata,7096480447
+2022-05-06,Afternoon Swim,Swim,2738,2857,2500.0,0,500,29,,138,,,,strava_backfill,trimp_hr,7098075985
+2022-05-07,Bike / X (Provando a sciogliere la contrattura),Ride,7748,8180,62065.4,805.0,1791,141,,143,,206,,strava_backfill,trimp_hr,7100923687
+2022-05-08,Morning Ride,Ride,6424,6867,37171.4,1319.0,1494,101,,136,,208,,strava_backfill,trimp_hr,7106727480
+2022-05-09,Morning Swim,Swim,2071,2466,2000.0,0,400,17,,120,,,,strava_backfill,trimp_hr,7111709773
+2022-05-09,Afternoon Ride,Ride,3539,3885,32479.7,353.0,634,46,,127,,226,,strava_backfill,trimp_hr,7114803261
+2022-05-10,Bike / X (It's officially sedern-period),Ride,5329,5329,54035.5,309.0,1155,89,,139,,243,,strava_backfill,trimp_hr,7119888314
+2022-05-10,Run / X (First brick killing brick),Run,2476,2492,10500.0,37.0,757,80,,179,,,,strava_backfill,trimp_hr,7119895030
+2022-05-11,Lunch Swim,Swim,2164,2378,2000.0,0,400,20,,127,,,,strava_backfill,trimp_hr,7123995603
+2022-05-12,Run / X (ZZZ-2),Run,2453,2557,8173.9,109.0,560,32,,132,,,,strava_backfill,trimp_hr,7128446456
+2022-05-12,Evening Run,Run,2641,3146,9003.8,30.0,628,33,,130,,,,strava_backfill,trimp_hr,7131421090
+2022-05-12,Run / X (Beer Mile),Run,87,87,432.8,1.0,21,1,,112,,,,strava_backfill,trimp_hr,7131809843
+2022-05-13,Lunch Ride,Ride,4793,4907,34482.5,788.0,1171,83,,141,,219,,strava_backfill,trimp_hr,7134924021
+2022-05-14,"Swim / X (E' sempre noioso, ma a volte un po' meno)",Swim,1996,2371,2000.0,0,400,12,,101,,,,strava_backfill,trimp_hr,7139111268
+2022-05-14,Run / X (FINALLY 🤩🤩🤩🤩🤩),Run,3240,3250,14007.6,59.0,967,81,,166,,,,strava_backfill,trimp_hr,7139115133
+2022-05-15,Run / X (Pre-Suchello),Run,1917,2031,5688.7,383.0,519,34,,148,,,,strava_backfill,trimp_hr,7144410338
+2022-05-15,Morning Hike,Hike,11994,16198,12868.7,854.0,1002,35,,88,,,,strava_backfill,trimp_hr,7146185654
+2022-05-16,Morning Swim,Swim,2538,2736,2350.0,0,470,16,,102,,,,strava_backfill,trimp_hr,7150461089
+2022-05-17,Bike / X (Brick afoso),Ride,6286,6286,66499.9,331.0,1552,127,,148,,265,,strava_backfill,trimp_hr,7158532310
+2022-05-17,Run / X (Rischiando un infarto ❤️‍🩹),Run,2742,2819,10019.1,139.0,748,63,,162,,,,strava_backfill,trimp_hr,7158537462
+2022-05-18,Morning Swim,Swim,2026,2376,2000.0,0,400,16,,118,,,,strava_backfill,trimp_hr,7161375491
+2022-05-18,Afternoon Run,Run,2890,2890,10008.7,30.0,639,34,,127,,,,strava_backfill,trimp_hr,7164102244
+2022-05-19,Bike / X (Bossico afterwork),Ride,8755,10224,71682.0,1132.0,2060,126,,132,,211,,strava_backfill,trimp_hr,7169759690
+2022-05-20,Afternoon Ride,Ride,5477,8747,38495.5,773.0,1254,69,,126,,203,,strava_backfill,trimp_hr,7175158980
+2022-05-21,Run / X (The Stelvio Half Marathon),Run,7768,7809,20859.2,1532.0,2030,166,,158,,,,strava_backfill,trimp_hr,7177818410
+2022-05-22,Bike / X (Colli da Vigolo sempre top),Ride,15293,17132,113943.8,1971.0,3411,202,,128,,198,,strava_backfill,trimp_hr,7183753035
+2022-05-24,Run / X (Ri-finire o ri-finirsi),Run,1926,2169,8007.1,23.0,539,31,,143,,,,strava_backfill,trimp_hr,7194353750
+2022-05-25,Swim / X (The last dance),Swim,1871,2023,1750.0,0,350,11,,102,,,,strava_backfill,trimp_hr,7198683159
+2022-05-25,Evening Ride,Ride,3799,6500,20390.4,655.0,747,50,,128,,171,,strava_backfill,trimp_hr,7201849652
+2022-05-26,Lunch Run,Run,2520,3504,8814.1,228.0,620,39,,141,,,,strava_backfill,trimp_hr,7204879014
+2022-05-27,Bike / X (Lo scarico infinito),Ride,3716,3748,29043.4,624.0,914,62,,139,,223,,strava_backfill,trimp_hr,7210286970
+2022-05-29,Morning Swim,Swim,2131,2131,2011.4,0,426,15,,110,,,,strava_backfill,trimp_hr,7220941009
+2022-05-29,Morning Ride,Ride,9733,9788,78554.4,1465.0,2286,169,,141,,209,,strava_backfill,trimp_hr,7220956371
+2022-05-31,Morning Run,Run,3996,4218,13861.7,258.0,941,52,,132,,,,strava_backfill,trimp_hr,7230082785
+2022-05-31,Afternoon Ride,Ride,5635,6320,40842.5,729.0,1054,81,,132,,180,,strava_backfill,trimp_hr,7232782500
+2022-06-01,Evening Run,Run,3857,4707,7772.3,649.0,720,51,,133,,,,strava_backfill,trimp_hr,7238872030
+2022-06-02,Bike / X (Gavia Mortirolo Classic with PP),Ride,20045,26540,127804.2,3588.0,4452,327,,138,,194,,strava_backfill,trimp_hr,7243131429
+2022-06-04,Bike / X (Coppa Asteria quasi tutta),Ride,15667,18955,100745.0,2331.8,2847,261,,139,,171,,strava_backfill,trimp_hr,7252830009
+2022-06-05,Run / X (Campionato Italiano Corsa Montagna e Accoppata),Run,4353,4359,11388.9,757.0,1211,103,,163,,,,strava_backfill,trimp_hr,7257916590
+2022-06-06,Bike to work / 1 (Defaticamento on),Ride,5945,43964,48547.2,476.0,1212,69,,122,,179,,strava_backfill,trimp_hr,7265734223
+2022-06-07,Bike / X (New Jersey Day - Polpacci Pelosi),Ride,8141,8669,58779.2,1375.0,1878,122,,134,,206,,strava_backfill,trimp_hr,7270690808
+2022-06-08,Run / X (Provando a ritrovare le gambe),Run,2143,2243,7011.9,25.0,500,31,,137,,,,strava_backfill,trimp_hr,7273452502
+2022-06-09,Evening Run,Run,343,370,1266.8,0,62,3,,115,,,,strava_backfill,trimp_hr,7284018681
+2022-06-10,"Bike / X (Fuori dal mondo, di mattina)",Ride,7114,7595,42872.6,1415.0,1620,105,,133,,202,,strava_backfill,trimp_hr,7284023946
+2022-06-11,Bike / X (Via Mala Malissimo - Vivione),Ride,20897,21945,157121.7,3207.4,4924,364,,141,,211,,strava_backfill,trimp_hr,7289843768
+2022-06-12,"Bike / X (Festival Techno, Gin e laghetto di Valcanale)",Ride,9166,12315,69406.7,1133.0,2025,121,,128,,196,,strava_backfill,trimp_hr,7295916157
+2022-06-14,Bike / X (After Work Colli 🤩),Ride,11110,11980,74645.1,1987.1,2660,185,,139,,214,,strava_backfill,trimp_hr,7308688876
+2022-06-15,"Bike to work / 2 (Home, Work, Liuke, Finitudine, Home)",Ride,8766,43348,70604.2,687.0,1791,106,,124,,179,,strava_backfill,trimp_hr,7314193702
+2022-06-16,Run / X (Si torna pian piano a correre),Run,3743,3921,13075.7,309.0,954,67,,149,,,,strava_backfill,trimp_hr,7316668908
+2022-06-17,"Bike / X (Relax, podcast e Porecche)",Ride,4886,5140,33730.9,762.0,1043,72,,133,,188,,strava_backfill,trimp_hr,7322093076
+2022-06-18,Bike / X (Un Gioco chiamato Maniva),Ride,26307,28260,203811.3,3495.0,5913,448,,140,,199,,strava_backfill,trimp_hr,7328449866
+2022-06-19,Run / X (Ammazzando la noia e acclimatandosi),Run,2534,2866,9016.6,189.0,624,33,,133,,,,strava_backfill,trimp_hr,7334082728
+2022-06-20,Bike / X (Afterwork Selvino + Podcast),Ride,8029,41383,61307.2,871.0,1610,100,,125,,176,,strava_backfill,trimp_hr,7340047382
+2022-06-21,Bike / X (MTB non mi mancavi),Ride,6310,8001,26727.3,782.0,1012,69,,119,,126,,strava_backfill,trimp_hr,7346017630
+2022-06-22,Bike / X (Test per Poli),Ride,5148,5820,35389.8,888.0,1201,71,,130,,209,,strava_backfill,trimp_hr,7351945421
+2022-06-23,Bike / X (L'Alben di un nuovo giorno),Ride,7225,8959,43439.6,1079.0,1390,113,,136,,163,,strava_backfill,trimp_hr,7356900045
+2022-06-24,Bike / X (Parafulmine al risveglio),Ride,8367,9375,40466.8,1535.4,1555,140,,139,,167,,strava_backfill,trimp_hr,7359379375
+2022-06-25,Bike / X (Culmine di sderenatezza),Ride,14927,16021,108705.8,2345.4,3301,254,,140,,196,,strava_backfill,trimp_hr,7365184963
+2022-06-25,Afternoon Ride,Ride,1,1,0,0,0,0,,,,,,strava_backfill,durata,7619174609
+2022-06-26,Bike / X (Cavlera Sunday Perfection),Ride,6551,21021,26146.8,1232.0,1275,81,,125,,167,,strava_backfill,trimp_hr,7372179907
+2022-06-28,Bike / X (Sellaronda solo per me),Ride,7744,8265,50591.1,1687.0,1926,144,,144,,223,,strava_backfill,trimp_hr,7380099484
+2022-06-29,Bike / X (Fedaia Malga Ciape-la-pioggia?),Ride,12588,13365,81426.1,2406.0,2976,224,,142,,212,,strava_backfill,trimp_hr,7388161017
+2022-06-30,Bike / X (Falzarego con l'hamburger ancora lì),Ride,9157,9566,55889.3,1428.0,1720,135,,133,,163,,strava_backfill,trimp_hr,7391139567
+2022-07-01,Bike / X (Dolomites Gravel Edition!),Ride,8645,13432,36921.1,1287.0,1553,105,,124,,141,,strava_backfill,trimp_hr,7397171821
+2022-07-02,Morning Ride,Ride,3877,6928,20664.2,557.0,634,41,,118,,139,,strava_backfill,trimp_hr,7407234230
+2022-07-02,Morning Ride,Ride,4220,4511,14338.6,485.0,466,67,,,,99,,strava_backfill,durata,7619180304
+2022-07-03,Bike / X (Maratona Dles Dolomites 2022: Griglia Rossa!),Ride,18813,18850,135757.1,4024.0,4966,431,,154,,239,,strava_backfill,trimp_hr,7407270237
+2022-07-04,Bike / X (Si torna al lavoro 🥲 ma con la gravel 🤩),Ride,3220,3260,25750.0,28.0,536,38,,123,,92,,strava_backfill,trimp_hr,7412075271
+2022-07-05,Bike / X (Poieto Exploration),Ride,4451,5325,19542.7,735.0,786,60,,129,,159,,strava_backfill,trimp_hr,7417233969
+2022-07-05,Run / X (Tornare a correre parte 2),Run,2520,2541,8276.2,225.0,608,40,,142,,,,strava_backfill,trimp_hr,7418125154
+2022-07-06,Bike / X (Gravvellata ignorante 🥲),Ride,6593,41067,50929.9,420.0,1302,93,,131,,148,,strava_backfill,trimp_hr,7425484874
+2022-07-07,"Run / X (It is always hard, but worth it)",Run,3281,3517,11009.8,251.0,789,60,,150,,,,strava_backfill,trimp_hr,7428395166
+2022-07-08,"Bike / X (Giro spremuta, spremuto)",Ride,2641,2837,17318.0,353.0,522,40,,134,,172,,strava_backfill,trimp_hr,7433377720
+2022-07-09,"Bike / X (Bella la gravel, ma...)",Ride,8056,10298,41024.4,841.0,1376,121,,134,,131,,strava_backfill,trimp_hr,7438519373
+2022-07-09,Run / X (Extra 1 h),Run,4065,4274,9530.2,545.0,700,42,,120,,,,strava_backfill,trimp_hr,7440625817
+2022-07-10,Bike / X (Green Lago Moro featuring PopX),Ride,14975,17098,109712.4,2488.5,3425,234,,136,,201,,strava_backfill,trimp_hr,7445044627
+2022-07-11,Bike / X (Orezzo Km Rosso Valbondione),Ride,9243,42976,83056.7,713.0,1971,133,,132,,188,,strava_backfill,trimp_hr,7452227727
+2022-07-12,Evening Ride,Ride,1424,1567,11510.5,80.0,216,16,,121,,128,,strava_backfill,trimp_hr,7457686317
+2022-07-12,Bike / X (Cronoscalata Ignorante Ganda 🥉),Ride,1894,1894,9149.5,653.0,675,49,,160,,331,,strava_backfill,trimp_hr,7457688975
+2022-07-13,Bike / X (Orezzo - Km Rosso - Gualdi bike - Gallo - Lujo river - Orezzo),Ride,13061,53229,103328.8,1202.0,2591,162,,125,,178,,strava_backfill,trimp_hr,7464241054
+2022-07-14,Afternoon Run,Run,3002,3308,10369.8,281.0,708,42,,136,,,,strava_backfill,trimp_hr,7468245312
+2022-07-15,Galibier - Ancienne Route,Ride,15984,22427,110645.9,2030.0,2772,216,,129,,169,,strava_backfill,trimp_hr,7473032929
+2022-07-16,La Expl del M ha un B in una G,Ride,5284,5644,20142.2,926.0,1121,96,,143,,163,,strava_backfill,trimp_hr,7476476787
+2022-07-16,Sestriere Gravel Ignorante,Ride,10945,15248,70345.6,1446.0,1714,130,,123,,165,,strava_backfill,trimp_hr,7478335635
+2022-07-17,Morning Hike,Hike,4964,8040,5801.1,432.0,346,12,,81,,,,strava_backfill,trimp_hr,7483120280
+2022-07-18,Il solito KM rosso + 1,Ride,6430,40426,54790.9,491.0,1384,78,,124,,190,,strava_backfill,trimp_hr,7489523460
+2022-07-19,Variazioni e sudorazioni,Run,2612,2671,9154.1,284.0,657,45,,147,,,,strava_backfill,trimp_hr,7493296363
+2022-07-20,Ciclabili del cazzo 💥,Ride,8378,42845,62329.9,855.0,1534,111,,128,,176,,strava_backfill,trimp_hr,7500591519
+2022-07-21,Ciclopodistica con qualche acciacco,Ride,751,751,3708.5,251.0,269,19,,159,,336,,strava_backfill,trimp_hr,7506068369
+2022-07-22,Strength a Luglio,Ride,3775,4444,21172.6,802.8,865,52,,130,,204,,strava_backfill,trimp_hr,7510675157
+2022-07-23,Regalarsi un Vaccaro,Ride,8575,8910,44291.0,1515.1,1626,126,,133,,177,,strava_backfill,trimp_hr,7513415224
+2022-07-24,"Detox: Zambla, Selvino, Hidden Ganda",Ride,13117,13711,84998.9,2240.0,2740,170,,127,,183,,strava_backfill,trimp_hr,7519376638
+2022-07-25,Selvinello cercando il fresco (non pervenuto),Ride,7902,40949,62424.3,845.0,1654,104,,128,,184,,strava_backfill,trimp_hr,7526955315
+2022-07-27,Ganda prima di 8 ore seduto,Ride,4529,4652,35415.5,429.0,850,56,,125,,163,,strava_backfill,trimp_hr,7535354948
+2022-07-28,When in Valpolicella - Testing my back,Run,3154,5057,10509.6,341.0,741,47,,139,,,,strava_backfill,trimp_hr,7542110585
+2022-07-28,Palio del Recioto post lavoro Lessinia,Ride,6223,6341,33011.7,1377.0,1571,111,,142,,228,,strava_backfill,trimp_hr,7544087763
+2022-07-29,Bardolino per pranzo,Ride,2715,2715,22343.0,139.0,555,25,,110,,180,,strava_backfill,trimp_hr,7547549892
+2022-07-29,Il drittone di Bardolino 😂,Swim,436,576,347.8,0,93,3,,115,,,,strava_backfill,trimp_hr,7548343655
+2022-07-30,Vivione da di là con extra da di qua,Ride,25325,28673,175490.0,4010.0,5444,396,,136,,190,,strava_backfill,trimp_hr,7553137541
+2022-07-31,Valcava gravel,Ride,15152,17251,104975.9,1829.8,2464,188,,125,,161,,strava_backfill,trimp_hr,7558232550
+2022-08-01,Morning Ride,Ride,2881,2910,27214.6,27.0,585,31,,118,,117,,strava_backfill,trimp_hr,7563382248
+2022-08-01,La ritirata dei Merelli - Finitudine,Ride,5237,5561,32692.0,524.0,678,47,,110,,161,,strava_backfill,trimp_hr,7565190171
+2022-08-02,Capanna 2000 in gravel,Ride,13110,14303,74193.1,2163.0,2263,181,,130,,174,,strava_backfill,trimp_hr,7571542585
+2022-08-04,Ganda without legs (:,Run,3778,4085,12151.0,437.1,979,64,,146,,,,strava_backfill,trimp_hr,7579479924
+2022-08-04,"Random gravel, why not",Ride,4910,6105,24179.5,965.6,891,68,,130,,171,,strava_backfill,trimp_hr,7582282198
+2022-08-05,Rifugio Olmo per cambiare un po',Hike,16048,69504,18025.9,1406.0,1262,44,,86,,,,strava_backfill,trimp_hr,7591016707
+2022-08-07,Slippery Fonteno,Ride,11903,12707,66336.1,1945.9,1929,157,,128,,162,,strava_backfill,trimp_hr,7596170164
+2022-08-08,Morning Ride,Ride,5863,38973,51487.1,248.0,1149,70,,123,,156,,strava_backfill,trimp_hr,7607748490
+2022-08-09,Lunch Run,Run,3189,3217,11362.0,253.0,805,64,,155,,,,strava_backfill,trimp_hr,7607751449
+2022-08-10,"Con un aperitivo, una gravel e due zaini da portare a casa. Ma sono FERIE!",Ride,6898,40107,54139.2,486.0,1363,91,,128,,158,,strava_backfill,trimp_hr,7615647633
+2022-08-12,Orezzo - Capanna GrossAlp,Ride,28817,33574,192952.9,3514.4,5446,470,,138,,163,,strava_backfill,trimp_hr,7626034360
+2022-08-13,Bosco Gurin - San Bernardino - Spluga - Gordona,Ride,26682,33657,179235.8,2960.3,4029,317,,123,,140,,strava_backfill,trimp_hr,7631181990
+2022-08-14,Gordona - Passo Dordona - Orezzo (casa),Ride,24262,27365,135161.8,2974.0,3845,328,,129,,139,,strava_backfill,trimp_hr,7636367383
+2022-08-15,Morning Hike,Hike,4409,5854,5308.5,392.0,267,9,,76,,,,strava_backfill,trimp_hr,7641934550
+2022-08-16,Monte Pora solo per la pizza di Ian,Ride,10823,13745,78245.2,1477.0,2224,169,,136,,180,,strava_backfill,trimp_hr,7646500187
+2022-08-17,"Running, always a bad idea up to the 5th km",Run,3828,3828,13113.2,311.0,934,64,,145,,,,strava_backfill,trimp_hr,7651794807
+2022-08-18,Coldre' KOM tra uno scrollo e l'altro,Run,3205,3287,8222.7,438.0,720,48,,139,,,,strava_backfill,trimp_hr,7657951352
+2022-08-19,Rifugio V Alpini - Giro Confinale / 1,Hike,9878,10792,12186.0,1286.2,1360,61,,112,,,,strava_backfill,trimp_hr,7663378763
+2022-08-20,Ghiacciaio Forni - Giro del Confinale / 2,Hike,14245,22735,18364.8,789.0,1431,54,,96,,,,strava_backfill,trimp_hr,7669728483
+2022-08-21,Running for something more - Giro del Confinale / 3,Run,6495,6699,15308.9,362.0,1438,94,,138,,,,strava_backfill,trimp_hr,7673554713
+2022-08-21,Laghi di Cancano gravel 🤩,Ride,6553,7634,39982.3,965.0,1285,112,,140,,163,,strava_backfill,trimp_hr,7675335230
+2022-08-22,Il primo Stelvio di PMT,Ride,8895,11941,44444.1,1533.0,1299,99,,120,,162,,strava_backfill,trimp_hr,7679920544
+2022-08-23,Morning Run,Run,3041,3139,10030.6,295.0,711,52,,146,,,,strava_backfill,trimp_hr,7684936256
+2022-08-24,Orezzo - Saint Moritz (Passo Bernina),Ride,26093,30633,181285.6,3477.7,5566,417,,137,,187,,strava_backfill,trimp_hr,7692201918
+2022-08-25,St. Moritz - Orezzo (Passo San Marco),Ride,23950,25627,174348.7,2796.2,4055,317,,128,,96,,strava_backfill,trimp_hr,7697676143
+2022-08-25,Lunch Ride,Ride,13159,13584,54232.5,994.0,3320,219,,139,,91,,strava_backfill,trimp_hr,8648294677
+2022-08-27,Poieto zero sbatti,Hike,4850,5602,7940.4,656.7,624,27,,109,,,,strava_backfill,trimp_hr,7708848590
+2022-08-28,Ganda zero sbatti detox,Ride,3553,3945,20029.1,661.0,711,52,,133,,179,,strava_backfill,trimp_hr,7713313142
+2022-08-29,Ritorno alla routine,Ride,6404,40385,54915.7,484.0,1379,92,,132,,183,,strava_backfill,trimp_hr,7720947118
+2022-08-30,"Up and up, just for consistency.",Run,2992,3004,10015.7,373.0,707,49,,144,,,,strava_backfill,trimp_hr,7724473786
+2022-08-31,ARKetipo THOUGHTS,Run,3080,3083,10029.3,338.0,719,49,,143,,,,strava_backfill,trimp_hr,7732197244
+2022-09-01,Orezzo KM Rosso PR ?,Ride,2427,2427,26622.1,41.0,569,40,,138,,183,,strava_backfill,trimp_hr,7734838577
+2022-09-01,Afternoon Ride,Ride,3980,3995,28179.6,497.7,703,52,,127,,195,,strava_backfill,trimp_hr,7737507540
+2022-09-02,Gazzaniga pre work empty stomach,Run,2468,2504,8516.9,283.0,605,44,,149,,,,strava_backfill,trimp_hr,7740247651
+2022-09-03,Ganda x 3,Ride,9578,10155,55702.0,1928.0,1619,147,,135,,186,,strava_backfill,trimp_hr,7745573197
+2022-09-04,2000 m ascension in 60km is the new cool,Ride,11335,13115,66358.5,2023.0,1957,163,,132,,178,,strava_backfill,trimp_hr,7751633636
+2022-09-05,Valenciaga - Back to running in the flatlands,Run,3609,4228,14010.0,25.0,944,65,,149,,,,strava_backfill,trimp_hr,7758907590
+2022-09-06,Pre-bruciando la colazione,Run,2520,2584,9078.3,0,712,54,,158,,,,strava_backfill,trimp_hr,7762010275
+2022-09-07,Chilling post conference 😁,Run,3007,3080,11045.8,32.0,773,50,,145,,,,strava_backfill,trimp_hr,7770256225
+2022-09-10,Giro del Tavolo 2022 - Umidi a metà,Ride,12506,16285,79071.7,1969.0,2357,184,,133,,189,,strava_backfill,trimp_hr,7783912761
+2022-09-11,"Pizza, Gin Tonic e Ganda di corsa",Run,5577,5718,18251.6,654.0,1352,93,,145,,,,strava_backfill,trimp_hr,7791100564
+2022-09-12,Monday motivation,Ride,6469,40494,54033.5,515.0,1316,93,,132,,181,,strava_backfill,trimp_hr,7796900556
+2022-09-12,Afternoon Ride,Ride,9030,9057,49028.8,557.0,2185,138,,135,,91,,strava_backfill,trimp_hr,8648291264
+2022-09-13,Some PRs without even trying,Ride,4778,4778,33856.8,768.0,979,80,,139,,188,,strava_backfill,trimp_hr,7800805722
+2022-09-14,9k YTD!,Ride,6563,40129,55026.1,518.0,1409,103,,136,,181,,strava_backfill,trimp_hr,7807993315
+2022-09-15,A volte bisognerebbe rimanere sul divano,Run,2326,2338,8005.7,174.0,567,36,,141,,,,strava_backfill,trimp_hr,7812846738
+2022-09-17,Coppa Coppi 2022 - 10 x Direttissima,Ride,13905,18144,66575.1,2795.0,2164,192,,130,,178,,strava_backfill,trimp_hr,7821602709
+2022-09-18,It's all about shoes,Run,4054,4083,16011.5,104.0,1055,72,,148,,,,strava_backfill,trimp_hr,7826205575
+2022-09-19,Gravellata Hot n Cold,Ride,7111,41287,53768.1,545.0,1474,100,,131,,151,,strava_backfill,trimp_hr,7833946755
+2022-09-20,Night Run / Insomnia digestion,Run,1801,1815,6112.8,161.0,450,29,,144,,,,strava_backfill,trimp_hr,7835900812
+2022-09-22,Una scappata in Ganda 😪,Ride,3034,3138,18652.4,667.0,704,47,,136,,208,,strava_backfill,trimp_hr,7848432833
+2022-09-23,🦵🫁☠️,Run,2409,2419,8513.8,168.0,580,44,,150,,,,strava_backfill,trimp_hr,7852596993
+2022-09-24,Bello fino a quando il Tacx non è esploso,VirtualRide,2033,2033,21280.3,0,440,32,,,,217,,strava_backfill,durata,7857573481
+2022-09-24,Duathlon di Coldre',Run,2374,2551,4904.2,398.0,482,32,,134,,,,strava_backfill,trimp_hr,7857870941
+2022-09-25,"Tra podcast, gleno e le Hoka che volano in discesa",Run,5831,5987,10611.8,832.0,930,71,,129,,,,strava_backfill,trimp_hr,7863085837
+2022-09-26,Nice-ly done 🏃,Run,3116,3249,12025.8,100.0,849,68,,159,,,,strava_backfill,trimp_hr,7870423697
+2022-09-27,Pre-conference 10k,Run,2642,2971,10010.4,14.0,710,48,,149,,,,strava_backfill,trimp_hr,7873085787
+2022-09-29,Un'altra scappata in Ganda (old file),Ride,3034,3138,18705.1,662.6,674,47,,136,,199,,strava_backfill,trimp_hr,7888736191
+2022-09-30,Morning Weight Training,WeightTraining,1510,1510,0,0,139,5,,92,,,,strava_backfill,trimp_hr,7888104427
+2022-10-01,Tornare a pedalare. Con le donne ✌️,Ride,9643,11205,73751.3,1243.0,1932,168,,141,,190,,strava_backfill,trimp_hr,7893500598
+2022-10-02,"Autopilot ON, good feelz",Run,4488,4820,18028.3,58.0,1216,110,,165,,,,strava_backfill,trimp_hr,7898087855
+2022-10-03,Monday traffic 🥲,Ride,6615,40049,55009.2,517.0,1440,101,,135,,178,,strava_backfill,trimp_hr,7905504433
+2022-10-04,Believe the process,Ride,3910,3950,23959.8,774.0,875,60,,135,,196,,strava_backfill,trimp_hr,7909108534
+2022-10-05,The We Run Comeback!,Run,2501,5428,9359.3,129.0,632,39,,141,,,,strava_backfill,trimp_hr,7917362961
+2022-10-06,Lunch Ride,Ride,3354,3354,19150.7,667.0,683,44,,128,,188,,strava_backfill,trimp_hr,7919977309
+2022-10-07,Tennis 🎾,Workout,1973,3595,1380.7,1.0,336,8,,98,,,,strava_backfill,trimp_hr,7926755680
+2022-10-08,Il Lombardia 2022,Ride,5971,16785,30413.7,1145.0,1246,86,,132,,178,,strava_backfill,trimp_hr,7931250344
+2022-10-09,Carbo-alcoholic unloading 💩,Run,3709,3739,13232.4,319.0,1065,108,,174,,,,strava_backfill,trimp_hr,7936368975
+2022-10-10,Grave(l) Monday,Ride,6861,41046,54003.1,526.0,1560,107,,136,,159,,strava_backfill,trimp_hr,7941952405
+2022-10-11,Earlyish elvish,Run,2920,2971,10018.0,308.0,721,54,,150,,,,strava_backfill,trimp_hr,7944621453
+2022-10-12,Afternoon Hike,Hike,2737,3552,3959.5,245.0,323,14,,105,,,,strava_backfill,trimp_hr,7952670547
+2022-10-13,Fratellanza di MTB,Ride,7199,7981,27661.4,914.0,1282,95,,128,,127,,strava_backfill,trimp_hr,7957520230
+2022-10-14,The 7AM routine,Run,2913,2938,10006.6,299.0,719,57,,153,,,,strava_backfill,trimp_hr,7960132484
+2022-10-15,Relax 🙂,Hike,6389,6956,11800.6,964.0,952,57,,124,,,,strava_backfill,trimp_hr,7964957371
+2022-10-17,✨,Ride,6300,39617,53922.8,532.0,1526,105,,139,,190,,strava_backfill,trimp_hr,7977895300
+2022-10-18,🦉,Ride,4678,4678,33978.2,784.0,1026,78,,139,,198,,strava_backfill,trimp_hr,7981493219
+2022-10-19,We run Caccia al Tesoro,Run,2186,6165,7005.4,128.0,418,23,,121,,,,strava_backfill,trimp_hr,7989441605
+2022-10-20,🥔🥔,Ride,3204,3230,18729.5,661.0,661,45,,131,,193,,strava_backfill,trimp_hr,7992018476
+2022-10-21,🥱,Run,2971,2971,10014.3,305.0,717,57,,152,,,,strava_backfill,trimp_hr,7995500915
+2022-10-22,🔁,Run,2963,3281,10028.6,380.0,738,71,,164,,,,strava_backfill,trimp_hr,8001876577
+2022-10-23,Scedrina Death Race 📸,Hike,2310,2430,2856.9,394.0,330,16,,116,,,,strava_backfill,trimp_hr,8006579715
+2022-10-24,⏮️☔,Ride,3296,3447,18790.0,661.0,700,47,,132,,183,,strava_backfill,trimp_hr,8010679683
+2022-10-25,🔦,Run,2939,2954,10026.0,304.0,727,56,,152,,,,strava_backfill,trimp_hr,8015207698
+2022-10-26,👩‍👦‍👦,Ride,6661,39117,54788.5,514.0,1267,90,,129,,175,,strava_backfill,trimp_hr,8022828250
+2022-10-27,⛩️,Ride,4823,4852,33966.2,787.0,1062,80,,139,,189,,strava_backfill,trimp_hr,8026596840
+2022-10-28,🍜,Run,2472,2494,10009.4,37.0,681,53,,158,,,,strava_backfill,trimp_hr,8032626916
+2022-10-29,🍂,Ride,8639,8769,58980.8,1391.0,1756,171,,147,,180,,strava_backfill,trimp_hr,8035305550
+2022-10-30,🎮,Run,2832,2875,10031.3,296.0,738,64,,161,,,,strava_backfill,trimp_hr,8041618144
+2022-10-31,🎃,Ride,14554,17255,122651.2,1019.0,2870,253,,141,,174,,strava_backfill,trimp_hr,8047251960
+2022-11-02,🌑,Ride,6529,39750,52753.9,524.0,1419,98,,134,,172,,strava_backfill,trimp_hr,8058795611
+2022-11-03,🆕🏠,Run,2613,2644,9317.6,188.0,650,42,,143,,,,strava_backfill,trimp_hr,8061040338
+2022-11-04,🫥,Run,2376,2486,9011.6,50.0,610,40,,145,,,,strava_backfill,trimp_hr,8066843774
+2022-11-06,🥃 (Monte Grappa - Grappa Bocchino edition) - 10.000 km YTD,Ride,11510,18505,72896.9,2396.0,2374,192,,139,,212,,strava_backfill,trimp_hr,8078049193
+2022-11-07,🥶,Ride,5460,39818,44567.8,415.0,1255,89,,138,,181,,strava_backfill,trimp_hr,8082908850
+2022-11-08,🍝,Run,3674,4707,13302.6,322.0,947,77,,157,,,,strava_backfill,trimp_hr,8086513263
+2022-11-09,🐹,VirtualRide,3124,3124,33414.0,0,713,50,,,,228,,strava_backfill,durata,8091577857
+2022-11-11,🩺,Run,2548,2576,9370.7,182.0,705,68,,169,,,,strava_backfill,trimp_hr,8100116695
+2022-11-12,♨️,Ride,6816,24796,57138.9,812.0,1680,126,,144,,206,,strava_backfill,trimp_hr,8107596009
+2022-11-14,🌄,VirtualRide,3330,3330,37052.6,0,843,53,,,,253,,strava_backfill,durata,8115395547
+2022-11-16,🌰,Run,3690,4381,13016.0,332.0,909,69,,151,,,,strava_backfill,trimp_hr,8125941098
+2022-11-17,💦,Ride,4765,6622,34100.7,788.0,1066,85,,142,,189,,strava_backfill,trimp_hr,8130378852
+2022-11-19,🇳🇱,Run,7008,9558,26293.8,100.0,1810,134,,152,,,,strava_backfill,trimp_hr,8138355034
+2022-11-20,🚮,Run,3151,3283,11074.7,18.0,788,48,,140,,,,strava_backfill,trimp_hr,8142581116
+2022-11-22,🥞,Run,3399,3553,13507.7,107.0,1015,101,,175,,,,strava_backfill,trimp_hr,8153187739
+2022-11-23,👌,Run,2748,2830,10058.3,84.0,694,47,,146,,,,strava_backfill,trimp_hr,8156230866
+2022-11-24,🧀,Run,2764,2807,11025.9,55.0,773,65,,163,,,,strava_backfill,trimp_hr,8160801675
+2022-11-25,🍞,Ride,2478,2478,25323.7,62.0,535,34,,130,,174,,strava_backfill,trimp_hr,8165161223
+2022-11-25,🔙,Ride,3187,3216,23894.9,384.0,863,66,,149,,214,,strava_backfill,trimp_hr,8167254125
+2022-11-26,🐕‍🦺🦴,Hike,4492,5468,8050.7,656.0,860,57,,135,,,,strava_backfill,trimp_hr,8169474624
+2022-11-27,🍷,Ride,12742,21916,56578.5,1224.0,1855,145,,121,,106,,strava_backfill,trimp_hr,8176769591
+2022-11-28,🌿,Ride,9033,11603,36372.6,642.0,1212,95,,117,,89,,strava_backfill,trimp_hr,8179804994
+2022-11-29,💼,Run,3378,4372,12033.8,328.0,852,63,,151,,,,strava_backfill,trimp_hr,8184138384
+2022-11-30,⏰,VirtualRide,3494,3494,38020.8,0,846,56,,,,242,,strava_backfill,durata,8187803884
+2022-12-01,🇦🇫,Run,2689,2791,11058.0,11.0,782,51,,152,,,,strava_backfill,trimp_hr,8192109049
+2022-12-02,♨️,VirtualRide,3478,3478,36038.1,0,742,55,,,,214,,strava_backfill,durata,8198683529
+2022-12-03,🌨️,Hike,7236,7602,11622.5,968.0,931,54,,118,,,,strava_backfill,trimp_hr,8200596174
+2022-12-04,🎠,VirtualRide,5718,5718,58052.9,0,1132,91,,,,198,,strava_backfill,durata,8205059208
+2022-12-05,⚽,Run,2884,2959,10011.8,195.0,711,48,,145,,,,strava_backfill,trimp_hr,8209254140
+2022-12-06,😍,Ride,3069,3436,13327.8,596.0,589,41,,129,,168,,strava_backfill,trimp_hr,8214209539
+2022-12-07,🪨,Ride,6536,39996,48618.5,400.0,1469,100,,135,,135,,strava_backfill,trimp_hr,8219990467
+2022-12-08,🦭,BackcountrySki,9139,14702,15056.6,1514.0,785,30,,92,,,,strava_backfill,trimp_hr,8222968835
+2022-12-09,🛝,Hike,4984,5607,8580.4,798.0,1081,89,,146,,,,strava_backfill,trimp_hr,8227889529
+2022-12-10,🪵,Run,5529,5568,19544.0,238.0,1316,84,,140,,,,strava_backfill,trimp_hr,8231804614
+2022-12-11,🧔‍♀️🟥,BackcountrySki,7896,15009,10420.5,1188.0,706,21,,85,,,,strava_backfill,trimp_hr,8235295520
+2022-12-12,🤷‍♂️,VirtualRide,3062,3062,32948.3,0,712,49,,,,233,,strava_backfill,durata,8238553476
+2022-12-13,🧖‍♀️,Run,2900,4050,10261.9,314.0,742,56,,153,,,,strava_backfill,trimp_hr,8243230231
+2022-12-14,🎁,Ride,6650,39855,48197.6,397.0,1610,116,,141,,127,,strava_backfill,trimp_hr,8248294007
+2022-12-15,🥱,Run,2844,2865,9862.9,320.0,744,50,,148,,,,strava_backfill,trimp_hr,8250971529
+2022-12-16,🏋️‍♂️,WeightTraining,927,927,0,0,96,3,,95,,,,strava_backfill,trimp_hr,8254012562
+2022-12-18,🫁,Hike,6289,6574,10689.1,981.0,1285,105,,144,,,,strava_backfill,trimp_hr,8261747398
+2022-12-19,🤒,VirtualRide,3002,3002,30560.1,0,607,48,,,,203,,strava_backfill,durata,8265498509
+2022-12-22,🦥,Run,2821,2861,10079.6,303.0,756,75,,169,,,,strava_backfill,trimp_hr,8277996907
+2022-12-23,Morning Hike,Hike,5155,5270,8662.8,785.0,932,61,,133,,,,strava_backfill,trimp_hr,8281570045
+2022-12-24,⛷️,AlpineSki,943,12968,9319.9,0,63,2,,77,,,,strava_backfill,trimp_hr,8287019831
+2022-12-25,🎄,Run,4382,5561,10584.9,669.0,895,61,,136,,,,strava_backfill,trimp_hr,8288429405
+2022-12-26,🎁,BackcountrySki,5955,7953,12023.5,1090.0,379,15,,83,,,,strava_backfill,trimp_hr,8291801751
+2022-12-26,🐗,Hike,7689,8628,8242.0,655.0,607,25,,91,,,,strava_backfill,trimp_hr,8294070078
+2022-12-27,🫄,Run,3009,4081,10205.5,299.0,743,61,,155,,,,strava_backfill,trimp_hr,8297124895
+2022-12-28,🍕,VirtualRide,3504,3504,36324.1,0,747,56,,,,213,,strava_backfill,durata,8303194503
+2022-12-29,🥔,Run,2961,2965,10016.2,316.0,754,54,,150,,,,strava_backfill,trimp_hr,8306279404
+2022-12-29,🍛,BackcountrySki,2281,10298,3830.6,424.0,117,5,,76,,,,strava_backfill,trimp_hr,8308837148
+2022-12-30,🍾,VirtualRide,3579,3579,37960.5,0,846,57,,,,237,,strava_backfill,durata,8312263970
+2022-12-31,🎇,BackcountrySki,4941,9629,7500.8,732.0,496,21,,100,,,,strava_backfill,trimp_hr,8314883189
+2023-01-01,1️⃣,Hike,4962,6376,8559.2,774.0,728,38,,119,,,,strava_backfill,trimp_hr,8319687160
+2023-01-02,🥈,Run,3994,4189,13623.6,331.0,1010,78,,153,,,,strava_backfill,trimp_hr,8326543887
+2023-01-03,💩,AlpineSki,3207,13896,32405.6,0,234,9,,85,,,,strava_backfill,trimp_hr,8330694535
+2023-01-04,👨‍👨‍👦‍👦,Run,2550,2550,9509.9,49.0,676,41,,143,,,,strava_backfill,trimp_hr,8336191090
+2023-01-04,☕,Ride,3436,6080,24424.2,186.0,650,45,,128,,122,,strava_backfill,trimp_hr,8336808352
+2023-01-05,🍰,Ride,8848,11335,40504.9,1485.0,1764,138,,136,,161,,strava_backfill,trimp_hr,8341278968
+2023-01-06,🌁,Hike,6410,8888,8069.9,708.0,641,26,,98,,,,strava_backfill,trimp_hr,8346584667
+2023-01-07,⛸️,Run,3516,3928,8419.0,488.0,721,47,,134,,,,strava_backfill,trimp_hr,8350813257
+2023-01-08,💦,Run,4546,5275,9416.3,784.0,840,60,,133,,,,strava_backfill,trimp_hr,8356347428
+2023-01-09,🐇,VirtualRide,3061,3061,33414.8,0,741,49,,,,242,,strava_backfill,durata,8361963237
+2023-01-09,🌕,BackcountrySki,2892,3813,3644.9,435.0,315,14,,103,,,,strava_backfill,trimp_hr,8365148672
+2023-01-10,🥵,Ride,3643,5516,15430.8,694.0,731,52,,132,,171,,strava_backfill,trimp_hr,8368716067
+2023-01-11,🌄,Ride,6099,22951,48773.7,410.0,1584,118,,146,,158,,strava_backfill,trimp_hr,8374180278
+2023-01-12,🫡,Run,3071,3074,11016.6,204.0,787,59,,152,,,,strava_backfill,trimp_hr,8379899230
+2023-01-12,2️⃣,BackcountrySki,3985,19018,7735.7,855.0,287,11,,86,,,,strava_backfill,trimp_hr,8382277768
+2023-01-13,🧨,Run,2566,2603,10028.0,26.0,717,47,,150,,,,strava_backfill,trimp_hr,8383461039
+2023-01-14,🏡,Ride,5209,5695,27563.9,900.0,1038,73,,131,,168,,strava_backfill,trimp_hr,8388752083
+2023-01-15,👹,Run,5608,5823,18565.1,666.0,1376,99,,148,,,,strava_backfill,trimp_hr,8394349879
+2023-01-16,♥️,Run,2407,2428,9171.9,31.0,652,38,,142,,,,strava_backfill,trimp_hr,8399611619
+2023-01-17,😇,Ride,3382,3825,11426.6,591.0,624,42,,125,,152,,strava_backfill,trimp_hr,8405852915
+2023-01-18,⏱️,Run,2374,2386,10031.6,46.0,705,59,,166,,,,strava_backfill,trimp_hr,8411359667
+2023-01-19,🙅,BackcountrySki,4531,4771,7351.6,463.0,398,16,,94,,,,strava_backfill,trimp_hr,8417084101
+2023-01-20,📵,Run,2649,2682,10221.8,29.0,731,59,,160,,,,strava_backfill,trimp_hr,8420939255
+2023-01-24,Afternoon Ride,VirtualRide,3610,3610,34735.0,0,615,58,,,,170,,strava_backfill,durata,8444281205
+2023-01-26,Afternoon Run,Run,2614,2716,8470.4,289.0,632,52,,154,,,,strava_backfill,trimp_hr,8455079404
+2023-01-27,Afternoon Backcountry Ski,BackcountrySki,5101,6017,6685.3,965.0,510,23,,101,,,,strava_backfill,trimp_hr,8460636375
+2023-01-28,Morning Hike,Hike,4081,4278,7767.8,663.0,833,64,,142,,,,strava_backfill,trimp_hr,8469609451
+2023-01-29,🏁,BackcountrySki,6409,12259,12288.7,1213.0,861,39,,111,,,,strava_backfill,trimp_hr,8469612477
+2023-01-30,Lunch Run,Run,2576,2593,10019.0,48.0,705,48,,151,,,,strava_backfill,trimp_hr,8475903138
+2023-01-31,🦋,Ride,5004,5102,31875.3,785.0,1185,97,,146,,179,,strava_backfill,trimp_hr,8481553108
+2023-02-01,🏓,Workout,4117,4117,0,0,158,7,,70,,,,strava_backfill,trimp_hr,8489089209
+2023-02-02,⚰️,Run,3266,3271,11119.7,314.0,834,62,,152,,,,strava_backfill,trimp_hr,8492431153
+2023-02-02,🐡,Swim,2045,3320,1750.0,0,350,14,,108,,,,strava_backfill,trimp_hr,8494222160
+2023-02-03,🐻,Ride,6284,39399,48802.3,388.0,1580,114,,143,,147,,strava_backfill,trimp_hr,8499157083
+2023-02-04,🦥,Run,3016,3019,10049.2,296.0,710,48,,143,,,,strava_backfill,trimp_hr,8502098356
+2023-02-05,👮,Run,4901,4907,21449.9,120.0,1482,130,,169,,,,strava_backfill,trimp_hr,8507880563
+2023-02-06,‼️🤨,Ride,6432,39806,48445.8,402.0,1504,101,,136,,139,,strava_backfill,trimp_hr,8515906243
+2023-02-07,😱,Run,3124,3127,11717.2,215.0,829,64,,156,,,,strava_backfill,trimp_hr,8520155721
+2023-02-08,🦵,Run,3234,3284,12141.5,36.0,861,59,,150,,,,strava_backfill,trimp_hr,8525850042
+2023-02-09,🥴,VirtualRide,3319,3319,37527.7,0,872,53,,,,263,,strava_backfill,durata,8531565914
+2023-02-09,Evening Backcountry Ski,BackcountrySki,2478,13013,4036.9,439.0,160,6,,81,,,,strava_backfill,trimp_hr,8534451844
+2023-02-10,🍝,Run,2985,3071,11363.8,172.0,817,66,,160,,,,strava_backfill,trimp_hr,8535662927
+2023-02-11,🛏️,Ride,7133,7270,35349.3,1339.0,1232,96,,129,,168,,strava_backfill,trimp_hr,8541298095
+2023-02-12,🧀,Run,6458,6785,23016.2,362.0,1640,138,,158,,,,strava_backfill,trimp_hr,8548939196
+2023-02-13,Lunch Ride,Ride,3642,3852,18761.7,666.0,679,45,,125,,165,,strava_backfill,trimp_hr,8553612146
+2023-02-14,🍜,Run,3381,3386,13390.1,65.0,921,63,,151,,,,strava_backfill,trimp_hr,8559144786
+2023-02-15,🐖,Ride,6260,39418,48506.1,415.0,1424,98,,136,,149,,strava_backfill,trimp_hr,8566338225
+2023-02-16,🔋,Ride,3374,3520,16779.7,674.0,687,45,,128,,187,,strava_backfill,trimp_hr,8570463136
+2023-02-16,✌️,Run,3280,3283,11200.3,316.0,861,82,,166,,,,strava_backfill,trimp_hr,8571806988
+2023-02-17,Morning Weight Training,WeightTraining,760,760,0,0,56,2,,83,,,,strava_backfill,trimp_hr,8579550622
+2023-02-18,Morning Ride,Ride,745,745,2408.5,167.0,106,6,,105,,196,,strava_backfill,trimp_hr,8579600812
+2023-02-18,🤖,Ride,10103,11653,74000.5,1457.0,1988,162,,137,,192,,strava_backfill,trimp_hr,8582046872
+2023-02-19,🇬🇷,Run,7349,7588,23046.6,706.0,1834,195,,169,,,,strava_backfill,trimp_hr,8585852674
+2023-02-20,🦵,Run,3539,3539,11223.4,324.0,880,61,,147,,,,strava_backfill,trimp_hr,8591130026
+2023-02-21,🎉,Ride,5827,21840,50059.2,410.0,1334,120,,149,,204,,strava_backfill,trimp_hr,8597741681
+2023-02-22,🧁,Run,4276,4841,15717.9,176.0,1090,85,,154,,,,strava_backfill,trimp_hr,8602310565
+2023-02-23,🔁➿,Ride,4960,5023,31884.8,797.0,1178,68,,130,,212,,strava_backfill,trimp_hr,8608774280
+2023-02-24,🫘,Run,3473,3483,12048.0,193.0,862,66,,152,,,,strava_backfill,trimp_hr,8612891974
+2023-02-25,🦶,Ride,11773,14385,76218.2,1918.0,2856,184,,136,,217,,strava_backfill,trimp_hr,8620531657
+2023-02-26,🛡️ Coglia 2023,Ride,11566,12173,72060.8,482.9,2014,166,,132,,95,,strava_backfill,trimp_hr,8624441552
+2023-02-27,Lunch Ride,VirtualRide,3319,3319,35077.5,0,731,53,,,,220,,strava_backfill,durata,8630417021
+2023-02-28,🍦,Run,3354,3371,12552.4,175.0,923,79,,163,,,,strava_backfill,trimp_hr,8634394724
+2023-03-01,🍝,Run,2401,2417,10339.4,53.0,719,47,,153,,,,strava_backfill,trimp_hr,8643537137
+2023-03-02,✨,Run,3805,4008,13322.1,336.0,981,85,,160,,,,strava_backfill,trimp_hr,8645807421
+2023-03-02,Evening Hike,Hike,4317,11226,4330.2,431.0,424,14,,92,,,,strava_backfill,trimp_hr,8649805813
+2023-03-03,🦥,Run,2685,2698,10041.0,39.0,655,37,,135,,,,strava_backfill,trimp_hr,8653646791
+2023-03-04,🍷,Ride,26551,30333,237288.5,1257.0,6185,536,,148,,208,,strava_backfill,trimp_hr,8658647836
+2023-03-05,🥞,Run,2921,3193,10332.9,46.0,699,41,,136,,,,strava_backfill,trimp_hr,8661988058
+2023-03-06,🍀,Run,3830,5191,13363.7,323.0,954,63,,144,,,,strava_backfill,trimp_hr,8669302971
+2023-03-07,🔁,Ride,5847,23455,48360.9,401.0,1297,104,,142,,197,,strava_backfill,trimp_hr,8674851469
+2023-03-08,🇲🇵,Run,3546,3549,12496.8,224.0,913,63,,148,,,,strava_backfill,trimp_hr,8679217240
+2023-03-09,👩‍🎤,Run,3272,3743,12785.5,30.0,866,53,,144,,,,strava_backfill,trimp_hr,8685439650
+2023-03-10,🥣,Ride,7932,41020,60334.0,933.0,1885,130,,138,,210,,strava_backfill,trimp_hr,8692019479
+2023-03-11,🚮,Run,9724,10402,32748.6,797.0,2442,216,,160,,,,strava_backfill,trimp_hr,8694754087
+2023-03-11,🚁,Hike,4389,13655,4617.5,447.0,523,20,,102,,,,strava_backfill,trimp_hr,8697449506
+2023-03-12,🔚,Ride,8985,9115,59107.3,1436.0,2045,147,,138,,202,,strava_backfill,trimp_hr,8700273264
+2023-03-13,⚰️,Run,4171,4242,13032.4,451.0,1019,83,,154,,,,strava_backfill,trimp_hr,8707039409
+2023-03-15,🥪,Ride,6895,40553,50984.0,606.0,1353,93,,129,,162,,strava_backfill,trimp_hr,8719500526
+2023-03-16,🌷,Run,4219,4515,14096.3,526.0,1017,77,,150,,,,strava_backfill,trimp_hr,8722356829
+2023-03-17,💼,Ride,6140,40111,48273.3,412.0,1244,85,,130,,157,,strava_backfill,trimp_hr,8730462177
+2023-03-18,✔️,Run,3206,3561,15014.0,64.0,1008,58,,149,,,,strava_backfill,trimp_hr,8733557053
+2023-03-19,🏰 Castel Alberto Lessinia Gravel,Ride,11912,15932,52863.2,1569.0,1774,145,,124,,133,,strava_backfill,trimp_hr,8740422391
+2023-03-20,🍬,Run,3877,3895,13020.8,328.0,915,63,,144,,,,strava_backfill,trimp_hr,8747445371
+2023-03-21,🗿,Run,2672,2681,10013.0,43.0,698,47,,148,,,,strava_backfill,trimp_hr,8751836086
+2023-03-22,🪨,Ride,7933,40390,59566.1,958.0,1844,124,,136,,207,,strava_backfill,trimp_hr,8759310794
+2023-03-23,🍦,Ride,6414,8028,37227.2,1199.0,1588,105,,138,,222,,strava_backfill,trimp_hr,8764913447
+2023-03-24,🦉,Run,3629,3640,12546.1,186.0,925,76,,157,,,,strava_backfill,trimp_hr,8767571081
+2023-03-25,🍃,Ride,11704,12120,96114.8,1130.0,2210,204,,141,,71,,strava_backfill,trimp_hr,8773019093
+2023-03-26,😂 Sky del canto 2023 - quasi tutta,Run,6755,6765,18757.3,1172.0,1627,139,,156,,,,strava_backfill,trimp_hr,8778972583
+2023-03-27,📡,Ride,4579,5235,22983.8,810.0,702,48,,117,,166,,strava_backfill,trimp_hr,8786740188
+2023-03-28,🫥,Ride,6632,39718,52516.5,584.0,1485,100,,134,,199,,strava_backfill,trimp_hr,8792247566
+2023-03-29,🍝,Run,3404,3682,12062.3,256.0,830,57,,145,,,,strava_backfill,trimp_hr,8798285981
+2023-03-30,🏛️,Run,3443,5109,12036.6,187.0,877,67,,153,,,,strava_backfill,trimp_hr,8801245385
+2023-04-01,🐟 - Ronde Van Vlandeeren 2023,Ride,23774,25444,188935.3,1692.0,5178,469,,147,,193,,strava_backfill,trimp_hr,8813077343
+2023-04-04,🇮🇹,Ride,6231,22369,48537.2,405.0,1491,108,,141,,150,,strava_backfill,trimp_hr,8830197667
+2023-04-05,🔂,Run,3255,3255,14013.3,70.0,982,81,,166,,,,strava_backfill,trimp_hr,8837670492
+2023-04-06,🥵,Run,4403,4403,15553.3,215.0,1126,98,,160,,,,strava_backfill,trimp_hr,8843067578
+2023-04-07,✝️,Ride,16103,16663,114109.4,2096.0,3530,269,,139,,193,,strava_backfill,trimp_hr,8846821008
+2023-04-08,🦩,Run,6476,6598,22601.0,370.0,1597,104,,143,,,,strava_backfill,trimp_hr,8852341964
+2023-04-09,🥚,Ride,18350,18960,123135.6,2808.0,4125,319,,141,,199,,strava_backfill,trimp_hr,8859024845
+2023-04-10,♨️,Run,6152,6194,22015.7,241.0,1592,129,,157,,,,strava_backfill,trimp_hr,8863812168
+2023-04-27,🧘‍♂️,Hike,4500,4500,5000.0,0,458,23,,,,,,strava_backfill,durata,8967171284
+2023-08-10,Morning Ride,Ride,3600,3600,25000.0,300.0,0,57,,,,,,strava_backfill,durata,9618057757
+2023-10-04,🐹 (Extra miles),VirtualRun,3120,3120,11000.0,0,1007,56,,,,,,strava_backfill,durata,9973091845
+2023-10-28,🇯🇵🤩(Japan Introduction),Run,2631,3065,10103.1,43.0,681,47,,149,,,,strava_backfill,trimp_hr,10121685264
+2023-10-29,🗼(Tokyo Tower),Run,3704,4838,13112.1,48.0,827,51,,135,,,,strava_backfill,trimp_hr,10127901519
+2023-10-30,🏞️ (Sumida 10k),Run,2749,2924,10178.6,43.0,723,50,,150,,,,strava_backfill,trimp_hr,10133080945
+2023-11-01,👋 (Tokyo Farewell Half Marathon),Run,7193,7993,26547.7,114.0,1813,145,,155,,,,strava_backfill,trimp_hr,10145378939
+2023-11-02,⛩️ (Kyoto Trail 521),Run,4080,6414,11208.0,450.0,867,68,,145,,,,strava_backfill,trimp_hr,10150227183
+2023-11-03,"🎴 (Until next time, Japan)",Run,3082,4563,10643.7,59.0,716,55,,149,,,,strava_backfill,trimp_hr,10155612669
+2024-01-25,🐹,VirtualRun,3120,3120,12500.0,0,1144,56,,,,,,strava_backfill,durata,10624766462
+2024-02-10,"☔(Piove, piove la Hoka non si muove)",VirtualRun,6420,6420,24400.0,0,2233,115,,,,,,strava_backfill,durata,10733957414
+2024-03-22,🛴(Micromobilita imposta),Run,564,1163,1953.6,2.0,133,6,,119,,,,strava_backfill,trimp_hr,11017921877
+2024-04-18,🎖️(Medaglie e Coppi),VirtualRun,3120,3120,11000.0,0,1007,56,,,,,,strava_backfill,durata,11209077992
+2024-05-03,☔,VirtualRun,3300,3300,12300.0,0,1126,59,,,,,,strava_backfill,durata,11319882069
+2024-08-29,Evening Alpine Ski,AlpineSki,1379,2128,1308.2,3.0,365,8,,109,139,,,strava_backfill,trimp_hr,12275716214
+2024-10-22,🧘🏼‍♂️(Yoga and elevator pitch),Workout,1093,1093,0,0,11,1,,54,78,,,strava_backfill,trimp_hr,12722742944
+2024-12-03,🇩🇪 (CTI Opening Act),VirtualRun,3600,3600,14400.0,0,1318,65,,,,,,strava_backfill,durata,13035050452
+2024-12-05,🍌 (Banana Zone),Run,3665,3665,15000.0,0,1373,66,,,,,,strava_backfill,durata,13049977387
+2025-02-01,🇭🇰(Hong Kong 21),Run,6243,7083,21431.5,405.0,1462,87,,136,160,,,strava_backfill,trimp_hr,13515015867
+2025-02-04,🇨🇳(Shenzhen Rationale),Run,4433,6569,16344.9,63.0,1049,68,,141,170,,,strava_backfill,trimp_hr,13541434039
+2025-02-06,📳(4:33),Run,2125,2443,8161.2,10.0,569,37,,147,162,,,strava_backfill,trimp_hr,13559620057
+2025-02-07,♾️(Groundness Marathon),Run,10273,12178,42253.1,150.0,2883,229,,160,189,,,strava_backfill,trimp_hr,13568089022
+2025-02-26,"🚱(Heat Protocol and Mantovana ""HD""",VirtualRun,4421,4421,17003.8,0,1556,79,,,,,,strava_backfill,durata,13729640890
+2025-04-09,🥶🥵(Hot 'n' Cold),Ride,10803,44656,76417.8,1252.0,2105,180,,139,178,175,,strava_backfill,trimp_hr,14128470291
+2025-05-02,❤️‍🩹,VirtualRide,3600,3600,34000.0,0,0,57,,,,,,strava_backfill,durata,14353684101
+2025-05-03,❤️‍🩹,Ride,5400,5400,51000.0,0,0,86,,,,,,strava_backfill,durata,14361082857
+2025-06-11,❤️‍🩹(In prigione senza passare dal via),VirtualRide,5119,5119,36752.3,584.0,1008,82,,,,197,,strava_backfill,durata,14762148297
+2025-06-12,❤️‍🩹,VirtualRide,5409,5409,41902.1,721.0,1090,86,,,,202,,strava_backfill,durata,14773237553
+2025-06-14,🥭(Mango Ice Cream),VirtualRide,5443,5443,50992.4,71.0,1113,87,,,,205,,strava_backfill,durata,14792606852
+2025-06-16,0️⃣(Rulli a Giugno),VirtualRide,4811,4811,33227.2,659.0,1052,77,,,,219,,strava_backfill,durata,14813082947
+2025-08-30,🧼(Foaming Mental Half),Run,6299,6489,21588.7,311.9,2044,140,,160,186,,,strava_backfill,trimp_hr,15634186825
+2025-09-07,Morning Trail Run,Run,1276,1357,3098.1,148.0,365,23,,,,,,strava_backfill,durata,15726999310
+2025-09-26,💍(Post Wedding),VirtualRide,5638,5638,47242.1,464.0,1192,90,,,,211,,strava_backfill,durata,15938946267
+2025-09-27,🧚‍♂️(Sina Farewell),Run,4097,4243,14258.7,259.0,1383,84,,156,176,,,strava_backfill,trimp_hr,15951897150
+2025-10-18,🇬🇷(Athens Half Marathon),Run,6570,9180,24015.0,38.0,663,90,,135,153,181,,strava_backfill,trimp_hr,16176427516
+2025-12-14,🧆(Ceci e Strino),Run,5620,5782,18436.9,664.8,1120,101,,149,175,,,strava_backfill,trimp_hr,16740762050
+2026-02-21,❄️(Parafulmine con Marti),Run,7167,8449,8637.3,364.9,956,129,,,,,,strava_backfill,durata,17475362168
+2026-03-08,🗡️(Coglia Coglia 2026),Ride,19939,25632,122079.2,1612.0,2865,293,,133,174,129,,strava_backfill,trimp_hr,17648643970
+2026-03-10,↩️(Reverse Engineering),Ride,7993,9953,56291.0,750.0,1293,131,,138,170,145,,strava_backfill,trimp_hr,17668710827
+2026-06-09,🔥(Heat?!),Ride,5400,5400,55500.0,0,0,86,,,,,,strava_backfill,durata,18851915927

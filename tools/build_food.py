@@ -16,6 +16,13 @@ Cosa gira, in ordine, e perche' quest'ordine:
                             piu' i piatti del mese) in `data/derived/assumed_log.csv`.
                             **Non tocca `food_log.csv`**: il diario resta quello
                             che l'utente ha davvero raccontato.
+  1b. `cronometer.py`     — l'export Cronometer, cioe' i 265 giorni in cui il cibo
+                            e' stato pesato per davvero, in
+                            `data/derived/cronometer_days.json`. Va DOPO
+                            fill_defaults.py e PRIMA della serie: il passo 2 usa
+                            questi giorni per buttare via la ricostruzione dove
+                            esiste la misura. Vedi il docstring di cronometer.py
+                            per la regola pieno/parziale.
   2. `build_nutrition_series.py` — somma diario + ricostruzione in una serie
                             giornaliera, e la esporta in `vita/cibo/data/nutrition.csv`
                             (aggregati) e `vita/cibo/data/days.json` (dettaglio popup).
@@ -91,6 +98,7 @@ def main():
         # stages. They are gitignored build cache, so regenerate them while still
         # guaranteeing that --check never touches the published vita/cibo/data.
         run("fill_defaults.py")
+        run("cronometer.py")
         run("build_nutrition_series.py")
         run("microbiome_model.py", "--check")
         run("metabolismo.py", "--check", optional=True)
@@ -98,6 +106,7 @@ def main():
         return
 
     run("fill_defaults.py")
+    run("cronometer.py")
     os.makedirs(DATA, exist_ok=True)
     run("build_nutrition_series.py",
         "--export", os.path.join(DATA, "nutrition.csv"),
