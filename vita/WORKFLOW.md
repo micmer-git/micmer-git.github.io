@@ -61,6 +61,37 @@ This file is the durable handoff for every agent working on `/vita`.
   millilitres and units distinct; show total quantity and eating occasions, and
   always separate observed from reconstructed intake.
 
+## The diary (the "Apri il diario" button)
+
+- The button under the fortnight averages opens `#diary`, the same day the chart
+  popup shows but reachable without knowing which point to click: arrows, a date
+  picker, and a jump to the last day. It lists the body measures, every food row
+  of that day, the macro coverage, and a preset palette.
+- It is **not** a writer. `/vita` is a static file on GitHub Pages with no server
+  and no credential, so edits live in `localStorage` under `vita.diario.v1` and
+  the page emits ready-made `food_log.csv` lines to paste into the repo. Never
+  present a draft as if it had landed: `tools/food/data/food_log.csv` remains the
+  only source of truth, and a day is only really logged once it is committed.
+- Presets are **not** a hand-written list. `build_food_catalog()` in
+  `tools/build_vita.py` reads `food_log.csv` and ships the 28 most frequently
+  logged ids with their most common quantity and meal slot, so the palette tracks
+  Michele's actual habits and cannot silently go stale.
+- The payload carries three new keys for it: `foodCat` (per-unit macros for every
+  food, from `foods.csv`), `foodRec` (recipes, so one row can be an avocado toast
+  instead of three ingredients) and `foodPre` (the presets). Drafts recompute
+  kcal/protein/carb/fibre/fat as a **delta** on the real totals — the 24
+  micronutrients are not in the payload and must not be faked; they come back
+  from the Python pipeline after the lines are committed.
+- `days.json` meal items carry `f` (food id) and `qn` (numeric quantity), not the
+  preformatted `"150 g"` string: the page composes that from `foodCat`. A row
+  without `f` cannot be corrected and the diary shows it locked.
+- **Calendar dates use the LOCAL fields, never `toISOString()`.** The day index is
+  an offset from local midnight; normalising it to UTC shifts every day back by
+  one east of Greenwich, which is exactly how the day popup spent months opening
+  yesterday's dinner from Rome. CI runs in UTC, where the offset is zero and the
+  bug is invisible — so `check_vita.cjs` round-trips date → index → date and
+  asserts the popup's kcal match the day it was asked for.
+
 ## Receipt estimates
 
 When Michele attaches a receipt:

@@ -739,6 +739,97 @@ if (ran) {
     }
   }
 
+  /* --------------------------------------------- 5d. il diario, e la sua data
+     Il giorno si indirizza per data di calendario, ma l'indice di calendario e'
+     un offset in millisecondi da mezzanotte LOCALE: chi lo riconverte con
+     `toISOString()` normalizza a UTC e, a est di Greenwich, torna indietro di un
+     giorno. Il popup ha avuto per mesi esattamente questo difetto — da Roma
+     apriva la cena di ieri — e questo check non poteva vederlo perche' la CI gira
+     in UTC, dove l'offset e' zero. Qui il round-trip si prova a offset forzato. */
+  const dia = K.diary;
+  ok(!!dia, "window.CRUSCOTTO.diary esposto");
+  if (dia) {
+    const realDays = Object.keys(D.days || {})
+      .filter(k => !k.startsWith("_") && typeof D.days[k] === "object");
+    const trip = realDays.filter(k => {
+      const i = dia.idxOf(k);
+      return i !== null && dia.iso(i) === k;
+    });
+    ok(trip.length === realDays.length,
+      `data → indice → data torna su tutti i ${realDays.length} giorni con del cibo` +
+      (trip.length === realDays.length ? "" : ` (${realDays.length - trip.length} sfasati)`));
+
+    /* la prova che conta: il giorno aperto dall'indice e' QUEL giorno, non il vicino */
+    const wrong = realDays.slice(-40).filter(k => {
+      openDay(dia.idxOf(k));
+      const want = Math.round(D.days[k].tot.kcal);
+      const m = sheetIn.innerHTML.match(/Tavola — ([\d.]+) kcal/);
+      return !m || Math.abs(Number(m[1].replace(/\./g, "")) - want) > 1;
+    });
+    ok(wrong.length === 0, "il popup apre il giorno chiesto, non quello prima" +
+      (wrong.length ? ` — sfasati: ${wrong.slice(0, 3).join(", ")}` : ""));
+
+    /* Ogni riga di un pasto deve saper dire la propria quantita' — o con `f`+`qn`,
+       e allora il diario sa anche risalire alla riga di food_log.csv da correggere,
+       o con la stringa `q` gia' fatta, che e' il caso dei giorni Cronometer: quelli
+       non vengono dal diario, quindi non hanno un food_id nostro e nel diario
+       restano giustamente in sola lettura. Quello che NON deve esistere e' una riga
+       che non ha ne' l'uno ne' l'altra: la quantita' sparirebbe dallo schermo. */
+    const cat = D.foodCat || {};
+    const mute = [], unknownId = new Set();
+    let fromLog = 0, fromCron = 0;
+    for (const k of realDays) {
+      const meals = D.days[k].meals || {};
+      for (const m of Object.keys(meals)) for (const it of meals[m]) {
+        if (it.f !== undefined) { fromLog++; if (!cat[it.f]) unknownId.add(it.f); }
+        else if (it.q !== undefined) fromCron++;
+        else mute.push(`${k}/${m}/${it.n}`);
+      }
+    }
+    ok(mute.length === 0, `ogni riga di pasto dichiara la propria quantita'` +
+      (mute.length ? ` — mute: ${mute.slice(0, 3).join(", ")}` :
+        ` (${fromLog} dal diario, ${fromCron} da Cronometer)`));
+    ok(unknownId.size === 0,
+      `ogni alimento del diario e' nel catalogo (${Object.keys(cat).length} voci)` +
+      (unknownId.size ? ` — mancano ${[...unknownId].slice(0, 4).join(", ")}` : ""));
+    ok(fromCron > 0, `i giorni Cronometer arrivano nel popup (${fromCron} righe misurate)`);
+
+    const pre = D.foodPre || [];
+    const badPre = pre.filter(p => p.f.startsWith("recipe:")
+      ? !(D.foodRec || {})[p.f.slice(7)] : !cat[p.f]);
+    ok(pre.length >= 8 && badPre.length === 0,
+      `${pre.length} preset, tutti su alimenti o ricette che esistono` +
+      (badPre.length ? ` — rotti: ${badPre.map(p => p.f).join(", ")}` : ""));
+
+    /* apertura, e le righe che ne escono */
+    const dayK = realDays[realDays.length - 1];
+    const node = document.getElementById("diary-in");
+    let threw = null;
+    try { dia.open(dia.idxOf(dayK)); } catch (e) { threw = e; }
+    ok(!threw, "il diario si apre senza sollevare" + (threw ? `: ${threw.stack || threw}` : ""));
+    const rows = () => node.descendants().filter(n => /(^| )d-row( |$)/.test(n.className || ""));
+    ok(rows().length > 0, `il diario elenca le righe del giorno (${rows().length})`);
+    ok(node.descendants().some(n => (n.attrs.type === "date")),
+      "il diario ha il selettore di data per sfogliare");
+
+    /* una riga nuova deve muovere le kcal E comparire nel CSV: sono le due meta'
+       della stessa promessa — quello che vedi e quello che porti nel repo. */
+    const before = rows().length;
+    dia.mut(dayK, t => t.add.push({ f: "banana", q: 1, m: "spuntino" }));
+    ok(rows().length === before + 1, "annotare un preset aggiunge la sua riga");
+    const dk = dia.delta(dayK).k;
+    ok(dk > 90 && dk < 130, `e sposta le kcal del giorno di quanto vale (${Math.round(dk)} per una banana)`);
+    const csv = dia.csv(dayK);
+    const line = csv.split("\n").find(l => l.startsWith(dayK + ","));
+    ok(!!line && line.split(",").length === 6 && line.split(",")[2] === "banana",
+      `e produce la riga di food_log.csv gia' pronta (${line || "nessuna"})`);
+    dia.mut(dayK, t => { const i = t.add.findIndex(a => a.f === "banana"); t.add.splice(i, 1); });
+    ok(rows().length === before && !dia.csv(dayK).split("\n").some(l => l.startsWith(dayK + ",")),
+      "e togliendola non resta niente ne' a schermo ne' nel CSV");
+    ok(JSON.stringify(dia.draft()) === "{}", "una bozza svuotata non resta in localStorage");
+    dia.close();
+  }
+
   /* ------------------------------------------- 6. il 2022, che non e' piu' un buco
      Fino al 2026-08-13 qui si controllava che il buco lungo un anno FOSSE dichiarato:
      su Intervals il 2022 ha zero attivita', e disegnarlo pieno sarebbe stato mentire.
@@ -749,7 +840,9 @@ if (ran) {
      e cardio, non misurato. Se un giorno il backfill sparisse, il buco tornerebbe e
      dovrebbe tornare anche la sua banda: e' il caso che le due righe qui sotto tengono. */
   const d0 = new Date(D.d0 + "T00:00:00");
-  const iso = i => new Date(d0.getTime() + i * 86400000).toISOString().slice(0, 10);
+  /* campi locali, non `toISOString()`: vedi 5d */
+  const iso = i => { const d = new Date(d0.getTime() + i * 86400000), p = v => String(v).padStart(2, "0");
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`; };
   const spans = D.gaps.map(([a, b]) => `${iso(a)}→${iso(b)}`);
   const hole = D.gaps.find(([a, b]) => iso(a) < "2022-01-01" && iso(b) > "2022-12-31");
   const n2022 = D.acts.filter(a => iso(a[0]).startsWith("2022")).length;
