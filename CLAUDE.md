@@ -1,5 +1,15 @@
 # Istruzioni per gli agenti che lavorano su questa repo
 
+> **Il contratto generale sta altrove.** `AGENTS.md` nel repo privato `micmer-git/agents`
+> è la fonte di verità per ogni agente su ogni macchina: preflight, ciclo
+> PLAN→EXECUTE→VERIFY→REPORT, confini, dove si scrive cosa. Leggi quello per primo.
+> Se una regola qui lo contraddice, vince quello.
+>
+> Questo file è solo **quello che vale in più su questa repo**: la pipeline di `/vita`,
+> l'Action oraria, i tranelli che ci sono già costati tempo qui dentro.
+>
+> Prima di chiudere un lavoro qui: una riga nel journal di `agents`, via `bin/report.ps1`.
+
 ## Prima regola: **fai `git pull`.**
 
 Una GitHub Action gira **ogni ora** e committa da sola (`hourly: sync intervals.icu +
