@@ -48,6 +48,16 @@ jobs:
           echo "::group::Diario di un Unno"
           python tools/sync_diario.py || rc=1
           echo "::endgroup::"
+          # Questi due avevano gia' il loro builder e la loro config in tools/, ma
+          # nessuno li chiamava: si rigeneravano solo quando qualcuno ci lavorava
+          # sopra a mano, e nel frattempo restavano indietro di settimane. Un
+          # tracker che si aggiorna solo se te ne ricordi non e' un tracker.
+          echo "::group::Il signore delle cime"
+          python tools/build_signore.py || rc=1
+          echo "::endgroup::"
+          echo "::group::Top 20"
+          python tools/build_top20.py || rc=1
+          echo "::endgroup::"
           exit $rc
 
       # Lo stesso pull alimenta /vita e il CSV attività letto dal modello del cibo.
@@ -81,7 +91,9 @@ jobs:
         run: |
           git config user.name  "vita-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A gazzaniga-orezzo sogni-di-un-unno diario-di-un-unno vita tools/vita_tests.md tools/food/data
+          git add -A gazzaniga-orezzo sogni-di-un-unno diario-di-un-unno vita \
+                     signoredellecime top-20 tools/signore.json tools/top-20.json \
+                     tools/vita_tests.md tools/food/data
           if git diff --cached --quiet; then
             echo "nothing changed this hour"
           else

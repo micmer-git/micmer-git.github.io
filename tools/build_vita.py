@@ -761,6 +761,12 @@ TEMPLATE = r"""<!DOCTYPE html>
   .compare-result p{font-size:.75rem; line-height:1.45; color:var(--muted); margin-top:10px}
   .compare-note{font-size:.72rem; line-height:1.5; color:var(--muted); margin-top:9px;
     text-align:center}
+  /* L'avviso "e' solo trend" non e' un errore: e' il risultato. Prende l'arancio
+     degli avvisi, quello di conferma resta muto — una conferma non deve gridare. */
+  .compare-result .cmp-warn{color:var(--s2); border-left:2px solid var(--s2);
+    padding-left:8px; margin-top:9px; font-size:.7rem}
+  .compare-result .cmp-ok{color:var(--ink-soft); margin-top:9px; font-size:.7rem}
+  .compare-result .cmp-warn strong{color:var(--s2); font-weight:600}
 
   /* ---------- range control ---------- */
   /* Due gruppi di comandi sulla stessa riga: la finestra temporale e la forma
@@ -1161,6 +1167,11 @@ correlazione nulla si vede solo se la si disegna.</p>
     <label>Tempo<select id="compare-lag">
       <option value="0">stesso giorno</option>
       <option value="1">Y il giorno dopo</option>
+    </select></label>
+    <label>Come<select id="compare-mode">
+      <option value="lv">livelli</option>
+      <option value="d1">variazioni giorno su giorno</option>
+      <option value="d7">variazioni settimana su settimana</option>
     </select></label>
   </div>
   <div class="compare-body">
@@ -1639,8 +1650,13 @@ function rLines(svg, W, H, t, from, to) {
           " L" + g.X(first[0]) + " " + base + " Z", fill:s.col, opacity:".14" }));
       }
     }
-    svg.appendChild(el("path", { d:pathOf(s.vals, g.X, g.Y), fill:"none", stroke:s.col,
-      "stroke-width":s.w || 2, "stroke-linejoin":"round", "stroke-linecap":"round" }));
+    /* `dash`: per le serie che stanno su un ASSE DIVERSO dalle altre del riquadro.
+       L'ultra-processato attraversa le quattro quote d'origine invece di essere la
+       quinta, e il tratteggio lo dice prima della legenda. Non e' decorazione: una
+       linea piena in mezzo a una composizione si legge come parte della somma. */
+    svg.appendChild(el("path", Object.assign({ d:pathOf(s.vals, g.X, g.Y), fill:"none",
+      stroke:s.col, "stroke-width":s.w || 2, "stroke-linejoin":"round",
+      "stroke-linecap":"round" }, s.dash ? { "stroke-dasharray":s.dash } : {})));
   }
   crosshair(svg, g, W, H, from, to, i => series.map(s => {
     const p = s.vals[i - from]; return p && p[1] !== null
@@ -2858,17 +2874,42 @@ function nutriTiles() {
     noFoot:true,
     dataNote:"Modello, non una misura: associazioni direzionali da letteratura su un modello log-lineare, pesi nel sorgente. È una composizione: qualcuno sale solo se qualcun altro scende." });
 
-  /* ---- quote settimanali: vegetale, latticini, ultra-processato ---------- */
+  /* ---- ORIGINE: quattro fette che fanno cento -----------------------------
+     Prima erano tre etichette sovrapposte che sommavano 128 % e il piede doveva
+     spiegare perche' non facevano cento. Adesso l'origine e' una partizione — ogni
+     caloria in una fetta sola — e le quattro linee si leggono come una composizione,
+     che e' come le si guardava comunque. L'ultra-processato NON e' una quinta fetta:
+     attraversa tutte e quattro (un cornetto e' vegetale e ultra-processato insieme),
+     quindi non prende uno slot categorico ma il grigio del testo secondario. Il
+     colore dice "sono un'altra cosa" prima che lo dica la legenda. */
   if (has("pct_plant")) t.push({ panel:"tavola", h:170, first:"n_pct_plant",
-    title:"Da dove arrivano le calorie", cap:"% delle kcal · quote sovrapposte, non una torta",
-    legend:[["Vegetale", SCH[2]], ["Latticini", SCH[0]], ["Ultra-processato", SCH[3]]],
+    title:"Da dove arrivano le calorie", cap:"% delle kcal · le quattro fanno cento",
+    legend:[["Vegetale", SCH[2]], ["Latticini", SCH[0]], ["Animale", SCH[1]],
+            ["Altro", SCH[3]], ["Ultra-processato", "var(--muted)"]],
     now:() => lastMean(N_.pct_plant, 7), nowFmt:v => nf(v, 0) + " %", nowUnit:"vegetale, 7 gg",
     kind:rLines, spec:{ zero:true, fmt:v => nf(v, 0) + " %", series:[
       { name:"Vegetale", col:SCH[2], area:true, get:(a, b) => rolling(N_.pct_plant, a, b, 7).map((v, k) => [a + k, v]) },
       { name:"Latticini", col:SCH[0], get:(a, b) => rolling(N_.pct_dairy, a, b, 7).map((v, k) => [a + k, v]) },
-      { name:"Ultra-processato", col:SCH[3], get:(a, b) => rolling(N_.pct_upf, a, b, 7).map((v, k) => [a + k, v]) },
+      { name:"Animale", col:SCH[1], get:(a, b) => rolling(N_.pct_animal, a, b, 7).map((v, k) => [a + k, v]) },
+      { name:"Altro", col:SCH[3], get:(a, b) => rolling(N_.pct_other, a, b, 7).map((v, k) => [a + k, v]) },
+      { name:"Ultra-processato", col:"var(--muted)", dash:"3 3", get:(a, b) => rolling(N_.pct_upf, a, b, 7).map((v, k) => [a + k, v]) },
     ] },
-    foot:"Un alimento può contare in più quote: il latte è latticino e animale, un cornetto è vegetale (frumento) e ultra-processato. Per questo non sommano a cento." });
+    foot:"Vegetale, latticini, animale e altro sono una partizione: ogni caloria sta in una fetta sola e le quattro fanno cento. L'ultra-processato è un altro asse e le attraversa tutte — un cornetto è vegetale e ultra-processato insieme — quindi non va sommato con loro. «Altro» è burro, miele, whey: se cresce, mancano dei `plant` in foods.csv." });
+
+  /* ---- MACRO: di cosa erano fatte quelle calorie -------------------------
+     Il denominatore sono le tre macro, non le kcal del giorno: vedi macro_split()
+     in build_nutrition_series.py. Diviso per le kcal la somma ballava fra 97 e 122
+     a seconda del giorno, che come composizione non si puo' guardare. */
+  if (has("pct_kcal_carb")) t.push({ panel:"tavola", h:170, first:"n_pct_kcal_carb",
+    title:"Di cosa erano fatte", cap:"% dell'energia da macro · le tre fanno cento",
+    legend:[["Carboidrati", SCH[0]], ["Grassi", SCH[3]], ["Proteine", SCH[2]]],
+    now:() => lastMean(N_.pct_kcal_carb, 7), nowFmt:v => nf(v, 0) + " %", nowUnit:"carboidrati, 7 gg",
+    kind:rLines, spec:{ zero:true, fmt:v => nf(v, 0) + " %", series:[
+      { name:"Carboidrati", col:SCH[0], area:true, get:(a, b) => rolling(N_.pct_kcal_carb, a, b, 7).map((v, k) => [a + k, v]) },
+      { name:"Grassi", col:SCH[3], get:(a, b) => rolling(N_.pct_kcal_fat, a, b, 7).map((v, k) => [a + k, v]) },
+      { name:"Proteine", col:SCH[2], get:(a, b) => rolling(N_.pct_kcal_protein, a, b, 7).map((v, k) => [a + k, v]) },
+    ] },
+    foot:"Atwater: proteine e carboidrati 4 kcal/g, grassi 9. La quota è sul totale delle tre macro, non sulle kcal del giorno — le kcal arrivano dal database alimenti o da Cronometer e i due conti non tornano mai identici. È una composizione: uno sale solo se un altro scende." });
 
   /* ---- quali cibi muovono la flora: heatmap alimenti × generi ------------ */
   const FF = D.floraFoods || [];
@@ -3722,50 +3763,94 @@ noteEl.textContent = noteFor();
 const compareX = document.getElementById("compare-x");
 const compareY = document.getElementById("compare-y");
 const compareLag = document.getElementById("compare-lag");
+const compareMode = document.getElementById("compare-mode");
 const comparePlot = document.getElementById("compare-plot");
 const compareResult = document.getElementById("compare-result");
 const CF = D.nutri || {};
+/* Le serie confrontabili NON si scrivono a mano.
+   Erano un elenco fisso, e come ogni elenco fisso accanto a un registro vivo era
+   rimasto indietro: la ridgeline aveva ventisette corsie, il menu ventiquattro voci,
+   e mancavano proprio quelle nuove — heat strain, temperatura, momento metabolico.
+   Chi aggiungeva una corsia non aveva motivo di sapere che c'era un secondo posto da
+   aggiornare. Adesso il menu ESCE da RIDGE, che e' gia' il registro di tutto quello
+   che la pagina sa disegnare: una corsia nuova compare da sola anche qui, e i due
+   elenchi non possono piu' divergere.
+   Le voci qui sotto sono solo quelle che una corsia non ce l'hanno — nutrienti che
+   nella vista compatta non stanno, ma che ha senso incrociare. */
+const compareExtra = [
+  ["protein","Tavola","Proteine",CF.protein_g,v=>nf(v,0)+" g"],
+  ["carb","Tavola","Carboidrati",CF.carb_g,v=>nf(v,0)+" g"],
+  ["fat","Tavola","Grassi",CF.fat_g,v=>nf(v,0)+" g"],
+  ["satfat","Tavola","Grassi saturi",CF.satfat_g,v=>nf(v,1)+" g"],
+  ["sodium","Tavola","Sodio",CF.sodium_mg,v=>nf(v,0)+" mg"],
+  ["pctprot","Tavola","Quota kcal proteine",CF.pct_kcal_protein,FMT.pct],
+  ["pctcarb","Tavola","Quota kcal carboidrati",CF.pct_kcal_carb,FMT.pct],
+  ["pctfat","Tavola","Quota kcal grassi",CF.pct_kcal_fat,FMT.pct],
+  ["dairy","Tavola","Quota latticini",CF.pct_dairy,FMT.pct],
+  ["animal","Tavola","Quota animale",CF.pct_animal,FMT.pct],
+  ["vit","Tavola","Indice vitamine",CF.vit_index,FMT.pct],
+  ["min","Tavola","Indice minerali",CF.min_index,FMT.pct],
+  ["carbgap","Tavola","Scarto carboidrati",CF.carb_gap_g,v=>nf(v,0)+" g"],
+  ["plantsday","Tavola","Piante del giorno",CF.plants_day,FMT.num0],
+  ["fatmax","Metabolismo","FatMax",(D.metab||{}).fatmax_hr,FMT.bpm],
+  ["fatmaxmin","Metabolismo","Minuti in FatMax",(D.metab||{}).fatmax_min,FMT.num0],
+];
 const compareSeries = [
-  ["sleep","Notte","Sonno",D.sleep,FMT.hhmm],
-  ["score","Notte","Qualità del sonno",D.score,FMT.num0],
-  ["hrv","Recupero","HRV",D.hrv,FMT.ms],
-  ["rhr","Recupero","FC a riposo",D.rhr,FMT.bpm],
-  ["steps","Attività","Passi",D.steps,FMT.num0],
-  ["load","Attività","Carico (TSS)",D.load,FMT.tss],
-  ["ctl","Attività","Fitness (CTL)",D.ctl,FMT.num0],
-  ["atl","Attività","Fatica (ATL)",D.atl,FMT.num0],
-  ["hours","Attività","Ore di allenamento",secsOf.secs.map(v=>v/3600),FMT.hours],
-  ["km","Attività","Chilometri",secsOf.dist.map(v=>v/1000),FMT.km],
-  ["vo2","Corpo","VO₂max",D.vo2,FMT.num1],
-  ["weight","Corpo","Peso",D.weight,FMT.kg],
-  ["bodyfat","Corpo","Massa grassa",D.bodyfat,FMT.pct],
-  ["kcal","Cibo","Energia",CF.kcal,FMT.num0],
-  ["protein","Cibo","Proteine",CF.protein_g,v=>nf(v,0)+" g"],
-  ["carb","Cibo","Carboidrati",CF.carb_g,v=>nf(v,0)+" g"],
-  ["fiber","Cibo","Fibre",CF.fiber_g,v=>nf(v,1)+" g"],
-  ["sugar","Cibo","Zuccheri",CF.sugar_g,v=>nf(v,1)+" g"],
-  ["magnesium","Cibo","Magnesio",CF.magnesium_mg,v=>nf(v,0)+" mg"],
-  ["potassium","Cibo","Potassio",CF.potassium_mg,v=>nf(v,0)+" mg"],
-  ["sodium","Cibo","Sodio",CF.sodium_mg,v=>nf(v,0)+" mg"],
-  ["plants","Cibo","Piante diverse / 7 giorni",CF.plants_7d,FMT.num1],
-  ["plantpct","Cibo","Quota vegetale",CF.pct_plant,FMT.pct],
-  ["microbiome","Cibo","Indice microbiota",CF.microbiome,FMT.num0],
-].filter(s=>Array.isArray(s[3]));
+  ...RIDGE.map(l=>[l.key,l.sec,l.name,l.arr,l.fmt]),
+  ...compareExtra,
+].filter(s=>Array.isArray(s[3]) && s[3].some(v=>v!==null&&v!==undefined));
 const compareByKey = new Map(compareSeries.map(s=>[s[0],s]));
 const compareOptions = compareSeries.map(s=>`<option value="${s[0]}">${s[1]} · ${s[2]}</option>`).join("");
 compareX.innerHTML = compareOptions; compareY.innerHTML = compareOptions;
 compareX.value = compareByKey.has("sleep") ? "sleep" : compareSeries[0][0];
 compareY.value = compareByKey.has("hrv") ? "hrv" : compareSeries[Math.min(1,compareSeries.length-1)][0];
 
-function drawCompare(){
-  if(!compareSeries.length) return;
-  const sx=compareByKey.get(compareX.value), sy=compareByKey.get(compareY.value);
-  const lag=Number(compareLag.value)||0, [from,to]=windowFor(0), pts=[];
+/* Correlazione sulle VARIAZIONI, non solo sui livelli.
+   In finanza non si correlano i prezzi, si correlano i rendimenti, e per un motivo
+   che vale identico qui: due serie che salgono nello stesso periodo escono correlate
+   anche quando non c'entrano niente l'una con l'altra: e' il tempo che le muove
+   tutte e due. Fitness e peso salgono insieme per una stagione e r dice 0,8 — ma non
+   e' il peso a fare la fitness. Sulle differenze il trend condiviso sparisce e resta
+   solo "quando questa si muove, si muove anche quella?", che e' la domanda vera.
+   d1 = differenza col giorno prima; d7 = con la settimana prima, che toglie anche il
+   ritmo settimanale (il lungo della domenica, il riposo del lunedi'). */
+const diffed=(arr,k)=>{
+  if(!k) return arr;
+  const out=new Array(arr.length).fill(null);
+  for(let i=k;i<arr.length;i++){
+    const a=arr[i],b=arr[i-k];
+    if(a===null||a===undefined||b===null||b===undefined)continue;
+    out[i]=a-b;
+  }
+  return out;
+};
+const pearson=pts=>{
+  const n=pts.length; if(n<4) return null;
+  let sx=0,sy=0; for(const p of pts){sx+=p[0];sy+=p[1];}
+  const mx=sx/n,my=sy/n; let num=0,dx=0,dy=0;
+  for(const p of pts){const a=p[0]-mx,b=p[1]-my;num+=a*b;dx+=a*a;dy+=b*b;}
+  return (dx>0&&dy>0)?num/Math.sqrt(dx*dy):null;
+};
+const MODE_K={lv:0,d1:1,d7:7};
+const MODE_LABEL={lv:"livelli",d1:"variazioni giorno su giorno",
+  d7:"variazioni settimana su settimana"};
+
+function pairsFor(sx,sy,k,lag,from,to){
+  const ax=diffed(sx[3],k), ay=diffed(sy[3],k), pts=[];
   for(let i=from;i<=to-lag;i++){
-    const x=sx[3][i], y=sy[3][i+lag];
+    const x=ax[i], y=ay[i+lag];
     if(x===null||x===undefined||y===null||y===undefined||!isFinite(x)||!isFinite(y))continue;
     pts.push([x,y,i+lag]);
   }
+  return pts;
+}
+
+function drawCompare(){
+  if(!compareSeries.length) return;
+  const sx=compareByKey.get(compareX.value), sy=compareByKey.get(compareY.value);
+  const lag=Number(compareLag.value)||0, [from,to]=windowFor(0);
+  const mode=compareMode.value||"lv", k=MODE_K[mode]||0;
+  const pts=pairsFor(sx,sy,k,lag,from,to);
   comparePlot.innerHTML="";
   if(pts.length<4){
     comparePlot.innerHTML='<p class="t-empty">Meno di quattro giorni in comune in questa finestra.</p>';
@@ -3776,17 +3861,44 @@ function drawCompare(){
   const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,role:"img",
     "aria-label":`${sx[2]} contro ${sy[2]}`});
   comparePlot.appendChild(svg);
-  const rendered=rXY(svg,W,H,{xname:sx[2],yname:sy[2],xfmt:sx[4],yfmt:sy[4],r:3,
+  const unit=mode==="lv"?"":" (Δ)";
+  const rendered=rXY(svg,W,H,{xname:sx[2]+unit,yname:sy[2]+unit,xfmt:sx[4],yfmt:sy[4],r:3,
     points:()=>[{name:lag?"Y il giorno dopo":"stesso giorno",col:"var(--s1)",pts}]},from,to);
   const f=rendered&&rendered.fit;
   if(!f){compareResult.innerHTML='<b>r = —</b><span>varianza insufficiente</span>';return;}
   const a=Math.abs(f.r), strength=a<.2?"molto debole":a<.4?"debole":a<.6?"moderata":a<.8?"forte":"molto forte";
+
+  /* L'altro modo si calcola SEMPRE, anche quando non e' quello disegnato: e' il
+     controllo che dice se un r alto e' una relazione o solo due trend paralleli. */
+  const rLv=mode==="lv"?f.r:pearson(pairsFor(sx,sy,0,lag,from,to));
+  const rD=mode==="lv"?pearson(pairsFor(sx,sy,1,lag,from,to)):f.r;
+
+  /* Le due soglie sono tarate sui dati veri, non a caso: in questo archivio quasi
+     tutte le associazioni stanno vicine a zero, e l'unica coppia con dell'andamento
+     condiviso davvero grosso e' piante x microbiota (0,44 sui livelli, 0,26 sulle
+     variazioni). Con una soglia di 0,25 di scarto non si sarebbe accesa proprio
+     dove serviva. A 0,15 si accende li' e resta zitta su fitness x fatica, che sulle
+     variazioni regge eccome (0,94 → 0,97). */
+  let caveat="";
+  if(rLv!==null&&rD!==null&&Math.abs(rLv)>=.3&&Math.abs(rLv)-Math.abs(rD)>=.15){
+    caveat=`<p class="cmp-warn">Sui livelli r = ${nf(rLv,2)}, sulle variazioni `+
+      `${nf(rD,2)}: quasi tutta l'associazione è <strong>andamento condiviso</strong>, `+
+      `non le due serie che si muovono insieme. Le due cose salgono nello stesso `+
+      `periodo — il che non vuol dire che una tiri l'altra.</p>`;
+  }else if(rLv!==null&&rD!==null&&Math.abs(rD)>=.3&&Math.abs(rD)>=Math.abs(rLv)){
+    caveat=`<p class="cmp-ok">Regge anche sulle variazioni (r = ${nf(rD,2)}): `+
+      `non è solo trend condiviso.</p>`;
+  }
+
   compareResult.innerHTML=`<b>r = ${nf(f.r,2)}</b><span>${f.n} giorni in comune</span>`+
-    `<span>R² = ${nf(f.r*f.r,2)}</span><p>Associazione ${strength}${f.r<0?", inversa":""}. `+
-    `${lag?"X è il giorno precedente a Y.":"Le misure sono dello stesso giorno."}</p>`;
+    `<span>R² = ${nf(f.r*f.r,2)}</span><span>${MODE_LABEL[mode]}</span>`+
+    `<p>Associazione ${strength}${f.r<0?", inversa":""}. `+
+    `${lag?"X è il giorno precedente a Y.":"Le misure sono dello stesso giorno."}</p>`+
+    caveat;
 }
-[compareX,compareY,compareLag].forEach(x=>x.addEventListener("change",drawCompare));
-window.CRUSCOTTO.compare={series:compareSeries,draw:drawCompare,x:compareX,y:compareY,lag:compareLag};
+[compareX,compareY,compareLag,compareMode].forEach(x=>x.addEventListener("change",drawCompare));
+window.CRUSCOTTO.compare={series:compareSeries,draw:drawCompare,x:compareX,y:compareY,
+  lag:compareLag,mode:compareMode,pearson,pairsFor,byKey:compareByKey};
 
 /* --------------------------------------------------- le tre pagine in cima */
 document.getElementById("tracks").innerHTML = (D.tracks || []).map(t => `

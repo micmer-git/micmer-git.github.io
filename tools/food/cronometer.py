@@ -233,9 +233,13 @@ KCAL_PER_G = {
     "Fast Foods": 2.5, "Restaurant Foods": 2.5, "": 1.5,
 }
 DAIRY = ("Dairy and Egg Products",)
-ANIMAL = ("Dairy and Egg Products", "Beef Products", "Pork Products",
-          "Poultry Products", "Sausages and Luncheon Meats",
-          "Lamb, Veal, and Game Products", "Finfish and Shellfish Products")
+ANIMAL = ("Beef Products", "Pork Products", "Poultry Products",
+          "Sausages and Luncheon Meats", "Lamb, Veal, and Game Products",
+          "Finfish and Shellfish Products")
+# Cronometer mette le uova insieme ai latticini in una categoria sola. Un uovo non e'
+# un latticino, e in una torta che deve fare 100 la fetta sbagliata non si compensa
+# con niente: quindi si guarda il nome prima della categoria.
+EGGS = ("egg", "uova", "uovo")
 
 
 def num(v):
@@ -349,12 +353,17 @@ def build():
                     unknown[it["name"]] += 1
                 if has(it["name"], FERMENTED):
                     ferm = True
-                if p:
-                    share["plant"] += kc
-                if it["cat"] in DAIRY:
-                    share["dairy"] += kc
-                if it["cat"] in ANIMAL:
+                # stessa partizione di build_nutrition_series.py, stessa precedenza:
+                # ogni caloria in una fetta sola, e le quattro fanno 100
+                if it["cat"] in ANIMAL or has(it["name"], EGGS):
                     share["animal"] += kc
+                elif it["cat"] in DAIRY:
+                    share["dairy"] += kc
+                elif p:
+                    share["plant"] += kc
+                else:
+                    share["other"] += kc
+                # asse trasversale, non una quinta fetta
                 if has(it["name"], UPF):
                     share["upf"] += kc
                 # `a` e `r` tengono la forma che il popup di /vita si aspetta dalle

@@ -701,6 +701,44 @@ if (ran) {
     ok(anyLink, "almeno un'attivita' nel popup linka a intervals.icu con un id vero");
   }
 
+  /* ------------------------------- 5c. il correlatore: completo, e sulle variazioni
+     Due controlli che nascono da due bug veri.
+     Il primo: l'elenco delle serie confrontabili era scritto a mano accanto al
+     registro della ridgeline, e c'era rimasto indietro — heat strain, temperatura e
+     momento metabolico non si potevano incrociare. Ora esce da RIDGE, e questo
+     controllo tiene il fatto che nessuna corsia resti fuori dal menu.
+     Il secondo: la correlazione si leggeva solo sui livelli, dove due serie che
+     salgono nello stesso periodo escono associate anche se non c'entrano. Il modo
+     "variazioni" deve esserci e deve dare un r DIVERSO da quello sui livelli, se no
+     vuol dire che il differenziatore non sta differenziando niente. */
+  const CMP = K.compare;
+  ok(!!CMP, "window.CRUSCOTTO.compare esposto");
+  if (CMP && K.compact) {
+    const keys = new Set(CMP.series.map(s => s[0]));
+    const missing = K.compact.series.map(l => l.key).filter(k => !keys.has(k));
+    ok(missing.length === 0,
+      `ogni corsia della ridgeline si puo' incrociare (${CMP.series.length} serie` +
+      (missing.length ? `, mancano: ${missing.join(", ")}` : "") + ")");
+    for (const k of ["heat", "temp", "mm"]) {
+      ok(keys.has(k), `la serie "${k}" e' fra quelle confrontabili`);
+    }
+    ok(!!document.getElementById("compare-mode"), "il selettore livelli/variazioni e' in pagina");
+
+    /* r sui livelli contro r sulle variazioni, su una coppia che di sicuro ha
+       dell'andamento condiviso: fitness e fatica salgono e scendono insieme. */
+    const sx = CMP.byKey.get("ctl"), sy = CMP.byKey.get("atl");
+    if (sx && sy) {
+      const rLv = CMP.pearson(CMP.pairsFor(sx, sy, 0, 0, 0, D.n - 1));
+      const rD1 = CMP.pearson(CMP.pairsFor(sx, sy, 1, 0, 0, D.n - 1));
+      ok(rLv !== null && rD1 !== null, "r calcolabile sia sui livelli sia sulle variazioni");
+      if (rLv !== null && rD1 !== null) {
+        ok(Math.abs(rLv - rD1) > 0.01,
+          `livelli e variazioni danno r diversi (${rLv.toFixed(2)} contro ${rD1.toFixed(2)})`);
+        ok(Math.abs(rLv) <= 1.0001 && Math.abs(rD1) <= 1.0001, "r resta dentro [-1, 1]");
+      }
+    }
+  }
+
   /* ------------------------------------------- 6. il 2022, che non e' piu' un buco
      Fino al 2026-08-13 qui si controllava che il buco lungo un anno FOSSE dichiarato:
      su Intervals il 2022 ha zero attivita', e disegnarlo pieno sarebbe stato mentire.

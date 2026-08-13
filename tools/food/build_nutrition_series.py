@@ -92,10 +92,38 @@ FIELDS = ["date", "kcal", "protein_g", "carb_g", "sugar_g", "fiber_g", "fat_g",
           "vit_index", "min_index", "plants_day", "plants_7d",
           "tss", "carb_target_g", "carb_gap_g", "microbiome",
           "kcal_observed", "kcal_assumed", "n_items",
-          # quote di calorie per origine: vegetale, latticini, ultra-processato,
-          # animale. Sono percentuali del giorno, non grammi, perche' la domanda
-          # e' "quanto della mia dieta e'..." e non "quanto ne ho mangiato".
-          "pct_plant", "pct_dairy", "pct_upf", "pct_animal"] +          ["cnt_" + k for k in TALLY]
+          # ORIGINE delle calorie, quattro fette di una torta sola: fanno 100 (±0,1 di
+          # arrotondamento). Percentuali e non grammi perche' la domanda e' "quanto
+          # della mia dieta e'..." e non "quanto ne ho mangiato".
+          "pct_plant", "pct_dairy", "pct_animal", "pct_other",
+          # LAVORAZIONE, che e' un altro asse e NON una quinta fetta: un cornetto e'
+          # vegetale e ultra-processato insieme. Attraversa le quattro di sopra e non
+          # va sommato con loro.
+          "pct_upf",
+          # MACRO in quota di energia: proteine e carboidrati x4 kcal/g, grassi x9.
+          # Anche queste fanno ~100, e quello che manca e' fibra e alcol, che le
+          # 4/4/9 non contano.
+          "pct_kcal_protein", "pct_kcal_carb", "pct_kcal_fat",
+          ] + ["cnt_" + k for k in TALLY]
+
+
+def macro_split(t):
+    """Quota di energia da proteine, carboidrati e grassi. Fanno 100 per costruzione.
+
+    Il denominatore sono le tre macro (Atwater 4/4/9), NON le kcal del giorno. Sembra
+    un dettaglio e non lo e': le kcal arrivano dal database alimenti o da Cronometer,
+    le macro sono campi loro, e i due conti non tornano mai identici. Dividendo per le
+    kcal, le tre quote sommavano fra 97 e 122 a seconda del giorno — cioe' una
+    "composizione" che a volte fa 122 %, che come composizione non si puo' vedere.
+    Diviso per le macro fa 100 sempre, ed e' anche la definizione che usa qualunque
+    app di nutrizione quando dice "il tuo split e' 20/55/25".
+
+    Le kcal restano la serie dell'energia: questa risponde a "di cosa erano fatte".
+    """
+    e = {"protein": t["protein_g"] * 4.0, "carb": t["carb_g"] * 4.0,
+         "fat": t["fat_g"] * 9.0}
+    tot = sum(e.values()) or 1.0
+    return {"pct_kcal_" + k: round(100.0 * v / tot, 1) for k, v in e.items()}
 
 
 def load_rows():
@@ -199,15 +227,31 @@ def main():
             "a": 1 if r.get("source") == "assunto" else 0,   # assunto, non osservato
             "r": r.get("recipe", ""),                        # da quale ricetta viene
         })
-        # un alimento puo' contare in piu' quote: il latte intero e' latticino e
-        # animale, un cornetto e' vegetale (frumento) e ultra-processato. Sono
-        # quote sovrapposte, non una torta — e vanno lette cosi'.
-        if f["plant"]:
-            src_kcal[d]["plant"] += kcal
-        if f["group"] == "latticini":
+        # ORIGINE: una torta vera, cioe' ogni caloria in una fetta sola.
+        #
+        # Fino al 2026-08-13 queste erano etichette sovrapposte — il latte contava sia
+        # latticino sia animale, il cornetto sia vegetale sia ultra-processato — e la
+        # somma faceva 128 %. Sovrapposte erano difendibili ma illeggibili: nessuno
+        # guarda quattro percentuali senza sommarle con l'occhio, e quella somma non
+        # voleva dire niente. Adesso l'origine e' una PARTIZIONE con precedenza, e le
+        # quattro quote fanno 100.
+        #
+        # La precedenza risolve i casi doppi nell'unico modo che non perde calorie:
+        #   latticini PRIMA di vegetale, ma solo se non ha una specie — cosi' il latte
+        #     di soia va fra i vegetali, dov'e' giusto che stia;
+        #   proteine (carne, pesce, uova) prima di vegetale — un ragu' ha il pomodoro
+        #     dentro, ma e' un piatto di carne e sta fra gli animali;
+        #   vegetale per tutto quello che una specie ce l'ha;
+        #   altro per il resto: burro, miele, whey, cappuccino. Deve restare piccolo:
+        #     se cresce, vuol dire che a foods.csv mancano dei `plant`.
+        if f["group"] == "latticini" and not f["plant"]:
             src_kcal[d]["dairy"] += kcal
-        if f["group"] in ("proteine", "latticini"):
+        elif f["group"] == "proteine":
             src_kcal[d]["animal"] += kcal
+        elif f["plant"]:
+            src_kcal[d]["plant"] += kcal
+        else:
+            src_kcal[d]["other"] += kcal
         if f["plant"]:
             plants_of[d].add(f["plant"])
         if f["fermented"]:
@@ -235,7 +279,7 @@ def main():
             kcal_src[d]["assumed"] = 0.0
             items[d] = v.get("n_items") or 0
             plants_of[d] = set(v.get("plants") or ())
-            for q in ("plant", "dairy", "animal"):
+            for q in ("plant", "dairy", "animal", "other"):
                 src_kcal[d][q] = float((v.get("shares") or {}).get(q) or 0.0)
             upf_kcal[d] = float((v.get("shares") or {}).get("upf") or 0.0)
             detail[d] = {m: list(it) for m, it in (v.get("meals") or {}).items()}
@@ -246,7 +290,7 @@ def main():
             items[d] += v.get("n_items") or 0
             plants_of[d] |= set(v.get("plants") or ())
             frac = kcal / (v["nutrients"]["kcal"] or kcal)   # quota del giorno coperta
-            for q in ("plant", "dairy", "animal"):
+            for q in ("plant", "dairy", "animal", "other"):
                 src_kcal[d][q] += float((v.get("shares") or {}).get(q) or 0.0) * frac
             upf_kcal[d] += float((v.get("shares") or {}).get("upf") or 0.0) * frac
             for m, it in (v.get("meals") or {}).items():
@@ -324,8 +368,9 @@ def main():
             "kcal_assumed": round(kcal_src[k]["assumed"]),
             "n_items": items[k],
             **{"pct_" + q: round(100.0 * src_kcal[k].get(q, 0.0) / (t["kcal"] or 1), 1)
-               for q in ("plant", "dairy", "animal")},
+               for q in ("plant", "dairy", "animal", "other")},
             "pct_upf": round(100.0 * upf_kcal.get(k, 0.0) / (t["kcal"] or 1), 1),
+            **macro_split(t),
             **{"cnt_" + key: round(tally[k].get(key, 0.0), 2) for key in TALLY},
         })
         cur += timedelta(days=1)
