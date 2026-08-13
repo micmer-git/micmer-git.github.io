@@ -103,7 +103,18 @@ class Node {
     arr.forEach((c, i) => { col[i] = c; });
     return col;
   }
-  addEventListener() {}
+  /* I gestori si TENGONO, invece di essere buttati. Finche' la pagina era solo
+     grafici bastava disegnarli e misurarli; da quando c'e' il diario, meta' di
+     quello che puo' rompersi sta dietro un click — scegliere il pasto, premere un
+     preset, correggere una quantita' — e un DOM che scarta i gestori non puo'
+     provarne nemmeno uno. `fire()` chiama il gestore come farebbe il browser. */
+  addEventListener(type, fn) { (this._on = this._on || {})[type] = fn; }
+  fire(type, ev) {
+    const fn = this._on && this._on[type];
+    if (typeof fn !== "function") return false;
+    fn(Object.assign({ target: this, currentTarget: this }, ev || {}));
+    return true;
+  }
   getBoundingClientRect() { return { width: SHIM_W, height: 180, top: 0, left: 0, right: SHIM_W, bottom: 180 }; }
   get clientWidth() { return SHIM_W; }
   /* the only descendant walk the page does is over ranges' direct children */
@@ -133,8 +144,22 @@ const localStorage = {
   removeItem: k => { delete LS[k]; },
 };
 
+/* `fetch` finto: registra la richiesta e risponde a vuoto. Serve al diario, che da
+   quando ha un Worker dietro parla in rete — e la cosa da verificare non e' la
+   rete, e' COSA le manda: pasto, alimento, quantita', row_key. Quello si guarda
+   qui, senza uscire dal processo. */
+const FETCHES = [];
+const fakeFetch = (url, opts) => {
+  const o = opts || {};
+  FETCHES.push({ url: String(url), method: o.method || "GET",
+                 headers: o.headers || {},
+                 body: o.body ? JSON.parse(o.body) : null });
+  const body = /\/api\/day\//.test(String(url)) ? { ops: [] } : { ok: true };
+  return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(body) });
+};
+
 const sandbox = {
-  document, console, localStorage,
+  document, console, localStorage, fetch: fakeFetch,
   window: {}, innerWidth: 1200, innerHeight: 900,
   setTimeout: () => 0, clearTimeout() {}, addEventListener() {},
   Math, Date, JSON, Number, String, Array, Object, Map, Set, isFinite, parseFloat, parseInt,
@@ -812,21 +837,72 @@ if (ran) {
     ok(node.descendants().some(n => (n.attrs.type === "date")),
       "il diario ha il selettore di data per sfogliare");
 
-    /* una riga nuova deve muovere le kcal E comparire nel CSV: sono le due meta'
-       della stessa promessa — quello che vedi e quello che porti nel repo. */
+    /* ---- scollegato: l'annotazione non si perde, e sa come arrivare nel repo ---- */
     const before = rows().length;
-    dia.mut(dayK, t => t.add.push({ f: "banana", q: 1, m: "spuntino" }));
-    ok(rows().length === before + 1, "annotare un preset aggiunge la sua riga");
+    dia.write(dayK, { kind: "add", meal: "spuntino", food_id: "banana", qty: 1 });
+    ok(rows().length === before + 1, "senza Worker l'annotazione resta comunque a schermo");
     const dk = dia.delta(dayK).k;
     ok(dk > 90 && dk < 130, `e sposta le kcal del giorno di quanto vale (${Math.round(dk)} per una banana)`);
-    const csv = dia.csv(dayK);
-    const line = csv.split("\n").find(l => l.startsWith(dayK + ","));
+    const line = dia.csv(dayK).split("\n").find(l => l.startsWith(dayK + ","));
     ok(!!line && line.split(",").length === 6 && line.split(",")[2] === "banana",
-      `e produce la riga di food_log.csv gia' pronta (${line || "nessuna"})`);
-    dia.mut(dayK, t => { const i = t.add.findIndex(a => a.f === "banana"); t.add.splice(i, 1); });
-    ok(rows().length === before && !dia.csv(dayK).split("\n").some(l => l.startsWith(dayK + ",")),
-      "e togliendola non resta niente ne' a schermo ne' nel CSV");
-    ok(JSON.stringify(dia.draft()) === "{}", "una bozza svuotata non resta in localStorage");
+      `e la riga per food_log.csv c'e' lo stesso (${line || "nessuna"})`);
+    ok(dia.local()[dayK] && dia.local()[dayK].length === 1,
+      "ed e' salvata in locale, non persa mentre la pagina dice di averla presa");
+    dia.reset();
+    ok(rows().length === before, "azzerando la bozza il giorno torna com'era");
+
+    /* ---- collegato: quello che parte deve essere ESATTAMENTE quello che si vede -
+       il pasto scelto, l'alimento premuto, la quantita' del preset. Prima il pasto
+       non si poteva nemmeno scegliere: il preset imponeva il suo e la ricerca
+       metteva tutto negli spuntini, quindi una cena non si poteva annotare. */
+    ok(/^https:\/\//.test(dia.api || ""), `il Worker e' configurato in pagina (${dia.api || "nessuno"})`);
+    FETCHES.length = 0;
+    dia.setState("collegato");
+    dia.meal("cena");
+    dia.render();
+    const btns = () => node.descendants().filter(n => n.tagName === "button");
+    const mealOn = node.descendants().filter(n => /(^| )on( |$)/.test(n.className || "")
+      && n.tagName === "button");
+    ok(mealOn.length === 1 && mealOn[0].textContent === "Cena",
+      `il pasto scelto e' marcato nella pulsantiera (${mealOn.map(b => b.textContent).join(",") || "nessuno"})`);
+
+    const preset = btns().find(b => (D.foodPre || []).some(p => p.n === b.textContent));
+    ok(!!preset, "i preset sono bottoni veri, premibili");
+    if (preset) {
+      const p = (D.foodPre || []).find(x => x.n === preset.textContent);
+      preset.fire("click");
+      const post = FETCHES.filter(f => f.method === "POST" && /\/api\/ops$/.test(f.url)).pop();
+      ok(!!post, "premere un preset parla col Worker");
+      if (post) {
+        ok(post.body.kind === "add" && post.body.food_id === p.f && post.body.qty === p.q,
+          `e gli manda l'alimento giusto (${post.body.food_id} ${post.body.qty})`);
+        ok(post.body.meal === "cena",
+          `nel pasto SCELTO, non in quello abituale del preset (${post.body.meal}, abituale ${p.m})`);
+        ok(post.body.day === dayK, `e nel giorno aperto (${post.body.day})`);
+        ok((post.headers["X-Vita-Key"] || "") !== undefined, "con l'intestazione della chiave");
+      }
+    }
+
+    /* correggere una quantita' deve mandare la row_key della riga base, non una
+       riga nuova: e' la differenza fra "ho corretto" e "ho mangiato il doppio" */
+    FETCHES.length = 0;
+    const base = rows().find(r => !/(^| )new( |$)/.test(r.className || ""));
+    const qtyIn = base && [...base.children].find(n => n.attrs.type === "number");
+    if (qtyIn && !qtyIn.attrs.disabled) {
+      qtyIn.value = String(Number(qtyIn.value || 0) + 7);
+      qtyIn.fire("change");
+      const post = FETCHES.filter(f => f.method === "POST").pop();
+      ok(post && post.body.kind === "set" && /\|/.test(post.body.row_key || ""),
+        `correggere una quantita' manda una correzione, non una riga nuova (${post && post.body.kind})`);
+      ok(post && post.body.row_key.split("|").length === 3,
+        `con la row_key nella forma che apply_diary_ops.py sa ritrovare (${post && post.body.row_key})`);
+    } else {
+      notes.push("info  nessuna riga correggibile sull'ultimo giorno (tutte da Cronometer)");
+    }
+
+    dia.setState("senza-chiave");
+    dia.meal("");
+    dia.reset();
     dia.close();
   }
 

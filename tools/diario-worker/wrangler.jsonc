@@ -1,0 +1,17 @@
+{
+  "name": "vita-diario",
+  "main": "src/index.js",
+  "workers_dev": true,
+  "compatibility_date": "2026-08-13",
+  "observability": { "enabled": true },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "vita-diario",
+      "database_id": "4232de15-73b4-485a-a13c-f77e1282e5e0"
+    }
+  ]
+  // I due segreti NON stanno qui: `wrangler secret put VITA_DIARY_KEY` e
+  // `wrangler secret put VITA_DIARY_ADMIN`. Il primo lo digita Michele nel diario,
+  // il secondo e' il GitHub secret che la Action usa per svuotare la casella.
+}

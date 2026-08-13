@@ -68,6 +68,18 @@ jobs:
           INTERVALS_API_KEY: ${{ secrets.INTERVALS_API_KEY }}
         run: python tools/build_vita.py --api-key "$INTERVALS_API_KEY" --sync-source
 
+      # Quello che Michele ha annotato dal diario di /vita sta nel Worker vita-diario
+      # (D1), che lo serve subito alla pagina ma non e' un registro: il registro e'
+      # food_log.csv. Qui si svuota la casella dentro il CSV, PRIMA di build_food.py,
+      # se no le righe di oggi non entrerebbero nei conti fino al giro dopo.
+      # Senza il secret lo script esce a zero senza scrivere: la pagina si rigenera
+      # comunque, che e' il comportamento giusto quando la casella non e' raggiungibile.
+      - name: Travasa le annotazioni del diario in food_log.csv
+        continue-on-error: true
+        env:
+          VITA_DIARY_ADMIN: ${{ secrets.VITA_DIARY_ADMIN }}
+        run: python tools/apply_diary_ops.py
+
       # Il cibo prima di /vita: build_vita.py inlina i CSV che questo produce.
       # La sorgente (alimenti, ricette, diario, piatti del mese) sta in tools/food/,
       # dentro questo repo — prima viveva in una repo non pubblicabile e i CSV in

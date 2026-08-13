@@ -319,6 +319,12 @@ FOODS_CSV = os.path.join(HERE, "food", "data", "foods.csv")
 RECIPES_CSV = os.path.join(HERE, "food", "data", "recipes.csv")
 FOOD_LOG_CSV = os.path.join(HERE, "food", "data", "food_log.csv")
 
+# Il Worker che riceve le annotazioni (tools/diario-worker/). Indirizzo pubblico:
+# senza la chiave, che vive nel browser di Michele e non in questo repo, l'unica
+# cosa che risponde e' /api/health.
+DIARY_API = os.environ.get("VITA_DIARY_URL",
+                           "https://vita-diario.micmer-recastello.workers.dev")
+
 # Le colonne che il diario usa davvero: nome, unita', e i macro per la stima al
 # volo. I 24 micronutrienti restano fuori — la pagina non li ricalcola in bozza,
 # li rilegge dalla build vera dopo che le righe sono state commesse.
@@ -578,6 +584,11 @@ def build_payload(raw):
         "foodCat": food_catalog,
         "foodRec": food_recipes,
         "foodPre": food_presets,
+        # L'URL del Worker che riceve le annotazioni. NON e' un segreto — e' un
+        # indirizzo pubblico, e senza la chiave non risponde niente oltre a
+        # /api/health. La chiave la digita Michele nel diario e resta nel suo
+        # browser: nel repo, che e' pubblico, non entra mai.
+        "diaryApi": DIARY_API,
         "pulled": raw["pulled"],
         "d0": d0.isoformat(),
         "n": n,
@@ -1127,6 +1138,32 @@ TEMPLATE = r"""<!DOCTYPE html>
   .d-row.edit em{color:var(--gold)}
   .d-row.new>span::after{content:" nuovo"; font-family:'IBM Plex Mono',monospace;
     font-size:.5rem; letter-spacing:.1em; text-transform:uppercase; color:var(--gold)}
+  /* lo stato del collegamento: un pallino, una riga, e la chiave se manca */
+  .dstate{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:10px 0 2px;
+    padding:8px 11px; border:1px solid var(--rule); border-radius:6px;
+    background:var(--paper-2); font-family:'IBM Plex Mono',monospace; font-size:.6rem}
+  .dstate b{color:var(--ink); font-weight:600; letter-spacing:.08em; white-space:nowrap}
+  .dstate b::before{content:"● "; color:var(--muted)}
+  .dstate.on b::before{color:var(--s3)}
+  .dstate.bad b::before{color:var(--neg)}
+  .dstate.off b::before{color:var(--gold)}
+  .dstate span{color:var(--muted); letter-spacing:.05em; flex:1 1 160px; min-width:0}
+  .dstate input{font-family:'IBM Plex Mono',monospace; font-size:.66rem; color:var(--ink);
+    background:var(--paper); border:1px solid var(--rule); border-radius:4px;
+    padding:5px 8px; flex:0 1 180px; min-width:0}
+  .dstate input:focus{outline:none; border-color:var(--gold)}
+  .dstate button{font-family:'IBM Plex Mono',monospace; font-size:.6rem; letter-spacing:.1em;
+    color:#0a0906; background:var(--gold); border:0; border-radius:4px;
+    padding:6px 12px; cursor:pointer}
+  /* in che pasto finisce quello che aggiungi */
+  .d-meal{display:flex; align-items:center; flex-wrap:wrap; gap:5px; margin:2px 0 6px}
+  .d-meal u{text-decoration:none; font-family:'IBM Plex Mono',monospace; font-size:.53rem;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-right:3px}
+  .d-meal button{font-family:'IBM Plex Mono',monospace; font-size:.58rem; color:var(--muted);
+    background:none; border:1px solid var(--rule); border-radius:99px; padding:4px 10px;
+    cursor:pointer}
+  .d-meal button:hover{color:var(--ink); border-color:var(--gold)}
+  .d-meal button.on{color:#0a0906; background:var(--gold); border-color:var(--gold)}
   .d-pre{display:flex; flex-wrap:wrap; gap:6px; margin:7px 0 2px}
   .d-pre button{font-family:'IBM Plex Mono',monospace; font-size:.62rem; color:var(--ink-soft);
     background:var(--paper-2); border:1px solid var(--rule); border-radius:99px;
@@ -4155,62 +4192,118 @@ document.getElementById("tracks").innerHTML = (D.tracks || []).map(t => `
 })();
 
 /* ============================================================== il diario
-   Il popup della giornata sa mostrare un giorno, ma ci si arriva solo colpendo
-   un punto del grafico giusto: se non sai gia' che giorno cerchi, non lo trovi.
-   Il diario e' la stessa giornata con una porta davanti — si sfoglia con le
-   frecce o con una data — e con una differenza sostanziale: **si annota**.
+   Il popup della giornata sa mostrare un giorno, ma ci si arriva solo colpendo un
+   punto del grafico giusto: se non sai gia' che giorno cerchi, non lo trovi. Il
+   diario e' la stessa giornata con una porta davanti — si sfoglia con le frecce o
+   con una data — e con una differenza sostanziale: **si annota**.
 
-   Cosa NON fa, e perche' lo dice invece di far finta: questa pagina e' un file
-   statico su GitHub Pages, non ha un server e non ha una credenziale. Non puo'
-   scrivere in `tools/food/data/food_log.csv`, che resta l'unica fonte di verita'.
-   Quindi le modifiche vivono in `localStorage` — su questo dispositivo, in questo
-   browser — e la pagina ne produce le righe CSV gia' pronte da incollare nel
-   repo. Una bozza dichiarata come tale vale piu' di una scrittura che finge di
-   essere andata a segno. */
-const DIARY_KEY = "vita.diario.v1";
+   E l'annotazione e' vera. Fino al 2026-08-13 restava in `localStorage`, cioe' su
+   un dispositivo solo, e la pagina sputava righe CSV da incollare a mano nel repo.
+   Adesso c'e' un Worker (`tools/diario-worker/`) con un D1 dietro: la pagina gli
+   parla, e quello che annoti dal telefono lo vedi dal portatile un istante dopo.
+
+   Restano DUE registri e uno solo e' la verita'. Il Worker e' una casella di posta
+   con un'ora di vita: la Action oraria la svuota dentro
+   `tools/food/data/food_log.csv`, marca le operazioni `applied`, e da quel momento
+   la pagina le legge dalla build. Per questo il diario mostra le operazioni
+   pendenti come "in arrivo" e non come pasti gia' registrati — e per questo, se il
+   Worker non risponde o la chiave non c'e', si torna alla bozza locale invece di
+   perdere quello che stai scrivendo, dicendolo. */
+const DIARY_KEY = "vita.diario.v2";      /* la v1 aveva un'altra forma: si scarta */
+const DIARY_AUTH = "vita.diario.key";
+const DIARY_API = (D.diaryApi || "").replace(/\/+$/, "");
 const diaryEl = document.getElementById("diary");
 const diaryIn = document.getElementById("diary-in");
 const MEAL_SORT = ["colazione", "spuntino", "pranzo", "merenda", "cena", "non_specificato"];
+const MEAL_PICK = ["colazione", "spuntino", "pranzo", "merenda", "cena"];
 /* i macro che la bozza sa ricalcolare da sola: sono nel catalogo inlineato.
-   I micronutrienti no — quelli tornano dalla build vera, dopo il commit. */
+   I micronutrienti no — quelli tornano dalla build vera, dopo il travaso. */
 const DELTA_KEYS = [["k", "kcal"], ["p", "protein_g"], ["c", "carb_g"],
                     ["fb", "fiber_g"], ["ft", "fat_g"]];
 
-const diaryRead = () => {
-  try { return JSON.parse(localStorage.getItem(DIARY_KEY) || "{}") || {}; }
-  catch (e) { return {}; }
-};
-const diaryWrite = d => {
-  try { localStorage.setItem(DIARY_KEY, JSON.stringify(d)); } catch (e) {}
-};
-let diaryDraft = diaryRead();
-let diaryIdx = null;      /* giorno aperto, in indice di calendario */
-let diaryQuery = "";      /* filtro della ricerca alimenti */
+const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
 
-/* Normalizza sempre: una bozza salvata da una versione precedente della pagina
-   puo' non avere tutte e tre le liste, e un `undefined.indexOf` qui dentro
-   toglierebbe la pagina intera, non solo il diario. */
-const diaryDayDraft = k => {
-  const t = diaryDraft[k] || {};
-  if (!Array.isArray(t.add)) t.add = [];
-  if (!t.set || typeof t.set !== "object") t.set = {};
-  if (!Array.isArray(t.del)) t.del = [];
-  return t;
-};
-const diaryTouched = k => {
-  const t = diaryDraft[k];
-  return !!t && (t.add.length || t.del.length || Object.keys(t.set).length);
-};
-const diaryMut = (k, fn) => {
-  const t = diaryDayDraft(k);
-  fn(t);
-  if (t.add.length || t.del.length || Object.keys(t.set).length) diaryDraft[k] = t;
-  else delete diaryDraft[k];
-  diaryWrite(diaryDraft);
-  diaryRender();
-};
+/* Le operazioni locali hanno la STESSA forma di quelle del Worker — stesso `kind`,
+   stesso `row_key` — e id negativi per distinguerle. Cosi' il disegno di una
+   giornata ha un percorso solo, collegata o no: senza, sarebbero due modi diversi
+   di calcolare la stessa cosa, e uno dei due sarebbe rimasto indietro. */
+let diaryLocal = (() => {
+  try { return JSON.parse(lsGet(DIARY_KEY) || "{}") || {}; } catch (e) { return {}; }
+})();
+let diaryAuth = lsGet(DIARY_AUTH) || "";
+let diaryRemote = {};      /* giorno -> ops del Worker */
+let diaryIdx = null;       /* giorno aperto, in indice di calendario */
+let diaryQuery = "";       /* filtro della ricerca alimenti */
+let diaryMeal = "";        /* pasto scelto per le aggiunte ("" = quello abituale) */
+let diaryState = DIARY_API ? (diaryAuth ? "provo" : "senza-chiave") : "assente";
+let diaryErr = "";
+let diaryBusy = false;
 
-/* Il nome e l'unita' di un id, che sia un alimento o una ricetta. */
+const diaryLocalOps = k => (diaryLocal[k] = diaryLocal[k] || []);
+const diaryOnline = () => diaryState === "collegato";
+const diaryOps = k => diaryOnline() ? (diaryRemote[k] || []) : (diaryLocal[k] || []);
+const diarySaveLocal = () => lsSet(DIARY_KEY, JSON.stringify(diaryLocal));
+
+/* --------------------------------------------------------------- il Worker */
+function diaryFetch(path, opts) {
+  const o = opts || {};
+  return fetch(DIARY_API + path, {
+    method: o.method || "GET",
+    headers: Object.assign({ "X-Vita-Key": diaryAuth },
+      o.body ? { "Content-Type": "application/json" } : {}),
+    body: o.body ? JSON.stringify(o.body) : undefined,
+  }).then(r => r.json().catch(() => ({})).then(b => {
+    if (!r.ok) throw new Error(b.errore || `HTTP ${r.status}`);
+    return b;
+  }));
+}
+
+function diaryLoadDay(k) {
+  if (!DIARY_API || !diaryAuth) {
+    diaryState = DIARY_API ? "senza-chiave" : "assente";
+    return Promise.resolve();
+  }
+  diaryBusy = true;
+  return diaryFetch(`/api/day/${k}`).then(b => {
+    diaryRemote[k] = b.ops || [];
+    diaryState = "collegato"; diaryErr = "";
+  }).catch(e => {
+    diaryState = /chiave/i.test(e.message) ? "chiave-rifiutata" : "scollegato";
+    diaryErr = e.message || "";
+  }).then(() => { diaryBusy = false; diaryRender(); });
+}
+
+/* Ogni scrittura passa di qui, e quando il Worker non c'e' finisce in locale invece
+   di sparire. Il caso peggiore e' un'annotazione che resta su un dispositivo solo —
+   non un'annotazione persa mentre la pagina diceva di averla presa. */
+function diaryWrite(k, op) {
+  if (!diaryOnline()) {
+    diaryLocalOps(k).push(Object.assign({ id: -Date.now() - diaryLocalOps(k).length }, op));
+    diarySaveLocal(); diaryRender();
+    return;
+  }
+  diaryBusy = true; diaryRender();
+  diaryFetch("/api/ops", { method: "POST", body: Object.assign({ day: k }, op) })
+    .then(() => diaryLoadDay(k))
+    .catch(e => { diaryErr = e.message; diaryBusy = false; diaryRender(); });
+}
+
+function diaryUndo(k, id) {
+  if (id < 0 || !diaryOnline()) {
+    const arr = diaryLocalOps(k), i = arr.findIndex(o => o.id === id);
+    if (i >= 0) arr.splice(i, 1);
+    if (!arr.length) delete diaryLocal[k];
+    diarySaveLocal(); diaryRender();
+    return;
+  }
+  diaryBusy = true; diaryRender();
+  diaryFetch(`/api/ops/${id}`, { method: "DELETE" })
+    .then(() => diaryLoadDay(k))
+    .catch(e => { diaryErr = e.message; diaryBusy = false; diaryRender(); });
+}
+
+/* ------------------------------------------------------------ il catalogo */
 function diaryLabel(fid) {
   if (fid.slice(0, 7) === "recipe:") {
     const r = (D.foodRec || {})[fid.slice(7)];
@@ -4220,9 +4313,9 @@ function diaryLabel(fid) {
   return { n: f ? f.n : fid, u: f ? f.u : "g" };
 }
 
-/* I macro di una quantita', per alimento o per ricetta (che si espande nei suoi
-   ingredienti divisi per le porzioni, esattamente come fa `expand_log` in
-   Python: una ricetta non ha valori propri, li ha i suoi ingredienti). */
+/* I macro di una quantita', per alimento o per ricetta — che si espande nei suoi
+   ingredienti divisi per le porzioni, esattamente come fa `expand_log` in Python:
+   una ricetta non ha valori propri, li hanno i suoi ingredienti. */
 function diaryMacros(fid, qty) {
   const out = { k: 0, p: 0, c: 0, fb: 0, ft: 0 };
   const add = (f, q) => {
@@ -4237,53 +4330,67 @@ function diaryMacros(fid, qty) {
   return out;
 }
 
-/* Le righe del giorno: quelle vere della build, piu' quelle della bozza, ognuna
-   con il proprio stato. Una riga base senza `f` (le giornate interamente
-   ricostruite non lo portano) resta visibile ma non modificabile: non avrebbe una
-   riga di CSV da correggere. */
+/* ------------------------------------------------------- la giornata, unita' */
+/* Le righe vere della build piu' le operazioni non ancora travasate, ognuna con il
+   proprio stato. Una riga base senza `f` — i giorni misurati con Cronometer non ne
+   hanno, e le ricostruzioni nemmeno — resta visibile ma bloccata: non esiste una
+   riga di food_log.csv da correggere, e fingere di poterlo fare sarebbe peggio che
+   dirlo. */
 function diaryRows(k) {
   let day = (D.days || {})[k];
   if (typeof day === "string") day = ((D.days || {})._p || {})[day];
-  const t = diaryDayDraft(k);
+  const ops = diaryOps(k);
+  const setOf = {}, delOf = {};
+  for (const o of ops) {
+    if (o.kind === "set") setOf[o.row_key] = o;
+    else if (o.kind === "del") delOf[o.row_key] = o;
+  }
   const rows = [];
   const meals = (day && day.meals) || {};
   for (const m of Object.keys(meals)) {
-    (meals[m] || []).forEach((it, j) => {
-      const id = `${m}|${it.f || it.n}|${j}`;
-      const q = t.set[id] !== undefined ? t.set[id] : it.qn;
+    const nth = {};
+    (meals[m] || []).forEach(it => {
+      const fid = it.f || "";
+      /* l'ordinale conta le righe con quello STESSO food_id dentro il pasto: e'
+         la chiave che apply_diary_ops.py ricostruisce sul CSV, dove le righe di
+         alimenti diversi stanno mescolate */
+      const j = nth[fid] = (nth[fid] === undefined ? 0 : nth[fid] + 1);
+      const id = `${m}|${fid || it.n}|${j}`;
+      const s = setOf[id], d = delOf[id];
+      const q = s ? s.qty : it.qn;
       rows.push({ id, meal: m, f: it.f || null, n: it.n, base: it.qn, q,
                   kcal: it.qn ? Math.round(it.kcal * q / it.qn) : it.kcal,
                   asm: !!it.a, recipe: it.r || "",
-                  gone: t.del.indexOf(id) >= 0,
-                  edited: t.set[id] !== undefined && t.set[id] !== it.qn,
-                  fresh: false, locked: !it.f });
+                  gone: !!d, goneOp: d ? d.id : null,
+                  edited: !!s && s.qty !== it.qn, setOp: s ? s.id : null,
+                  fresh: false, opId: null, locked: !it.f });
     });
   }
-  t.add.forEach((a, j) => {
-    const lab = diaryLabel(a.f);
-    rows.push({ id: `+|${j}`, meal: a.m, f: a.f, n: lab.n, base: a.q, q: a.q,
-                kcal: Math.round(diaryMacros(a.f, a.q).k), asm: false, recipe: "",
-                gone: false, edited: false, fresh: true, locked: false });
-  });
+  for (const o of ops) {
+    if (o.kind !== "add") continue;
+    const lab = diaryLabel(o.food_id);
+    rows.push({ id: `+${o.id}`, meal: o.meal || "spuntino", f: o.food_id, n: lab.n,
+                base: o.qty, q: o.qty, kcal: Math.round(diaryMacros(o.food_id, o.qty).k),
+                asm: false, recipe: "", gone: false, edited: false,
+                fresh: true, opId: o.id, locked: false });
+  }
   const rank = m => { const i = MEAL_SORT.indexOf(m); return i < 0 ? MEAL_SORT.length : i; };
   rows.sort((a, b) => rank(a.meal) - rank(b.meal));
   return { day, rows };
 }
 
-/* Quanto la bozza sposta i totali del giorno. Si lavora per DIFFERENZE e non
+/* Quanto le operazioni spostano i totali. Si lavora per DIFFERENZE e non
    ricalcolando tutto da capo: i totali veri escono dalla pipeline in Python, con
-   dentro i 24 micronutrienti che il catalogo qui non porta. Sommare una delta a
-   un totale vero e' onesto; rifare il totale con meta' dei dati non lo sarebbe. */
+   dentro i 24 micronutrienti che il catalogo qui non porta. Sommare una delta a un
+   totale vero e' onesto; rifare il totale con meta' dei dati non lo sarebbe. */
 function diaryDelta(k) {
-  const t = diaryDayDraft(k);
   const d = { k: 0, p: 0, c: 0, fb: 0, ft: 0 };
   const acc = (fid, q, sign) => {
-    if (!fid) return;
+    if (!fid || !isFinite(q)) return;
     const m = diaryMacros(fid, q);
     for (const [key] of DELTA_KEYS) d[key] += sign * m[key];
   };
-  const { rows } = diaryRows(k);
-  for (const r of rows) {
+  for (const r of diaryRows(k).rows) {
     if (r.fresh) acc(r.f, r.q, +1);
     else if (r.gone) acc(r.f, r.base, -1);
     else if (r.edited) acc(r.f, r.q - r.base, +1);
@@ -4291,37 +4398,49 @@ function diaryDelta(k) {
   return d;
 }
 
+/* Le righe CSV: non servono piu' a incollarle a mano quando si e' collegati — le
+   travasa la Action — ma restano la via d'uscita quando il Worker non risponde e
+   l'annotazione e' rimasta su questo dispositivo. */
 function diaryCsv(k) {
-  const t = diaryDayDraft(k);
-  const { rows } = diaryRows(k);
-  const out = [`# vita · diario ${k} — bozza locale, non ancora nel repo`];
+  const rows = diaryRows(k).rows;
+  const out = [`# vita · diario ${k}`];
   const adds = rows.filter(r => r.fresh);
   if (adds.length) {
     out.push("# righe da aggiungere in coda a tools/food/data/food_log.csv:");
     for (const r of adds)
-      out.push(`${k},${r.meal},${r.f},${+r.q.toFixed(4)},annotato dal diario di /vita,dichiarato`);
+      out.push(`${k},${r.meal},${r.f},${+(+r.q).toFixed(4)},annotato dal diario di /vita,dichiarato`);
   }
   const edits = rows.filter(r => r.edited && !r.gone);
   if (edits.length) {
     out.push("# quantita' da correggere su righe che esistono gia':");
     for (const r of edits)
-      out.push(`# correggi ${k} ${r.meal} ${r.f}: ${+r.base} -> ${+r.q.toFixed(4)}`);
+      out.push(`# correggi ${k} ${r.meal} ${r.f}: ${+r.base} -> ${+(+r.q).toFixed(4)}`);
   }
   const gone = rows.filter(r => r.gone);
   if (gone.length) {
     out.push("# righe da togliere:");
-    for (const r of gone)
-      out.push(`# rimuovi ${k} ${r.meal} ${r.f} (${+r.base})`);
+    for (const r of gone) out.push(`# rimuovi ${k} ${r.meal} ${r.f} (${+r.base})`);
   }
   if (out.length === 1) out.push("# nessuna modifica su questo giorno.");
   return out.join("\n");
 }
 
+/* ----------------------------------------------------------------- disegno */
+const DIARY_SAY = {
+  "collegato":        ["on",  "collegato", "quello che annoti qui entra in food_log.csv entro l'ora"],
+  "provo":            ["",    "mi collego…", ""],
+  "senza-chiave":     ["off", "non collegato", "incolla la chiave e le annotazioni diventano vere"],
+  "chiave-rifiutata": ["bad", "chiave rifiutata", "il Worker non la riconosce"],
+  "scollegato":       ["bad", "Worker non raggiungibile", "le annotazioni restano su questo dispositivo"],
+  "assente":          ["off", "nessun Worker configurato", "le annotazioni restano su questo dispositivo"],
+};
+
 function diaryRender() {
   if (diaryIdx === null) return;
   const i = diaryIdx, k = isoOf(i);
   const { day, rows } = diaryRows(k);
-  const dirty = diaryTouched(k);
+  const ops = diaryOps(k);
+  const dirty = ops.length > 0;
   diaryIn.innerHTML = "";
 
   const x = mk("button", "sheet-x", diaryIn, "×");
@@ -4330,31 +4449,50 @@ function diaryRender() {
   x.addEventListener("click", closeDiary);
 
   const hd = mk("div", "sheet-hd", diaryIn);
-  mk("div", "when", hd, DOW[(dayDate(i).getDay() + 6) % 7] + (dirty ? " · bozza aperta" : ""));
+  mk("div", "when", hd, DOW[(dayDate(i).getDay() + 6) % 7]
+    + (dirty ? ` · ${ops.length} in arrivo` : ""));
   mk("h3", null, hd, fmtDate(i)).setAttribute("id", "diary-t");
 
   /* ---- navigazione ---- */
   const nav = mk("div", "dnav", diaryIn);
-  const step = n => { const j = i + n; if (j >= 0 && j < N) { diaryIdx = j; diaryRender(); } };
+  const go = j => { if (j !== null && j >= 0 && j < N) { diaryIdx = j; diaryRender(); diaryLoadDay(isoOf(j)); } };
   const prev = mk("button", null, nav, "‹ giorno prima");
   prev.setAttribute("type", "button");
-  prev.addEventListener("click", () => step(-1));
+  prev.addEventListener("click", () => go(i - 1));
   const picker = mk("input", null, nav);
   picker.setAttribute("type", "date");
   picker.value = k;
-  picker.addEventListener("change", () => {
-    const j = diaryIdxOf(picker.value);
-    if (j !== null) { diaryIdx = j; diaryRender(); }
-  });
+  picker.addEventListener("change", () => go(diaryIdxOf(picker.value)));
   const next = mk("button", null, nav, "giorno dopo ›");
   next.setAttribute("type", "button");
-  next.addEventListener("click", () => step(1));
+  next.addEventListener("click", () => go(i + 1));
   mk("span", "grow", nav);
-  const today = mk("button", null, nav, "ultimo giorno");
-  today.setAttribute("type", "button");
-  today.addEventListener("click", () => { diaryIdx = N - 1; diaryRender(); });
+  const last = mk("button", null, nav, "ultimo giorno");
+  last.setAttribute("type", "button");
+  last.addEventListener("click", () => go(N - 1));
 
-  /* ---- le misure del giorno, le stesse del popup ---- */
+  /* ---- stato del collegamento ---- */
+  const say = DIARY_SAY[diaryState] || DIARY_SAY["scollegato"];
+  const st = mk("div", "dstate " + say[0], diaryIn);
+  mk("b", null, st, diaryBusy ? "…" : say[1]);
+  mk("span", null, st, diaryErr && say[0] === "bad" ? `${say[2]} — ${diaryErr}` : say[2]);
+  if (DIARY_API && diaryState !== "collegato") {
+    const kin = mk("input", null, st);
+    kin.setAttribute("type", "password");
+    kin.setAttribute("placeholder", "chiave del diario");
+    kin.setAttribute("aria-label", "Chiave del diario");
+    kin.value = diaryAuth;
+    const use = mk("button", null, st, "collega");
+    use.setAttribute("type", "button");
+    use.addEventListener("click", () => {
+      diaryAuth = (kin.value || "").trim();
+      lsSet(DIARY_AUTH, diaryAuth);
+      diaryState = diaryAuth ? "provo" : "senza-chiave";
+      diaryRender(); diaryLoadDay(k);
+    });
+  }
+
+  /* ---- le misure del giorno ---- */
   const kv = [];
   const push = (v, l) => { if (v !== null && v !== undefined) kv.push([v, l]); };
   push(D.sleep[i] === null ? null : hhmm(D.sleep[i]), "sonno");
@@ -4364,9 +4502,9 @@ function diaryRender() {
   push(D.steps[i] === null ? null : nf(D.steps[i]), "passi");
   push(D.weight[i] === null ? null : nf(D.weight[i], 1) + " kg", "peso");
   push(D.ctl[i] === null ? null : nf(D.ctl[i], 0), "fitness");
-  let tss = 0, acts = 0;
-  D.acts.forEach(a => { if (a[0] === i) { acts++; tss += a[5] || 0; } });
-  if (acts) push(nf(tss, 0), acts === 1 ? "tss · 1 uscita" : `tss · ${acts} uscite`);
+  let tss = 0, nact = 0;
+  D.acts.forEach(a => { if (a[0] === i) { nact++; tss += a[5] || 0; } });
+  if (nact) push(nf(tss, 0), nact === 1 ? "tss · 1 uscita" : `tss · ${nact} uscite`);
   if (kv.length) {
     mk("h4", null, diaryIn, "Corpo");
     const box = mk("div", "kv", diaryIn);
@@ -4380,25 +4518,23 @@ function diaryRender() {
   /* ---- la tavola, riga per riga ---- */
   const dl = diaryDelta(k);
   const baseK = day && day.tot ? day.tot.kcal : 0;
-  const head = `Tavola — ${nf(baseK + dl.k)} kcal` +
-    (dirty ? ` · ${dl.k >= 0 ? "+" : ""}${nf(dl.k)} in bozza` : "") +
-    (day && day.asm ? ` · ${nf(Math.round(100 * day.obs / (day.obs + day.asm)))}% osservato` : "");
-  mk("h4", null, diaryIn, head);
+  mk("h4", null, diaryIn, `Tavola — ${nf(baseK + dl.k)} kcal`
+    + (dirty ? ` · ${dl.k >= 0 ? "+" : ""}${nf(dl.k)} in arrivo` : "")
+    + (day && day.asm ? ` · ${nf(Math.round(100 * day.obs / (day.obs + day.asm)))}% osservato` : ""));
 
   if (!rows.length) {
     mk("p", "d-empty", diaryIn, "Nessun pasto per questo giorno. Aggiungine uno qui sotto.");
   } else {
-    let cur = null, ul = null;
+    let cur = null, box = null;
     for (const r of rows) {
       if (r.meal !== cur) {
         cur = r.meal;
-        const wrap = mk("div", "meal", diaryIn);
-        mk("div", "mname", wrap, MEAL_IT[cur] || cur);
-        ul = wrap;
+        box = mk("div", "meal", diaryIn);
+        mk("div", "mname", box, MEAL_IT[cur] || cur);
       }
       const cls = ["d-row", r.asm ? "asm" : "", r.gone ? "gone" : "",
                    r.edited ? "edit" : "", r.fresh ? "new" : ""].filter(Boolean).join(" ");
-      const row = mk("div", cls, ul);
+      const row = mk("div", cls, box);
       mk("span", null, row, r.n + (r.recipe ? ` · ${r.recipe}` : ""));
       const inp = mk("input", null, row);
       inp.setAttribute("type", "number");
@@ -4409,28 +4545,32 @@ function diaryRender() {
       if (r.locked || r.gone) inp.setAttribute("disabled", "disabled");
       inp.addEventListener("change", () => {
         const v = parseFloat(inp.value);
-        if (!isFinite(v) || v < 0) return;
-        diaryMut(k, t2 => {
-          if (r.fresh) { const j = +r.id.split("|")[1]; if (t2.add[j]) t2.add[j].q = v; }
-          else if (v === r.base) delete t2.set[r.id];
-          else t2.set[r.id] = v;
-        });
+        if (!isFinite(v) || v < 0 || v === r.q) return;
+        if (r.fresh) {
+          /* una riga ancora in arrivo si riscrive: si toglie e si rimette, che e'
+             anche l'unica cosa che il Worker sa fare su una `add` */
+          diaryUndo(k, r.opId);
+          diaryWrite(k, { kind: "add", meal: r.meal, food_id: r.f, qty: v });
+        } else if (v === r.base && r.setOp !== null) {
+          diaryUndo(k, r.setOp);
+        } else {
+          diaryWrite(k, { kind: "set", row_key: r.id, food_id: r.f, qty: v });
+        }
       });
-      const lab = r.f ? diaryLabel(r.f) : { u: "" };
-      mk("em", null, row, `${lab.u === "unit" ? "×" : lab.u} · ${nf(r.kcal)} kcal`);
+      mk("em", null, row, `${unitOf(r.f) === "unit" ? "×" : unitOf(r.f)} · ${nf(r.kcal)} kcal`);
       const del = mk("button", null, row, r.gone ? "↺" : "×");
       del.setAttribute("type", "button");
       del.setAttribute("aria-label", r.gone ? `Rimetti ${r.n}` : `Togli ${r.n}`);
       if (r.locked) del.setAttribute("disabled", "disabled");
-      else del.addEventListener("click", () => diaryMut(k, t2 => {
-        if (r.fresh) { const j = +r.id.split("|")[1]; t2.add.splice(j, 1); return; }
-        const at = t2.del.indexOf(r.id);
-        if (at >= 0) t2.del.splice(at, 1); else t2.del.push(r.id);
-      }));
+      else del.addEventListener("click", () => {
+        if (r.fresh) diaryUndo(k, r.opId);
+        else if (r.gone) diaryUndo(k, r.goneOp);
+        else diaryWrite(k, { kind: "del", row_key: r.id, food_id: r.f });
+      });
     }
   }
 
-  /* ---- i macro, con la bozza gia' dentro ---- */
+  /* ---- i macro, con quello che sta arrivando gia' dentro ---- */
   if (day && day.pct) {
     const P = D.foodProfile || {}, rda = (P.rda || {});
     const need = { protein_g: P.weight_kg && P.protein_g_per_kg ? P.weight_kg * P.protein_g_per_kg : null,
@@ -4442,22 +4582,37 @@ function diaryRender() {
       if (nut === "kcal" || day.pct[nut] === undefined) continue;
       const basis = need[nut] || (day.tot[nut] && day.pct[nut]
         ? day.tot[nut] * 100 / day.pct[nut] : null);
-      const pct = basis ? 100 * ((day.tot[nut] || 0) + dl[key]) / basis : day.pct[nut];
-      html.push(bar(NUTRI_IT[nut] || nut, pct));
+      html.push(bar(NUTRI_IT[nut] || nut,
+        basis ? 100 * ((day.tot[nut] || 0) + dl[key]) / basis : day.pct[nut]));
     }
     bars.innerHTML = html.join("");
   }
 
   /* ---- annota ---- */
-  mk("h4", null, diaryIn, "Annota — i tuoi soliti");
+  mk("h4", null, diaryIn, "Annota");
+  /* In che pasto finisce quello che aggiungi. Prima non si poteva scegliere: il
+     preset imponeva il proprio pasto abituale e la ricerca metteva tutto negli
+     spuntini, il che rendeva il diario inutile per la cena. "abituale" resta il
+     default perche' nove volte su dieci e' giusto. */
+  const mp = mk("div", "d-meal", diaryIn);
+  mk("u", null, mp, "in");
+  const mealBtn = (val, label) => {
+    const b = mk("button", diaryMeal === val ? "on" : null, mp, label);
+    b.setAttribute("type", "button");
+    b.setAttribute("aria-pressed", diaryMeal === val ? "true" : "false");
+    b.addEventListener("click", () => { diaryMeal = val; diaryRender(); });
+  };
+  mealBtn("", "abituale");
+  for (const m of MEAL_PICK) mealBtn(m, MEAL_IT[m] || m);
+
   const pre = mk("div", "d-pre", diaryIn);
   for (const p of (D.foodPre || []).slice(0, 18)) {
     const b = mk("button", null, pre);
     b.setAttribute("type", "button");
     b.textContent = p.n;
     mk("b", null, b, `${+p.q}${diaryLabel(p.f).u === "unit" ? "×" : ""}`);
-    b.addEventListener("click", () => diaryMut(k, t2 =>
-      t2.add.push({ f: p.f, q: p.q, m: p.m })));
+    b.addEventListener("click", () => diaryWrite(k,
+      { kind: "add", meal: diaryMeal || p.m, food_id: p.f, qty: p.q }));
   }
   const search = mk("input", "d-search", diaryIn);
   search.setAttribute("type", "search");
@@ -4476,41 +4631,36 @@ function diaryRender() {
       const b = mk("button", null, hits);
       b.setAttribute("type", "button");
       b.textContent = cat[f].n;
-      mk("b", null, b, cat[f].u === "unit" ? "1×" : "100 " + cat[f].u);
-      b.addEventListener("click", () => diaryMut(k, t2 =>
-        t2.add.push({ f, q: cat[f].u === "unit" ? 1 : 100, m: "spuntino" })));
+      const unit = cat[f].u === "unit";
+      mk("b", null, b, unit ? "1×" : "100 " + cat[f].u);
+      b.addEventListener("click", () => diaryWrite(k,
+        { kind: "add", meal: diaryMeal || "spuntino", food_id: f, qty: unit ? 1 : 100 }));
     }
   }
 
-  /* ---- cosa portarsi via ---- */
-  mk("h4", null, diaryIn, dirty ? "Le righe da mettere nel repo" : "Righe");
-  const out = mk("textarea", "d-out", diaryIn);
-  out.setAttribute("readonly", "readonly");
-  out.setAttribute("aria-label", "Righe CSV di questa giornata");
-  /* prima il contenuto, poi `value`: su una textarea scrivere `textContent` dopo
-     rimette il valore di default e cancellerebbe quello appena messo */
-  out.textContent = diaryCsv(k);
-  out.value = out.textContent;
-  const acts2 = mk("div", "d-acts", diaryIn);
-  const copy = mk("button", "d-act", acts2, "Copia");
-  copy.setAttribute("type", "button");
-  copy.addEventListener("click", () => {
-    const txt = diaryCsv(k);
-    if (typeof navigator !== "undefined" && navigator.clipboard)
-      navigator.clipboard.writeText(txt).then(() => { copy.textContent = "Copiato"; }, () => {});
-  });
-  if (dirty) {
-    const wipe = mk("button", "d-act", acts2, "Scarta la bozza del giorno");
-    wipe.setAttribute("type", "button");
-    wipe.addEventListener("click", () => diaryMut(k, t2 => {
-      t2.add = []; t2.set = {}; t2.del = [];
-    }));
+  /* ---- la via d'uscita, quando il Worker non c'e' ---- */
+  if (!diaryOnline() && dirty) {
+    mk("h4", null, diaryIn, "Le righe da mettere nel repo a mano");
+    const out = mk("textarea", "d-out", diaryIn);
+    out.setAttribute("readonly", "readonly");
+    out.setAttribute("aria-label", "Righe CSV di questa giornata");
+    out.textContent = diaryCsv(k);
+    out.value = out.textContent;
+    const acts = mk("div", "d-acts", diaryIn);
+    const copy = mk("button", "d-act", acts, "Copia");
+    copy.setAttribute("type", "button");
+    copy.addEventListener("click", () => {
+      if (typeof navigator !== "undefined" && navigator.clipboard)
+        navigator.clipboard.writeText(diaryCsv(k)).then(() => { copy.textContent = "Copiato"; }, () => {});
+    });
   }
-  const days = Object.keys(diaryDraft).length;
-  mk("p", "hint", diaryIn, dirty || days
-    ? `Bozza locale su ${days} giorn${days === 1 ? "o" : "i"}: vive in questo browser, non nel repo. ` +
-      "La fonte di verità resta tools/food/data/food_log.csv — incolla lì le righe qui sopra."
-    : "Questa pagina non scrive nel repo: quello che annoti qui esce come righe CSV da portare in tools/food/data/food_log.csv.");
+
+  const pend = Object.keys(diaryLocal).length;
+  mk("p", "hint", diaryIn, diaryOnline()
+    ? "Le annotazioni vivono nel Worker finché la build oraria non le porta in "
+      + "tools/food/data/food_log.csv, che resta l'unico registro."
+    : `Non collegato: ${pend ? `bozza su ${pend} giorn${pend === 1 ? "o" : "i"}, ` : ""}`
+      + "tutto resta su questo dispositivo e non entra nel repo da solo.");
 }
 
 function diaryIdxOf(iso) {
@@ -4521,22 +4671,20 @@ function diaryIdxOf(iso) {
   return j >= 0 && j < N ? j : null;
 }
 
-/* Si apre sull'ultimo giorno che ha davvero del cibo: aprire su una giornata
-   vuota farebbe sembrare rotto un diario che invece e' solo in pari. */
+/* Si apre sull'ultimo giorno che ha davvero del cibo: aprire su una giornata vuota
+   farebbe sembrare rotto un diario che invece e' solo in pari. */
 function diaryLastWithFood() {
-  for (let i = N - 1; i >= 0 && i > N - 400; i--) {
-    const d = (D.days || {})[isoOf(i)];
-    if (d) return i;
-  }
+  for (let i = N - 1; i >= 0 && i > N - 400; i--) if ((D.days || {})[isoOf(i)]) return i;
   return N - 1;
 }
 
 function openDiary(i) {
-  diaryDraft = diaryRead();
-  diaryIdx = i === undefined || i === null ? diaryLastWithFood() : Math.max(0, Math.min(N - 1, i));
+  diaryIdx = i === undefined || i === null ? diaryLastWithFood()
+    : Math.max(0, Math.min(N - 1, i));
   diaryRender();
   diaryEl.classList.add("on");
   document.body.style.overflow = "hidden";
+  diaryLoadDay(isoOf(diaryIdx));
 }
 function closeDiary() {
   diaryEl.classList.remove("on");
@@ -4547,11 +4695,15 @@ diaryEl.addEventListener("click", ev => { if (ev.target === diaryEl) closeDiary(
 addEventListener("keydown", ev => { if (ev.key === "Escape" && diaryIdx !== null) closeDiary(); });
 document.getElementById("diary-btn").addEventListener("click", () => openDiary());
 window.openDiary = openDiary;
-window.CRUSCOTTO.diary = { open:openDiary, close:closeDiary, render:diaryRender,
-  rows:diaryRows, csv:diaryCsv, delta:diaryDelta, macros:diaryMacros, idxOf:diaryIdxOf,
-  iso:isoOf, lastWithFood:diaryLastWithFood, node:diaryIn,
-  draft:() => diaryDraft, mut:(k, fn) => diaryMut(k, fn),
-  reset:() => { diaryDraft = {}; diaryWrite(diaryDraft); if (diaryIdx !== null) diaryRender(); } };
+window.CRUSCOTTO.diary = {
+  open:openDiary, close:closeDiary, render:diaryRender, rows:diaryRows, csv:diaryCsv,
+  delta:diaryDelta, macros:diaryMacros, idxOf:diaryIdxOf, iso:isoOf,
+  lastWithFood:diaryLastWithFood, node:diaryIn, api:DIARY_API,
+  ops:diaryOps, write:(k, op) => diaryWrite(k, op), undo:(k, id) => diaryUndo(k, id),
+  state:() => diaryState, setState:s => { diaryState = s; }, local:() => diaryLocal,
+  meal:m => { diaryMeal = m; }, search:s => { diaryQuery = s; },
+  reset:() => { diaryLocal = {}; diaryRemote = {}; diarySaveLocal(); if (diaryIdx !== null) diaryRender(); },
+};
 
 drawAll();
 let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawAll, 160); });

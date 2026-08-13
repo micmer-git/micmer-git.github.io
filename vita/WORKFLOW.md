@@ -66,16 +66,35 @@ This file is the durable handoff for every agent working on `/vita`.
 - The button under the fortnight averages opens `#diary`, the same day the chart
   popup shows but reachable without knowing which point to click: arrows, a date
   picker, and a jump to the last day. It lists the body measures, every food row
-  of that day, the macro coverage, and a preset palette.
-- It is **not** a writer. `/vita` is a static file on GitHub Pages with no server
-  and no credential, so edits live in `localStorage` under `vita.diario.v1` and
-  the page emits ready-made `food_log.csv` lines to paste into the repo. Never
-  present a draft as if it had landed: `tools/food/data/food_log.csv` remains the
-  only source of truth, and a day is only really logged once it is committed.
+  of that day, the macro coverage, a meal picker and a preset palette.
+- **It writes.** `tools/diario-worker/` is a Cloudflare Worker over a D1 database:
+  the page posts what Michele annotates, and serves it back on any device a moment
+  later. The `vita-diario` D1 is a **mailbox with an hour to live**, not a second
+  register — the hourly Action runs `tools/apply_diary_ops.py`, which drains it
+  into `tools/food/data/food_log.csv` and marks the ops `applied`. From that
+  moment the page reads them from the build, so nothing is counted twice. The CSV
+  remains the only source of truth; never present a pending op as a logged meal.
+- Three op kinds: `add` (a new row, appended to the CSV), `set` (correct a
+  quantity) and `del` (drop a row). `set` and `del` carry a `row_key` shaped
+  `<meal>|<food_id>|<ordinal>`, where the ordinal counts rows with that same
+  `food_id` inside that meal, in file order. `apply_diary_ops.py` rebuilds the
+  same ordering over the CSV. A `row_key` that matches nothing in `food_log.csv` —
+  a `fill_defaults.py` reconstruction, a Cronometer row — is **skipped and
+  reported**, never forced: correcting a reconstruction would write into the diary
+  something Michele never said.
+- Two secrets, on purpose. `VITA_DIARY_KEY` is typed by Michele into the diary and
+  lives in his browser's `localStorage`; `VITA_DIARY_ADMIN` is the GitHub repo
+  secret the Action uses to drain the mailbox. The browser key must never be able
+  to mark ops as already in the repo. Neither belongs in this public repository.
+- If the Worker is unreachable or no key is set, the diary falls back to a local
+  draft (`vita.diario.v2`) and **says so** in the status line, still offering the
+  CSV lines to carry over by hand. Losing an annotation while the page pretends to
+  have taken it is the one outcome worth engineering against.
 - Presets are **not** a hand-written list. `build_food_catalog()` in
   `tools/build_vita.py` reads `food_log.csv` and ships the 28 most frequently
   logged ids with their most common quantity and meal slot, so the palette tracks
-  Michele's actual habits and cannot silently go stale.
+  Michele's actual habits and cannot silently go stale. The meal picker overrides
+  the preset's usual slot — without it a dinner could not be annotated at all.
 - The payload carries three new keys for it: `foodCat` (per-unit macros for every
   food, from `foods.csv`), `foodRec` (recipes, so one row can be an avocado toast
   instead of three ingredients) and `foodPre` (the presets). Drafts recompute

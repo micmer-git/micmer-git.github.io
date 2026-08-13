@@ -6,6 +6,13 @@ dist/
 tools/.intervals_key
 __pycache__/
 
+# Le chiavi del Worker del diario. Il repo e' PUBBLICO: chi le avesse potrebbe
+# scrivere nel diario di Michele. Le copie vere stanno nei secret del Worker,
+# nei secret del repo su GitHub, e in agents/secrets/api-keys.md.
+tools/diario-worker/.dev.vars
+tools/diario-worker/node_modules/
+.wrangler/
+
 # build_top20.py: cache locale degli stream Intervals (si riscarica da sola)
 tools/.cache_streams/
 # build_cruscotto.py: la pull grezza di wellness + attivita' (si riscarica da sola,
