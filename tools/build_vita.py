@@ -102,6 +102,11 @@ METAB = os.path.join(FOOD_DATA, "metabolismo.csv")
 # nasce un riquadro nuovo si aggiunge la sua colonna qui — non il contrario.
 METAB_COLS = ("temp_c", "temp_min_c", "temp_max_c",
               "fatmax_hr", "fatmax_lo_hr", "fatmax_hi_hr", "fatmax_min",
+              # i grammi: il modello li stima per giornata, e per giornata non si
+              # confrontano — due ore e venti minuti fanno grammi diversi senza che
+              # sia cambiato niente. La pagina li divide per `train_min` e disegna
+              # il TASSO, g/min, che e' la grandezza di cui parla la letteratura.
+              "fat_g_est", "train_min", "mfo_g_min", "cho_pct_60d",
               "mm", "mm_n")
 
 # The athlete. Intervals.icu also accepts "0" for "whoever owns the key", but the
@@ -447,9 +452,17 @@ def build_payload(raw):
             load_i0 = i
             break
 
-    # activities -> [dayIdx, sport, movingSecs, metres, gainMetres, load]
+    # activities -> [dayIdx, sport, movingSecs, metres, gainMetres, load, backfill,
+    #                hr, gapCentesimi, tempDecimi]
     # piu' una lista parallela di nomi/id: il popup della giornata apre le attivita'
     # con il loro nome vero e il link a Intervals, e "Morning Ride" non e' un nome.
+    #
+    # Le tre code servono ai riquadri "passo contro battito": la domanda "come varia
+    # la mia capacita' di ossidare grassi" si guarda per ATTIVITA', non per giorno —
+    # una giornata con un lungo e una sgambata ha una media che non e' successa. Il
+    # passo e' il GAP di Intervals (grade adjusted pace, m/s): senza correzione della
+    # pendenza un'uscita in salita e una in piano non sono confrontabili, ed e' tutto
+    # il punto. Zero = non misurato; non c'e' nessun caso reale con FC o passo a zero.
     arows, anames, act_days = [], [], set()
     for a in acts:
         sd = (a.get("start_date_local") or "")[:10]
@@ -457,6 +470,7 @@ def build_payload(raw):
             # an activity outside the wellness calendar cannot be placed on the axis
             continue
         i = idx[sd]
+        indoor = bool(a.get("trainer")) or a.get("type") in ("VirtualRide", "VirtualRun")
         arows.append([
             i,
             SPORT_OF.get(a.get("type") or "", 3),
@@ -466,6 +480,10 @@ def build_payload(raw):
             int(round(a.get("icu_training_load") or 0)),
             # 1 = attività ricostruita dall'export Strava, carico stimato non misurato
             1 if a.get("_backfill") else 0,
+            int(round(a.get("average_heartrate") or 0)),
+            int(round((a.get("gap") or 0) * 100)),
+            # il termometro dell'orologio, e solo all'aperto: dentro misura il garage
+            int(round((a.get("average_temp") or 0) * 10)) if not indoor else 0,
         ])
         anames.append([a.get("name") or "", a.get("id") or "",
                        a.get("strava_id") or ""])
@@ -954,8 +972,6 @@ TEMPLATE = r"""<!DOCTYPE html>
     font-variant-numeric:tabular-nums; color:var(--gold); line-height:1.15; margin-top:3px}
   .t-now small{display:block; font-size:.55rem; letter-spacing:.1em;
     text-transform:uppercase; color:var(--muted); font-weight:400; margin-top:1px}
-  .t-cap{font-family:'IBM Plex Mono',monospace; font-size:.55rem; letter-spacing:.08em;
-    text-transform:uppercase; color:var(--muted); margin-top:2px; line-height:1.45}
   .t-legend{display:flex; gap:9px; flex-wrap:wrap; margin:3px 0 0;
     font-family:'IBM Plex Mono',monospace; font-size:.54rem; letter-spacing:.06em;
     text-transform:uppercase; color:var(--ink-soft)}
@@ -979,6 +995,11 @@ TEMPLATE = r"""<!DOCTYPE html>
   details.data summary::before{content:"▸ "; }
   details.data[open] summary::before{content:"▾ "; }
   details.data summary:hover{color:var(--ink-soft)}
+  /* la didascalia sta qui dentro, non sotto il titolo: si legge quando si vuole */
+  .d-cap{font-family:'IBM Plex Mono',monospace; font-size:.56rem; letter-spacing:.06em;
+    color:var(--ink-soft); margin:6px 0 0; line-height:1.5}
+  .d-cap:empty{display:none}
+  .d-cap b{color:var(--muted); font-weight:500}
   table.fallback{width:100%; border-collapse:collapse; margin-top:6px; font-size:.72rem;
     font-family:'IBM Plex Mono',monospace; font-variant-numeric:tabular-nums}
   table.fallback th,table.fallback td{text-align:right; padding:2px 0 2px 8px;
@@ -1201,7 +1222,6 @@ TEMPLATE = r"""<!DOCTYPE html>
       gap:10px; flex-wrap:wrap}
     .t-now{font-size:1rem; margin-top:0; text-align:right}
     .t-now small{display:inline; margin-left:5px}
-    .t-cap{flex-basis:100%; margin-top:0}
   }
   @media(max-width:560px){
     body{padding:26px 11px 64px; font-size:17px}
@@ -1279,17 +1299,19 @@ TEMPLATE = r"""<!DOCTYPE html>
 <p class="band-sub">Cosa dice il cuore al mattino, prima che cominci qualsiasi cosa.</p>
 <main class="panel" id="panel-recupero"></main>
 
-<h2 class="band">Corpo</h2>
-<p class="band-sub">Poche misure, prese di rado: nuvole di punti con la loro tendenza.</p>
-<main class="panel" id="panel-corpo"></main>
-
 <h2 class="band">Metabolismo</h2>
-<p class="band-sub">Un sensore vero letto nel posto sbagliato, e tre modelli.
+<p class="band-sub">Un sensore vero letto nel posto sbagliato, tre modelli, e due misure.
 La temperatura è quella dell'<strong>orologio al polso durante l'uscita</strong>: aria
 scaldata da un corpo, non meteo. FatMax, heat strain e momento metabolico sono
 <strong>costruiti</strong> — ognuno dichiara la propria formula o la propria fonte, perché
 su un grafico un numero misurato e un numero calcolato hanno esattamente lo stesso
-aspetto.</p>
+aspetto.<br>
+La domanda vera qui sotto è una sola: <strong>la capacità di bruciare grassi si
+sposta?</strong> Misurarla vorrebbe dire una maschera metabolica e un test a gradini, che
+non esistono in questo archivio — i grammi al minuto restano una stima, con il suo ±40 %.
+Quello che invece è misurato ogni giorno è <strong>quanto si va forte a parità di
+battito</strong>: il passo corretto per la pendenza contro la frequenza cardiaca, una
+corsa alla volta. Non è la stessa cosa, ed è la cosa più vicina che ci sia.</p>
 <main class="panel" id="panel-metabolismo"></main>
 
 <h2 class="band">Volume</h2>
@@ -1301,7 +1323,9 @@ aspetto.</p>
 quadrati e <em>r</em> è la correlazione. Il risultato onesto di questa sezione è che
 sono <strong>tutte vicine a zero</strong>: niente di quello che l'orologio misura al
 mattino sa dire cosa è successo il giorno prima. Le nuvole sono qui apposta — una
-correlazione nulla si vede solo se la si disegna.</p>
+correlazione nulla si vede solo se la si disegna. In fondo stanno le tre misure di
+contorno — peso, massa grassa, VO₂max dell'orologio: da sole non sono una serie da
+guardare, e il posto giusto per un gregario è accanto a quello che dovrebbe spiegare.</p>
 <section class="compare" aria-label="Confronta due misure">
   <div class="compare-controls">
     <label>Asse X<select id="compare-x"></select></label>
@@ -1352,8 +1376,10 @@ davvero.</p>
   <span class="mono">tools/build_vita.py</span>, leggendo Intervals.icu e gli
   aggregati giornalieri del diario alimentare.<br>
   Il carico è registrato dal 2019; sonno, HRV, passi e VO₂max dal 2025; la tavola
-  da maggio 2026. Il <strong>2022 manca dall'archivio</strong>: le zone tratteggiate
-  non sono riposo, sono assenza di dati.
+  da maggio 2026. Il <strong>2022 non manca più</strong>: le sue 394 attività sono
+  rientrate da un export Strava, ma il loro carico è <strong>stimato</strong> da durata
+  e frequenza cardiaca, non misurato — perciò quel tratto dice «carico ricostruito».
+  Le zone tratteggiate rimaste non sono riposo, sono assenza di dati.
 </footer>
 
 <div class="tip" id="tip" role="status" aria-live="polite"></div>
@@ -2550,23 +2576,127 @@ const SCH = [C_POS, "#d95926", "#199e70", "#c98500"];
 
 /* Una mezza maratona misura 21,0975 km. Una traccia GPS della stessa gara cade fra
    20,5 e 22: sotto e' un lungo, sopra ha smesso di essere una mezza. Con questa
-   forbice l'archivio ne conta 51, dal 2019 a oggi. */
+   forbice l'archivio ne conta 58, dal 2019 a oggi — ventisei nel solo 2025. Il conto
+   vero lo rifa' `feats` a ogni build e la didascalia legge quello. */
 const HALF_LO = 20500, HALF_HI = 22000;
 /* "Salita lunga": oltre un'ora, e dislivello importante. Importante rispetto a COSA
    e' la domanda vera, e la risposta viene dai dati: la mediana del dislivello di
-   un'uscita oltre l'ora, in questo archivio, e' 648 m — cioe' 648 m e' l'ordinario,
+   un'uscita oltre l'ora, in questo archivio, e' 647 m — cioe' 647 m e' l'ordinario,
    non un indicatore di sforzo. La soglia va sopra l'ordinario, e 1.000 m e' il primo
-   numero leggibile che ci sta: seleziona 541 uscite su 1.603, circa una a settimana,
-   che e' abbastanza fitto perche' un conteggio mensile sia un grafico e non una
-   sequenza di zeri e uni. */
+   numero leggibile che ci sta: seleziona 654 uscite su 2.027, circa una a settimana.
+   I due conteggi si rifanno a ogni build (vedi `feats`): erano 541 su 1.603 finche'
+   il 2022 mancava, e una didascalia con dentro un numero a mano sarebbe gia' falsa. */
 const CLIMB_SECS = 3600, CLIMB_GAIN = 1000;
 const feats = (() => {
-  const half = new Array(N).fill(0), climb = new Array(N).fill(0);
+  const half = new Array(N).fill(0), climb = new Array(N).fill(0), long = [];
   for (const [i, sp, s, m, up] of D.acts) {
     if (sp === 1 && m >= HALF_LO && m <= HALF_HI) half[i] += 1;
-    if (s > CLIMB_SECS && up >= CLIMB_GAIN) climb[i] += 1;
+    if (s > CLIMB_SECS) {
+      long.push(up);
+      if (up >= CLIMB_GAIN) climb[i] += 1;
+    }
   }
-  return { half, climb };
+  /* La mediana del dislivello di un'uscita oltre l'ora e' la SOGLIA che giustifica
+     CLIMB_GAIN, e va ricontata a ogni build: era 648 m su 1.603 uscite prima che il
+     backfill rimettesse dentro il 2022, e un numero scritto a mano nella didascalia
+     sarebbe gia' vecchio adesso. Le didascalie leggono queste, non delle costanti. */
+  long.sort((a, b) => a - b);
+  return { half, climb, long,
+    medGain: long.length ? long[Math.floor(long.length / 2)] : 0,
+    halfTot: half.reduce((a, b) => a + b, 0),
+    climbTot: climb.reduce((a, b) => a + b, 0) };
+})();
+
+/* Somma mobile all'indietro: quanti ne sono caduti negli ultimi `win` giorni.
+   Le mezze e le salite lunghe erano due istogrammi mensili, cioe' due file di
+   picchi con dei buchi in mezzo — e un buco li' non vuol dire "niente", vuol dire
+   "quel mese no" (2026-08-14: "devono essere quelle medie mobili, non spike").
+   Un conteggio che scorre risponde alla domanda vera, che e' quanto fitto si va,
+   non quale casella del calendario e' toccata.
+   I primi `win` giorni restano vuoti invece di salire da zero: una somma mobile
+   che comincia da meta' finestra disegna una rampa che non e' successa. */
+const trailing = (arr, win, from0) => {
+  const o = new Array(N).fill(null);
+  let acc = 0;
+  for (let i = 0; i < N; i++) {
+    acc += arr[i] || 0;
+    if (i >= win) acc -= arr[i - win] || 0;
+    if (i >= (from0 || 0) + win) o[i] = acc;
+  }
+  return o;
+};
+const HALF_WIN = 365, CLIMB_WIN = 90;
+/* calcolate una volta: il riquadro si ridisegna a ogni cambio di finestra */
+const halfRoll = trailing(feats.half, HALF_WIN, daysOf("act"));
+const climbRoll = trailing(feats.climb, CLIMB_WIN, daysOf("act"));
+
+/* ------------------------------------------------- passo contro battito (misurato)
+   La domanda vera dietro al FatMax non e' "dove sta la banda" — quella e' un numero
+   di letteratura e si muove di due battiti — ma "la mia capacita' di bruciare grassi
+   cambia?". Non c'e' modo di misurarla qui: servirebbe una maschera. C'e' pero' una
+   cosa che le sta accanto e che l'archivio misura davvero, tutti i giorni:
+   **quanto vado forte a parita' di battito**.
+
+   L'unita' e' l'attivita', non la giornata: una giornata con un lungo e una sgambata
+   ha una media che non e' successa in nessuno dei due. Il passo e' il GAP di
+   Intervals (grade adjusted pace): senza correzione della pendenza un'uscita in
+   salita e una in piano non si possono confrontare, e qui si confronta.
+
+   Tre filtri, tutti per lo stesso motivo — togliere quello che non e' un'uscita
+   aerobica continua:
+     · almeno mezz'ora (sotto, la media della FC e' ancora il riscaldamento);
+     · FC media fra 120 e 170 (fuori sono passeggiate o ripetute, e in entrambi i
+       casi la media di un'attivita' polarizzata non descrive nessun momento di
+       quell'attivita');
+     · niente attivita' ricostruite dall'export Strava, che non hanno FC.
+
+   Resta un limite che non si toglie con un filtro, ed e' il piu' grosso: **la FC
+   media di un'uscita e' una media**. Due uscite con la stessa media possono essere
+   una continua e una a strappi. Il fondo di questa nuvola e' quel rumore. */
+const EF_MIN_SECS = 1800, EF_HR_LO = 120, EF_HR_HI = 170;
+const aero = (() => {
+  const acts = [], perDay = new Array(N).fill(null), cnt = new Array(N).fill(0);
+  for (const a of D.acts) {
+    const i = a[0], sp = a[1], secs = a[2], bf = a[6], hr = a[7] || 0,
+          gap = (a[8] || 0) / 100, t = a[9] ? a[9] / 10 : null;
+    if (bf || sp !== 1 || !hr || !gap) continue;
+    if (secs < EF_MIN_SECS || hr < EF_HR_LO || hr > EF_HR_HI) continue;
+    const ef = gap * 60 / hr;                 /* metri al minuto per battito */
+    acts.push({ i, hr, kmh: gap * 3.6, ef, t, secs });
+    perDay[i] = (perDay[i] || 0) + ef; cnt[i] += 1;
+  }
+  for (let i = 0; i < N; i++) if (cnt[i]) perDay[i] /= cnt[i];
+  if (!acts.length) return null;
+  const i0 = acts.reduce((m, a) => Math.min(m, a.i), N);
+  D.first.ef = i0;
+  /* le tre ere non sono decorative: nel 2022 l'archivio non ha FC (le attivita'
+     arrivano dall'export Strava) e nel 2024 e' cambiato l'orologio, quindi il
+     confronto onesto e' fra blocchi omogenei, non fra un anno e l'altro */
+  const yearOf = i => dayDate(i).getFullYear();
+  const era = i => yearOf(i) <= 2021 ? 0 : yearOf(i) <= 2024 ? 1 : 2;
+  return { acts, day:perDay, era,
+    eras:["fino al 2021", "2023–2024", "dal 2025"], i0 };
+})();
+
+/* g/min di grassi stimati: i grammi del giorno divisi per i minuti di allenamento
+   del giorno. E' il modello, non una misura — eredita per intero il +/-40% di
+   incertezza di metabolismo.py — ma e' il modello espresso nell'unita' in cui la
+   letteratura parla di ossidazione dei grassi, e in cui un giorno da due ore e uno
+   da venti minuti si possono mettere sullo stesso asse. */
+const fatRate = (() => {
+  const M = D.metab || {};
+  if (!Array.isArray(M.fat_g_est) || !Array.isArray(M.train_min)) return null;
+  const o = new Array(N).fill(null);
+  let i0 = null;
+  for (let i = 0; i < N; i++) {
+    const g = M.fat_g_est[i], m = M.train_min[i];
+    if (g === null || g === undefined || !m || m < 20) continue;
+    o[i] = g / m;
+    if (i0 === null) i0 = i;
+  }
+  if (i0 === null) return null;
+  D.first.fat_rate = i0;
+  return o;
 })();
 
 /* Heat strain. Non e' una misura: nessuno ha mai preso la temperatura interna di
@@ -2657,8 +2787,12 @@ const TILES = [
     kind:rBars, spec:{ name:"Ore", arr:secsOf.secs, how:"sum", scale:v => v / 3600,
       col:"var(--s3)", fmt:FMT.hours } },
 
-  /* ---- Notte ---- */
-  { panel:"notte", cls:"half", h:180, first:"sleep",
+  /* ---- Notte ----
+     Le nuvole di punti stanno su 150 px e non su 180 (2026-08-14: "i punti tipo HRV
+     potrebbero essere un po' piu' compatti in Y"). Il dominio y non cambia — lo detta
+     sempre la media mobile — quindi non si perde escursione: si perde spazio bianco,
+     e la colonna intera diventa scorribile invece che da scorrere. */
+  { panel:"notte", cls:"half", h:150, first:"sleep",
     title:"Durata del sonno", cap:"ogni notte · media mobile 7 giorni",
     now:() => { const r = rolling(D.sleep, N - 7, N - 1, 7); return r[r.length - 1]; },
     nowFmt:FMT.hhmm, nowUnit:"media 7 notti",
@@ -2666,59 +2800,36 @@ const TILES = [
       band:[420, 480], win:7, ytick:v => (v / 60).toFixed(0) + "h" },
     foot:"Fascia: 7–8 ore." },
 
-  { panel:"notte", h:180, first:"score", title:"Punteggio del sonno",
+  { panel:"notte", h:150, first:"score", title:"Punteggio del sonno",
     cap:"come lo valuta l'orologio · 0–100",
     now:() => { const r = rolling(D.score, N - 14, N - 1, 14); return r[r.length - 1]; },
     nowFmt:FMT.num0, nowUnit:"media 14 notti",
     kind:rCloud, spec:{ name:"Punteggio", arr:D.score, col:"var(--s3)", fmt:FMT.num0, win:14 } },
 
-  { panel:"notte", h:180, first:"sleep", title:"Sonno per giorno della settimana",
+  { panel:"notte", h:160, first:"sleep", title:"Sonno per giorno della settimana",
     cap:"media · il baffo è l'escursione fra la notte più corta e la più lunga",
     kind:rDow, spec:{ name:"Sonno", arr:D.sleep, col:"var(--s4)", fmt:FMT.hhmm,
       ytick:v => (v / 60).toFixed(0) + "h" } },
 
   /* ---- Recupero ---- */
-  { panel:"recupero", cls:"half", h:180, first:"hrv",
+  { panel:"recupero", cls:"half", h:150, first:"hrv",
     title:"HRV", cap:"variabilità cardiaca al risveglio · media mobile 7 giorni",
     now:() => { const r = rolling(D.hrv, N - 7, N - 1, 7); return r[r.length - 1]; },
     nowFmt:FMT.num0, nowUnit:"ms, media 7 gg",
     kind:rCloud, spec:{ name:"HRV", arr:D.hrv, col:"var(--s2)", fmt:FMT.ms, win:7 },
     foot:"Conta la media, non il singolo giorno." },
 
-  { panel:"recupero", h:180, first:"rhr", title:"Frequenza a riposo",
+  { panel:"recupero", h:150, first:"rhr", title:"Frequenza a riposo",
     cap:"battiti al minuto · media mobile 7 giorni",
     now:() => { const r = rolling(D.rhr, N - 7, N - 1, 7); return r[r.length - 1]; },
     nowFmt:FMT.num0, nowUnit:"bpm, media 7 gg",
     kind:rCloud, spec:{ name:"FC a riposo", arr:D.rhr, col:"var(--s1)", fmt:FMT.bpm, win:7 } },
 
-  { panel:"recupero", h:180, first:"vo2", title:"VO₂max stimato",
-    cap:"stima dell'orologio · ml/kg/min",
-    now:() => { for (let i = N - 1; i >= 0; i--) if (D.vo2[i] !== null) return D.vo2[i]; return null; },
-    nowFmt:FMT.num1, nowUnit:"ml/kg/min",
-    kind:rStep, spec:{ name:"VO₂max", arr:D.vo2, col:"var(--s3)", fmt:FMT.num1 },
-    foot:"A gradini: la stima si aggiorna a scatti." },
-
-  { panel:"recupero", h:180, first:"steps", title:"Passi", cap:"al giorno · media mobile 7 giorni",
+  { panel:"recupero", h:150, first:"steps", title:"Passi", cap:"al giorno · media mobile 7 giorni",
     now:() => { const r = rolling(D.steps, N - 7, N - 1, 7); return r[r.length - 1]; },
     nowFmt:FMT.num0, nowUnit:"passi/giorno",
     kind:rCloud, spec:{ name:"Passi", arr:D.steps, col:"var(--s4)", fmt:FMT.num0, zero:true,
       ytick:v => v >= 1000 ? (v / 1000) + "k" : String(v) } },
-
-  /* ---- Corpo ---- */
-  { panel:"corpo", h:180, first:"weight", title:"Peso", cap:"ogni pesata registrata",
-    now:() => { for (let i = N - 1; i >= 0; i--) if (D.weight[i] !== null) return D.weight[i]; return null; },
-    nowFmt:FMT.num1, nowUnit:"kg, ultima pesata",
-    kind:rXY, spec:{ xname:"giorno", yname:"Peso", yfmt:FMT.kg, r:3.2,
-      xfmt:v => fmtDate(Math.round(v)), xtick:monthTick,
-      points:(a, b) => [{ name:"Peso", col:"var(--s2)", pts:sparsePts(D.weight, a, b) }] },
-    foot:"65 pesate: una nuvola, non una serie." },
-
-  { panel:"corpo", h:180, first:"bodyfat", title:"Massa grassa", cap:"stima della bilancia · %",
-    now:() => { for (let i = N - 1; i >= 0; i--) if (D.bodyfat[i] !== null) return D.bodyfat[i]; return null; },
-    nowFmt:FMT.num1, nowUnit:"%, ultima misura",
-    kind:rXY, spec:{ xname:"giorno", yname:"Massa grassa", yfmt:FMT.pct, r:3.2,
-      xfmt:v => fmtDate(Math.round(v)), xtick:monthTick,
-      points:(a, b) => [{ name:"Massa grassa", col:"var(--s4)", pts:sparsePts(D.bodyfat, a, b) }] } },
 
   /* ---- Volume ---- */
   { panel:"volume", cls:"half", h:170, first:"act", title:"Mix per sport",
@@ -2745,22 +2856,33 @@ const TILES = [
           .map(x => [x[3] / 1000, x[4], x[0]]) })) },
     foot:"Solo bici e corsa: gli altri sport non hanno questo asse." },
 
-  { panel:"volume", h:170, first:"act", title:"Mezze maratone",
-    cap:`corse fra ${nf(HALF_LO / 1000, 1)} e ${nf(HALF_HI / 1000, 0)} km · quante al mese`,
-    now:() => feats.half.reduce((a, b) => a + b, 0), nowFmt:FMT.num0, nowUnit:"in tutto",
-    kind:rBars, spec:{ name:"Mezze", arr:feats.half, how:"sum", col:"var(--s2)",
-      fmt:v => nf(v, 0) + (v === 1 ? " mezza" : " mezze") },
+  { panel:"volume", h:150, first:"act", title:"Mezze maratone",
+    cap:`corse fra ${nf(HALF_LO / 1000, 1)} e ${nf(HALF_HI / 1000, 0)} km · quante negli ultimi ${HALF_WIN} giorni, giorno per giorno`,
+    now:() => halfRoll[N - 1],
+    nowFmt:FMT.num0, nowUnit:"nell'ultimo anno",
+    kind:rLines, spec:{ zero:true, fmt:v => nf(v, 0) + (v === 1 ? " mezza" : " mezze"),
+      series:[{ name:"Mezze, 12 mesi", col:SCH[0], area:true,
+        get:(a, b) => halfRoll.slice(a, b + 1).map((v, k) => [a + k, v]) }] },
     foot:`La distanza vera è 21,0975 km: la forbice ${nf(HALF_LO / 1000, 1)}–${nf(HALF_HI / 1000, 0)} km ` +
-      "tiene dentro la stessa gara misurata da GPS diversi e lascia fuori il lungo da venti e il trentino." },
+      "tiene dentro la stessa gara misurata da GPS diversi e lascia fuori il lungo da venti e il trentino. " +
+      `La linea è una <strong>somma mobile a ${HALF_WIN} giorni</strong>: quante ne sono cadute nei dodici ` +
+      `mesi precedenti a quel giorno. Sono ${nf(feats.halfTot)} in tutto l'archivio, cioè in un istogramma ` +
+      "mensile quasi altrettante colonne alte uno separate da buchi — e un buco lì si legge come una pausa " +
+      "senza esserlo." },
 
-  { panel:"volume", h:170, first:"act", title:"Salite lunghe",
-    cap:`oltre un'ora e almeno ${nf(CLIMB_GAIN, 0)} m di dislivello · quante al mese`,
-    now:() => feats.climb.reduce((a, b) => a + b, 0), nowFmt:FMT.num0, nowUnit:"uscite in tutto",
-    kind:rBars, spec:{ name:"Salite lunghe", arr:feats.climb, how:"sum", col:"var(--s4)",
-      fmt:v => nf(v, 0) + (v === 1 ? " uscita" : " uscite") },
+  { panel:"volume", h:150, first:"act", title:"Salite lunghe",
+    cap:`oltre un'ora e almeno ${nf(CLIMB_GAIN, 0)} m di dislivello · quante negli ultimi ${CLIMB_WIN} giorni, giorno per giorno`,
+    now:() => climbRoll[N - 1],
+    nowFmt:FMT.num0, nowUnit:`negli ultimi ${CLIMB_WIN} giorni`,
+    kind:rLines, spec:{ zero:true, fmt:v => nf(v, 0) + (v === 1 ? " uscita" : " uscite"),
+      series:[{ name:"Salite lunghe, 90 giorni", col:SCH[3], area:true,
+        get:(a, b) => climbRoll.slice(a, b + 1).map((v, k) => [a + k, v]) }] },
     foot:`La soglia è misurata, non scelta a occhio: la <strong>mediana</strong> del dislivello di ` +
-      `un'uscita oltre l'ora, qui dentro, è 648 m — l'ordinario. ${nf(CLIMB_GAIN, 0)} m sta sopra ` +
-      "l'ordinario e seleziona 541 uscite su 1.603, circa una a settimana." },
+      `un'uscita oltre l'ora, qui dentro, è ${nf(feats.medGain, 0)} m — l'ordinario. ${nf(CLIMB_GAIN, 0)} m ` +
+      `sta sopra l'ordinario e seleziona ${nf(feats.climbTot)} uscite su ${nf(feats.long.length)}, ` +
+      "circa una a settimana. " +
+      `Finestra di ${CLIMB_WIN} giorni e non di dodici mesi perché qui la densità cambia dentro la stagione, ` +
+      "e una finestra lunga la spianerebbe proprio dove c'è qualcosa da vedere." },
 
   /* ---- Incroci ---- */
   { panel:"incroci", h:180, first:"sleep", title:"Sonno contro carico del giorno prima",
@@ -2795,6 +2917,36 @@ const TILES = [
       points:(a, b) => [{ name:"stime", col:"var(--s1)",
         pts:pairPts(i => D.ctl[i], i => D.vo2[i], a, b) }] },
     foot:"Fra fitness 90 e 190 la stima non si sposta." },
+
+  /* ---- Corpo: tre gregari, e stanno negli Incroci ----
+     Il VO2max dell'orologio, il peso e la massa grassa avevano una sezione a testa.
+     Nessuno dei tre e' una serie che si guarda: il VO2max e' una stima che si muove
+     a gradini di mezzo punto e passa mesi ferma, il peso sono 65 pesate in undici
+     anni, la massa grassa e' la stima di una bilancia. Sono numeri di contorno, e il
+     contorno serve incrociato con qualcosa (2026-08-14: "sono gregari, mettili nella
+     parte di correlazione"). Restano tutti e tre come serie complete nel comparatore
+     libero e nella vista compatta — sono spostati, non tolti. */
+  { panel:"incroci", h:160, first:"weight", title:"Peso", cap:"ogni pesata registrata",
+    now:() => { for (let i = N - 1; i >= 0; i--) if (D.weight[i] !== null) return D.weight[i]; return null; },
+    nowFmt:FMT.num1, nowUnit:"kg, ultima pesata",
+    kind:rXY, spec:{ xname:"giorno", yname:"Peso", yfmt:FMT.kg, r:3.2,
+      xfmt:v => fmtDate(Math.round(v)), xtick:monthTick,
+      points:(a, b) => [{ name:"Peso", col:"var(--s2)", pts:sparsePts(D.weight, a, b) }] },
+    foot:"65 pesate: una nuvola, non una serie." },
+
+  { panel:"incroci", h:160, first:"bodyfat", title:"Massa grassa", cap:"stima della bilancia · %",
+    now:() => { for (let i = N - 1; i >= 0; i--) if (D.bodyfat[i] !== null) return D.bodyfat[i]; return null; },
+    nowFmt:FMT.num1, nowUnit:"%, ultima misura",
+    kind:rXY, spec:{ xname:"giorno", yname:"Massa grassa", yfmt:FMT.pct, r:3.2,
+      xfmt:v => fmtDate(Math.round(v)), xtick:monthTick,
+      points:(a, b) => [{ name:"Massa grassa", col:"var(--s4)", pts:sparsePts(D.bodyfat, a, b) }] } },
+
+  { panel:"incroci", h:160, first:"vo2", title:"VO₂max stimato",
+    cap:"stima dell'orologio · ml/kg/min",
+    now:() => { for (let i = N - 1; i >= 0; i--) if (D.vo2[i] !== null) return D.vo2[i]; return null; },
+    nowFmt:FMT.num1, nowUnit:"ml/kg/min",
+    kind:rStep, spec:{ name:"VO₂max", arr:D.vo2, col:"var(--s3)", fmt:FMT.num1 },
+    foot:"A gradini: la stima si aggiorna a scatti, e fra fitness 90 e 190 non si sposta." },
 
   /* ---- Metabolismo: presenti solo se metabolismo.csv era sul disco al build ---- */
   ...metabTiles(),
@@ -2870,6 +3022,78 @@ function metabTiles() {
       foot:"Conta i minuti in cui la frequenza stava fra <span class=\"mono\">fatmax_lo</span> e " +
         "<span class=\"mono\">fatmax_hi</span>, quindi eredita per intero l'incertezza del modello " +
         "qui sopra. Il 2022 è vuoto perché mancano le attività, non perché si andasse forte." });
+  }
+
+  /* --- i grammi, e la sola cosa misurata che ci gira intorno --------------- */
+
+  if (fatRate) {
+    t.push({ panel:"metabolismo", h:150, first:"fat_rate",
+      title:"Grassi al minuto",
+      cap:"grammi stimati diviso i minuti di allenamento di quel giorno · media mobile 45 giorni",
+      now:() => lastMean(fatRate, 45), nowFmt:v => nf(v, 2), nowUnit:"g/min, media 45 gg",
+      kind:rCloud, spec:{ name:"Grassi", arr:fatRate, col:SCH[2], win:45,
+        fmt:v => nf(v, 2) + " g/min", ytick:v => nf(v, 2) },
+      dataNote:"modello, non una misura",
+      foot:"Il numero che la letteratura chiama <span class=\"mono\">MFO</span> è un tasso, non un " +
+        "totale: 0,52 g/min per un maschio allenato a digiuno (Achten 2003). Qui è il totale " +
+        "stimato del giorno diviso i minuti di quel giorno, e sta sotto quel valore perché la " +
+        "media di un'uscita comprende i tratti sopra la banda, dove l'ossidazione dei grassi " +
+        "crolla. <strong>Vale la sua variazione, non il suo valore</strong>: l'incertezza sul " +
+        "livello assoluto è dell'ordine del ±40 %, e i giorni sotto i venti minuti non entrano." });
+  }
+
+  if (aero) {
+    /* La nuvola che risponde alla domanda: a parita' di battito, vado piu' forte?
+       Tre ere, un colore per era, e la retta unica sopra a dire la relazione media.
+       Se le tre nuvole stanno una sopra l'altra qualcosa e' cambiato; se si
+       sovrappongono, non e' cambiato niente — ed e' una risposta anche quella. */
+    t.push({ panel:"metabolismo", cls:"wide", h:200, first:"ef",
+      title:"Passo contro battito",
+      cap:"una corsa oltre la mezz'ora, un punto · passo corretto per la pendenza (GAP) contro FC media",
+      legend:aero.eras.map((e, k) => [e, SCH[k]]),
+      kind:rXY, spec:{ xname:"FC media", yname:"Passo (GAP)", xfmt:FMT.bpm,
+        yfmt:v => nf(v, 1) + " km/h", r:2.6,
+        ytick:v => nf(v, 1),
+        points:(a, b) => aero.eras.map((name, k) => ({ name, col:SCH[k],
+          pts:aero.acts.filter(x => x.i >= a && x.i <= b && aero.era(x.i) === k)
+            .map(x => [x.hr, x.kmh, x.i]) })) },
+      dataNote:"misurato · una riga per attività, non per giornata",
+      foot:"È la sola cosa misurata di tutta questa sezione, e la sola che risponda alla domanda " +
+        "vera: <strong>a parità di battito, il passo si sta spostando?</strong> Il GAP corregge la " +
+        "pendenza, quindi una salita e un piano finiscono sullo stesso asse; non corregge il fondo, " +
+        "e un trail tecnico resta un punto basso che non dice quello che sembra. La retta è una " +
+        "regressione su tutti i punti insieme, non per era." });
+
+    t.push({ panel:"metabolismo", h:150, first:"ef",
+      title:"Efficienza aerobica",
+      cap:"metri al minuto per battito, media delle corse del giorno · media mobile 45 giorni",
+      now:() => lastMean(aero.day, 45), nowFmt:v => nf(v, 2), nowUnit:"m/min per battito, media 45 gg",
+      kind:rCloud, spec:{ name:"Efficienza", arr:aero.day, col:SCH[0], win:45,
+        fmt:v => nf(v, 2), ytick:v => nf(v, 2) },
+      dataNote:"misurato",
+      foot:"La stessa nuvola di sopra ridotta a un numero per giornata: passo GAP in metri al " +
+        "minuto diviso i battiti al minuto. Sale se si va più forte agli stessi battiti — che è " +
+        "quello che succede quando la macchina aerobica migliora — <strong>ma sale anche se si " +
+        "sceglie di correre più forte</strong>, e il numero da solo non sa distinguere le due cose. " +
+        "Per quello accanto c'è la nuvola: lì il battito è sull'asse e la scelta si vede." });
+
+    t.push({ panel:"metabolismo", h:150, first:"ef",
+      title:"Il caldo",
+      cap:"temperatura al polso durante la corsa → efficienza di quella corsa",
+      kind:rXY, spec:{ xname:"Temperatura", yname:"Efficienza",
+        xfmt:v => nf(v, 1) + " °C", yfmt:v => nf(v, 2), r:2.4,
+        ytick:v => nf(v, 2), xtick:v => nf(v, 0),
+        points:(a, b) => [{ name:"corse", col:SCH[1],
+          pts:aero.acts.filter(x => x.i >= a && x.i <= b && x.t !== null)
+            .map(x => [x.t, x.ef, x.i]) }] },
+      dataNote:"misurato · termometro da polso, non meteo",
+      foot:"Serviva a pesare le altre due per il caldo, e il risultato è che <strong>non c'è niente " +
+        "da pesare</strong>: sull'archivio intero la pendenza è di pochi centesimi di metro al " +
+        "minuto per grado, cioè zero. Non vuol dire che il caldo non costi — vuol dire che il costo " +
+        "non finisce qui dentro, perché quando fa caldo si rallenta, e rallentando la frequenza " +
+        "torna dov'era. Quello che il caldo sposta è il <em>passo scelto</em>, non il rapporto fra " +
+        "passo e battito. La temperatura è quella dell'orologio: aria a un centimetro da un corpo " +
+        "che scalda, buona per ordinare le uscite fra loro e non come dato meteo." });
   }
 
   if (mmDraw) {
@@ -3297,6 +3521,17 @@ const RIDGE = (() => {
   add("Metabolismo", "var(--s2)", "heat", "Heat strain", heat, 30, FMT.num1);
   add("Metabolismo", "var(--s2)", "mm", "Momento metabolico",
       mmDraw && mmDraw.arr, 14, FMT.num1);
+  /* Le due serie che servono a incrociare l'ossidazione dei grassi con la tavola:
+     l'efficienza e' misurata, il tasso di grassi e' modellato, e nel comparatore
+     si possono mettere contro la quota di carboidrati, le kcal, qualunque cosa.
+     Attenzione a una circolarita' vera: `fatrate` scende da un modello che gia'
+     contiene i carboidrati abituali (metabolismo.py, assunzione 4), quindi una
+     correlazione fra quei due e' il cablaggio, non una scoperta. `ef` no: quella
+     e' passo e battito, e con la tavola non ha nessun filo diretto. */
+  add("Metabolismo", "var(--s2)", "ef", "Efficienza aerobica",
+      aero && aero.day, 45, v => nf(v, 2));
+  add("Metabolismo", "var(--s2)", "fatrate", "Grassi al minuto",
+      fatRate, 45, v => nf(v, 2) + " g/min");
   return out;
 })();
 
@@ -3572,7 +3807,11 @@ function tileNode(t) {
   const head = mk("div", "t-head", side);
   mk("div", "t-title", head, t.title);
   const now = mk("div", "t-now", side);
-  mk("div", "t-cap", side, t.cap);
+  /* Niente sottotitolo sotto il titolo, e niente "media 7 gg" sotto il numero
+     grande (2026-08-14: "non voglio sottotitoli ai grafici… in genere non voglio
+     testi tipo media di 7 giorni"). Il titolo e il disegno bastano a guardare; la
+     didascalia e cosa sia esattamente il numero grande stanno un clic sotto, in
+     "dati", insieme alla tabella. Chi vuole leggere apre, chi vuole guardare no. */
   const shift = t.shifters ? mk("div", "t-shift", side) : null;
   if (t.legend) {
     const lg = mk("div", "t-legend", side);
@@ -3583,12 +3822,13 @@ function tileNode(t) {
   const foot = mk("div", "t-foot", art);
   const det = mk("details", "data", art);
   const sum = mk("summary", null, det, "dati");
+  const cap = mk("p", "d-cap", det);
   const tbl = mk("table", "fallback", det);
   const tbody = mk("tbody", null, tbl);
   /* si tiene il riferimento, non lo si ricerca: `children` nel browser e' una
      HTMLCollection e non ha .find() — cercarlo li' uccideva l'intero script, cioe'
      la pagina senza nemmeno un grafico */
-  return { art, now, box, foot, sum, tbody, shift };
+  return { art, now, box, foot, sum, cap, tbody, shift };
 }
 
 function drawTile(n, t) {
@@ -3618,7 +3858,8 @@ function drawTile(n, t) {
   if (t.now) {
     const v = t.now();
     n.now.innerHTML = v === null || v === undefined || !isFinite(v) ? ""
-      : `${t.nowFmt(v)}<br><small>${t.nowUnit}</small>`;
+      : t.nowFmt(v);
+    n.now.title = t.nowUnit || "";
   }
 
   /* Il piede dice solo quello che non si vede dal grafico. La finestra e il
@@ -3641,6 +3882,10 @@ function drawTile(n, t) {
   }
   n.foot.innerHTML = t.noFoot ? "" : bits.join(" · ") + (t.foot ? `<br>${t.foot}` : "");
   n.sum.textContent = t.dataNote ? `dati · ${t.dataNote}` : "dati";
+  /* la didascalia e la legenda del numero grande, che una volta stavano in pagina */
+  if (n.cap) n.cap.innerHTML = [t.cap,
+    t.now && t.nowUnit ? `<b>Il numero grande</b>: ${t.nowUnit}.` : ""]
+    .filter(Boolean).join(" · ");
   n.tbody.innerHTML = res ? res.table : "";
 }
 

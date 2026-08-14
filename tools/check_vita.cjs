@@ -320,6 +320,18 @@ if (ran) {
   ok(noTable.length === 0, `ogni riquadro ha la tabella di ripiego` +
     (noTable.length ? ` — mancano: ${noTable.join(", ")}` : ""));
 
+  /* La didascalia e la legenda del numero grande stanno sotto "dati", non in pagina
+     (2026-08-14). E' facile che tornino su per sbaglio la prossima volta che qualcuno
+     tocca tileNode, e sarebbe invisibile: il riquadro funzionerebbe lo stesso. */
+  const noCap = K.MOUNTED.filter(([n, t]) => t.cap && !String(n.cap && n.cap.innerHTML)
+    .includes(String(t.cap).slice(0, 24))).map(([, t]) => t.title);
+  ok(noCap.length === 0, "ogni didascalia sta dentro il pannello «dati»" +
+    (noCap.length ? ` — mancano: ${noCap.join(", ")}` : ""));
+  const unitOut = K.MOUNTED.filter(([n, t]) => t.now && t.nowUnit &&
+    String(n.now.innerHTML).includes(t.nowUnit)).map(([, t]) => t.title);
+  ok(unitOut.length === 0, "nessun «media 7 gg» stampato accanto al numero grande" +
+    (unitOut.length ? ` — ce l'hanno: ${unitOut.join(", ")}` : ""));
+
   const multi = K.MOUNTED.filter(([, t]) =>
     (t.spec.series && t.spec.series.length > 1) ||
     (t.spec.names && t.spec.names.length > 1) ||
@@ -343,6 +355,12 @@ if (ran) {
     ["Momento metabolico", /componenti/i],
     ["Mezze maratone", /21,0975/],
     ["Salite lunghe", /mediana/i],
+    /* i quattro dell'ossidazione dei grassi: due modelli e due misure, e la
+       differenza deve restare scritta nel piede di ognuno */
+    ["Grassi al minuto", /vale la sua variazione/i],
+    ["Passo contro battito", /a parità di battito/i],
+    ["Efficienza aerobica", /ma sale anche se/i],
+    ["Il caldo", /non c'è niente da pesare/i],
   ];
   const strip0 = s => String(s).replace(/<[^>]+>/g, "");
   for (const [title, must] of NEW_TILES) {
@@ -355,7 +373,10 @@ if (ran) {
     ok(n.tbody.innerHTML.includes("<tr"), `"${title}" ha la sua tabella di ripiego`);
     ok(must.test(strip0(n.foot.innerHTML)),
       `"${title}" dichiara cosa è nel piede (cerco ${must})`);
-    ok(/\S/.test(String(n.now.innerHTML)), `"${title}" ha il suo numero di testa`);
+    /* non tutti hanno un numero di testa: una nuvola come "Il caldo" e' una
+       relazione, e un "valore di oggi" li' sarebbe l'ultima corsa spacciata per
+       un livello. Il controllo vale su chi lo dichiara. */
+    if (t.now) ok(/\S/.test(String(n.now.innerHTML)), `"${title}" ha il suo numero di testa`);
   }
 
   /* il momento metabolico non si disegna sotto la soglia di componenti: e' la

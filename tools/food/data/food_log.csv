@@ -422,3 +422,19 @@ date,meal,food_id,qty,note,source
 2026-08-13,spuntino,gelato_cono,120,gelato al cioccolato medio; grammatura stimata,dichiarato
 2026-08-13,spuntino,pera,1.2,pera da 200 g dichiarata; convertita sulla pera media da ~170 g,dichiarato
 2026-08-13,spuntino,yogurt_greco_0,150,yogurt greco; quantita non dichiarata - vasetto standard stimato,dichiarato
+2026-08-13,cena,uovo_intero,2,cena veloce dichiarata a voce il 14/8,dichiarato
+2026-08-13,cena,lupini,100,"cena veloce; ""un po' di lupini"" = ~100 g sgocciolati, confermato",dichiarato
+2026-08-13,cena,pomodorini,150,150 g di pomodoro dichiarati,dichiarato
+2026-08-13,cena,polenta_cotta,100,"100 g dichiarati; presi come polenta gia' pronta, non come farina a crudo",dichiarato
+2026-08-13,merenda,pane_integrale,60,panino marmellata + peanut butter; grammatura standard stimata,dichiarato
+2026-08-13,merenda,marmellata_fragola,20,panino marmellata + peanut butter; grammatura standard stimata,dichiarato
+2026-08-13,merenda,burro_arachidi_sgrassato,10,"peanut butter nel panino, come il 12/8",dichiarato
+2026-08-13,merenda,latte_ps,100,"""100 di latte"" confermato; voce PS come proxy",dichiarato
+2026-08-14,colazione,yogurt_greco_0,150,colazione dichiarata a voce; vasetto standard stimato,dichiarato
+2026-08-14,colazione,gallette_riso,10,una galletta; ~10 g,dichiarato
+2026-08-14,colazione,miele,15,un cucchiaino di miele; quantita' standard stimata,dichiarato
+2026-08-14,colazione,banana,1,banana con un cucchiaio di peanut butter,dichiarato
+2026-08-14,colazione,burro_arachidi_sgrassato,15,"un cucchiaio, confermato a voce; grammatura stimata",dichiarato
+2026-08-14,spuntino,cappuccino,1,dichiarato a voce,dichiarato
+2026-08-14,spuntino,banana,1,"seconda banana della giornata, dichiarata a voce",dichiarato
+2026-08-14,spuntino,pesca,1,dichiarata a voce,dichiarato
