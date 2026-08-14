@@ -819,12 +819,14 @@ if (ran) {
       (unknownId.size ? ` — mancano ${[...unknownId].slice(0, 4).join(", ")}` : ""));
     ok(fromCron > 0, `i giorni Cronometer arrivano nel popup (${fromCron} righe misurate)`);
 
-    const pre = D.foodPre || [];
-    const badPre = pre.filter(p => p.f.startsWith("recipe:")
-      ? !(D.foodRec || {})[p.f.slice(7)] : !cat[p.f]);
-    ok(pre.length >= 8 && badPre.length === 0,
-      `${pre.length} preset, tutti su alimenti o ricette che esistono` +
-      (badPre.length ? ` — rotti: ${badPre.map(p => p.f).join(", ")}` : ""));
+    /* Ricette e preset servivano ad annotare da qui, e da quando si annota da
+       Mission Control non li apre piu' nessuno: nel payload non ci devono
+       tornare. Un elenco che nessuno legge e' un elenco che va indietro senza
+       che se ne accorga nessuno — e' la quarta regola di questa repo. */
+    const morti = ["foodRec", "foodPre"].filter(k => D[k] !== undefined);
+    ok(morti.length === 0,
+      "il payload non porta piu' dati che nessuno legge"
+      + (morti.length ? ` — ci sono ancora: ${morti.join(", ")}` : ""));
 
     /* apertura, e le righe che ne escono */
     const dayK = realDays[realDays.length - 1];
@@ -837,72 +839,48 @@ if (ran) {
     ok(node.descendants().some(n => (n.attrs.type === "date")),
       "il diario ha il selettore di data per sfogliare");
 
-    /* ---- scollegato: l'annotazione non si perde, e sa come arrivare nel repo ---- */
-    const before = rows().length;
-    dia.write(dayK, { kind: "add", meal: "spuntino", food_id: "banana", qty: 1 });
-    ok(rows().length === before + 1, "senza Worker l'annotazione resta comunque a schermo");
-    const dk = dia.delta(dayK).k;
-    ok(dk > 90 && dk < 130, `e sposta le kcal del giorno di quanto vale (${Math.round(dk)} per una banana)`);
-    const line = dia.csv(dayK).split("\n").find(l => l.startsWith(dayK + ","));
-    ok(!!line && line.split(",").length === 6 && line.split(",")[2] === "banana",
-      `e la riga per food_log.csv c'e' lo stesso (${line || "nessuna"})`);
-    ok(dia.local()[dayK] && dia.local()[dayK].length === 1,
-      "ed e' salvata in locale, non persa mentre la pagina dice di averla presa");
-    dia.reset();
-    ok(rows().length === before, "azzerando la bozza il giorno torna com'era");
-
-    /* ---- collegato: quello che parte deve essere ESATTAMENTE quello che si vede -
-       il pasto scelto, l'alimento premuto, la quantita' del preset. Prima il pasto
-       non si poteva nemmeno scegliere: il preset imponeva il suo e la ricerca
-       metteva tutto negli spuntini, quindi una cena non si poteva annotare. */
-    ok(/^https:\/\//.test(dia.api || ""), `il Worker e' configurato in pagina (${dia.api || "nessuno"})`);
+    /* ---- di sola lettura, e per davvero ------------------------------------
+       Fino al 2026-08-14 qui si controllava che il diario sapesse SCRIVERE: la
+       bozza locale quando il Worker non c'era, il preset che parte nel pasto
+       scelto, la correzione che manda una row_key invece di una riga nuova.
+       Quel lavoro si e' spostato in Mission Control, che e' dietro login: una
+       pagina pubblica non e' il posto dove tenere una chiave che scrive nel
+       repo. I controlli non spariscono, si girano sul fatto nuovo — se domani
+       qualcuno rimettesse un campo scrivibile qui, questi lo prendono. */
     FETCHES.length = 0;
-    dia.setState("collegato");
-    dia.meal("cena");
-    dia.render();
-    const btns = () => node.descendants().filter(n => n.tagName === "button");
-    const mealOn = node.descendants().filter(n => /(^| )on( |$)/.test(n.className || "")
-      && n.tagName === "button");
-    ok(mealOn.length === 1 && mealOn[0].textContent === "Cena",
-      `il pasto scelto e' marcato nella pulsantiera (${mealOn.map(b => b.textContent).join(",") || "nessuno"})`);
+    dia.open(dia.idxOf(dayK));      /* riapre a rete azzerata: e' l'apertura che si misura */
 
-    const preset = btns().find(b => (D.foodPre || []).some(p => p.n === b.textContent));
-    ok(!!preset, "i preset sono bottoni veri, premibili");
-    if (preset) {
-      const p = (D.foodPre || []).find(x => x.n === preset.textContent);
-      preset.fire("click");
-      const post = FETCHES.filter(f => f.method === "POST" && /\/api\/ops$/.test(f.url)).pop();
-      ok(!!post, "premere un preset parla col Worker");
-      if (post) {
-        ok(post.body.kind === "add" && post.body.food_id === p.f && post.body.qty === p.q,
-          `e gli manda l'alimento giusto (${post.body.food_id} ${post.body.qty})`);
-        ok(post.body.meal === "cena",
-          `nel pasto SCELTO, non in quello abituale del preset (${post.body.meal}, abituale ${p.m})`);
-        ok(post.body.day === dayK, `e nel giorno aperto (${post.body.day})`);
-        ok((post.headers["X-Vita-Key"] || "") !== undefined, "con l'intestazione della chiave");
-      }
-    }
+    const editabili = node.descendants().filter(n =>
+      (n.tagName === "input" && n.attrs.type !== "date") || n.tagName === "textarea");
+    ok(editabili.length === 0,
+      "nel diario non c'e' nessun campo scrivibile, a parte il calendario per sfogliare"
+      + (editabili.length ? ` — trovati: ${editabili.map(n => n.attrs.type || n.tagName).join(", ")}` : ""));
 
-    /* correggere una quantita' deve mandare la row_key della riga base, non una
-       riga nuova: e' la differenza fra "ho corretto" e "ho mangiato il doppio" */
-    FETCHES.length = 0;
-    const base = rows().find(r => !/(^| )new( |$)/.test(r.className || ""));
-    const qtyIn = base && [...base.children].find(n => n.attrs.type === "number");
-    if (qtyIn && !qtyIn.attrs.disabled) {
-      qtyIn.value = String(Number(qtyIn.value || 0) + 7);
-      qtyIn.fire("change");
-      const post = FETCHES.filter(f => f.method === "POST").pop();
-      ok(post && post.body.kind === "set" && /\|/.test(post.body.row_key || ""),
-        `correggere una quantita' manda una correzione, non una riga nuova (${post && post.body.kind})`);
-      ok(post && post.body.row_key.split("|").length === 3,
-        `con la row_key nella forma che apply_diary_ops.py sa ritrovare (${post && post.body.row_key})`);
-    } else {
-      notes.push("info  nessuna riga correggibile sull'ultimo giorno (tutte da Cronometer)");
-    }
+    /* I bottoni che restano sono solo quelli per muoversi: chiudere, il giorno
+       prima, il giorno dopo, l'ultimo. Nessuno che tolga o aggiunga una riga. */
+    const bottoni = node.descendants().filter(n => n.tagName === "button");
+    const ammessi = ["×", "‹ giorno prima", "giorno dopo ›", "ultimo giorno"];
+    const estranei = bottoni.filter(b => !ammessi.includes((b.textContent || "").trim()));
+    ok(estranei.length === 0,
+      `i bottoni del diario sono solo di navigazione (${bottoni.length})`
+      + (estranei.length ? ` — estranei: ${estranei.map(b => b.textContent).join(", ")}` : ""));
 
-    dia.setState("senza-chiave");
-    dia.meal("");
-    dia.reset();
+    ok(FETCHES.length === 0,
+      `aprire il diario non chiama piu' nessun Worker (${FETCHES.length} richieste)`);
+
+    ok(typeof dia.write !== "function" && typeof dia.ops !== "function",
+      "e la pagina non espone piu' nemmeno il modo di scrivere");
+
+    const rinvio = node.descendants().find(n => /Mission Control/.test(n.textContent || ""));
+    ok(!!rinvio, "il diario dice dove si annota adesso");
+
+    /* La row_key resta nella forma che apply_diary_ops.py sa ritrovare: e' la
+       stessa che Mission Control manda, e vederla uguale nei due posti e' quello
+       che tiene onesto il confronto. */
+    const conFood = dia.rows(dayK).rows.find(r => r.f);
+    ok(conFood && conFood.id.split("|").length === 3,
+      `le righe portano ancora la row_key a tre pezzi (${conFood ? conFood.id : "nessuna"})`);
+
     dia.close();
   }
 

@@ -307,36 +307,31 @@ def load_backfill():
 
 # --------------------------------------------------------------- il diario
 # Il popup della giornata sa **mostrare** un pasto ma non sa proporne uno: legge
-# `days.json`, che e' gia' cotto. Perche' /vita possa diventare anche il posto in
-# cui si annota cosa si e' mangiato, servono tre cose che nel payload non c'erano:
-# il catalogo degli alimenti (per calcolare le kcal di una riga nuova senza una
-# chiamata), le ricette (perche' "avocado toast" e' una riga sola, non tre), e i
-# preset — che NON sono una lista scelta a mano ma le abitudini vere lette da
-# `food_log.csv`: cosa Michele registra piu' spesso, con la quantita' che usa piu'
-# spesso e nel pasto in cui la mette piu' spesso. Una lista scritta a mano
-# invecchierebbe in silenzio; questa si aggiorna da sola a ogni build.
+# `days.json`, che e' gia' cotto. Al diario serve in piu' il catalogo degli
+# alimenti, per sapere in che unita' e' misurata ogni riga.
+#
+# Il Worker che riceve le annotazioni (tools/diario-worker/) non si chiama piu' da
+# questa pagina: /vita e' pubblica, e una pagina pubblica che chiede una chiave per
+# scrivere e' il posto sbagliato dove tenerne una. Dal 2026-08-14 si annota da
+# Mission Control, che e' dietro login e parla con lo stesso Worker; qui il diario
+# si legge soltanto. Il registro resta uno: tools/food/data/food_log.csv.
 FOODS_CSV = os.path.join(HERE, "food", "data", "foods.csv")
-RECIPES_CSV = os.path.join(HERE, "food", "data", "recipes.csv")
-FOOD_LOG_CSV = os.path.join(HERE, "food", "data", "food_log.csv")
 
-# Il Worker che riceve le annotazioni (tools/diario-worker/). Indirizzo pubblico:
-# senza la chiave, che vive nel browser di Michele e non in questo repo, l'unica
-# cosa che risponde e' /api/health.
-DIARY_API = os.environ.get("VITA_DIARY_URL",
-                           "https://vita-diario.micmer-recastello.workers.dev")
-
-# Le colonne che il diario usa davvero: nome, unita', e i macro per la stima al
-# volo. I 24 micronutrienti restano fuori — la pagina non li ricalcola in bozza,
-# li rilegge dalla build vera dopo che le righe sono state commesse.
+# Le colonne che il diario usa davvero: nome, unita', e i macro. I 24
+# micronutrienti restano fuori — li porta gia' la build vera, per giorno.
 CAT_COLS = (("kcal", "k"), ("protein_g", "p"), ("carb_g", "c"),
             ("fiber_g", "fb"), ("fat_g", "ft"))
-PRESET_N = 28
 
 
 def build_food_catalog():
-    """(catalogo, ricette, preset) per il diario editabile di /vita."""
+    """Il catalogo degli alimenti che la pagina inlina, per l'unita' di misura.
+
+    Prima tornava anche ricette e preset, che servivano al diario quando si
+    poteva scrivere da qui. Ora si annota da Mission Control, che ricalcola i
+    preset per conto suo dagli stessi CSV: tenerne una seconda copia qui
+    significherebbe due elenchi della stessa cosa, e uno dei due indietro.
+    """
     import csv as _csv
-    from collections import Counter, defaultdict
 
     cat = {}
     if os.path.exists(FOODS_CSV):
@@ -350,38 +345,8 @@ def build_food_catalog():
                     e[dst] = round(float(r[src] or 0) / ref, 4)
                 cat[r["id"]] = e
 
-    rec = {}
-    if os.path.exists(RECIPES_CSV):
-        with open(RECIPES_CSV, encoding="utf-8", newline="") as fh:
-            for r in _csv.DictReader(fh):
-                e = rec.setdefault(r["recipe_id"], {"n": r["name"],
-                                                    "s": float(r["servings"] or 1) or 1,
-                                                    "i": []})
-                e["i"].append([r["food_id"], float(r["qty"] or 0)])
-
-    presets = []
-    if os.path.exists(FOOD_LOG_CSV):
-        seen = Counter()
-        qty_of = defaultdict(Counter)
-        meal_of = defaultdict(Counter)
-        with open(FOOD_LOG_CSV, encoding="utf-8", newline="") as fh:
-            for r in _csv.DictReader(fh):
-                fid = r["food_id"]
-                if fid not in cat and fid.removeprefix("recipe:") not in rec:
-                    continue
-                seen[fid] += 1
-                qty_of[fid][r["qty"]] += 1
-                meal_of[fid][r.get("meal") or "spuntino"] += 1
-        for fid, n in seen.most_common(PRESET_N):
-            rid = fid.removeprefix("recipe:")
-            label = rec[rid]["n"] if fid.startswith("recipe:") else cat[fid]["n"]
-            presets.append({"f": fid, "n": label,
-                            "q": float(qty_of[fid].most_common(1)[0][0]),
-                            "m": meal_of[fid].most_common(1)[0][0],
-                            "seen": n})
-
-    print(f"  diario: {len(cat)} alimenti, {len(rec)} ricette, {len(presets)} preset")
-    return cat, rec, presets
+    print(f"  diario: {len(cat)} alimenti")
+    return cat
 
 
 def build_payload(raw):
@@ -561,7 +526,7 @@ def build_payload(raw):
             days_detail = json.load(fh)
         print(f"  dettaglio giornaliero: {len(days_detail)} giorni")
 
-    food_catalog, food_recipes, food_presets = build_food_catalog()
+    food_catalog = build_food_catalog()
 
     food_profile = {}
     if os.path.exists(FOOD_PROFILE):
@@ -581,14 +546,11 @@ def build_payload(raw):
         "floraFoods": flora_foods,
         "days": days_detail,
         "foodProfile": food_profile,
+        # Il catalogo serve ancora: la pagina ci legge l'unita' di misura di ogni
+        # alimento. Ricette e preset no — servivano solo ad annotare, e da quando
+        # si annota da Mission Control resterebbero nel payload senza che nessuno
+        # li apra. Un elenco che nessuno legge e' un elenco che va indietro.
         "foodCat": food_catalog,
-        "foodRec": food_recipes,
-        "foodPre": food_presets,
-        # L'URL del Worker che riceve le annotazioni. NON e' un segreto — e' un
-        # indirizzo pubblico, e senza la chiave non risponde niente oltre a
-        # /api/health. La chiave la digita Michele nel diario e resta nel suo
-        # browser: nel repo, che e' pubblico, non entra mai.
-        "diaryApi": DIARY_API,
         "pulled": raw["pulled"],
         "d0": d0.isoformat(),
         "n": n,
@@ -4209,142 +4171,21 @@ document.getElementById("tracks").innerHTML = (D.tracks || []).map(t => `
    pendenti come "in arrivo" e non come pasti gia' registrati — e per questo, se il
    Worker non risponde o la chiave non c'e', si torna alla bozza locale invece di
    perdere quello che stai scrivendo, dicendolo. */
-const DIARY_KEY = "vita.diario.v2";      /* la v1 aveva un'altra forma: si scarta */
-const DIARY_AUTH = "vita.diario.key";
-const DIARY_API = (D.diaryApi || "").replace(/\/+$/, "");
 const diaryEl = document.getElementById("diary");
 const diaryIn = document.getElementById("diary-in");
 const MEAL_SORT = ["colazione", "spuntino", "pranzo", "merenda", "cena", "non_specificato"];
-const MEAL_PICK = ["colazione", "spuntino", "pranzo", "merenda", "cena"];
-/* i macro che la bozza sa ricalcolare da sola: sono nel catalogo inlineato.
-   I micronutrienti no — quelli tornano dalla build vera, dopo il travaso. */
-const DELTA_KEYS = [["k", "kcal"], ["p", "protein_g"], ["c", "carb_g"],
-                    ["fb", "fiber_g"], ["ft", "fat_g"]];
-
-const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
-const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
-
-/* Le operazioni locali hanno la STESSA forma di quelle del Worker — stesso `kind`,
-   stesso `row_key` — e id negativi per distinguerle. Cosi' il disegno di una
-   giornata ha un percorso solo, collegata o no: senza, sarebbero due modi diversi
-   di calcolare la stessa cosa, e uno dei due sarebbe rimasto indietro. */
-let diaryLocal = (() => {
-  try { return JSON.parse(lsGet(DIARY_KEY) || "{}") || {}; } catch (e) { return {}; }
-})();
-let diaryAuth = lsGet(DIARY_AUTH) || "";
-let diaryRemote = {};      /* giorno -> ops del Worker */
-let diaryIdx = null;       /* giorno aperto, in indice di calendario */
-let diaryQuery = "";       /* filtro della ricerca alimenti */
-let diaryMeal = "";        /* pasto scelto per le aggiunte ("" = quello abituale) */
-let diaryState = DIARY_API ? (diaryAuth ? "provo" : "senza-chiave") : "assente";
-let diaryErr = "";
-let diaryBusy = false;
-
-const diaryLocalOps = k => (diaryLocal[k] = diaryLocal[k] || []);
-const diaryOnline = () => diaryState === "collegato";
-const diaryOps = k => diaryOnline() ? (diaryRemote[k] || []) : (diaryLocal[k] || []);
-const diarySaveLocal = () => lsSet(DIARY_KEY, JSON.stringify(diaryLocal));
-
-/* --------------------------------------------------------------- il Worker */
-function diaryFetch(path, opts) {
-  const o = opts || {};
-  return fetch(DIARY_API + path, {
-    method: o.method || "GET",
-    headers: Object.assign({ "X-Vita-Key": diaryAuth },
-      o.body ? { "Content-Type": "application/json" } : {}),
-    body: o.body ? JSON.stringify(o.body) : undefined,
-  }).then(r => r.json().catch(() => ({})).then(b => {
-    if (!r.ok) throw new Error(b.errore || `HTTP ${r.status}`);
-    return b;
-  }));
-}
-
-function diaryLoadDay(k) {
-  if (!DIARY_API || !diaryAuth) {
-    diaryState = DIARY_API ? "senza-chiave" : "assente";
-    return Promise.resolve();
-  }
-  diaryBusy = true;
-  return diaryFetch(`/api/day/${k}`).then(b => {
-    diaryRemote[k] = b.ops || [];
-    diaryState = "collegato"; diaryErr = "";
-  }).catch(e => {
-    diaryState = /chiave/i.test(e.message) ? "chiave-rifiutata" : "scollegato";
-    diaryErr = e.message || "";
-  }).then(() => { diaryBusy = false; diaryRender(); });
-}
-
-/* Ogni scrittura passa di qui, e quando il Worker non c'e' finisce in locale invece
-   di sparire. Il caso peggiore e' un'annotazione che resta su un dispositivo solo —
-   non un'annotazione persa mentre la pagina diceva di averla presa. */
-function diaryWrite(k, op) {
-  if (!diaryOnline()) {
-    diaryLocalOps(k).push(Object.assign({ id: -Date.now() - diaryLocalOps(k).length }, op));
-    diarySaveLocal(); diaryRender();
-    return;
-  }
-  diaryBusy = true; diaryRender();
-  diaryFetch("/api/ops", { method: "POST", body: Object.assign({ day: k }, op) })
-    .then(() => diaryLoadDay(k))
-    .catch(e => { diaryErr = e.message; diaryBusy = false; diaryRender(); });
-}
-
-function diaryUndo(k, id) {
-  if (id < 0 || !diaryOnline()) {
-    const arr = diaryLocalOps(k), i = arr.findIndex(o => o.id === id);
-    if (i >= 0) arr.splice(i, 1);
-    if (!arr.length) delete diaryLocal[k];
-    diarySaveLocal(); diaryRender();
-    return;
-  }
-  diaryBusy = true; diaryRender();
-  diaryFetch(`/api/ops/${id}`, { method: "DELETE" })
-    .then(() => diaryLoadDay(k))
-    .catch(e => { diaryErr = e.message; diaryBusy = false; diaryRender(); });
-}
-
-/* ------------------------------------------------------------ il catalogo */
-function diaryLabel(fid) {
-  if (fid.slice(0, 7) === "recipe:") {
-    const r = (D.foodRec || {})[fid.slice(7)];
-    return { n: r ? r.n : fid, u: "porzione" };
-  }
-  const f = (D.foodCat || {})[fid];
-  return { n: f ? f.n : fid, u: f ? f.u : "g" };
-}
-
-/* I macro di una quantita', per alimento o per ricetta — che si espande nei suoi
-   ingredienti divisi per le porzioni, esattamente come fa `expand_log` in Python:
-   una ricetta non ha valori propri, li hanno i suoi ingredienti. */
-function diaryMacros(fid, qty) {
-  const out = { k: 0, p: 0, c: 0, fb: 0, ft: 0 };
-  const add = (f, q) => {
-    const e = (D.foodCat || {})[f];
-    if (!e) return;
-    for (const [key] of DELTA_KEYS) out[key] += (e[key] || 0) * q;
-  };
-  if (fid.slice(0, 7) === "recipe:") {
-    const r = (D.foodRec || {})[fid.slice(7)];
-    if (r) for (const [f, q] of r.i) add(f, q * qty / (r.s || 1));
-  } else add(fid, qty);
-  return out;
-}
-
 /* ------------------------------------------------------- la giornata, unita' */
-/* Le righe vere della build piu' le operazioni non ancora travasate, ognuna con il
-   proprio stato. Una riga base senza `f` — i giorni misurati con Cronometer non ne
-   hanno, e le ricostruzioni nemmeno — resta visibile ma bloccata: non esiste una
-   riga di food_log.csv da correggere, e fingere di poterlo fare sarebbe peggio che
-   dirlo. */
+/* Le righe della build, e basta: qui il diario si legge soltanto. Si scrive da
+   Mission Control, che parla con lo stesso Worker `vita-diario` e finisce nello
+   stesso `tools/food/data/food_log.csv`. Questa pagina e' pubblica, quella e'
+   dietro login — e' li' che ha senso tenere una chiave, non qui.
+
+   `row_key` resta nella riga anche se qui non serve a nessuno: e' la chiave che
+   Mission Control manda e che apply_diary_ops.py ricostruisce sul CSV, e vederla
+   nella stessa forma nei due posti e' quello che tiene onesto il confronto. */
 function diaryRows(k) {
   let day = (D.days || {})[k];
   if (typeof day === "string") day = ((D.days || {})._p || {})[day];
-  const ops = diaryOps(k);
-  const setOf = {}, delOf = {};
-  for (const o of ops) {
-    if (o.kind === "set") setOf[o.row_key] = o;
-    else if (o.kind === "del") delOf[o.row_key] = o;
-  }
   const rows = [];
   const meals = (day && day.meals) || {};
   for (const m of Object.keys(meals)) {
@@ -4356,91 +4197,20 @@ function diaryRows(k) {
          alimenti diversi stanno mescolate */
       const j = nth[fid] = (nth[fid] === undefined ? 0 : nth[fid] + 1);
       const id = `${m}|${fid || it.n}|${j}`;
-      const s = setOf[id], d = delOf[id];
-      const q = s ? s.qty : it.qn;
-      rows.push({ id, meal: m, f: it.f || null, n: it.n, base: it.qn, q,
-                  kcal: it.qn ? Math.round(it.kcal * q / it.qn) : it.kcal,
-                  asm: !!it.a, recipe: it.r || "",
-                  gone: !!d, goneOp: d ? d.id : null,
-                  edited: !!s && s.qty !== it.qn, setOp: s ? s.id : null,
-                  fresh: false, opId: null, locked: !it.f });
+      rows.push({ id, meal: m, f: it.f || null, n: it.n, q: it.qn,
+                  kcal: it.kcal, asm: !!it.a, recipe: it.r || "" });
     });
-  }
-  for (const o of ops) {
-    if (o.kind !== "add") continue;
-    const lab = diaryLabel(o.food_id);
-    rows.push({ id: `+${o.id}`, meal: o.meal || "spuntino", f: o.food_id, n: lab.n,
-                base: o.qty, q: o.qty, kcal: Math.round(diaryMacros(o.food_id, o.qty).k),
-                asm: false, recipe: "", gone: false, edited: false,
-                fresh: true, opId: o.id, locked: false });
   }
   const rank = m => { const i = MEAL_SORT.indexOf(m); return i < 0 ? MEAL_SORT.length : i; };
   rows.sort((a, b) => rank(a.meal) - rank(b.meal));
   return { day, rows };
 }
 
-/* Quanto le operazioni spostano i totali. Si lavora per DIFFERENZE e non
-   ricalcolando tutto da capo: i totali veri escono dalla pipeline in Python, con
-   dentro i 24 micronutrienti che il catalogo qui non porta. Sommare una delta a un
-   totale vero e' onesto; rifare il totale con meta' dei dati non lo sarebbe. */
-function diaryDelta(k) {
-  const d = { k: 0, p: 0, c: 0, fb: 0, ft: 0 };
-  const acc = (fid, q, sign) => {
-    if (!fid || !isFinite(q)) return;
-    const m = diaryMacros(fid, q);
-    for (const [key] of DELTA_KEYS) d[key] += sign * m[key];
-  };
-  for (const r of diaryRows(k).rows) {
-    if (r.fresh) acc(r.f, r.q, +1);
-    else if (r.gone) acc(r.f, r.base, -1);
-    else if (r.edited) acc(r.f, r.q - r.base, +1);
-  }
-  return d;
-}
-
-/* Le righe CSV: non servono piu' a incollarle a mano quando si e' collegati — le
-   travasa la Action — ma restano la via d'uscita quando il Worker non risponde e
-   l'annotazione e' rimasta su questo dispositivo. */
-function diaryCsv(k) {
-  const rows = diaryRows(k).rows;
-  const out = [`# vita · diario ${k}`];
-  const adds = rows.filter(r => r.fresh);
-  if (adds.length) {
-    out.push("# righe da aggiungere in coda a tools/food/data/food_log.csv:");
-    for (const r of adds)
-      out.push(`${k},${r.meal},${r.f},${+(+r.q).toFixed(4)},annotato dal diario di /vita,dichiarato`);
-  }
-  const edits = rows.filter(r => r.edited && !r.gone);
-  if (edits.length) {
-    out.push("# quantita' da correggere su righe che esistono gia':");
-    for (const r of edits)
-      out.push(`# correggi ${k} ${r.meal} ${r.f}: ${+r.base} -> ${+(+r.q).toFixed(4)}`);
-  }
-  const gone = rows.filter(r => r.gone);
-  if (gone.length) {
-    out.push("# righe da togliere:");
-    for (const r of gone) out.push(`# rimuovi ${k} ${r.meal} ${r.f} (${+r.base})`);
-  }
-  if (out.length === 1) out.push("# nessuna modifica su questo giorno.");
-  return out.join("\n");
-}
-
 /* ----------------------------------------------------------------- disegno */
-const DIARY_SAY = {
-  "collegato":        ["on",  "collegato", "quello che annoti qui entra in food_log.csv entro l'ora"],
-  "provo":            ["",    "mi collego…", ""],
-  "senza-chiave":     ["off", "non collegato", "incolla la chiave e le annotazioni diventano vere"],
-  "chiave-rifiutata": ["bad", "chiave rifiutata", "il Worker non la riconosce"],
-  "scollegato":       ["bad", "Worker non raggiungibile", "le annotazioni restano su questo dispositivo"],
-  "assente":          ["off", "nessun Worker configurato", "le annotazioni restano su questo dispositivo"],
-};
-
 function diaryRender() {
   if (diaryIdx === null) return;
   const i = diaryIdx, k = isoOf(i);
   const { day, rows } = diaryRows(k);
-  const ops = diaryOps(k);
-  const dirty = ops.length > 0;
   diaryIn.innerHTML = "";
 
   const x = mk("button", "sheet-x", diaryIn, "×");
@@ -4449,13 +4219,12 @@ function diaryRender() {
   x.addEventListener("click", closeDiary);
 
   const hd = mk("div", "sheet-hd", diaryIn);
-  mk("div", "when", hd, DOW[(dayDate(i).getDay() + 6) % 7]
-    + (dirty ? ` · ${ops.length} in arrivo` : ""));
+  mk("div", "when", hd, DOW[(dayDate(i).getDay() + 6) % 7]);
   mk("h3", null, hd, fmtDate(i)).setAttribute("id", "diary-t");
 
   /* ---- navigazione ---- */
   const nav = mk("div", "dnav", diaryIn);
-  const go = j => { if (j !== null && j >= 0 && j < N) { diaryIdx = j; diaryRender(); diaryLoadDay(isoOf(j)); } };
+  const go = j => { if (j !== null && j >= 0 && j < N) { diaryIdx = j; diaryRender(); } };
   const prev = mk("button", null, nav, "‹ giorno prima");
   prev.setAttribute("type", "button");
   prev.addEventListener("click", () => go(i - 1));
@@ -4470,27 +4239,6 @@ function diaryRender() {
   const last = mk("button", null, nav, "ultimo giorno");
   last.setAttribute("type", "button");
   last.addEventListener("click", () => go(N - 1));
-
-  /* ---- stato del collegamento ---- */
-  const say = DIARY_SAY[diaryState] || DIARY_SAY["scollegato"];
-  const st = mk("div", "dstate " + say[0], diaryIn);
-  mk("b", null, st, diaryBusy ? "…" : say[1]);
-  mk("span", null, st, diaryErr && say[0] === "bad" ? `${say[2]} — ${diaryErr}` : say[2]);
-  if (DIARY_API && diaryState !== "collegato") {
-    const kin = mk("input", null, st);
-    kin.setAttribute("type", "password");
-    kin.setAttribute("placeholder", "chiave del diario");
-    kin.setAttribute("aria-label", "Chiave del diario");
-    kin.value = diaryAuth;
-    const use = mk("button", null, st, "collega");
-    use.setAttribute("type", "button");
-    use.addEventListener("click", () => {
-      diaryAuth = (kin.value || "").trim();
-      lsSet(DIARY_AUTH, diaryAuth);
-      diaryState = diaryAuth ? "provo" : "senza-chiave";
-      diaryRender(); diaryLoadDay(k);
-    });
-  }
 
   /* ---- le misure del giorno ---- */
   const kv = [];
@@ -4516,14 +4264,11 @@ function diaryRender() {
   }
 
   /* ---- la tavola, riga per riga ---- */
-  const dl = diaryDelta(k);
-  const baseK = day && day.tot ? day.tot.kcal : 0;
-  mk("h4", null, diaryIn, `Tavola — ${nf(baseK + dl.k)} kcal`
-    + (dirty ? ` · ${dl.k >= 0 ? "+" : ""}${nf(dl.k)} in arrivo` : "")
+  mk("h4", null, diaryIn, `Tavola — ${nf(day && day.tot ? day.tot.kcal : 0)} kcal`
     + (day && day.asm ? ` · ${nf(Math.round(100 * day.obs / (day.obs + day.asm)))}% osservato` : ""));
 
   if (!rows.length) {
-    mk("p", "d-empty", diaryIn, "Nessun pasto per questo giorno. Aggiungine uno qui sotto.");
+    mk("p", "d-empty", diaryIn, "Nessun pasto registrato per questo giorno.");
   } else {
     let cur = null, box = null;
     for (const r of rows) {
@@ -4532,45 +4277,14 @@ function diaryRender() {
         box = mk("div", "meal", diaryIn);
         mk("div", "mname", box, MEAL_IT[cur] || cur);
       }
-      const cls = ["d-row", r.asm ? "asm" : "", r.gone ? "gone" : "",
-                   r.edited ? "edit" : "", r.fresh ? "new" : ""].filter(Boolean).join(" ");
-      const row = mk("div", cls, box);
+      const row = mk("div", ["d-row", r.asm ? "asm" : ""].filter(Boolean).join(" "), box);
       mk("span", null, row, r.n + (r.recipe ? ` · ${r.recipe}` : ""));
-      const inp = mk("input", null, row);
-      inp.setAttribute("type", "number");
-      inp.setAttribute("step", "any");
-      inp.setAttribute("min", "0");
-      inp.setAttribute("aria-label", `Quantità di ${r.n}`);
-      inp.value = String(r.q);
-      if (r.locked || r.gone) inp.setAttribute("disabled", "disabled");
-      inp.addEventListener("change", () => {
-        const v = parseFloat(inp.value);
-        if (!isFinite(v) || v < 0 || v === r.q) return;
-        if (r.fresh) {
-          /* una riga ancora in arrivo si riscrive: si toglie e si rimette, che e'
-             anche l'unica cosa che il Worker sa fare su una `add` */
-          diaryUndo(k, r.opId);
-          diaryWrite(k, { kind: "add", meal: r.meal, food_id: r.f, qty: v });
-        } else if (v === r.base && r.setOp !== null) {
-          diaryUndo(k, r.setOp);
-        } else {
-          diaryWrite(k, { kind: "set", row_key: r.id, food_id: r.f, qty: v });
-        }
-      });
+      mk("b", null, row, String(r.q));
       mk("em", null, row, `${unitOf(r.f) === "unit" ? "×" : unitOf(r.f)} · ${nf(r.kcal)} kcal`);
-      const del = mk("button", null, row, r.gone ? "↺" : "×");
-      del.setAttribute("type", "button");
-      del.setAttribute("aria-label", r.gone ? `Rimetti ${r.n}` : `Togli ${r.n}`);
-      if (r.locked) del.setAttribute("disabled", "disabled");
-      else del.addEventListener("click", () => {
-        if (r.fresh) diaryUndo(k, r.opId);
-        else if (r.gone) diaryUndo(k, r.goneOp);
-        else diaryWrite(k, { kind: "del", row_key: r.id, food_id: r.f });
-      });
     }
   }
 
-  /* ---- i macro, con quello che sta arrivando gia' dentro ---- */
+  /* ---- i macro ---- */
   if (day && day.pct) {
     const P = D.foodProfile || {}, rda = (P.rda || {});
     const need = { protein_g: P.weight_kg && P.protein_g_per_kg ? P.weight_kg * P.protein_g_per_kg : null,
@@ -4583,84 +4297,13 @@ function diaryRender() {
       const basis = need[nut] || (day.tot[nut] && day.pct[nut]
         ? day.tot[nut] * 100 / day.pct[nut] : null);
       html.push(bar(NUTRI_IT[nut] || nut,
-        basis ? 100 * ((day.tot[nut] || 0) + dl[key]) / basis : day.pct[nut]));
+        basis ? 100 * (day.tot[nut] || 0) / basis : day.pct[nut]));
     }
     bars.innerHTML = html.join("");
   }
 
-  /* ---- annota ---- */
-  mk("h4", null, diaryIn, "Annota");
-  /* In che pasto finisce quello che aggiungi. Prima non si poteva scegliere: il
-     preset imponeva il proprio pasto abituale e la ricerca metteva tutto negli
-     spuntini, il che rendeva il diario inutile per la cena. "abituale" resta il
-     default perche' nove volte su dieci e' giusto. */
-  const mp = mk("div", "d-meal", diaryIn);
-  mk("u", null, mp, "in");
-  const mealBtn = (val, label) => {
-    const b = mk("button", diaryMeal === val ? "on" : null, mp, label);
-    b.setAttribute("type", "button");
-    b.setAttribute("aria-pressed", diaryMeal === val ? "true" : "false");
-    b.addEventListener("click", () => { diaryMeal = val; diaryRender(); });
-  };
-  mealBtn("", "abituale");
-  for (const m of MEAL_PICK) mealBtn(m, MEAL_IT[m] || m);
-
-  const pre = mk("div", "d-pre", diaryIn);
-  for (const p of (D.foodPre || []).slice(0, 18)) {
-    const b = mk("button", null, pre);
-    b.setAttribute("type", "button");
-    b.textContent = p.n;
-    mk("b", null, b, `${+p.q}${diaryLabel(p.f).u === "unit" ? "×" : ""}`);
-    b.addEventListener("click", () => diaryWrite(k,
-      { kind: "add", meal: diaryMeal || p.m, food_id: p.f, qty: p.q }));
-  }
-  const search = mk("input", "d-search", diaryIn);
-  search.setAttribute("type", "search");
-  search.setAttribute("placeholder", "…oppure cerca un alimento (mela, salmone, riso)");
-  search.setAttribute("aria-label", "Cerca un alimento");
-  search.value = diaryQuery;
-  search.addEventListener("input", () => { diaryQuery = search.value || ""; diaryRender(); });
-  const q = diaryQuery.trim().toLowerCase();
-  if (q.length >= 2) {
-    const hits = mk("div", "d-pre", diaryIn);
-    const cat = D.foodCat || {};
-    const found = Object.keys(cat).filter(f => cat[f].n.toLowerCase().indexOf(q) >= 0
-      || f.indexOf(q) >= 0).slice(0, 10);
-    if (!found.length) mk("span", "d-empty", hits, "Nessun alimento con questo nome nel catalogo.");
-    for (const f of found) {
-      const b = mk("button", null, hits);
-      b.setAttribute("type", "button");
-      b.textContent = cat[f].n;
-      const unit = cat[f].u === "unit";
-      mk("b", null, b, unit ? "1×" : "100 " + cat[f].u);
-      b.addEventListener("click", () => diaryWrite(k,
-        { kind: "add", meal: diaryMeal || "spuntino", food_id: f, qty: unit ? 1 : 100 }));
-    }
-  }
-
-  /* ---- la via d'uscita, quando il Worker non c'e' ---- */
-  if (!diaryOnline() && dirty) {
-    mk("h4", null, diaryIn, "Le righe da mettere nel repo a mano");
-    const out = mk("textarea", "d-out", diaryIn);
-    out.setAttribute("readonly", "readonly");
-    out.setAttribute("aria-label", "Righe CSV di questa giornata");
-    out.textContent = diaryCsv(k);
-    out.value = out.textContent;
-    const acts = mk("div", "d-acts", diaryIn);
-    const copy = mk("button", "d-act", acts, "Copia");
-    copy.setAttribute("type", "button");
-    copy.addEventListener("click", () => {
-      if (typeof navigator !== "undefined" && navigator.clipboard)
-        navigator.clipboard.writeText(diaryCsv(k)).then(() => { copy.textContent = "Copiato"; }, () => {});
-    });
-  }
-
-  const pend = Object.keys(diaryLocal).length;
-  mk("p", "hint", diaryIn, diaryOnline()
-    ? "Le annotazioni vivono nel Worker finché la build oraria non le porta in "
-      + "tools/food/data/food_log.csv, che resta l'unico registro."
-    : `Non collegato: ${pend ? `bozza su ${pend} giorn${pend === 1 ? "o" : "i"}, ` : ""}`
-      + "tutto resta su questo dispositivo e non entra nel repo da solo.");
+  mk("p", "hint", diaryIn, "Questo diario si legge soltanto. Si annota da Mission "
+    + "Control, che scrive nello stesso registro: tools/food/data/food_log.csv.");
 }
 
 function diaryIdxOf(iso) {
@@ -4684,7 +4327,6 @@ function openDiary(i) {
   diaryRender();
   diaryEl.classList.add("on");
   document.body.style.overflow = "hidden";
-  diaryLoadDay(isoOf(diaryIdx));
 }
 function closeDiary() {
   diaryEl.classList.remove("on");
@@ -4696,13 +4338,8 @@ addEventListener("keydown", ev => { if (ev.key === "Escape" && diaryIdx !== null
 document.getElementById("diary-btn").addEventListener("click", () => openDiary());
 window.openDiary = openDiary;
 window.CRUSCOTTO.diary = {
-  open:openDiary, close:closeDiary, render:diaryRender, rows:diaryRows, csv:diaryCsv,
-  delta:diaryDelta, macros:diaryMacros, idxOf:diaryIdxOf, iso:isoOf,
-  lastWithFood:diaryLastWithFood, node:diaryIn, api:DIARY_API,
-  ops:diaryOps, write:(k, op) => diaryWrite(k, op), undo:(k, id) => diaryUndo(k, id),
-  state:() => diaryState, setState:s => { diaryState = s; }, local:() => diaryLocal,
-  meal:m => { diaryMeal = m; }, search:s => { diaryQuery = s; },
-  reset:() => { diaryLocal = {}; diaryRemote = {}; diarySaveLocal(); if (diaryIdx !== null) diaryRender(); },
+  open:openDiary, close:closeDiary, render:diaryRender, rows:diaryRows,
+  idxOf:diaryIdxOf, iso:isoOf, lastWithFood:diaryLastWithFood, node:diaryIn,
 };
 
 drawAll();
