@@ -438,3 +438,6 @@ date,meal,food_id,qty,note,source
 2026-08-14,spuntino,cappuccino,1,dichiarato a voce,dichiarato
 2026-08-14,spuntino,banana,1,"seconda banana della giornata, dichiarata a voce",dichiarato
 2026-08-14,spuntino,pesca,1,dichiarata a voce,dichiarato
+2026-08-14,pranzo,pizza_margherita,1,"pizza media prosciutto e mozzarella, dichiarata a voce; base margherita (con mozzarella), 1 pizza intera da pizzeria",dichiarato
+2026-08-14,pranzo,prosciutto_cotto,50,"il prosciutto sulla pizza; ""normale"" letto come cotto, non crudo. Grammatura standard stimata",dichiarato
+2026-08-14,pranzo,torta_semplice,120,"torta di grano saraceno con marmellata; nessuna voce a catalogo, torta da forno generica usata come proxy. Fetta standard stimata",dichiarato
