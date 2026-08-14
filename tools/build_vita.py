@@ -4174,6 +4174,9 @@ document.getElementById("tracks").innerHTML = (D.tracks || []).map(t => `
 const diaryEl = document.getElementById("diary");
 const diaryIn = document.getElementById("diary-in");
 const MEAL_SORT = ["colazione", "spuntino", "pranzo", "merenda", "cena", "non_specificato"];
+/* I macro che il diario disegna a barre. Le kcal non ci sono: stanno gia' nel
+   titolo della tavola, e ripeterle qui direbbe due volte la stessa cosa. */
+const MACRO_BARRE = ["protein_g", "carb_g", "fiber_g", "fat_g"];
 /* ------------------------------------------------------- la giornata, unita' */
 /* Le righe della build, e basta: qui il diario si legge soltanto. Si scrive da
    Mission Control, che parla con lo stesso Worker `vita-diario` e finisce nello
@@ -4292,8 +4295,8 @@ function diaryRender() {
     mk("h4", null, diaryIn, "Macro, in % del fabbisogno");
     const bars = mk("div", "bars", diaryIn);
     const html = [];
-    for (const [key, nut] of DELTA_KEYS) {
-      if (nut === "kcal" || day.pct[nut] === undefined) continue;
+    for (const nut of MACRO_BARRE) {
+      if (day.pct[nut] === undefined) continue;
       const basis = need[nut] || (day.tot[nut] && day.pct[nut]
         ? day.tot[nut] * 100 / day.pct[nut] : null);
       html.push(bar(NUTRI_IT[nut] || nut,
