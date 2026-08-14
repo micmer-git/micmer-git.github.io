@@ -371,8 +371,11 @@ if (ran) {
     ok(!n.art.dataset.err, `"${title}" non solleva` + (n.art.dataset.err ? `: ${n.art.dataset.err}` : ""));
     ok(!n.art.dataset.empty, `"${title}" disegna qualcosa (non è un riquadro vuoto)`);
     ok(n.tbody.innerHTML.includes("<tr"), `"${title}" ha la sua tabella di ripiego`);
-    ok(must.test(strip0(n.foot.innerHTML)),
-      `"${title}" dichiara cosa è nel piede (cerco ${must})`);
+    /* la nota di metodo sta sotto "dati" dal 14/8, non piu' sotto il grafico */
+    ok(must.test(strip0(n.cap.innerHTML)),
+      `"${title}" dichiara cosa è, dentro «dati» (cerco ${must})`);
+    ok(!must.test(strip0(n.foot.innerHTML)),
+      `"${title}" non rimette la nota di metodo sotto il grafico`);
     /* non tutti hanno un numero di testa: una nuvola come "Il caldo" e' una
        relazione, e un "valore di oggi" li' sarebbe l'ultima corsa spacciata per
        un livello. Il controllo vale su chi lo dichiara. */
@@ -783,6 +786,71 @@ if (ran) {
         ok(Math.abs(rLv) <= 1.0001 && Math.abs(rD1) <= 1.0001, "r resta dentro [-1, 1]");
       }
     }
+  }
+
+  /* --------------------------------- 5c-bis. le dieci coppie, e i due slot liberi
+     Un preset che punta a una serie che non esiste piu' non rompe niente: sparisce
+     dalla barra, in silenzio. Per questo si contano — se qualcuno toglie una serie
+     dal registro (com'e' appena successo al VO2max) le pastiglie che la usavano
+     devono farsi notare qui e non nel browser di Michele. */
+  if (CMP && CMP.presets) {
+    const dead = CMP.presets.filter(p => !CMP.byKey.has(p.x) || !CMP.byKey.has(p.y));
+    ok(dead.length === 0, `le ${CMP.presets.length} coppie notevoli puntano a serie vive` +
+      (dead.length ? ` — rotte: ${dead.map(p => p.t).join(", ")}` : ""));
+    ok(CMP.presets.length === 10, `dieci coppie notevoli (${CMP.presets.length})`);
+    const noWhy = CMP.presets.filter(p => !p.why || p.why.length < 60).map(p => p.t);
+    ok(noWhy.length === 0, "ogni coppia dice perché guardarla" +
+      (noWhy.length ? ` — mute: ${noWhy.join(", ")}` : ""));
+    /* ogni tesi deve reggere il proprio r: si ricalcola qui, e se un preset e'
+       diventato una frase falsa il check lo dice invece di lasciarla in pagina */
+    const wrong = [];
+    for (const p of CMP.presets) {
+      const sx = CMP.byKey.get(p.x), sy = CMP.byKey.get(p.y);
+      if (!sx || !sy) continue;
+      const pts = CMP.pairsFor(sx, sy, { lv:0, d1:1, d7:7 }[p.mode] || 0, p.lag || 0, 0, D.n - 1);
+      const r = CMP.pearson(pts);
+      if (r === null || pts.length < 50) { wrong.push(`${p.t} (n ${pts.length})`); continue; }
+      if (p.tag === "zero" && Math.abs(r) > 0.15) wrong.push(`${p.t} non è più uno zero (r ${r.toFixed(2)})`);
+      if (p.tag !== "zero" && p.tag !== "poco n" && Math.abs(r) < 0.15)
+        wrong.push(`${p.t} si è spento (r ${r.toFixed(2)})`);
+    }
+    ok(wrong.length === 0, "ogni coppia notevole regge ancora il proprio r" +
+      (wrong.length ? ` — da riscrivere: ${wrong.join(" · ")}` : ""));
+    const chips = document.getElementById("compare-presets");
+    ok(chips._kids.length === CMP.presets.length + 1,
+      `la barra ha le dieci pastiglie più lo slot libero (${chips._kids.length})`);
+    /* lo slot "questa e' mia": due, non venti, e devono sopravvivere alla visita */
+    const add = chips._kids[chips._kids.length - 1];
+    add.fire("click"); add.fire("click"); add.fire("click");
+    ok(CMP.mine.length === 2, `gli slot personali si fermano a due (${CMP.mine.length})`);
+    ok(/cxmine/.test(Object.keys(LS).join(",")), "e sono salvati per la visita dopo");
+  }
+
+  /* ------------------------------------------- 5c-ter. l'opinione del coach
+     Il rapporto non ha nemmeno un numero scritto a mano: se una serie sparisce,
+     al posto della cifra deve uscire un trattino, mai "NaN" o "undefined" — che
+     e' il modo tipico in cui un testo generato smette di dire la verita' senza
+     smettere di sembrare autorevole. */
+  const CO = K.coach;
+  ok(!!CO, "window.CRUSCOTTO.coach esposto");
+  if (CO) {
+    let html = "";
+    try { html = CO.html(); } catch (e) { fails.push("FAIL il rapporto solleva: " + (e && e.stack || e)); }
+    const bare = String(html).replace(/<[^>]+>/g, "");
+    ok(html.length > 2000, `il rapporto ha del testo (${(html.length / 1000).toFixed(1)} KB)`);
+    ok(!/NaN|undefined/.test(html), "nessun NaN o undefined nel rapporto");
+    for (const t of ["La tavola", "Il motore", "La gamba", "Cosa questo rapporto non sa"])
+      ok(bare.includes(t), `il rapporto ha la sezione "${t}"`);
+    ok(/r -?0,\d\d · n \d/.test(bare), "ogni associazione porta il suo r e il suo n");
+    ok(/±40/.test(bare) && /ricostruit/i.test(bare) && /non è un parere medico/i.test(bare),
+      "il rapporto dichiara i propri limiti (modello, ricostruito, non è un referto)");
+    const lead = document.getElementById("coach-lead");
+    ok(/\S/.test(String(lead.innerHTML)), "la scheda in cima porta già il verdetto");
+    ok(!/NaN|undefined/.test(String(lead.innerHTML)), "e senza NaN");
+    document.getElementById("coach-btn").fire("click");
+    ok(document.getElementById("coach").classList.contains("on"),
+      "il bottone apre il rapporto");
+    K.coach.close();
   }
 
   /* --------------------------------------------- 5d. il diario, e la sua data

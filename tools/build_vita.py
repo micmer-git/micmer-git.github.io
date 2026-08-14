@@ -438,7 +438,6 @@ def build_payload(raw):
     hrv = col("hrv", r1)
     rhr = col("restingHR", ri)
     steps = col("steps", ri)
-    vo2 = col("vo2max", r1)
     weight = col("weight", r1)
     bodyfat = col("bodyFat", r1)
 
@@ -577,14 +576,14 @@ def build_payload(raw):
         "recon": recon,
         "ctl": ctl, "atl": atl, "load": load,
         "sleep": sleep, "score": score, "hrv": hrv, "rhr": rhr,
-        "steps": steps, "vo2": vo2, "weight": weight, "bodyfat": bodyfat,
+        "steps": steps, "weight": weight, "bodyfat": bodyfat,
         "acts": arows,
         "anames": anames,
         "first": {
             "load": load_i0,
             "act": arows[0][0] if arows else 0,
             "sleep": first(sleep), "score": first(score), "hrv": first(hrv),
-            "rhr": first(rhr), "steps": first(steps), "vo2": first(vo2),
+            "rhr": first(rhr), "steps": first(steps),
             "weight": first(weight), "bodyfat": first(bodyfat),
             **{f"n_{c}": i for c, i in nutri_first.items() if i is not None},
             **{f"m_{c}": i for c, i in microbe_first.items()},
@@ -610,7 +609,7 @@ def coverage(p):
     lines = []
     lines.append(f"span: {p['d0']} → "
                  f"{(d0 + timedelta(days=p['n'] - 1)).isoformat()}  ({p['n']} giorni)")
-    fields = ["ctl", "load", "sleep", "score", "hrv", "rhr", "steps", "vo2",
+    fields = ["ctl", "load", "sleep", "score", "hrv", "rhr", "steps",
               "weight", "bodyfat"]
     for f in fields:
         vals = [v for v in p[f] if v is not None]
@@ -828,6 +827,24 @@ TEMPLATE = r"""<!DOCTYPE html>
   .compare-result span{display:block; font:500 .59rem 'IBM Plex Mono',monospace;
     color:var(--ink-soft); margin:3px 0}
   .compare-result p{font-size:.75rem; line-height:1.45; color:var(--muted); margin-top:10px}
+  /* i dieci preset: pastiglie, non un menu a tendina. Il titolo di ognuna e' la
+     TESI, non i nomi delle due serie — "il caldo si paga il mattino dopo" dice
+     perche' guardarla, "Heat strain contro FC a riposo" no. */
+  .cx-presets{display:flex; flex-wrap:wrap; gap:6px; justify-content:center;
+    margin:0 0 12px}
+  .cx-presets button{font-family:'IBM Plex Mono',monospace; font-size:.6rem;
+    letter-spacing:.05em; color:var(--ink-soft); background:transparent; cursor:pointer;
+    border:1px solid var(--rule); border-radius:999px; padding:5px 11px; line-height:1.3}
+  .cx-presets button:hover{border-color:var(--gold); color:var(--ink)}
+  .cx-presets button[aria-pressed="true"]{border-color:var(--gold); color:var(--paper);
+    background:var(--gold)}
+  .cx-presets button.cx-add{border-style:dashed}
+  .cx-presets button i{font-style:normal; opacity:.55; margin-left:6px}
+  .cx-claim{max-width:70ch; margin:0 auto 12px; text-align:center; font-size:.88rem;
+    line-height:1.55; color:var(--ink-soft)}
+  .cx-claim:empty{display:none}
+  .cx-claim b{color:var(--gold); font-weight:500}
+  .cx-claim em{color:var(--muted); font-style:italic}
   .compare-note{font-size:.72rem; line-height:1.5; color:var(--muted); margin-top:9px;
     text-align:center}
   /* L'avviso "e' solo trend" non e' un errore: e' il risultato. Prende l'arancio
@@ -1000,6 +1017,10 @@ TEMPLATE = r"""<!DOCTYPE html>
     color:var(--ink-soft); margin:6px 0 0; line-height:1.5}
   .d-cap:empty{display:none}
   .d-cap b{color:var(--muted); font-weight:500}
+  /* la nota di metodo: piu' lunga, quindi corpo di testo e non monospazio */
+  .d-note{display:block; margin-top:7px; font-family:'EB Garamond',Georgia,serif;
+    font-size:.86rem; letter-spacing:0; line-height:1.55; color:var(--ink-soft);
+    border-left:2px solid var(--rule); padding-left:11px}
   table.fallback{width:100%; border-collapse:collapse; margin-top:6px; font-size:.72rem;
     font-family:'IBM Plex Mono',monospace; font-variant-numeric:tabular-nums}
   table.fallback th,table.fallback td{text-align:right; padding:2px 0 2px 8px;
@@ -1084,6 +1105,50 @@ TEMPLATE = r"""<!DOCTYPE html>
     color:var(--muted); text-align:center; margin-top:9px}
 
   /* ---------- il diario: la giornata sfogliabile e annotabile ---------- */
+  /* ---------- l'opinione del coach ----------
+     Sta in cima e non in fondo apposta: e' la sola superficie della pagina che
+     mette insieme tavola, motore e gamba in una lettura sola, e chi apre /vita
+     nove volte su dieci vuole quella, non ventisette grafici. La scheda dice il
+     verdetto; il rapporto intero e' dietro il bottone. */
+  .coach-card{margin:26px 0 0; border:1px solid var(--rule); border-left:3px solid var(--gold);
+    border-radius:10px; background:var(--paper); padding:17px 20px 18px}
+  .coach-k{font-family:'IBM Plex Mono',monospace; font-size:.55rem; letter-spacing:.24em;
+    text-transform:uppercase; color:var(--muted)}
+  .coach-card h2{font-family:'Cinzel',serif; font-size:1.32rem; font-weight:700;
+    letter-spacing:.01em; margin:3px 0 6px}
+  .coach-lead{font-size:1rem; line-height:1.6; color:var(--ink-soft); max-width:74ch;
+    margin:0 0 12px}
+  .coach-lead b{color:var(--gold); font-weight:500}
+  .coach-card button{font-family:'IBM Plex Mono',monospace; font-size:.62rem;
+    letter-spacing:.15em; text-transform:uppercase; color:var(--ink);
+    background:var(--paper); border:1px solid var(--gold); border-radius:99px;
+    padding:9px 20px; cursor:pointer; transition:background .16s,color .16s}
+  .coach-card button:hover{background:var(--gold); color:#0a0906}
+  /* il rapporto dentro il pannello */
+  .cr-when{font-family:'IBM Plex Mono',monospace; font-size:.55rem; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--muted); padding-right:34px}
+  .cr-verdict{font-size:1.06rem; line-height:1.62; margin:10px 0 4px; color:var(--ink)}
+  .cr-verdict b{color:var(--gold); font-weight:500}
+  .cr-sec{margin:24px 0 0; border-top:1px solid var(--rule); padding-top:15px}
+  .cr-sec > h4{font-family:'Cinzel',serif; font-size:1.02rem; font-weight:700; margin:0 0 2px}
+  .cr-sec > p.cr-sub{font-family:'IBM Plex Mono',monospace; font-size:.55rem;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin:0 0 12px}
+  .cr-item{margin:0 0 15px; padding-left:13px; border-left:2px solid var(--rule)}
+  .cr-item.hot{border-left-color:var(--gold)}
+  .cr-item.nil{border-left-color:var(--rule); opacity:.92}
+  .cr-item h5{font-size:1rem; font-weight:500; margin:0 0 3px; color:var(--ink);
+    font-family:'EB Garamond',Georgia,serif; line-height:1.35}
+  .cr-item p{margin:0; font-size:.92rem; line-height:1.58; color:var(--ink-soft)}
+  .cr-num{display:block; margin-top:5px; font-family:'IBM Plex Mono',monospace;
+    font-size:.58rem; letter-spacing:.08em; color:var(--muted)}
+  .cr-num b{color:var(--gold); font-weight:500}
+  .cr-do{display:block; margin-top:6px; font-size:.9rem; line-height:1.5; color:var(--ink)}
+  .cr-do::before{content:"→ "; color:var(--gold)}
+  .cr-limits{margin:24px 0 0; border-top:1px solid var(--rule); padding-top:14px;
+    font-size:.86rem; line-height:1.55; color:var(--muted)}
+  .cr-limits h4{font-family:'IBM Plex Mono',monospace; font-size:.55rem; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--muted); margin:0 0 7px}
+  .cr-limits li{margin:0 0 5px}
   .diary-open{display:flex; align-items:center; justify-content:center; gap:11px;
     flex-wrap:wrap; margin:16px 0 0}
   .diary-open button{font-family:'IBM Plex Mono',monospace; font-size:.62rem;
@@ -1272,6 +1337,13 @@ TEMPLATE = r"""<!DOCTYPE html>
 </div>
 <p class="fortnight">Medie giornaliere degli ultimi 14 giorni · variazione rispetto ai 14 precedenti. Tocca una voce della tavola per gli insight.</p>
 
+<section class="coach-card" aria-labelledby="coach-h">
+  <div class="coach-k">il rapporto</div>
+  <h2 id="coach-h">L'opinione del coach</h2>
+  <p class="coach-lead" id="coach-lead"></p>
+  <button type="button" id="coach-btn">Leggi il rapporto</button>
+</section>
+
 <div class="diary-open">
   <button type="button" id="diary-btn">Apri il diario</button>
   <span>una giornata alla volta · misure, pasti, e le righe da annotare</span>
@@ -1319,14 +1391,19 @@ corsa alla volta. Non è la stessa cosa, ed è la cosa più vicina che ci sia.</
 <main class="panel" id="panel-volume"></main>
 
 <h2 class="band">Incroci</h2>
-<p class="band-sub">Una serie contro l'altra. La retta è una regressione dei minimi
-quadrati e <em>r</em> è la correlazione. Il risultato onesto di questa sezione è che
-sono <strong>tutte vicine a zero</strong>: niente di quello che l'orologio misura al
-mattino sa dire cosa è successo il giorno prima. Le nuvole sono qui apposta — una
-correlazione nulla si vede solo se la si disegna. In fondo stanno le tre misure di
-contorno — peso, massa grassa, VO₂max dell'orologio: da sole non sono una serie da
-guardare, e il posto giusto per un gregario è accanto a quello che dovrebbe spiegare.</p>
+<p class="band-sub">Un grafico solo, e dieci coppie già scelte. Non scelte a occhio:
+sono uscite calcolando <strong>tutte le 2.958 combinazioni</strong> di serie, su due
+sfasamenti e su livelli e variazioni, e poi buttando via due cose — quelle dentro la
+stessa sezione, che sono il cablaggio del database e non una scoperta (fibre contro
+magnesio stanno negli stessi cibi), e quelle il cui <em>r</em> si scioglie appena si
+guardano le variazioni, dove era solo il tempo a muovere tutte e due.<br>
+Quattro delle dieci sono <strong>zeri</strong>, ed è il risultato più solido che ci sia:
+con cinquecento mattine e un <em>r</em> sotto 0,15 non è che non si sia trovato niente,
+è che non c'è niente da trovare. Sotto le pastiglie i due assi restano liberi, e due
+slot sono da riempire con le proprie.</p>
 <section class="compare" aria-label="Confronta due misure">
+  <div class="cx-presets" id="compare-presets" role="group" aria-label="Coppie notevoli"></div>
+  <p class="cx-claim" id="compare-claim"></p>
   <div class="compare-controls">
     <label>Asse X<select id="compare-x"></select></label>
     <label>Asse Y<select id="compare-y"></select></label>
@@ -1348,7 +1425,6 @@ guardare, e il posto giusto per un gregario è accanto a quello che dovrebbe spi
   descrivono l'associazione, non una causa. Le serie alimentari ricostruite possono
   mostrare soprattutto le regole usate per ricostruirle.</p>
 </section>
-<main class="panel" id="panel-incroci"></main>
 
 <h2 class="band" id="cibo">Tavola</h2>
 <p class="band-sub">Cosa entra, contro cosa serve. Queste serie sono una
@@ -1375,7 +1451,7 @@ davvero.</p>
   Generato il <span class="mono">__BUILT__</span> da
   <span class="mono">tools/build_vita.py</span>, leggendo Intervals.icu e gli
   aggregati giornalieri del diario alimentare.<br>
-  Il carico è registrato dal 2019; sonno, HRV, passi e VO₂max dal 2025; la tavola
+  Il carico è registrato dal 2019; sonno, HRV e passi dal 2025; la tavola
   da maggio 2026. Il <strong>2022 non manca più</strong>: le sue 394 attività sono
   rientrate da un export Strava, ma il loro carico è <strong>stimato</strong> da durata
   e frequenza cardiaca, non misurato — perciò quel tratto dice «carico ricostruito».
@@ -1386,6 +1462,10 @@ davvero.</p>
 
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-t">
   <div class="sheet-in" id="sheet-in"></div>
+</div>
+
+<div class="sheet" id="coach" role="dialog" aria-modal="true" aria-labelledby="coach-t">
+  <div class="sheet-in" id="coach-in"></div>
 </div>
 
 <div class="sheet" id="diary" role="dialog" aria-modal="true" aria-labelledby="diary-t">
@@ -2884,69 +2964,16 @@ const TILES = [
       `Finestra di ${CLIMB_WIN} giorni e non di dodici mesi perché qui la densità cambia dentro la stagione, ` +
       "e una finestra lunga la spianerebbe proprio dove c'è qualcosa da vedere." },
 
-  /* ---- Incroci ---- */
-  { panel:"incroci", h:180, first:"sleep", title:"Sonno contro carico del giorno prima",
-    cap:"TSS di ieri → ore dormite stanotte",
-    kind:rXY, spec:{ xname:"TSS di ieri", yname:"Sonno", xfmt:FMT.tss, yfmt:FMT.hhmm, r:2.8,
-      points:(a, b) => [{ name:"notti", col:"var(--s1)",
-        pts:pairPts(i => D.load[i - 1], i => D.sleep[i], a, b, x => x > 0) }] } },
-
-  { panel:"incroci", h:180, first:"hrv", title:"HRV contro il sonno della notte",
-    cap:"ore dormite → HRV al risveglio",
-    kind:rXY, spec:{ xname:"Sonno", yname:"HRV", xfmt:FMT.hhmm, yfmt:FMT.ms, r:2.8,
-      xtick:v => (v / 60).toFixed(0) + "h",
-      points:(a, b) => [{ name:"mattine", col:"var(--s2)",
-        pts:pairPts(i => D.sleep[i], i => D.hrv[i], a, b) }] } },
-
-  { panel:"incroci", h:180, first:"rhr", title:"FC a riposo contro carico del giorno prima",
-    cap:"TSS di ieri → battiti stamattina",
-    kind:rXY, spec:{ xname:"TSS di ieri", yname:"FC a riposo", xfmt:FMT.tss, yfmt:FMT.bpm, r:2.8,
-      points:(a, b) => [{ name:"mattine", col:"var(--s3)",
-        pts:pairPts(i => D.load[i - 1], i => D.rhr[i], a, b, x => x > 0) }] } },
-
-  { panel:"incroci", h:180, first:"hrv", title:"HRV contro forma",
-    cap:"CTL − ATL → HRV al risveglio",
-    kind:rXY, spec:{ xname:"Forma", yname:"HRV", xfmt:FMT.num0, yfmt:FMT.ms, r:2.8,
-      points:(a, b) => [{ name:"mattine", col:"var(--s4)",
-        pts:pairPts(i => (D.ctl[i] === null || D.atl[i] === null ? null : D.ctl[i] - D.atl[i]), i => D.hrv[i], a, b) }] } },
-
-  { panel:"incroci", h:180, first:"vo2", title:"VO₂max contro fitness",
-    cap:"CTL del giorno → VO₂max stimato",
-    kind:rXY, spec:{ xname:"Fitness (CTL)", yname:"VO₂max", xfmt:FMT.num0,
-      yfmt:FMT.num1, r:2.8,
-      points:(a, b) => [{ name:"stime", col:"var(--s1)",
-        pts:pairPts(i => D.ctl[i], i => D.vo2[i], a, b) }] },
-    foot:"Fra fitness 90 e 190 la stima non si sposta." },
-
-  /* ---- Corpo: tre gregari, e stanno negli Incroci ----
-     Il VO2max dell'orologio, il peso e la massa grassa avevano una sezione a testa.
-     Nessuno dei tre e' una serie che si guarda: il VO2max e' una stima che si muove
-     a gradini di mezzo punto e passa mesi ferma, il peso sono 65 pesate in undici
-     anni, la massa grassa e' la stima di una bilancia. Sono numeri di contorno, e il
-     contorno serve incrociato con qualcosa (2026-08-14: "sono gregari, mettili nella
-     parte di correlazione"). Restano tutti e tre come serie complete nel comparatore
-     libero e nella vista compatta — sono spostati, non tolti. */
-  { panel:"incroci", h:160, first:"weight", title:"Peso", cap:"ogni pesata registrata",
-    now:() => { for (let i = N - 1; i >= 0; i--) if (D.weight[i] !== null) return D.weight[i]; return null; },
-    nowFmt:FMT.num1, nowUnit:"kg, ultima pesata",
-    kind:rXY, spec:{ xname:"giorno", yname:"Peso", yfmt:FMT.kg, r:3.2,
-      xfmt:v => fmtDate(Math.round(v)), xtick:monthTick,
-      points:(a, b) => [{ name:"Peso", col:"var(--s2)", pts:sparsePts(D.weight, a, b) }] },
-    foot:"65 pesate: una nuvola, non una serie." },
-
-  { panel:"incroci", h:160, first:"bodyfat", title:"Massa grassa", cap:"stima della bilancia · %",
-    now:() => { for (let i = N - 1; i >= 0; i--) if (D.bodyfat[i] !== null) return D.bodyfat[i]; return null; },
-    nowFmt:FMT.num1, nowUnit:"%, ultima misura",
-    kind:rXY, spec:{ xname:"giorno", yname:"Massa grassa", yfmt:FMT.pct, r:3.2,
-      xfmt:v => fmtDate(Math.round(v)), xtick:monthTick,
-      points:(a, b) => [{ name:"Massa grassa", col:"var(--s4)", pts:sparsePts(D.bodyfat, a, b) }] } },
-
-  { panel:"incroci", h:160, first:"vo2", title:"VO₂max stimato",
-    cap:"stima dell'orologio · ml/kg/min",
-    now:() => { for (let i = N - 1; i >= 0; i--) if (D.vo2[i] !== null) return D.vo2[i]; return null; },
-    nowFmt:FMT.num1, nowUnit:"ml/kg/min",
-    kind:rStep, spec:{ name:"VO₂max", arr:D.vo2, col:"var(--s3)", fmt:FMT.num1 },
-    foot:"A gradini: la stima si aggiorna a scatti, e fra fitness 90 e 190 non si sposta." },
+  /* ---- Incroci: nessun riquadro fisso ----
+     C'erano sei nuvole scelte a mano (sonno contro carico, HRV contro sonno, …) piu'
+     peso e massa grassa. Sceglierle a mano era il problema: erano le sei coppie a cui
+     qualcuno aveva pensato, non le sei che dicono qualcosa, e stavano li' anche quando
+     il loro r era zero da due anni. Adesso la sezione e' UN grafico solo con dieci
+     preset ricavati dai dati (2026-08-14), piu' due slot che Michele si riempie da se'.
+     Le coppie sono scelte cosi': si calcolano tutte le 2.958 combinazioni, si buttano
+     quelle dentro la stessa sezione (fibre x magnesio e' il cablaggio del database
+     alimenti, non una scoperta), e di quelle che restano si tengono le dieci che
+     dicono qualcosa di non ovvio — compresi gli zeri, che qui sono il risultato. */
 
   /* ---- Metabolismo: presenti solo se metabolismo.csv era sul disco al build ---- */
   ...metabTiles(),
@@ -3493,7 +3520,6 @@ const RIDGE = (() => {
   add("Notte", "var(--s3)", "score", "Punteggio del sonno", D.score, 14, FMT.num0);
   add("Recupero", "var(--s2)", "hrv", "HRV", D.hrv, 7, FMT.ms);
   add("Recupero", "var(--s2)", "rhr", "FC a riposo", D.rhr, 7, FMT.bpm);
-  add("Recupero", "var(--s2)", "vo2", "VO₂max", D.vo2, 45, FMT.num1);
   add("Recupero", "var(--s2)", "steps", "Passi", D.steps, 7, FMT.num0);
   add("Corpo", "var(--s4)", "weight", "Peso", D.weight, 120, FMT.kg);
   add("Corpo", "var(--s4)", "bodyfat", "Massa grassa", D.bodyfat, 120, FMT.pct);
@@ -3862,14 +3888,14 @@ function drawTile(n, t) {
     n.now.title = t.nowUnit || "";
   }
 
-  /* Il piede dice solo quello che non si vede dal grafico. La finestra e il
-     conteggio dei punti erano rumore — l'asse mostra già le date, e "n 92" non ha
-     mai cambiato una decisione. Restano il passo di aggregazione quando non è
-     ovvio, la correlazione, e i punti lasciati fuori scala, che è l'unica cosa
-     che il disegno tace davvero. */
-  /* Il piede torna sotto il riquadro (2026-08-10: "in genere precedente versione
-     era meglio"). Dice quello che il disegno tace: il passo di aggregazione, la
-     correlazione, i punti lasciati fuori scala, e la nota di metodo. */
+  /* Sotto il grafico resta solo la riga CORTA: finestra, passo di aggregazione,
+     n, r, punti fuori scala. Sono numeri, si leggono in un secondo, e cambiano
+     come si guarda il disegno.
+     La nota di metodo — i paragrafi sul perché quella soglia, cosa è misurato e
+     cosa modellato — è andata sotto "dati" insieme alla didascalia (2026-08-14:
+     "rimuovi dai sottografici info like…, metti nel toggle"). Non è sparita:
+     sparita sarebbe stato pubblicare un indice costruito senza la sua formula,
+     che è la cosa che questa pagina non fa. È a un clic. */
   const bits = [];
   if (res) {
     bits.push(`${fmtDate(from)} → ${fmtDate(to)}`);
@@ -3880,12 +3906,12 @@ function drawTile(n, t) {
     if (res.best) bits.push(`più alta ${res.best}`);
     if (res.outside) bits.push(`${res.outside} fuori scala`);
   }
-  n.foot.innerHTML = t.noFoot ? "" : bits.join(" · ") + (t.foot ? `<br>${t.foot}` : "");
+  n.foot.innerHTML = t.noFoot ? "" : bits.join(" · ");
   n.sum.textContent = t.dataNote ? `dati · ${t.dataNote}` : "dati";
-  /* la didascalia e la legenda del numero grande, che una volta stavano in pagina */
+  /* la didascalia, la legenda del numero grande e la nota di metodo: tutto qui */
   if (n.cap) n.cap.innerHTML = [t.cap,
     t.now && t.nowUnit ? `<b>Il numero grande</b>: ${t.nowUnit}.` : ""]
-    .filter(Boolean).join(" · ");
+    .filter(Boolean).join(" · ") + (t.foot ? `<span class="d-note">${t.foot}</span>` : "");
   n.tbody.innerHTML = res ? res.table : "";
 }
 
@@ -4311,9 +4337,403 @@ function drawCompare(){
     `${lag?"X è il giorno precedente a Y.":"Le misure sono dello stesso giorno."}</p>`+
     caveat;
 }
-[compareX,compareY,compareLag,compareMode].forEach(x=>x.addEventListener("change",drawCompare));
+/* ------------------------------------------------------- le dieci coppie notevoli
+   Non sono le coppie a cui qualcuno ha pensato: sono uscite calcolando TUTTE le
+   2.958 combinazioni di serie per due sfasamenti (stesso giorno e giorno dopo), su
+   livelli e su variazioni settimana su settimana. Poi tre filtri, in quest'ordine:
+
+     1. via le coppie dentro la stessa sezione. Fibre x magnesio (r 0,79) o kcal x
+        carboidrati (0,92) non sono scoperte: sono il database alimenti che si
+        specchia. Lo stesso vale per ore x chilometri (0,93) e CTL x ATL (0,94).
+     2. via quelle il cui r sui livelli crolla sulle variazioni: li' e' il tempo che
+        muove tutte e due, non una che tira l'altra.
+     3. di quello che resta, si tiene cio' che dice una cosa che non si sapeva gia' —
+        **compresi gli zeri**. In questo archivio quattro delle dieci sono zeri, e
+        sono il risultato piu' solido che ci sia: n intorno a 550 e r sotto 0,15
+        non e' "non si e' trovato niente", e' "non c'e' niente da trovare".
+
+   Ogni voce porta il suo r e il suo n scritti in chiaro: se un giorno cambiano, la
+   frase accanto va riletta, e questo e' il punto. */
+const CX_PRESETS = [
+  { k:"caldo-rhr", x:"heat", y:"rhr", lag:1, mode:"lv", tag:"·",
+    t:"Il caldo si paga il mattino dopo",
+    why:"Fra tutte le cose che potrebbero muovere il recupero — carico, sonno, cibo — "+
+      "l'unica che si vede davvero è il <b>caldo</b>. Un'uscita calda alza la frequenza "+
+      "a riposo del giorno dopo, e regge anche sulle variazioni settimanali. È debole, "+
+      "ma è l'unico segnale non nullo di tutta questa sezione." },
+  { k:"passi-salita", x:"steps", y:"gain", lag:0, mode:"lv", tag:"·",
+    t:"I passi non contano lo sport: lo sostituiscono",
+    why:"Più dislivello, <b>meno</b> passi — e non è un errore dell'orologio. Le giornate "+
+      "grosse sono giornate in bici, e in bici i passi non si fanno. Il contatore misura "+
+      "quanto ci si è mossi <em>fuori</em> dall'allenamento, non l'allenamento: leggerlo "+
+      "come «quanto sono stato attivo oggi» lo legge al contrario." },
+  { k:"hrv-rhr", x:"hrv", y:"rhr", lag:0, mode:"lv", tag:"zero",
+    t:"Le due misure del recupero non si parlano",
+    why:"HRV e frequenza a riposo sono le due metriche che ogni orologio vende come "+
+      "«recupero», e qui, sulla stessa persona e sullo stesso mattino, sono <b>scorrelate "+
+      "a zero</b>. Non è che una sia sbagliata: misurano cose diverse, e usarle come se "+
+      "fossero la stessa cosa è il modo più comune di sbagliarsi." },
+  { k:"carico-hrv", x:"load", y:"hrv", lag:1, mode:"lv", tag:"zero",
+    t:"Il carico di ieri non arriva all'HRV di stamattina",
+    why:"È la promessa implicita di ogni dashboard: alleni forte, l'HRV scende, il giorno "+
+      "dopo lo sai. Su cinquecento mattine <b>non succede</b>. Se serve sapere quanto è "+
+      "costata ieri, la risposta sta nel carico stesso, non nel cuore di stamattina." },
+  { k:"sonno-hrv", x:"sleep", y:"hrv", lag:0, mode:"lv", tag:"zero",
+    t:"Dormire di più non alza l'HRV di quella notte",
+    why:"Nemmeno la notte in cui si è dormito bene sposta la variabilità del mattino. "+
+      "Vale la pena dirlo perché la direzione opposta — «HRV bassa? dormi di più» — è "+
+      "consigliata ovunque, e qui dentro non ha nessun appiglio." },
+  { k:"carbgap", x:"load", y:"carbgap", lag:0, mode:"lv", tag:"·",
+    t:"Più alleni, più ti mancano i carboidrati",
+    why:"Lo scarto è <b>ingeriti meno il fabbisogno</b>: negativo vuol dire sotto. E scende "+
+      "proprio quando il carico sale — il fabbisogno cresce con i TSS e l'alimentazione non "+
+      "lo insegue. È l'associazione più forte di tutta la tavola che non sia cablaggio, e "+
+      "l'unica di questa lista su cui si possa fare qualcosa domani." },
+  { k:"caldo-ef", x:"temp", y:"ef", lag:0, mode:"lv", tag:"zero",
+    t:"Il caldo non tocca il rapporto fra passo e battito",
+    why:"Il costo del caldo non finisce qui: quando fa caldo si <b>rallenta</b>, e "+
+      "rallentando la frequenza torna dov'era. Quello che il caldo sposta è il passo "+
+      "scelto, non il prezzo in battiti di quel passo. Da tenere accanto alla riga qui "+
+      "sopra: il caldo si vede il mattino dopo, non durante." },
+  { k:"cibo-domani", x:"kcal", y:"hours", lag:1, mode:"d7", tag:"zero",
+    t:"Mangiare oggi non compra l'allenamento di domani",
+    why:"Sulle variazioni settimanali il segno è perfino leggermente <b>negativo</b>: le "+
+      "settimane in cui si è mangiato di più non sono quelle in cui si è allenato di più "+
+      "il giorno dopo. Il verso della freccia è l'altro — è l'allenamento che tira il "+
+      "cibo, e si vede scegliendo «stesso giorno»." },
+  { k:"ef-grassi", x:"ef", y:"fatrate", lag:0, mode:"lv", tag:"cablaggio",
+    t:"Efficienza e grammi di grasso: quanto è modello",
+    why:"Le due serie della sezione Metabolismo si muovono insieme, ma <b>metà di questo "+
+      "è cablaggio</b>: nascono dalle stesse uscite, una dal passo e una dall'istogramma "+
+      "della frequenza. È qui apposta come promemoria — un r alto fra due numeri che "+
+      "condividono la sorgente non è una scoperta, è un controllo di coerenza." },
+  { k:"peso-hrv", x:"weight", y:"hrv", lag:0, mode:"lv", tag:"poco n",
+    t:"Il peso e l'HRV, su sessantacinque pesate",
+    why:"L'unica associazione visibile che tocchi il peso, ed è <b>inversa</b>: mattine "+
+      "con HRV più alta dove il peso è più basso. Sessantacinque punti in undici anni "+
+      "sono pochissimi e il verso della causa qui non si può nemmeno ipotizzare — sta in "+
+      "lista come cosa da riguardare fra un anno di pesate, non come conclusione." },
+];
+const cxHostP = document.getElementById("compare-presets");
+const cxClaim = document.getElementById("compare-claim");
+/* I due slot liberi: quello che Michele sta guardando diventa una pastiglia sua, e
+   resta li' alla visita dopo. Due e non venti — una barra di pastiglie lunga il
+   doppio della pagina non e' una scorciatoia, e' un secondo menu. */
+const CX_MAX_MINE = 2;
+const cxMine = (() => {
+  try { const v = JSON.parse(store.get("vita:cxmine", "[]")); return Array.isArray(v) ? v.slice(0, CX_MAX_MINE) : []; }
+  catch (e) { return []; }
+})();
+const cxSaveMine = () => store.set("vita:cxmine", JSON.stringify(cxMine));
+let cxActive = null;
+
+function cxApply(p){
+  if(!compareByKey.has(p.x) || !compareByKey.has(p.y)) return false;
+  compareX.value=p.x; compareY.value=p.y;
+  compareLag.value=String(p.lag||0); compareMode.value=p.mode||"lv";
+  cxActive=p.k; drawCompare(); cxPaint(); return true;
+}
+function cxPaint(){
+  cxHostP.innerHTML="";
+  const chip=(p,mine)=>{
+    const b=mk("button",mine?"cx-own":null,cxHostP,p.t);
+    b.setAttribute("type","button");
+    /* l'etichetta dice che RAZZA di risultato e', prima ancora di aprirlo: uno
+       zero, un cablaggio e un campione piccolo si guardano in tre modi diversi */
+    if(!mine&&p.tag&&p.tag!=="·") mk("i",null,b,p.tag);
+    b.setAttribute("aria-pressed",cxActive===p.k?"true":"false");
+    b.addEventListener("click",()=>cxApply(p));
+    if(mine){
+      const x=mk("i",null,b,"×");
+      x.addEventListener("click",ev=>{ if(ev.stopPropagation) ev.stopPropagation();
+        const j=cxMine.indexOf(p); if(j>=0) cxMine.splice(j,1); cxSaveMine(); cxPaint(); });
+    }
+    return b;
+  };
+  for(const p of CX_PRESETS) if(compareByKey.has(p.x)&&compareByKey.has(p.y)) chip(p,false);
+  for(const p of cxMine) chip(p,true);
+  if(cxMine.length<CX_MAX_MINE){
+    const add=mk("button","cx-add",cxHostP,"+ questa è mia");
+    add.setAttribute("type","button");
+    add.setAttribute("aria-pressed","false");
+    add.addEventListener("click",()=>{
+      const sx=compareByKey.get(compareX.value), sy=compareByKey.get(compareY.value);
+      if(!sx||!sy) return;
+      const lag=Number(compareLag.value)||0;
+      /* il tetto si impone QUI e non solo nascondendo il bottone: il bottone puo'
+         restare in mano a qualcuno (un vecchio riferimento, un doppio click) e due
+         slot che diventano cinque sono una barra che non sta piu' su una riga */
+      if(cxMine.length>=CX_MAX_MINE) return;
+      cxMine.push({ k:"mia:"+sx[0]+">"+sy[0]+":"+lag+":"+compareMode.value,
+        x:sx[0], y:sy[0], lag, mode:compareMode.value,
+        t:sx[2]+" → "+sy[2]+(lag?" (domani)":""), why:"" });
+      cxSaveMine(); cxActive=cxMine[cxMine.length-1].k; cxPaint();
+    });
+  }
+  const p=[...CX_PRESETS,...cxMine].find(q=>q.k===cxActive);
+  cxClaim.innerHTML=p&&p.why?`<b>${p.t}.</b> ${p.why}`:"";
+}
+/* cambiare una tendina a mano scioglie la pastiglia: quello che si guarda non e'
+   piu' quello che la frase raccontava, e lasciare la frase li' sarebbe una bugia */
+[compareX,compareY,compareLag,compareMode].forEach(x=>x.addEventListener("change",()=>{
+  cxActive=null; cxPaint(); drawCompare();
+}));
+cxPaint();
+if(!cxApply(CX_PRESETS[0])) drawCompare();
 window.CRUSCOTTO.compare={series:compareSeries,draw:drawCompare,x:compareX,y:compareY,
-  lag:compareLag,mode:compareMode,pearson,pairsFor,byKey:compareByKey};
+  lag:compareLag,mode:compareMode,pearson,pairsFor,byKey:compareByKey,
+  presets:CX_PRESETS,apply:cxApply,mine:cxMine,paint:cxPaint,claim:cxClaim,host:cxHostP};
+
+/* ====================================================== l'opinione del coach
+   Un rapporto solo che mette insieme le tre cose che la pagina misura — la tavola,
+   il motore, la gamba — e dice cosa se ne ricava. Tre regole che lo tengono onesto:
+
+     · **ogni numero e' calcolato qui, adesso.** Nessuna cifra scritta a mano nel
+       testo: le medie a 14 giorni, gli r, gli n escono dagli stessi array che
+       disegnano i grafici. Se domani il dato cambia, cambia la frase. Un rapporto
+       con dentro un numero congelato invecchia senza dirlo, ed e' peggio di non
+       averlo;
+     · **le associazioni portano il loro n e il loro r**, anche quando sono zero.
+       Gli zeri sono meta' di quello che c'e' da sapere qui dentro;
+     · **cosa e' osservato e cosa e' ricostruito resta scritto.** Il rapporto parla
+       di calorie che per meta' sono un modello, e non puo' fingere di no.
+
+   Non e' un referto. Non c'e' nessun medico dietro, e le raccomandazioni sono
+   quelle che si darebbe un allenatore guardando questi numeri, cioe' discutibili. */
+const coachBtn = document.getElementById("coach-btn");
+const coachLead = document.getElementById("coach-lead");
+const coachSheet = document.getElementById("coach");
+const coachIn = document.getElementById("coach-in");
+/* variazione percentuale fra due medie: la usano sia i dati sia il testo */
+const coachPc = (a, b) => (a == null || b == null || !b) ? null : 100 * (a - b) / Math.abs(b);
+
+function coachData(){
+  const F = D.nutri || {}, M = D.metab || {};
+  const mean = (a, lo, hi) => { const s = stats((a || []).slice(Math.max(0, lo), hi + 1));
+    return s ? s.mean : null; };
+  const m14 = a => mean(a, N - 14, N - 1), m28 = a => mean(a, N - 28, N - 15);
+  /* r e n di una coppia, dalle stesse funzioni del comparatore: il rapporto non
+     puo' dire un numero diverso da quello che si legge scegliendo la stessa coppia */
+  const rn = (xk, yk, lag, k) => {
+    const sx = compareByKey.get(xk), sy = compareByKey.get(yk);
+    if (!sx || !sy) return null;
+    const pts = pairsFor(sx, sy, k || 0, lag || 0, 0, N - 1);
+    const r = pearson(pts);
+    return r === null ? null : { r, n:pts.length };
+  };
+  const mins = new Array(N).fill(0);
+  D.acts.forEach(a => { if (a[0] >= 0 && a[0] < N) mins[a[0]] += (a[2] || 0) / 60; });
+  const obs = m14(F.kcal_observed), kcal = m14(F.kcal);
+  return {
+    ctl:D.ctl[N - 1], atl:D.atl[N - 1],
+    forma:(D.ctl[N - 1] == null || D.atl[N - 1] == null) ? null : D.ctl[N - 1] - D.atl[N - 1],
+    ore14:m14(mins), ore28:m28(mins),
+    half:halfRoll[N - 1], climb:climbRoll[N - 1],
+    kcal, kcal28:m28(F.kcal), prot:m14(F.protein_g), fib:m14(F.fiber_g),
+    carb:m14(F.carb_g), gap:m14(F.carb_gap_g), gapAll:mean(F.carb_gap_g, 0, N - 1),
+    sug:m14(F.sugar_g), upf:m14(F.pct_upf), plant:m14(F.pct_plant),
+    oss:(obs != null && kcal) ? 100 * obs / kcal : null,
+    sonno:m14(D.sleep), hrv:m14(D.hrv), rhr:m14(D.rhr), passi:m14(D.steps),
+    fat:fatRate ? lastMean(fatRate, 45) : null,
+    ef:aero ? lastMean(aero.day, 45) : null,
+    fatmaxHr:M.fatmax_hr ? M.fatmax_hr[N - 1] : null,
+    fatmaxMin:mean(M.fatmax_min, N - 90, N - 1),
+    rGap:rn("load", "carbgap", 0, 0), rHeat:rn("heat", "rhr", 1, 0),
+    rPassi:rn("steps", "gain", 0, 0), rCarico:rn("load", "hrv", 1, 0),
+    rSonno:rn("sleep", "hrv", 0, 0), rHrvRhr:rn("hrv", "rhr", 0, 0),
+    rTemp:rn("temp", "ef", 0, 0), rCibo:rn("kcal", "hours", 1, 7),
+    /* Il migliore della categoria "il cibo di ieri spiega il mattino di oggi": si
+       cerca fra TUTTE le serie della tavola contro le tre del recupero, invece di
+       scriverne una a mano. Cosi' la frase "nessuna arriva a 0,15" e' verificata a
+       ogni build, e se un giorno una ci arrivasse il rapporto lo direbbe da solo. */
+    best:(() => {
+      let best = null;
+      for (const s of compareSeries) {
+        if (s[1] !== "Tavola") continue;
+        for (const y of ["hrv", "rhr", "sleep"]) {
+          const f = rn(s[0], y, 1, 0);
+          if (f && f.n >= 200 && (!best || Math.abs(f.r) > Math.abs(best.r)))
+            best = { r:f.r, n:f.n, x:s[2], y:compareByKey.get(y)[2] };
+        }
+      }
+      return best;
+    })(),
+    /* quota osservata su TUTTO l'archivio, non sulle ultime due settimane */
+    ossTot:(() => {
+      const o = stats((F.kcal_observed || []).filter(v => v !== null && v !== undefined));
+      const t = stats((F.kcal || []).filter(v => v !== null && v !== undefined));
+      return (o && t && t.mean) ? 100 * o.mean / t.mean : null;
+    })(),
+  };
+}
+
+function coachHtml(){
+  const c = coachData();
+  const n1 = v => v == null ? "—" : nf(v, 1), n0 = v => v == null ? "—" : nf(v, 0);
+  const rr = f => f ? `r ${nf(f.r, 2)} · n ${nf(f.n)}` : "dati insufficienti";
+  const dOre = c.ore14 != null && c.ore28 ? (c.ore14 - c.ore28) / 60 : null;
+  const item = (cls, h, p, num, doit) =>
+    `<div class="cr-item ${cls}"><h5>${h}</h5><p>${p}` +
+    (num ? `<span class="cr-num">${num}</span>` : "") +
+    (doit ? `<span class="cr-do">${doit}</span>` : "") + `</p></div>`;
+
+  /* --- il verdetto: tre righe, e cambiano col dato ------------------------- */
+  const freschezza = c.forma == null ? "" : c.forma > 5
+    ? `Sei <b>fresco</b> (forma ${n0(c.forma)}): è una finestra per caricare, non per riposare.`
+    : c.forma < -15
+    ? `Sei <b>sotto</b> (forma ${n0(c.forma)}): stai scavando, e a questa profondità il conto arriva.`
+    : `Forma ${n0(c.forma)}, cioè in equilibrio: né una scusa per fermarsi né il momento di alzare.`;
+  const tavola = c.gap == null ? "" : c.gap < -60
+    ? ` A tavola mancano <b>${n0(-c.gap)} g di carboidrati al giorno</b> sul fabbisogno stimato delle ultime due settimane, ed è lì che si perde più roba.`
+    : ` A tavola i carboidrati stanno a ${n0(Math.abs(c.gap))} g dal fabbisogno stimato: per una volta non è quello il problema.`;
+  const verdict = freschezza + tavola;
+
+  return `<button class="sheet-x" type="button" aria-label="Chiudi" onclick="closeCoach()">×</button>
+<div class="cr-when">rapporto generato dal dato di ${fmtDate(N - 1)}</div>
+<h3 id="coach-t">L'opinione del coach</h3>
+<p class="cr-verdict">${verdict}</p>
+
+<div class="cr-sec">
+  <h4>La tavola</h4>
+  <p class="cr-sub">ultime due settimane · ${c.oss == null ? "" : n0(c.oss) + " % osservato, il resto ricostruito"}</p>
+  ${item("hot", "Il carico tira il cibo, ma i carboidrati non lo seguono",
+    "È l'associazione più forte di tutta la sezione alimentare che non sia cablaggio del " +
+    "database, e ha il segno scomodo: <b>più sale il carico, più lo scarto di carboidrati " +
+    "diventa negativo</b>. Il fabbisogno cresce con i TSS, l'alimentazione insegue e non " +
+    "arriva. Le kcal totali invece salgono con l'allenamento — quindi non è che si mangi " +
+    "poco: è che si mangia la cosa sbagliata nel giorno sbagliato.",
+    `scarto medio 14 gg <b>${n0(c.gap)} g/g</b> · sull'archivio ${n0(c.gapAll)} g/g · carico → scarto ${rr(c.rGap)}`,
+    "I carboidrati vanno messi <em>dentro e attorno</em> alle uscite lunghe, non spalmati sulla giornata. È l'unica raccomandazione di questo rapporto che i dati sostengano davvero.")}
+  ${item("", "Proteine e fibre: dove si sta",
+    `Le ultime due settimane danno <b>${n0(c.prot)} g di proteine</b> e <b>${n1(c.fib)} g di fibre</b> ` +
+    `al giorno, su ${n0(c.kcal)} kcal (${c.kcal28 == null ? "—" : (coachPc(c.kcal, c.kcal28) >= 0 ? "+" : "") + n0(coachPc(c.kcal, c.kcal28)) + " % rispetto alle due precedenti"}). ` +
+    "Sono medie di una serie per metà ricostruita: vanno lette come ordine di grandezza, " +
+    "non come un conteggio.",
+    `vegetale ${n0(c.plant)} % · ultra-processato ${n0(c.upf)} % · zuccheri ${n0(c.sug)} g/g`,
+    "")}
+  ${item("nil", "Quello che il cibo non fa: il recupero",
+    "Nessuna serie della tavola sposta HRV, sonno o frequenza a riposo del giorno dopo. " +
+    "Zuccheri, fibre, magnesio, piante, ultra-processato: nessuna arriva a 0,15 con più " +
+    "di cinquecento giorni in comune. Non vuol dire che mangiare non conti — vuol dire che " +
+    "<b>non conta su questa scala</b>, quella del giorno dopo, ed è esattamente la scala " +
+    "su cui viene venduto.",
+    c.best ? `il meno debole di tutti: ${c.best.x.toLowerCase()} → ${c.best.y.toLowerCase()} del giorno dopo, <b>r ${nf(c.best.r, 2)}</b> su n ${nf(c.best.n)}` : "",
+    "Smettere di cercare l'effetto di ieri sera nel numero di stamattina.")}
+</div>
+
+<div class="cr-sec">
+  <h4>Il motore</h4>
+  <p class="cr-sub">ossidazione dei grassi · modello e misura, tenuti separati</p>
+  ${item("hot", "A parità di battito, il passo non si muove dal 2023",
+    "La domanda era se la capacità di bruciare grassi stia cambiando. La risposta " +
+    "onesta che questi dati sanno dare: <b>no, non da tre anni</b>. Nelle bande di " +
+    "frequenza confrontabili (140-150 e 150-160 bpm) il passo corretto per la pendenza " +
+    "sta fermo intorno a 3,6 m/s dal 2023. L'efficienza complessiva sale dal 2019 — da " +
+    "1,30 a 1,49 m/min per battito — ma quasi tutta la salita è <em>frequenza più bassa " +
+    "a passo simile</em>, non passo più alto a frequenza pari.",
+    `efficienza, media 45 gg <b>${c.ef == null ? "—" : nf(c.ef, 2)} m/min per battito</b> · grassi stimati ${c.fat == null ? "—" : nf(c.fat, 2)} g/min`,
+    "Se l'obiettivo è spostarlo davvero, serve lavoro specifico sotto la banda FatMax (" + n0(c.fatmaxHr) + " bpm), continuo e lungo — non altro volume misto.")}
+  ${item("hot", "Il caldo si paga il mattino dopo, non durante",
+    "È il solo segnale di recupero non nullo dell'intero archivio, e va nella direzione " +
+    "meno intuitiva. <b>Durante</b> l'uscita il caldo non tocca il rapporto fra passo e " +
+    "battito — perché col caldo si rallenta, e rallentando la frequenza torna dov'era. " +
+    "<b>Dopo</b>, sì: le giornate con più gradi-ora di caldo pesato lasciano una frequenza " +
+    "a riposo più alta la mattina seguente.",
+    `caldo → FC a riposo di domani <b>${rr(c.rHeat)}</b> · temperatura → efficienza ${rr(c.rTemp)}`,
+    "In estate il costo va contato sul giorno dopo, non sul cronometro del giorno stesso.")}
+  ${item("", "I minuti in banda FatMax sono volume travestito",
+    "Il tempo passato nella banda correla 0,71 col carico: non è una qualità " +
+    "dell'allenamento, è quanto si è stati fuori. Guardarlo come se misurasse " +
+    "l'adattamento aerobico è il tipo di errore che questa pagina esiste per non fare.",
+    `media ultimi 90 giorni ${c.fatmaxMin == null ? "—" : n0(c.fatmaxMin) + " min/giorno"}`,
+    "")}
+</div>
+
+<div class="cr-sec">
+  <h4>La gamba</h4>
+  <p class="cr-sub">carico, volume, e cosa ne resta al mattino</p>
+  ${item("", "Dove sei adesso",
+    `Fitness ${n0(c.ctl)}, fatica ${n0(c.atl)}, forma ${n0(c.forma)}. Nelle ultime due ` +
+    `settimane <b>${n0(c.ore14)} minuti al giorno</b> di movimento` +
+    (dOre == null ? "" : `, ${dOre >= 0 ? "+" : ""}${n1(dOre)} ore al giorno rispetto alle due precedenti`) +
+    `. Nell'ultimo anno ${n0(c.half)} mezze maratone; negli ultimi novanta giorni ${n0(c.climb)} salite lunghe.`,
+    `sonno ${c.sonno == null ? "—" : hhmm(c.sonno)} · HRV ${n0(c.hrv)} ms · FC a riposo ${n0(c.rhr)} bpm · ${n0(c.passi)} passi`,
+    "")}
+  ${item("hot", "I passi misurano l'opposto di quello che sembra",
+    "Più dislivello, <b>meno</b> passi, e con un'associazione che regge anche sulle " +
+    "variazioni settimanali. Le giornate grosse sono giornate in bici, e in bici i passi " +
+    "non si fanno. Il contatore misura quanto ci si è mossi <em>fuori</em> " +
+    "dall'allenamento — è una misura di sedentarietà residua, non di attività.",
+    `passi → dislivello <b>${rr(c.rPassi)}</b>`,
+    "Un giorno da pochi passi e tanto dislivello è un buon giorno. Il numero rosso sull'orologio, lì, non vuol dire niente.")}
+  ${item("nil", "Il carico di ieri non arriva al mattino di oggi",
+    "Né sull'HRV, né sulla frequenza a riposo, né sul sonno della notte in mezzo. Su " +
+    "cinquecentocinquanta mattine, con la stessa persona e lo stesso orologio. E le due " +
+    "misure che dovrebbero dire la stessa cosa — HRV e frequenza a riposo — <b>fra loro " +
+    "sono scorrelate a zero</b>.",
+    `carico → HRV di domani ${rr(c.rCarico)} · sonno → HRV ${rr(c.rSonno)} · HRV ↔ FC a riposo <b>${rr(c.rHrvRhr)}</b>`,
+    "Per sapere quanto è costata ieri, guardare ieri. Il cuore di stamattina non lo sa.")}
+  ${item("nil", "Mangiare oggi non compra l'allenamento di domani",
+    "Sulle variazioni settimana su settimana il segno è perfino leggermente negativo. " +
+    "La freccia va nell'altro verso — è l'allenamento che tira il cibo, e quello si vede " +
+    "benissimo — quindi il cibo qui è una conseguenza, non una leva sul giorno dopo.",
+    `kcal → ore di domani, variazioni settimanali ${rr(c.rCibo)}`,
+    "")}
+</div>
+
+<div class="cr-limits">
+  <h4>Cosa questo rapporto non sa</h4>
+  <ul>
+    <li>${c.ossTot == null ? "Buona parte" : "Il " + n0(100 - c.ossTot) + " %"} delle calorie
+      è <strong>ricostruito</strong>, non pesato: dove c'è Cronometer sono giornate
+      osservate, altrove è lo schema mensile dichiarato. Le medie della tavola sono
+      ordini di grandezza, e nelle ultime due settimane la quota osservata è
+      ${c.oss == null ? "—" : n0(c.oss) + " %"}.</li>
+    <li>I grammi di grasso al minuto sono un <strong>modello</strong> ancorato ad
+      Achten e Jeukendrup, non una misura: nessuno ha mai fatto un test a gradini
+      con analisi dei gas. L'incertezza sul livello assoluto è dell'ordine del ±40 %,
+      e solo la variazione nel tempo dice qualcosa.</li>
+    <li>Sonno, HRV, frequenza a riposo e passi <strong>esistono dal 21 gennaio 2025</strong>:
+      ogni affermazione sul recupero poggia su un anno e mezzo, non su undici.</li>
+    <li>Il carico del 2022 è <strong>ricostruito</strong> da un export Strava, stimato
+      da durata e frequenza cardiaca.</li>
+    <li>Nessuna delle associazioni qui sopra è una causa, e cercando fra 2.958 coppie
+      qualcosa di apparentemente forte si trova sempre. Le dieci scelte sono quelle
+      che reggono anche sulle variazioni, il che le rende meno fragili — non vere.</li>
+    <li>Non è un parere medico e non c'è nessun medico dietro.</li>
+  </ul>
+</div>`;
+}
+
+function openCoach(){
+  coachIn.innerHTML = coachHtml();
+  coachSheet.classList.add("on");
+  document.body.style.overflow = "hidden";
+}
+function closeCoach(){
+  coachSheet.classList.remove("on");
+  document.body.style.overflow = "";
+}
+window.openCoach = openCoach; window.closeCoach = closeCoach;
+coachBtn.addEventListener("click", openCoach);
+coachSheet.addEventListener("click", ev => { if (ev.target === coachSheet) closeCoach(); });
+/* la riga in cima alla pagina e' il verdetto del rapporto, non un invito a leggerlo:
+   se uno non apre niente, quella riga da sola deve gia' valere la visita */
+(function coachLeadLine(){
+  const c = coachData();
+  const bits = [];
+  if (c.forma != null) bits.push(c.forma > 5
+    ? `<b>fresco</b> (forma ${nf(c.forma, 0)})`
+    : c.forma < -15 ? `<b>sotto</b> (forma ${nf(c.forma, 0)})`
+    : `in equilibrio (forma ${nf(c.forma, 0)})`);
+  if (c.gap != null) bits.push(c.gap < -60
+    ? `<b>${nf(-c.gap, 0)} g di carboidrati</b> sotto il fabbisogno`
+    : `carboidrati a ${nf(Math.abs(c.gap), 0)} g dal fabbisogno`);
+  if (c.ef != null) bits.push(`efficienza ${nf(c.ef, 2)} m/min per battito`);
+  coachLead.innerHTML = bits.join(" · ") +
+    ". Dieci righe su cosa dicono i numeri, cosa non dicono, e le due o tre cose su cui vale la pena agire.";
+})();
+window.CRUSCOTTO.coach = { data:coachData, html:coachHtml, open:openCoach, close:closeCoach };
 
 /* --------------------------------------------------- le tre pagine in cima */
 document.getElementById("tracks").innerHTML = (D.tracks || []).map(t => `
