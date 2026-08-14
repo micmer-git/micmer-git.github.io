@@ -1,16 +1,16 @@
 food_id,name,kcal,share_pct,Faecalibacterium,Bacteroides,Prevotella,Bifidobacterium,Roseburia,Blautia,Ruminococcus,Eubacterium,Akkermansia,Lactobacillus
-pane_integrale,Pane integrale,230918,13.31,15.619,-3.395,16.484,15.73,12.114,8.253,9.939,9.651,14.043,15.972
-lenticchie_secche,Lenticchie secche,108632,6.26,10.332,-2.818,10.332,5.322,8.14,4.696,6.575,6.575,7.827,0.0
+pane_integrale,Pane integrale,230918,13.31,15.619,-3.395,16.484,15.729,12.114,8.253,9.939,9.651,14.043,15.972
+lenticchie_secche,Lenticchie secche,108632,6.26,10.331,-2.818,10.331,5.322,8.14,4.696,6.575,6.575,7.827,0.0
 avena_fiocchi,Fiocchi d'avena,104596,6.03,6.93,-1.479,7.342,2.793,5.369,3.699,4.41,4.273,6.302,0.0
 uovo_intero,Uovo intero medio,74100,4.27,0.0,3.63,-3.417,0.0,0.0,0.854,0.0,0.0,0.0,0.0
-burro_arachidi_sgrassato,Burro di arachidi sgrassato in polvere,71460,4.12,3.54,-0.503,6.119,0.63,3.271,2.875,3.826,2.554,1.945,-1.442
+burro_arachidi_sgrassato,Burro di arachidi sgrassato in polvere,71460,4.12,3.54,-0.503,6.119,0.63,3.271,2.875,3.826,2.554,1.944,-1.442
 patate_dolci,Patate dolci,67844,3.91,5.152,-1.228,5.329,2.319,4.02,2.578,3.278,3.219,4.356,0.0
 banana,Banana media,67196,3.87,4.599,-1.01,4.843,1.908,3.569,2.416,2.927,2.845,4.108,0.0
 yogurt_greco_0,Yogurt greco 0%,58546,3.37,0.0,2.868,-2.7,2.362,0.0,0.675,0.0,0.0,0.0,4.049
 pizza_base,Pizza rossa senza mozzarella (base),55720,3.21,2.423,-0.268,2.815,2.755,1.821,1.624,1.542,1.411,2.838,3.854
 marmellata_fragola,Marmellata di fragole,50562,2.91,0.111,0.624,2.262,-1.405,0.356,1.381,1.183,0.175,0.396,-1.02
 pane_segale,Pane di segale scuro,40328,2.32,2.424,-0.468,2.616,2.512,1.867,1.358,1.542,1.478,2.328,2.789
-cioccolato_fondente_50,Cioccolato fondente 50%,39428,2.27,0.458,0.334,2.084,0.782,0.581,1.179,1.159,0.39,0.461,1.932
+cioccolato_fondente_50,Cioccolato fondente 50%,39428,2.27,0.458,0.334,2.084,0.782,0.581,1.178,1.159,0.39,0.461,1.932
 avocado,Avocado,39248,2.26,3.328,-0.853,3.383,1.61,2.61,1.586,2.118,2.1,2.662,0.0
 pizza_margherita,Pizza margherita intera,39100,2.25,1.59,-0.143,1.88,1.848,1.188,1.11,1.012,0.915,1.946,2.704
 ceci_scatola,Ceci in scatola sgocciolati,37232,2.15,3.354,-0.889,3.38,1.68,2.637,1.559,2.134,2.126,2.606,0.0
