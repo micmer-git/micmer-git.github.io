@@ -453,3 +453,8 @@ date,meal,food_id,qty,note,source
 2026-08-15,spuntino,banana,1,"seconda banana della giornata, letta da «un'altra mela banana»",dichiarato
 2026-08-15,pranzo,pomodorini,150,"«un pomodoro», dichiarato a voce; 150 g e' la grammatura solita nel registro",dichiarato
 2026-08-15,cena,lupini,100,"«di lupini quelli soliti»: i 100 g della riga precedente sono i lupini, non il peanut butter. 100 g e' l'unica quantita' mai registrata",dichiarato
+2026-08-15,pranzo,pasta_semola,100,"«pasta al ragu'», dichiarata a voce. Pasta di semola: non ha detto tagliatelle, quindi non uso la ricetta tagliatelle_ragu che sarebbe all'uovo. 100 g e' la sua quantita' piu' frequente (8 volte su 13)",dichiarato
+2026-08-15,pranzo,ragu_carne,150,"il ragu' della pasta, dichiarato a voce. 150 g e' la quantita' piu' frequente nel registro",dichiarato
+2026-08-15,pranzo,pomodorini,150,"dichiarati a voce senza quantita': 150 g e' la grammatura piu' frequente. Sono i secondi della giornata, dopo quelli gia' registrati stamattina",dichiarato
+2026-08-15,cena,polenta_cotta,200,"«polenta 200 g», dichiarata a voce: letta come polenta gia' cotta, non farina di mais — 200 g di farina sarebbero 724 kcal e un paiolo intero",dichiarato
+2026-08-15,spuntino,mela,1,dichiarata a voce. E' la terza mela della giornata,dichiarato
