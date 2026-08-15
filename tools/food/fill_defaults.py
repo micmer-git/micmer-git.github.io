@@ -37,6 +37,34 @@ for _s in (sys.stdout, sys.stderr):
 OUT = common.DERIVED / "assumed_log.csv"
 FIELDS = ["date", "meal", "food_id", "qty", "note", "source"]
 
+# Quello che Michele ha detto di NON aver mangiato, riga per riga.
+#
+# Una ricostruzione e' un'ipotesi, e un'ipotesi si deve poter smentire: fino al
+# 2026-08-14 non si poteva, perche' `assumed_log.csv` viene riscritto da zero a
+# ogni giro e cancellarci dentro una riga non serviva a niente — tornava il giro
+# dopo. La smentita quindi non vive nell'output, vive qui: un file di INPUT, che
+# nessuno rigenera, dove ogni riga dice "questo, quel giorno, in quel pasto, non
+# c'era". `fill_defaults` la legge e non emette la riga corrispondente.
+#
+# La chiave e' (data, pasto, food_id), dove food_id puo' essere `recipe:<id>`:
+# una ricetta si toglie intera, che e' l'unico modo sensato — togliere le
+# lenticchie e lasciare il curry non descrive nessuna cena mai avvenuta. E una
+# ricetta smentita chiude il pasto per quel giorno: vedi il commento in fondo a
+# `main`, dove la smentita si applica.
+SUPPRESS = common.DATA / "diary_suppress.csv"
+SUPPRESS_FIELDS = ["date", "meal", "food_id", "nota", "quando"]
+
+
+def carica_soppressioni():
+    if not SUPPRESS.exists():
+        return set()
+    fuori = set()
+    with SUPPRESS.open(encoding="utf-8", newline="") as fh:
+        for r in csv.DictReader(fh):
+            if r.get("date") and r.get("food_id"):
+                fuori.add((r["date"], r.get("meal") or "", r["food_id"]))
+    return fuori
+
 BREAKFAST = "recipe:colazione_standard"
 WEEKLY = [
     # (food_id, porzioni a settimana, pasto, nota)
@@ -212,6 +240,31 @@ def main():
                           "note": f"{n} panino/i in bici ({h:.1f} h di uscita), dichiarato",
                           "source": "assunto"})
 
+    # Le smentite si applicano QUI, in fondo: cosi' valgono su tutte le famiglie di
+    # ricostruzione (colazione, ricette settimanali, piatti del mese, merenda,
+    # panino) senza doverle ripetere in cinque punti diversi.
+    #
+    # Un piatto smentito chiude il PASTO, non solo se stesso. La ragione e' che la
+    # ricostruzione di un giorno passato non e' stabile: le ricette settimanali si
+    # distribuiscono sui giorni ancora liberi, quindi la cena del 14 puo' essere il
+    # dahl oggi e la crostata domani. Se la smentita valesse solo per il food_id,
+    # Michele direbbe "non ho mangiato il dahl", il giro dopo comparirebbe la
+    # crostata al suo posto, e non ne uscirebbe piu'.
+    #
+    # Vale solo per le ricette, che nel pasto sono UNA: il contorno additivo
+    # (yogurt, mela, gallette della merenda) si toglie uno per uno, perche' li'
+    # negare la mela non dice niente sullo yogurt.
+    fuori = carica_soppressioni()
+    n_tolte = 0
+    if fuori:
+        pasti_chiusi = {(d, m) for d, m, f in fuori if f.startswith("recipe:")}
+        prima = len(added)
+        added = [r for r in added
+                 if (r["date"], r["meal"], r["food_id"]) not in fuori
+                 and not (r["food_id"].startswith("recipe:")
+                          and (r["date"], r["meal"]) in pasti_chiusi)]
+        n_tolte = prima - len(added)
+
     added.sort(key=lambda r: (r["date"], r["meal"]))
 
     n_days = (d1 - d0).days + 1
@@ -222,6 +275,8 @@ def main():
     for fid, n in sorted(by_kind.items()):
         print(f"  +{n:4d}  {fid}")
     print(f"  totale {len(added)} righe assunte")
+    if n_tolte:
+        print(f"  -{n_tolte} tolte perche' smentite in {SUPPRESS.name}")
     print(f"  panini da bici distribuiti: {n_panini}")
 
     if args.check:

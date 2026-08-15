@@ -233,6 +233,7 @@ def main():
             "kcal": round(kcal),
             "a": 1 if r.get("source") == "assunto" else 0,   # assunto, non osservato
             "r": r.get("recipe", ""),                        # da quale ricetta viene
+            "ri": r.get("recipe_id", ""),                    # ...e con quale id, per poterla togliere
         })
         # ORIGINE: una torta vera, cioe' ogni caloria in una fetta sola.
         #
@@ -489,9 +490,39 @@ def main():
                 # centinaia di volte (colazione sola, colazione+toast,
                 # colazione+dahl, tutte e tre): se ne emette una copia per forma e
                 # la data ci punta. Da 497 KB a una manciata.
+                # `piatti` e' `recipes` con dentro di che rimetterci le mani: il
+                # pasto e l'id, non il solo nome. Un giorno tutto ricostruito non ha
+                # `meals`, quindi la dashboard non aveva NIENTE da cliccare — e sono
+                # la maggioranza dei giorni. Con questo, ogni piatto ipotizzato ha
+                # la sua riga e si puo' smentire.
+                #
+                # Non rompe la deduplica dei profili: il pasto e l'id fanno parte
+                # della forma tanto quanto il nome, quindi due giorni identici
+                # restano identici e continuano a condividere un profilo solo.
+                # Le ricette entrano una volta sola, non una per ingrediente: `f` e'
+                # la stessa chiave che il diario usa per scriverle, `recipe:<id>`.
+                # Gli assunti sciolti (yogurt, mela, gallette della merenda) entrano
+                # per se stessi, perche' li' negare la mela non dice niente sullo
+                # yogurt.
+                # `q` e' la quantita' da proporre quando si corregge: per una
+                # ricetta e' 1 porzione (fill_defaults le scrive sempre cosi'), per
+                # un assunto sciolto e' la quantita' ipotizzata. Senza, il campo si
+                # aprirebbe su un numero finto.
+                piatti = {}
+                for m in detail[k]:
+                    for it in detail[k][m]:
+                        f = "recipe:" + it["ri"] if it.get("ri") else it.get("f")
+                        if not f:
+                            continue
+                        piatti.setdefault((m, f), (
+                            it.get("r") if it.get("ri") else (it.get("n") or f),
+                            1 if it.get("ri") else it.get("qn"),
+                        ))
                 prof = {
                     "recipes": sorted({it["r"] for m in detail[k]
                                        for it in detail[k][m] if it["r"]}),
+                    "piatti": [{"m": m, "f": f, "n": nome, "q": q}
+                               for (m, f), (nome, q) in sorted(piatti.items())],
                     "tot": {n: round(t[n], 1) for n in common.NUTRIENTS},
                     "pct": {n: round(100.0 * t[n] / rda[n]) for n in common.NUTRIENTS
                             if rda.get(n)},

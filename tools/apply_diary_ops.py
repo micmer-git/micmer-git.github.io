@@ -18,10 +18,17 @@ pagina identifica una riga di `days.json`. Per ritrovarla nel CSV si ricostruisc
 stesso ordinamento — le righe di quel giorno e di quel pasto, nell'ordine in cui
 stanno nel file — e si prende l'n-esima con quel food_id.
 
-**Le righe ricostruite non si toccano.** `fill_defaults.py` inventa i pasti dei giorni
-muti e scrive in `assumed_log.csv`, che qui non entra mai: correggere una ricostruzione
-vorrebbe dire scrivere nel diario qualcosa che Michele non ha raccontato. Un `set` o un
-`del` su una riga che nel CSV non c'e' viene SALTATO e riferito, non forzato.
+**Le righe ricostruite si smentiscono, non si correggono.** `fill_defaults.py` inventa
+i pasti dei giorni muti e scrive in `assumed_log.csv`, che qui non entra mai. Fino al
+2026-08-14 un `set`/`del` su una di quelle veniva saltato — corretto come principio, ma
+lasciava Michele senza modo di dire "quel piatto non l'ho mangiato". Ora la dashboard
+manda quelle operazioni con row_key `assunto|<pasto>|<food_id>`, e qui diventano righe
+di `food/data/diary_suppress.csv`: un `del` toglie l'ipotesi, un `set` la toglie e
+scrive al suo posto una riga VERA con la quantita' dichiarata. Il diario resta il
+racconto di Michele; l'ipotesi smentita sparisce al primo `fill_defaults`.
+
+Un `set`/`del` su una riga che nel CSV non c'e' e non e' marcata assunta resta SALTATO
+e riferito, non forzato.
 
 Se il Worker non risponde, o le chiavi non ci sono, lo script esce a zero senza
 scrivere: la Action oraria deve continuare a rigenerare /vita anche quando la casella
@@ -41,6 +48,15 @@ import urllib.request
 HERE = os.path.dirname(os.path.abspath(__file__))
 LOG = os.path.join(HERE, "food", "data", "food_log.csv")
 FIELDS = ["date", "meal", "food_id", "qty", "note", "source"]
+# La lista delle ricostruzioni smentite. La legge fill_defaults.py, che senza di
+# essa rimetterebbe la riga al giro dopo: `assumed_log.csv` e' un OUTPUT, e
+# cancellarci dentro non vuol dire niente.
+SUPPRESS = os.path.join(HERE, "food", "data", "diary_suppress.csv")
+SUPPRESS_FIELDS = ["date", "meal", "food_id", "nota", "quando"]
+# Le righe ricostruite arrivano dalla dashboard con questo prefisso al posto
+# dell'ordinale: `assunto|<pasto>|<food_id>` — dove food_id puo' essere
+# `recipe:<id>`, perche' una ricetta si smentisce intera.
+PREFISSO_ASSUNTO = "assunto|"
 BASE = (os.environ.get("VITA_DIARY_URL")
         or "https://vita-diario.micmer-recastello.workers.dev").rstrip("/")
 
@@ -87,6 +103,35 @@ def write_log(rows):
             w.writerow({k: r.get(k, "") for k in FIELDS})
 
 
+def leggi_soppressioni():
+    if not os.path.exists(SUPPRESS):
+        return []
+    with open(SUPPRESS, encoding="utf-8", newline="") as fh:
+        return list(csv.DictReader(fh))
+
+
+def scrivi_soppressioni(righe):
+    with open(SUPPRESS, "w", encoding="utf-8", newline="") as fh:
+        w = csv.DictWriter(fh, fieldnames=SUPPRESS_FIELDS)
+        w.writeheader()
+        w.writerows(righe)
+
+
+def chiave_assunta(row_key):
+    """(pasto, food_id) da `assunto|<pasto>|<food_id>`, o None se non e' una di quelle.
+
+    I pezzi sono esattamente tre: ne' il pasto ne' il food_id contengono "|". Il
+    food_id puo' essere `recipe:<id>`, che ha i due punti ma non la barra, quindi
+    lo split semplice basta e non serve limitarne il numero.
+    """
+    if not row_key.startswith(PREFISSO_ASSUNTO):
+        return None
+    pezzi = row_key.split("|")
+    if len(pezzi) != 3 or not pezzi[2]:
+        return None
+    return pezzi[1], pezzi[2]
+
+
 def locate(rows, day, row_key):
     """L'indice in `rows` della riga puntata da row_key, o None.
 
@@ -129,6 +174,8 @@ def main():
         return
 
     rows = read_log()
+    fuori = leggi_soppressioni()
+    n_fuori_prima = len(fuori)
     applied, skipped = [], []
 
     # add per ultime: un `set`/`del` punta a una riga che c'era gia' quando la pagina
@@ -144,6 +191,29 @@ def main():
             })
             applied.append(op["id"])
             print(f"  + {day} {op.get('meal')} {op['food_id']} {float(op['qty']):g}")
+            continue
+
+        # Una riga ricostruita non sta nel CSV, quindi non si "corregge": si
+        # SMENTISCE. `del` la toglie dalle ipotesi; `set` la toglie e al suo posto
+        # scrive una riga vera con la quantita' che hai detto tu — cosi' la
+        # provenienza resta onesta (dichiarato, non assunto) e non si conta due volte.
+        assunta = chiave_assunta(op.get("row_key") or "")
+        if assunta:
+            pasto, food_id = assunta
+            fuori.append({"date": day, "meal": pasto, "food_id": food_id,
+                          "nota": (op.get("note") or "smentita dal diario"),
+                          "quando": op.get("created_at") or ""})
+            if kind == "set" and float(op.get("qty") or 0) > 0:
+                rows.append({
+                    "date": day, "meal": pasto, "food_id": food_id,
+                    "qty": f'{float(op["qty"]):g}',
+                    "note": "ricostruzione corretta a mano dal diario",
+                    "source": "dichiarato",
+                })
+                print(f"  ~ {day} {pasto} {food_id}: ricostruzione -> dichiarata {float(op['qty']):g}")
+            else:
+                print(f"  - {day} {pasto} {food_id}: ricostruzione smentita")
+            applied.append(op["id"])
             continue
 
         i = locate(rows, day, op.get("row_key") or "")
@@ -170,6 +240,9 @@ def main():
         return
 
     write_log(rows)
+    if len(fuori) != n_fuori_prima:
+        scrivi_soppressioni(fuori)
+        print(f"  diario: {len(fuori) - n_fuori_prima} ricostruzioni smentite -> {os.path.basename(SUPPRESS)}")
     # Anche le saltate si marcano: restando pendenti tornerebbero a ogni ora, e a
     # ogni ora fallirebbero allo stesso modo. Il riferimento resta qui sopra.
     if applied or skipped:

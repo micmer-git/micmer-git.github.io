@@ -227,9 +227,14 @@ def expand_log(rows, recipes):
             continue
         portions = float(row["qty"]) / recipe["servings"]
         for ing in recipe["ingredients"]:
+            # `recipe_id` oltre al nome: il nome serve a leggere, l'id a rimetterci
+            # le mani. Una riga ricostruita si toglie o si corregge per RICETTA
+            # intera (non ha senso cancellare le lenticchie e lasciare il curry), e
+            # per dirlo a fill_defaults serve l'id con cui l'ha scritta lui.
             out.append({**row, "food_id": ing["food_id"],
                         "qty": ing["qty"] * portions,
-                        "recipe": recipe["name"]})
+                        "recipe": recipe["name"],
+                        "recipe_id": rid})
     return out
 
 
