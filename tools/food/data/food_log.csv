@@ -442,3 +442,14 @@ date,meal,food_id,qty,note,source
 2026-08-14,pranzo,prosciutto_cotto,50,"il prosciutto sulla pizza; ""normale"" letto come cotto, non crudo. Grammatura standard stimata",dichiarato
 2026-08-14,pranzo,torta_semplice,120,"torta di grano saraceno con marmellata; nessuna voce a catalogo, torta da forno generica usata come proxy. Fetta standard stimata",dichiarato
 2026-08-14,pranzo,pomodorini,150,annotato dal diario di /vita,dichiarato
+2026-08-15,colazione,recipe:porridge_banana_cioccolato_peanut,1,"il solito porridge con la ricetta solita, dichiarato a voce: ricetta a catalogo, nota «il tuo porridge abituale»",dichiarato
+2026-08-15,colazione,latte_ps,100,"«100 ml di latte in piu'», dichiarato a voce: si aggiunge ai 50 ml gia' dentro la ricetta del porridge",dichiarato
+2026-08-15,colazione,burro_arachidi_sgrassato,15,"«un cucchiaio di peanut butter», dichiarato a voce. Cucchiaio = 15 g come il 14/08; si aggiunge ai 25 g della ricetta",dichiarato
+2026-08-15,spuntino,mela,1,dichiarata a voce,dichiarato
+2026-08-15,spuntino,banana,1,dichiarata a voce,dichiarato
+2026-08-15,spuntino,pesca,1,dichiarata a voce,dichiarato
+2026-08-15,spuntino,yogurt_bianco_intero,150,"budino Danone da 96 kcal dichiarato a voce. Nessun budino a catalogo: yogurt bianco intero usato come proxy, 150 g = 92 kcal, il piu' vicino ai 96 dichiarati",dichiarato
+2026-08-15,spuntino,mela,1,"«un'altra mela»: seconda mela della giornata, dichiarata a voce",dichiarato
+2026-08-15,spuntino,banana,1,"seconda banana della giornata, letta da «un'altra mela banana»",dichiarato
+2026-08-15,pranzo,pomodorini,150,"«un pomodoro», dichiarato a voce; 150 g e' la grammatura solita nel registro",dichiarato
+2026-08-15,cena,lupini,100,"«di lupini quelli soliti»: i 100 g della riga precedente sono i lupini, non il peanut butter. 100 g e' l'unica quantita' mai registrata",dichiarato
