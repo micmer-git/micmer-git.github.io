@@ -675,7 +675,7 @@ def highlights():
               vita_trackers.load_sogni(), vita_trackers.load_spostamenti()):
         out.append({
             "key": t["key"], "title": t["title"], "href": t["href"],
-            "eyebrow": t["eyebrow"], "blurb": t["blurb"], "accent": t["accent"],
+            "eyebrow": t["eyebrow"], "accent": t["accent"],   # `blurb` non serve piu': il 16/08 e' uscito dalla pagina
             "last": t["last"],
             "stats": [{"v": s["v"], "l": s["l"]} for s in t["stats"]],
         })
@@ -906,8 +906,15 @@ TEMPLATE = r"""<!DOCTYPE html>
   body[data-view="compatta"] .panel,
   body[data-view="compatta"] h2.band,
   body[data-view="compatta"] .band-sub{display:none}
-  .cx-note{text-align:center; color:var(--muted); font-size:.8rem; font-style:italic;
-    max-width:56em; margin:16px auto 0; line-height:1.55}
+  .cx-note{text-align:left; color:var(--muted); font-size:.8rem;
+    max-width:56em; margin:14px auto 0; line-height:1.55; display:flex; gap:10px;
+    align-items:baseline; flex-wrap:wrap}
+  /* i gesti stanno accanto ai comandi, non in un paragrafo tre schermate piu' su */
+  .cx-note .cx-gesti{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;
+    font-size:.62rem; letter-spacing:.04em; color:var(--muted);
+    border-left:1px solid var(--rule); padding-left:10px}
+  .cx-note .cx-gesti b{color:var(--ink-soft); font-weight:600}
+  @media(max-width:640px){ .cx-note .cx-gesti{border-left:0; padding-left:0} }
   .cx-note strong{color:var(--ink-soft); font-weight:500}
   .cx-wrap{display:grid; grid-template-columns:minmax(0,1fr) 214px; gap:14px;
     align-items:start; margin-top:14px}
@@ -1002,6 +1009,20 @@ TEMPLATE = r"""<!DOCTYPE html>
   .tile:hover{border-color:rgba(162,100,1,.4); background:var(--paper-2)}
   .t-side{min-width:0}
   .t-head{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap}
+  /* La pastiglia di provenienza. E' la terza regola di casa resa visibile: un numero
+     misurato e uno ricostruito da un modello non si disegnano uguali. Prima lo diceva
+     `dataNote`, con sette formulazioni diverse per tre concetti, e solo su 9 riquadri
+     su 42. Ora e' un vocabolario chiuso, obbligatorio, e la stessa parola vuol sempre
+     dire la stessa cosa. Non c'e' colore nuovo: sono gli slot dei grafici. */
+  .t-src{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.5rem;
+    letter-spacing:.13em; text-transform:uppercase; font-weight:600; padding:2px 7px;
+    border-radius:999px; border:1px solid currentColor; opacity:.85; white-space:nowrap;
+    align-self:center; cursor:pointer; background:none}
+  .t-src[data-src="misurato"]{color:var(--s3)}
+  .t-src[data-src="ricostruito"]{color:var(--s4)}
+  .t-src[data-src="modello"]{color:var(--s1)}
+  .t-src[data-src="stima"]{color:var(--s2)}
+  .t-src:hover,.t-src:focus-visible{opacity:1}
   .t-title{font-family:'VT323',ui-monospace,monospace; font-size:1.3rem; font-weight:600;
     letter-spacing:.02em; line-height:1.2}
   .t-now{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:1.15rem; font-weight:600;
@@ -1016,6 +1037,10 @@ TEMPLATE = r"""<!DOCTYPE html>
   /* le leve dell'indice microbiota: l'emoji dice quale, il numero quanto e' tirata */
   .t-shift{display:flex; gap:11px; flex-wrap:wrap; margin-top:5px; font-size:.95rem}
   .t-shift b{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem; font-weight:600}
+  /* La parola accanto all'emoji. Prima stava solo dentro `title=`, e su un telefono
+     non c'e' hover: quel testo non e' mai comparso a nessuno. */
+  .t-shift .sh-l{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.5rem;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-style:normal}
   svg.plot{width:100%; height:auto; display:block; touch-action:pan-y; overflow:hidden}
   .t-foot{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.53rem; letter-spacing:.06em;
     color:var(--muted); margin-top:3px; line-height:1.45; grid-column:1/-1}
@@ -1385,7 +1410,6 @@ TEMPLATE = r"""<!DOCTYPE html>
   <button type="button" id="diary-btn">Apri il diario</button>
 </div>
 
-<nav class="tracks" id="tracks" aria-label="Le pagine"></nav>
 
 <div class="controls">
   <div class="ranges" id="ranges" role="group" aria-label="Finestra temporale"></div>
@@ -1445,6 +1469,8 @@ sono zeri, e sono il risultato più solido che ci sia.<span id="ico-band-incroci
 <p class="band-sub">Cosa entra, contro cosa serve — <strong>ricostruito</strong> al
 <strong>75 %</strong>, quindi una base, non un totale.<span id="ico-band-tavola"></span></p>
 <main class="panel" id="panel-tavola"></main>
+
+<nav class="tracks" id="tracks" aria-label="Le pagine"></nav>
 
 <nav class="also">
   <a href="../top-20/">Venti giorni su 2.923</a>
@@ -2019,6 +2045,38 @@ infoReg("testata", "Da dove arrivano questi numeri",
    di qui mentre la guardi.</p>
    <p>Il carico è registrato dal 2019; sonno, HRV e passi dal 2025; la tavola da maggio
    2026.</p>`);
+/* IL VOCABOLARIO DELLA PROVENIENZA — quattro parole, e non una di piu'.
+   Prima c'era `dataNote`, testo libero: sette formulazioni per tre concetti
+   («modello, non una misura», «indice, non una misura», «modello, non un test da
+   laboratorio»…) e su 9 riquadri su 42. Le altre 33 non dichiaravano niente a colpo
+   d'occhio. Questa e' la terza regola di casa — osservato, ricostruito e stimato non
+   sono la stessa cosa — smessa di essere una raccomandazione e diventata un campo. */
+const SRC_LAB = { misurato:"misurato", ricostruito:"ricostruito", modello:"modello", stima:"stima" };
+infoReg("provenienza:misurato", "Misurato",
+  `<p>Un sensore l'ha letto: l'orologio, il ciclocomputer, la bilancia. Resta vero che
+   uno strumento ha la sua precisione — ma nessuno ha inventato il numero.</p>`);
+infoReg("provenienza:ricostruito", "Ricostruito",
+  `<p>Rimesso insieme da quello che Michele ha <strong>dichiarato</strong>, non pesato
+   pasto per pasto: la colazione fissa, i piatti che ricorrono ogni mese. Copre circa il
+   <strong>75 %</strong> di quello che mangia — il resto qui non c'è.</p>
+   <p>Vuol dire che questi numeri sono una <strong>base</strong>, non un totale, e che
+   una correlazione con la tavola può mostrare le regole della ricostruzione invece del
+   corpo.</p>`);
+infoReg("provenienza:modello", "Modello",
+  `<p>Calcolato da una formula o da una curva di letteratura, non misurato: FatMax,
+   heat strain, il momento metabolico, le medie esponenziali di fitness e fatica.</p>
+   <p>Ogni riquadro di questo tipo dichiara la propria formula o la propria fonte sotto
+   «dati» — perché su un grafico un numero misurato e uno calcolato hanno esattamente lo
+   stesso aspetto.</p>`);
+infoReg("provenienza:stima", "Stima",
+  `<p>Un modello di cui si conosce anche l'errore, ed è grande: i grammi di grasso al
+   minuto stanno a <strong>±40 %</strong> sul livello assoluto.</p>
+   <p>Si legge la <strong>variazione</strong>, non il valore: se sale, qualcosa si è
+   mosso; quanto valga davvero quel numero, questo archivio non lo sa.</p>`);
+infoReg("provenienza:ignota", "Provenienza non dichiarata",
+  `<p>Questo riquadro non dichiara da dove vengono i suoi numeri, ed è un difetto:
+   andrebbe messo <code>src</code> nella sua definizione.</p>`);
+
 infoReg("incrocio", "Come si legge la nuvola",
   `<p>Ogni punto è un giorno con <strong>entrambe</strong> le misure. La retta e
    l'<em>r</em> descrivono un'<strong>associazione, non una causa</strong>.</p>
@@ -2980,7 +3038,7 @@ const mmDraw = (() => {
 const TILES = [
   /* ---- Carico ---- */
   { panel:"carico", cls:"wide", h:190, first:"load",
-    title:"Fitness e fatica", cap:"CTL e ATL · giorno per giorno",
+    src:"modello", title:"Fitness e fatica", cap:"CTL e ATL · giorno per giorno",
     legend:[["Fitness (CTL)", SCH[0]], ["Fatica (ATL)", SCH[1]]],
     now:() => D.ctl[N - 1], nowFmt:FMT.num0, nowUnit:"CTL oggi",
     kind:rLines, spec:{ zero:true, fmt:FMT.num0, series:[
@@ -2990,17 +3048,17 @@ const TILES = [
     foot:"Arancio sopra blu: si sta scavando." },
 
   { panel:"carico", cls:"wide", h:150, first:"load",
-    title:"Forma", cap:"CTL − ATL · sopra lo zero si è freschi",
+    src:"modello", title:"Forma", cap:"CTL − ATL · sopra lo zero si è freschi",
     now:() => D.ctl[N - 1] - D.atl[N - 1], nowFmt:FMT.num0, nowUnit:"forma oggi",
     kind:rDiverge, spec:{ name:"Forma", fmt:FMT.num0,
       get:(a, b) => { const o = []; for (let i = a; i <= b; i++) o.push([i, D.ctl[i] === null || D.atl[i] === null ? null : D.ctl[i] - D.atl[i]]); return o; } },
     foot:"Blu credito, rosso debito." },
 
-  { panel:"carico", h:170, first:"load", title:"Carico", cap:"TSS sommato",
+  { panel:"carico", h:170, first:"load", src:"misurato", title:"Carico", cap:"TSS sommato",
     now:() => D.load.slice(N - 7).reduce((a, b) => a + (b || 0), 0), nowFmt:FMT.num0, nowUnit:"TSS ultimi 7 gg",
     kind:rBars, spec:{ name:"Carico", arr:D.load, how:"sum", col:"var(--s1)", fmt:FMT.tss } },
 
-  { panel:"carico", h:170, first:"act", title:"Ore", cap:"tempo in movimento",
+  { panel:"carico", h:170, first:"act", src:"misurato", title:"Ore", cap:"tempo in movimento",
     now:() => secsOf.secs.slice(N - 7).reduce((a, b) => a + b, 0) / 3600, nowFmt:FMT.num1, nowUnit:"ore ultimi 7 gg",
     kind:rBars, spec:{ name:"Ore", arr:secsOf.secs, how:"sum", scale:v => v / 3600,
       col:"var(--s3)", fmt:FMT.hours } },
@@ -3011,61 +3069,61 @@ const TILES = [
      sempre la media mobile — quindi non si perde escursione: si perde spazio bianco,
      e la colonna intera diventa scorribile invece che da scorrere. */
   { panel:"notte", cls:"half", h:150, first:"sleep",
-    title:"Durata del sonno", cap:"ogni notte · media mobile 7 giorni",
+    src:"misurato", title:"Durata del sonno", cap:"ogni notte · media mobile 7 giorni",
     now:() => { const r = rolling(D.sleep, N - 7, N - 1, 7); return r[r.length - 1]; },
     nowFmt:FMT.hhmm, nowUnit:"media 7 notti",
     kind:rCloud, spec:{ name:"Sonno", arr:D.sleep, col:"var(--s1)", fmt:FMT.hhmm,
       band:[420, 480], win:7, ytick:v => (v / 60).toFixed(0) + "h" },
     foot:"Fascia: 7–8 ore." },
 
-  { panel:"notte", h:150, first:"score", title:"Punteggio del sonno",
+  { panel:"notte", h:150, first:"score", src:"modello", title:"Punteggio del sonno",
     cap:"come lo valuta l'orologio · 0–100",
     now:() => { const r = rolling(D.score, N - 14, N - 1, 14); return r[r.length - 1]; },
     nowFmt:FMT.num0, nowUnit:"media 14 notti",
     kind:rCloud, spec:{ name:"Punteggio", arr:D.score, col:"var(--s3)", fmt:FMT.num0, win:14 } },
 
-  { panel:"notte", h:160, first:"sleep", title:"Sonno per giorno della settimana",
+  { panel:"notte", h:160, first:"sleep", src:"misurato", title:"Sonno per giorno della settimana",
     cap:"media · il baffo è l'escursione fra la notte più corta e la più lunga",
     kind:rDow, spec:{ name:"Sonno", arr:D.sleep, col:"var(--s4)", fmt:FMT.hhmm,
       ytick:v => (v / 60).toFixed(0) + "h" } },
 
   /* ---- Recupero ---- */
   { panel:"recupero", cls:"half", h:150, first:"hrv",
-    title:"HRV", cap:"variabilità cardiaca al risveglio · media mobile 7 giorni",
+    src:"misurato", title:"HRV", cap:"variabilità cardiaca al risveglio · media mobile 7 giorni",
     now:() => { const r = rolling(D.hrv, N - 7, N - 1, 7); return r[r.length - 1]; },
     nowFmt:FMT.num0, nowUnit:"ms, media 7 gg",
     kind:rCloud, spec:{ name:"HRV", arr:D.hrv, col:"var(--s2)", fmt:FMT.ms, win:7 },
     foot:"Conta la media, non il singolo giorno." },
 
-  { panel:"recupero", h:150, first:"rhr", title:"Frequenza a riposo",
+  { panel:"recupero", h:150, first:"rhr", src:"misurato", title:"Frequenza a riposo",
     cap:"battiti al minuto · media mobile 7 giorni",
     now:() => { const r = rolling(D.rhr, N - 7, N - 1, 7); return r[r.length - 1]; },
     nowFmt:FMT.num0, nowUnit:"bpm, media 7 gg",
     kind:rCloud, spec:{ name:"FC a riposo", arr:D.rhr, col:"var(--s1)", fmt:FMT.bpm, win:7 } },
 
-  { panel:"recupero", h:150, first:"steps", title:"Passi", cap:"al giorno · media mobile 7 giorni",
+  { panel:"recupero", h:150, first:"steps", src:"misurato", title:"Passi", cap:"al giorno · media mobile 7 giorni",
     now:() => { const r = rolling(D.steps, N - 7, N - 1, 7); return r[r.length - 1]; },
     nowFmt:FMT.num0, nowUnit:"passi/giorno",
     kind:rCloud, spec:{ name:"Passi", arr:D.steps, col:"var(--s4)", fmt:FMT.num0, zero:true,
       ytick:v => v >= 1000 ? (v / 1000) + "k" : String(v) } },
 
   /* ---- Volume ---- */
-  { panel:"volume", cls:"half", h:170, first:"act", title:"Mix per sport",
+  { panel:"volume", cls:"half", h:170, first:"act", src:"misurato", title:"Mix per sport",
     cap:"ore, impilate", legend:S.map((s, i) => [s, SCH[i]]),
     kind:rStack, spec:{ arrs:secsOf.bySport, names:S, cols:SC, scale:v => v / 3600,
       fmt:FMT.hours } },
 
-  { panel:"volume", h:170, first:"act", title:"Chilometri", cap:"distanza sommata",
+  { panel:"volume", h:170, first:"act", src:"misurato", title:"Chilometri", cap:"distanza sommata",
     now:() => secsOf.dist.reduce((a, b) => a + b, 0) / 1000, nowFmt:FMT.num0, nowUnit:"km in tutto",
     kind:rBars, spec:{ name:"Distanza", arr:secsOf.dist, how:"sum", scale:v => v / 1000,
       col:"var(--s2)", fmt:FMT.km } },
 
-  { panel:"volume", h:170, first:"act", title:"Dislivello", cap:"metri di salita sommati",
+  { panel:"volume", h:170, first:"act", src:"misurato", title:"Dislivello", cap:"metri di salita sommati",
     now:() => secsOf.gain.reduce((a, b) => a + b, 0), nowFmt:FMT.num0, nowUnit:"m in tutto",
     kind:rBars, spec:{ name:"Dislivello", arr:secsOf.gain, how:"sum", col:"var(--s4)",
       fmt:FMT.m, ytick:v => v >= 1000 ? (v / 1000) + "k" : String(v) } },
 
-  { panel:"volume", h:190, first:"act", title:"Distanza contro dislivello",
+  { panel:"volume", h:190, first:"act", src:"misurato", title:"Distanza contro dislivello",
     cap:"una attività, un punto · solo bici e corsa",
     legend:[["Bici", SCH[0]], ["Corsa", SCH[1]]],
     kind:rXY, spec:{ xname:"Distanza", yname:"Dislivello", xfmt:FMT.km, yfmt:FMT.m, r:2.2,
@@ -3074,7 +3132,7 @@ const TILES = [
           .map(x => [x[3] / 1000, x[4], x[0]]) })) },
     foot:"Solo bici e corsa: gli altri sport non hanno questo asse." },
 
-  { panel:"volume", h:150, first:"act", title:"Mezze maratone",
+  { panel:"volume", h:150, first:"act", src:"misurato", title:"Mezze maratone",
     cap:`corse fra ${nf(HALF_LO / 1000, 1)} e ${nf(HALF_HI / 1000, 0)} km · quante negli ultimi ${HALF_WIN} giorni, giorno per giorno`,
     now:() => halfRoll[N - 1],
     nowFmt:FMT.num0, nowUnit:"nell'ultimo anno",
@@ -3088,7 +3146,7 @@ const TILES = [
       "mensile quasi altrettante colonne alte uno separate da buchi — e un buco lì si legge come una pausa " +
       "senza esserlo." },
 
-  { panel:"volume", h:150, first:"act", title:"Salite lunghe",
+  { panel:"volume", h:150, first:"act", src:"misurato", title:"Salite lunghe",
     cap:`oltre un'ora e almeno ${nf(CLIMB_GAIN, 0)} m di dislivello · quante negli ultimi ${CLIMB_WIN} giorni, giorno per giorno`,
     now:() => climbRoll[N - 1],
     nowFmt:FMT.num0, nowUnit:`negli ultimi ${CLIMB_WIN} giorni`,
@@ -3132,7 +3190,7 @@ function metabTiles() {
 
   if (has("temp_c") && has("temp_min_c") && has("temp_max_c")) {
     t.push({ panel:"metabolismo", cls:"wide", h:190, first:"mb_temp_c",
-      title:"Temperatura", cap:"sensore al polso durante l'uscita · banda min–max del giorno, media mobile 30 giorni",
+      src:"misurato", title:"Temperatura", cap:"sensore al polso durante l'uscita · banda min–max del giorno, media mobile 30 giorni",
       legend:[["Media dell'uscita", SCH[1]], ["Fra minimo e massimo", "rgba(217,89,38,.35)"]],
       now:() => lastMean(M.temp_c, 30), nowFmt:v => nf(v, 1) + " °C", nowUnit:"media 30 gg",
       kind:rBand, spec:{ name:"Temperatura", mid:M.temp_c, lo:M.temp_min_c, hi:M.temp_max_c,
@@ -3147,7 +3205,7 @@ function metabTiles() {
   }
 
   if (heat) {
-    t.push({ panel:"metabolismo", h:170, first:"load", title:"Heat strain",
+    t.push({ panel:"metabolismo", h:170, first:"load", src:"modello", title:"Heat strain",
       cap:`indice costruito · gradi-ora sopra ${HS_SOGLIA_C} °C pesati per il carico · sommati al mese`,
       now:() => heat.reduce((a, b) => a + (b || 0), 0), nowFmt:FMT.num0, nowUnit:"indice, in tutto",
       kind:rBars, spec:{ name:"Heat strain", arr:heat, how:"sum", col:"var(--s2)",
@@ -3164,7 +3222,7 @@ function metabTiles() {
 
   if (has("fatmax_hr") && has("fatmax_lo_hr") && has("fatmax_hi_hr")) {
     t.push({ panel:"metabolismo", cls:"wide", h:180, first:"mb_fatmax_hr",
-      title:"FatMax", cap:"battiti al minuto · la banda in cui il modello mette il massimo consumo di grassi",
+      src:"modello", title:"FatMax", cap:"battiti al minuto · la banda in cui il modello mette il massimo consumo di grassi",
       legend:[["FatMax", SCH[2]], ["Banda", "rgba(25,158,112,.35)"]],
       now:() => lastMean(M.fatmax_hr, 45), nowFmt:FMT.num0, nowUnit:"bpm, media 45 gg",
       kind:rBand, spec:{ name:"FatMax", mid:M.fatmax_hr, lo:M.fatmax_lo_hr, hi:M.fatmax_hi_hr,
@@ -3179,7 +3237,7 @@ function metabTiles() {
 
   if (has("fatmax_min")) {
     t.push({ panel:"metabolismo", h:170, first:"mb_fatmax_min",
-      title:"Minuti dentro la banda", cap:"tempo passato fra i due estremi del FatMax · sommato al mese",
+      src:"modello", title:"Minuti dentro la banda", cap:"tempo passato fra i due estremi del FatMax · sommato al mese",
       now:() => M.fatmax_min.reduce((a, b) => a + (b || 0), 0), nowFmt:v => nf(v / 60, 0),
       nowUnit:"ore in tutto",
       kind:rBars, spec:{ name:"Nella banda", arr:M.fatmax_min, how:"sum",
@@ -3193,18 +3251,18 @@ function metabTiles() {
 
   if (fatRate) {
     t.push({ panel:"metabolismo", h:150, first:"fat_rate",
-      title:"Grassi al minuto",
+      src:"stima", title:"Grassi al minuto",
       cap:"grammi stimati diviso i minuti di allenamento di quel giorno · media mobile 45 giorni",
       now:() => lastMean(fatRate, 45), nowFmt:v => nf(v, 2), nowUnit:"g/min, media 45 gg",
       kind:rCloud, spec:{ name:"Grassi", arr:fatRate, col:SCH[2], win:45,
         fmt:v => nf(v, 2) + " g/min", ytick:v => nf(v, 2) },
       dataNote:"modello, non una misura",
-      foot:"Il numero che la letteratura chiama <span class=\"mono\">MFO</span> è un tasso, non un " +
-        "totale: 0,52 g/min per un maschio allenato a digiuno (Achten 2003). Qui è il totale " +
-        "stimato del giorno diviso i minuti di quel giorno, e sta sotto quel valore perché la " +
-        "media di un'uscita comprende i tratti sopra la banda, dove l'ossidazione dei grassi " +
-        "crolla. <strong>Vale la sua variazione, non il suo valore</strong>: l'incertezza sul " +
-        "livello assoluto è dell'ordine del ±40 %, e i giorni sotto i venti minuti non entrano." });
+      foot:"<strong>Vale la sua variazione, non il suo valore</strong>: sul livello assoluto " +
+        "l'incertezza è dell'ordine del ±40 %. È il totale stimato del giorno diviso i minuti " +
+        "di quel giorno. Quello che la letteratura chiama <span class=\"mono\">MFO</span> è un " +
+        "tasso, non un totale: 0,52 g/min per un maschio allenato a digiuno (Achten 2003), e " +
+        "qui si sta sotto perché la media di un'uscita comprende i tratti sopra la banda, dove " +
+        "l'ossidazione dei grassi crolla. I giorni sotto i venti minuti non entrano." });
   }
 
   if (aero) {
@@ -3213,7 +3271,7 @@ function metabTiles() {
        Se le tre nuvole stanno una sopra l'altra qualcosa e' cambiato; se si
        sovrappongono, non e' cambiato niente — ed e' una risposta anche quella. */
     t.push({ panel:"metabolismo", cls:"wide", h:200, first:"ef",
-      title:"Passo contro battito",
+      src:"misurato", title:"Passo contro battito",
       cap:"una corsa oltre la mezz'ora, un punto · passo corretto per la pendenza (GAP) contro FC media",
       legend:aero.eras.map((e, k) => [e, SCH[k]]),
       kind:rXY, spec:{ xname:"FC media", yname:"Passo (GAP)", xfmt:FMT.bpm,
@@ -3230,20 +3288,20 @@ function metabTiles() {
         "regressione su tutti i punti insieme, non per era." });
 
     t.push({ panel:"metabolismo", h:150, first:"ef",
-      title:"Efficienza aerobica",
+      src:"misurato", title:"Efficienza aerobica",
       cap:"metri al minuto per battito, media delle corse del giorno · media mobile 45 giorni",
       now:() => lastMean(aero.day, 45), nowFmt:v => nf(v, 2), nowUnit:"m/min per battito, media 45 gg",
       kind:rCloud, spec:{ name:"Efficienza", arr:aero.day, col:SCH[0], win:45,
         fmt:v => nf(v, 2), ytick:v => nf(v, 2) },
       dataNote:"misurato",
-      foot:"La stessa nuvola di sopra ridotta a un numero per giornata: passo GAP in metri al " +
-        "minuto diviso i battiti al minuto. Sale se si va più forte agli stessi battiti — che è " +
-        "quello che succede quando la macchina aerobica migliora — <strong>ma sale anche se si " +
-        "sceglie di correre più forte</strong>, e il numero da solo non sa distinguere le due cose. " +
-        "Per quello accanto c'è la nuvola: lì il battito è sull'asse e la scelta si vede." });
+      foot:"Sale quando la macchina aerobica migliora, <strong>ma sale anche se si sceglie di " +
+        "correre più forte</strong>: il numero da solo non sa distinguere le due cose. " +
+        "È la nuvola di sopra ridotta a un numero al giorno: passo GAP in metri al minuto " +
+        "diviso i battiti al minuto. Per distinguerle c'è la nuvola accanto: lì il battito è " +
+        "sull'asse e la scelta si vede." });
 
     t.push({ panel:"metabolismo", h:150, first:"ef",
-      title:"Il caldo",
+      src:"misurato", title:"Il caldo",
       cap:"temperatura al polso durante la corsa → efficienza di quella corsa",
       kind:rXY, spec:{ xname:"Temperatura", yname:"Efficienza",
         xfmt:v => nf(v, 1) + " °C", yfmt:v => nf(v, 2), r:2.4,
@@ -3263,7 +3321,7 @@ function metabTiles() {
 
   if (mmDraw) {
     t.push({ panel:"metabolismo", cls:"wide", h:170, first:"mm_drawn",
-      title:"Momento metabolico",
+      src:"modello", title:"Momento metabolico",
       cap:`scala −20 → +20 · disegnato solo dove poggia su almeno ${MM_MIN_COMP} componenti su 6`,
       now:() => lastMean(mmDraw.arr, 14), nowFmt:FMT.num1, nowUnit:"momento, media 14 gg",
       kind:rDiverge, spec:{ name:"Momento", fmt:FMT.num1,
@@ -3296,7 +3354,7 @@ function nutriTiles() {
                ["Ruminococcus", "🥔"], ["Eubacterium", "🌾"], ["Akkermansia", "🫐"],
                ["Lactobacillus", "🍶"]].filter(([g]) => Array.isArray(MICR[g]));
 
-  t.push({ panel:"tavola", h:118, first:"n_kcal", title:"Quanto è raccontato",
+  t.push({ panel:"tavola", h:118, first:"n_kcal", src:"misurato", title:"Quanto è raccontato",
     cap:"kcal osservate contro ricostruite · i piatti dichiarati sono ~75 % della dieta", legend:[["Osservate", SCH[2]], ["Ricostruite", SCH[3]]],
     now:() => { const a = N_.kcal_observed, b = N_.kcal_assumed; let o = 0, s = 0;
       for (let i = 0; i < N; i++) if (a[i] !== null) { o += a[i]; s += a[i] + (b[i] || 0); }
@@ -3306,14 +3364,14 @@ function nutriTiles() {
       names:["Osservate", "Ricostruite"], cols:["var(--s3)", "var(--s4)"], fmt:FMT.num0 },
     foot:"Osservato = un pasto raccontato. Ricostruito = lo schema mensile dichiarato, che copre circa tre quarti della dieta." });
 
-  t.push({ panel:"tavola", h:118, first:"n_kcal", title:"Energia",
+  t.push({ panel:"tavola", h:118, first:"n_kcal", src:"ricostruito", title:"Energia",
     cap:"kcal al giorno · media mobile 7 giorni",
     now:() => lastMean(N_.kcal, 7),
     nowFmt:FMT.num0, nowUnit:"kcal, media 7 gg",
     kind:rCloud, spec:{ name:"Energia", arr:N_.kcal, col:"var(--s2)", fmt:FMT.num0,
       zero:true, win:7 } });
 
-  t.push({ panel:"tavola", h:118, first:"n_fiber_g", title:"Fibre",
+  t.push({ panel:"tavola", h:118, first:"n_fiber_g", src:"ricostruito", title:"Fibre",
     cap:"grammi al giorno · la fascia è l'obiettivo, 30 g",
     now:() => lastMean(N_.fiber_g, 7),
     nowFmt:FMT.num1, nowUnit:"g, media 7 gg",
@@ -3321,14 +3379,14 @@ function nutriTiles() {
       band:[30, 45], zero:true, win:7 } });
 
   if (has("plants_7d")) t.push({ panel:"tavola", h:118, first:"n_plants_7d",
-    title:"Piante diverse", cap:"specie vegetali distinte negli ultimi 7 giorni · obiettivo 30",
+    src:"ricostruito", title:"Piante diverse", cap:"specie vegetali distinte negli ultimi 7 giorni · obiettivo 30",
     now:() => { for (let i = N - 1; i >= 0; i--) if (N_.plants_7d[i] !== null) return N_.plants_7d[i]; return null; },
     nowFmt:FMT.num0, nowUnit:"su 30",
     kind:rCloud, spec:{ name:"Piante", arr:N_.plants_7d, col:"var(--s1)", fmt:FMT.num0,
       band:[30, 30], zero:true, win:14 },
     foot:"Cereali, legumi, frutta secca, erbe e spezie contano." });
 
-  t.push({ panel:"tavola", h:118, first:"n_carb_g", title:"Carboidrati contro fabbisogno",
+  t.push({ panel:"tavola", h:118, first:"n_carb_g", src:"ricostruito", title:"Carboidrati contro fabbisogno",
     cap:"ingeriti e stimati dal TSS del giorno",
     legend:[["Ingeriti", SCH[0]], ["Stimati dal carico", SCH[1]]],
     now:() => lastMean(N_.carb_gap_g, 7),
@@ -3339,14 +3397,14 @@ function nutriTiles() {
     ] },
     foot:"Stima: 3 g/kg da fermo, ~6 a TSS 100, fino a 10." });
 
-  t.push({ panel:"tavola", h:118, first:"n_sugar_g", title:"Zuccheri",
+  t.push({ panel:"tavola", h:118, first:"n_sugar_g", src:"ricostruito", title:"Zuccheri",
     cap:"grammi al giorno · media mobile 7 giorni",
     now:() => lastMean(N_.sugar_g, 7),
     nowFmt:FMT.num1, nowUnit:"g, media 7 gg",
     kind:rCloud, spec:{ name:"Zuccheri", arr:N_.sugar_g, col:"var(--s4)",
       fmt:v => nf(v, 1) + " g", zero:true, win:7 } });
 
-  t.push({ panel:"tavola", h:118, first:"n_magnesium_mg", title:"Magnesio e potassio",
+  t.push({ panel:"tavola", h:118, first:"n_magnesium_mg", src:"ricostruito", title:"Magnesio e potassio",
     cap:"% del fabbisogno coperta", legend:[["Magnesio", SCH[2]], ["Potassio", SCH[0]]],
     now:() => { const v = lastMean(N_.magnesium_mg, 7); return v === null ? null : 100 * v / 350; },
     nowFmt:v => nf(v, 0) + " %", nowUnit:"magnesio, 7 gg",
@@ -3356,7 +3414,7 @@ function nutriTiles() {
     ] },
     foot:"100 % = fabbisogno coperto." });
 
-  t.push({ panel:"tavola", h:118, first:"n_vit_index", title:"Vitamine e minerali",
+  t.push({ panel:"tavola", h:118, first:"n_vit_index", src:"ricostruito", title:"Vitamine e minerali",
     cap:"indice 0-100 · media delle coperture, ognuna tagliata a 100",
     legend:[["Vitamine", SCH[1]], ["Minerali", SCH[2]]],
     now:() => lastMean(N_.vit_index, 7),
@@ -3368,7 +3426,7 @@ function nutriTiles() {
     foot:"Ogni nutriente tagliato al 100 % prima della media." });
 
   if (has("microbiome")) t.push({ panel:"tavola", h:118, first:"n_microbiome",
-    title:"Indice microbiota", cap:"proxy 0-100 dal diario, non una misura",
+    src:"modello", title:"Indice microbiota", cap:"proxy 0-100 dal diario, non una misura",
     now:() => lastMean(N_.microbiome, 14),
     nowFmt:FMT.num0, nowUnit:"su 100, 14 gg",
     kind:rCloud, spec:{ name:"Microbiota", arr:N_.microbiome, col:"var(--s1)",
@@ -3389,7 +3447,7 @@ function nutriTiles() {
      Nove ipotesi guardate insieme — se ne mostrassi solo la più forte starei
      scegliendo il risultato dopo aver visto i dati. */
   if (has("fiber_g") && has("magnesium_mg")) t.push({
-    panel:"tavola", h:340, first:"n_fiber_g", title:"Tavola contro recupero",
+    panel:"tavola", h:340, first:"n_fiber_g", src:"ricostruito", title:"Tavola contro recupero",
     cap:"nove incroci · colonne: cosa è entrato · righe: come è andata la notte",
     kind:rMatrix, spec:{ col:"var(--s1)",
       cols:[{ name:"Fibre", arr:N_.fiber_g, fmt:v => nf(v, 0) + " g" },
@@ -3404,7 +3462,7 @@ function nutriTiles() {
      una griglia si. E' l'unico punto della pagina in cui una griglia e' la forma
      giusta — e lo e' perche' qui il colore porta un valore continuo con un segno. */
   t.push({ panel:"tavola", h:430, first:"n_fiber_g",
-    title:"Tutte contro tutte", cap:"correlazione fra ogni coppia di serie · triangolo inferiore",
+    src:"ricostruito", title:"Tutte contro tutte", cap:"correlazione fra ogni coppia di serie · triangolo inferiore",
     kind:rHeat, spec:{ vars:[
       { name:"Fibre", arr:N_.fiber_g }, { name:"Magnesio", arr:N_.magnesium_mg },
       { name:"Potassio", arr:N_.potassium_mg }, { name:"Zuccheri", arr:N_.sugar_g },
@@ -3422,7 +3480,7 @@ function nutriTiles() {
      fatte girare su un modello log-lineare i cui pesi stanno nel sorgente. */
 
   if (GEN.length >= 5) t.push({ panel:"tavola", h:300, first:"m_Faecalibacterium",
-    title:"Flora intestinale — modello, non una misura",
+    src:"modello", title:"Flora intestinale — modello, non una misura",
     cap:"dieci generi noti · quota stimata da come si è mangiato",
     labA:"inizio finestra", labB:"oggi",
     kind:rSlope, spec:{ labA:"inizio", labB:"oggi",
@@ -3442,7 +3500,7 @@ function nutriTiles() {
      quindi non prende uno slot categorico ma il grigio del testo secondario. Il
      colore dice "sono un'altra cosa" prima che lo dica la legenda. */
   if (has("pct_plant")) t.push({ panel:"tavola", h:170, first:"n_pct_plant",
-    title:"Da dove arrivano le calorie", cap:"% delle kcal · le quattro fanno cento",
+    src:"ricostruito", title:"Da dove arrivano le calorie", cap:"% delle kcal · le quattro fanno cento",
     legend:[["Vegetale", SCH[2]], ["Latticini", SCH[0]], ["Animale", SCH[1]],
             ["Altro", SCH[3]], ["Ultra-processato", "var(--muted)"]],
     now:() => lastMean(N_.pct_plant, 7), nowFmt:v => nf(v, 0) + " %", nowUnit:"vegetale, 7 gg",
@@ -3460,7 +3518,7 @@ function nutriTiles() {
      in build_nutrition_series.py. Diviso per le kcal la somma ballava fra 97 e 122
      a seconda del giorno, che come composizione non si puo' guardare. */
   if (has("pct_kcal_carb")) t.push({ panel:"tavola", h:170, first:"n_pct_kcal_carb",
-    title:"Di cosa erano fatte", cap:"% dell'energia da macro · le tre fanno cento",
+    src:"ricostruito", title:"Di cosa erano fatte", cap:"% dell'energia da macro · le tre fanno cento",
     legend:[["Carboidrati", SCH[0]], ["Grassi", SCH[3]], ["Proteine", SCH[2]]],
     now:() => lastMean(N_.pct_kcal_carb, 7), nowFmt:v => nf(v, 0) + " %", nowUnit:"carboidrati, 7 gg",
     kind:rLines, spec:{ zero:true, fmt:v => nf(v, 0) + " %", series:[
@@ -3477,7 +3535,7 @@ function nutriTiles() {
     const items = FF.slice(0, 16).map(f => ({ name:f.name.length > 20 ? f.name.slice(0, 19) + "…" : f.name, f }));
     const vmax = Math.max(...items.flatMap(it => gens.map(g => Math.abs(it.f[g.key] || 0)))) || 1;
     t.push({ panel:"tavola", h:430, first:"m_Faecalibacterium",
-      title:"Quali cibi muovono la flora", cap:"il modello letto al contrario · spinta di ogni alimento su ogni genere",
+      src:"modello", title:"Quali cibi muovono la flora", cap:"il modello letto al contrario · spinta di ogni alimento su ogni genere",
       kind:rGrid, spec:{ rows:items, cols:gens, vmax, labMax:150, labB:74,
         cell:(i, j) => { const v = items[i].f[gens[j].key];
           if (v === undefined) return null;
@@ -3499,7 +3557,7 @@ function nutriTiles() {
     ["FC riposo", D.rhr], ["Carico", D.load],
   ].filter(([, a]) => Array.isArray(a));
   if (STRIP.length >= 6) t.push({ panel:"tavola", h:300, first:"n_fiber_g",
-    title:"Tutto, nel tempo", cap:"una riga per serie · il passo si adatta allo spazio: settimane, mesi, anni",
+    src:"ricostruito", title:"Tutto, nel tempo", cap:"una riga per serie · il passo si adatta allo spazio: settimane, mesi, anni",
     kind:(svg, W, H, spec, a, b) => {
       /* Ogni riga ha unita' sue — grammi, ore, battiti — quindi il colore non puo'
          essere il valore: e' il PERCENTILE dentro la storia di quella riga. Cosi'
@@ -3544,7 +3602,7 @@ function nutriTiles() {
                ["cnt_avena", "porzioni di avena", "🌾"], ["cnt_patate_dolci", "porzioni di patate dolci", "🍠"]]
     .filter(([k]) => has(k));
   if (TAL.length) t.push({ panel:"tavola", h:180, first:"n_cnt_avocado",
-    title:"Quanti ne sono passati", cap:"conteggio cumulato dall'inizio della finestra",
+    src:"ricostruito", title:"Quanti ne sono passati", cap:"conteggio cumulato dall'inizio della finestra",
     legend:TAL.slice(0, 4).map(([, l, e], i) => [`${e} ${l}`, SCH[i % 4]]),
     kind:rLines, spec:{ zero:true, fmt:FMT.num0,
       series:TAL.slice(0, 4).map(([k, l, e], i) => ({ name:`${e} ${l}`, col:SCH[i % 4],
@@ -3970,6 +4028,14 @@ function tileNode(t) {
   const side = mk("div", "t-side", art);
   const head = mk("div", "t-head", side);
   mk("div", "t-title", head, t.title);
+  /* Obbligatoria: se un riquadro nuovo nasce senza `src`, si vede subito invece di
+     scivolare in pagina senza dire da dove vengono i suoi numeri. */
+  const sp = mk("button", "t-src", head, SRC_LAB[t.src] || "??");
+  sp.setAttribute("type", "button");
+  sp.setAttribute("data-src", t.src || "");
+  sp.setAttribute("data-info", "provenienza:" + (t.src || "ignota"));
+  sp.setAttribute("aria-label", "Provenienza: " + (SRC_LAB[t.src] || "non dichiarata"));
+  if (sp.dataset) { sp.dataset.src = t.src || ""; sp.dataset.info = "provenienza:" + (t.src || "ignota"); }
   const now = mk("div", "t-now", side);
   /* Niente sottotitolo sotto il titolo, e niente "media 7 gg" sotto il numero
      grande (2026-08-14: "non voglio sottotitoli ai grafici… in genere non voglio
@@ -3992,7 +4058,40 @@ function tileNode(t) {
   /* si tiene il riferimento, non lo si ricerca: `children` nel browser e' una
      HTMLCollection e non ha .find() — cercarlo li' uccideva l'intero script, cioe'
      la pagina senza nemmeno un grafico */
-  return { art, now, box, foot, sum, cap, tbody, shift };
+  return { art, head, now, box, foot, sum, cap, tbody, shift };
+}
+
+/* Taglia una nota di metodo alla fine di una frase, entro il tetto, e solo se il pezzo
+   che resta ha i tag bilanciati: meglio una nota lunga che un <strong> aperto e mai
+   chiuso. Torna [quello che resta a schermo, quello che va dietro l'ⓘ]. */
+const NOTA_MAX = 220;
+function tagBilanciati(h) {
+  const ap = {}, re = /<(\/?)([a-z][a-z0-9]*)[^>]*?(\/?)>/gi;
+  let m;
+  while ((m = re.exec(h))) {
+    const [, chiude, tag, autoc] = m;
+    if (autoc || /^(br|img|hr|input|meta|link)$/i.test(tag)) continue;
+    const k = tag.toLowerCase();
+    ap[k] = (ap[k] || 0) + (chiude ? -1 : 1);
+    if (ap[k] < 0) return false;
+  }
+  return Object.values(ap).every(v => v === 0);
+}
+function tagliaNota(h) {
+  if (!h || h.length <= NOTA_MAX) return [h, ""];
+  let cut = -1;
+  const re = /[.!?](\s|<)/g;
+  let m, primo = -1;
+  while ((m = re.exec(h))) {
+    const fine = m.index + 1;
+    if (primo < 0) primo = fine;
+    if (fine <= NOTA_MAX) cut = fine; else break;
+  }
+  if (cut < 0) cut = primo;                 // mai meno della prima frase
+  if (cut < 0 || cut >= h.length) return [h, ""];
+  const corto = h.slice(0, cut).trim();
+  if (!tagBilanciati(corto)) return [h, ""];
+  return [corto, h.slice(cut).trim()];
 }
 
 function drawTile(n, t) {
@@ -4017,13 +4116,16 @@ function drawTile(n, t) {
 
   if (t.shifters && n.shift) {
     n.shift.innerHTML = t.shifters().map(([e, lab, v, inv]) =>
-      `<span title="${lab}">${e} <b style="color:${(inv ? 1 - v : v) >= .6 ? "var(--s3)" : (inv ? 1 - v : v) >= .35 ? "var(--s4)" : "var(--neg)"}">${nf(v * 100, 0)}</b></span>`).join("");
+      `<span aria-label="${lab}">${e} <i class="sh-l">${lab}</i> <b style="color:${(inv ? 1 - v : v) >= .6 ? "var(--s3)" : (inv ? 1 - v : v) >= .35 ? "var(--s4)" : "var(--neg)"}">${nf(v * 100, 0)}</b></span>`).join("");
   }
   if (t.now) {
     const v = t.now();
     n.now.innerHTML = v === null || v === undefined || !isFinite(v) ? ""
       : t.nowFmt(v);
-    n.now.title = t.nowUnit || "";
+    /* niente title=: dal telefono non esiste. Resta come etichetta accessibile,
+       e NON dentro innerHTML — check_vita vieta di stampare l'unita' li' dentro. */
+    n.now.removeAttribute && n.now.removeAttribute("title");
+    if (t.nowUnit) n.now.setAttribute("aria-label", t.nowFmt(v) + " · " + t.nowUnit);
   }
 
   /* Sotto il grafico resta solo la riga CORTA: finestra, passo di aggregazione,
@@ -4046,10 +4148,35 @@ function drawTile(n, t) {
   }
   n.foot.innerHTML = t.noFoot ? "" : bits.join(" · ");
   n.sum.textContent = t.dataNote ? `dati · ${t.dataNote}` : "dati";
+  /* LA NOTA DI METODO, TAGLIATA AL VERDETTO.
+     Erano fino a 577 caratteri l'una, e nove riquadri su 42 (tutti nel metabolismo) si
+     prendevano il 57 % di tutta la nota di metodo della pagina. Adesso sotto «dati»
+     resta il verdetto — la prima frase, o le prime finche' ci stanno — e il resto
+     (formula, fonte, il perche' di una soglia) va dietro l'ⓘ del riquadro.
+     Non e' una potatura a occhio: il taglio cade a FINE FRASE e solo se il pezzo che
+     resta ha i tag bilanciati, altrimenti non si taglia affatto. E le stringhe che
+     check_vita cerca stanno nella prima frase apposta: se una finisse oltre il taglio,
+     il controllo diventa rosso, che e' il modo giusto di accorgersene. */
+  if (n.cap && t.foot) {
+    const [corto, resto] = tagliaNota(t.foot);
+    if (resto) {
+      const k = "nota:" + t.panel + ":" + t.title;
+      infoReg(k, t.title, `<p>${t.foot}</p>`);
+      t._footCorto = corto;
+      /* una volta sola: drawTile rigira a ogni cambio di finestra e a ogni resize, e
+         senza questa guardia i bottoncini si accumulerebbero uno per ridisegno.
+         Un flag sul nodo, non una querySelector: il DOM finto del check non ce l'ha. */
+      if (n.head && !n._icoNota) { icoNode(n.head, k, t.title); n._icoNota = true; }
+    }
+  }
   /* la didascalia, la legenda del numero grande e la nota di metodo: tutto qui */
   if (n.cap) n.cap.innerHTML = [t.cap,
-    t.now && t.nowUnit ? `<b>Il numero grande</b>: ${t.nowUnit}.` : ""]
-    .filter(Boolean).join(" · ") + (t.foot ? `<span class="d-note">${t.foot}</span>` : "");
+    /* solo quando aggiunge qualcosa: su dieci riquadri questa clausola ripeteva
+       alla lettera il `cap` scritto due parole prima (Energia: «kcal al giorno ·
+       media mobile 7 giorni» seguito da «Il numero grande: kcal al giorno»). */
+    t.now && t.nowUnit && !String(t.cap || "").toLowerCase().includes(String(t.nowUnit).toLowerCase())
+      ? `<b>Il numero grande</b>: ${t.nowUnit}.` : ""]
+    .filter(Boolean).join(" · ") + (t.foot ? `<span class="d-note">${t._footCorto || t.foot}</span>` : "");
   n.tbody.innerHTML = res ? res.table : "";
 }
 
@@ -4092,23 +4219,35 @@ window.openDay = openDay;   /* il check lo chiama per verificare il popup */
 /* ------------------------------------------- il pannello della vista compatta */
 const cxHost = document.getElementById("compact");
 const cxNote = mk("p", "cx-note", cxHost);
-cxNote.innerHTML = "Una corsia per serie, impilate con una sovrapposizione di un " +
-  "quinto. Ogni corsia è riscalata sulla <strong>propria</strong> storia — dal 2° al " +
-  "98° percentile della sua media mobile su tutto l'archivio, non da zero: " +
-  "<strong>due corsie alte uguali non valgono uguale</strong>, dicono solo «ognuna al " +
-  "suo massimo». Qui si confrontano le forme e i tempi, mai i valori; per i valori " +
-  "c'è la vista estesa, che ha gli assi." +
-  "<br>Un click sul <strong>nome a lato isola</strong> quella serie; un click su un " +
-  "altro nome isola quello; lo stesso nome una seconda volta rimette tutto. Per " +
-  "accenderne e spegnerne <strong>più di una</strong>: ⌘ o Ctrl-click, oppure il " +
-  "modo <strong>somma</strong> in cima alla colonna, che fa la stessa cosa senza " +
-  "modificatore. <strong>Tutte</strong> rimette tutto. Un click <em>sul grafico</em> " +
-  "invece <strong>congela</strong> la corsia: resta in cima mentre il resto scorre, e " +
-  "nel disegno si distingue perché è più marcata, non perché sia in un riquadro." +
-  "<br>Dove una corsia è vuota resta il suo <strong>tratteggio</strong>: la serie non " +
-  "era ancora misurata. Il trattino verticale con l'anno segna il giorno in cui " +
-  "comincia — quasi nessuna comincia a sinistra. «Rada» accanto al nome vuol dire " +
-  "poche misure vere unite da una media mobile: la linea è continua, il dato no.";
+/* Erano 1.139 caratteri, centrati e in corsivo, e in vista compatta il PRIMO blocco
+   della pagina: piu' lunghi di qualunque intestazione di sezione. Facevano due mestieri
+   incompatibili — dichiarare il metodo e insegnare i gesti.
+   Quello che resta a schermo e' la riga che spiega perche' due corsie alte uguali NON
+   valgono uguale: e' provenienza del disegno, e non va dietro un tocco.
+   I gesti tornano dove si compiono, come chip accanto ai comandi: un'interazione che
+   non si annuncia non esiste, e adesso si annuncia sul comando invece che in un
+   paragrafo tre schermate piu' su. */
+cxNote.innerHTML = "Ogni corsia sulla <strong>propria</strong> scala, dal 2° al 98° " +
+  "percentile: si confrontano le forme, non i valori." +
+  "<span class=\"cx-gesti\"><b>click</b> isola · <b>Ctrl</b>-click o <b>somma</b> " +
+  "per piu' di una · <b>click sul grafico</b> congela</span>";
+infoReg("compatta", "La vista compatta, per intero",
+  `<p>Una corsia per serie, impilate con una sovrapposizione di un quinto. Ogni corsia è
+   riscalata sulla <strong>propria</strong> storia — dal 2° al 98° percentile della sua
+   media mobile su tutto l'archivio, non da zero: <strong>due corsie alte uguali non
+   valgono uguale</strong>, dicono solo «ognuna al suo massimo». Qui si confrontano le
+   forme e i tempi, mai i valori; per i valori c'è la vista estesa, che ha gli assi.</p>
+   <p>Un click sul <strong>nome a lato isola</strong> quella serie; un click su un altro
+   nome isola quello; lo stesso nome una seconda volta rimette tutto. Per accenderne e
+   spegnerne <strong>più di una</strong>: ⌘ o Ctrl-click, oppure il modo
+   <strong>somma</strong> in cima alla colonna, che fa la stessa cosa senza modificatore.
+   <strong>Tutte</strong> rimette tutto. Un click <em>sul grafico</em> invece
+   <strong>congela</strong> la corsia: resta in cima mentre il resto scorre, e nel
+   disegno si distingue perché è più marcata, non perché sia in un riquadro.</p>
+   <p>Dove una corsia è vuota resta il suo <strong>tratteggio</strong>: la serie non era
+   ancora misurata. Il trattino verticale con l'anno segna il giorno in cui comincia —
+   quasi nessuna comincia a sinistra. «Rada» accanto al nome vuol dire poche misure vere
+   unite da una media mobile: la linea è continua, il dato no.</p>`);
 const cxWrap = mk("div", "cx-wrap", cxHost);
 const cxMain = mk("div", "cx-main", cxWrap);
 const cxPinBox = mk("div", "cx-pin", cxMain);
@@ -4150,6 +4289,8 @@ let cxAllBtn = null, cxMultiBtn = null;
   cxAllBtn.addEventListener("click", showAll);
   cxMultiBtn = mk("button", null, head, "somma");
   cxMultiBtn.type = "button";
+  /* il gesto si annuncia sul comando che lo compie, non in un paragrafo lontano */
+  cxMultiBtn.setAttribute("aria-label", "Somma: accende piu' di una serie senza tenere premuto Ctrl");
   cxMultiBtn.setAttribute("aria-pressed", "false");
   cxMultiBtn.setAttribute("aria-label",
     "Selezione a somma: ogni click accende o spegne una serie invece di isolarla");
@@ -4499,13 +4640,13 @@ function drawCompare(){
    Ogni voce porta il suo r e il suo n scritti in chiaro: se un giorno cambiano, la
    frase accanto va riletta, e questo e' il punto. */
 const CX_PRESETS = [
-  { k:"caldo-rhr", x:"heat", y:"rhr", lag:1, mode:"lv", tag:"·",
+  { k:"caldo-rhr", doit:"Una giornata calda si paga il mattino dopo: se la FC a riposo è alta e ieri faceva caldo, è quello.", x:"heat", y:"rhr", lag:1, mode:"lv", tag:"·",
     t:"Il caldo si paga il mattino dopo",
     why:"Fra tutte le cose che potrebbero muovere il recupero — carico, sonno, cibo — "+
       "l'unica che si vede davvero è il <b>caldo</b>. Un'uscita calda alza la frequenza "+
       "a riposo del giorno dopo, e regge anche sulle variazioni settimanali. È debole, "+
       "ma è l'unico segnale non nullo di tutta questa sezione." },
-  { k:"passi-salita", x:"steps", y:"gain", lag:0, mode:"lv", tag:"·",
+  { k:"passi-salita", doit:"Un giorno da pochi passi e tanto dislivello è un buon giorno. Il numero rosso sull'orologio, lì, non vuol dire niente.", x:"steps", y:"gain", lag:0, mode:"lv", tag:"·",
     t:"I passi non contano lo sport: lo sostituiscono",
     why:"Più dislivello, <b>meno</b> passi — e non è un errore dell'orologio. Le giornate "+
       "grosse sono giornate in bici, e in bici i passi non si fanno. Il contatore misura "+
@@ -4517,7 +4658,7 @@ const CX_PRESETS = [
       "«recupero», e qui, sulla stessa persona e sullo stesso mattino, sono <b>scorrelate "+
       "a zero</b>. Non è che una sia sbagliata: misurano cose diverse, e usarle come se "+
       "fossero la stessa cosa è il modo più comune di sbagliarsi." },
-  { k:"carico-hrv", x:"load", y:"hrv", lag:1, mode:"lv", tag:"zero",
+  { k:"carico-hrv", doit:"Per sapere quanto è costata ieri, guardare ieri. Il cuore di stamattina non lo sa.", x:"load", y:"hrv", lag:1, mode:"lv", tag:"zero",
     t:"Il carico di ieri non arriva all'HRV di stamattina",
     why:"È la promessa implicita di ogni dashboard: alleni forte, l'HRV scende, il giorno "+
       "dopo lo sai. Su cinquecento mattine <b>non succede</b>. Se serve sapere quanto è "+
@@ -4533,13 +4674,13 @@ const CX_PRESETS = [
       "proprio quando il carico sale — il fabbisogno cresce con i TSS e l'alimentazione non "+
       "lo insegue. È l'associazione più forte di tutta la tavola che non sia cablaggio, e "+
       "l'unica di questa lista su cui si possa fare qualcosa domani." },
-  { k:"caldo-ef", x:"temp", y:"ef", lag:0, mode:"lv", tag:"zero",
+  { k:"caldo-ef", doit:"", x:"temp", y:"ef", lag:0, mode:"lv", tag:"zero",
     t:"Il caldo non tocca il rapporto fra passo e battito",
     why:"Il costo del caldo non finisce qui: quando fa caldo si <b>rallenta</b>, e "+
       "rallentando la frequenza torna dov'era. Quello che il caldo sposta è il passo "+
       "scelto, non il prezzo in battiti di quel passo. Da tenere accanto alla riga qui "+
       "sopra: il caldo si vede il mattino dopo, non durante." },
-  { k:"cibo-domani", x:"kcal", y:"hours", lag:1, mode:"d7", tag:"zero",
+  { k:"cibo-domani", doit:"", x:"kcal", y:"hours", lag:1, mode:"d7", tag:"zero",
     t:"Mangiare oggi non compra l'allenamento di domani",
     why:"Sulle variazioni settimanali il segno è perfino leggermente <b>negativo</b>: le "+
       "settimane in cui si è mangiato di più non sono quelle in cui si è allenato di più "+
@@ -4813,48 +4954,31 @@ function coachHtml(){
     `. Nell'ultimo anno ${n0(c.half)} mezze maratone; negli ultimi novanta giorni ${n0(c.climb)} salite lunghe.`,
     `sonno ${c.sonno == null ? "—" : hhmm(c.sonno)} · HRV ${n0(c.hrv)} ms · FC a riposo ${n0(c.rhr)} bpm · ${n0(c.passi)} passi`,
     "")}
-  ${item("hot", "I passi misurano l'opposto di quello che sembra",
-    "Più dislivello, <b>meno</b> passi, e con un'associazione che regge anche sulle " +
-    "variazioni settimanali. Le giornate grosse sono giornate in bici, e in bici i passi " +
-    "non si fanno. Il contatore misura quanto ci si è mossi <em>fuori</em> " +
-    "dall'allenamento — è una misura di sedentarietà residua, non di attività.",
-    `passi → dislivello <b>${rr(c.rPassi)}</b>`,
-    "Un giorno da pochi passi e tanto dislivello è un buon giorno. Il numero rosso sull'orologio, lì, non vuol dire niente.")}
-  ${item("nil", "Il carico di ieri non arriva al mattino di oggi",
-    "Né sull'HRV, né sulla frequenza a riposo, né sul sonno della notte in mezzo. Su " +
-    "cinquecentocinquanta mattine, con la stessa persona e lo stesso orologio. E le due " +
-    "misure che dovrebbero dire la stessa cosa — HRV e frequenza a riposo — <b>fra loro " +
-    "sono scorrelate a zero</b>.",
-    `carico → HRV di domani ${rr(c.rCarico)} · sonno → HRV ${rr(c.rSonno)} · HRV ↔ FC a riposo <b>${rr(c.rHrvRhr)}</b>`,
-    "Per sapere quanto è costata ieri, guardare ieri. Il cuore di stamattina non lo sa.")}
-  ${item("nil", "Mangiare oggi non compra l'allenamento di domani",
-    "Sulle variazioni settimana su settimana il segno è perfino leggermente negativo. " +
-    "La freccia va nell'altro verso — è l'allenamento che tira il cibo, e quello si vede " +
-    "benissimo — quindi il cibo qui è una conseguenza, non una leva sul giorno dopo.",
-    `kcal → ore di domani, variazioni settimanali ${rr(c.rCibo)}`,
-    "")}
+  ${/* DERIVATI, non ricopiati. Queste tre tesi vivevano in DUE posti — qui e in
+       CX_PRESETS — ed erano gia' andate in deriva: «Mangiare oggi non compra
+       l'allenamento di domani» esisteva identica nel titolo e diversa nel corpo,
+       perche' qualcuno ne aveva riscritta una sola. Adesso il registro e' uno: il
+       preset. Quarta regola di CLAUDE.md. */
+    [["passi-salita", "hot", `passi → dislivello <b>${rr(c.rPassi)}</b>`],
+     ["carico-hrv", "nil", `carico → HRV di domani ${rr(c.rCarico)} · sonno → HRV ${rr(c.rSonno)} · HRV ↔ FC a riposo <b>${rr(c.rHrvRhr)}</b>`],
+     ["cibo-domani", "nil", `kcal → ore di domani, variazioni settimanali ${rr(c.rCibo)}`]]
+    .map(([k, tag, num]) => {
+      const pr = CX_PRESETS.find(p => p.k === k);
+      return pr ? item(tag, pr.t, pr.why, num, pr.doit || "") : "";
+    }).join("")}
 </div>
 
 <div class="cr-limits">
   <h4>Cosa questo rapporto non sa</h4>
   <ul>
     <li>${c.ossTot == null ? "Buona parte" : "Il " + n0(100 - c.ossTot) + " %"} delle calorie
-      è <strong>ricostruito</strong>, non pesato: dove c'è Cronometer sono giornate
-      osservate, altrove è lo schema mensile dichiarato. Le medie della tavola sono
-      ordini di grandezza, e nelle ultime due settimane la quota osservata è
+      è <strong>ricostruito</strong>, non pesato — nelle ultime due settimane l'osservato è
       ${c.oss == null ? "—" : n0(c.oss) + " %"}.</li>
-    <li>I grammi di grasso al minuto sono un <strong>modello</strong> ancorato ad
-      Achten e Jeukendrup, non una misura: nessuno ha mai fatto un test a gradini
-      con analisi dei gas. L'incertezza sul livello assoluto è dell'ordine del ±40 %,
-      e solo la variazione nel tempo dice qualcosa.</li>
-    <li>Sonno, HRV, frequenza a riposo e passi <strong>esistono dal 21 gennaio 2025</strong>:
-      ogni affermazione sul recupero poggia su un anno e mezzo, non su undici.</li>
-    <li>Il carico del 2022 è <strong>ricostruito</strong> da un export Strava, stimato
-      da durata e frequenza cardiaca.</li>
-    <li>Nessuna delle associazioni qui sopra è una causa, e cercando fra 2.958 coppie
-      qualcosa di apparentemente forte si trova sempre. Le dieci scelte sono quelle
-      che reggono anche sulle variazioni, il che le rende meno fragili — non vere.</li>
-    <li>Non è un parere medico e non c'è nessun medico dietro.</li>
+    <li>Grassi al minuto: <strong>modello</strong> Achten-Jeukendrup, ±40 % sul livello.</li>
+    <li>Sonno, HRV, FC a riposo, passi: esistono dal <strong>21 gennaio 2025</strong>.</li>
+    <li>Carico 2022: <strong>ricostruito</strong> da un export Strava.</li>
+    <li>Associazioni, non cause: 2.958 coppie cercate.</li>
+    <li><strong>Non è un parere medico</strong>, e non c'è nessun medico dietro.</li>
   </ul>
 </div>`;
 }
@@ -4891,12 +5015,16 @@ coachSheet.addEventListener("click", ev => { if (ev.target === coachSheet) close
 })();
 window.CRUSCOTTO.coach = { data:coachData, html:coachHtml, open:openCoach, close:closeCoach };
 
-/* --------------------------------------------------- le tre pagine in cima */
+/* ---------------------------------------------- le altre pagine, in fondo
+   Erano in cima, a piena larghezza: su un telefono quattro schede da ~171px fanno
+   750px fra il bottone del diario e i comandi — cioe' esattamente dove uno si aspetta
+   il primo disegno, occupati da link che portano FUORI da /vita. Ora stanno accanto a
+   `nav.also`, che fa gia' quel mestiere. Via anche i blurb: 377 caratteri che nessuno
+   legge scorrendo, e il titolo coi tre numeri dice gia' cosa c'e' dall'altra parte. */
 document.getElementById("tracks").innerHTML = (D.tracks || []).map(t => `
   <a class="track" href="${t.href}" style="--a:${t.accent}">
     <div class="k">${t.eyebrow}</div>
     <h3>${t.title}</h3>
-    <p>${t.blurb}</p>
     <div class="nums">${t.stats.map(s =>
       `<div><b>${s.v}</b><span>${s.l}</span></div>`).join("")}</div>
   </a>`).join("");

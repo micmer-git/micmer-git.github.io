@@ -187,6 +187,34 @@ if (ran) {
     `ogni riquadro dichiarato e' montato (${K.MOUNTED.length}/${K.TILES.length})`);
   ok(K.MOUNTED.length >= 32, `almeno 32 riquadri (${K.MOUNTED.length})`);
 
+  /* La provenienza e' un campo, non piu' una raccomandazione (16/08/2026). Un riquadro
+     nuovo che nasce senza `src` scivolerebbe in pagina senza dire da dove vengono i suoi
+     numeri, ed e' esattamente cio' che la terza regola di CLAUDE.md vieta. */
+  const SRC_OK = ["misurato", "ricostruito", "modello", "stima"];
+  const senzaSrc = K.TILES.filter(t => !SRC_OK.includes(t.src));
+  ok(senzaSrc.length === 0,
+    `ogni riquadro dichiara la provenienza (${K.TILES.length - senzaSrc.length}/${K.TILES.length})` +
+    (senzaSrc.length ? " — senza: " + senzaSrc.map(t => `${t.title}=${t.src}`).join(", ") : ""));
+  {
+    const per = {};
+    K.TILES.forEach(t => { per[t.src] = (per[t.src] || 0) + 1; });
+    ok(Object.keys(per).length >= 3,
+      "il vocabolario e' usato davvero, non una parola sola: " +
+      Object.entries(per).map(([k, v]) => `${k} ${v}`).join(" · "));
+  }
+
+  /* Ogni ⓘ deve puntare a una voce viva del registro: un bottone che apre il vuoto e'
+     peggio del paragrafo che ha sostituito. */
+  if (K.info) {
+    const chiavi = [...K.info.reg.keys()];
+    ok(chiavi.length >= 8, `il registro degli ⓘ ha ${chiavi.length} voci`);
+    const orfane = SRC_OK.map(s => "provenienza:" + s).filter(k => !K.info.reg.has(k));
+    ok(orfane.length === 0,
+      "ogni tipo di provenienza ha la sua scheda" + (orfane.length ? " — manca " + orfane.join(", ") : ""));
+    ok(K.info.reg.has("provenienza:ignota"),
+      "e c'e' anche la scheda per il caso 'nessuno l'ha dichiarata'");
+  } else ok(false, "window.CRUSCOTTO.info non e' esposto");
+
   for (const r of ["2a", "1a", "3m", "sempre"]) {
     let threw = 0, empty = [];
     try { K.setRange(r); } catch (e) { fails.push(`FAIL setRange(${r}): ${e && e.stack || e}`); }
@@ -619,6 +647,30 @@ if (ran) {
     ok(/Ctrl/.test(note) && /somma/.test(note),
       "la pagina dichiara come accenderne piu' di una (modificatore e modo somma)");
     ok(!!C.allBtn && !!C.multiBtn, "i due comandi \"tutte\" e \"somma\" sono in pagina");
+    /* Dal 16/08 l'annuncio non e' piu' un paragrafo da 1.139 caratteri ma una riga di
+       chip accanto al grafico: l'intento del controllo qui sopra resta identico — un
+       gesto che non si annuncia non esiste — e questo verifica che l'annuncio sia
+       rimasto COMPATTO invece di riscivolare in prosa. */
+    ok(/cx-gesti/.test(note), "i gesti sono annunciati come chip, accanto al disegno");
+    /* Nessuna tesi deve tornare a vivere in due posti. Il 16/08 «Mangiare oggi non
+       compra l'allenamento di domani» stava sia in CX_PRESETS sia nel rapporto del
+       coach, con due corpi gia' diversi: qualcuno ne aveva riscritta una sola. Ora il
+       coach DERIVA dai preset, e questo controllo verifica che la copia non torni. */
+    if (K.coach && K.compare) {
+      const html = K.coach.html();
+      const titoli = (K.compare.presets || []).map(p => p.t).filter(Boolean);
+      const doppi = titoli.filter(t => {
+        let n = 0, i = 0;
+        for (;;) { const j = html.indexOf(t, i); if (j < 0) break; n++; i = j + t.length; }
+        return n > 1;
+      });
+      ok(doppi.length === 0,
+        "nessuna tesi e' scritta due volte nel rapporto" + (doppi.length ? " — " + doppi.join(" · ") : ""));
+    }
+    ok(note.replace(/<[^>]*>/g, "").length <= 260,
+      `l'intestazione della vista compatta e' una riga, non un saggio (${note.replace(/<[^>]*>/g, "").length} caratteri)`);
+    ok(!!K.info && K.info.reg.has("compatta"),
+      "e il metodo per intero e' dietro l'ⓘ, non perso");
 
     /* ---- 4d. il vuoto di una corsia e' disegnato, non lasciato bianco ---------
        Misurato il 2026-08-11: in finestra "sempre", a 1040 px, NESSUNA corsia si
