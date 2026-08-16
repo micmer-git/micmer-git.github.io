@@ -895,8 +895,6 @@ TEMPLATE = r"""<!DOCTYPE html>
   .ranges button[aria-pressed="true"]{border-color:var(--accent); color:var(--bg);
     background:var(--accent); font-weight:600}
   .ranges button:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
-  .range-note{text-align:center; color:var(--muted); font-size:.82rem; font-style:italic;
-    margin-top:8px}
 
   /* ---------- vista compatta: ridgeline ----------
      La colonna estesa e' nascosta, non smontata: la compatta e' un modo in piu' di
@@ -1288,8 +1286,28 @@ TEMPLATE = r"""<!DOCTYPE html>
   h2.band{font-family:'VT323',ui-monospace,monospace; font-size:1.25rem; letter-spacing:.2em;
     text-transform:uppercase; color:var(--accent); text-align:center; font-weight:600;
     margin:36px 0 2px}
-  .band-sub{text-align:center; color:var(--muted); font-size:.82rem; font-style:italic;
+  /* Una riga sola, a sinistra, sotto il titolo: e' un'ETICHETTA di sezione. Centrata e in
+     corsivo su 52em era una didascalia da saggio, ed e' meta' dell'impressione che
+     Michele ha fotografato dal telefono il 16/08/2026 ("quanto cavolo di testo"). */
+  .band-sub{text-align:left; color:var(--muted); font-size:.82rem;
     max-width:52em; margin:0 auto}
+
+  /* ---------- ⓘ: il come si legge, dietro un tocco ----------
+     Michele, ordine #11: «info simboli click = show pop up». E' un <button>, non uno
+     <span>, cosi' entra nel Tab da solo; e non e' un title=, che dal telefono non
+     esiste — non c'e' hover, e li' dentro finiva testo che nessuno ha mai letto. */
+  .ico{display:inline-flex; align-items:center; justify-content:center; vertical-align:.06em;
+    width:17px; height:17px; margin-left:6px; padding:0; flex:0 0 auto;
+    font:600 11px/1 'Plus Jakarta Sans',system-ui,sans-serif; font-style:italic;
+    color:var(--muted); background:var(--paper-2); border:1px solid var(--rule);
+    border-radius:50%; cursor:pointer; position:relative}
+  .ico::after{content:""; position:absolute; inset:-13px}   /* bersaglio da pollice */
+  .ico:hover,.ico:focus-visible{color:var(--ink); border-color:var(--ink)}
+  @media(max-width:640px){ .ico{width:22px; height:22px; font-size:13px} }
+  #info-in h3{font-size:1.5rem}
+  #info-in p{margin:9px 0 0; font-size:.9rem; line-height:1.6; color:var(--ink-soft)}
+  #info-in code{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.82rem;
+    background:var(--paper-2); padding:1px 5px; border-radius:4px}
 
   /* ---------- also / footer ---------- */
   .also{margin-top:44px; text-align:center}
@@ -1341,9 +1359,7 @@ TEMPLATE = r"""<!DOCTYPE html>
 <header>
   <div class="eyebrow">micmer · quadro di comando</div>
   <h1>Vita</h1>
-  <p class="sub">Tutto quello che misuro, in una colonna sola. I numeri arrivano da
-  Intervals.icu e dal diario alimentare, e sono inseriti nella pagina quando viene
-  generata: nessuna chiamata, nessun dato che esce di qui.</p>
+  <p class="sub">Undici anni di dati, in una colonna sola.<span id="ico-testata"></span></p>
 </header>
 
 <div class="headline-stats" id="totals">
@@ -1356,7 +1372,7 @@ TEMPLATE = r"""<!DOCTYPE html>
     <div class="totals" id="totals-food"></div>
   </section>
 </div>
-<p class="fortnight">Medie giornaliere degli ultimi 14 giorni · variazione rispetto ai 14 precedenti. Tocca una voce della tavola per gli insight.</p>
+<p class="fortnight">14 giorni · variazione sui 14 precedenti</p>
 
 <section class="coach-card" aria-labelledby="coach-h">
   <div class="coach-k">il rapporto</div>
@@ -1367,7 +1383,6 @@ TEMPLATE = r"""<!DOCTYPE html>
 
 <div class="diary-open">
   <button type="button" id="diary-btn">Apri il diario</button>
-  <span>una giornata alla volta · misure, pasti, e le righe da annotare</span>
 </div>
 
 <nav class="tracks" id="tracks" aria-label="Le pagine"></nav>
@@ -1376,7 +1391,6 @@ TEMPLATE = r"""<!DOCTYPE html>
   <div class="ranges" id="ranges" role="group" aria-label="Finestra temporale"></div>
   <div class="ranges viewsw" id="viewsw" role="group" aria-label="Forma della vista"></div>
 </div>
-<p class="range-note" id="range-note"></p>
 
 <section class="compact" id="compact" aria-label="Vista compatta"></section>
 
@@ -1393,18 +1407,8 @@ TEMPLATE = r"""<!DOCTYPE html>
 <main class="panel" id="panel-recupero"></main>
 
 <h2 class="band">Metabolismo</h2>
-<p class="band-sub">Un sensore vero letto nel posto sbagliato, tre modelli, e due misure.
-La temperatura è quella dell'<strong>orologio al polso durante l'uscita</strong>: aria
-scaldata da un corpo, non meteo. FatMax, heat strain e momento metabolico sono
-<strong>costruiti</strong> — ognuno dichiara la propria formula o la propria fonte, perché
-su un grafico un numero misurato e un numero calcolato hanno esattamente lo stesso
-aspetto.<br>
-La domanda vera qui sotto è una sola: <strong>la capacità di bruciare grassi si
-sposta?</strong> Misurarla vorrebbe dire una maschera metabolica e un test a gradini, che
-non esistono in questo archivio — i grammi al minuto restano una stima, con il suo ±40 %.
-Quello che invece è misurato ogni giorno è <strong>quanto si va forte a parità di
-battito</strong>: il passo corretto per la pendenza contro la frequenza cardiaca, una
-corsa alla volta. Non è la stessa cosa, ed è la cosa più vicina che ci sia.</p>
+<p class="band-sub">Un sensore vero, tre modelli, due misure — le stime valgono la loro
+variazione, non il loro livello (±40 %).<span id="ico-band-metabolismo"></span></p>
 <main class="panel" id="panel-metabolismo"></main>
 
 <h2 class="band">Volume</h2>
@@ -1412,16 +1416,8 @@ corsa alla volta. Non è la stessa cosa, ed è la cosa più vicina che ci sia.</
 <main class="panel" id="panel-volume"></main>
 
 <h2 class="band">Incroci</h2>
-<p class="band-sub">Un grafico solo, e dieci coppie già scelte. Non scelte a occhio:
-sono uscite calcolando <strong>tutte le 2.958 combinazioni</strong> di serie, su due
-sfasamenti e su livelli e variazioni, e poi buttando via due cose — quelle dentro la
-stessa sezione, che sono il cablaggio del database e non una scoperta (fibre contro
-magnesio stanno negli stessi cibi), e quelle il cui <em>r</em> si scioglie appena si
-guardano le variazioni, dove era solo il tempo a muovere tutte e due.<br>
-Quattro delle dieci sono <strong>zeri</strong>, ed è il risultato più solido che ci sia:
-con cinquecento mattine e un <em>r</em> sotto 0,15 non è che non si sia trovato niente,
-è che non c'è niente da trovare. Sotto le pastiglie i due assi restano liberi, e due
-slot sono da riempire con le proprie.</p>
+<p class="band-sub">Dieci coppie uscite da <strong>2.958 combinazioni</strong> — quattro
+sono zeri, e sono il risultato più solido che ci sia.<span id="ico-band-incroci"></span></p>
 <section class="compare" aria-label="Confronta due misure">
   <div class="cx-presets" id="compare-presets" role="group" aria-label="Coppie notevoli"></div>
   <p class="cx-claim" id="compare-claim"></p>
@@ -1442,21 +1438,12 @@ slot sono da riempire con le proprie.</p>
     <div class="compare-plot" id="compare-plot"></div>
     <div class="compare-result" id="compare-result"></div>
   </div>
-  <p class="compare-note">Ogni punto è un giorno con entrambe le misure. La retta e <em>r</em>
-  descrivono l'associazione, non una causa. Le serie alimentari ricostruite possono
-  mostrare soprattutto le regole usate per ricostruirle.</p>
+  <p class="compare-note">Associazione, non causa.<span id="ico-incrocio"></span></p>
 </section>
 
 <h2 class="band" id="cibo">Tavola</h2>
-<p class="band-sub">Cosa entra, contro cosa serve. Queste serie sono una
-<strong>ricostruzione</strong>, non un diario: due anni di giornate rimesse insieme
-da quello che Michele ha dichiarato di mangiare — la colazione fissa, due avocado
-toast e due dahl a settimana, e i piatti che ogni mese ricorrevano nelle sue foto,
-ognuno una volta nella sua settimana e poi a rotazione. Per sua stessa stima quei
-piatti sono circa il <strong>75 %</strong> di cosa mangia: il restante quarto —
-spuntini, avanzi, il resto — qui non c'è, quindi le calorie sono una base, non un
-totale. Il primo riquadro dice quanta parte di ogni giorno è invece osservata
-davvero.</p>
+<p class="band-sub">Cosa entra, contro cosa serve — <strong>ricostruito</strong> al
+<strong>75 %</strong>, quindi una base, non un totale.<span id="ico-band-tavola"></span></p>
 <main class="panel" id="panel-tavola"></main>
 
 <nav class="also">
@@ -1469,14 +1456,8 @@ davvero.</p>
 </nav>
 
 <footer>
-  Generato il <span class="mono">__BUILT__</span> da
-  <span class="mono">tools/build_vita.py</span>, leggendo Intervals.icu e gli
-  aggregati giornalieri del diario alimentare.<br>
-  Il carico è registrato dal 2019; sonno, HRV e passi dal 2025; la tavola
-  da maggio 2026. Il <strong>2022 non manca più</strong>: le sue 394 attività sono
-  rientrate da un export Strava, ma il loro carico è <strong>stimato</strong> da durata
-  e frequenza cardiaca, non misurato — perciò quel tratto dice «carico ricostruito».
-  Le zone tratteggiate rimaste non sono riposo, sono assenza di dati.
+  <span class="mono">__BUILT__</span> · <span class="mono">build_vita.py</span> ·
+  Intervals.icu + diario alimentare · il 2022 è <strong>ricostruito</strong><span id="ico-provenienza"></span>
 </footer>
 
 <div class="tip" id="tip" role="status" aria-live="polite"></div>
@@ -1491,6 +1472,10 @@ davvero.</p>
 
 <div class="sheet" id="diary" role="dialog" aria-modal="true" aria-labelledby="diary-t">
   <div class="sheet-in" id="diary-in"></div>
+</div>
+
+<div class="sheet" id="info" role="dialog" aria-modal="true" aria-labelledby="info-t">
+  <div class="sheet-in" id="info-in"></div>
 </div>
 
 <script>
@@ -1924,7 +1909,139 @@ function closeDay() {
   document.body.style.overflow = "";
 }
 sheet.addEventListener("click", ev => { if (ev.target === sheet) closeDay(); });
-addEventListener("keydown", ev => { if (ev.key === "Escape") closeDay(); });
+
+/* ------------------------------------------------------------------- ⓘ ----
+   «info simboli click = show pop up» (Michele, ordine #11). Un registro solo:
+   chi vuole un ⓘ scrive `infoReg(chiave, titolo, corpo)` e mette
+   `data-info="chiave"` sul bottone. Non esiste un secondo elenco da tenere
+   allineato — quarta regola di CLAUDE.md.
+
+   UN listener solo, delegato su document: i riquadri si ridisegnano a ogni
+   drawAll e a ogni resize, e un listener attaccato al singolo bottone si
+   sfilerebbe in silenzio al primo ridisegno. */
+const infoEl = document.getElementById("info"), infoIn = document.getElementById("info-in");
+const INFO = new Map();
+const infoReg = (k, titolo, corpo) => { INFO.set(k, { titolo, corpo }); return k; };
+const infoAperto = () => infoEl.classList.contains("on");
+function openInfo(k) {
+  const v = INFO.get(k);
+  if (!v) return;
+  infoIn.innerHTML = `<div class="sheet-hd"><h3 id="info-t">${v.titolo}</h3></div>${v.corpo}`;
+  const x = mk("button", "sheet-x", infoIn, "×");
+  x.setAttribute("type", "button"); x.setAttribute("aria-label", "Chiudi");
+  x.addEventListener("click", closeInfo);
+  infoEl.classList.add("on");
+  document.body.style.overflow = "hidden";
+  x.focus();
+}
+function closeInfo() {
+  infoEl.classList.remove("on");
+  // il popup della giornata puo' essere sotto: gli si lascia il blocco dello scorrimento
+  document.body.style.overflow = sheet.classList.contains("on") ? "hidden" : "";
+}
+infoEl.addEventListener("click", ev => { if (ev.target === infoEl) closeInfo(); });
+document.addEventListener("click", ev => {
+  const b = ev.target.closest && ev.target.closest("[data-info]");
+  if (!b) return;
+  // senza questo, un ⓘ dentro l'intestazione di un riquadro aprirebbe anche il riquadro
+  ev.preventDefault(); ev.stopPropagation();
+  openInfo(b.dataset.info);
+});
+/* L'Escape chiude UNA cosa per volta, la piu' in alto. Senza la guardia, un ⓘ aperto
+   sopra il popup della giornata li chiudeva tutti e due con un tasto solo. */
+addEventListener("keydown", ev => {
+  if (ev.key !== "Escape") return;
+  if (infoAperto()) { closeInfo(); return; }
+  closeDay();
+});
+window.CRUSCOTTO = window.CRUSCOTTO || {};
+window.CRUSCOTTO.info = { open:openInfo, close:closeInfo, reg:INFO, aperto:infoAperto };
+/* il bottoncino, sempre uguale: si scrive una volta e si usa dappertutto */
+const ico = (k, che) =>
+  `<button class="ico" type="button" data-info="${k}" aria-label="Come si legge: ${che}">i</button>`;
+/* la stessa cosa come nodo, per quando si appende invece di comporre una stringa.
+   Niente insertAdjacentHTML: il DOM finto di check_vita.cjs non ce l'ha, e un metodo
+   che esiste solo nel browser vero rende il check cieco proprio dove serve. */
+const icoNode = (parent, k, che) => {
+  const b = mk("button", "ico", parent, "i");
+  b.setAttribute("type", "button");
+  b.setAttribute("data-info", k);
+  b.setAttribute("aria-label", "Come si legge: " + che);
+  if (b.dataset) b.dataset.info = k;
+  return b;
+};
+
+/* Le tre intestazioni di sezione che erano paragrafi da 600-850 caratteri, centrati e
+   in corsivo. Quello che resta a schermo e' una riga; il metodo sta qui dietro. Cio' che
+   dichiara la PROVENIENZA non e' sceso qui: «ricostruito», «75 %» e «±40 %» sono rimasti
+   sulla superficie, perche' l'ⓘ porta il come, non il che. */
+infoReg("band:metabolismo", "Metabolismo — come si legge",
+  `<p>La temperatura è quella dell'<strong>orologio al polso durante l'uscita</strong>:
+   aria scaldata da un corpo, non meteo.</p>
+   <p>FatMax, heat strain e momento metabolico sono <strong>costruiti</strong>, e ognuno
+   dichiara la propria formula o la propria fonte — perché su un grafico un numero
+   misurato e uno calcolato hanno esattamente lo stesso aspetto.</p>
+   <p>La domanda vera è una sola: <strong>la capacità di bruciare grassi si sposta?</strong>
+   Misurarla vorrebbe dire una maschera metabolica e un test a gradini, che in questo
+   archivio non esistono: i grammi al minuto restano una stima, col suo ±40 %.</p>
+   <p>Quello che invece è misurato ogni giorno è <strong>quanto si va forte a parità di
+   battito</strong>: il passo corretto per la pendenza contro la frequenza cardiaca, una
+   corsa alla volta. Non è la stessa cosa, ed è la cosa più vicina che ci sia.</p>`);
+infoReg("band:incroci", "Incroci — da dove escono le dieci coppie",
+  `<p>Non scelte a occhio: calcolando <strong>tutte le 2.958 combinazioni</strong> di
+   serie, su due sfasamenti e su livelli e variazioni, e poi buttando via due cose.</p>
+   <p>Quelle dentro la stessa sezione, che sono il cablaggio del database e non una
+   scoperta — fibre contro magnesio stanno negli stessi cibi. E quelle il cui <em>r</em>
+   si scioglie appena si guardano le variazioni, dove era solo il tempo a muovere tutte
+   e due.</p>
+   <p>Quattro delle dieci sono <strong>zeri</strong>, ed è il risultato più solido che ci
+   sia: con cinquecento mattine e un <em>r</em> sotto 0,15 non è che non si sia trovato
+   niente, è che non c'è niente da trovare.</p>
+   <p>Sotto le pastiglie i due assi restano liberi, e due slot sono da riempire con le
+   proprie.</p>`);
+infoReg("band:tavola", "Tavola — che cosa vuol dire «ricostruito»",
+  `<p>Due anni di giornate rimesse insieme da quello che Michele ha dichiarato di
+   mangiare: la colazione fissa, due avocado toast e due dahl a settimana, e i piatti che
+   ogni mese ricorrevano nelle sue foto — ognuno una volta nella sua settimana, poi a
+   rotazione.</p>
+   <p>Per sua stessa stima quei piatti sono circa il <strong>75 %</strong> di cosa mangia.
+   Il restante quarto — spuntini, avanzi, il resto — qui non c'è: le calorie sono una
+   base, non un totale.</p>
+   <p><strong>Osservato</strong> = un pasto raccontato. <strong>Ricostruito</strong> = lo
+   schema mensile dichiarato. Il primo riquadro della sezione dice quanta parte di ogni
+   giorno è osservata davvero.</p>`);
+/* La cornice: testata e piede. Erano 682 caratteri sempre a schermo, di cui 204 prima di
+   qualunque numero. Quello che resta in superficie e' cio' che dichiara la provenienza —
+   «ricostruito», e la data di generazione; il resto e' metodo, e sta dietro il tocco. */
+infoReg("testata", "Da dove arrivano questi numeri",
+  `<p>Da <strong>Intervals.icu</strong> e dal diario alimentare, inseriti nella pagina
+   <strong>quando viene generata</strong>: nessuna chiamata di rete, nessun dato che esce
+   di qui mentre la guardi.</p>
+   <p>Il carico è registrato dal 2019; sonno, HRV e passi dal 2025; la tavola da maggio
+   2026.</p>`);
+infoReg("incrocio", "Come si legge la nuvola",
+  `<p>Ogni punto è un giorno con <strong>entrambe</strong> le misure. La retta e
+   l'<em>r</em> descrivono un'<strong>associazione, non una causa</strong>.</p>
+   <p>Le serie alimentari <strong>ricostruite</strong> possono mostrare soprattutto le
+   regole usate per ricostruirle: se uno dei due assi è la tavola, il legame che vedi
+   può essere il modello, non il corpo.</p>`);
+infoReg("provenienza", "Il 2022, e le zone tratteggiate",
+  `<p>Il <strong>2022 non manca più</strong>: le sue 394 attività sono rientrate da un
+   export Strava. Ma il loro carico è <strong>stimato</strong> da durata e frequenza
+   cardiaca, non misurato — perciò quel tratto dice «carico ricostruito».</p>
+   <p>Le zone tratteggiate rimaste <strong>non sono riposo: sono assenza di dati</strong>.
+   Uno zero lì sarebbe un dato mancante travestito da zero.</p>
+   <p>Generato da <code>tools/build_vita.py</code>, che rilegge le sorgenti a ogni ora.</p>`);
+
+[["band:metabolismo", "ico-band-metabolismo", "Metabolismo"],
+ ["band:incroci", "ico-band-incroci", "Incroci"],
+ ["band:tavola", "ico-band-tavola", "Tavola"],
+ ["testata", "ico-testata", "da dove arrivano i numeri"],
+ ["provenienza", "ico-provenienza", "il 2022 e le zone tratteggiate"],
+ ["incrocio", "ico-incrocio", "come si legge la nuvola"]].forEach(([k, id, che]) => {
+  const s = document.getElementById(id);
+  if (s) s.outerHTML = ico(k, che);
+});
 
 /* --------------------------------------------------------------- renderers */
 /* Each returns {stats, table, foot} so the tile can print its own summary and its
@@ -3966,8 +4083,10 @@ const drawAll = () => {
   else for (const [n, t] of MOUNTED) drawTile(n, t);
   drawCompare();
 };
-window.CRUSCOTTO = { D, TILES, MOUNTED, drawAll, mm:mmDraw, mmMin:MM_MIN_COMP,
-  setRange:k => { range = k; drawAll(); } };
+/* Object.assign, non un'assegnazione: `info` viene registrato molto piu' su, e una
+   riassegnazione secca lo cancellerebbe senza che nessuno se ne accorga. */
+Object.assign(window.CRUSCOTTO, { D, TILES, MOUNTED, drawAll, mm:mmDraw, mmMin:MM_MIN_COMP,
+  setRange:k => { range = k; drawAll(); } });
 window.openDay = openDay;   /* il check lo chiama per verificare il popup */
 
 /* ------------------------------------------- il pannello della vista compatta */
@@ -4195,7 +4314,6 @@ for (const r of RANGES) {
   b.addEventListener("click", () => {
     range = r.key;
     for (const c of rangesEl.children) c.setAttribute("aria-pressed", String(c === b));
-    noteEl.textContent = noteFor();
     drawAll();
   });
   rangesEl.appendChild(b);
@@ -4211,13 +4329,18 @@ for (const v of [["estesa", "estesa"], ["compatta", "compatta"]]) {
   viewswEl.appendChild(b);
 }
 
-const noteEl = document.getElementById("range-note");
-function noteFor() {
-  return range === "sempre"
-    ? "Ogni riquadro parte da dove comincia la sua serie, non da dove comincia l'archivio: il carico dal 2019, sonno e HRV dal 2025."
-    : "La stessa finestra su tutti i riquadri. Dove la serie non arriva così indietro, il riquadro parte da dove può.";
-}
-noteEl.textContent = noteFor();
+/* Il paragrafo che stava qui — 110 caratteri fra i comandi e i grafici — mostrava la
+   STESSA identica stringa su tre finestre su quattro. Adesso e' un ⓘ accanto ai
+   bottoni, e porta tutte e due le varianti. Attenzione a non riesumare `noteEl`: il
+   nodo non esiste piu', e lo shim del check ne inventa uno a chiunque lo chieda, quindi
+   un `noteEl.textContent` di ritorno passerebbe il check e ucciderebbe la pagina vera. */
+infoReg("finestra", "Che cosa cambia la finestra temporale",
+  `<p>Con <strong>sempre</strong>, ogni riquadro parte da dove comincia la <em>sua</em>
+   serie, non da dove comincia l'archivio: il carico dal 2019, sonno e HRV dal 2025. I
+   riquadri della stessa schermata quindi <strong>non coprono lo stesso periodo</strong>.</p>
+   <p>Con una finestra scelta, è la stessa su tutti. Dove la serie non arriva così
+   indietro, il riquadro parte da dove può.</p>`);
+icoNode(document.getElementById("ranges"), "finestra", "la finestra temporale");
 
 /* ------------------------------------------------------ confronto selezionabile
    Usa i valori giornalieri non smussati. Il ritardo di un giorno serve soprattutto
@@ -4492,7 +4615,17 @@ function cxPaint(){
     });
   }
   const p=[...CX_PRESETS,...cxMine].find(q=>q.k===cxActive);
-  cxClaim.innerHTML=p&&p.why?`<b>${p.t}.</b> ${p.why}`:"";
+  /* A schermo la tesi e la PRIMA frase del perche', non tutte e tre-quattro: erano 321
+     caratteri centrati che si riscrivevano a ogni pastiglia toccata, e sul telefono
+     spingevano il grafico sotto la piega proprio mentre lo si stava scegliendo. Il resto
+     entra nell'ⓘ, registrato qui accanto — un elenco solo, non due. */
+  if (p && p.why) {
+    const primo = (p.why.match(/^[^.]*\./) || [p.why])[0];
+    const resto = p.why.slice(primo.length).trim();
+    infoReg("cross:" + p.k, p.t, `<p>${p.why}</p>`);
+    cxClaim.innerHTML = `<b>${p.t}.</b> ${primo}` +
+      (resto ? ico("cross:" + p.k, p.t) : "");
+  } else cxClaim.innerHTML = "";
 }
 /* cambiare una tendina a mano scioglie la pastiglia: quello che si guarda non e'
    piu' quello che la frase raccontava, e lasciare la frase li' sarebbe una bugia */
@@ -4751,8 +4884,10 @@ coachSheet.addEventListener("click", ev => { if (ev.target === coachSheet) close
     ? `<b>${nf(-c.gap, 0)} g di carboidrati</b> sotto il fabbisogno`
     : `carboidrati a ${nf(Math.abs(c.gap), 0)} g dal fabbisogno`);
   if (c.ef != null) bits.push(`efficienza ${nf(c.ef, 2)} m/min per battito`);
-  coachLead.innerHTML = bits.join(" · ") +
-    ". Dieci righe su cosa dicono i numeri, cosa non dicono, e le due o tre cose su cui vale la pena agire.";
+  /* La coda che c'era qui — «Dieci righe su cosa dicono i numeri, cosa non dicono…» —
+     erano 102 caratteri su 198 che non contenevano un dato: pubblicita' del bottone che
+     sta tre righe sotto e che dice gia' «Leggi il rapporto». */
+  coachLead.innerHTML = bits.join(" · ");
 })();
 window.CRUSCOTTO.coach = { data:coachData, html:coachHtml, open:openCoach, close:closeCoach };
 
@@ -4895,6 +5030,13 @@ function diaryRows(k) {
   return { day, rows };
 }
 
+/* Dichiarato qui, e non solo assegnato dentro openDiary/closeDiary come faceva prima:
+   fino a quando il diario non veniva aperto una volta, `diaryIdx` non esisteva, e il
+   gestore dell'Escape che lo legge sollevava un ReferenceError su OGNI Escape premuto
+   in pagina. Non si vedeva perche' l'errore muore nel gestore e non ferma il resto —
+   ma la console si riempiva e il tasto non chiudeva niente. */
+let diaryIdx = null;
+
 /* ----------------------------------------------------------------- disegno */
 function diaryRender() {
   if (diaryIdx === null) return;
@@ -5023,7 +5165,10 @@ function closeDiary() {
   document.body.style.overflow = "";
 }
 diaryEl.addEventListener("click", ev => { if (ev.target === diaryEl) closeDiary(); });
-addEventListener("keydown", ev => { if (ev.key === "Escape" && diaryIdx !== null) closeDiary(); });
+addEventListener("keydown", ev => {
+  // se c'e' un ⓘ aperto sopra, l'Escape e' suo: lo chiude quello, e il diario resta
+  if (ev.key === "Escape" && diaryIdx !== null && !window.CRUSCOTTO.info.aperto()) closeDiary();
+});
 document.getElementById("diary-btn").addEventListener("click", () => openDiary());
 window.openDiary = openDiary;
 window.CRUSCOTTO.diary = {
