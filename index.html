@@ -688,6 +688,22 @@
                 textColor: 'text-brand-dark'
             },
             {
+                name: 'Sempre di corsa',
+                desc: 'La mappa delle gare bergamasche: dove si corre, e quando.',
+                icon: <Map size={32} />,
+                url: 'https://sempredicorsa.pages.dev/',
+                color: 'bg-io-yellow',
+                textColor: 'text-brand-dark'
+            },
+            {
+                name: 'Val Seriana',
+                desc: 'Quanto ci metti adesso: 26 tratte misurate ogni mezz’ora.',
+                icon: <CloudRain size={32} />,
+                url: 'https://valseriana.pages.dev/',
+                color: 'bg-io-green',
+                textColor: 'text-white'
+            },
+            {
                 name: 'Ciclopodistica Orezzo',
                 desc: 'Risultati e storia della corsa di casa, 2016–2026.',
                 icon: <Trophy size={32} />,
@@ -1213,7 +1229,7 @@
                     <div className="flex items-center justify-between w-full p-4 md:p-6">
                         <div className="flex items-center gap-3">
                             <span className="text-2xl">📊</span>
-                            <h3 className="font-pixel text-3xl md:text-4xl leading-none text-white">DATI</h3>
+                            <h3 className="font-pixel text-3xl md:text-4xl leading-none text-white">PROJECTS</h3>
                         </div>
                         <div className="w-10 h-10 bg-black/10 flex items-center justify-center">
                              <ArrowUpRight size={24} className="text-white" />
@@ -1311,7 +1327,7 @@
                   <AppsContent />
               </Overlay>
 
-              <Overlay isOpen={activeOverlay === 'data'} onClose={closeOverlay} title="DATI" color="bg-io-blue">
+              <Overlay isOpen={activeOverlay === 'data'} onClose={closeOverlay} title="PROJECTS" color="bg-io-blue">
                   <DataContent />
               </Overlay>
 

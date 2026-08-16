@@ -114,19 +114,20 @@ METAB_COLS = ("temp_c", "temp_min_c", "temp_max_c",
 ATHLETE = os.environ.get("INTERVALS_ATHLETE_ID", "i302515")
 OLDEST = "2012-01-01"
 
-# Categorical slots 1-4 of the dataviz reference palette, dark steps. Validated as a
-# set against this page's card surface (#211d16), not against the reference surface:
-# adjacent worst CVD dE 8.4, normal-vision 19.3, all four >= 3:1 on the card. The
-# scatter that needs all-pairs separation carries two of them only (blue/orange,
-# dE 31.8) — four hues cannot clear the all-pairs floor and yellow beside orange is
-# exactly the pair that fails. Colour never carries identity alone: every series is
-# named in its own title or legend.
+# Categorical slots 1-4, LIGHT steps: dal 16/08/2026 la scheda e' bianca, non piu'
+# #211d16 (la pagina ha preso il vestito della home). I passi scuri di prima, nati per
+# stagliarsi su una carta scura, sul bianco sbiadivano — quindi sono stati sostituiti
+# coi passi chiari della stessa palette, quelli di Google I/O portati sopra il 4,5:1.
+# Devono restare uguali a --s1..--s4 nel CSS del TEMPLATE: sono un registro solo, letto
+# da due parti, e se divergono i grafici PNG e la pagina dicono due colori diversi.
+# Resta vero il principio: il colore non porta MAI l'identita' da solo — ogni serie e'
+# nominata nel proprio titolo o nella propria legenda.
 C = {
-    "blue": "#3987e5",
-    "orange": "#d95926",
-    "aqua": "#199e70",
-    "yellow": "#c98500",
-    "red": "#e66767",       # the negative arm of Forma — a diverging pole, not a series
+    "blue": "#1a73e8",
+    "orange": "#d93025",
+    "aqua": "#137333",
+    "yellow": "#8430ce",    # non e' piu' giallo: il giallo e' l'accento del sito, e in mezzo ai dati si spacciava per una serie
+    "red": "#c5221f",       # the negative arm of Forma — a diverging pole, not a series
 }
 
 # Sport buckets. Six raw types collapse to four so a stack never needs a fifth hue.
@@ -739,71 +740,91 @@ TEMPLATE = r"""<!DOCTYPE html>
 <link rel="icon" type="image/png" href="../favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=VT323&display=swap" rel="stylesheet">
 <style>
   :root{
-    /* Due valori qui dentro sono MISURATI, non scelti (laboratorio di stile,
-       2026-08-10) — cambiarli a occhio rimette i difetti che sistemano, e il
-       check li rimisura a ogni run:
-         --muted  era #8a7d62 = 4,15:1 sulla scheda, sotto il minimo di 4,5:1 per
-                  il testo normale — ed e' il colore di OGNI piede, didascalia,
-                  etichetta d'asse e intestazione di tabella della pagina.
-                  #9a8d70 sta a 5,13:1: margine vero, e resta recessivo.
-         --gold   era #c89a3f, a ΔE 5,2 dallo slot 4 dei grafici (#c98500) sulla
-                  stessa scheda: l'accento del sito si spacciava per una serie di
-                  dati. #e2c98f sta a ΔE 18,6 da quello slot, contrasto 10,4:1. */
-    --bg:#17150f; --paper:#211d16; --paper-2:#2a2519;
-    --ink:#ece3cd; --ink-soft:#c6b997; --muted:#9a8d70;
-    --gold:#e2c98f; --rule:rgba(200,154,63,.22);
-    --grid:rgba(236,227,205,.09); --axis:rgba(236,227,205,.20);
-    /* categorical slots 1-4, dark steps, validated against --paper */
-    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --neg:#e66767;
+    /* LO STESSO VESTITO DELLA HOME (micmer-git.github.io/): pixel art, quadretti,
+       ombre secche, palette Google I/O. Fino al 16/08/2026 questa pagina era scura
+       e serif, e sembrava di un altro sito — chiesto da Michele (ordine #10).
+       Quello che NON e' cambiato e' la disciplina: due valori qui dentro restano
+       MISURATI, non scelti, e `node tools/check_vita.cjs` li rimisura a ogni run.
+         --muted  e' il colore di OGNI piede, didascalia, etichetta d'asse e
+                  intestazione di tabella: deve stare sopra 4,5:1 sulla scheda.
+                  #5f6368 (il grigio I/O) sta a 5,9:1 sul bianco.
+         --accent e' l'accento del sito e deve stare a ΔE >= 15 da OGNI slot dei
+                  grafici, o si spaccia per una serie di dati. Si chiamava --gold ed
+                  era oro: sul bianco NESSUN accento saturo passa piu' quel cancello,
+                  perche' i quattro slot si prendono lo spazio cromatico — misurati,
+                  i candidati migliori (ocra #a26401, teal #00695c, viola #6a1b9a)
+                  stanno fra ΔE 7 e 14. Quindi l'accento e' il nero della home,
+                  #202124: ΔE 27,4 dallo slot piu' vicino e 16:1 di contrasto. Non e'
+                  una rinuncia, e' come e' fatta la home — li' l'accento sono i
+                  riquadri neri con l'ombra secca, e il colore lo portano i FONDI
+                  delle schede. Rinominato apposta: una variabile chiamata --gold che
+                  contiene nero e' la prossima mezz'ora persa da qualcuno. */
+    --bg:#f8f9fa; --paper:#ffffff; --paper-2:#f1f3f4;
+    --ink:#202124; --ink-soft:#3c4043; --muted:#5f6368;
+    --accent:#202124; --rule:rgba(32,33,36,.20);
+    --grid:rgba(32,33,36,.09); --axis:rgba(32,33,36,.22);
+    /* categorical slots 1-4, passi chiari, validati contro --paper */
+    --s1:#1a73e8; --s2:#d93025; --s3:#137333; --s4:#8430ce; --neg:#c5221f;
+    /* l'ombra secca della home: nessuna sfocatura, e' quella che fa lo stile */
+    --neo:4px 4px 0 0 rgba(32,33,36,1); --neo-sm:2px 2px 0 0 rgba(32,33,36,1);
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth;max-width:100%;overflow-x:hidden;overflow-x:clip}
   body{
     background:var(--bg); color:var(--ink);
-    font-family:'EB Garamond',Georgia,serif; font-size:18px; line-height:1.6;
+    font-family:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif; font-size:17px; line-height:1.6;
     max-width:1280px; margin:0 auto; padding:44px 20px 90px;
     -webkit-text-size-adjust:100%; width:100%; overflow-x:hidden; overflow-x:clip;
   }
+  /* i quadretti della home, che li' stanno solo in cima e poi sfumano */
   body::before{
     content:""; position:fixed; inset:0; pointer-events:none; z-index:-1;
     background-image:
-      radial-gradient(ellipse at 12% 10%,rgba(200,154,63,.09) 0,transparent 46%),
-      radial-gradient(ellipse at 88% 84%,rgba(57,135,229,.07) 0,transparent 46%);
+      linear-gradient(to right,rgba(32,33,36,.055) 1px,transparent 1px),
+      linear-gradient(to bottom,rgba(32,33,36,.055) 1px,transparent 1px);
+    background-size:24px 24px;
+    -webkit-mask-image:linear-gradient(to bottom,#000 0,transparent 62vh);
+    mask-image:linear-gradient(to bottom,#000 0,transparent 62vh);
   }
   a{color:inherit}
-  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+  .mono{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace}
+  /* VT323 e' il carattere pixel della home. Va bene grande: sotto i 15px le sue
+     aste sottili spariscono, quindi le etichette minute restano mono di sistema. */
+  .pixel{font-family:'VT323',ui-monospace,monospace; letter-spacing:.02em}
 
   /* ---------- hero ---------- */
   header{text-align:center}
-  .eyebrow{font-family:'IBM Plex Mono',monospace; font-size:.66rem; letter-spacing:.24em;
-    text-transform:uppercase; color:var(--gold)}
+  .eyebrow{font-family:'VT323',ui-monospace,monospace; font-size:1.15rem; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--accent)}
   .eyebrow a{text-decoration:none; border-bottom:1px solid var(--rule)}
   .eyebrow a:hover{color:var(--ink)}
-  h1{font-family:'Cinzel',serif; font-size:clamp(2.6rem,10vw,4.4rem); font-weight:700;
-    letter-spacing:.06em; line-height:1; margin:12px 0 6px}
-  .sub{color:var(--ink-soft); font-style:italic; max-width:36em; margin:12px auto 0;
-    font-size:1.02rem}
+  h1{font-family:'VT323',ui-monospace,monospace; font-size:clamp(3.2rem,12vw,5.6rem); font-weight:400;
+    letter-spacing:.01em; line-height:.92; margin:10px 0 6px; text-transform:uppercase;
+    display:inline-block; background:var(--paper); color:var(--ink);
+    border:3px solid var(--ink); box-shadow:var(--neo); padding:2px 18px 0}
+  .sub{color:var(--ink-soft); max-width:36em; margin:16px auto 0;
+    font-size:.97rem}
 
   /* ---------- headline numbers ---------- */
   .headline-stats{max-width:1000px; margin:30px auto 0; display:grid; gap:16px}
   .headline-group{border-top:1px solid var(--rule); padding-top:10px}
-  .headline-label{font-family:'IBM Plex Mono',monospace; font-size:.56rem;
-    letter-spacing:.17em; text-transform:uppercase; color:var(--gold); text-align:center;
+  .headline-label{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.56rem;
+    letter-spacing:.17em; text-transform:uppercase; color:var(--accent); text-align:center;
     margin-bottom:10px}
   .totals{display:grid; grid-template-columns:repeat(auto-fit,minmax(112px,1fr));
     gap:16px 10px; max-width:1000px}
   .total{text-align:center}
-  .total .n{font-family:'Cinzel',serif; font-size:1.5rem; font-weight:700; color:var(--gold);
+  .total .n{font-family:'VT323',ui-monospace,monospace; font-size:1.95rem; font-weight:700; color:var(--accent);
     font-variant-numeric:tabular-nums; line-height:1.1}
-  .total .l{font-family:'IBM Plex Mono',monospace; font-size:.58rem; letter-spacing:.13em;
+  .total .l{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.58rem; letter-spacing:.13em;
     text-transform:uppercase; color:var(--muted); margin-top:4px; overflow-wrap:anywhere}
   .total{border:0;background:transparent;color:inherit;font:inherit;padding:5px;min-width:0}
   button.total{cursor:pointer;border-radius:7px}
   button.total:hover{background:var(--paper);outline:1px solid var(--rule)}
-  .total .d{font-family:'IBM Plex Mono',monospace;font-size:.55rem;margin-top:3px;color:var(--ink-soft)}
+  .total .d{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;font-size:.55rem;margin-top:3px;color:var(--ink-soft)}
   .total .d.up{color:var(--s3)} .total .d.down{color:var(--neg)}
   .fortnight{margin:15px auto 0;max-width:900px;text-align:center;color:var(--muted);font-size:.78rem}
 
@@ -812,19 +833,19 @@ TEMPLATE = r"""<!DOCTYPE html>
     border-radius:9px; background:var(--paper); padding:16px 18px 13px}
   .compare-controls{display:flex; align-items:end; justify-content:center; flex-wrap:wrap;
     gap:10px 14px}
-  .compare-controls label{display:grid; gap:4px; font-family:'IBM Plex Mono',monospace;
+  .compare-controls label{display:grid; gap:4px; font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;
     font-size:.54rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
   .compare-controls select{min-width:180px; max-width:280px; border:1px solid var(--rule);
     border-radius:6px; background:var(--paper-2); color:var(--ink); padding:7px 28px 7px 9px;
-    font:500 .72rem 'IBM Plex Mono',monospace}
-  .compare-controls select:focus-visible{outline:2px solid var(--gold); outline-offset:2px}
+    font:500 .72rem ui-monospace,'SFMono-Regular',Menlo,monospace}
+  .compare-controls select:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   .compare-body{display:grid; grid-template-columns:minmax(0,1fr) 160px; gap:14px;
     align-items:center; margin-top:14px}
   .compare-plot{min-height:280px}
   .compare-plot svg{display:block; width:100%; height:280px; overflow:hidden}
   .compare-result{border-left:1px solid var(--rule); padding-left:14px}
-  .compare-result b{display:block; font:700 1.8rem 'Cinzel',serif; color:var(--gold)}
-  .compare-result span{display:block; font:500 .59rem 'IBM Plex Mono',monospace;
+  .compare-result b{display:block; font:700 1.8rem 'VT323',ui-monospace,monospace; color:var(--accent)}
+  .compare-result span{display:block; font:500 .59rem ui-monospace,'SFMono-Regular',Menlo,monospace;
     color:var(--ink-soft); margin:3px 0}
   .compare-result p{font-size:.75rem; line-height:1.45; color:var(--muted); margin-top:10px}
   /* i dieci preset: pastiglie, non un menu a tendina. Il titolo di ognuna e' la
@@ -832,18 +853,18 @@ TEMPLATE = r"""<!DOCTYPE html>
      perche' guardarla, "Heat strain contro FC a riposo" no. */
   .cx-presets{display:flex; flex-wrap:wrap; gap:6px; justify-content:center;
     margin:0 0 12px}
-  .cx-presets button{font-family:'IBM Plex Mono',monospace; font-size:.6rem;
+  .cx-presets button{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.6rem;
     letter-spacing:.05em; color:var(--ink-soft); background:transparent; cursor:pointer;
     border:1px solid var(--rule); border-radius:999px; padding:5px 11px; line-height:1.3}
-  .cx-presets button:hover{border-color:var(--gold); color:var(--ink)}
-  .cx-presets button[aria-pressed="true"]{border-color:var(--gold); color:var(--paper);
-    background:var(--gold)}
+  .cx-presets button:hover{border-color:var(--accent); color:var(--ink)}
+  .cx-presets button[aria-pressed="true"]{border-color:var(--accent); color:var(--paper);
+    background:var(--accent)}
   .cx-presets button.cx-add{border-style:dashed}
   .cx-presets button i{font-style:normal; opacity:.55; margin-left:6px}
   .cx-claim{max-width:70ch; margin:0 auto 12px; text-align:center; font-size:.88rem;
     line-height:1.55; color:var(--ink-soft)}
   .cx-claim:empty{display:none}
-  .cx-claim b{color:var(--gold); font-weight:500}
+  .cx-claim b{color:var(--accent); font-weight:500}
   .cx-claim em{color:var(--muted); font-style:italic}
   .compare-note{font-size:.72rem; line-height:1.5; color:var(--muted); margin-top:9px;
     text-align:center}
@@ -865,15 +886,15 @@ TEMPLATE = r"""<!DOCTYPE html>
   .viewsw{border-left:1px solid var(--rule); padding-left:20px}
   .ranges{display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:30px 0 6px}
   .ranges button{
-    font-family:'IBM Plex Mono',monospace; font-size:.66rem; letter-spacing:.14em;
+    font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.66rem; letter-spacing:.14em;
     text-transform:uppercase; padding:7px 15px; border-radius:999px; cursor:pointer;
     background:transparent; border:1px solid var(--rule); color:var(--ink-soft);
     transition:border-color .15s,color .15s,background .15s;
   }
-  .ranges button:hover{border-color:var(--gold); color:var(--ink)}
-  .ranges button[aria-pressed="true"]{border-color:var(--gold); color:var(--bg);
-    background:var(--gold); font-weight:600}
-  .ranges button:focus-visible{outline:2px solid var(--gold); outline-offset:3px}
+  .ranges button:hover{border-color:var(--accent); color:var(--ink)}
+  .ranges button[aria-pressed="true"]{border-color:var(--accent); color:var(--bg);
+    background:var(--accent); font-weight:600}
+  .ranges button:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
   .range-note{text-align:center; color:var(--muted); font-size:.82rem; font-style:italic;
     margin-top:8px}
 
@@ -908,18 +929,18 @@ TEMPLATE = r"""<!DOCTYPE html>
     box-shadow:0 7px 10px -9px rgba(0,0,0,.75); margin:0 -13px; padding:5px 13px 4px}
   .cx-pin.off{display:none}
   .cx-pin-top{display:flex; align-items:center; gap:9px; flex-wrap:wrap}
-  .cx-pin-h{font-family:'IBM Plex Mono',monospace; font-size:.5rem; letter-spacing:.14em;
-    text-transform:uppercase; color:var(--gold); opacity:.85}
+  .cx-pin-h{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.5rem; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--accent); opacity:.85}
   .cx-chips{display:flex; gap:5px; flex-wrap:wrap}
-  .cx-chip{font-family:'IBM Plex Mono',monospace; font-size:.55rem; letter-spacing:.08em;
+  .cx-chip{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.55rem; letter-spacing:.08em;
     padding:3px 9px; border-radius:999px; cursor:pointer; background:transparent;
     border:1px solid var(--rule); color:var(--ink-soft)}
-  .cx-chip:hover{border-color:var(--gold); color:var(--ink)}
-  .cx-chip:focus-visible{outline:2px solid var(--gold); outline-offset:2px}
+  .cx-chip:hover{border-color:var(--accent); color:var(--ink)}
+  .cx-chip:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   .cx-plot{padding-top:9px}
-  .cx-plot rect:focus-visible,.cx-pin-plot rect:focus-visible{outline:2px solid var(--gold);
+  .cx-plot rect:focus-visible,.cx-pin-plot rect:focus-visible{outline:2px solid var(--accent);
     outline-offset:-2px}
-  .cx-foot{font-family:'IBM Plex Mono',monospace; font-size:.53rem; letter-spacing:.06em;
+  .cx-foot{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.53rem; letter-spacing:.06em;
     color:var(--muted); margin-top:5px; line-height:1.5}
   .cx-rail{position:sticky; top:8px; max-height:calc(100vh - 20px); overflow:auto;
     background:var(--paper); border:1px solid var(--rule); border-radius:7px;
@@ -928,21 +949,21 @@ TEMPLATE = r"""<!DOCTYPE html>
      in una didascalia: "somma" cambia cosa fa il click successivo, e un modo che non
      si vede mentre si clicca non esiste. */
   .cx-rail-h{display:flex; gap:5px; margin-bottom:8px}
-  .cx-rail-h button{flex:1; font-family:'IBM Plex Mono',monospace; font-size:.55rem;
+  .cx-rail-h button{flex:1; font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.55rem;
     letter-spacing:.08em; padding:3px 6px; border-radius:4px; cursor:pointer;
     background:transparent; border:1px solid var(--rule); color:var(--ink-soft)}
-  .cx-rail-h button:hover{border-color:var(--gold); color:var(--ink)}
-  .cx-rail-h button[aria-pressed="true"]{border-color:var(--gold); background:var(--gold);
+  .cx-rail-h button:hover{border-color:var(--accent); color:var(--ink)}
+  .cx-rail-h button[aria-pressed="true"]{border-color:var(--accent); background:var(--accent);
     color:var(--bg); font-weight:600}
-  .cx-rail-h button:focus-visible{outline:2px solid var(--gold); outline-offset:2px}
+  .cx-rail-h button:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   .cx-grp{margin-bottom:9px}
-  .cx-grp-h{font-family:'Cinzel',serif; font-size:.6rem; letter-spacing:.18em;
-    text-transform:uppercase; color:var(--gold); margin-bottom:4px}
+  .cx-grp-h{font-family:'Plus Jakarta Sans',system-ui,sans-serif; font-weight:800; font-size:.6rem; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:4px}
   /* la voce isolata e' l'unica accesa: si marca, o "isola" e "ho spento tutto il
      resto a mano" hanno lo stesso aspetto */
-  .cx-sw[data-iso="1"]{border-color:var(--gold); color:var(--ink)}
+  .cx-sw[data-iso="1"]{border-color:var(--accent); color:var(--ink)}
   .cx-sw{display:flex; align-items:center; gap:6px; width:100%; text-align:left;
-    font-family:'IBM Plex Mono',monospace; font-size:.6rem; letter-spacing:.03em;
+    font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.6rem; letter-spacing:.03em;
     padding:3px 5px; border-radius:4px; cursor:pointer; background:transparent;
     border:1px solid transparent; color:var(--ink-soft);
     transition:color .15s,border-color .15s}
@@ -952,7 +973,7 @@ TEMPLATE = r"""<!DOCTYPE html>
   .cx-sw[aria-pressed="false"]::before{background:transparent;
     box-shadow:inset 0 0 0 1px var(--muted)}
   .cx-sw:hover{border-color:var(--rule); color:var(--ink)}
-  .cx-sw:focus-visible{outline:2px solid var(--gold); outline-offset:2px}
+  .cx-sw:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   /* Sotto i 720px la colonna di interruttori non ci sta accanto al grafico: diventa
      una riga di chip sopra il pannello, scorrevole in orizzontale. */
   @media(max-width:720px){
@@ -980,32 +1001,32 @@ TEMPLATE = r"""<!DOCTYPE html>
     min-width:0; display:grid; grid-template-columns:170px 1fr; gap:0 16px;
     align-items:center;
   }
-  .tile:hover{border-color:rgba(200,154,63,.4); background:var(--paper-2)}
+  .tile:hover{border-color:rgba(162,100,1,.4); background:var(--paper-2)}
   .t-side{min-width:0}
   .t-head{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap}
-  .t-title{font-family:'Cinzel',serif; font-size:.98rem; font-weight:600;
+  .t-title{font-family:'VT323',ui-monospace,monospace; font-size:1.3rem; font-weight:600;
     letter-spacing:.02em; line-height:1.2}
-  .t-now{font-family:'IBM Plex Mono',monospace; font-size:1.15rem; font-weight:600;
-    font-variant-numeric:tabular-nums; color:var(--gold); line-height:1.15; margin-top:3px}
+  .t-now{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:1.15rem; font-weight:600;
+    font-variant-numeric:tabular-nums; color:var(--accent); line-height:1.15; margin-top:3px}
   .t-now small{display:block; font-size:.55rem; letter-spacing:.1em;
     text-transform:uppercase; color:var(--muted); font-weight:400; margin-top:1px}
   .t-legend{display:flex; gap:9px; flex-wrap:wrap; margin:3px 0 0;
-    font-family:'IBM Plex Mono',monospace; font-size:.54rem; letter-spacing:.06em;
+    font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.54rem; letter-spacing:.06em;
     text-transform:uppercase; color:var(--ink-soft)}
   .t-legend i{display:inline-block; width:8px; height:8px; border-radius:2px;
     margin-right:4px; vertical-align:-1px}
   /* le leve dell'indice microbiota: l'emoji dice quale, il numero quanto e' tirata */
   .t-shift{display:flex; gap:11px; flex-wrap:wrap; margin-top:5px; font-size:.95rem}
-  .t-shift b{font-family:'IBM Plex Mono',monospace; font-size:.68rem; font-weight:600}
+  .t-shift b{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem; font-weight:600}
   svg.plot{width:100%; height:auto; display:block; touch-action:pan-y; overflow:hidden}
-  .t-foot{font-family:'IBM Plex Mono',monospace; font-size:.53rem; letter-spacing:.06em;
+  .t-foot{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.53rem; letter-spacing:.06em;
     color:var(--muted); margin-top:3px; line-height:1.45; grid-column:1/-1}
   .t-empty{font-style:italic; color:var(--muted); font-size:.8rem; padding:14px 0;
     text-align:center}
 
   /* ---------- data fallback ---------- */
   details.data{margin-top:4px; grid-column:1/-1}
-  details.data summary{font-family:'IBM Plex Mono',monospace; font-size:.55rem;
+  details.data summary{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.55rem;
     letter-spacing:.1em; text-transform:uppercase; color:var(--muted); cursor:pointer;
     list-style:none}
   details.data summary::-webkit-details-marker{display:none}
@@ -1013,18 +1034,18 @@ TEMPLATE = r"""<!DOCTYPE html>
   details.data[open] summary::before{content:"▾ "; }
   details.data summary:hover{color:var(--ink-soft)}
   /* la didascalia sta qui dentro, non sotto il titolo: si legge quando si vuole */
-  .d-cap{font-family:'IBM Plex Mono',monospace; font-size:.56rem; letter-spacing:.06em;
+  .d-cap{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.56rem; letter-spacing:.06em;
     color:var(--ink-soft); margin:6px 0 0; line-height:1.5}
   .d-cap:empty{display:none}
   .d-cap b{color:var(--muted); font-weight:500}
   /* la nota di metodo: piu' lunga, quindi corpo di testo e non monospazio */
-  .d-note{display:block; margin-top:7px; font-family:'EB Garamond',Georgia,serif;
+  .d-note{display:block; margin-top:7px; font-family:'Plus Jakarta Sans',system-ui,sans-serif;
     font-size:.86rem; letter-spacing:0; line-height:1.55; color:var(--ink-soft);
     border-left:2px solid var(--rule); padding-left:11px}
   table.fallback{width:100%; border-collapse:collapse; margin-top:6px; font-size:.72rem;
-    font-family:'IBM Plex Mono',monospace; font-variant-numeric:tabular-nums}
+    font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-variant-numeric:tabular-nums}
   table.fallback th,table.fallback td{text-align:right; padding:2px 0 2px 8px;
-    border-bottom:1px solid rgba(200,154,63,.12); color:var(--ink-soft); white-space:nowrap}
+    border-bottom:1px solid rgba(162,100,1,.12); color:var(--ink-soft); white-space:nowrap}
   table.fallback th:first-child,table.fallback td:first-child{text-align:left; padding-left:0}
   table.fallback th{color:var(--muted); font-weight:500}
 
@@ -1035,73 +1056,73 @@ TEMPLATE = r"""<!DOCTYPE html>
   .sheet-in{position:relative; max-width:760px; margin:0 auto; background:var(--paper);
     border:1px solid var(--rule); border-radius:9px; padding:20px 22px 24px;
     box-shadow:0 20px 60px rgba(0,0,0,.6)}
-  .sheet h3{font-family:'Cinzel',serif; font-size:1.5rem; font-weight:700; margin:0}
-  .sheet .when{font-family:'IBM Plex Mono',monospace; font-size:.6rem; letter-spacing:.16em;
-    text-transform:uppercase; color:var(--gold)}
+  .sheet h3{font-family:'VT323',ui-monospace,monospace; font-size:1.95rem; font-weight:700; margin:0}
+  .sheet .when{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.6rem; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--accent)}
   .sheet-x{position:absolute; top:12px; right:12px; background:none; border:0; cursor:pointer;
     color:var(--muted); font-size:1.5rem; line-height:1; padding:4px 8px}
   .sheet-x:hover{color:var(--ink)}
   .sheet-hd{padding-right:34px}
-  .sheet h4{font-family:'IBM Plex Mono',monospace; font-size:.6rem; letter-spacing:.17em;
-    text-transform:uppercase; color:var(--gold); font-weight:600; margin:20px 0 7px;
+  .sheet h4{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.6rem; letter-spacing:.17em;
+    text-transform:uppercase; color:var(--accent); font-weight:600; margin:20px 0 7px;
     border-top:1px solid var(--rule); padding-top:11px}
   .kv{display:grid; grid-template-columns:repeat(auto-fit,minmax(94px,1fr)); gap:10px 14px}
-  .kv div b{font-family:'IBM Plex Mono',monospace; font-size:.95rem; color:var(--ink);
+  .kv div b{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.95rem; color:var(--ink);
     font-variant-numeric:tabular-nums; display:block}
-  .kv div span{font-family:'IBM Plex Mono',monospace; font-size:.52rem; letter-spacing:.1em;
+  .kv div span{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.52rem; letter-spacing:.1em;
     text-transform:uppercase; color:var(--muted)}
   .acts li{list-style:none; display:flex; justify-content:space-between; gap:12px;
-    padding:6px 0; border-bottom:1px solid rgba(200,154,63,.12); flex-wrap:wrap}
+    padding:6px 0; border-bottom:1px solid rgba(162,100,1,.12); flex-wrap:wrap}
   .acts a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--rule)}
-  .acts a:hover{color:var(--gold)}
-  .acts em{font-family:'IBM Plex Mono',monospace; font-size:.66rem; color:var(--muted);
+  .acts a:hover{color:var(--accent)}
+  .acts em{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.66rem; color:var(--muted);
     font-style:normal; white-space:nowrap}
   .meal{margin-bottom:9px}
-  .meal .mname{font-family:'IBM Plex Mono',monospace; font-size:.55rem; letter-spacing:.14em;
+  .meal .mname{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.55rem; letter-spacing:.14em;
     text-transform:uppercase; color:var(--ink-soft)}
   .meal ul{list-style:none; margin-top:3px}
   .meal li{display:flex; justify-content:space-between; gap:10px; font-size:.86rem;
     color:var(--ink-soft); padding:1px 0}
-  .meal li i{font-style:normal; font-family:'IBM Plex Mono',monospace; font-size:.68rem;
+  .meal li i{font-style:normal; font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem;
     color:var(--muted); white-space:nowrap}
   .meal li.asm{opacity:.62}
-  .meal li.asm::after{content:" ricostruito"; font-family:'IBM Plex Mono',monospace;
+  .meal li.asm::after{content:" ricostruito"; font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;
     font-size:.5rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted)}
   .bars{display:grid; gap:4px}
   .bar{display:grid; grid-template-columns:96px 1fr 46px; gap:9px; align-items:center;
-    font-family:'IBM Plex Mono',monospace; font-size:.62rem; color:var(--ink-soft)}
+    font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.62rem; color:var(--ink-soft)}
   .bar u{text-decoration:none; color:var(--muted)}
-  .bar div{height:7px; border-radius:99px; background:rgba(236,227,205,.09); overflow:hidden}
+  .bar div{height:7px; border-radius:99px; background:rgba(32,33,36,.09); overflow:hidden}
   .bar div i{display:block; height:100%; border-radius:99px}
   .bar b{text-align:right; color:var(--ink); font-variant-numeric:tabular-nums;
     font-weight:500}
-  .insight-list .bar{grid-template-columns:minmax(0,1fr) auto; border-bottom:1px solid rgba(200,154,63,.12);
+  .insight-list .bar{grid-template-columns:minmax(0,1fr) auto; border-bottom:1px solid rgba(162,100,1,.12);
     padding:7px 0; gap:4px 12px}
   .insight-list .bar b{min-width:118px; white-space:nowrap}
   .insight-list .bar .target-track{display:block; position:relative; grid-column:1/-1;
-    width:100%; height:9px; overflow:visible; background:rgba(236,227,205,.09)}
+    width:100%; height:9px; overflow:visible; background:rgba(32,33,36,.09)}
   .insight-list .bar .target-track i{transition:width .18s ease}
   .insight-list .bar .target-track mark{position:absolute; top:-3px; bottom:-3px; width:2px;
     padding:0; background:var(--ink); box-shadow:0 0 0 1px rgba(10,9,6,.52)}
   .insight-list .bar small{grid-column:1/-1; color:var(--muted); font-size:.52rem;
     letter-spacing:.04em; text-align:right}
   .insight-list .bar.sel{background:rgba(226,201,143,.07); margin:0 -9px;
-    padding-left:9px; padding-right:9px; border-left:2px solid var(--gold)}
+    padding-left:9px; padding-right:9px; border-left:2px solid var(--accent)}
   .insight-chart{margin:13px 0 8px; border:1px solid var(--rule); border-radius:7px;
     background:var(--paper-2); padding:8px 9px 6px; overflow:hidden}
   .insight-chart svg{display:block; width:100%; height:auto; overflow:hidden}
   .insight-chart .legend{display:flex; justify-content:space-between; gap:12px;
-    font:500 .52rem 'IBM Plex Mono',monospace; letter-spacing:.08em; color:var(--muted)}
+    font:500 .52rem ui-monospace,'SFMono-Regular',Menlo,monospace; letter-spacing:.08em; color:var(--muted)}
   .food-intake{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:5px 14px}
   .food-intake .food-row{display:grid; grid-template-columns:minmax(0,1fr) auto;
-    gap:1px 9px; padding:6px 0; border-bottom:1px solid rgba(200,154,63,.12)}
+    gap:1px 9px; padding:6px 0; border-bottom:1px solid rgba(162,100,1,.12)}
   .food-intake .food-row span{min-width:0; color:var(--ink-soft); font-size:.78rem;
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-  .food-intake .food-row b{font:600 .67rem 'IBM Plex Mono',monospace; color:var(--ink);
+  .food-intake .food-row b{font:600 .67rem ui-monospace,'SFMono-Regular',Menlo,monospace; color:var(--ink);
     white-space:nowrap; font-variant-numeric:tabular-nums}
-  .food-intake .food-row small{grid-column:1/-1; font:500 .49rem 'IBM Plex Mono',monospace;
+  .food-intake .food-row small{grid-column:1/-1; font:500 .49rem ui-monospace,'SFMono-Regular',Menlo,monospace;
     color:var(--muted); letter-spacing:.04em}
-  .hint{font-family:'IBM Plex Mono',monospace; font-size:.53rem; letter-spacing:.09em;
+  .hint{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.53rem; letter-spacing:.09em;
     color:var(--muted); text-align:center; margin-top:9px}
 
   /* ---------- il diario: la giornata sfogliabile e annotabile ---------- */
@@ -1110,124 +1131,124 @@ TEMPLATE = r"""<!DOCTYPE html>
      mette insieme tavola, motore e gamba in una lettura sola, e chi apre /vita
      nove volte su dieci vuole quella, non ventisette grafici. La scheda dice il
      verdetto; il rapporto intero e' dietro il bottone. */
-  .coach-card{margin:26px 0 0; border:1px solid var(--rule); border-left:3px solid var(--gold);
+  .coach-card{margin:26px 0 0; border:1px solid var(--rule); border-left:3px solid var(--accent);
     border-radius:10px; background:var(--paper); padding:17px 20px 18px}
-  .coach-k{font-family:'IBM Plex Mono',monospace; font-size:.55rem; letter-spacing:.24em;
+  .coach-k{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.55rem; letter-spacing:.24em;
     text-transform:uppercase; color:var(--muted)}
-  .coach-card h2{font-family:'Cinzel',serif; font-size:1.32rem; font-weight:700;
+  .coach-card h2{font-family:'VT323',ui-monospace,monospace; font-size:1.32rem; font-weight:700;
     letter-spacing:.01em; margin:3px 0 6px}
   .coach-lead{font-size:1rem; line-height:1.6; color:var(--ink-soft); max-width:74ch;
     margin:0 0 12px}
-  .coach-lead b{color:var(--gold); font-weight:500}
-  .coach-card button{font-family:'IBM Plex Mono',monospace; font-size:.62rem;
+  .coach-lead b{color:var(--accent); font-weight:500}
+  .coach-card button{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.62rem;
     letter-spacing:.15em; text-transform:uppercase; color:var(--ink);
-    background:var(--paper); border:1px solid var(--gold); border-radius:99px;
+    background:var(--paper); border:1px solid var(--accent); border-radius:99px;
     padding:9px 20px; cursor:pointer; transition:background .16s,color .16s}
-  .coach-card button:hover{background:var(--gold); color:#0a0906}
+  .coach-card button:hover{background:var(--accent); color:#0a0906}
   /* il rapporto dentro il pannello */
-  .cr-when{font-family:'IBM Plex Mono',monospace; font-size:.55rem; letter-spacing:.16em;
+  .cr-when{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.55rem; letter-spacing:.16em;
     text-transform:uppercase; color:var(--muted); padding-right:34px}
   .cr-verdict{font-size:1.06rem; line-height:1.62; margin:10px 0 4px; color:var(--ink)}
-  .cr-verdict b{color:var(--gold); font-weight:500}
+  .cr-verdict b{color:var(--accent); font-weight:500}
   .cr-sec{margin:24px 0 0; border-top:1px solid var(--rule); padding-top:15px}
-  .cr-sec > h4{font-family:'Cinzel',serif; font-size:1.02rem; font-weight:700; margin:0 0 2px}
-  .cr-sec > p.cr-sub{font-family:'IBM Plex Mono',monospace; font-size:.55rem;
+  .cr-sec > h4{font-family:'VT323',ui-monospace,monospace; font-size:1.02rem; font-weight:700; margin:0 0 2px}
+  .cr-sec > p.cr-sub{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.55rem;
     letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin:0 0 12px}
   .cr-item{margin:0 0 15px; padding-left:13px; border-left:2px solid var(--rule)}
-  .cr-item.hot{border-left-color:var(--gold)}
+  .cr-item.hot{border-left-color:var(--accent)}
   .cr-item.nil{border-left-color:var(--rule); opacity:.92}
   .cr-item h5{font-size:1rem; font-weight:500; margin:0 0 3px; color:var(--ink);
-    font-family:'EB Garamond',Georgia,serif; line-height:1.35}
+    font-family:'Plus Jakarta Sans',system-ui,sans-serif; line-height:1.35}
   .cr-item p{margin:0; font-size:.92rem; line-height:1.58; color:var(--ink-soft)}
-  .cr-num{display:block; margin-top:5px; font-family:'IBM Plex Mono',monospace;
+  .cr-num{display:block; margin-top:5px; font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;
     font-size:.58rem; letter-spacing:.08em; color:var(--muted)}
-  .cr-num b{color:var(--gold); font-weight:500}
+  .cr-num b{color:var(--accent); font-weight:500}
   .cr-do{display:block; margin-top:6px; font-size:.9rem; line-height:1.5; color:var(--ink)}
-  .cr-do::before{content:"→ "; color:var(--gold)}
+  .cr-do::before{content:"→ "; color:var(--accent)}
   .cr-limits{margin:24px 0 0; border-top:1px solid var(--rule); padding-top:14px;
     font-size:.86rem; line-height:1.55; color:var(--muted)}
-  .cr-limits h4{font-family:'IBM Plex Mono',monospace; font-size:.55rem; letter-spacing:.16em;
+  .cr-limits h4{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.55rem; letter-spacing:.16em;
     text-transform:uppercase; color:var(--muted); margin:0 0 7px}
   .cr-limits li{margin:0 0 5px}
   .diary-open{display:flex; align-items:center; justify-content:center; gap:11px;
     flex-wrap:wrap; margin:16px 0 0}
-  .diary-open button{font-family:'IBM Plex Mono',monospace; font-size:.62rem;
+  .diary-open button{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.62rem;
     letter-spacing:.15em; text-transform:uppercase; color:var(--ink);
-    background:var(--paper); border:1px solid var(--gold); border-radius:99px;
+    background:var(--paper); border:1px solid var(--accent); border-radius:99px;
     padding:9px 20px; cursor:pointer; transition:background .16s,color .16s}
-  .diary-open button:hover{background:var(--gold); color:#0a0906}
-  .diary-open span{font-family:'IBM Plex Mono',monospace; font-size:.53rem;
+  .diary-open button:hover{background:var(--accent); color:#0a0906}
+  .diary-open span{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.53rem;
     letter-spacing:.08em; color:var(--muted)}
   .dnav{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:12px 0 4px}
-  .dnav button,.d-act{font-family:'IBM Plex Mono',monospace; font-size:.6rem;
+  .dnav button,.d-act{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.6rem;
     letter-spacing:.1em; color:var(--ink-soft); background:var(--paper-2);
     border:1px solid var(--rule); border-radius:5px; padding:6px 11px; cursor:pointer}
-  .dnav button:hover,.d-act:hover{border-color:var(--gold); color:var(--ink)}
-  .dnav input[type=date]{font-family:'IBM Plex Mono',monospace; font-size:.68rem;
+  .dnav button:hover,.d-act:hover{border-color:var(--accent); color:var(--ink)}
+  .dnav input[type=date]{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem;
     color:var(--ink); background:var(--paper-2); border:1px solid var(--rule);
     border-radius:5px; padding:5px 8px; color-scheme:dark}
   .dnav .grow{flex:1 1 auto}
   /* una riga del pasto: nome, quantita' modificabile, kcal, e il cestino */
   .d-row{display:grid; grid-template-columns:minmax(0,1fr) 74px 62px 26px; gap:8px;
-    align-items:center; padding:4px 0; border-bottom:1px solid rgba(200,154,63,.1)}
+    align-items:center; padding:4px 0; border-bottom:1px solid rgba(162,100,1,.1)}
   .d-row>span{min-width:0; font-size:.84rem; color:var(--ink-soft); overflow:hidden;
     text-overflow:ellipsis; white-space:nowrap}
-  .d-row input{width:100%; font-family:'IBM Plex Mono',monospace; font-size:.7rem;
+  .d-row input{width:100%; font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.7rem;
     color:var(--ink); background:var(--paper-2); border:1px solid var(--rule);
     border-radius:4px; padding:4px 6px; text-align:right}
-  .d-row input:focus{outline:none; border-color:var(--gold)}
-  .d-row em{font-style:normal; font-family:'IBM Plex Mono',monospace; font-size:.66rem;
+  .d-row input:focus{outline:none; border-color:var(--accent)}
+  .d-row em{font-style:normal; font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.66rem;
     color:var(--muted); text-align:right; font-variant-numeric:tabular-nums}
   .d-row button{background:none; border:0; color:var(--muted); cursor:pointer;
     font-size:.95rem; line-height:1; padding:2px}
   .d-row button:hover{color:var(--neg)}
   .d-row.asm{opacity:.6}
   .d-row.gone>span{text-decoration:line-through; color:var(--muted)}
-  .d-row.edit em{color:var(--gold)}
-  .d-row.new>span::after{content:" nuovo"; font-family:'IBM Plex Mono',monospace;
-    font-size:.5rem; letter-spacing:.1em; text-transform:uppercase; color:var(--gold)}
+  .d-row.edit em{color:var(--accent)}
+  .d-row.new>span::after{content:" nuovo"; font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;
+    font-size:.5rem; letter-spacing:.1em; text-transform:uppercase; color:var(--accent)}
   /* lo stato del collegamento: un pallino, una riga, e la chiave se manca */
   .dstate{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:10px 0 2px;
     padding:8px 11px; border:1px solid var(--rule); border-radius:6px;
-    background:var(--paper-2); font-family:'IBM Plex Mono',monospace; font-size:.6rem}
+    background:var(--paper-2); font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.6rem}
   .dstate b{color:var(--ink); font-weight:600; letter-spacing:.08em; white-space:nowrap}
   .dstate b::before{content:"● "; color:var(--muted)}
   .dstate.on b::before{color:var(--s3)}
   .dstate.bad b::before{color:var(--neg)}
-  .dstate.off b::before{color:var(--gold)}
+  .dstate.off b::before{color:var(--accent)}
   .dstate span{color:var(--muted); letter-spacing:.05em; flex:1 1 160px; min-width:0}
-  .dstate input{font-family:'IBM Plex Mono',monospace; font-size:.66rem; color:var(--ink);
+  .dstate input{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.66rem; color:var(--ink);
     background:var(--paper); border:1px solid var(--rule); border-radius:4px;
     padding:5px 8px; flex:0 1 180px; min-width:0}
-  .dstate input:focus{outline:none; border-color:var(--gold)}
-  .dstate button{font-family:'IBM Plex Mono',monospace; font-size:.6rem; letter-spacing:.1em;
-    color:#0a0906; background:var(--gold); border:0; border-radius:4px;
+  .dstate input:focus{outline:none; border-color:var(--accent)}
+  .dstate button{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.6rem; letter-spacing:.1em;
+    color:#0a0906; background:var(--accent); border:0; border-radius:4px;
     padding:6px 12px; cursor:pointer}
   /* in che pasto finisce quello che aggiungi */
   .d-meal{display:flex; align-items:center; flex-wrap:wrap; gap:5px; margin:2px 0 6px}
-  .d-meal u{text-decoration:none; font-family:'IBM Plex Mono',monospace; font-size:.53rem;
+  .d-meal u{text-decoration:none; font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.53rem;
     letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-right:3px}
-  .d-meal button{font-family:'IBM Plex Mono',monospace; font-size:.58rem; color:var(--muted);
+  .d-meal button{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.58rem; color:var(--muted);
     background:none; border:1px solid var(--rule); border-radius:99px; padding:4px 10px;
     cursor:pointer}
-  .d-meal button:hover{color:var(--ink); border-color:var(--gold)}
-  .d-meal button.on{color:#0a0906; background:var(--gold); border-color:var(--gold)}
+  .d-meal button:hover{color:var(--ink); border-color:var(--accent)}
+  .d-meal button.on{color:#0a0906; background:var(--accent); border-color:var(--accent)}
   .d-pre{display:flex; flex-wrap:wrap; gap:6px; margin:7px 0 2px}
-  .d-pre button{font-family:'IBM Plex Mono',monospace; font-size:.62rem; color:var(--ink-soft);
+  .d-pre button{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.62rem; color:var(--ink-soft);
     background:var(--paper-2); border:1px solid var(--rule); border-radius:99px;
     padding:5px 11px; cursor:pointer; white-space:nowrap}
-  .d-pre button:hover{border-color:var(--gold); color:var(--ink)}
+  .d-pre button:hover{border-color:var(--accent); color:var(--ink)}
   .d-pre button b{font-weight:500; color:var(--muted); font-size:.56rem; margin-left:5px}
-  .d-search{width:100%; font-family:'IBM Plex Mono',monospace; font-size:.72rem;
+  .d-search{width:100%; font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.72rem;
     color:var(--ink); background:var(--paper-2); border:1px solid var(--rule);
     border-radius:5px; padding:7px 9px; margin-top:8px}
-  .d-search:focus{outline:none; border-color:var(--gold)}
-  .d-out{width:100%; min-height:104px; font-family:'IBM Plex Mono',monospace;
+  .d-search:focus{outline:none; border-color:var(--accent)}
+  .d-out{width:100%; min-height:104px; font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;
     font-size:.62rem; line-height:1.6; color:var(--ink-soft); background:#0e0d09;
     border:1px solid var(--rule); border-radius:5px; padding:9px 10px; margin-top:8px;
     white-space:pre; overflow:auto; resize:vertical}
   .d-acts{display:flex; gap:8px; flex-wrap:wrap; margin-top:9px}
-  .d-empty{font-family:'IBM Plex Mono',monospace; font-size:.62rem; color:var(--muted);
+  .d-empty{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.62rem; color:var(--muted);
     padding:8px 0}
   @media (max-width:560px){
     .d-row{grid-template-columns:minmax(0,1fr) 62px 52px 24px; gap:6px}
@@ -1237,10 +1258,10 @@ TEMPLATE = r"""<!DOCTYPE html>
   /* ---------- tooltip ---------- */
   .tip{position:fixed; z-index:9; pointer-events:none; opacity:0; transition:opacity .1s;
     background:#0e0d09; border:1px solid var(--rule); border-radius:5px; padding:6px 10px;
-    font-family:'IBM Plex Mono',monospace; font-size:.68rem; line-height:1.55;
+    font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem; line-height:1.55;
     color:var(--ink-soft); max-width:240px; box-shadow:0 6px 20px rgba(0,0,0,.5)}
   .tip.on{opacity:1}
-  .tip .v{color:var(--gold); font-weight:600}
+  .tip .v{color:var(--accent); font-weight:600}
   .tip .d{color:var(--muted); font-size:.62rem; letter-spacing:.06em}
 
   /* ---------- le tre pagine-racconto, in cima ---------- */
@@ -1252,20 +1273,20 @@ TEMPLATE = r"""<!DOCTYPE html>
   .track::before{content:""; position:absolute; inset:0 auto 0 0; width:3px; background:var(--a)}
   .track:hover{border-color:var(--a); background:var(--paper-2); transform:translateY(-2px)}
   .track:focus-visible{outline:2px solid var(--a); outline-offset:3px}
-  .track .k{font-family:'IBM Plex Mono',monospace; font-size:.56rem; letter-spacing:.19em;
+  .track .k{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.56rem; letter-spacing:.19em;
     text-transform:uppercase; color:var(--a)}
-  .track h3{font-family:'Cinzel',serif; font-size:1.12rem; font-weight:700; margin:4px 0 0}
+  .track h3{font-family:'VT323',ui-monospace,monospace; font-size:1.12rem; font-weight:700; margin:4px 0 0}
   .track p{color:var(--ink-soft); font-size:.85rem; line-height:1.5; margin-top:5px}
   .track .nums{display:flex; gap:14px; flex-wrap:wrap; margin-top:9px}
-  .track .nums b{font-family:'IBM Plex Mono',monospace; font-size:.82rem; font-weight:600;
+  .track .nums b{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.82rem; font-weight:600;
     color:var(--ink); font-variant-numeric:tabular-nums; display:block}
-  .track .nums span{font-family:'IBM Plex Mono',monospace; font-size:.5rem;
+  .track .nums span{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.5rem;
     letter-spacing:.1em; text-transform:uppercase; color:var(--muted)}
   @media(prefers-reduced-motion:reduce){.track{transition:none}.track:hover{transform:none}}
 
   /* ---------- sections ---------- */
-  h2.band{font-family:'Cinzel',serif; font-size:.9rem; letter-spacing:.2em;
-    text-transform:uppercase; color:var(--gold); text-align:center; font-weight:600;
+  h2.band{font-family:'VT323',ui-monospace,monospace; font-size:1.25rem; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--accent); text-align:center; font-weight:600;
     margin:36px 0 2px}
   .band-sub{text-align:center; color:var(--muted); font-size:.82rem; font-style:italic;
     max-width:52em; margin:0 auto}
@@ -1274,7 +1295,7 @@ TEMPLATE = r"""<!DOCTYPE html>
   .also{margin-top:44px; text-align:center}
   .also a{display:inline-block; margin:6px 6px; padding:7px 15px; border-radius:999px;
     border:1px solid var(--rule); color:var(--ink-soft); text-decoration:none; font-size:.85rem}
-  .also a:hover{border-color:var(--gold); color:var(--ink)}
+  .also a:hover{border-color:var(--accent); color:var(--ink)}
   footer{margin-top:34px; text-align:center; color:var(--muted); font-size:.78rem;
     line-height:1.7}
   @media(prefers-reduced-motion:reduce){*{transition:none !important}}
@@ -1655,7 +1676,7 @@ const yTicks = (yd, fmt) => {
 const padFor = ticks => Math.min(62, Math.max(24,
   Math.ceil(Math.max(...ticks.map(t => t[1].length)) * TICKW) + 9));
 const axisText = (x, y, s, anchor) => el("text", { x, y, "text-anchor":anchor,
-  fill:"var(--muted)", "font-size":"8", "font-family":"'IBM Plex Mono',monospace" });
+  fill:"var(--muted)", "font-size":"8", "font-family":"ui-monospace,'SFMono-Regular',Menlo,monospace" });
 function yAxis(svg, ticks, Y, l, right) {
   for (const [v, lab] of ticks) {
     const y = Y(v);
@@ -1698,12 +1719,12 @@ function gapBands(svg, X, x0, x1, top, ih) {
     if (xb - xa > 46) {
       const t = el("text", { x:(xa + xb) / 2, y:top + 10, "text-anchor":"middle",
         fill:"var(--muted)", "font-size":"7.5", "letter-spacing":".08em",
-        "font-family":"'IBM Plex Mono',monospace" });
+        "font-family":"ui-monospace,'SFMono-Regular',Menlo,monospace" });
       t.textContent = label; svg.appendChild(t);
     }
   };
   for (const [a, b] of D.gaps)
-    band(a, b, "nessun dato", "rgba(236,227,205,.05)", "rgba(236,227,205,.16)");
+    band(a, b, "nessun dato", "rgba(32,33,36,.05)", "rgba(32,33,36,.16)");
   for (const [a, b] of (D.recon || []))
     band(a, b, "carico ricostruito", "rgba(201,133,0,.055)", "rgba(201,133,0,.20)");
 }
@@ -2315,11 +2336,11 @@ function rMatrix(svg, W, H, t, from, to) {
       const f = fit(pts.map(p => [p[0], p[1]]));
       const strength = f ? Math.abs(f.r) : 0;
       /* fondo divergente: |r| porta l'intensità, il segno il verso */
-      const bg = !f ? "rgba(236,227,205,.03)"
+      const bg = !f ? "rgba(32,33,36,.03)"
         : (f.r >= 0 ? `rgba(57,135,229,${(strength * .30).toFixed(3)}`
                     : `rgba(230,103,103,${(strength * .30).toFixed(3)}`) + ")";
       svg.appendChild(el("rect", { x:x0, y:y0, width:cw, height:ch, rx:3, fill:bg,
-        stroke:"rgba(236,227,205,.10)", "stroke-width":1 }));
+        stroke:"rgba(32,33,36,.10)", "stroke-width":1 }));
       if (!pts.length) return;
       n_ok++;
       const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
@@ -2403,12 +2424,12 @@ function rHeat(svg, W, H, t, from, to) {
       const g = res ? Math.min(1, Math.abs(res.r) / 0.6) : 0;
       /* il grigio del fondo scheda e' il punto zero: da li' ci si allontana verso
          il blu o verso il rosso, e la distanza e' |r| */
-      const fill = !res ? "rgba(236,227,205,.035)"
+      const fill = !res ? "rgba(32,33,36,.035)"
         : (res.r >= 0 ? `rgba(57,135,229,${(g * .78).toFixed(3)})`
                       : `rgba(230,103,103,${(g * .78).toFixed(3)})`);
       const rect = el("rect", { x:cx + pad, y:cy + pad, width:cell - pad * 2,
         height:cell - pad * 2, rx:2, fill,
-        stroke:"rgba(236,227,205,.08)", "stroke-width":1 });
+        stroke:"rgba(32,33,36,.08)", "stroke-width":1 });
       if (res) {
         rect.setAttribute("style", "cursor:pointer");
         rect.addEventListener("pointerenter", ev => showTip(ev.clientX, ev.clientY,
@@ -2424,7 +2445,7 @@ function rHeat(svg, W, H, t, from, to) {
       if (res && cell >= 26) {
         const tx = el("text", { x:cx + cell / 2, y:cy + cell / 2 + 3,
           "text-anchor":"middle", "font-size":"8.5",
-          "font-family":"'IBM Plex Mono',monospace",
+          "font-family":"ui-monospace,'SFMono-Regular',Menlo,monospace",
           fill:g > .55 ? "var(--ink)" : "var(--muted)" });
         tx.textContent = (res.r >= 0 ? "+" : "") + res.r.toFixed(2).replace("0.", ".");
         svg.appendChild(tx);
@@ -2440,7 +2461,7 @@ function rHeat(svg, W, H, t, from, to) {
   for (let j = 0; j < n - 1; j++) {
     const cx = x0 + j * cell + cell / 2, cy = y0 + (n - 1) * cell + 7;
     const tx = el("text", { x:cx, y:cy, "text-anchor":"end", "font-size":"8",
-      "font-family":"'IBM Plex Mono',monospace", fill:"var(--muted)",
+      "font-family":"ui-monospace,'SFMono-Regular',Menlo,monospace", fill:"var(--muted)",
       transform:`rotate(-52 ${cx.toFixed(1)} ${cy.toFixed(1)})` });
     tx.textContent = V[j].name; svg.appendChild(tx);
   }
@@ -2473,7 +2494,7 @@ function rGrid(svg, W, H, t, from, to) {
     cols.forEach((c, j) => {
       const cell = t.cell(i, j);
       const x = labL + j * cw, y = top + i * ch;
-      let fill = "rgba(236,227,205,.035)";
+      let fill = "rgba(32,33,36,.035)";
       if (cell && cell.v !== null && cell.v !== undefined) {
         const g = Math.min(1, Math.abs(cell.v) / (t.vmax || 1));
         fill = t.diverging === false
@@ -2485,7 +2506,7 @@ function rGrid(svg, W, H, t, from, to) {
       }
       const rect = el("rect", { x:x + pad, y:y + pad, width:Math.max(1, cw - pad * 2),
         height:Math.max(1, ch - pad * 2), rx:2, fill,
-        stroke:"rgba(236,227,205,.07)", "stroke-width":1 });
+        stroke:"rgba(32,33,36,.07)", "stroke-width":1 });
       if (cell && cell.tip) {
         rect.setAttribute("style", "cursor:pointer");
         rect.addEventListener("pointerenter", ev => showTip(ev.clientX, ev.clientY, cell.tip));
@@ -2495,7 +2516,7 @@ function rGrid(svg, W, H, t, from, to) {
       svg.appendChild(rect);
       if (cell && cell.txt && cw >= 26 && ch >= 15) {
         const tx = el("text", { x:x + cw / 2, y:y + ch / 2 + 3, "text-anchor":"middle",
-          "font-size":"8", "font-family":"'IBM Plex Mono',monospace",
+          "font-size":"8", "font-family":"ui-monospace,'SFMono-Regular',Menlo,monospace",
           fill:Math.abs(cell.v) / (t.vmax || 1) > .55 ? "var(--ink)" : "var(--muted)" });
         tx.textContent = cell.txt; svg.appendChild(tx);
       }
@@ -2510,7 +2531,7 @@ function rGrid(svg, W, H, t, from, to) {
     if (j % every) return;
     const cx = labL + j * cw + cw / 2, cy = top + rows.length * ch + 7;
     const tx = el("text", { x:cx, y:cy, "text-anchor":"end", "font-size":"8",
-      "font-family":"'IBM Plex Mono',monospace", fill:"var(--muted)",
+      "font-family":"ui-monospace,'SFMono-Regular',Menlo,monospace", fill:"var(--muted)",
       transform:`rotate(-52 ${cx.toFixed(1)} ${cy.toFixed(1)})` });
     tx.textContent = c.name; svg.appendChild(tx);
   });
@@ -2568,7 +2589,7 @@ function rSlope(svg, W, H, t, from, to) {
       svg.appendChild(el("circle", { cx:x, cy:Y(v), r:3, fill:col,
         stroke:"var(--paper)", "stroke-width":1 }));
     const lab = el("text", { x:xb + 8, y:it._ly + 3.5, fill:"var(--ink-soft)",
-      "font-size":"9", "font-family":"'IBM Plex Mono',monospace" });
+      "font-size":"9", "font-family":"ui-monospace,'SFMono-Regular',Menlo,monospace" });
     lab.textContent = `${it.emoji} ${it.name} ${(it.b - it.a >= 0 ? "+" : "")}${(it.b - it.a).toFixed(1)}`;
     svg.appendChild(lab);
     svg.appendChild(el("line", { x1:xb + 3, y1:Y(it.b), x2:xb + 6, y2:it._ly,
@@ -2584,7 +2605,7 @@ function rSlope(svg, W, H, t, from, to) {
 
 /* One crosshair implementation for every day-indexed renderer. */
 function crosshair(svg, g, W, H, from, to, describe) {
-  const line = el("line", { y1:g.P.t, y2:g.P.t + g.ih, stroke:"var(--gold)",
+  const line = el("line", { y1:g.P.t, y2:g.P.t + g.ih, stroke:"var(--accent)",
     "stroke-width":1, opacity:"0", "pointer-events":"none" });
   svg.appendChild(line);
   const hit = el("rect", { x:g.P.l, y:g.P.t, width:g.iw, height:g.ih, fill:"transparent" });
@@ -3727,8 +3748,8 @@ function drawRidge(lanes, W, from, to, step, showAxis, pinnedSet) {
        anche quando la linea le passa attraverso */
     const labText = (on ? "❄ " : "") + s.name + (sparse ? " · rada" : "");
     const label = el("text", { x:P.l + 7, y:base - 5,
-      fill:on ? "var(--gold)" : dim ? "var(--muted)" : "var(--ink)",
-      "font-size":"10.5", "font-family":"'IBM Plex Mono',monospace",
+      fill:on ? "var(--accent)" : dim ? "var(--muted)" : "var(--ink)",
+      "font-size":"10.5", "font-family":"ui-monospace,'SFMono-Regular',Menlo,monospace",
       "letter-spacing":".03em", stroke:"var(--paper)", "stroke-width":"3.4",
       "paint-order":"stroke", "pointer-events":"none" });
     label.textContent = labText;
@@ -3744,7 +3765,7 @@ function drawRidge(lanes, W, from, to, step, showAxis, pinnedSet) {
       if (labRight + 14 < W - P.r - wRng) {
         rngLeft = W - P.r - wRng;
         const t = el("text", { x:W - P.r, y:base - 5, "text-anchor":"end",
-          fill:"var(--muted)", "font-size":"8", "font-family":"'IBM Plex Mono',monospace",
+          fill:"var(--muted)", "font-size":"8", "font-family":"ui-monospace,'SFMono-Regular',Menlo,monospace",
           stroke:"var(--paper)", "stroke-width":"3", "paint-order":"stroke",
           "pointer-events":"none" });
         t.textContent = rng; g.appendChild(t);
@@ -3761,7 +3782,7 @@ function drawRidge(lanes, W, from, to, step, showAxis, pinnedSet) {
       const w = lab.length * TICKW;
       if (X(i0) - 4 - w > labRight + 8 && X(i0) - 4 < rngLeft - 8) {
         const t = el("text", { x:X(i0) - 4, y:base - 5, "text-anchor":"end",
-          fill:"var(--muted)", "font-size":"8", "font-family":"'IBM Plex Mono',monospace",
+          fill:"var(--muted)", "font-size":"8", "font-family":"ui-monospace,'SFMono-Regular',Menlo,monospace",
           stroke:"var(--paper)", "stroke-width":"3", "paint-order":"stroke",
           "pointer-events":"none" });
         t.textContent = lab; g.appendChild(t);
@@ -4790,7 +4811,7 @@ document.getElementById("tracks").innerHTML = (D.tracks || []).map(t => `
         marker=x.target==null?null:Math.max(0,Math.min(100,100*x.target/scale)),
         ratio=x.target?x.now/x.target:null,
         col=x.target==null?'var(--s1)':x.ceiling?(ratio<=1?'var(--s3)':'var(--neg)'):
-          (ratio>=1?'var(--s3)':ratio>=.8?'var(--s1)':'var(--gold)'),
+          (ratio>=1?'var(--s3)':ratio>=.8?'var(--s1)':'var(--accent)'),
         target=x.target==null?'nessun target definito':`${x.ceiling?'limite':'target'} ${x.fmt(x.target)} · ${nf(100*ratio,0)}%`;
       return `<div class="bar ${x===selected?'sel':''}"><u>${x.label}</u><b>${x.fmt(x.now)} · ${fd(x.d)}</b>`+
         `<div class="target-track"><i style="width:${fill}%;background:${col}"></i>${marker==null?'':`<mark style="left:${marker}%" title="${target}"></mark>`}</div><small>${target}</small></div>`;
@@ -4804,7 +4825,7 @@ document.getElementById("tracks").innerHTML = (D.tracks || []).map(t => `
       const av=(a,b)=>{const v=vals.slice(a,b+1).filter(v=>v!=null);return v.length?v.reduce((q,z)=>q+z,0)/v.length:null;};
       const p=av(0,13),n=av(14,27),meanLine=(v,a,b,col)=>v==null?"":`<line x1="${X(a)}" x2="${X(b)}" y1="${Y(v)}" y2="${Y(v)}" stroke="${col}" stroke-width="1.2" stroke-dasharray="5 4"/>`;
       return `<div class="insight-chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${x.label}, ultimi 28 giorni">`+
-        `<line x1="${X(13.5)}" x2="${X(13.5)}" y1="0" y2="${H}" stroke="var(--rule)"/>${meanLine(p,0,13,'var(--muted)')}${meanLine(n,14,27,'var(--gold)')}${segments(0,13,'var(--muted)')}${segments(14,27,'var(--gold)')}</svg>`+
+        `<line x1="${X(13.5)}" x2="${X(13.5)}" y1="0" y2="${H}" stroke="var(--rule)"/>${meanLine(p,0,13,'var(--muted)')}${meanLine(n,14,27,'var(--accent)')}${segments(0,13,'var(--muted)')}${segments(14,27,'var(--accent)')}</svg>`+
         `<div class="legend"><span>14 precedenti · media ${x.fmt(p)}</span><span>ultimi 14 · media ${x.fmt(n)}</span></div></div>`;
     }
     const qty=f=>{const q=(f.qty_observed||0)+(f.qty_assumed||0),u=f.unit==='unit'?'×':` ${f.unit}`;return `${nf(q,q<10?1:0)}${u}`;};

@@ -1005,11 +1005,17 @@ if (ran) {
 }
 
 /* -------------------------------------------------- 5. la tavolozza nel CSS */
-const PAL = { "--s1": "#3987e5", "--s2": "#d95926", "--s3": "#199e70", "--s4": "#c98500" };
+/* Passi CHIARI dal 16/08/2026: la pagina ha preso il vestito della home e la scheda
+   e' bianca, non piu' #211d16. I passi scuri di prima, nati per stagliarsi su una
+   carta scura, sul bianco sbiadivano. Il controllo non e' stato tolto, e' stato
+   girato sul fatto nuovo — e vale sempre la stessa cosa: questi quattro devono
+   restare identici a `C` in tools/build_vita.py, che disegna i PNG. Sono un registro
+   solo letto da due parti; se divergono, pagina e immagini dicono due colori diversi. */
+const PAL = { "--s1": "#1a73e8", "--s2": "#d93025", "--s3": "#137333", "--s4": "#8430ce" };
 for (const [k, v] of Object.entries(PAL)) {
   ok(new RegExp(k + ":\\s*" + v, "i").test(html), `CSS ${k} = ${v} (slot validato)`);
 }
-ok(/--paper:#211d16/.test(html), "CSS --paper = #211d16 (il fondo su cui la tavolozza e' stata validata)");
+ok(/--paper:#ffffff/.test(html), "CSS --paper = #ffffff (il fondo su cui la tavolozza e' stata validata)");
 
 /* --------------------------------------------- 5b. i due valori MISURATI
    Il laboratorio di stile (2026-08-10) ha trovato due difetti nel sistema di
@@ -1040,21 +1046,25 @@ const dE = (a, b) => { const p = oklab(a), q = oklab(b);
   return 100 * Math.hypot(p[0] - q[0], p[1] - q[1], p[2] - q[2]); };
 
 const pick = name => (html.match(new RegExp(name + ":\\s*(#[0-9a-f]{6})", "i")) || [])[1];
-const paper = pick("--paper"), muted = pick("--muted"), gold = pick("--gold");
+/* --gold si chiama --accent dal 16/08/2026: sul fondo chiaro e' diventato il nero
+   della home, e un token chiamato "gold" che contiene nero manda fuori strada. */
+const paper = pick("--paper"), muted = pick("--muted"), accent = pick("--accent");
 if (muted && paper) {
   const r = ratio(muted, paper);
   ok(r >= 4.5, `--muted ${muted} su ${paper}: ${r.toFixed(2)}:1 (minimo 4,5 per il testo piccolo)`);
 }
-if (gold && paper) {
-  const r = ratio(gold, paper);
-  ok(r >= 4.5, `--gold ${gold} su ${paper}: ${r.toFixed(2)}:1`);
+ok(!!accent && !/--gold\s*:/.test(html),
+  "l'accento si chiama --accent, e di --gold non e' rimasto niente in pagina");
+if (accent && paper) {
+  const r = ratio(accent, paper);
+  ok(r >= 4.5, `--accent ${accent} su ${paper}: ${r.toFixed(2)}:1`);
   let worst = null;
   for (const [k, v] of Object.entries(PAL)) {
-    const d = dE(gold, v);
+    const d = dE(accent, v);
     if (!worst || d < worst[1]) worst = [k, d];
   }
   ok(worst[1] >= 15,
-    `--gold ${gold} contro gli slot dei grafici: peggiore ${worst[0]} ΔE ${worst[1].toFixed(1)} ` +
+    `--accent ${accent} contro gli slot dei grafici: peggiore ${worst[0]} ΔE ${worst[1].toFixed(1)} ` +
     `(minimo 15, o l'accento si spaccia per una serie)`);
 }
 
