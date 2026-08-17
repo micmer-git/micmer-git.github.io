@@ -3,28 +3,685 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Il Signore dei kJ · settimanale → mensile</title>
-<meta http-equiv="refresh" content="0; url=signore-dei-kj.html">
-<link rel="canonical" href="https://micmer-git.github.io/signore-dei-kj.html">
-<meta name="robots" content="noindex">
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=Cinzel:wght@600&display=swap" rel="stylesheet">
+<title>Il Signore dei kJ — Settimanale · Michele Merelli</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
 <style>
- body{background:#faf6ed;color:#2a2317;font-family:'EB Garamond',Georgia,serif;font-size:19px;
-   line-height:1.7;max-width:640px;margin:0 auto;padding:80px 24px}
- h1{font-family:'Cinzel',serif;font-size:1.6rem;color:#8b2e1f;margin-bottom:18px}
- a{color:#8b2e1f}
- ul{columns:2;font-size:.85rem;margin-top:18px;list-style:none;padding:0}
- li{margin-bottom:2px}
-</style>
-</head>
+:root{--bg:#faf6ed;--paper:#fffdf6;--ink:#2a2317;--gold:#b8860b;--gold-soft:rgba(184,134,11,0.12);--rule:#d4c8a8;--muted:#6b5f48;--accent:#8b2e1f}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'EB Garamond',Georgia,serif;font-size:19px;line-height:1.7;max-width:720px;margin:0 auto;padding:60px 28px 100px}
+body::before{content:"";position:fixed;inset:0;background-image:radial-gradient(circle at 25% 30%,rgba(184,134,11,0.04) 0,transparent 40%),radial-gradient(circle at 75% 70%,rgba(139,46,31,0.03) 0,transparent 35%);pointer-events:none;z-index:-1}
+h1.cover{font-family:'Cinzel',serif;font-size:2.4rem;font-weight:700;letter-spacing:0.04em;text-align:center;line-height:1.1;margin-bottom:8px}
+h1.cover .accent{display:block;font-size:0.45em;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.cover-sub{text-align:center;color:var(--muted);font-style:italic;max-width:540px;margin:18px auto 30px;font-size:1.05rem}
+.cover-stats{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin:30px 0 20px}
+.cover-stat{text-align:center}.cover-stat .num{font-family:'Cinzel',serif;font-size:1.5rem;color:var(--gold);font-weight:700}
+.cover-stat .label{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-top:4px}
+.ornament{text-align:center;color:var(--gold);margin:30px 0;font-size:1.4rem;letter-spacing:1em}
+.reading-note{background:var(--paper);border:1px dashed var(--rule);padding:14px 20px;margin:28px auto;max-width:520px;font-size:0.92rem;color:var(--muted);font-style:italic;text-align:center;border-radius:4px}
+.reading-note strong{color:var(--accent);font-style:normal;font-family:'IBM Plex Mono',monospace;font-size:0.85em;letter-spacing:0.1em;text-transform:uppercase}
+.week-grid{display:grid;grid-template-columns:repeat(13,1fr);gap:4px;max-width:540px;margin:30px auto}
+.week-grid .dot{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:0.8rem;background:var(--paper);border:1px solid var(--rule);border-radius:4px;text-decoration:none;transition:all 0.25s ease}
+.week-grid .dot:hover{transform:translateY(-2px);border-color:var(--gold);background:var(--gold-soft)}
+.story{margin:60px 0;padding-bottom:40px;border-bottom:1px dashed var(--rule);scroll-margin-top:30px}.story:last-child{border-bottom:none}
+.story-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.week-num{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold)}.week-mood{font-size:1.4rem}
+h2.story-title{font-family:'Cinzel',serif;font-size:1.5rem;font-weight:700;margin-bottom:4px;line-height:1.2}
+.story-subtitle{font-family:'IBM Plex Mono',monospace;font-size:0.78rem;color:var(--muted);margin-bottom:18px;letter-spacing:0.06em}
+.story-body{font-size:1.02rem}.story-body p{margin-bottom:12px}
+.story-body p:first-child::first-letter{font-family:'Cinzel',serif;font-size:2.6rem;float:left;line-height:0.92;padding:6px 8px 0 0;color:var(--gold)}
+.stat-strip{margin-top:18px;padding-top:12px;border-top:1px solid var(--rule);font-family:'IBM Plex Mono',monospace;font-size:0.74rem;color:var(--muted);letter-spacing:0.04em}
+a.strava-inline{color:var(--accent);text-decoration:none;background-image:linear-gradient(transparent 60%,var(--gold-soft) 60%);padding:0 1px;transition:all 0.25s ease}
+a.strava-inline:hover{color:var(--gold);background-image:linear-gradient(transparent 0%,var(--gold-soft) 100%)}
+a.strava-inline .strava-mark{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:0.7em;color:var(--gold);margin-left:2px;opacity:0.6;transition:all 0.2s ease}
+a.strava-inline:hover .strava-mark{opacity:1;transform:translate(2px,-2px)}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.7s cubic-bezier(0.16,1,0.3,1),transform 0.7s cubic-bezier(0.16,1,0.3,1)}.reveal.in{opacity:1;transform:translateY(0)}
+.end-marker{text-align:center;margin:60px 0;font-family:'Cinzel',serif;color:var(--gold);font-size:1.2rem;letter-spacing:0.2em}
+.colophon{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;text-align:center;color:var(--muted);margin-top:80px;letter-spacing:0.1em}.colophon a{color:var(--gold)}
+@media (max-width:600px){body{font-size:17px;padding:30px 18px 60px}h1.cover{font-size:1.8rem}.week-grid{grid-template-columns:repeat(8,1fr)}}
+</style></head>
 <body>
-<h1>Il settimanale è diventato mensile</h1>
-<p>Le 55 settimane non sono sparite: ora vivono dentro il mese a cui
-appartengono, in <a href="signore-dei-kj.html"><strong>Il Signore dei kJ</strong></a>, insieme ai
-numeri di quel mese e a tutte le sue attività. Una pagina sola, una sola routine che la costruisce
-(41 mesi, 2023-04 → 2026-08).</p>
-<p>Se il browser non ti ha già portato là: <a href="signore-dei-kj.html">vai alla saga mensile ↗</a>.</p>
-<ul><li><a href="signore-dei-kj.html#m-2023-04">Aprile 2023</a></li><li><a href="signore-dei-kj.html#m-2023-05">Maggio 2023</a></li><li><a href="signore-dei-kj.html#m-2023-06">Giugno 2023</a></li><li><a href="signore-dei-kj.html#m-2023-07">Luglio 2023</a></li><li><a href="signore-dei-kj.html#m-2023-08">Agosto 2023</a></li><li><a href="signore-dei-kj.html#m-2023-09">Settembre 2023</a></li><li><a href="signore-dei-kj.html#m-2023-10">Ottobre 2023</a></li><li><a href="signore-dei-kj.html#m-2023-11">Novembre 2023</a></li><li><a href="signore-dei-kj.html#m-2023-12">Dicembre 2023</a></li><li><a href="signore-dei-kj.html#m-2024-01">Gennaio 2024</a></li><li><a href="signore-dei-kj.html#m-2024-02">Febbraio 2024</a></li><li><a href="signore-dei-kj.html#m-2024-03">Marzo 2024</a></li><li><a href="signore-dei-kj.html#m-2024-04">Aprile 2024</a></li><li><a href="signore-dei-kj.html#m-2024-05">Maggio 2024</a></li><li><a href="signore-dei-kj.html#m-2024-06">Giugno 2024</a></li><li><a href="signore-dei-kj.html#m-2024-07">Luglio 2024</a></li><li><a href="signore-dei-kj.html#m-2024-08">Agosto 2024</a></li><li><a href="signore-dei-kj.html#m-2024-09">Settembre 2024</a></li><li><a href="signore-dei-kj.html#m-2024-10">Ottobre 2024</a></li><li><a href="signore-dei-kj.html#m-2024-11">Novembre 2024</a></li><li><a href="signore-dei-kj.html#m-2024-12">Dicembre 2024</a></li><li><a href="signore-dei-kj.html#m-2025-01">Gennaio 2025</a></li><li><a href="signore-dei-kj.html#m-2025-02">Febbraio 2025</a></li><li><a href="signore-dei-kj.html#m-2025-03">Marzo 2025</a></li><li><a href="signore-dei-kj.html#m-2025-04">Aprile 2025</a></li><li><a href="signore-dei-kj.html#m-2025-05">Maggio 2025</a></li><li><a href="signore-dei-kj.html#m-2025-06">Giugno 2025</a></li><li><a href="signore-dei-kj.html#m-2025-07">Luglio 2025</a></li><li><a href="signore-dei-kj.html#m-2025-08">Agosto 2025</a></li><li><a href="signore-dei-kj.html#m-2025-09">Settembre 2025</a></li><li><a href="signore-dei-kj.html#m-2025-10">Ottobre 2025</a></li><li><a href="signore-dei-kj.html#m-2025-11">Novembre 2025</a></li><li><a href="signore-dei-kj.html#m-2025-12">Dicembre 2025</a></li><li><a href="signore-dei-kj.html#m-2026-01">Gennaio 2026</a></li><li><a href="signore-dei-kj.html#m-2026-02">Febbraio 2026</a></li><li><a href="signore-dei-kj.html#m-2026-03">Marzo 2026</a></li><li><a href="signore-dei-kj.html#m-2026-04">Aprile 2026</a></li><li><a href="signore-dei-kj.html#m-2026-05">Maggio 2026</a></li><li><a href="signore-dei-kj.html#m-2026-06">Giugno 2026</a></li><li><a href="signore-dei-kj.html#m-2026-07">Luglio 2026</a></li><li><a href="signore-dei-kj.html#m-2026-08">Agosto 2026</a></li></ul>
-<p style="font-size:.7rem;color:#6b5f48;margin-top:40px">Generato il 2026-08-10 da <code>tools/build_signore.py</code>.</p>
-</body>
-</html>
+<h1 class="cover"><span class="accent">57 short stories di 2 anni</span>Il Signore dei kJ<span class="accent" style="margin-top:8px;">— Settimanale —</span></h1>
+<p class="cover-sub">Un romanzo a frammenti su Michele Merelli, settimana per settimana. Ogni capitolo è una scena, non un riassunto.</p>
+<div class="cover-stats">
+  <div class="cover-stat"><div class="num">57</div><div class="label">Capitoli</div></div>
+  <div class="cover-stat"><div class="num">514</div><div class="label">Sortite</div></div>
+  <div class="cover-stat"><div class="num">18,174</div><div class="label">km</div></div>
+  <div class="cover-stat"><div class="num">376,869</div><div class="label">m saliti</div></div>
+  <div class="cover-stat"><div class="num">432,885</div><div class="label">kJ forgiati</div></div>
+  <div class="cover-stat"><div class="num">4</div><div class="label">Anelli (1/100k kJ)</div></div>
+</div>
+<div class="reading-note"><strong>Come si legge</strong><br>L'ordine in pagina è il più recente in alto. Il romanzo va letto <em>dal basso verso l'alto</em>: il Capitolo 1 è in fondo, il presente in cima.</div>
+<div class="ornament">⚜ · ⚜ · ⚜</div>
+<nav class="week-grid" aria-label="57 settimane"><a class="dot" href="#week-57" title="Cap. 57 — La strada dei cannoni">⛰️</a><a class="dot" href="#week-56" title="Cap. 56 — Il calzino dimenticato">⛰️</a><a class="dot" href="#week-55" title="Cap. 55 — Tafani e un addio presidenziale">🦟</a><a class="dot" href="#week-54" title="Cap. 54 — Onorare un venerdì diciassette">🐈‍⬛</a><a class="dot" href="#week-53" title="Cap. 53 — Campione di forature">🛞</a><a class="dot" href="#week-52" title="Cap. 52 — Per Oliver">🏁</a><a class="dot" href="#week-51" title="Cap. 51 — Una prima, una dopo">🧘</a><a class="dot" href="#week-50" title="Cap. 50 — Ironman in un 9-5">🥇</a><a class="dot" href="#week-49" title="Cap. 49 — Dieci anni con Federico">🚴</a><a class="dot" href="#week-48" title="Cap. 48 — Duran e Giau">🩷</a><a class="dot" href="#week-47" title="Cap. 47 — Nove Colli">⛰️</a><a class="dot" href="#week-46" title="Cap. 46 — Dezzo, Pora, caponata">🍆</a><a class="dot" href="#week-45" title="Cap. 45 — Stupid Marathon">🌧️</a><a class="dot" href="#week-44" title="Cap. 44 — Tra la Ford e il guardrail">☠️</a><a class="dot" href="#week-43" title="Cap. 43 — Diventa automatico">🍃</a><a class="dot" href="#week-42" title="Cap. 42 — Avocado e una birra">🥑</a><a class="dot" href="#week-41" title="Cap. 41 — Zambla all'alba">🌚</a><a class="dot" href="#week-40" title="Cap. 40 — Prima che il gallo canti">🐓</a><a class="dot" href="#week-39" title="Cap. 39 — Mangiato troppo, pedalato poco">🪿</a><a class="dot" href="#week-38" title="Cap. 38 — La città eterna di corsa">🏟️</a><a class="dot" href="#week-37" title="Cap. 37 — Formiche e formicai">🐜</a><a class="dot" href="#week-36" title="Cap. 36 — Orezzo, andata e ritorno">🕊️</a><a class="dot" href="#week-35" title="Cap. 35 — Un colle alla volta">⛰️</a><a class="dot" href="#week-34" title="Cap. 34 — Il coniglio di Carnevale">🐇</a><a class="dot" href="#week-33" title="Cap. 33 — Il primo lungo della stagione">🐺</a><a class="dot" href="#week-32" title="Cap. 32 — La mezza di Martina">⏲️</a><a class="dot" href="#week-31" title="Cap. 31 — Trenta chilometri a secco">🐩</a><a class="dot" href="#week-30" title="Cap. 30 — Acciacchi e neve fresca">❄️</a><a class="dot" href="#week-29" title="Cap. 29 — La penitenza di Valcava">🫁</a><a class="dot" href="#week-28" title="Cap. 28 — Le ceneri di Varanasi">🔥</a><a class="dot" href="#week-27" title="Cap. 27 — Capodanno tra due continenti">🌫️</a><a class="dot" href="#week-26" title="Cap. 26 — Dodicimila km anche quest'anno">🧀</a><a class="dot" href="#week-25" title="Cap. 25 — Il giro del litro e del lago">🌫️</a><a class="dot" href="#week-24" title="Cap. 24 — Sette colline tra Bergamo e Gazzaniga">🚲</a><a class="dot" href="#week-23" title="Cap. 23 — Dicembre nella nebbia della valle">🌫️</a><a class="dot" href="#week-22" title="Cap. 22 — A riveder le stelle">🌟</a><a class="dot" href="#week-21" title="Cap. 21 — La prima neve">❄️</a><a class="dot" href="#week-20" title="Cap. 20 — Le settimane da 100 sono tornate">🕸️</a><a class="dot" href="#week-19" title="Cap. 19 — Tre volte la Ganda">⛰️</a><a class="dot" href="#week-18" title="Cap. 18 — L'ultimo bike-to-work">🌬️</a><a class="dot" href="#week-17" title="Cap. 17 — Una maratona per festeggiare">🚪</a><a class="dot" href="#week-16" title="Cap. 16 — Risotto e poi a est">✈️</a><a class="dot" href="#week-15" title="Cap. 15 — La settimana del Lombardia">🌈</a><a class="dot" href="#week-14" title="Cap. 14 — L'iniziazione del Farno">🍂</a><a class="dot" href="#week-13" title="Cap. 13 — Bucarest da turista">🌸</a><a class="dot" href="#week-12" title="Cap. 12 — Cinquanta sul cerchione">🌊</a><a class="dot" href="#week-11" title="Cap. 11 — Riempire le gambe per strada">🍂</a><a class="dot" href="#week-10" title="Cap. 10 — Weekend da clown">🤡</a><a class="dot" href="#week-9" title="Cap. 9 — Il Gavia da casa">⛰️</a><a class="dot" href="#week-8" title="Cap. 8 — Sei ore mentali">🌫️</a><a class="dot" href="#week-7" title="Cap. 7 — La foto di Sonny">⛰️</a><a class="dot" href="#week-6" title="Cap. 6 — Quel che si poteva prendere">🔥</a><a class="dot" href="#week-5" title="Cap. 5 — Non fare l'avaro">☀️</a><a class="dot" href="#week-4" title="Cap. 4 — Piove sul bagnato">🌧️</a><a class="dot" href="#week-3" title="Cap. 3 — Quarantadue di nuovo">🔥</a><a class="dot" href="#week-2" title="Cap. 2 — Sei euro e cinquanta">⛰️</a><a class="dot" href="#week-1" title="Cap. 1 — Cordoba a ventotto gradi">☀️</a></nav>
+<div class="ornament">·</div>
+
+    <article class="story reveal" id="week-57" data-week="57">
+      <header class="story-head">
+        <span class="week-num">Capitolo 57 · settimana 57</span>
+        <span class="week-mood">⛰️</span>
+      </header>
+      <h2 class="story-title">La strada dei cannoni</h2>
+      <p class="story-subtitle">10–16 agosto 2026</p>
+      <div class="story-body"><p>Lunedì Michele parte da Ceratello e scrive tre lettere e mezza di bestemmia: <a class="strava-inline" href="https://www.strava.com/activities/19678211976" target="_blank" rel="noopener">gli 87,2 km del Magnolini, 1920 metri<span class="strava-mark">↗</span></a> sono duri come solo agosto sa essere, e li chiude con la pizza di Ian, che è il modo bergamasco di perdonarsi. Mercoledì invece è il giorno in cui il corpo dice no tre volte: <a class="strava-inline" href="https://www.strava.com/activities/19707577659" target="_blank" rel="noopener">i 105,3 km di Nonono<span class="strava-mark">↗</span></a> finiscono ritirati, strade chiuse, caldo, zero voglia — e Michele impara di nuovo che ostinarsi non è sempre una virtù, a volte è solo rumore.</p><p>Domenica torna a Cuneo per rispondersi. La Strada dei Cannoni sale verso la Fauniera, la scommessa sulla strada chiusa viene vinta, ci si ferma per una torta a Elva. All'orizzonte una punta ambigua: Monviso o non Monviso? Michele non lo decide. <a class="strava-inline" href="https://www.strava.com/activities/19765360645" target="_blank" rel="noopener">I 107,6 km e 3733 metri<span class="strava-mark">↗</span></a> gli lasciano nelle gambe la settimana intera, 417,8 chilometri e quasi undicimila di salita, e sul valico gli scriccioli — che nella sua contabilità valgono più del carico 1226.</p></div>
+      <div class="stat-strip">7 attività · 417,8 km · 10.997 m · 24h · 4.793 kJ · TL 1226</div>
+    </article>
+
+    <article class="story reveal" id="week-56" data-week="56">
+      <header class="story-head">
+        <span class="week-num">Capitolo 56 · settimana 56</span>
+        <span class="week-mood">⛰️</span>
+      </header>
+      <h2 class="story-title">Il calzino dimenticato</h2>
+      <p class="story-subtitle">3–9 agosto 2026</p>
+      <div class="story-body"><p>Lunedì Michele parte convinto di stare male e invece <a class="strava-inline" href="https://www.strava.com/activities/19581199553" target="_blank" rel="noopener">i 42,2 km di Sciallo ma rapido, 1176 metri<span class="strava-mark">↗</span></a> gli escono lisci: "stranamente bene", scrive, con la farinata di Nizza ancora nello stomaco e 1307 kJ nelle gambe. È un inganno che conosce — le settimane migliori cominciano sempre da un sospetto. Venerdì rifà la stessa salita, stessi 1176 metri, e la chiama Calzino perché i calzini li ha soltanto dimenticati a casa: non un fallimento, una distrazione da uomo che ha già la testa altrove. Sabato la vacanza arriva davvero, sotto forma di temporale e di una gomma bucata prima ancora di essere partito. Michele aspetta, ripara, riparte, e si prende <a class="strava-inline" href="https://www.strava.com/activities/19651049389" target="_blank" rel="noopener">i 127,7 km del Vivione con 3003 metri di salita<span class="strava-mark">↗</span></a>, 3679 kJ, il carico che sale a 409 in un giorno solo. Bibione, scrive ridendo di sé, ehm, Vivione. Sette uscite, 338,8 chilometri, 7666 metri: agosto non si trattiene.</p></div>
+      <div class="stat-strip">7 attività · 338,8 km · 7.666 m · 16,4 h · 10.258 kJ · TL 1148</div>
+    </article>
+
+    <article class="story reveal" id="week-55" data-week="55">
+      <header class="story-head">
+        <span class="week-num">Capitolo 55 · settimana 55</span>
+        <span class="week-mood">🦟</span>
+      </header>
+      <h2 class="story-title">Tafani e un addio presidenziale</h2>
+      <p class="story-subtitle">27 luglio – 2 agosto 2026</p>
+      <div class="story-body"><p>Ci sono settimane che si misurano in insetti. Il 31 luglio Michele sale <a class="strava-inline" href="https://www.strava.com/activities/19538007142" target="_blank" rel="noopener">i 34,3 km e 1.149 metri dell'Oude Farnomont<span class="strava-mark">↗</span></a> e l'unica cronaca che riesce a lasciare è una zanzara e la parola tafani, con la faccina esausta di chi ha pedalato agitando una mano. Il Farno resta quello dell'iniziazione d'ottobre, solo che adesso ha un esercito.</p><p>Il resto della settimana lo fa a piedi: cinque corse su sei attività, 126,3 chilometri complessivi, 3.308 metri, 6.064 kJ, un carico che si ferma a 559 — la metà scarsa di certe settimane di febbraio, e va bene così. Il 30 luglio corre <a class="strava-inline" href="https://www.strava.com/activities/19530239379" target="_blank" rel="noopener">i 19,1 km dell'Agentic Age<span class="strava-mark">↗</span></a> con 659 metri dentro, come se il lavoro e la salita fossero la stessa faccenda.</p><p>Poi domenica 2 agosto, la mezza di Nizza: <a class="strava-inline" href="https://www.strava.com/activities/19564519200" target="_blank" rel="noopener">21,1 km lungo la promenade<span class="strava-mark">↗</span></a>, 116 metri appena, e 7,3 chilometri di strade mai percorse prima. Un congedo. Michele scrive daje e non spiega da cosa si stia congedando.</p></div>
+      <div class="stat-strip">126,3 km · 3.308 m · 9,4 h · 6.064 kJ · TL 559 · 6 attività</div>
+    </article>
+
+    <article class="story reveal" id="week-54" data-week="54">
+      <header class="story-head">
+        <span class="week-num">Capitolo 54 · settimana 54</span>
+        <span class="week-mood">🐈‍⬛</span>
+      </header>
+      <h2 class="story-title">Onorare un venerdì diciassette</h2>
+      <p class="story-subtitle">13–19 luglio 2026</p>
+      <div class="story-body"><p>Michele non è superstizioso, ma il 17 luglio si alza comunque con l'idea di dover pagare qualcosa. Sale la Zambla — <a class="strava-inline" href="https://www.strava.com/activities/19351181666" target="_blank" rel="noopener">58,9 chilometri e 1.386 metri con un gatto nero come titolo<span class="strava-mark">↗</span></a> — e chiama fortuna quello che è solo il rifiuto di stare fermo: 1.642 kJ per dimostrare a una data che non decide niente. Due giorni prima aveva rubato la Bedulita prima del lavoro, <a class="strava-inline" href="https://www.strava.com/activities/19318690941" target="_blank" rel="noopener">54,2 chilometri all'alba<span class="strava-mark">↗</span></a>, tutto perfetto finché la gente non è scesa dalla Roncola come se fosse un rally. Il conto vero arriva sabato notte, con una pizza da Romano alle mezzanotte, e la domenica le Orobie <a class="strava-inline" href="https://www.strava.com/activities/19359237675" target="_blank" rel="noopener">gli restituiscono 100,1 chilometri e 2.166 metri<span class="strava-mark">↗</span></a> con gli interessi. Nove attività, 265,1 chilometri, 6.865 metri, 8.222 kJ: quasi la settimana precedente, ma questa volta senza forature da collezionare. Michele conta le camere d'aria intatte e si concede l'unica superstizione che ammette — non dirlo ad alta voce.</p></div>
+      <div class="stat-strip">265,1 km · 6.865 m · 8.222 kJ · 15,9 h · TL 890 · 9 attività</div>
+    </article>
+
+    <article class="story reveal" id="week-53" data-week="53">
+      <header class="story-head">
+        <span class="week-num">Capitolo 53 · settimana 53</span>
+        <span class="week-mood">🛞</span>
+      </header>
+      <h2 class="story-title">Campione di forature</h2>
+      <p class="story-subtitle">6–12 luglio 2026</p>
+      <div class="story-body"><p>Dopo la settimana trattenuta per Oliver, il corpo chiede di riempirsi di nuovo: 251,9 chilometri, 7.707 metri, un carico che tocca quota 999. Giovedì Michele sale in malga e la chiama resistenza: <a class="strava-inline" href="https://www.strava.com/activities/19238176622" target="_blank" rel="noopener">43,2 km di gravel e 1.336 metri senza traffico<span class="strava-mark">↗</span></a>, "resistere all'entropia nei posti che lo fanno sembrare effortless", con 19,39 chilometri nuovi che Wandrer registra come un notaio paziente. Venerdì torna alla liturgia di sempre, <a class="strava-inline" href="https://www.strava.com/activities/19257333127" target="_blank" rel="noopener">il Ganda Protocol, due salite e qualche chiacchiera<span class="strava-mark">↗</span></a>, 1.489 kJ e la montagna che ad aprile cominciava a sembrare automatica adesso è diventata protocollo, quasi preghiera. Domenica il capitolo lungo: <a class="strava-inline" href="https://www.strava.com/activities/19277846703" target="_blank" rel="noopener">69,4 km e 2.162 metri<span class="strava-mark">↗</span></a>, tutto bello e bene fino al solito imprevisto — un'altra foratura, parente di quella a cinquanta all'ora sul cerchione di settembre — e Michele si incorona da solo, con l'ironia di chi ormai ripara più camere d'aria che dubbi: campione, sì, ma di forature.</p></div>
+      <div class="stat-strip">7 attività · 251,9 km · 7.707 m D+ · 15 h · 3.767 kJ · TL 999</div>
+    </article>
+
+    <article class="story reveal" id="week-52" data-week="52">
+      <header class="story-head">
+        <span class="week-num">Capitolo 52 · settimana 52</span>
+        <span class="week-mood">🏁</span>
+      </header>
+      <h2 class="story-title">Per Oliver</h2>
+      <p class="story-subtitle">22–28 giugno 2026</p>
+      <div class="story-body"><p>La settimana della gara è corta e leggera, cinque attività, appena 97 chilometri: il corpo trattenuto come una corda tesa. Il 22 Michele corre <a class="strava-inline" href="https://www.strava.com/activities/19017688607" target="_blank" rel="noopener">i 17,3 km della Race Week<span class="strava-mark">↗</span></a> e dice che manca solo una cosa, l'acclimatazione al caldo. Ma è il 23 a fermare il respiro. <a class="strava-inline" href="https://www.strava.com/activities/19034094074" target="_blank" rel="noopener">I 60,4 km "per Oliver"<span class="strava-mark">↗</span></a>, pedalati nel caldo con sensazioni buone, portano una frase che non c'entra coi watt: "la vita va avanti, e avanti, e avanti. Credo". Tra le righe di una pianura facile, un lutto che non si nomina. Poi il 24, finalmente sudore, <a class="strava-inline" href="https://www.strava.com/activities/19045047386" target="_blank" rel="noopener">i 14,6 km a chiudere<span class="strava-mark">↗</span></a> prima dell'ultima doppia. Duemilacentodieci kJ in tutto, il valore più basso del batch: è così che ci si presenta a una corsa, scarichi e affilati. Cinquantadue settimane di chilometri si fermano qui, sulla linea di partenza, ad aspettare il via.</p></div>
+      <div class="stat-strip">5 attività · 97 km · 1.227 m · 5,9 h · 2.110 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-51" data-week="51">
+      <header class="story-head">
+        <span class="week-num">Capitolo 51 · settimana 51</span>
+        <span class="week-mood">🧘</span>
+      </header>
+      <h2 class="story-title">Una prima, una dopo</h2>
+      <p class="story-subtitle">15–21 giugno 2026</p>
+      <div class="story-body"><p>Il 17 giugno Michele fa Ganda due volte, una prima del lavoro e una dopo, e mette solo due punti e una faccina: ":)". <a class="strava-inline" href="https://www.strava.com/activities/18959708456" target="_blank" rel="noopener">Gli 88,6 km del giorno<span class="strava-mark">↗</span></a>, 2.419 kJ spezzati a metà da otto ore d'ufficio, sono la firma di chi non distingue più l'allenamento dalla vita. La settimana è scarico vero: undici attività ma appena 5.493 kJ, 1.113 di carico, il corpo che si svuota in vista di qualcosa. C'è il "freddo?!" stupito del 16, un AlbenFest finito in ritiro il 20, i test casuali a sette giorni dalla gara. E il 21, peace and chill con M, 1.939 metri di pura calma e una promessa scritta a mezza voce: "dalla prossima settimana ci alleniamo per ciò che rende l'allenamento degno... Traka?". L'occhiolino dice che lo sa già.</p></div>
+      <div class="stat-strip">11 attività · 455 km · 7.090 m · 21,3 h · 5.493 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-50" data-week="50">
+      <header class="story-head">
+        <span class="week-num">Capitolo 50 · settimana 50</span>
+        <span class="week-mood">🥇</span>
+      </header>
+      <h2 class="story-title">Ironman in un 9-5</h2>
+      <p class="story-subtitle">8–14 giugno 2026</p>
+      <div class="story-body"><p>Il 12 giugno Michele incastra un Ironman 70.3 dentro una giornata di lavoro, spezzandolo in tre martellate registrate una dopo l'altra. È la prova di chi non ha tempo e se lo costruisce a forza, tra una riunione e l'altra. Ma la settimana la chiude il 14, vincendo "solo quando non c'è classifica": <a class="strava-inline" href="https://www.strava.com/activities/18916531098" target="_blank" rel="noopener">i 181 km della Berghem Mola Mia<span class="strava-mark">↗</span></a>, 3.840 metri, una medaglia d'oro ironica appiccicata a una corsa senza ordine d'arrivo. Dodici attività, la più affollata del blocco, 503 chilometri, e un carico che scende a 1.136 perché il taper si avvicina. Slalom nella pioggia il 10, poche gocce prese e tante ore di sonno sacrificate, come al solito. Una corsa il 13 sospesa tra disidratazione e tapering, okokok. La forma è pronta; ora bisogna solo non rovinarla.</p></div>
+      <div class="stat-strip">12 attività · 503 km · 7.866 m · 23,1 h · 6.017 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-49" data-week="49">
+      <header class="story-head">
+        <span class="week-num">Capitolo 49 · settimana 49</span>
+        <span class="week-mood">🚴</span>
+      </header>
+      <h2 class="story-title">Dieci anni con Federico</h2>
+      <p class="story-subtitle">1–7 giugno 2026</p>
+      <div class="story-body"><p>Il 7 giugno Michele corre la Coppa Asteria con un amico e ne fa una dichiarazione d'affetto. <a class="strava-inline" href="https://www.strava.com/activities/18823386559" target="_blank" rel="noopener">I 181,2 km condivisi con Federico Fagiani<span class="strava-mark">↗</span></a>, 3.699 metri, sono il decimo anniversario di qualcosa: "spero che tra dieci anni festeggeremo allo stesso modo". È la settimana più abbondante del batch, undici attività, 539 chilometri, 26 ore e mezza in movimento. Eppure i kJ crollano a 6.265: ride lunghe ma leggere, salite che ripagano in discesa. C'è il rifugio Campione il 2, a Schilpario, abbandonato per la troppa acqua vista sul 3B meteo — "ma va bene così, c'è la pizza di Ian". E Miragolo verso il lavoro il 3, duro al mattino, leggero al pomeriggio, per il vento o per la focaccia barese, non si sa. Dieci anni di amicizia misurati in chilometri, e l'augurio di rifarli tutti.</p></div>
+      <div class="stat-strip">11 attività · 539 km · 10.678 m · 26,5 h · 6.265 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-48" data-week="48">
+      <header class="story-head">
+        <span class="week-num">Capitolo 48 · settimana 48</span>
+        <span class="week-mood">🩷</span>
+      </header>
+      <h2 class="story-title">Duran e Giau</h2>
+      <p class="story-subtitle">25–31 maggio 2026</p>
+      <div class="story-body"><p>Il 29 maggio Michele pedala dentro la corsa rosa. Passo Duran e passo Giau nello stesso giorno, e l'unico commento è un "wow" che vale più di mille aggettivi: <a class="strava-inline" href="https://www.strava.com/activities/18704129885" target="_blank" rel="noopener">i 100,7 km del Giro d'Italia<span class="strava-mark">↗</span></a>, 3.252 metri, là dove i professionisti passeranno a sentirsi le gambe. La settimana è la più verticale di tutto il blocco, 9.669 metri in nove uscite, ma curiosamente la più povera di kJ, 7.571: tanto dislivello, tanta discesa, energia che torna indietro. C'è la prima nuotata in acque libere della stagione, un kebab alle nove di sera il 30, il gravel di Lago Moro il 31 con l'hashtag sfacchinate. E un risotto al dèclair tardissimo che diventa scusa per <a class="strava-inline" href="https://www.strava.com/activities/18684782246" target="_blank" rel="noopener">i 72 km di Valbondione<span class="strava-mark">↗</span></a>. Le Dolomiti come campo da gioco, e un "wow" come unica parola necessaria.</p></div>
+      <div class="stat-strip">9 attività · 411 km · 9.669 m · 21,8 h · 7.571 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-47" data-week="47">
+      <header class="story-head">
+        <span class="week-num">Capitolo 47 · settimana 47</span>
+        <span class="week-mood">⛰️</span>
+      </header>
+      <h2 class="story-title">Nove Colli</h2>
+      <p class="story-subtitle">18–24 maggio 2026</p>
+      <div class="story-body"><p>Il 24 maggio Michele fa i conti con la granfondo che ogni romagnolo conosce a memoria. "Brutale, bella, tutta colline", scrive, e ci mette una faccina innamorata. <a class="strava-inline" href="https://www.strava.com/activities/18633408496" target="_blank" rel="noopener">I 197 km del Nove Colli<span class="strava-mark">↗</span></a>, 3.796 metri di dislivello, 5.321 kJ, duecento chilometri nuovi divorati in un giorno solo: è l'uscita più lunga del batch, il picco di una settimana già piena. Ci era arrivato preparando le gambe pezzo a pezzo, Ganda verso il lavoro il 20 — pieno di nuove partenze, vuoto alla fine — e il tour de padel di Zambla il 19, con solo il 53 di corona concesso. C'è una mezza nella terra della piadina, a chiudere il cerchio gastronomico-geografico. Nove attività, 14.859 kJ, 1.626 di carico. I nove colli erano nel nome; lui ne ha aggiunti altri per arrivarci.</p></div>
+      <div class="stat-strip">9 attività · 462 km · 8.978 m · 21,3 h · 14.859 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-46" data-week="46">
+      <header class="story-head">
+        <span class="week-num">Capitolo 46 · settimana 46</span>
+        <span class="week-mood">🍆</span>
+      </header>
+      <h2 class="story-title">Dezzo, Pora, caponata</h2>
+      <p class="story-subtitle">11–17 maggio 2026</p>
+      <div class="story-body"><p>Il 13 maggio è un pomeriggio di vacanza-allenamento che gira storto. Michele non è fresco, mentalmente fatica, e si infuria con chi scende dall'auto e ti butta a terra con uno spintone: <a class="strava-inline" href="https://www.strava.com/activities/18492712540" target="_blank" rel="noopener">i 124 km dell'Avaro Permesso<span class="strava-mark">↗</span></a>, 2.755 metri, chiusi con una faccina di nausea. Ma la settimana si raddrizza il 17, e il titolo è già un menu: Dezzo, Pora, caponata. <a class="strava-inline" href="https://www.strava.com/activities/18539551902" target="_blank" rel="noopener">I 124,2 km di quella domenica<span class="strava-mark">↗</span></a>, 3.003 metri di salita, San Vigilio messo in testa come antipasto, e la frase che torna a essere la sua: non ci si può lamentare. In mezzo, un BlackRock il 12 col meteo sbagliato per un lenticolare, un tris di primi, l'ennesima doppia messa agli atti. Nove attività, 13.241 kJ, 1.477 di carico. La rabbia e la caponata, nella stessa settimana, allo stesso tavolo.</p></div>
+      <div class="stat-strip">9 attività · 430 km · 8.344 m · 21,6 h · 13.241 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-45" data-week="45">
+      <header class="story-head">
+        <span class="week-num">Capitolo 45 · settimana 45</span>
+        <span class="week-mood">🌧️</span>
+      </header>
+      <h2 class="story-title">Stupid Marathon</h2>
+      <p class="story-subtitle">4–10 maggio 2026</p>
+      <div class="story-body"><p>Il 10 maggio Michele corre una maratona e la chiama, senza pietà, stupida. <a class="strava-inline" href="https://www.strava.com/activities/18447465014" target="_blank" rel="noopener">I 42,2 km sotto la pioggia<span class="strava-mark">↗</span></a>, 2.594 kJ, con doppio cappuccino al trentunesimo come unico vero rifornimento di senso. Okokok, scrive, due sillabe che valgono un trattato sulla resistenza. Il giorno prima erano stati i Selvinos: <a class="strava-inline" href="https://www.strava.com/activities/18435040380" target="_blank" rel="noopener">i 94,7 km del 9 maggio<span class="strava-mark">↗</span></a>, tremila metri puliti e tranquilli, sotto le cento miglia e sotto le quattro ore e mezza, due caselle spuntate con la soddisfazione di un contabile. La settimana è quattro corse e quattro pedalate, una sola nuotata, 1.311 di carico. C'è anche il test del lenticolare il 7, le due ore extra dell'8 fatte solo per una barretta di polenta e burro d'arachidi. È tutto qui, in fondo: chilometri che diventano scuse per mangiare, fatica che si paga in cappuccini sotto l'acqua.</p></div>
+      <div class="stat-strip">9 attività · 392 km · 7.365 m · 20,1 h · 10.712 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-44" data-week="44">
+      <header class="story-head">
+        <span class="week-num">Capitolo 44 · settimana 44</span>
+        <span class="week-mood">☠️</span>
+      </header>
+      <h2 class="story-title">Tra la Ford e il guardrail</h2>
+      <p class="story-subtitle">27 aprile–3 maggio 2026</p>
+      <div class="story-body"><p>Il 3 maggio finisce a un chilometro da casa, quasi morto. Michele parte con le gambe spente e le racconta così: <a class="strava-inline" href="https://www.strava.com/activities/18355367281" target="_blank" rel="noopener">i 98,8 km di corsa<span class="strava-mark">↗</span></a>, 5.168 kJ, e una bestemmia per chi taglia le curve, la bici infilata non si sa bene come tra una Ford rossa e il guardrail. È la settimana più dura del batch, 1.857 di carico, 10.105 metri saliti in otto attività. Il primo maggio era stata gloria pura: <a class="strava-inline" href="https://www.strava.com/activities/18331743678" target="_blank" rel="noopener">i 151,5 km del Taleggio<span class="strava-mark">↗</span></a>, 3.311 metri, vichinghi pelosi e amici ritrovati sul percorso, sole e 39 chilometri nuovi. C'è il test della clavicola a un anno esatto dalla caduta, il 29, come a controllare che l'osso ricordi. E un Valzurio Trail in mezzo. Quindicimila settecento kJ in sette giorni: il prezzo, scritto in maiuscolo, di chi non smette mai.</p></div>
+      <div class="stat-strip">8 attività · 461 km · 10.105 m · 21,7 h · 15.713 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-43" data-week="43">
+      <header class="story-head">
+        <span class="week-num">Capitolo 43 · settimana 43</span>
+        <span class="week-mood">🍃</span>
+      </header>
+      <h2 class="story-title">Diventa automatico</h2>
+      <p class="story-subtitle">20–26 aprile 2026</p>
+      <div class="story-body"><p>Il 20 aprile Michele va al lavoro passando per Ganda e Boccola e scrive una frase che è quasi una confessione: "comincia a sembrare automatico, ti piace vederlo". <a class="strava-inline" href="https://www.strava.com/activities/18185940707" target="_blank" rel="noopener">I 77,2 km di quel lunedì<span class="strava-mark">↗</span></a>, 1.487 metri prima dell'ufficio, sono la routine che si è fatta corpo. La settimana è la più verticale del batch, 8.877 metri in nove uscite, eppure la racconta con leggerezza: il nuovo loop preferito il 22, polpacci e pizza in arrivo; il gravel chill del 25 con la verticale di Recastello che gli appartiene. Tra Cattelan e il Fuorisalone il 24, poi la regata di Sarnico-Lovere a chiudere il giro del lago. Una sola nuotata in tutta la settimana, 9.297 kJ. È l'automatismo dei forti: non la noia, ma la pace di un gesto ripetuto fino a non doverci più pensare. Pre-pizza, sempre.</p></div>
+      <div class="stat-strip">9 attività · 363 km · 8.877 m · 19,3 h · 9.297 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-42" data-week="42">
+      <header class="story-head">
+        <span class="week-num">Capitolo 42 · settimana 42</span>
+        <span class="week-mood">🥑</span>
+      </header>
+      <h2 class="story-title">Avocado e una birra</h2>
+      <p class="story-subtitle">13–19 aprile 2026</p>
+      <div class="story-body"><p>Il 18 aprile parte da Milano, da casa di Giorgio, e finisce a duemila metri. In mezzo, racconta Michele, c'è un leone, un avocado trovato chissà dove e una birra raccolta lungo la strada. <a class="strava-inline" href="https://www.strava.com/activities/18156255279" target="_blank" rel="noopener">I 130,4 km di San Marco<span class="strava-mark">↗</span></a>, 3.028 metri di dislivello, hanno la grazia delle giornate benedette, quando la fatica si traveste da pellegrinaggio gastronomico. Il resto della settimana è un seguito di gambe spente dichiarate apertamente: la spa di San Pellegrino il 15, rilassata ieri e un po' meno oggi; Miragolo a colazione il 17, con le "gambe are dead" scritte senza giri di parole. Nove attività, quattro corse, 12.875 kJ. La pioggia di primavera arriva il 19 come una passeggiata casuale. Ma è quell'avocado a restare: la prova che una giornata in bici si misura anche in cose trovate, non solo in metri saliti.</p></div>
+      <div class="stat-strip">9 attività · 350 km · 7.403 m · 19 h · 12.875 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-41" data-week="41">
+      <header class="story-head">
+        <span class="week-num">Capitolo 41 · settimana 41</span>
+        <span class="week-mood">🌚</span>
+      </header>
+      <h2 class="story-title">Zambla all'alba</h2>
+      <p class="story-subtitle">6–12 aprile 2026</p>
+      <div class="story-body"><p>Il 10 aprile Michele esce mentre è ancora notte e lo dice senza enfasi: "Buio". <a class="strava-inline" href="https://www.strava.com/activities/18049785357" target="_blank" rel="noopener">I 58,2 km di Zambla all'alba<span class="strava-mark">↗</span></a> hanno il colore di una torcia frontale e di 1.416 metri di salita presi prima che il mondo si accorga. Più tardi raddoppia, perché un buio solo non gli basta mai. Il giorno dopo, recupero ai minimi, corre comunque con Valentino i 27 chilometri di una doppia che chiama "pizza": prendersi tutto, anche quando il corpo chiede tregua. Ma è il 12 che la settimana mostra i denti. Montecampione in versione aprile, scrive, è la versione mortale: <a class="strava-inline" href="https://www.strava.com/activities/18076925246" target="_blank" rel="noopener">i 132,5 km e i 3.154 metri<span class="strava-mark">↗</span></a> lo lasciano, come al solito, più forte alla fine che all'inizio. Nove attività, 7.296 kJ, 1.240 di carico. E un Garmin perso per strada, da qualche parte tra un'alba e l'altra.</p></div>
+      <div class="stat-strip">9 attività · 372 km · 7.296 m · 19,8 h · 10.247 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-40" data-week="40">
+      <header class="story-head">
+        <span class="week-num">Capitolo 40 · settimana 40</span>
+        <span class="week-mood">🐓</span>
+      </header>
+      <h2 class="story-title">Prima che il gallo canti</h2>
+      <p class="story-subtitle">30 marzo–5 aprile 2026</p>
+      <div class="story-body"><p>La settimana si apre con un blocco da Ironman e si chiude masticando uova di Pasqua. Il 3 aprile Michele sale al Culmine e a San Gallo, e annota il premio con la serietà di un bambino: doppia torta in cima, scusa perfetta per scendere piano. Sono <a class="strava-inline" href="https://www.strava.com/activities/17959916063" target="_blank" rel="noopener">i 139,2 km e i 2.760 metri di quel giorno<span class="strava-mark">↗</span></a>, 57 chilometri nuovi rubati a una valle che credeva di conoscere. Il giorno di Pasqua le gambe non rispondono a Vigolo, poi pian piano la macchina riparte: cinque ore oltre i 200 watt, il commento è una faccina da clown. <a class="strava-inline" href="https://www.strava.com/activities/17985159931" target="_blank" rel="noopener">I 124,1 km del 5 aprile<span class="strava-mark">↗</span></a> chiudono nove attività e 450 chilometri, 15.091 kJ bruciati tra una fagianata e l'altra. Non ci si lamenta, scrive, dopo i trenta del giorno prima. È la legge della stanchezza accumulata: pedalare con quello che resta, e scoprire che basta.</p></div>
+      <div class="stat-strip">9 attività · 450 km · 9.497 m · 22,4 h · 15.091 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-39" data-week="39">
+      <header class="story-head">
+        <span class="week-num">Capitolo 39 · settimana 39</span>
+        <span class="week-mood">🪿</span>
+      </header>
+      <h2 class="story-title">Mangiato troppo, pedalato poco</h2>
+      <p class="story-subtitle">23 – 29 marzo 2026</p>
+      <div class="story-body"><p>"Mangiato troppo, pedalato poco", confessa Michele, eppure <a class="strava-inline" href="https://www.strava.com/activities/17885216901" target="_blank" rel="noopener">gli 83,4 km di Poco e Male, 2001 metri<span class="strava-mark">↗</span></a> valgono un terzo posto a fine marzo — "too much", 2374 kJ, un cupcake di troppo a fare da zavorra. La settimana è ruvida: <a class="strava-inline" href="https://www.strava.com/activities/17862301832" target="_blank" rel="noopener">i 54,4 km della Pernice<span class="strava-mark">↗</span></a>, vento, gravel e poco recupero da Selvino, "tosta". A chiudere <a class="strava-inline" href="https://www.strava.com/activities/17885216901" target="_blank" rel="noopener">i 32,3 km di Gazzaniga Running<span class="strava-mark">↗</span></a>, 988 metri, 2177 kJ — la corsa lunga del restart. Otto uscite, 289,5 km, 6632 metri di dislivello: il numero più alto del batch, scavato un secondo alla volta come dice il titolo di martedì. C'è pure il padel a spezzare la fatica, un padellone tra amici. Marzo finisce con le gambe pesanti e la testa già sui giri di aprile — la stagione adesso ha preso il suo ritmo, e non molla.</p></div>
+      <div class="stat-strip">8 attività · 289,5 km · 6.632 m · 15,7 h · 7.707 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-38" data-week="38">
+      <header class="story-head">
+        <span class="week-num">Capitolo 38 · settimana 38</span>
+        <span class="week-mood">🏟️</span>
+      </header>
+      <h2 class="story-title">La città eterna di corsa</h2>
+      <p class="story-subtitle">16 – 22 marzo 2026</p>
+      <div class="story-body"><p>La settimana scivola fino a Roma, e lì Michele chiude con <a class="strava-inline" href="https://www.strava.com/activities/17812811940" target="_blank" rel="noopener">i 42,8 km di Rome Running, 1002 metri<span class="strava-mark">↗</span></a> — "powered da Martinucci e Marti", non il più fresco, 2704 kJ, e "ora carbonara". Una maratona attraverso la Città Eterna, le rovine come pietre miliari. A Bergamo aveva scaldato i motori a modo suo: <a class="strava-inline" href="https://www.strava.com/activities/17750336957" target="_blank" rel="noopener">38,1 km in bici, il pirata per scaldarsi<span class="strava-mark">↗</span></a>, con 2,19 chilometri nuovi e un quarto di Ponteranica completato secondo Wandrer; e <a class="strava-inline" href="https://www.strava.com/activities/17753739811" target="_blank" rel="noopener">i 15,6 km di Lambo two<span class="strava-mark">↗</span></a>, perché non si può lasciar sola una pausa pranzo di sole — "now pizza". Dieci uscite, 218,2 km, 5186 metri, sei corse: la settimana corre via tra il bagno rosso senza fatica e la bici per andare al lavoro, fino a quel traguardo romano dove l'unica cosa giusta da fare è sedersi a tavola.</p></div>
+      <div class="stat-strip">10 attività · 218,2 km · 5.186 m · 13,8 h · 7.233 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-37" data-week="37">
+      <header class="story-head">
+        <span class="week-num">Capitolo 37 · settimana 37</span>
+        <span class="week-mood">🐜</span>
+      </header>
+      <h2 class="story-title">Formiche e formicai</h2>
+      <p class="story-subtitle">9 – 15 marzo 2026</p>
+      <div class="story-body"><p>"Gravel, niente traffico, buon dislivello — non posso lamentarmi", scrive Michele, e <a class="strava-inline" href="https://www.strava.com/activities/17728297737" target="_blank" rel="noopener">i 100,1 km di Formiche e formicai, 2061 metri<span class="strava-mark">↗</span></a> sono la settimana intera condensata in una mattina: lo sterrato, il silenzio, le gambe che vanno. Il solito, grazie — lo ripete come un mantra, prima <a class="strava-inline" href="https://www.strava.com/activities/17707365139" target="_blank" rel="noopener">in bici per 42,1 km e 1193 metri<span class="strava-mark">↗</span></a>, poi <a class="strava-inline" href="https://www.strava.com/activities/17715484631" target="_blank" rel="noopener">di corsa per 27 km e 561 metri<span class="strava-mark">↗</span></a>, "e che solito al sorsi", 1749 kJ e quasi un chilometro nuovo. Dieci uscite, 323,6 km, 6365 metri: cinque volte in sella, tre di corsa, una nuotata, l'oro in bocca di una mezza chiamata Tre Soldi. La routine, per Michele, non è noia: è un formicaio costruito un granello alla volta, ogni giorno lo stesso giro che diventa ogni giorno diverso.</p></div>
+      <div class="stat-strip">10 attività · 323,6 km · 6.365 m · 16,6 h · 5.485 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-36" data-week="36">
+      <header class="story-head">
+        <span class="week-num">Capitolo 36 · settimana 36</span>
+        <span class="week-mood">🕊️</span>
+      </header>
+      <h2 class="story-title">Orezzo, andata e ritorno</h2>
+      <p class="story-subtitle">2 – 8 marzo 2026</p>
+      <div class="story-body"><p>C'è una corsa che è quasi un itinerario recitato a memoria: <a class="strava-inline" href="https://www.strava.com/activities/17632830570" target="_blank" rel="noopener">i 30 km di Ganda Marti, 1493 metri<span class="strava-mark">↗</span></a> — Orezzo, Gazzaniga, Ganda, Marti e ritorno, con una sosta colomba e brioche in mezzo, 2041 kJ. È la settimana in cui Michele lavora anche da remoto, monta un PC, fa i conti con le deviazioni <a class="strava-inline" href="https://www.strava.com/activities/17623935301" target="_blank" rel="noopener">che fanno male e bene insieme, 45 km e 1014 metri<span class="strava-mark">↗</span></a>. Si chiude in sella con <a class="strava-inline" href="https://www.strava.com/activities/17632830570" target="_blank" rel="noopener">i 107,1 km del Bergamo Cycling<span class="strava-mark">↗</span></a>, 1533 metri di pura distanza. Nove uscite, 324,6 km, 6519 metri di dislivello — la settimana più alta del mese. Strudel e Selvino, le colline a fare da pausa pranzo: la geografia di Michele è fatta di paesi attaccati uno all'altro come perle, percorsi avanti e indietro fino a conoscerne ogni curva.</p></div>
+      <div class="stat-strip">9 attività · 324,6 km · 6.519 m · 17,3 h · 5.438 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-35" data-week="35">
+      <header class="story-head">
+        <span class="week-num">Capitolo 35 · settimana 35</span>
+        <span class="week-mood">⛰️</span>
+      </header>
+      <h2 class="story-title">Un colle alla volta</h2>
+      <p class="story-subtitle">23 febbraio – 1 marzo 2026</p>
+      <div class="story-body"><p>"La fibra ottica è arrivata anche ai Colli", scherza Michele, e <a class="strava-inline" href="https://www.strava.com/activities/17551198404" target="_blank" rel="noopener">i 106,5 km di Un colle alla volta, 2213 metri<span class="strava-mark">↗</span></a> li sale in progressione, 3026 kJ, il giro più verticale della settimana. Il giorno prima <a class="strava-inline" href="https://www.strava.com/activities/17540699802" target="_blank" rel="noopener">i 42,1 km dei Biscotti<span class="strava-mark">↗</span></a> avevano restituito "finalmente sensazioni okish in bici", 1186 metri a rimettere fiducia nelle gambe. La domenica si corre invece <a class="strava-inline" href="https://www.strava.com/activities/17560984977" target="_blank" rel="noopener">Zucca e amo, 27,3 km e 404 metri<span class="strava-mark">↗</span></a>, 1796 kJ — "abbastanza buono dopo i 3000 kJ di ieri". Nove uscite, 321 km, 6386 metri totali tra bici, corsa, sci d'alpinismo e una nuotata. Il doppio toro del martedì, la Vodalata in funivia, le 6 del mattino a Selvino: la settimana è un crescendo di colli affrontati uno per volta, fino a esaurire l'asfalto e le scorte.</p></div>
+      <div class="stat-strip">9 attività · 321 km · 6.386 m · 16,4 h · 8.312 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-34" data-week="34">
+      <header class="story-head">
+        <span class="week-num">Capitolo 34 · settimana 34</span>
+        <span class="week-mood">🐇</span>
+      </header>
+      <h2 class="story-title">Il coniglio di Carnevale</h2>
+      <p class="story-subtitle">16 – 22 febbraio 2026</p>
+      <div class="story-body"><p>È la settimana che esplode: 368,2 km, 12.770 kJ, diciotto ore in movimento, un carico da 1233. La apre <a class="strava-inline" href="https://www.strava.com/activities/17425655328" target="_blank" rel="noopener">il coniglio di Carnevale, 101,4 km e 2002 metri sui Colli<span class="strava-mark">↗</span></a> — "mi mancava da morire", scrive Michele, e si sente. Pochi giorni dopo arriva <a class="strava-inline" href="https://www.strava.com/activities/17469967688" target="_blank" rel="noopener">l'anno del cavallo, 94 km e 1118 metri<span class="strava-mark">↗</span></a> con Leonardo Bertocchi a tirare, gente che non va mai piano. E a chiudere, dopo tutto il carico accumulato, <a class="strava-inline" href="https://www.strava.com/activities/17480893268" target="_blank" rel="noopener">la maratona dell'Alveo Lab, 42,2 km e 784 metri<span class="strava-mark">↗</span></a>: "non posso davvero lamentarmi", 2724 kJ dopo una settimana già satura. In mezzo, due serate a tema pizza che non galleggia e aragoste. Undici attività, cinque corse e tre uscite in bici: una settimana che Michele riempie fino all'orlo, come se febbraio dovesse bastare per due.</p></div>
+      <div class="stat-strip">11 attività · 368,2 km · 6.092 m · 18 h · 12.770 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-33" data-week="33">
+      <header class="story-head">
+        <span class="week-num">Capitolo 33 · settimana 33</span>
+        <span class="week-mood">🐺</span>
+      </header>
+      <h2 class="story-title">Il primo lungo della stagione</h2>
+      <p class="story-subtitle">9 – 15 febbraio 2026</p>
+      <div class="story-body"><p>"First long of the season = ☠️", scrive Michele, e i <a class="strava-inline" href="https://www.strava.com/activities/17403795906" target="_blank" rel="noopener">79 km del Lupo Lucio con 1621 metri<span class="strava-mark">↗</span></a> glielo confermano nelle gambe: 2190 kJ, 258 di carico, il primo vero fondo dell'anno che lascia il segno. Il giorno di San Valentino le gambe erano partite morte — <a class="strava-inline" href="https://www.strava.com/activities/17391235478" target="_blank" rel="noopener">i 26 km di My Valentine<span class="strava-mark">↗</span></a>, 562 metri — poi "in qualche modo sono risorte". Lento, dice, ma in piedi. Quattro uscite in bici, tre di corsa, una nuotata: 260,5 km totali, la settimana più lunga del batch, 5914 kJ a fine conto. C'è la Cannondale che torna, c'è il vapore acqueo di una mattina fredda, c'è una Selvinata aragosta a colorare il giovedì. Ma su tutto resta quel lungo, il primo, che apre la stagione con un teschio e una promessa.</p></div>
+      <div class="stat-strip">8 attività · 260,5 km · 5.412 m · 13,4 h · 5.914 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-32" data-week="32">
+      <header class="story-head">
+        <span class="week-num">Capitolo 32 · settimana 32</span>
+        <span class="week-mood">⏲️</span>
+      </header>
+      <h2 class="story-title">La mezza di Martina</h2>
+      <p class="story-subtitle">2 – 8 febbraio 2026</p>
+      <div class="story-body"><p>Mentre a Milano e Cortina si accendono i giochi olimpici, Michele pedala i suoi <a class="strava-inline" href="https://www.strava.com/activities/17314163110" target="_blank" rel="noopener">60,4 km di vigilia, 1061 metri<span class="strava-mark">↗</span></a>, "pre-race da clown" come scrive lui, un riscaldamento travestito da giro. Ma il cuore della settimana è la domenica: <a class="strava-inline" href="https://www.strava.com/activities/17326499370" target="_blank" rel="noopener">la Bergamo 21, 21,4 km tirati a ritmo<span class="strava-mark">↗</span></a>, 1366 kJ, e accanto i nomi che contano — Martina Tognin seconda, la prima mezza di Martina Gelmi. Una corsa fatta per gli altri più che per il cronometro. In mezzo restano <a class="strava-inline" href="https://www.strava.com/activities/17270382511" target="_blank" rel="noopener">i 15,2 km del ritorno di Pegla<span class="strava-mark">↗</span></a>, 495 metri e mezzo chilometro nuovo strappato alle colline. Otto uscite, 208,7 km, 5064 kJ: una settimana che alterna la festa a cinque cerchi e la fatica condivisa di un passo tenuto per accompagnare qualcuno fino al traguardo.</p></div>
+      <div class="stat-strip">8 attività · 208,7 km · 4.243 m · 11,5 h · 5.064 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-31" data-week="31">
+      <header class="story-head">
+        <span class="week-num">Capitolo 31 · settimana 31</span>
+        <span class="week-mood">🐩</span>
+      </header>
+      <h2 class="story-title">Trenta chilometri a secco</h2>
+      <p class="story-subtitle">26 gennaio – 1 febbraio 2026</p>
+      <div class="story-body"><p>Mai aggredito da un cane a Katmandu, e poi succede a casa: <a class="strava-inline" href="https://www.strava.com/activities/17246116614" target="_blank" rel="noopener">i 30,6 km di Porco Cane<span class="strava-mark">↗</span></a> li corre Michele con l'assalto di un cane dei Saletti ancora nelle vene, sorsi e bocconi chiusi, trenta chilometri senza un grammo di carburante. 1961 kJ spesi a vuoto, di pura testardaggine. La settimana prima aveva impastato di tutto: <a class="strava-inline" href="https://www.strava.com/activities/17215943725" target="_blank" rel="noopener">i 15,4 km del Collinarino ARKetipo<span class="strava-mark">↗</span></a> con 569 metri e quegli 0,81 chilometri nuovi "graziosi", una nuotata in piscina, un Power Workout, gli sci d'alpinismo a spezzare la monotonia. Otto uscite, 167,5 km, 5006 metri di salita: un mosaico di discipline tenuto insieme dalla fame di muoversi. Febbraio si apre digiuno e con un cane alle calcagna — ma la corsa, alla fine, la chiude lui.</p></div>
+      <div class="stat-strip">8 attività · 167,5 km · 5.006 m · 11,8 h · 4.784 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-30" data-week="30">
+      <header class="story-head">
+        <span class="week-num">Capitolo 30 · settimana 30</span>
+        <span class="week-mood">❄️</span>
+      </header>
+      <h2 class="story-title">Acciacchi e neve fresca</h2>
+      <p class="story-subtitle">19 – 25 gennaio 2026</p>
+      <div class="story-body"><p>"Un acciacco dietro l'altro", annota Michele, e lo dice salendo sui rulli: <a class="strava-inline" href="https://www.strava.com/activities/17100244790" target="_blank" rel="noopener">44,8 km e 895 kJ della Rullata 1000kcal<span class="strava-mark">↗</span></a> per non fermarsi del tutto. Poi la neve cambia le carte. Castione della Presolana, gli sci d'alpinismo, il silenzio che inghiotte i rumori. Tra una scivolata e l'altra arriva pure <a class="strava-inline" href="https://www.strava.com/activities/17114819469" target="_blank" rel="noopener">la pedalata dello scuotimento, 35,1 km<span class="strava-mark">↗</span></a>, con quei 0,18 chilometri nuovi annotati da Wandrer come un tesoro minuscolo. La settimana si chiude di corsa: <a class="strava-inline" href="https://www.strava.com/activities/17100244790" target="_blank" rel="noopener">i 23,3 km di Gazzaniga<span class="strava-mark">↗</span></a> del 25 gennaio, 1511 kJ, le gambe che finalmente girano. Nove attività, 204,2 km, 5275 metri di dislivello accumulati tra asfalto, neve e tapis roulant indoor. Il corpo protesta, ma Michele lo ascolta solo a metà — e intanto la settimana diventa la più verticale del mese.</p></div>
+      <div class="stat-strip">9 attività · 204,2 km · 5.275 m · 12,7 h · 4.389 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-29" data-week="29">
+      <header class="story-head">
+        <span class="week-num">Capitolo 29 · settimana 29</span>
+        <span class="week-mood">🫁</span>
+      </header>
+      <h2 class="story-title">La penitenza di Valcava</h2>
+      <p class="story-subtitle">12 – 18 gennaio 2026</p>
+      <div class="story-body"><p>Due settimane senza bici, polveri sottili ancora nei polmoni, cibo sbagliato e ghiaia sotto le ruote: la formula, dice Michele, fa una Valcava "maledettamente esilarante". <a class="strava-inline" href="https://www.strava.com/activities/17077287282" target="_blank" rel="noopener">I 66,3 km con 1381 metri di Valcava Penitence<span class="strava-mark">↗</span></a> sono il conto da pagare al ritorno, 160 di carico in una sola mattina. Ma la settimana non perdona: il giorno dopo arriva <a class="strava-inline" href="https://www.strava.com/activities/17088904514" target="_blank" rel="noopener">la mezza maratona della bronchite, 21,1 km e 476 metri<span class="strava-mark">↗</span></a>, corsa mentre il petto fischia, addolcita solo dalla brioche del mese offerta dalla suocera. In mezzo, <a class="strava-inline" href="https://www.strava.com/activities/17066467262" target="_blank" rel="noopener">i 15,2 km dell'Anno nuovo<span class="strava-mark">↗</span></a> a rimettere ordine nelle gambe. Otto uscite, 186,8 km, 5830 kJ bruciati: il ritorno alla routine ha il sapore aspro della tosse e quello dolce di una brioche. Si riparte sempre da capo, anche con i bronchi in fiamme.</p></div>
+      <div class="stat-strip">8 attività · 186,8 km · 3.144 m · 10,1 h · 5.830 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-28" data-week="28">
+      <header class="story-head">
+        <span class="week-num">Capitolo 28 · settimana 28</span>
+        <span class="week-mood">🔥</span>
+      </header>
+      <h2 class="story-title">Le ceneri di Varanasi</h2>
+      <p class="story-subtitle">5 – 11 gennaio 2026</p>
+      <div class="story-body"><p>C'è una corsa che Michele non riesce nemmeno a cominciare a digerire: <a class="strava-inline" href="https://www.strava.com/activities/16953906572" target="_blank" rel="noopener">i 10,1 km di Varanasi, la 451<span class="strava-mark">↗</span></a>, lungo il fiume dove la cenere e il fuoco fanno parte del paesaggio. "Uno dei giorni più strani, unici e toccanti della mia vita", scrive, ancora con addosso la cena di ieri sul treno in 3AC. Poi il viaggio sale di quota: Lucknow, Katmandu, l'alba sopra la valle. Il 10 gennaio la mountain bike lo porta per <a class="strava-inline" href="https://www.strava.com/activities/16996011177" target="_blank" rel="noopener">27,1 km di sterrato nepalese<span class="strava-mark">↗</span></a>, finché la gomma non cede al decimo chilometro — "ne è valsa la pena comunque". L'indomani le gambe trovano i <a class="strava-inline" href="https://www.strava.com/activities/17007296224" target="_blank" rel="noopener">504 metri di Kathmandu Running<span class="strava-mark">↗</span></a>, 12,1 km in salita dentro l'aria sottile. Sei uscite, 79,8 km, 1708 metri: un altro modo di attraversare un Paese, misurandolo a passi e pedalate.</p></div>
+      <div class="stat-strip">6 attività · 79,8 km · 1.708 m · 6,4 h · 2.689 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-27" data-week="27">
+      <header class="story-head">
+        <span class="week-num">Capitolo 27 · settimana 27</span>
+        <span class="week-mood">🌫️</span>
+      </header>
+      <h2 class="story-title">Capodanno tra due continenti</h2>
+      <p class="story-subtitle">29 dicembre 2025 – 4 gennaio 2026</p>
+      <div class="story-body"><p>L'anno finisce a New Delhi, con <a class="strava-inline" href="https://www.strava.com/activities/16889738769" target="_blank" rel="noopener">la corsa della vigilia tra i clacson e il fumo della capitale<span class="strava-mark">↗</span></a>, e comincia di nuovo a Bergamo, dove il freddo è un'altra lingua. Tra un vaccino e un viaggio, Michele tiene insieme i fili: i 10,3 km del 29 dicembre prima di partire, poi il rientro. Il 3 gennaio scioglie le gambe nei <a class="strava-inline" href="https://www.strava.com/activities/16918888791" target="_blank" rel="noopener">14,6 km di Palladio's Sanpelle<span class="strava-mark">↗</span></a>, simmetrie e geometrie a fare da bussola, 902 kJ spesi senza fretta. Il giorno dopo si chiude al coperto, <a class="strava-inline" href="https://www.strava.com/activities/16929851494" target="_blank" rel="noopener">i rulli dell'Indoor Cycling<span class="strava-mark">↗</span></a> a girare a vuoto mentre fuori la città resta immobile. Nove uscite, 54,4 km, niente di eroico: solo il modo di non lasciare che il fuso orario vinca. L'anno è appena nato, 882 metri di dislivello a fargli da culla.</p></div>
+      <div class="stat-strip">9 attività · 54,4 km · 882 m · 5,4 h · 3.271 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-26" data-week="26">
+      <header class="story-head">
+        <span class="week-num">Capitolo 26 · settimana 26</span>
+        <span class="week-mood">🧀</span>
+      </header>
+      <h2 class="story-title">Dodicimila km anche quest'anno</h2>
+      <p class="story-subtitle">22–28 dicembre 2025</p>
+      <div class="story-body"><p>Tutto perfetto, scrive Michele il giorno dopo Natale, e con <a class="strava-inline" href="https://www.strava.com/activities/16851604604" target="_blank" rel="noopener">i 63,8 km di Formaggi, Cave, Rosa<span class="strava-mark">↗</span></a> mette il sigillo: 12.000 km anche quest'anno, 6,69 nuovi chilometri secondo Wandrer, 1.426 metri di salita tra le cave. La vigilia l'aveva passata in sella in Zambla, <a class="strava-inline" href="https://www.strava.com/activities/16827098546" target="_blank" rel="noopener">i 59,1 km dove ha avuto più caldo ma anche più freddo<span class="strava-mark">↗</span></a>, un solo nuovo chilometro strappato alla mappa. Poi il rullo di Filetto, il Natale 2025, il Grinch e no Grinch. Si chiude correndo: <a class="strava-inline" href="https://www.strava.com/activities/16860793438" target="_blank" rel="noopener">i 22 km della Pizzoccheri Half<span class="strava-mark">↗</span></a>, quasi tempo di vacanza. Sette attività, 253,6 km, 5.413 metri, carico 708 — l'ultima settimana piena dell'anno. Dodicimila chilometri archiviati, formaggi compresi, e la vacanza che bussa alla porta.</p></div>
+      <div class="stat-strip">7 attività · 254 km · 5.413 m · 13 h · 4.146 kJ · TL708</div>
+    </article>
+
+    <article class="story reveal" id="week-25" data-week="25">
+      <header class="story-head">
+        <span class="week-num">Capitolo 25 · settimana 25</span>
+        <span class="week-mood">🌫️</span>
+      </header>
+      <h2 class="story-title">Il giro del litro e del lago</h2>
+      <p class="story-subtitle">15–21 dicembre 2025</p>
+      <div class="story-body"><p>Carbo-pregnant, ma grato, scrive Michele la domenica, mentre disegna <a class="strava-inline" href="https://www.strava.com/activities/16800303695" target="_blank" rel="noopener">i 93,7 km del Giro del Litro e del Lago<span class="strava-mark">↗</span></a>, l'uscita più lunga del blocco, 1.090 metri e una pancia piena di riconoscenza. Il giorno prima, post pizza con Rob e pre pranzone, si era chiesto <a class="strava-inline" href="https://www.strava.com/activities/16790402494" target="_blank" rel="noopener">che rumore fa la felicità<span class="strava-mark">↗</span></a> correndo 25 km e 1.208 metri, 1.675 kJ di salita. In mezzo le luci di Natale nella nebbia di Delhi e le solite pedalate da Bergamo. Sette attività, 233,1 km, 4.876 metri, carico 685: una settimana che mangia tanto quanto pedala. Il lago, il litro, le luci nel grigio — dicembre va così, tra una salita e una tavola imbandita.</p></div>
+      <div class="stat-strip">7 attività · 233 km · 4.876 m · 12 h · 4.584 kJ · TL685</div>
+    </article>
+
+    <article class="story reveal" id="week-24" data-week="24">
+      <header class="story-head">
+        <span class="week-num">Capitolo 24 · settimana 24</span>
+        <span class="week-mood">🚲</span>
+      </header>
+      <h2 class="story-title">Sette colline tra Bergamo e Gazzaniga</h2>
+      <p class="story-subtitle">8–14 dicembre 2025</p>
+      <div class="story-body"><p>La settimana scivola sulla bici. Michele firma il sabato <a class="strava-inline" href="https://www.strava.com/activities/16645" target="_blank" rel="noopener">i 64,5 km e 1.260 metri di Gazzaniga Cycling<span class="strava-mark">↗</span></a>, l'uscita più lunga, 0 kJ registrati ma le gambe che girano nel freddo di metà dicembre. Le altre sono pedalate da Bergamo, <a class="strava-inline" href="https://www.strava.com/activities/16630" target="_blank" rel="noopener">i 41,5 km del giovedì<span class="strava-mark">↗</span></a> e i 35,8 km del martedì, ripetute come un metronomo. Tra una ruota e l'altra restano tre corse — Ponte Nossa, Bergamo, ancora Bergamo — a tenere viva la base a piedi. Sette attività, 221,8 km, 4.987 metri di dislivello in una settimana che sceglie la quantità tranquilla invece dei picchi. È dicembre senza eroismi: il chilometraggio si accumula piano, paese dopo paese, in attesa che arrivino le feste e qualche salita con un nome.</p></div>
+      <div class="stat-strip">7 attività · 222 km · 4.987 m · 11 h · 3.080 kJ · TL584</div>
+    </article>
+
+    <article class="story reveal" id="week-23" data-week="23">
+      <header class="story-head">
+        <span class="week-num">Capitolo 23 · settimana 23</span>
+        <span class="week-mood">🌫️</span>
+      </header>
+      <h2 class="story-title">Dicembre nella nebbia della valle</h2>
+      <p class="story-subtitle">1–7 dicembre 2025</p>
+      <div class="story-body"><p>Dicembre apre senza titoli fantasiosi, solo nomi di paese che diventano coordinate. Michele corre dovunque: la settimana culmina la domenica con <a class="strava-inline" href="https://www.strava.com/activities/16615" target="_blank" rel="noopener">i 24,9 km e 1.705 metri di Villa di Serio<span class="strava-mark">↗</span></a>, la salita più dura del blocco, 1.960 kJ verso l'alto nella valle Seriana. Il sabato aveva infilato i 16,3 km di Gazzaniga, il giovedì i 15,3 km di Bergamo, corse brevi e fitte come pioggia. In mezzo si alternano le pedalate di Gazzaniga e la camminata del venerdì, nove attività in tutto, la più affollata del periodo. Sono 179,4 km e 5.399 metri di dislivello cuciti tra Bergamo, Gazzaniga e Villa di Serio, carico 631. Niente emoji, niente didascalie: solo gambe, fiato e i nomi dei paesi che si ripetono nel grigio.</p></div>
+      <div class="stat-strip">9 attività · 179 km · 5.399 m · 12 h · 4.518 kJ · TL631</div>
+    </article>
+
+    <article class="story reveal" id="week-22" data-week="22">
+      <header class="story-head">
+        <span class="week-num">Capitolo 22 · settimana 22</span>
+        <span class="week-mood">🌟</span>
+      </header>
+      <h2 class="story-title">A riveder le stelle</h2>
+      <p class="story-subtitle">24–30 novembre 2025</p>
+      <div class="story-body"><p>Firenze, l'ultima domenica del mese: Michele non se lo aspetta e invece firma <a class="strava-inline" href="https://www.strava.com/activities/16609005006" target="_blank" rel="noopener">i 42,7 km di Florence Running<span class="strava-mark">↗</span></a>, un PR inatteso, 2.746 kJ, e quel verso che gli scappa — a riveder le stelle. È il record che chiude una settimana costruita in punta di piedi, sei corse, un nuoto, una sola bici. Aveva aperto martedì tra le nicchie nascoste di <a class="strava-inline" href="https://www.strava.com/activities/16561163621" target="_blank" rel="noopener">i 16 km di Bastia-nich<span class="strava-mark">↗</span></a>, e provato giovedì <a class="strava-inline" href="https://www.strava.com/activities/16579081123" target="_blank" rel="noopener">i 31,1 km degli ultimi pantaloncini<span class="strava-mark">↗</span></a>, decisamente non caldi. Prima della gara il cambio regime, la conferma berlinese, lo showcase del completo da Ironman. Otto uscite, 145,3 km, 7.209 kJ, carico 686. Tutto convergeva su Firenze, e Firenze ha risposto con un primato e un cielo di stelle.</p></div>
+      <div class="stat-strip">8 attività · 145 km · 3.113 m · 10 h · 7.209 kJ · TL686</div>
+    </article>
+
+    <article class="story reveal" id="week-21" data-week="21">
+      <header class="story-head">
+        <span class="week-num">Capitolo 21 · settimana 21</span>
+        <span class="week-mood">❄️</span>
+      </header>
+      <h2 class="story-title">La prima neve</h2>
+      <p class="story-subtitle">17–23 novembre 2025</p>
+      <div class="story-body"><p>La settimana cambia colore il venerdì, quando cade <a class="strava-inline" href="https://www.strava.com/activities/16521643845" target="_blank" rel="noopener">la prima neve<span class="strava-mark">↗</span></a> e Michele la insegue, dopo aver provato il mattone inatteso e la motosega — due uscite spezzate nello stesso giorno. Sabato monta gli sci e fa <a class="strava-inline" href="https://www.strava.com/activities/16530660361" target="_blank" rel="noopener">le Skiing Variations<span class="strava-mark">↗</span></a>, la stagione bianca che si apre nel lato oscuro della Ramera. Ma è la domenica a riassumere tutto: <a class="strava-inline" href="https://www.strava.com/activities/16540208148" target="_blank" rel="noopener">i 30 km dell'Easy 30<span class="strava-mark">↗</span></a>, 1.928 kJ, senza cibo eppure metabolicamente a posto, non ci si può lamentare. Aveva aperto martedì con <a class="strava-inline" href="https://www.strava.com/activities/16481873057" target="_blank" rel="noopener">i 16 km di Odifreddi e freddo<span class="strava-mark">↗</span></a> e la pausa pranzo della focaccia barese a Lonno. Otto uscite, 145,2 km, 5.019 metri, prima sciata di backcountry dell'anno. Il freddo è arrivato, e la neve con lui.</p></div>
+      <div class="stat-strip">8 attività · 145 km · 5.019 m · 11 h · 5.839 kJ · TL589</div>
+    </article>
+
+    <article class="story reveal" id="week-20" data-week="20">
+      <header class="story-head">
+        <span class="week-num">Capitolo 20 · settimana 20</span>
+        <span class="week-mood">🕸️</span>
+      </header>
+      <h2 class="story-title">Le settimane da 100 sono tornate</h2>
+      <p class="story-subtitle">10–16 novembre 2025</p>
+      <div class="story-body"><p>70 km in tre giorni, scrive Michele la domenica: le settimane oltre i 100 km sono tornate. Lo annota dentro <a class="strava-inline" href="https://www.strava.com/activities/16472100317" target="_blank" rel="noopener">i 21,1 km di ArtDate, Vernici, Pipe<span class="strava-mark">↗</span></a>, 1.123 metri di dislivello rubati tra mostre e fatica. Il sabato aveva firmato la corsa più piena, <a class="strava-inline" href="https://www.strava.com/activities/16461890413" target="_blank" rel="noopener">i 32 km di Togliere ragnatele<span class="strava-mark">↗</span></a>, 2.051 kJ buttati lì a ripulire le gambe. E in mezzo c'è l'autoironia di giovedì, <a class="strava-inline" href="https://www.strava.com/activities/16442872117" target="_blank" rel="noopener">i 43,8 km di Sky del Canto<span class="strava-mark">↗</span></a> in bici, che non consiglierebbe necessariamente a nessuno. Cinque corse, due uscite in sella, la conferma insonne del mercoledì, il bao a Olera, il risotto zucca e farfalle. Sette attività, 180,1 km, 4.202 metri, carico 659. La base si ricostruisce un chilometro alla volta, e le ragnatele cadono.</p></div>
+      <div class="stat-strip">7 attività · 180 km · 4.202 m · 12 h · 6.654 kJ · TL659</div>
+    </article>
+
+    <article class="story reveal" id="week-19" data-week="19">
+      <header class="story-head">
+        <span class="week-num">Capitolo 19 · settimana 19</span>
+        <span class="week-mood">⛰️</span>
+      </header>
+      <h2 class="story-title">Tre volte la Ganda</h2>
+      <p class="story-subtitle">3–9 novembre 2025</p>
+      <div class="story-body"><p>Tre Ganda a novembre dovrebbero bastare, scrive Michele domenica, distrutto dal giorno prima, mentre macina <a class="strava-inline" href="https://www.strava.com/activities/16401610546" target="_blank" rel="noopener">i 55,7 km e 2.004 metri di Palak Ganda<span class="strava-mark">↗</span></a> con la testa già altrove. Il sabato era stato il più duro a piedi: <a class="strava-inline" href="https://www.strava.com/activities/16390715774" target="_blank" rel="noopener">i 37 km di Selvino Downtown<span class="strava-mark">↗</span></a>, l'idea da abortire, 2.450 kJ e scarpe nuove, ma è abbastanza buono così, bisogna lottare per la brioche. Venerdì il rientro storto in sella, <a class="strava-inline" href="https://www.strava.com/activities/16383160328" target="_blank" rel="noopener">i 42 km di Back to cycling<span class="strava-mark">↗</span></a> liquidati con una sola parola: male. Eppure la settimana accumula 8.744 kJ, il numero più alto del blocco, su 216 km e 6.594 metri di salita. Sette uscite, su e giù, finalmente di nuovo in piedi. La Ganda, intanto, è tornata sotto le ruote.</p></div>
+      <div class="stat-strip">7 attività · 216 km · 6.594 m · 13 h · 8.744 kJ · TL876</div>
+    </article>
+
+    <article class="story reveal" id="week-18" data-week="18">
+      <header class="story-head">
+        <span class="week-num">Capitolo 18 · settimana 18</span>
+        <span class="week-mood">🌬️</span>
+      </header>
+      <h2 class="story-title">L'ultimo bike-to-work</h2>
+      <p class="story-subtitle">27 ottobre–2 novembre 2025</p>
+      <div class="story-body"><p>Probabilmente l'ultimo per un po', scrive Michele, e in quel saluto stanno <a class="strava-inline" href="https://www.strava.com/activities/16293779048" target="_blank" rel="noopener">i 65 km di Bugonia and Wind of Change<span class="strava-mark">↗</span></a>, 1.702 kJ di pendolarismo che sa già di stagione che finisce. Poi arriva il primo novembre con <a class="strava-inline" href="https://www.strava.com/activities/16318973403" target="_blank" rel="noopener">i 57,3 km e 2.004 metri di Cortisolo e Rischiarite<span class="strava-mark">↗</span></a>, un giorno di crescita che però torna ai punti fermi. La maratona della settimana prima si paga: <a class="strava-inline" href="https://www.strava.com/activities/16273015566" target="_blank" rel="noopener">i 65,7 km del Post Marathon Recovery<span class="strava-mark">↗</span></a> vanno meglio del previsto, ma neanche malissimo. In coda l'Halloween dello Spooky Purito, l'Up-ctober che sale, i 31 dal 31. Sette uscite, 278,9 km, 6.350 metri di dislivello, il mese chiuso a 865 di carico. Il vento del cambio soffia, e la bici da lavoro va in letargo.</p></div>
+      <div class="stat-strip">7 attività · 279 km · 6.350 m · 15 h · 7.347 kJ · TL865</div>
+    </article>
+
+    <article class="story reveal" id="week-17" data-week="17">
+      <header class="story-head">
+        <span class="week-num">Capitolo 17 · settimana 17</span>
+        <span class="week-mood">🚪</span>
+      </header>
+      <h2 class="story-title">Una maratona per festeggiare</h2>
+      <p class="story-subtitle">20–26 ottobre 2025</p>
+      <div class="story-body"><p>Si apre un portone, scrive Michele domenica, e la domanda gli viene naturale: perché non una maratona per celebrare. Così nascono <a class="strava-inline" href="https://www.strava.com/activities/16258359236" target="_blank" rel="noopener">i 42,2 km della Portone Marathon<span class="strava-mark">↗</span></a>, 2.647 kJ e 642 metri buttati nel giorno della svolta. Il sabato era già stato pieno fino all'orlo: <a class="strava-inline" href="https://www.strava.com/activities/16249362237" target="_blank" rel="noopener">gli 84,9 km di Kokoroko, Pora, Ian<span class="strava-mark">↗</span></a>, 24 ore perfette e stratificate, 1.806 metri, 2.265 kJ. In mezzo la corsa al lavoro edizione 2025, <a class="strava-inline" href="https://www.strava.com/activities/16238713437" target="_blank" rel="noopener">i 26 km che vanno lenti ma sempre un po' meglio<span class="strava-mark">↗</span></a>, e stanotte qualcosa all'orizzonte. Pioggia d'autunno il giovedì, cambiamenti in arrivo, la pensione Beatì. È la settimana più grossa del blocco: 313,4 km, 5.635 metri, 15,7 ore, carico 932. Il portone si è aperto correndo.</p></div>
+      <div class="stat-strip">7 attività · 313 km · 5.635 m · 16 h · 8.556 kJ · TL932</div>
+    </article>
+
+    <article class="story reveal" id="week-16" data-week="16">
+      <header class="story-head">
+        <span class="week-num">Capitolo 16 · settimana 16</span>
+        <span class="week-mood">✈️</span>
+      </header>
+      <h2 class="story-title">Risotto e poi a est</h2>
+      <p class="story-subtitle">13–19 ottobre 2025</p>
+      <div class="story-body"><p>C'è una soglia, a metà settimana, e Michele la attraversa pedalando: <a class="strava-inline" href="https://www.strava.com/activities/16150746048" target="_blank" rel="noopener">i 66 km del Risotto and vacation<span class="strava-mark">↗</span></a>, +30 con Liuke e l'annuncio che domani si va a est. È il giro più lungo, 807 metri di salita senza fretta, perché conta la direzione più del passo. Aveva aperto il lunedì coi <a class="strava-inline" href="https://www.strava.com/activities/16125812464" target="_blank" rel="noopener">57,5 km di Maneskin Monday<span class="strava-mark">↗</span></a>, good feelz e basta, e martedì era tornato a correre con <a class="strava-inline" href="https://www.strava.com/activities/16134048946" target="_blank" rel="noopener">i 18,6 km di Starting Back<span class="strava-mark">↗</span></a>, sensazioni strane ma almeno la Ganda di nuovo lì. Poi il viaggio se la mangia, la settimana: la polvere del Kerala, lo shakeout di Atene, l'Acropoli, i 521 strati finali. Sette uscite, 184,5 km, 4.564 metri, e l'est che cominciava in cucina con un piatto di riso.</p></div>
+      <div class="stat-strip">7 attività · 185 km · 4.564 m · 10 h · 3.065 kJ · TL529</div>
+    </article>
+
+    <article class="story reveal" id="week-15" data-week="15">
+      <header class="story-head">
+        <span class="week-num">Capitolo 15 · settimana 15</span>
+        <span class="week-mood">🌈</span>
+      </header>
+      <h2 class="story-title">La settimana del Lombardia</h2>
+      <p class="story-subtitle">6–12 ottobre 2025</p>
+      <div class="story-body"><p>Tutta la settimana converge su sabato, quando Michele esce per <a class="strava-inline" href="https://www.strava.com/activities/16103766803" target="_blank" rel="noopener">i 55,8 km e 2.027 metri del Lombardia<span class="strava-mark">↗</span></a> e poi resta lì, fermo ad aspettare l'arcobaleno di Pogačar che passa. Una settimana intensa, piena, scrive, mentre dentro intanto ci sono stati il Bretzel bavarese, il bosco, la confusione della conference mash-up/mess-up. Era partito martedì con <a class="strava-inline" href="https://www.strava.com/activities/16059429258" target="_blank" rel="noopener">la corsa della resurrezione, 42,4 km verso il Pre Bretzel<span class="strava-mark">↗</span></a>, lunga giornata davanti. Si chiude male e lo ammette: domenica firma <a class="strava-inline" href="https://www.strava.com/activities/16116848355" target="_blank" rel="noopener">i 21,1 km della Fare Schifo Half<span class="strava-mark">↗</span></a>, fine di una settimana povera di cibo, sonno, salute. Eppure restano 167 km e 5.419 metri di dislivello, otto uscite tra corsa, salita e bici. Il Lombardia è passato, l'arcobaleno anche. Tutto il resto si rimette in piedi lunedì.</p></div>
+      <div class="stat-strip">8 attività · 167 km · 5.419 m · 11 h · 7.387 kJ · TL715</div>
+    </article>
+
+    <article class="story reveal" id="week-14" data-week="14">
+      <header class="story-head">
+        <span class="week-num">Capitolo 14 · settimana 14</span>
+        <span class="week-mood">🍂</span>
+      </header>
+      <h2 class="story-title">L'iniziazione del Farno</h2>
+      <p class="story-subtitle">29 settembre–5 ottobre 2025</p>
+      <div class="story-body"><p>Michele lo scrive lui stesso, con due cavalli di razza: una corsa tra il Post 31 di Sant'Alessandro e l'Osaka di Fede. È in quella cornice che arrivano <a class="strava-inline" href="https://www.strava.com/activities/16039790394" target="_blank" rel="noopener">i 72,6 km e i 2.116 metri del Farno<span class="strava-mark">↗</span></a>, la salita che battezza ottobre con 2.386 kJ bruciati controvento. Il giorno prima aveva infilato <a class="strava-inline" href="https://www.strava.com/activities/16027125387" target="_blank" rel="noopener">i 29 km di Zelig Circus<span class="strava-mark">↗</span></a> tra le tende di BergamoScienza, l'autunno acceso sopra la testa, quasi 1.900 kJ a piedi solo per il gusto del foliage. In mezzo restano le piccole cose: il San Michele d'apertura, il GPS perso e ritrovato via Telegram, il vento del cambio. Sette uscite, 257,9 km, una settimana che pesa 882 di carico e non si lamenta. Il Farno l'ha inizializzato a dovere.</p></div>
+      <div class="stat-strip">7 attività · 258 km · 4.643 m · 13 h · 7.295 kJ · TL882</div>
+    </article>
+
+    <article class="story reveal" id="week-13" data-week="13">
+      <header class="story-head">
+        <span class="week-num">Capitolo 13 · settimana 13</span>
+        <span class="week-mood">🌸</span>
+      </header>
+      <h2 class="story-title">Bucarest da turista</h2>
+      <p class="story-subtitle">22 – 28 settembre 2025</p>
+      <div class="story-body"><p>Dopo l'Ironman, Michele abbassa il volume e lascia respirare le gambe: 167 chilometri appena, nove ore, otto attività in tono minore. Domenica corre <a class="strava-inline" href="https://www.strava.com/activities/15960131445" target="_blank" rel="noopener">i 21,4 km della mezza di Bucarest<span class="strava-mark">↗</span></a>, 1.312 kJ, e la racconta per quello che è: "un bel giro turistico". Niente cronometro, solo strade nuove sotto i piedi. Giovedì invece il piacere puro: <a class="strava-inline" href="https://www.strava.com/activities/15928795608" target="_blank" rel="noopener">i 16 km del Pre Wedding Up<span class="strava-mark">↗</span></a>, 936 metri di salita, "totalmente nel flusso". Una corsa che gli mancava, persino dentro il programma. In mezzo Routines and Peace in bici, un equinozio, una corsa muta col titolo fatto solo di parentesi vuote. È la settimana del respiro lungo, quella in cui un corpo che ha dato tutto torna a muoversi per il gusto di muoversi.</p></div>
+      <div class="stat-strip">8 attività · 167,8 km · 3.141 m · 9 h · 4.199 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-12" data-week="12">
+      <header class="story-head">
+        <span class="week-num">Capitolo 12 · settimana 12</span>
+        <span class="week-mood">🌊</span>
+      </header>
+      <h2 class="story-title">Cinquanta sul cerchione</h2>
+      <p class="story-subtitle">15 – 21 settembre 2025</p>
+      <div class="story-body"><p>Al chilometro 136, lanciato a 55 all'ora in discesa, Michele fora. Evita la caduta scivolando sul piede interno e poi, senza soluzioni meccaniche, si fa <a class="strava-inline" href="https://www.strava.com/activities/15879401635" target="_blank" rel="noopener">gli ultimi 50 km della frazione bici a gomma a terra<span class="strava-mark">↗</span></a> — 178,6 km in totale per chiudere comunque la prova. È il giorno dell'Ironman, costruito per mesi. La nuotata, la bici sul cerchione, e infine <a class="strava-inline" href="https://www.strava.com/activities/15879401652" target="_blank" rel="noopener">i 40,9 km della maratona finale<span class="strava-mark">↗</span></a>, 2.554 kJ, con lo stomaco che cede al quindicesimo chilometro. Arriva lo stesso. La settimana ruota tutta intorno a quella domenica: 366 chilometri, un test muta, una reattivazione tra vento e traffico, e il giorno dopo una corsa di recupero col cuore ferito. Un Ironman è anche questo: finire le cose anche quando si rompono.</p></div>
+      <div class="stat-strip">11 attività · 366,8 km · 2.659 m · 17,9 h · 5.932 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-11" data-week="11">
+      <header class="story-head">
+        <span class="week-num">Capitolo 11 · settimana 11</span>
+        <span class="week-mood">🍂</span>
+      </header>
+      <h2 class="story-title">Riempire le gambe per strada</h2>
+      <p class="story-subtitle">8 – 14 settembre 2025</p>
+      <div class="story-body"><p>Le gambe erano vuote, e Michele decide di riempirle lungo il tragitto. <a class="strava-inline" href="https://www.strava.com/activities/15805303699" target="_blank" rel="noopener">I 101,3 km della Focaccia Barese<span class="strava-mark">↗</span></a>, 817 metri di salita, sono una caccia al cibo travestita da uscita in bici: si parte a secco, si torna pieni. È la settimana che annuncia il taglio, ultima prima della gara: 363 chilometri, 3.724 metri, sedici ore appena. Sabato l'ultima delle mezze "Sorsi e Bocconi": <a class="strava-inline" href="https://www.strava.com/activities/15792978981" target="_blank" rel="noopener">i 25,1 km di Effortless 25<span class="strava-mark">↗</span></a>, 1.621 kJ corsi senza sforzo, "😍". In mezzo Villa Panza sotto l'eclissi — "che giornata splendida" — il balletto della sella, un'ultima doppia lunga, la torta di Ale. Lo scarico ha questo di bello: si rallenta abbastanza da accorgersi della focaccia.</p></div>
+      <div class="stat-strip">10 attività · 363,7 km · 3.724 m · 16,7 h · 4.654 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-10" data-week="10">
+      <header class="story-head">
+        <span class="week-num">Capitolo 10 · settimana 10</span>
+        <span class="week-mood">🤡</span>
+      </header>
+      <h2 class="story-title">Weekend da clown</h2>
+      <p class="story-subtitle">1 – 7 settembre 2025</p>
+      <div class="story-body"><p>Due settimane all'Ironman e Michele si concede un test che battezza, senza pietà, "Clown Weekend". <a class="strava-inline" href="https://www.strava.com/activities/15714625231" target="_blank" rel="noopener">I 144 km della prima parte<span class="strava-mark">↗</span></a>, 982 metri di salita, nutrizione come da foto più tre panini con la marmellata: la prova generale dello stomaco prima della gara. La domenica chiude il numero da circo con <a class="strava-inline" href="https://www.strava.com/activities/15725380611" target="_blank" rel="noopener">i 21,9 km del Moscato di Scanzo Trail<span class="strava-mark">↗</span></a>, 1.050 metri in salita corsi "in gestione", sperando di non aver compromesso le gambe. La settimana è di scarico relativo, 380 chilometri e undici attività tra City Variations, lenticchie raddoppiate e una Rugiada Half. Tutto è ormai funzione di quella domenica che si avvicina. A volte allenarsi seriamente vuol dire travestirsi da pagliaccio e mangiare panini in bici.</p></div>
+      <div class="stat-strip">11 attività · 380 km · 4.785 m · 19,1 h · 6.411 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-9" data-week="9">
+      <header class="story-head">
+        <span class="week-num">Capitolo 9 · settimana 9</span>
+        <span class="week-mood">⛰️</span>
+      </header>
+      <h2 class="story-title">Il Gavia da casa</h2>
+      <p class="story-subtitle">25 – 31 agosto 2025</p>
+      <div class="story-body"><p>Lunedì Michele parte da Orezzo e si prende il Gavia partendo da casa: <a class="strava-inline" href="https://www.strava.com/activities/15580126058" target="_blank" rel="noopener">i 192,8 km fino a Tirano<span class="strava-mark">↗</span></a>, 3.174 metri di salita e 4.961 kJ, buone sensazioni e la promessa di bresaola e pizzoccheri come ricompensa. Il giorno dopo <a class="strava-inline" href="https://www.strava.com/activities/15590025370" target="_blank" rel="noopener">i 126,4 km del ritorno via Trivigno<span class="strava-mark">↗</span></a>, altri 3.318 kJ, e l'ironia di sempre: "tecnicamente mi sto preparando per un Ironman, forse dovrei nuotare". È la settimana più ricca di tutte: 569 chilometri, 14.167 kJ, dodici attività. Domenica cambia tutto con <a class="strava-inline" href="https://www.strava.com/activities/15645697089" target="_blank" rel="noopener">i 101,7 km della Sunday Burrata<span class="strava-mark">↗</span></a> sulla bici nuova da triathlon, sole, Marti, burrata e lago. "Cos'altro?" Una vacanzina rubata dentro un blocco di carico, con le montagne giuste in mezzo.</p></div>
+      <div class="stat-strip">12 attività · 569,1 km · 8.482 m · 26,4 h · 14.167 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-8" data-week="8">
+      <header class="story-head">
+        <span class="week-num">Capitolo 8 · settimana 8</span>
+        <span class="week-mood">🌫️</span>
+      </header>
+      <h2 class="story-title">Sei ore mentali</h2>
+      <p class="story-subtitle">18 – 24 agosto 2025</p>
+      <div class="story-body"><p>"Che salita pazzesca", scrive Michele, "sei ore mentali aggiunte." <a class="strava-inline" href="https://www.strava.com/activities/15510225406" target="_blank" rel="noopener">I 150,9 km del Crocedomini delle gambe<span class="strava-mark">↗</span></a>, 3.048 metri di dislivello e 4.256 kJ, aprono la settimana da tredici attività — il numero più alto del blocco. Corsa, bici, nuoto in piscina e in acqua libera a Sirmione, due camminate. Venerdì il Sentiero delle 52 Gallerie e la Strada degli Eroi, la montagna come archivio di nomi. In bici poi <a class="strava-inline" href="https://www.strava.com/activities/15533414729" target="_blank" rel="noopener">i 90 km di Bani, pizza pecorina e altri incastri<span class="strava-mark">↗</span></a> e i 64 di Fonteno Chill, perché tra una galleria e l'altra le gambe vogliono comunque girare. Venticinque ore e mezza, 405 chilometri, un Calming 18 a chiudere. La fatica più dura, dice lui, è sempre quella che si fa nella testa.</p></div>
+      <div class="stat-strip">13 attività · 405,6 km · 8.981 m · 25,5 h · 9.519 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-7" data-week="7">
+      <header class="story-head">
+        <span class="week-num">Capitolo 7 · settimana 7</span>
+        <span class="week-mood">⛰️</span>
+      </header>
+      <h2 class="story-title">La foto di Sonny</h2>
+      <p class="story-subtitle">11 – 17 agosto 2025</p>
+      <div class="story-body"><p>Il souvenir più grande e pesante delle vacanze, scrive Michele, è una foto firmata di Sonny Colbrelli che vince la Roubaix. <a class="strava-inline" href="https://www.strava.com/activities/15442015549" target="_blank" rel="noopener">Gli 84,7 km dell'Antico Vaso – Sonny Edition<span class="strava-mark">↗</span></a>, 2.203 metri di salita, Passo San Zeno in gestione e un piccolo gravel a Casto che è pura bellezza. Ci arriva dopo <a class="strava-inline" href="https://www.strava.com/activities/15432760841" target="_blank" rel="noopener">i 188 km di Cima Rest Day<span class="strava-mark">↗</span></a>, passando per Brescia e il Vittoriale fino all'hotel dei cugini di Colbrelli, "finitudine assoluta in grave". È la settimana monstre: 534 chilometri, 10.188 metri, ventisette ore in sella e nelle scarpe. Ferragosto se lo gioca sul Guglielmo, finalmente buone sensazioni. Poi venerdì <a class="strava-inline" href="https://www.strava.com/activities/15485552538" target="_blank" rel="noopener">Enough / Esploso<span class="strava-mark">↗</span></a>, il titolo che chiude tutto. Certe vacanze si misurano in dislivello.</p></div>
+      <div class="stat-strip">10 attività · 534,4 km · 10.188 m · 27,2 h · 4.061 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-6" data-week="6">
+      <header class="story-head">
+        <span class="week-num">Capitolo 6 · settimana 6</span>
+        <span class="week-mood">🔥</span>
+      </header>
+      <h2 class="story-title">Quel che si poteva prendere</h2>
+      <p class="story-subtitle">4 – 10 agosto 2025</p>
+      <div class="story-body"><p>"Nessuna vera fiducia nei kJ della bici quest'anno", confessa Michele. "Ho preso quel che potevo, di nuovo." E quel che prende sono <a class="strava-inline" href="https://www.strava.com/activities/15396067624" target="_blank" rel="noopener">i 126,4 km di Passabocche e altri bocconi<span class="strava-mark">↗</span></a>, 2.702 metri di salita e 3.588 kJ raccolti come si raccoglie la legna prima dell'inverno. È la settimana più affamata di tutte, 11.376 kJ bruciati in dieci attività. Venerdì un recupero attivo che di recupero ha poco: <a class="strava-inline" href="https://www.strava.com/activities/15385587678" target="_blank" rel="noopener">i 57,9 km di Zambla a 65 di HRV<span class="strava-mark">↗</span></a>, low carb, "circo e clown". In mezzo un Ice Cream Brick, una mezza mattone giovedì, una torta a San Lucio. Trecentottantatré chilometri di sfiducia ben mascherata. A volte la forma non si sente, si rosicchia un boccone alla volta.</p></div>
+      <div class="stat-strip">10 attività · 383,4 km · 7.336 m · 20,1 h · 11.376 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-5" data-week="5">
+      <header class="story-head">
+        <span class="week-num">Capitolo 5 · settimana 5</span>
+        <span class="week-mood">☀️</span>
+      </header>
+      <h2 class="story-title">Non fare l'avaro</h2>
+      <p class="story-subtitle">28 luglio – 3 agosto 2025</p>
+      <div class="story-body"><p>"Quando ti alleni per tre sport — facciamo due e mezzo — non puoi essere avaro", scrive Michele, e domenica lo dimostra. <a class="strava-inline" href="https://www.strava.com/activities/15327496337" target="_blank" rel="noopener">I 122,8 km di Non Fare L'Avaro<span class="strava-mark">↗</span></a>, 2.861 metri di salita e 3.648 kJ, sono il pezzo grosso di una settimana da 7.853 kJ complessivi. Sabato i 30 chilometri li chiama come sono: <a class="strava-inline" href="https://www.strava.com/activities/15316578418" target="_blank" rel="noopener">gli Shitty 30s<span class="strava-mark">↗</span></a>, 1.892 kJ di corsa che non gira, e va bene così, anche le giornate storte fanno chilometraggio. Mercoledì il pellegrinaggio ad Altino prima del lavoro, perché "pre work batte post work", poi avocado, uovo e sole. Tra Forcella dei Leoni, una mezza combo e il burro, otto uscite per 368 chilometri. L'avarizia è l'unico peccato che un triatleta non si può permettere.</p></div>
+      <div class="stat-strip">8 attività · 368 km · 7.042 m · 18,2 h · 7.853 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-4" data-week="4">
+      <header class="story-head">
+        <span class="week-num">Capitolo 4 · settimana 4</span>
+        <span class="week-mood">🌧️</span>
+      </header>
+      <h2 class="story-title">Piove sul bagnato</h2>
+      <p class="story-subtitle">21 – 27 luglio 2025</p>
+      <div class="story-body"><p>"Ma almeno c'è lo steudel", annota Michele sotto la pioggia. <a class="strava-inline" href="https://www.strava.com/activities/15237914663" target="_blank" rel="noopener">I 67,2 km del sabato bagnato<span class="strava-mark">↗</span></a>, 1.452 metri di salita e 1.904 kJ presi sotto l'acqua, hanno questa consolazione austriaca a tenere su il morale. La settimana è la più calorica finora, 7.180 kJ bruciati in dieci attività tra corsa, bici, nuoto e una camminata. Domenica le stagioni cambiano marcia: <a class="strava-inline" href="https://www.strava.com/activities/15250175350" target="_blank" rel="noopener">i 31,5 km del Patè Parafulmine<span class="strava-mark">↗</span></a> corsi nella vendemmia, 1.383 metri in salita, 2.341 kJ, "powered by" uva e sole. In mezzo un mattino a caso da Bar Dony verso Belloro, un Mental Brick-Down, un Empty 18 con le gambe a secco. Trecentotredici chilometri sotto cieli incerti. La pioggia non chiede permesso, e nemmeno lui.</p></div>
+      <div class="stat-strip">10 attività · 313,8 km · 8.183 m · 21,1 h · 7.180 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-3" data-week="3">
+      <header class="story-head">
+        <span class="week-num">Capitolo 3 · settimana 3</span>
+        <span class="week-mood">🔥</span>
+      </header>
+      <h2 class="story-title">Quarantadue di nuovo</h2>
+      <p class="story-subtitle">14 – 20 luglio 2025</p>
+      <div class="story-body"><p>Domenica Michele torna alla maratona dopo tre mesi, e lo fa nel modo più storto possibile: il giorno prima, quattro ore e mezza di bici nelle gambe. <a class="strava-inline" href="https://www.strava.com/activities/15172490742" target="_blank" rel="noopener">I 42,2 km della Bionic Marathon<span class="strava-mark">↗</span></a>, nutrizione e idratazione studiate come da schema fotografato, 2.637 kJ versati sull'asfalto. Il corpo regge, la testa pure. La settimana l'ha preparata male a posta: <a class="strava-inline" href="https://www.strava.com/activities/15112131850" target="_blank" rel="noopener">i 65,1 km degli anni Ottanta e agosto<span class="strava-mark">↗</span></a> partiti dopo tre ore di sonno, due notti di fila, "okokok" e via. Sabato 110 km verso le piramidi e i geroglifici con lo stomaco incerto, ripiegato su un giro più corto. Quattro corse, quattro uscite in bici, una nuotata: 361 chilometri e 5.975 metri per arrivare a quei quarantadue. Tornare grandi distanze è soprattutto ricordarsi come si fa.</p></div>
+      <div class="stat-strip">9 attività · 361,5 km · 5.975 m · 18,8 h · 5.379 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-2" data-week="2">
+      <header class="story-head">
+        <span class="week-num">Capitolo 2 · settimana 2</span>
+        <span class="week-mood">⛰️</span>
+      </header>
+      <h2 class="story-title">Sei euro e cinquanta</h2>
+      <p class="story-subtitle">7 – 13 luglio 2025</p>
+      <div class="story-body"><p>Rinascere dopo un weekend di festa, con altra festa. <a class="strava-inline" href="https://www.strava.com/activities/15034359196" target="_blank" rel="noopener">I 136 km e 3.204 metri verso i Piani di Artavaggio<span class="strava-mark">↗</span></a> hanno un bilancio preciso, che Michele tiene come un contabile felice: snack stupidissimo in aeroporto, e a Fuipiano due banane, focaccia con cotto, torta, caffè. Totale sei euro e cinquanta. "Vivo per questo", scrive, e gli si crede. La settimana gonfia fino a 417 chilometri e 9.199 metri di dislivello, ventun'ore e mezza in movimento. Sabato infila <a class="strava-inline" href="https://www.strava.com/activities/15087056348" target="_blank" rel="noopener">i 117,5 km del Montecampione gravel<span class="strava-mark">↗</span></a>, certi posti che andrebbero lasciati agli sci, finito più volte eppure tenuto fino in fondo. In mezzo, una nuotata, una mezza di nome Acropolis Moon, un bowling che è un giro in bici. La fame come metodo.</p></div>
+      <div class="stat-strip">9 attività · 417,7 km · 9.199 m · 21,5 h · 4.064 kJ</div>
+    </article>
+
+    <article class="story reveal" id="week-1" data-week="1">
+      <header class="story-head">
+        <span class="week-num">Capitolo 1 · settimana 1</span>
+        <span class="week-mood">☀️</span>
+      </header>
+      <h2 class="story-title">Cordoba a ventotto gradi</h2>
+      <p class="story-subtitle">30 giugno – 6 luglio 2025</p>
+      <div class="story-body"><p>La settimana si apre con il vento sbagliato e le gambe vuote: <a class="strava-inline" href="https://www.strava.com/activities/14969262827" target="_blank" rel="noopener">il Sellaronda prima del lavoro, 51,6 km e 1.724 metri di salita<span class="strava-mark">↗</span></a>, un giro classico trasformato in penitenza. Poi l'aereo, la Spagna, il matrimonio di Andre e Marina che aspetta sullo sfondo. Michele si infila le scarpe a Cordoba e parte con ventotto gradi addosso, prima del sole vero. "Heat training, immagino", scrive. <a class="strava-inline" href="https://www.strava.com/activities/15010858255" target="_blank" rel="noopener">I 21,2 km della mezza andalusa<span class="strava-mark">↗</span></a> diventano il modo migliore di visitare una città: correndo, sudando, segnando comunque il tempo più veloce. Tra i due, in mezzo a una tempesta e l'altra, <a class="strava-inline" href="https://www.strava.com/activities/14980008658" target="_blank" rel="noopener">i 22,6 km della Pösa ü falì<span class="strava-mark">↗</span></a> con 1.514 kJ bruciati. Otto attività, due continenti, una cerimonia. Il giorno dopo, gli sposi.</p></div>
+      <div class="stat-strip">8 attività · 208,6 km · 5.601 m · 12,8 h · 5.349 kJ</div>
+    </article>
+<div class="end-marker">— Inizio della saga —</div>
+<div class="colophon">57 short stories · generato 2026-08-17 · dati: <a href="https://intervals.icu" target="_blank">intervals.icu</a></div>
+<script>(function(){const io=new IntersectionObserver((entries)=>{for(const e of entries){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}},{rootMargin:'0px 0px -40px 0px',threshold:0.05});document.querySelectorAll('.reveal').forEach(el=>io.observe(el));})();</script>
+</body></html>
