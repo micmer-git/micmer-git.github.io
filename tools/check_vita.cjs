@@ -1058,10 +1058,16 @@ if (ran) {
       "nel diario non c'e' nessun campo scrivibile, a parte il calendario per sfogliare"
       + (editabili.length ? ` — trovati: ${editabili.map(n => n.attrs.type || n.tagName).join(", ")}` : ""));
 
-    /* I bottoni che restano sono solo quelli per muoversi: chiudere, il giorno
-       prima, il giorno dopo, l'ultimo. Nessuno che tolga o aggiunga una riga. */
+    /* I bottoni che restano sono solo quelli per MUOVERSI dentro quello che gia'
+       esiste: chiudere, il giorno prima, il giorno dopo, l'ultimo, e da 17/08/2026
+       la finestra (giorno / 7 / 14). Nessuno che tolga o aggiunga una riga.
+       Il controllo non e' stato allargato per far passare i tre nuovi: e' stato
+       girato sul fatto nuovo, e resta esattamente lo stesso divieto — il diario si
+       legge, si annota da Mission Control. Un bottone che si chiamasse «aggiungi» o
+       «cancella» lo farebbe fallire come prima. */
     const bottoni = node.descendants().filter(n => n.tagName === "button");
-    const ammessi = ["×", "‹ giorno prima", "giorno dopo ›", "ultimo giorno"];
+    const ammessi = ["×", "‹ giorno prima", "giorno dopo ›", "ultimo giorno",
+                     "il giorno", "7 giorni", "14 giorni"];
     const estranei = bottoni.filter(b => !ammessi.includes((b.textContent || "").trim()));
     ok(estranei.length === 0,
       `i bottoni del diario sono solo di navigazione (${bottoni.length})`

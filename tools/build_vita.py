@@ -1269,6 +1269,28 @@ TEMPLATE = r"""<!DOCTYPE html>
   .diary-open button:hover{background:var(--accent); color:#fff}
   .diary-open span{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.66rem;
     letter-spacing:.08em; color:var(--muted)}
+  /* il selettore del periodo, e le due tabelle che ha portato con se' */
+  .dper{display:flex; gap:7px; align-items:baseline; flex-wrap:wrap; margin:12px 0 4px}
+  .dper button{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem;
+    letter-spacing:.08em; text-transform:uppercase; padding:5px 12px; cursor:pointer;
+    background:var(--paper); color:var(--muted); border:2px solid var(--rule); border-radius:0}
+  .dper button.on{background:var(--ink); color:var(--paper); border-color:var(--ink)}
+  .dper button:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+  .dper .dper-n{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.62rem;
+    color:var(--muted); margin-left:4px}
+  table.d-nutri, table.d-cibi{width:100%; border-collapse:collapse; margin-top:8px;
+    font-size:.82rem; font-variant-numeric:tabular-nums}
+  table.d-nutri th, table.d-cibi th{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;
+    font-size:.6rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+    text-align:left; font-weight:600; padding:0 8px 5px 0; border-bottom:1px solid var(--rule)}
+  table.d-nutri td, table.d-cibi td{padding:4px 8px 4px 0;
+    border-bottom:1px solid var(--rule-soft, rgba(32,33,36,.08))}
+  table.d-nutri .num, table.d-cibi .num{text-align:right; white-space:nowrap}
+  /* i tetti si leggono al contrario degli obiettivi: si marcano, non si colorano
+     uguale — superare il potassio e superare il sodio sono due cose opposte */
+  table.d-nutri tr.tetto td:first-child::before{content:"tetto · "; color:var(--muted);
+    font-size:.7rem; letter-spacing:.06em}
+  table.d-cibi tr.asm td{color:var(--muted); font-style:italic}
   .dnav{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:12px 0 4px}
   .dnav button,.d-act{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.6rem;
     letter-spacing:.1em; color:var(--ink-soft); background:var(--paper-2);
@@ -1984,6 +2006,9 @@ const NUTRI_IT = { protein_g:"Proteine", carb_g:"Carboidrati", fiber_g:"Fibre",
   iron_mg:"Ferro", magnesium_mg:"Magnesio", zinc_mg:"Zinco", vitc_mg:"Vit. C",
   vita_ug:"Vit. A", vitd_ug:"Vit. D", b12_ug:"Vit. B12", folate_ug:"Folati" };
 const CAP_IT = { sodium_mg:"Sodio", satfat_g:"Grassi saturi", sugar_g:"Zuccheri" };
+/* l'unita' si legge dal NOME della colonna invece di stare in un secondo elenco che
+   qualcuno dimentichera' di allineare: `_mg` -> mg, `_ug` -> µg, `_g` -> g */
+const UNI_IT = k => { const u = k.split("_").pop(); return u === "ug" ? "µg" : u; };
 
 function bar(label, pct, cap) {
   const w = Math.max(0, Math.min(100, pct));
@@ -5581,6 +5606,60 @@ function diaryRows(k) {
   return { day, rows };
 }
 
+/* IL DIARIO SU PIU' GIORNI.
+   Michele, 17/08: «un toggle che mi possa collassare non solo il giorno ma la settimana
+   e le ultime due settimane, cosi' vedo le medie su quello. E ovviamente tutto deve
+   essere mediato e pesato e sotto dovrei avere un riassunto delle somme in grammi di
+   tutti gli alimenti su quel periodo».
+
+   «Pesato» qui vuol dire una cosa precisa: la media si divide per i giorni CON DEL CIBO,
+   non per i giorni di calendario. Dividere per sette quando due giorni non sono stati
+   raccontati non da' «quanto mangio in media»: da' un numero piu' basso che non
+   corrisponde a niente, ed e' lo stesso errore che il riquadro dei grassi evita con
+   `how:"mean"`. I giorni vuoti si contano e si dichiarano, non si spalmano.
+
+   I grammi invece si SOMMANO: la domanda «quanto pane ho mangiato in due settimane»
+   vuole un totale, non una media. Per ogni alimento si tiene anche in quanti giorni
+   e' comparso, che e' la differenza fra mangiarne tanto una volta e un po' sempre. */
+let diarioGiorni = 1;
+function diarioPeriodo(iEnd, n) {
+  const tot = {}, cibi = new Map();
+  let conCibo = 0, kcalOss = 0, kcalAsm = 0;
+  const corpo = { sleep:[], score:[], hrv:[], rhr:[], steps:[], weight:[], ctl:[], tss:[] };
+  const i0 = Math.max(0, iEnd - n + 1);
+  for (let i = i0; i <= iEnd; i++) {
+    ["sleep", "score", "hrv", "rhr", "steps", "weight", "ctl"].forEach(k => {
+      const v = D[k] && D[k][i];
+      if (v !== null && v !== undefined && isFinite(v)) corpo[k].push(v);
+    });
+    let t = 0, vista = false;
+    D.acts.forEach(a => { if (a[0] === i) { t += a[5] || 0; vista = true; } });
+    if (vista) corpo.tss.push(t);
+
+    const { day, rows } = diaryRows(isoOf(i));
+    if (!day || !day.tot) continue;
+    conCibo++;
+    kcalOss += day.obs || 0; kcalAsm += day.asm || 0;
+    for (const k in day.tot) tot[k] = (tot[k] || 0) + (day.tot[k] || 0);
+    for (const r of rows) {
+      const key = r.f || r.n;
+      const c = cibi.get(key) || { f:r.f, n:r.n, q:0, kcal:0, giorni:new Set(), asm:0 };
+      c.q += (+r.q || 0); c.kcal += r.kcal || 0; c.giorni.add(i);
+      if (r.asm) c.asm++;
+      cibi.set(key, c);
+    }
+  }
+  const media = {};
+  for (const k in tot) media[k] = conCibo ? tot[k] / conCibo : 0;
+  const mediaCorpo = {};
+  for (const k in corpo) mediaCorpo[k] = corpo[k].length
+    ? { v: corpo[k].reduce((a, b) => a + b, 0) / corpo[k].length, n: corpo[k].length } : null;
+  return { i0, iEnd, giorni:iEnd - i0 + 1, conCibo, tot, media, mediaCorpo,
+           obs:kcalOss, asm:kcalAsm,
+           cibi:[...cibi.values()].map(c => ({ ...c, giorni:c.giorni.size }))
+                  .sort((a, b) => b.kcal - a.kcal) };
+}
+
 /* Dichiarato qui, e non solo assegnato dentro openDiary/closeDiary come faceva prima:
    fino a quando il diario non veniva aperto una volta, `diaryIdx` non esisteva, e il
    gestore dell'Escape che lo legge sollevava un ReferenceError su OGNI Escape premuto
@@ -5622,21 +5701,48 @@ function diaryRender() {
   last.setAttribute("type", "button");
   last.addEventListener("click", () => go(N - 1));
 
+  /* il periodo: un giorno, una settimana, due settimane */
+  const per = mk("div", "dper", diaryIn);
+  [[1, "il giorno"], [7, "7 giorni"], [14, "14 giorni"]].forEach(([n, lab]) => {
+    const b2 = mk("button", diarioGiorni === n ? "on" : null, per, lab);
+    b2.setAttribute("type", "button");
+    b2.setAttribute("aria-pressed", String(diarioGiorni === n));
+    b2.addEventListener("click", () => { diarioGiorni = n; diaryRender(); });
+  });
+  const P = diarioPeriodo(i, diarioGiorni);
+  if (diarioGiorni > 1) mk("span", "dper-n", per,
+    `${fmtDate(P.i0)} → ${fmtDate(P.iEnd)} · ${P.conCibo} giorni con del cibo su ${P.giorni}`);
+
   /* ---- le misure del giorno ---- */
   const kv = [];
   const push = (v, l) => { if (v !== null && v !== undefined) kv.push([v, l]); };
-  push(D.sleep[i] === null ? null : hhmm(D.sleep[i]), "sonno");
-  push(D.score[i] === null ? null : nf(D.score[i]), "punteggio");
-  push(D.hrv[i] === null ? null : nf(D.hrv[i]) + " ms", "hrv");
-  push(D.rhr[i] === null ? null : nf(D.rhr[i]), "fc riposo");
-  push(D.steps[i] === null ? null : nf(D.steps[i]), "passi");
-  push(D.weight[i] === null ? null : nf(D.weight[i], 1) + " kg", "peso");
-  push(D.ctl[i] === null ? null : nf(D.ctl[i], 0), "fitness");
-  let tss = 0, nact = 0;
-  D.acts.forEach(a => { if (a[0] === i) { nact++; tss += a[5] || 0; } });
-  if (nact) push(nf(tss, 0), nact === 1 ? "tss · 1 uscita" : `tss · ${nact} uscite`);
+  if (diarioGiorni > 1) {
+    /* sul periodo ogni misura porta su quanti giorni e' la media: due pesate e
+       quattordici non valgono uguale, e nasconderlo sarebbe la stessa bugia della
+       media divisa per i giorni di calendario */
+    const M = P.mediaCorpo, su = m => m ? ` (${m.n})` : "";
+    if (M.sleep)  push(hhmm(M.sleep.v), "sonno" + su(M.sleep));
+    if (M.score)  push(nf(M.score.v), "punteggio" + su(M.score));
+    if (M.hrv)    push(nf(M.hrv.v) + " ms", "hrv" + su(M.hrv));
+    if (M.rhr)    push(nf(M.rhr.v), "fc riposo" + su(M.rhr));
+    if (M.steps)  push(nf(M.steps.v), "passi" + su(M.steps));
+    if (M.weight) push(nf(M.weight.v, 1) + " kg", "peso" + su(M.weight));
+    if (M.ctl)    push(nf(M.ctl.v, 0), "fitness" + su(M.ctl));
+    if (M.tss)    push(nf(M.tss.v, 0), `tss · ${M.tss.n} giorni con uscita`);
+  } else {
+    push(D.sleep[i] === null ? null : hhmm(D.sleep[i]), "sonno");
+    push(D.score[i] === null ? null : nf(D.score[i]), "punteggio");
+    push(D.hrv[i] === null ? null : nf(D.hrv[i]) + " ms", "hrv");
+    push(D.rhr[i] === null ? null : nf(D.rhr[i]), "fc riposo");
+    push(D.steps[i] === null ? null : nf(D.steps[i]), "passi");
+    push(D.weight[i] === null ? null : nf(D.weight[i], 1) + " kg", "peso");
+    push(D.ctl[i] === null ? null : nf(D.ctl[i], 0), "fitness");
+    let tss = 0, nact = 0;
+    D.acts.forEach(a => { if (a[0] === i) { nact++; tss += a[5] || 0; } });
+    if (nact) push(nf(tss, 0), nact === 1 ? "tss · 1 uscita" : `tss · ${nact} uscite`);
+  }
   if (kv.length) {
-    mk("h4", null, diaryIn, "Corpo");
+    mk("h4", null, diaryIn, diarioGiorni > 1 ? "Corpo, media al giorno" : "Corpo");
     const box = mk("div", "kv", diaryIn);
     for (const [v, l] of kv) {
       const c = mk("div", null, box);
@@ -5645,7 +5751,27 @@ function diaryRender() {
     }
   }
 
-  /* ---- la tavola, riga per riga ---- */
+  /* ---- la tavola ---- */
+  if (diarioGiorni > 1) {
+    const oss = P.obs + P.asm ? Math.round(100 * P.obs / (P.obs + P.asm)) : null;
+    mk("h4", null, diaryIn, `Tavola — ${nf(P.media.kcal || 0)} kcal al giorno`
+      + (oss !== null ? ` · ${nf(oss)}% osservato` : ""));
+    if (!P.cibi.length) mk("p", "d-empty", diaryIn, "Niente di registrato in questo periodo.");
+    else {
+      /* IL RIASSUNTO IN GRAMMI, che e' la richiesta letterale. Somme, non medie:
+         «quanto pane in due settimane» vuole un totale. `giorni` accanto distingue
+         chi torna tutti i giorni da chi e' passato una volta sola. */
+      const tb = mk("table", "d-cibi", diaryIn);
+      tb.innerHTML = "<tr><th>alimento</th><th>totale</th><th>giorni</th><th>kcal</th></tr>"
+        + P.cibi.map(c => {
+            const u = unitOf(c.f) === "unit" ? "×" : (unitOf(c.f) || "g");
+            return `<tr${c.asm ? ' class="asm"' : ""}><td>${c.n}</td>`
+              + `<td class="num">${nf(c.q, c.q < 10 ? 1 : 0)} ${u}</td>`
+              + `<td class="num">${c.giorni}</td>`
+              + `<td class="num">${nf(c.kcal)}</td></tr>`;
+          }).join("");
+    }
+  } else {
   mk("h4", null, diaryIn, `Tavola — ${nf(day && day.tot ? day.tot.kcal : 0)} kcal`
     + (day && day.asm ? ` · ${nf(Math.round(100 * day.obs / (day.obs + day.asm)))}% osservato` : ""));
 
@@ -5665,8 +5791,49 @@ function diaryRender() {
       mk("em", null, row, `${unitOf(r.f) === "unit" ? "×" : unitOf(r.f)} · ${nf(r.kcal)} kcal`);
     }
   }
+  }
 
-  /* ---- i macro ---- */
+  /* ---- micro e macro, TUTTI ----
+     Michele, 17/08: «quando apro il diario voglio avere tutti i micro macro del giorno
+     stesso». Prima c'erano quattro barre. Qui c'e' la tabella intera: quanto, e quanto
+     e' del fabbisogno. Le tre voci col TETTO (sodio, saturi, zuccheri) restano marcate
+     come tetti e non come obiettivi — superare il 100 % del potassio e superare il
+     100 % del sodio sono due cose opposte. */
+  {
+    const base = diarioGiorni > 1 ? P.media : (day && day.tot);
+    const rif = diarioGiorni > 1 ? null : (day && day.pct);
+    const cap = day && day.cap;
+    if (base && Object.keys(base).length) {
+      mk("h4", null, diaryIn, diarioGiorni > 1
+        ? `Micro e macro, media al giorno su ${P.conCibo} giorni`
+        : "Micro e macro del giorno");
+      const tb = mk("table", "d-nutri", diaryIn);
+      const righe = [];
+      const quota = k => {
+        if (rif && rif[k] !== undefined) return rif[k];
+        // sul periodo la percentuale si ricava dal rapporto misura/fabbisogno del
+        // giorno aperto, che e' l'unico posto dove il fabbisogno e' scritto
+        const dr = day && day.pct, dt = day && day.tot;
+        if (dr && dt && dr[k] !== undefined && dt[k]) return base[k] * dr[k] / dt[k];
+        return null;
+      };
+      for (const k of Object.keys(NUTRI_IT)) {
+        if (base[k] === undefined) continue;
+        const q = quota(k);
+        righe.push(`<tr><td>${NUTRI_IT[k]}</td><td class="num">${nf(base[k], base[k] < 10 ? 1 : 0)} ${UNI_IT(k)}</td>`
+          + `<td class="num">${q === null ? "—" : nf(q) + " %"}</td></tr>`);
+      }
+      for (const k of Object.keys(CAP_IT)) {
+        if (base[k] === undefined) continue;
+        const c2 = cap && cap[k];
+        righe.push(`<tr class="tetto"><td>${CAP_IT[k]}</td><td class="num">${nf(base[k], base[k] < 10 ? 1 : 0)} ${UNI_IT(k)}</td>`
+          + `<td class="num">${c2 === undefined || c2 === null ? "tetto" : nf(c2) + " % del tetto"}</td></tr>`);
+      }
+      tb.innerHTML = "<tr><th>nutriente</th><th>quanto</th><th>del fabbisogno</th></tr>" + righe.join("");
+    }
+  }
+
+  /* ---- i macro, in barre ---- */
   if (day && day.pct) {
     const P = D.foodProfile || {}, rda = (P.rda || {});
     const need = { protein_g: P.weight_kg && P.protein_g_per_kg ? P.weight_kg * P.protein_g_per_kg : null,
