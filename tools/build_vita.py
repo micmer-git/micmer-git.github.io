@@ -1062,7 +1062,11 @@ TEMPLATE = r"""<!DOCTYPE html>
      onesto ma anonimo, e infatti dal telefono la pagina non sembrava di questo sito
      (Michele, 17/08/2026: "il background e i colori piu' vicini all'indice"). */
   .tile{
-    position:relative; background:var(--paper); border:2px solid var(--ink);
+    /* Il fondo lascia passare i quadretti della pagina: Michele, 17/08, «grafici in bg
+       piu' trasparenti». Non trasparente e basta — sotto un grafico serve comunque un
+       piano chiaro, o le linee sottili si perdono sul reticolo. */
+    position:relative; background:color-mix(in srgb, var(--paper) 74%, transparent);
+    border:2px solid var(--ink);
     border-radius:0; box-shadow:var(--neo-sm);
     padding:10px 14px 8px; transition:box-shadow .16s,transform .16s,background .16s;
     min-width:0; display:grid; grid-template-columns:180px 1fr; gap:0 16px;
@@ -1779,6 +1783,11 @@ const nice = (lo, hi) => {
      · GLYPH in tools/check_vita.cjs, che deve valere quanto TICKW — e' il modo in cui
        il check vede le etichette tagliate e quelle che si sovrappongono. */
 const AXIS_FS = 10;
+/* Il numero sopra la barra della media non e' un'etichetta d'asse: e' la cosa che si
+   legge. Michele, 17/08: «valori sopra medie orizzontali piu' grandi font». Sta a se'
+   perche' gli assi devono restare piccoli — se crescono anche loro, il disegno si
+   mangia lo spazio del disegno. */
+const MEAN_FS = 13;
 const TICKW = 6.05;
 const yTicks = (yd, fmt) => {
   const out = [];
@@ -1914,7 +1923,7 @@ function eighths(svg, g, pts, from, to, fmt, opts = {}) {
   /* le etichette: se in un ottavo non ci sta il numero piu' lungo, se ne stampa una
      ogni due. Meglio quattro numeri veri che otto sovrapposti. */
   const labs = acc.map(a => a.c ? String(fmt(a.s / a.c)) : "");
-  const wide = Math.max(...labs.map(s => s.length)) * TICKW + 6;
+  const wide = Math.max(...labs.map(s => s.length)) * TICKW * (MEAN_FS / AXIS_FS) + 6;
   const every = wide <= w ? 1 : 2;
   const out = [];
   acc.forEach((a, k) => {
@@ -1937,9 +1946,9 @@ function eighths(svg, g, pts, from, to, fmt, opts = {}) {
     if (k % every) return;
     /* sopra la barra, tranne quando la barra e' gia' in cima: li' il numero
        uscirebbe dal viewBox, e sotto ci si legge uguale */
-    const up = y - 7 >= g.P.t + AXIS_FS;
-    const t = el("text", { x:x + w / 2, y: up ? y - 6 : y + AXIS_FS + 5,
-      "text-anchor":"middle", fill:"var(--ink)", "font-size":String(AXIS_FS),
+    const up = y - 8 >= g.P.t + MEAN_FS;
+    const t = el("text", { x:x + w / 2, y: up ? y - 7 : y + MEAN_FS + 5,
+      "text-anchor":"middle", fill:"var(--ink)", "font-size":String(MEAN_FS),
       "font-weight":"700", "font-family":"ui-monospace,'SFMono-Regular',Menlo,monospace",
       stroke:"var(--paper)", "stroke-width":"3.2", "paint-order":"stroke",
       "stroke-linejoin":"round" });
@@ -2411,36 +2420,50 @@ function rStack(svg, W, H, t, from, to) {
   const rows = keys.map(k => ({ k, i:maps[0].get(k).i,
     parts:maps.map(m => { const v = m.get(k).v;
       return (t.scale ? t.scale(v) : v) || 0; }) }));
-  const hi = Math.max(...rows.map(r => r.parts.reduce((a, b) => a + b, 0)));
+  /* AL CENTO PER CENTO (`pct`): ogni colonna vale 100 e si guarda come si divide,
+     non quanto e' alta. Michele, 17/08: «graph grassi magari 100% e mostra % dei vari
+     con quei grafici a bande». E' la forma giusta quando la domanda e' la COMPOSIZIONE
+     e il totale e' un'altra storia — qui i grammi di grasso al giorno cambiano col
+     giorno, ma la quota di saturi e' quello che si vuole leggere.
+     I grammi non si perdono: restano nel tooltip e nella tabella sotto «dati». */
+  const grezze = rows.map(r => r.parts.slice());
+  if (t.pct) rows.forEach(r => {
+    const tot = r.parts.reduce((a, b) => a + b, 0);
+    if (tot > 0) r.parts = r.parts.map(v => 100 * v / tot);
+  });
+  const hi = t.pct ? 100 : Math.max(...rows.map(r => r.parts.reduce((a, b) => a + b, 0)));
   if (!(hi > 0)) return null;
-  const g = frame(svg, W, H, [from, to], [0, hi], { ytick:t.ytick });
+  const g = frame(svg, W, H, [from, to], [0, hi],
+    { ytick:t.pct ? (v => nf(v, 0) + " %") : t.ytick });
   /* Impilate: la domanda qui e' una composizione — quanto fa il totale e come si
      divide — e impilare e' l'unica forma che risponde a tutte e due insieme.
      2px di superficie fra un segmento e l'altro, o due colori adiacenti si
      fondono in una banda sola. */
   const bw = Math.max(1.6, Math.min(26, g.iw / rows.length - 1.8));
-  for (const r of rows) {
+  rows.forEach((r, ri) => {
     let acc = 0;
     const total = r.parts.reduce((a, b) => a + b, 0);
     r.parts.forEach((v, si) => {
       if (!(v > 0)) return;
       const yTop = g.Y(acc + v), yBot = g.Y(acc);
-      const h = Math.max(.8, yBot - yTop - (acc > 0 ? 2 : 0));
+      /* al 100% le bande si toccano quasi: un solco di 2px su una colonna piena
+         mangia il segmento piu' sottile, che qui e' proprio quello che interessa */
+      const h = Math.max(.8, yBot - yTop - (acc > 0 ? (t.pct ? 1 : 2) : 0));
       const rect = el("rect", { x:g.X(r.i) - bw / 2, y:yTop, width:bw, height:h,
         rx:Math.min(2, bw / 2), fill:cols[si], style:"cursor:pointer" });
       rect.addEventListener("pointerenter", ev => showTip(ev.clientX, ev.clientY,
         `<span class="d">${bucketLabel(r.k, plan.step)}</span><br>` +
-        r.parts.map((p, k) => p > 0 ? `<i style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${cols[k]};margin-right:5px"></i>${names[k]} <span class="v">${(t.fmt || FMT.num1)(p)}</span>` : null).filter(Boolean).join("<br>") +
-        `<br><span class="d">totale ${(t.fmt || FMT.num1)(total)}</span>`));
+        r.parts.map((p, k) => p > 0 ? `<i style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${cols[k]};margin-right:5px"></i>${names[k]} <span class="v">${t.pct ? nf(p, 1) + " %" : (t.fmt || FMT.num1)(p)}</span>${t.pct ? ` <span class="d">${(t.fmt || FMT.num1)(grezze[ri][k])}</span>` : ""}` : null).filter(Boolean).join("<br>") +
+        `<br><span class="d">totale ${(t.fmt || FMT.num1)(t.pct ? grezze[ri].reduce((a, b) => a + b, 0) : total)}</span>`));
       rect.addEventListener("pointerleave", hideTip);
       rect.addEventListener("click", () => openDay(r.i));
       svg.appendChild(rect);
       acc += v;
     });
-  }
-  return { stats:stats(rows.map(r => r.parts.reduce((a, b) => a + b, 0))), plan,
+  });
+  return { stats:stats(grezze.map(p => p.reduce((a, b) => a + b, 0))), plan,
     table:`<tr><th>${plan.label}</th>${names.map(n => `<th>${n}</th>`).join("")}</tr>` +
-      rows.slice(-30).reverse().map(r => `<tr><td>${bucketLabel(r.k, plan.step)}</td>${r.parts.map(p => `<td>${(t.fmt || FMT.num1)(p)}</td>`).join("")}</tr>`).join("") };
+      rows.map((r, ri) => [r, grezze[ri]]).slice(-30).reverse().map(([r, gz]) => `<tr><td>${bucketLabel(r.k, plan.step)}</td>${gz.map(p => `<td>${(t.fmt || FMT.num1)(p)}</td>`).join("")}</tr>`).join("") };
 }
 
 /* The cloud-and-trend form: every day is a dot, the line is the trailing mean, and
@@ -3851,21 +3874,20 @@ function nutriTiles() {
        I saturi il database li conosce su tutti e 788 i giorni, ma prendere quelli
        qui dentro impilerebbe una media su tutto il mese sotto tre medie sui soli
        giorni misurati: la colonna sarebbe alta per un motivo e divisa per un altro. */
-    const sat = new Array(N).fill(null), unsat = new Array(N).fill(null),
-          rest = new Array(N).fill(null);
+    const sat = new Array(N).fill(null), rest = new Array(N).fill(null);
     let nSplit = 0;
     for (let i = 0; i < N; i++) {
       if (tr[i] === null || tr[i] === undefined) continue;
       const m = mono[i] || 0, p = poly[i] || 0, s = N_.satfat_g[i] || 0, x = tr[i] || 0;
       sat[i] = s;
-      unsat[i] = m + p;
       rest[i] = Math.max(0, (N_.fat_g[i] || 0) - s - m - p - x);
       nSplit++;
     }
-    t.push({ panel:"tavola", h:180, first:"n_trans_g", src:"misurato",
-      title:"Di che grasso", cap:"grammi al giorno · media dei giorni pesati del mese",
-      legend:[["Saturi", "var(--s2)"], ["Insaturi", "var(--s3)"],
-              ["Trans", "var(--s4)"], ["Non classificato", "var(--muted)"]],
+    t.push({ panel:"tavola", h:180, first:"n_trans_g", src:"ricostruito",
+      title:"Di che grasso", cap:"quota del grasso del giorno · media del mese",
+      legend:[["Saturi", "var(--s2)"], ["Monoinsaturi", "var(--s3)"],
+              ["Polinsaturi", "var(--s1)"], ["Trans", "var(--s4)"],
+              ["Non classificato", "var(--muted)"]],
       /* Gli ULTIMI 30 GIORNI PESATI, non gli ultimi 30 giorni: una media mobile a
          finestra fissa qui non si accende mai, perche' i giorni misurati sono quattro
          al mese e `rolling` chiede almeno un terzo della finestra piena — per costruzione,
@@ -3876,19 +3898,23 @@ function nutriTiles() {
           if (tr[i] !== null && tr[i] !== undefined) v.push(tr[i]);
         return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; },
       nowFmt:v => nf(v, 2), nowUnit:"g di trans, ultimi 30 giorni pesati",
-      kind:rStack, spec:{ how:"mean", arrs:[sat, unsat, tr, rest],
-        names:["Saturi", "Insaturi", "Trans", "Non classificato"],
-        cols:["var(--s2)", "var(--s3)", "var(--s4)", "var(--muted)"],
+      kind:rStack, spec:{ how:"mean", pct:true, arrs:[sat, mono, poly, tr, rest],
+        names:["Saturi", "Monoinsaturi", "Polinsaturi", "Trans", "Non classificato"],
+        cols:["var(--s2)", "var(--s3)", "var(--s1)", "var(--s4)", "var(--muted)"],
         fmt:v => nf(v, 1) + " g" },
-      dataNote:"solo i giorni pesati su Cronometer",
-      foot:`<strong>${nf(nSplit)} giorni</strong>, quelli in cui Cronometer ha pesato la ` +
-        "giornata intera: è l'unico riquadro misurato di questa sezione. Il database interno " +
-        "conosce solo i <strong>saturi</strong>; mono, poli e trans arrivano da lì e da nessun " +
-        "altro posto, quindi negli altri giorni la serie è vuota invece di essere ricostruita. " +
-        "«Insaturi» è mono + poli. <strong>«Non classificato» è il grasso vero a cui Cronometer " +
-        "non assegna una classe</strong>: sommarlo agli insaturi avrebbe fatto quadrare il conto " +
-        "dicendo una cosa che non si sa. I trans stanno sotto il grammo quasi ogni giorno — " +
-        "l'OMS raccomanda meno dell'1 % dell'energia, cioè circa 3 g." });
+      foot:`<strong>${nf(nSplit)} giorni</strong> con del cibo, non piu' solo il centinaio ` +
+        "pesato da Cronometer: dal 17/08/2026 il catalogo porta anche mono, poli e trans, " +
+        "<strong>ricostruiti</strong> da profili di acidi grassi noti — l'olio d'oliva e' per " +
+        "tre quarti monoinsaturo, le noci per tre quarti polinsature, burro e formaggio " +
+        "portano un 4 % di trans naturali di ruminante. <strong>Non sono misure.</strong> " +
+        "Ma reggono il confronto: sui giorni pesati la mediana dice 31 % di saturi, 31 di " +
+        "mono, 17 di poli, e la ricostruzione dice 34, 32 e 18 — entro tre punti su ogni " +
+        "fetta, con 0,37 g di trans al giorno contro 0,34 misurati. <strong>«Non " +
+        "classificato» non e' un buco: e' il glicerolo</strong>, che nei trigliceridi e' " +
+        "circa il 4 % della massa e non e' un acido grasso. Li' dentro finisce anche " +
+        "l'imprecisione del profilo, invece di essere spalmata sugli insaturi per far " +
+        "quadrare il conto. I trans restano sotto il grammo quasi ogni giorno: l'OMS " +
+        "raccomanda meno dell'1 % dell'energia, circa 3 g." });
   }
 
   /* ---- quali cibi muovono la flora: heatmap alimenti × generi ------------ */

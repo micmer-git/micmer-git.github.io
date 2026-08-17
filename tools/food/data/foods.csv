@@ -1,176 +1,176 @@
-id,name_it,group,unit,ref_qty,kcal,protein_g,carb_g,sugar_g,fiber_g,fat_g,satfat_g,omega3_g,sodium_mg,potassium_mg,calcium_mg,iron_mg,magnesium_mg,zinc_mg,vitc_mg,vita_ug,vitd_ug,b12_ug,folate_ug,confidence,note,plant,fermented,upf
-lenticchie_secche,Lenticchie secche,legumi,g,100,353,25.8,60.1,2.0,30.5,1.1,0.15,0.1,6,955,56,7.5,122,4.8,4.5,1,0,0,479,medium,peso a crudo,lenticchia,0,0
-ceci_secchi,Ceci secchi,legumi,g,100,378,20.5,62.9,10.7,12.2,6.0,0.60,0.10,24,875,57,4.3,79,3.4,4.0,3,0,0,557,medium,peso a crudo,cece,0,0
-ceci_scatola,Ceci in scatola sgocciolati,legumi,g,100,139,7.1,22.8,4.0,6.4,2.6,0.27,0.04,240,172,45,1.6,30,1.1,1.0,1,0,0,51,medium,,cece,0,0
-piselli_secchi,Piselli secchi spezzati,legumi,g,100,341,24.6,60.4,8.0,25.5,1.2,0.16,0.04,15,981,55,4.4,115,3.0,1.8,7,0,0,274,medium,peso a crudo,pisello,0,0
-pasta_piselli,Pasta di piselli secca,legumi,g,100,350,24.0,50.0,4.0,12.0,4.0,0.50,0.10,20,700,60,5.0,100,3.0,0,0,0,0,120,low,varia molto per marca: controlla l'etichetta,pisello,0,1
-soia_granulare,Soia granulare disidratata,legumi,g,100,330,50.0,33.0,7.0,18.0,1.5,0.25,0.10,20,2000,250,9.0,290,4.5,0,0,0,0,300,low,peso a secco; varia per marca,soia,0,1
-tofu,Tofu al calcio,legumi,g,100,144,15.8,4.3,0.6,2.3,8.7,1.30,0.60,14,237,200,2.7,58,1.6,0.1,0,0,0,19,medium,coagulato al calcio,soia,0,0
-fagioli_neri_scatola,Fagioli neri in scatola,legumi,g,100,91,6.0,16.6,0.3,6.4,0.3,0.08,0.05,238,355,27,1.8,40,0.8,0,0,0,0,60,medium,,fagiolo_nero,0,0
-hummus,Hummus,legumi,g,100,166,7.9,14.3,0.3,6.0,9.6,1.40,0.10,379,228,38,2.4,71,1.8,0,1,0,0,83,medium,,cece,0,0
-lupini,Lupini in salamoia sgocciolati,legumi,g,100,119,15.6,9.9,1.0,2.8,2.9,0.34,0.06,400,245,51,1.2,54,2.3,1.1,0,0,0,61,medium,"USDA lupini lessi senza sale; sodio portato a 400 mg perche' quelli in salamoia si sciacquano ma non si desalano",lupino,0,0
-pasta_integrale,Pasta integrale secca,cereali,g,100,348,13.4,66.9,3.9,8.4,2.5,0.50,0.06,8,310,40,3.6,143,2.4,0,0,0,0,57,medium,peso a crudo,frumento,0,0
-pasta_semola,Pasta di semola secca,cereali,g,100,371,13.0,74.7,2.7,3.2,1.5,0.28,0.03,6,223,21,1.3,53,1.4,0,0,0,0,18,medium,peso a crudo,frumento,0,0
-riso_bianco,Riso bianco crudo,cereali,g,100,360,6.7,79.3,0.1,1.3,0.7,0.18,0.02,5,115,28,0.8,25,1.1,0,0,0,0,8,medium,peso a crudo,riso,0,0
-farro_perlato,Farro perlato crudo,cereali,g,100,340,15.1,67.1,6.8,6.8,2.4,0.40,0.05,8,400,29,4.4,136,3.3,0,0,0,0,45,medium,peso a crudo,farro,0,0
-polenta_mais,Farina di mais per polenta,cereali,g,100,362,8.1,76.9,1.6,7.3,3.6,0.50,0.06,7,315,7,2.4,127,1.7,0,11,0,0,25,medium,peso a crudo,mais,0,0
-avena_fiocchi,Fiocchi d'avena,cereali,g,100,389,13.2,66.3,1.0,10.6,6.9,1.20,0.11,2,429,54,4.7,177,4.0,0,0,0,0,56,high,,avena,0,0
-crusca_avena,Crusca d'avena,cereali,g,100,246,17.3,66.2,1.4,15.4,7.0,1.30,0.20,4,566,58,5.4,235,3.1,0,0,0,0,52,medium,,avena,0,0
-pane_integrale,Pane integrale,cereali,g,100,247,13.0,41.3,4.3,7.0,3.4,0.70,0.10,450,254,107,2.5,82,1.8,0,0,0,0,42,medium,,frumento,1,0
-pane_bianco,Pane bianco,cereali,g,100,265,9.0,49.0,5.0,2.7,3.2,0.70,0.05,490,115,150,3.6,25,0.7,0,0,0,0,100,medium,,frumento,1,0
-gallette_riso,Gallette di riso,cereali,g,100,387,8.2,81.5,0.9,4.2,2.8,0.55,0.05,30,200,12,1.4,100,1.8,0,0,0,0,20,medium,,riso,0,1
-farina_ceci,Farina di ceci,cereali,g,100,387,22.4,57.8,10.8,10.8,6.7,0.70,0.10,64,846,45,4.9,166,2.8,0,1,0,0,437,medium,per farinata,cece,0,0
-croissant_vuoto,Croissant vuoto,cereali,unit,1,264,5.3,29.8,7.0,1.6,13.7,7.60,0.10,270,70,25,1.2,10,0.4,0,50,0.2,0.1,40,medium,~65 g,frumento,0,1
-spinaci,Spinaci,verdura,g,100,23,2.9,3.6,0.4,2.2,0.4,0.06,0.14,79,558,99,2.7,79,0.5,28,469,0,0,194,high,,spinacio,0,0
-patate_dolci,Patate dolci,verdura,g,100,86,1.6,20.1,4.2,3.0,0.1,0.02,0.01,55,337,30,0.6,25,0.3,2.4,709,0,0,11,high,,patata_dolce,0,0
-carote,Carote,verdura,g,100,41,0.9,9.6,4.7,2.8,0.2,0.03,0.00,69,320,33,0.3,12,0.2,5.9,835,0,0,19,high,,carota,0,0
-cipolla,Cipolla,verdura,g,100,40,1.1,9.3,4.2,1.7,0.1,0.04,0.00,4,146,23,0.2,10,0.2,7.4,0,0,0,19,high,,cipolla,0,0
-peperoni,Peperoni,verdura,g,100,31,1.0,6.0,4.2,2.1,0.3,0.06,0.01,4,211,7,0.4,12,0.3,128,157,0,0,46,high,,peperone,0,0
-melanzane,Melanzane,verdura,g,100,25,1.0,5.9,3.5,3.0,0.2,0.03,0.01,2,229,9,0.2,14,0.2,2.2,1,0,0,22,high,,melanzana,0,0
-passata_pomodoro,Passata di pomodoro,verdura,g,100,32,1.6,6.0,4.5,1.5,0.2,0.03,0.02,20,400,15,0.9,15,0.2,12,40,0,0,12,medium,,pomodoro,0,0
-rucola,Rucola,verdura,g,100,25,2.6,3.7,2.0,1.6,0.7,0.09,0.17,27,369,160,1.5,47,0.5,15,119,0,0,97,high,,rucola,0,0
-avocado,Avocado,verdura,g,100,160,2.0,8.5,0.7,6.7,14.7,2.10,0.11,7,485,12,0.6,29,0.6,10,7,0,0,81,high,,avocado,0,0
-patate,Patate,verdura,g,100,77,2.0,17.5,0.8,2.2,0.1,0.03,0.01,6,425,12,0.8,23,0.3,19.7,0,0,0,15,high,,patata,0,0
-sugo_verdure,Sugo di pomodoro con verdure,verdura,ml,100,55,1.5,7.0,5.0,1.8,2.5,0.40,0.05,300,350,20,0.9,15,0.2,10,60,0,0,15,low,stima generica: dipende molto dall'olio aggiunto,pomodoro,0,1
-uovo_intero,Uovo intero medio,proteine,unit,1,78,6.3,0.6,0.2,0,5.5,1.70,0.04,70,69,28,0.9,6,0.6,0,87,1.1,0.6,24,high,~55 g di parte edibile,,0,0
-yogurt_greco_0,Yogurt greco 0%,latticini,g,100,59,10.3,3.6,3.2,0,0.4,0.10,0.01,36,141,110,0.1,11,0.5,0.8,1,0,0.8,5,high,,,1,0
-ricotta_vaccina,Ricotta vaccina,latticini,g,100,146,11.3,3.0,3.0,0,10.9,6.90,0.10,84,105,207,0.4,11,1.2,0,120,0.2,0.3,12,medium,,,0,0
-latte_ps,Latte parzialmente scremato,latticini,ml,100,46,3.3,4.9,4.9,0,1.6,1.00,0.02,44,150,120,0.1,11,0.4,1.0,20,0.0,0.5,5,high,,,0,0
-latte_soia,Latte di soia fortificato,latticini,ml,100,43,3.3,2.6,2.5,0.5,1.8,0.30,0.10,39,118,120,0.4,15,0.3,0,1,1.0,0.4,18,medium,valori da prodotto fortificato: senza fortificazione calcio B12 e D sono ~0,soia,0,1
-grana_padano,Grana Padano,latticini,g,100,384,33.0,0.0,0.0,0,28.0,18.00,0.30,700,102,1165,0.2,63,6.5,0,250,0.5,1.5,5,medium,,,1,0
-olio_evo,Olio extravergine d'oliva,grassi,ml,100,884,0,0,0,0,100.0,13.80,0.76,2,1,1,0.6,0,0,0,0,0,0,0,high,,oliva,0,0
-burro_arachidi_sgrassato,Burro di arachidi sgrassato in polvere,grassi,g,100,387,52.0,22.0,9.0,16.0,11.0,2.00,0.02,300,1300,60,4.5,200,4.0,0,0,0,0,90,high,"polvere sgrassata, confermato da te il 2026-08-11 (non la crema da ~600 kcal)",arachide,0,1
-mandorle,Mandorle,grassi,g,100,579,21.2,21.6,4.4,12.5,49.9,3.80,0.01,1,733,269,3.7,270,3.1,0,0,0,0,44,high,,mandorla,0,0
-noci,Noci,grassi,g,100,654,15.2,13.7,2.6,6.7,65.2,6.10,9.08,2,441,98,2.9,158,3.1,1.3,1,0,0,98,high,ottima fonte di ALA,noce,0,0
-banana,Banana media,frutta,unit,1,107,1.3,27.4,14.7,3.1,0.4,0.13,0.03,1,430,6,0.3,32,0.2,10.4,4,0,0,24,high,~120 g edibili,banana,0,0
-pesca,Pesca media,frutta,unit,1,59,1.4,14.3,12.6,2.3,0.4,0.03,0.00,0,285,9,0.4,14,0.2,9.9,24,0,0,6,high,~150 g edibili,pesca,0,0
-frutti_di_bosco,Frutti di bosco misti,frutta,g,100,45,1.0,10.0,6.0,4.0,0.4,0.03,0.06,1,100,25,0.5,15,0.3,30,5,0,0,25,medium,mix surgelato,frutti_di_bosco,0,0
-datteri,Datteri secchi,frutta,g,100,282,2.5,75.0,63.0,8.0,0.4,0.03,0.01,2,656,39,1.0,43,0.4,0.4,1,0,0,15,high,,dattero,0,0
-marmellata_fragola,Marmellata di fragole,dolci,g,100,250,0.4,65.0,60.0,1.0,0.1,0.01,0.00,30,80,20,0.4,5,0.1,3,1,0,0,2,medium,,fragola,0,1
-cioccolato_fondente_85,Cioccolato fondente 85%,dolci,g,100,592,10.3,25.0,14.0,12.0,49.0,29.00,0.10,20,715,73,11.9,228,3.3,0,2,0,0,12,medium,,cacao,1,0
-cacao_100,Cacao amaro 100%,dolci,g,100,228,19.6,57.9,1.8,37.0,13.7,8.10,0.08,21,1524,128,13.9,499,6.8,0,0,0,0,32,high,carboidrati in gran parte fibra,cacao,1,0
-proteine_whey,Proteine in polvere whey,integratori,g,100,380,80.0,6.0,4.0,1.0,5.0,2.00,0.05,300,500,500,1.0,60,3.0,0,0,0,1.5,20,low,varia molto per marca: controlla l'etichetta,,0,1
-lievito_nutrizionale,Lievito alimentare in scaglie,integratori,g,100,340,45.0,36.0,5.0,22.0,5.0,0.80,0.05,30,2000,40,5.0,230,8.0,0,0,0,40.0,300,low,B12 solo se fortificato: controlla l'etichetta,lievito,1,1
-latte_intero,Latte intero,latticini,ml,100,64,3.3,4.9,4.9,0,3.6,2.3,0.03,44,150,119,0.1,11,0.4,1.0,33,0.1,0.5,5,high,,,0,0
-cioccolato_fondente_50,Cioccolato fondente 50%,dolci,g,100,525,5.5,52.0,44.0,6.0,32.0,19.0,0.05,15,420,45,6.5,130,1.9,0,2,0,0,8,medium,,cacao,1,1
-cumino_semi,Cumino in semi,spezie,g,100,375,17.8,44.2,2.3,10.5,22.3,1.53,0.18,168,1788,931,66.4,366,4.8,7.7,64,0,0,10,medium,si usa a pizzichi: pesa poco ma conta come pianta,cumino,0,0
-curry_polvere,Curry in polvere,spezie,g,100,325,14.3,55.8,2.8,53.2,14.0,2.2,0.2,52,1543,478,29.6,254,4.1,11.4,49,0,0,154,medium,"miscela: coriandolo, curcuma, fieno greco…",curry,0,0
-pasta_uovo,Pasta all'uovo secca (tagliatelle),cereali,g,100,368,13.7,71.0,3.0,3.0,3.5,1.0,0.05,20,180,25,2.3,50,1.2,0,60,0.3,0.2,30,medium,peso a crudo,frumento,0,0
-pane_segale,Pane di segale scuro,cereali,g,100,259,8.5,48.3,3.9,5.8,3.3,0.6,0.09,603,190,73,2.8,40,1.2,0,0,0,0,35,medium,,segale,1,0
-piadina,Piadina / pane piatto,cereali,g,100,300,8.0,50.0,2.0,2.5,7.5,3.5,0.05,600,120,30,1.8,25,0.8,0,0,0,0,25,medium,,frumento,0,1
-focaccia,Focaccia,cereali,g,100,290,7.5,45.0,2.0,2.5,9.0,1.5,0.1,650,130,35,2.0,28,0.9,0,0,0,0,30,medium,barese o genovese: simili,frumento,1,0
-panino_bianco,Panino / rosetta,cereali,unit,1,145,4.9,26.9,2.7,1.5,1.8,0.38,0.03,270,63,82,2.0,14,0.4,0,0,0,0,55,medium,~55 g,frumento,1,0
-gnocchi_patate,Gnocchi di patate,cereali,g,100,157,3.9,32.0,1.0,2.0,1.2,0.3,0.02,290,180,20,0.8,20,0.4,3,0,0,0,12,medium,,patata,0,0
-couscous,Couscous secco,cereali,g,100,376,12.8,77.4,0.6,5.0,0.6,0.1,0.02,10,166,24,1.1,44,0.8,0,0,0,0,20,medium,peso a crudo,frumento,0,0
-cereali_colazione,Cereali da colazione (misti),cereali,g,100,380,8.0,78.0,20.0,6.0,3.0,0.8,0.05,400,250,100,8.0,60,2.0,0,300,2.0,1.5,150,low,"tipo hotel: fortificati, molto zuccherati",frumento,0,1
-quinoa,Quinoa cruda,cereali,g,100,368,14.1,64.2,4.6,7.0,6.1,0.71,0.26,5,563,47,4.6,197,3.1,0,1,0,0,184,high,peso a crudo,quinoa,0,0
-fagioli_cannellini,Fagioli cannellini in scatola,legumi,g,100,95,6.3,17.0,0.5,6.3,0.4,0.09,0.05,230,390,60,1.9,42,0.9,0,0,0,0,55,medium,,fagiolo,0,0
-edamame,Edamame sgusciati,legumi,g,100,121,11.9,8.9,2.2,5.2,5.2,0.6,0.36,6,436,63,2.3,64,1.4,6.1,9,0,0,311,high,,soia,0,0
-fagiolini,Fagiolini,verdura,g,100,31,1.8,7.0,3.3,2.7,0.2,0.03,0.07,6,211,37,1.0,25,0.2,12.2,35,0,0,33,high,,fagiolino,0,0
-zucchine,Zucchine,verdura,g,100,17,1.2,3.1,2.5,1.0,0.3,0.09,0.03,8,261,16,0.4,18,0.3,17.9,10,0,0,24,high,,zucchina,0,0
-pomodorini,Pomodorini / pomodori freschi,verdura,g,100,18,0.9,3.9,2.6,1.2,0.2,0.03,0.0,5,237,10,0.3,11,0.2,14,42,0,0,15,high,,pomodoro,0,0
-pomodori_secchi,Pomodori secchi,verdura,g,100,258,14.1,55.8,37.6,12.3,3.0,0.43,0.06,2095,3427,110,9.1,194,2.0,39,87,0,0,68,medium,,pomodoro,0,0
-funghi,Funghi champignon,verdura,g,100,22,3.1,3.3,2.0,1.0,0.3,0.05,0.0,5,318,3,0.5,9,0.5,2.1,0,0.2,0,17,high,non e' una pianta ma conta nella diversita' vegetale,fungo,0,0
-olive,Olive nere/verdi,verdura,g,100,145,1.0,3.8,0.5,3.3,15.3,2.0,0.06,1550,42,88,3.3,11,0.2,1,20,0,0,3,medium,,oliva,1,0
-insalata_mista,Insalata mista in foglia,verdura,g,100,17,1.4,2.9,1.0,1.8,0.2,0.03,0.06,28,230,40,0.8,14,0.2,15,300,0,0,80,medium,lattuga/misticanza,lattuga,0,0
-cetriolo,Cetriolo,verdura,g,100,15,0.7,3.6,1.7,0.5,0.1,0.04,0.0,2,147,16,0.3,13,0.2,2.8,5,0,0,7,high,,cetriolo,0,0
-mais_dolce,Mais dolce,verdura,g,100,86,3.3,19.0,3.2,2.7,1.4,0.2,0.02,15,270,2,0.5,37,0.5,6.8,9,0,0,42,high,,mais,0,0
-aglio,Aglio,spezie,g,100,149,6.4,33.1,1.0,2.1,0.5,0.09,0.02,17,401,181,1.7,25,1.2,31,0,0,0,3,high,si usa a spicchi,aglio,0,0
-basilico,Basilico fresco,spezie,g,100,23,3.2,2.7,0.3,1.6,0.6,0.04,0.32,4,295,177,3.2,64,0.8,18,264,0,0,68,high,,basilico,0,0
-prezzemolo,Prezzemolo fresco,spezie,g,100,36,3.0,6.3,0.9,3.3,0.8,0.13,0.01,56,554,138,6.2,50,1.1,133,421,0,0,152,high,,prezzemolo,0,0
-limone,Limone (succo di uno spicchio),frutta,g,100,29,1.1,9.3,2.5,2.8,0.3,0.04,0.03,2,138,26,0.6,8,0.1,53,1,0,0,11,high,,limone,0,0
-melone,Melone / cantalupo,frutta,g,100,34,0.8,8.2,7.9,0.9,0.2,0.05,0.03,16,267,9,0.2,12,0.2,36.7,169,0,0,21,high,,melone,0,0
-fragole,Fragole,frutta,g,100,32,0.7,7.7,4.9,2.0,0.3,0.02,0.07,1,153,16,0.4,13,0.1,58.8,1,0,0,24,high,,fragola,0,0
-mirtilli,Mirtilli,frutta,g,100,57,0.7,14.5,10.0,2.4,0.3,0.03,0.06,1,77,6,0.3,6,0.2,9.7,3,0,0,6,high,,mirtillo,0,0
-mango,Mango,frutta,g,100,60,0.8,15.0,13.7,1.6,0.4,0.09,0.05,1,168,11,0.2,10,0.1,36.4,54,0,0,43,high,,mango,0,0
-succo_frutta,Succo di frutta,bevande,ml,100,46,0.5,10.9,10.0,0.2,0.1,0.02,0.0,4,150,10,0.2,8,0.1,25,10,0,0,15,medium,,frutta,0,1
-caffe_espresso,Caffe' espresso,bevande,unit,1,2,0.1,0.0,0,0,0,0.0,0.0,2,115,2,0.1,8,0.0,0,0,0,0,0,high,"~30 ml, senza zucchero",caffe,0,0
-petto_pollo,Petto di pollo cotto,proteine,g,100,165,31.0,0,0,0,3.6,1.0,0.03,74,256,15,1.0,29,1.0,0,9,0.1,0.3,4,high,,,0,0
-carne_maiale,Carne di maiale (braciola) cotta,proteine,g,100,242,27.0,0,0,0,14.0,5.0,0.05,62,362,19,0.9,28,2.4,0,2,0.7,0.7,5,medium,,,0,0
-carne_macinata_manzo,Carne macinata di manzo cotta,proteine,g,100,250,26.0,0,0,0,15.0,6.0,0.04,72,318,18,2.6,21,6.0,0,0,0.1,2.5,9,medium,,,0,0
-salsiccia,Salsiccia di maiale cotta,proteine,g,100,325,18.0,1.5,0.5,0,28.0,10.0,0.1,900,240,15,1.2,18,2.2,0,0,0.5,1.0,3,medium,,,0,1
-prosciutto_cotto,Prosciutto cotto,proteine,g,100,145,19.8,1.0,1.0,0,7.0,2.4,0.05,900,300,10,0.8,20,1.8,0,0,0.6,0.8,3,medium,,,0,1
-prosciutto_crudo,Prosciutto crudo,proteine,g,100,268,26.0,0.5,0.5,0,18.0,6.3,0.1,2570,470,15,1.5,25,2.8,0,0,0.8,1.2,3,medium,,,1,1
-tonno_scatola,Tonno in scatola sgocciolato,proteine,g,100,128,25.5,0,0,0,2.5,0.7,0.28,320,240,15,1.3,30,0.8,0,5,2.0,2.2,4,high,al naturale,,0,0
-mozzarella,Mozzarella vaccina,latticini,g,100,253,18.7,2.2,1.0,0,19.0,11.0,0.2,486,76,505,0.2,20,2.9,0,150,0.4,1.3,7,high,,,1,0
-burrata,Burrata,latticini,g,100,300,17.0,2.0,1.5,0,25.0,15.0,0.25,420,90,420,0.2,18,2.5,0,180,0.4,1.1,6,medium,,,1,0
-feta,Feta,latticini,g,100,264,14.2,4.1,4.1,0,21.3,14.9,0.3,1116,62,493,0.7,19,2.9,0,125,0.4,1.7,32,high,,,1,0
-formaggio_semistagionato,Formaggio semistagionato,latticini,g,100,370,25.0,1.5,1.0,0,29.0,18.5,0.3,650,110,750,0.3,30,3.5,0,250,0.5,1.4,20,medium,tipo asiago/fontina,,1,0
-yogurt_bianco_intero,Yogurt bianco intero,latticini,g,100,61,3.5,4.7,4.7,0,3.3,2.1,0.03,46,155,121,0.1,12,0.6,0.5,27,0.1,0.4,7,high,,,1,0
-panna_montata,Panna montata,latticini,g,100,340,2.1,3.5,3.4,0,36.0,23.0,0.15,35,90,70,0.1,8,0.3,0.6,300,0.6,0.3,5,medium,,,0,0
-ragu_carne,Ragu' di carne,proteine,g,100,140,10.0,5.0,4.0,1.2,8.5,3.2,0.05,420,300,25,1.5,20,2.0,5,40,0,1.0,10,low,stima: carne + passata + soffritto,pomodoro,0,0
-pizza_margherita,Pizza margherita intera,cereali,unit,1,850,35.0,105.0,10.0,6.0,30.0,13.0,0.3,1900,600,550,4.5,90,4.0,10,250,0.4,1.0,90,low,stima su una pizza da pizzeria (~350 g),frumento,1,0
-burrito,Burrito,cereali,unit,1,520,22.0,60.0,4.0,7.0,20.0,7.0,0.2,1100,600,180,3.5,70,3.0,10,80,0.2,0.8,80,low,tortilla + fagioli + riso + condimenti,frumento,0,1
-crostata_frutta,Crostata di frutta,dolci,g,100,330,4.5,50.0,28.0,1.8,12.0,5.5,0.1,180,120,35,1.2,15,0.5,4,80,0.3,0.2,15,low,,frumento,0,1
-cornetto_crema,Cornetto/pasticcino con crema,dolci,unit,1,320,5.5,36.0,16.0,1.3,17.0,9.0,0.1,230,90,50,1.3,12,0.5,1,90,0.4,0.3,25,low,~80 g,frumento,0,1
-biscotto,Biscotto secco,dolci,unit,1,45,0.7,6.5,2.5,0.2,1.8,0.9,0.02,35,20,8,0.2,3,0.1,0,10,0,0,3,medium,~10 g,frumento,0,1
-cheesecake,Cheesecake,dolci,g,100,320,5.5,30.0,22.0,0.8,20.0,11.0,0.1,250,110,80,0.7,12,0.5,1,180,0.5,0.3,12,low,,frumento,1,1
-torta_cioccolato,Torta al cioccolato densa,dolci,g,100,400,6.0,45.0,32.0,3.5,22.0,12.0,0.1,220,250,60,2.5,50,1.2,0,80,0.3,0.2,15,low,,cacao,0,1
-sformato_verdure,Sformato salato di verdure,verdura,g,100,130,7.0,10.0,3.0,2.5,6.5,2.5,0.08,300,320,90,1.2,25,0.9,8,150,0.4,0.3,35,low,il suo 'savory bake': verdure + uova + formaggio,verdura_mista,0,0
-psyllium,Psillio in polvere,integratori,g,100,200,1.5,85.0,0,80.0,0.5,0.05,0,30,200,100,2.0,60,1.0,0,0,0,0,10,medium,quasi tutta fibra solubile,psillio,0,1
-ravioli_ricotta,Ravioli ricotta e spinaci,cereali,g,100,270,10.0,36.0,2.0,2.5,9.0,4.5,0.05,420,150,120,1.8,30,1.0,1,90,0.2,0.3,30,low,freschi,frumento,0,1
-riso_carnaroli,Riso carnaroli crudo,cereali,g,100,358,7.0,78.0,0.3,1.4,0.9,0.2,0.02,5,120,25,0.9,30,1.3,0,0,0,0,10,medium,peso a crudo,riso,0,0
-burro,Burro,grassi,g,100,717,0.9,0.1,0.1,0,81.1,51.4,0.32,11,24,24,0.0,2,0.1,0,684,1.5,0.2,3,high,,,0,0
-arrosticini,Arrosticini di pecora,proteine,g,100,270,25.0,0,0,0,19.0,8.5,0.15,320,290,15,1.9,23,3.6,0,0,0.4,2.4,5,medium,,,0,0
-bistecca_manzo,Bistecca di manzo alla griglia,proteine,g,100,271,26.0,0,0,0,18.0,7.2,0.05,60,330,18,2.6,24,4.5,0,0,0.2,2.6,8,medium,,,0,0
-pesce_bianco,"Pesce bianco (branzino, orata)",proteine,g,100,124,20.0,0,0,0,4.6,1.0,0.6,80,320,30,0.5,32,0.7,0,15,4.0,1.8,8,high,,,0,0
-cappuccino,Cappuccino,bevande,unit,1,75,4.0,5.5,5.5,0,3.9,2.4,0.03,50,190,140,0.1,15,0.5,1.0,35,0.1,0.6,6,medium,~150 ml di latte,,1,0
-torta_semplice,"Torta da forno (crostata, ciambella)",dolci,g,100,360,5.5,50.0,26.0,1.5,15.0,7.0,0.1,200,110,45,1.1,14,0.5,1,110,0.4,0.2,14,low,,frumento,0,1
-zuppa_vellutata,Vellutata di verdure,verdura,ml,100,55,1.8,7.5,3.0,2.0,1.8,0.6,0.04,280,260,35,0.7,18,0.3,9,220,0,0,25,low,,verdura_mista,0,0
-polenta_cotta,Polenta cotta,cereali,g,100,85,1.9,18.0,0.4,1.7,0.8,0.12,0.01,2,74,2,0.6,30,0.4,0,3,0,0,6,medium,"dalla farina, 1:4",mais,0,0
-panino_farcito,Panino farcito (bar),cereali,unit,1,420,18.0,45.0,4.0,3.0,18.0,7.0,0.1,900,260,180,2.4,35,1.8,2,120,0.3,0.8,60,low,~180 g,frumento,1,1
-pizza_base,Pizza rossa senza mozzarella (base),cereali,unit,1,700,22.0,110.0,8.0,6.5,20.0,3.5,0.2,1700,520,120,4.2,85,2.2,10,90,0,0,85,low,"~330 g, base + pomodoro + filo d'olio",frumento,1,0
-bresaola,Bresaola,proteine,g,100,151,33.1,0.4,0.4,0,2.0,0.8,0.03,1600,500,15,2.4,30,3.7,0,0,0.5,1.6,4,high,,,1,1
-mozzarella_proteica,Mozzarella proteica (light),latticini,g,100,150,24.0,1.5,1.5,0,6.0,4.0,0.1,400,90,480,0.2,20,3.0,0,60,0.2,1.0,7,medium,"alta in proteine, meno grassa della vaccina",,1,0
-gelato_cono,Gelato artigianale in cono,dolci,g,100,215,3.5,26.0,24.0,0.8,10.5,6.5,0.05,60,180,120,0.4,18,0.5,1,90,0.2,0.3,8,medium,"due gusti, cono compreso ~150 g",,1,0
-guanciale,Guanciale,proteine,g,100,655,8.0,0,0,0,69.0,25.0,0.3,1200,150,10,0.6,8,1.2,0,0,0.5,0.6,2,medium,,,1,1
-polpette_legumi,Polpette/burger di legumi fatti in casa,legumi,g,100,175,9.5,20.0,2.0,6.0,5.5,0.80,0.15,240,380,55,2.6,50,1.4,3,60,0,0,110,low,"composito: legumi + verdure, cotto in padella",legume_misto,0,0
-chapati,Chapati / roti integrale,cereali,g,100,297,9.0,55.0,1.5,7.0,4.0,0.90,0.06,220,220,40,3.0,90,1.5,0,0,0,0,25,medium,pane piatto indiano di farina integrale,frumento,0,0
-momo_nepalese,Momo nepalesi al vapore,cereali,g,100,200,8.0,26.0,1.5,1.8,7.0,2.50,0.05,420,190,30,1.6,22,1.0,3,25,0.1,0.4,20,low,"ravioli al vapore, ripieno misto verdure/carne",frumento,0,0
-noodles_saltati,Noodles saltati con verdure (chow mein),cereali,g,100,180,5.5,26.0,2.0,2.0,6.0,1.00,0.05,480,160,25,1.4,25,0.6,8,120,0,0,30,low,peso da cotto,frumento,0,1
-masala_chai,Masala chai (te' al latte zuccherato),bevande,ml,100,60,1.8,9.0,8.5,0,1.8,1.10,0.01,25,90,65,0.1,8,0.2,0,18,0.05,0.25,3,low,te' nero con latte e zucchero,te,1,0
-fave,Fave sgusciate,legumi,g,100,88,7.6,11.7,1.8,5.4,0.7,0.11,0.03,25,250,22,1.9,33,0.9,5,15,0,0,100,medium,"fresche o surgelate, sgusciate",fava,0,0
-babka_mandorle,Babka / girella lievitata cioccolato e mandorle,dolci,g,100,400,7.0,45.0,20.0,2.5,21.0,10.00,0.10,260,190,60,1.8,40,0.8,0,130,0.5,0.2,30,low,"dolce da pasticceria, stima",frumento,1,1
-arancia,Arancia media,frutta,unit,1,62,1.2,15.4,12.2,3.1,0.2,0.02,0.01,0,237,52,0.1,13,0.1,70,11,0,0,39,high,~130 g edibili · ~140 g edibili,arancia,0,0
-broccoli,Broccoli,verdura,g,100,35,2.4,7.2,1.4,3.3,0.4,0.04,0.13,41,293,40,0.7,21,0.4,65,63,0,0,108,high,cotti al vapore · vale anche per i cavolini di Bruxelles,broccolo,0,0
-piselli_verdi,Piselli verdi lessati/surgelati,verdura,g,100,81,5.4,14.5,5.7,5.1,0.4,0.07,0.04,5,244,25,1.5,33,1.2,20,38,0,0,65,high,peso da cotti,pisello,0,0
-panettone,Panettone,dolci,g,100,370,7.0,52.0,25.0,2.0,15.0,8.5,0.05,250,220,60,1.5,20,0.8,0,150,0.6,0.3,30,low,con uvetta e canditi,frumento,1,1
-dal_cotto,Dal indiano cotto,legumi,g,100,120,6.0,15.0,1.5,5.0,3.5,0.60,0.05,300,300,30,2.2,40,1.0,2,20,0,0,90,low,zuppa di lenticchie speziata gia' cotta,lenticchia,0,0
-naan,Pane piatto indiano (naan/chapati/puri),cereali,g,100,310,8.5,50.0,3.5,2.2,8.0,2.50,0.05,480,130,80,2.5,25,0.9,0,0,0,0,60,medium,vale per naan roti chapati e puri,frumento,1,0
-dosa,Dosa / idli (riso e lenticchie fermentati),cereali,g,100,165,4.0,30.0,0.8,1.5,3.0,0.60,0.02,250,90,20,1.2,25,0.6,0,0,0,0,20,low,pastella fermentata di riso e lenticchie,riso,1,0
-mandarino,Mandarino,frutta,unit,1,42,0.6,10.4,8.4,1.4,0.2,0.03,0.01,2,133,30,0.1,9,0.06,21,27,0,0,13,high,~80 g edibili,mandarino,0,0
-melagrana,Melagrana (chicchi),frutta,g,100,83,1.7,18.7,13.7,4.0,1.2,0.12,0.00,3,236,10,0.3,12,0.35,10.2,0,0,0,38,high,solo gli arilli,melograno,0,0
-mela,Mela,frutta,unit,1,78,0.4,20.6,15.5,3.6,0.3,0.04,0.01,2,161,9,0.2,8,0.06,7,5,0,0,5,high,~150 g,mela,0,0
-kiwi,Kiwi,frutta,g,100,61,1.1,14.7,9.0,3.0,0.5,0.03,0.04,3,312,34,0.3,17,0.14,92.7,4,0,0,25,high,,kiwi,0,0
-zucca,Zucca,verdura,g,100,26,1.0,6.5,2.8,0.5,0.1,0.05,0.01,1,340,21,0.8,12,0.32,9,426,0,0,16,high,,zucca,0,0
-miele,Miele,dolci,g,100,304,0.3,82.4,82.1,0.2,0.0,0.00,0.00,4,52,6,0.4,2,0.22,0.5,0,0,0,2,high,,,0,0
-salame,Salame,proteine,g,100,390,25.0,1.0,0.5,0,32.0,12.0,0.30,1800,380,12,1.4,20,3.0,0,0,0.6,1.5,2,medium,,,1,1
-salmone_affumicato,Salmone affumicato,proteine,g,100,117,18.3,0,0,0,4.3,0.90,1.40,1880,175,11,0.9,18,0.30,0,26,17.1,3.3,2,high,,,0,1
-filetto_crosta,Filetto in crosta (Beef Wellington),proteine,g,100,300,16.0,15.0,1.0,1.0,20.0,9.0,0.10,400,270,25,2.0,20,3.0,1,120,0.4,1.5,20,low,manzo + sfoglia + funghi,frumento,0,0
-panzerotto,Panzerotto / fritto ripieno,cereali,unit,1,430,12.0,42.0,3.0,2.0,23.0,8.0,0.10,700,180,200,2.0,25,1.5,3,90,0.2,0.4,40,low,~150 g di pasta fritta ripiena,frumento,0,1
-gallette_farro,Gallette di farro,cereali,g,100,380,11.0,74.0,1.0,5.5,3.0,0.6,0.05,25,240,25,2.0,90,2.0,0,0,0,0,25,medium,,farro,0,1
-fagioli_stufati,Fagioli stufati in salsa di pomodoro,legumi,g,100,94,4.8,16.9,5.2,4.9,0.5,0.10,0.05,400,296,46,1.4,31,0.6,0,1,0,0,29,medium,"baked beans in scatola, tipo colazione britannica",fagiolo,0,1
-bacon,Bacon / pancetta affumicata cotta,proteine,g,100,541,37.0,1.4,0,0,41.8,13.70,0.10,1717,565,11,1.4,32,3.5,0,11,0.4,0.9,2,medium,,,1,1
-scone,Scone,cereali,g,100,360,7.5,54.0,10.0,2.0,12.5,7.50,0.10,450,120,120,2.0,15,0.6,0,110,0.3,0.2,40,low,"scone britannico, stima",frumento,0,1
-injera,Injera (pane di teff fermentato),cereali,g,100,170,4.5,35.0,0.5,4.0,1.0,0.20,0.03,180,180,25,3.0,80,1.2,0,0,0,0,20,low,pane etiope di pastella di teff fermentata,teff,1,0
-kebab_wrap,Kebab in piadina (durum),cereali,unit,1,650,32.0,60.0,5.0,4.0,30.0,9.00,0.20,1500,500,150,4.0,60,4.0,8,80,0.3,1.5,60,low,"~350 g: pane piatto, carne di kebab, insalata e salsa",frumento,0,1
-strudel_mele,Strudel di mele,dolci,g,100,280,3.5,40.0,20.0,2.2,11.5,5.00,0.08,180,140,25,0.9,10,0.3,3,90,0.2,0.1,10,low,,frumento,0,1
-spirulina,Spirulina in polvere,integratori,g,100,290,57.5,23.9,3.1,3.6,7.7,2.65,0.82,1048,1363,120,28.5,195,2.0,10.1,29,0,0,94,medium,si usa a cucchiaini,spirulina,0,1
-cavolo_rosso,Cavolo cappuccio rosso,verdura,g,100,31,1.4,7.4,3.8,2.1,0.2,0.02,0.03,27,243,45,0.8,16,0.2,57,56,0,0,18,high,vale anche marinato in agrodolce,cavolo_rosso,0,0
-cavolfiore,Cavolfiore,verdura,g,100,25,1.9,5.0,1.9,2.0,0.3,0.13,0.02,30,299,22,0.4,15,0.3,48,0,0,0,57,high,,cavolfiore,0,0
-birra,Birra chiara,bevande,ml,100,43,0.5,3.6,0.0,0,0,0.00,0.00,4,27,4,0.0,6,0.0,0,0,0,0.02,6,high,birra bionda ~5%,orzo,1,0
-salmone,Salmone fresco cotto,proteine,g,100,206,22.1,0,0,0,12.4,3.10,2.02,61,384,9,0.3,29,0.4,0,12,13.1,3.2,26,high,,,0,0
-pera,Pera media,frutta,unit,1,101,0.6,27.1,17.4,5.5,0.2,0.02,0.01,2,206,16,0.3,13,0.2,7.5,2,0,0,13,high,~180 g edibili,pera,0,0
-cinnamon_roll,Cinnamon roll (girella alla cannella),dolci,unit,1,380,6.5,52.0,24.0,2.0,16.0,8.0,0.05,320,120,60,1.8,18,0.6,0,100,0.4,0.2,40,low,"~100 g, brioche lievitata con burro e zucchero",frumento,1,1
-patatine_fritte,Patatine fritte,verdura,g,100,312,3.4,41.0,0.3,3.8,15.0,2.30,0.06,210,580,15,0.8,25,0.4,9,0,0,0,25,low,patate fritte in olio di semi,patata,0,1
-barbabietola,Barbabietola rossa cotta,verdura,g,100,44,1.7,10.0,8.0,2.0,0.2,0.03,0.01,78,305,16,0.8,23,0.35,3.6,2,0,0,80,high,vale anche frullata negli impasti,barbabietola,0,0
-cavolo_nero,Cavolo nero,verdura,g,100,35,2.9,4.4,0.8,4.1,0.6,0.09,0.18,38,350,150,1.6,33,0.4,93,500,0,0,62,high,,cavolo_nero,0,0
-anguria,Anguria,frutta,g,100,30,0.6,7.6,6.2,0.4,0.15,0.02,0.00,1,112,7,0.24,10,0.10,8.1,28,0,0,3,high,,anguria,0,0
-vitello_tonnato,Vitello tonnato,proteine,g,100,230,20.0,2.0,1.0,0.2,16.0,2.8,0.20,380,300,20,1.5,25,2.5,0,25,0.6,1.2,12,low,stima: vitello magro con salsa di tonno maionese e capperi (circa 60/40). Nessuna delle due parti sta a catalogo da sola,,0,0
-coca_cola,Coca Cola (classica),bevande,ml,100,42,0,10.6,10.6,0,0,0,0,4,2,2,0,1,0,0,0,0,0,0,high,valori di etichetta. Una lattina sono 330 ml = 139 kcal,,0,1
-asparagi,Asparagi cotti,verdura,g,100,22,2.4,4.1,1.3,2.0,0.2,0.05,0.01,14,224,23,0.9,14,0.6,8,50,0,0,149,medium,"lessati o al vapore, senza condimento",asparago,0,0
-funghi_porcini,Porcini,verdura,g,100,27,3.1,3.3,1.0,2.5,0.4,0.06,0,5,318,3,0.5,10,0.5,2,0,0.2,0,17,low,freschi. Voce sua e non champignon perche' il contatore delle piante diverse conta le specie,porcino,0,0
-granola,Granola,cereali,g,100,450,10.0,60.0,20.0,7.0,18.0,3.0,0.2,30,350,60,3.0,110,2.2,0,0,0,0,30,low,varia molto per marca: controlla l'etichetta. Un cucchiaino sono circa 5 g,avena,0,1
-pesto_genovese,Pesto alla genovese,grassi,g,100,550,6.0,6.0,1.5,1.5,55.0,8.5,0.4,800,200,180,1.5,40,1.0,3,80,0,0.2,20,low,"stima: basilico, olio, pinoli, formaggio. Cambia molto fra industriale e fatto in casa",basilico,0,0
-stracchino,Stracchino,latticini,g,100,300,15.0,1.5,1.5,0,26.0,17.0,0.2,480,100,350,0.2,20,1.8,0,230,0.4,0.9,20,medium,,,1,0
-ragu_cervo,Ragu' di cervo,proteine,g,100,120,13.1,1.8,1.4,0.5,6.4,1.23,0.06,253,285,9,2.1,18,1.2,3,15,0,3.5,7,low,"ricavato dagli ingredienti: 55 g di cervo crudo + 30 g di passata + 8 g di soffritto + 5 g di olio per 100 g di sugo. Rispetto al ragu' di manzo ha meno grasso e piu' proteine, ferro e B12: la selvaggina e' magra",pomodoro,0,0
+id,name_it,group,unit,ref_qty,kcal,protein_g,carb_g,sugar_g,fiber_g,fat_g,satfat_g,monounsat_g,polyunsat_g,transfat_g,omega3_g,sodium_mg,potassium_mg,calcium_mg,iron_mg,magnesium_mg,zinc_mg,vitc_mg,vita_ug,vitd_ug,b12_ug,folate_ug,confidence,note,plant,fermented,upf
+lenticchie_secche,Lenticchie secche,legumi,g,100,353,25.8,60.1,2.0,30.5,1.1,0.15,0.22,0.5,0,0.1,6,955,56,7.5,122,4.8,4.5,1,0,0,479,medium,peso a crudo,lenticchia,0,0
+ceci_secchi,Ceci secchi,legumi,g,100,378,20.5,62.9,10.7,12.2,6.0,0.60,1.2,2.7,0,0.10,24,875,57,4.3,79,3.4,4.0,3,0,0,557,medium,peso a crudo,cece,0,0
+ceci_scatola,Ceci in scatola sgocciolati,legumi,g,100,139,7.1,22.8,4.0,6.4,2.6,0.27,0.52,1.17,0,0.04,240,172,45,1.6,30,1.1,1.0,1,0,0,51,medium,,cece,0,0
+piselli_secchi,Piselli secchi spezzati,legumi,g,100,341,24.6,60.4,8.0,25.5,1.2,0.16,0.24,0.54,0,0.04,15,981,55,4.4,115,3.0,1.8,7,0,0,274,medium,peso a crudo,pisello,0,0
+pasta_piselli,Pasta di piselli secca,legumi,g,100,350,24.0,50.0,4.0,12.0,4.0,0.50,0.8,1.8,0,0.10,20,700,60,5.0,100,3.0,0,0,0,0,120,low,varia molto per marca: controlla l'etichetta,pisello,0,1
+soia_granulare,Soia granulare disidratata,legumi,g,100,330,50.0,33.0,7.0,18.0,1.5,0.25,0.3,0.68,0,0.10,20,2000,250,9.0,290,4.5,0,0,0,0,300,low,peso a secco; varia per marca,soia,0,1
+tofu,Tofu al calcio,legumi,g,100,144,15.8,4.3,0.6,2.3,8.7,1.30,1.74,3.91,0,0.60,14,237,200,2.7,58,1.6,0.1,0,0,0,19,medium,coagulato al calcio,soia,0,0
+fagioli_neri_scatola,Fagioli neri in scatola,legumi,g,100,91,6.0,16.6,0.3,6.4,0.3,0.08,0.06,0.14,0,0.05,238,355,27,1.8,40,0.8,0,0,0,0,60,medium,,fagiolo_nero,0,0
+hummus,Hummus,legumi,g,100,166,7.9,14.3,0.3,6.0,9.6,1.40,1.92,4.32,0,0.10,379,228,38,2.4,71,1.8,0,1,0,0,83,medium,,cece,0,0
+lupini,Lupini in salamoia sgocciolati,legumi,g,100,119,15.6,9.9,1.0,2.8,2.9,0.34,0.58,1.3,0,0.06,400,245,51,1.2,54,2.3,1.1,0,0,0,61,medium,USDA lupini lessi senza sale; sodio portato a 400 mg perche' quelli in salamoia si sciacquano ma non si desalano,lupino,0,0
+pasta_integrale,Pasta integrale secca,cereali,g,100,348,13.4,66.9,3.9,8.4,2.5,0.50,0.75,0.88,0.013,0.06,8,310,40,3.6,143,2.4,0,0,0,0,57,medium,peso a crudo,frumento,0,0
+pasta_semola,Pasta di semola secca,cereali,g,100,371,13.0,74.7,2.7,3.2,1.5,0.28,0.45,0.52,0.007,0.03,6,223,21,1.3,53,1.4,0,0,0,0,18,medium,peso a crudo,frumento,0,0
+riso_bianco,Riso bianco crudo,cereali,g,100,360,6.7,79.3,0.1,1.3,0.7,0.18,0.21,0.24,0.003,0.02,5,115,28,0.8,25,1.1,0,0,0,0,8,medium,peso a crudo,riso,0,0
+farro_perlato,Farro perlato crudo,cereali,g,100,340,15.1,67.1,6.8,6.8,2.4,0.40,0.72,0.84,0.012,0.05,8,400,29,4.4,136,3.3,0,0,0,0,45,medium,peso a crudo,farro,0,0
+polenta_mais,Farina di mais per polenta,cereali,g,100,362,8.1,76.9,1.6,7.3,3.6,0.50,1.08,1.26,0.018,0.06,7,315,7,2.4,127,1.7,0,11,0,0,25,medium,peso a crudo,mais,0,0
+avena_fiocchi,Fiocchi d'avena,cereali,g,100,389,13.2,66.3,1.0,10.6,6.9,1.20,2.07,2.42,0.035,0.11,2,429,54,4.7,177,4.0,0,0,0,0,56,high,,avena,0,0
+crusca_avena,Crusca d'avena,cereali,g,100,246,17.3,66.2,1.4,15.4,7.0,1.30,2.1,2.45,0.035,0.20,4,566,58,5.4,235,3.1,0,0,0,0,52,medium,,avena,0,0
+pane_integrale,Pane integrale,cereali,g,100,247,13.0,41.3,4.3,7.0,3.4,0.70,1.02,1.19,0.017,0.10,450,254,107,2.5,82,1.8,0,0,0,0,42,medium,,frumento,1,0
+pane_bianco,Pane bianco,cereali,g,100,265,9.0,49.0,5.0,2.7,3.2,0.70,0.96,1.12,0.016,0.05,490,115,150,3.6,25,0.7,0,0,0,0,100,medium,,frumento,1,0
+gallette_riso,Gallette di riso,cereali,g,100,387,8.2,81.5,0.9,4.2,2.8,0.55,0.84,0.98,0.014,0.05,30,200,12,1.4,100,1.8,0,0,0,0,20,medium,,riso,0,1
+farina_ceci,Farina di ceci,cereali,g,100,387,22.4,57.8,10.8,10.8,6.7,0.70,2.01,2.34,0.034,0.10,64,846,45,4.9,166,2.8,0,1,0,0,437,medium,per farinata,cece,0,0
+croissant_vuoto,Croissant vuoto,cereali,unit,1,264,5.3,29.8,7.0,1.6,13.7,7.60,3.93,1.35,0.274,0.10,270,70,25,1.2,10,0.4,0,50,0.2,0.1,40,medium,~65 g,frumento,0,1
+spinaci,Spinaci,verdura,g,100,23,2.9,3.6,0.4,2.2,0.4,0.06,0.1,0.14,0,0.14,79,558,99,2.7,79,0.5,28,469,0,0,194,high,,spinacio,0,0
+patate_dolci,Patate dolci,verdura,g,100,86,1.6,20.1,4.2,3.0,0.1,0.02,0.03,0.03,0,0.01,55,337,30,0.6,25,0.3,2.4,709,0,0,11,high,,patata_dolce,0,0
+carote,Carote,verdura,g,100,41,0.9,9.6,4.7,2.8,0.2,0.03,0.05,0.07,0,0.00,69,320,33,0.3,12,0.2,5.9,835,0,0,19,high,,carota,0,0
+cipolla,Cipolla,verdura,g,100,40,1.1,9.3,4.2,1.7,0.1,0.04,0.02,0.03,0,0.00,4,146,23,0.2,10,0.2,7.4,0,0,0,19,high,,cipolla,0,0
+peperoni,Peperoni,verdura,g,100,31,1.0,6.0,4.2,2.1,0.3,0.06,0.07,0.1,0,0.01,4,211,7,0.4,12,0.3,128,157,0,0,46,high,,peperone,0,0
+melanzane,Melanzane,verdura,g,100,25,1.0,5.9,3.5,3.0,0.2,0.03,0.05,0.07,0,0.01,2,229,9,0.2,14,0.2,2.2,1,0,0,22,high,,melanzana,0,0
+passata_pomodoro,Passata di pomodoro,verdura,g,100,32,1.6,6.0,4.5,1.5,0.2,0.03,0.05,0.07,0,0.02,20,400,15,0.9,15,0.2,12,40,0,0,12,medium,,pomodoro,0,0
+rucola,Rucola,verdura,g,100,25,2.6,3.7,2.0,1.6,0.7,0.09,0.17,0.24,0,0.17,27,369,160,1.5,47,0.5,15,119,0,0,97,high,,rucola,0,0
+avocado,Avocado,verdura,g,100,160,2.0,8.5,0.7,6.7,14.7,2.10,9.85,1.76,0,0.11,7,485,12,0.6,29,0.6,10,7,0,0,81,high,,avocado,0,0
+patate,Patate,verdura,g,100,77,2.0,17.5,0.8,2.2,0.1,0.03,0.03,0.03,0,0.01,6,425,12,0.8,23,0.3,19.7,0,0,0,15,high,,patata,0,0
+sugo_verdure,Sugo di pomodoro con verdure,verdura,ml,100,55,1.5,7.0,5.0,1.8,2.5,0.40,0.62,0.88,0,0.05,300,350,20,0.9,15,0.2,10,60,0,0,15,low,stima generica: dipende molto dall'olio aggiunto,pomodoro,0,1
+uovo_intero,Uovo intero medio,proteine,unit,1,78,6.3,0.6,0.2,0,5.5,1.70,2.09,0.77,0,0.04,70,69,28,0.9,6,0.6,0,87,1.1,0.6,24,high,~55 g di parte edibile,,0,0
+yogurt_greco_0,Yogurt greco 0%,latticini,g,100,59,10.3,3.6,3.2,0,0.4,0.10,0.11,0.02,0.016,0.01,36,141,110,0.1,11,0.5,0.8,1,0,0.8,5,high,,,1,0
+ricotta_vaccina,Ricotta vaccina,latticini,g,100,146,11.3,3.0,3.0,0,10.9,6.90,2.74,0.39,0.436,0.10,84,105,207,0.4,11,1.2,0,120,0.2,0.3,12,medium,,,0,0
+latte_ps,Latte parzialmente scremato,latticini,ml,100,46,3.3,4.9,4.9,0,1.6,1.00,0.41,0.06,0.064,0.02,44,150,120,0.1,11,0.4,1.0,20,0.0,0.5,5,high,,,0,0
+latte_soia,Latte di soia fortificato,latticini,ml,100,43,3.3,2.6,2.5,0.5,1.8,0.30,0.5,0.07,0.072,0.10,39,118,120,0.4,15,0.3,0,1,1.0,0.4,18,medium,valori da prodotto fortificato: senza fortificazione calcio B12 e D sono ~0,soia,0,1
+grana_padano,Grana Padano,latticini,g,100,384,33.0,0.0,0.0,0,28.0,18.00,6.79,0.97,1.12,0.30,700,102,1165,0.2,63,6.5,0,250,0.5,1.5,5,medium,,,1,0
+olio_evo,Olio extravergine d'oliva,grassi,ml,100,884,0,0,0,0,100.0,13.80,71.44,10.76,0,0.76,2,1,1,0.6,0,0,0,0,0,0,0,high,,oliva,0,0
+burro_arachidi_sgrassato,Burro di arachidi sgrassato in polvere,grassi,g,100,387,52.0,22.0,9.0,16.0,11.0,2.00,5.35,3.21,0,0.02,300,1300,60,4.5,200,4.0,0,0,0,0,90,high,"polvere sgrassata, confermato da te il 2026-08-11 (non la crema da ~600 kcal)",arachide,0,1
+mandorle,Mandorle,grassi,g,100,579,21.2,21.6,4.4,12.5,49.9,3.80,31.44,12.47,0,0.01,1,733,269,3.7,270,3.1,0,0,0,0,44,high,,mandorla,0,0
+noci,Noci,grassi,g,100,654,15.2,13.7,2.6,6.7,65.2,6.10,9.13,46.94,0,9.08,2,441,98,2.9,158,3.1,1.3,1,0,0,98,high,ottima fonte di ALA,noce,0,0
+banana,Banana media,frutta,unit,1,107,1.3,27.4,14.7,3.1,0.4,0.13,0.14,0.1,0,0.03,1,430,6,0.3,32,0.2,10.4,4,0,0,24,high,~120 g edibili,banana,0,0
+pesca,Pesca media,frutta,unit,1,59,1.4,14.3,12.6,2.3,0.4,0.03,0.14,0.1,0,0.00,0,285,9,0.4,14,0.2,9.9,24,0,0,6,high,~150 g edibili,pesca,0,0
+frutti_di_bosco,Frutti di bosco misti,frutta,g,100,45,1.0,10.0,6.0,4.0,0.4,0.03,0.14,0.1,0,0.06,1,100,25,0.5,15,0.3,30,5,0,0,25,medium,mix surgelato,frutti_di_bosco,0,0
+datteri,Datteri secchi,frutta,g,100,282,2.5,75.0,63.0,8.0,0.4,0.03,0.14,0.1,0,0.01,2,656,39,1.0,43,0.4,0.4,1,0,0,15,high,,dattero,0,0
+marmellata_fragola,Marmellata di fragole,dolci,g,100,250,0.4,65.0,60.0,1.0,0.1,0.01,0.03,0.01,0.002,0.00,30,80,20,0.4,5,0.1,3,1,0,0,2,medium,,fragola,0,1
+cioccolato_fondente_85,Cioccolato fondente 85%,dolci,g,100,592,10.3,25.0,14.0,12.0,49.0,29.00,16.17,1.47,0,0.10,20,715,73,11.9,228,3.3,0,2,0,0,12,medium,,cacao,1,0
+cacao_100,Cacao amaro 100%,dolci,g,100,228,19.6,57.9,1.8,37.0,13.7,8.10,4.52,0.41,0,0.08,21,1524,128,13.9,499,6.8,0,0,0,0,32,high,carboidrati in gran parte fibra,cacao,1,0
+proteine_whey,Proteine in polvere whey,integratori,g,100,380,80.0,6.0,4.0,1.0,5.0,2.00,1.4,1.4,0,0.05,300,500,500,1.0,60,3.0,0,0,0,1.5,20,low,varia molto per marca: controlla l'etichetta,,0,1
+lievito_nutrizionale,Lievito alimentare in scaglie,integratori,g,100,340,45.0,36.0,5.0,22.0,5.0,0.80,1.5,1.5,0,0.05,30,2000,40,5.0,230,8.0,0,0,0,40.0,300,low,B12 solo se fortificato: controlla l'etichetta,lievito,1,1
+latte_intero,Latte intero,latticini,ml,100,64,3.3,4.9,4.9,0,3.6,2.3,0.89,0.13,0.144,0.03,44,150,119,0.1,11,0.4,1.0,33,0.1,0.5,5,high,,,0,0
+cioccolato_fondente_50,Cioccolato fondente 50%,dolci,g,100,525,5.5,52.0,44.0,6.0,32.0,19.0,10.56,0.96,0,0.05,15,420,45,6.5,130,1.9,0,2,0,0,8,medium,,cacao,1,1
+cumino_semi,Cumino in semi,spezie,g,100,375,17.8,44.2,2.3,10.5,22.3,1.53,12.27,6.69,0,0.18,168,1788,931,66.4,366,4.8,7.7,64,0,0,10,medium,si usa a pizzichi: pesa poco ma conta come pianta,cumino,0,0
+curry_polvere,Curry in polvere,spezie,g,100,325,14.3,55.8,2.8,53.2,14.0,2.2,6.3,4.9,0,0.2,52,1543,478,29.6,254,4.1,11.4,49,0,0,154,medium,"miscela: coriandolo, curcuma, fieno greco…",curry,0,0
+pasta_uovo,Pasta all'uovo secca (tagliatelle),cereali,g,100,368,13.7,71.0,3.0,3.0,3.5,1.0,1.05,1.22,0.018,0.05,20,180,25,2.3,50,1.2,0,60,0.3,0.2,30,medium,peso a crudo,frumento,0,0
+pane_segale,Pane di segale scuro,cereali,g,100,259,8.5,48.3,3.9,5.8,3.3,0.6,0.99,1.15,0.017,0.09,603,190,73,2.8,40,1.2,0,0,0,0,35,medium,,segale,1,0
+piadina,Piadina / pane piatto,cereali,g,100,300,8.0,50.0,2.0,2.5,7.5,3.5,1.69,1.97,0.037,0.05,600,120,30,1.8,25,0.8,0,0,0,0,25,medium,,frumento,0,1
+focaccia,Focaccia,cereali,g,100,290,7.5,45.0,2.0,2.5,9.0,1.5,2.7,3.15,0.045,0.1,650,130,35,2.0,28,0.9,0,0,0,0,30,medium,barese o genovese: simili,frumento,1,0
+panino_bianco,Panino / rosetta,cereali,unit,1,145,4.9,26.9,2.7,1.5,1.8,0.38,0.54,0.63,0.009,0.03,270,63,82,2.0,14,0.4,0,0,0,0,55,medium,~55 g,frumento,1,0
+gnocchi_patate,Gnocchi di patate,cereali,g,100,157,3.9,32.0,1.0,2.0,1.2,0.3,0.36,0.42,0.006,0.02,290,180,20,0.8,20,0.4,3,0,0,0,12,medium,,patata,0,0
+couscous,Couscous secco,cereali,g,100,376,12.8,77.4,0.6,5.0,0.6,0.1,0.18,0.21,0.003,0.02,10,166,24,1.1,44,0.8,0,0,0,0,20,medium,peso a crudo,frumento,0,0
+cereali_colazione,Cereali da colazione (misti),cereali,g,100,380,8.0,78.0,20.0,6.0,3.0,0.8,0.9,1.05,0.015,0.05,400,250,100,8.0,60,2.0,0,300,2.0,1.5,150,low,"tipo hotel: fortificati, molto zuccherati",frumento,0,1
+quinoa,Quinoa cruda,cereali,g,100,368,14.1,64.2,4.6,7.0,6.1,0.71,1.83,2.13,0.03,0.26,5,563,47,4.6,197,3.1,0,1,0,0,184,high,peso a crudo,quinoa,0,0
+fagioli_cannellini,Fagioli cannellini in scatola,legumi,g,100,95,6.3,17.0,0.5,6.3,0.4,0.09,0.08,0.18,0,0.05,230,390,60,1.9,42,0.9,0,0,0,0,55,medium,,fagiolo,0,0
+edamame,Edamame sgusciati,legumi,g,100,121,11.9,8.9,2.2,5.2,5.2,0.6,1.04,2.34,0,0.36,6,436,63,2.3,64,1.4,6.1,9,0,0,311,high,,soia,0,0
+fagiolini,Fagiolini,verdura,g,100,31,1.8,7.0,3.3,2.7,0.2,0.03,0.05,0.07,0,0.07,6,211,37,1.0,25,0.2,12.2,35,0,0,33,high,,fagiolino,0,0
+zucchine,Zucchine,verdura,g,100,17,1.2,3.1,2.5,1.0,0.3,0.09,0.07,0.1,0,0.03,8,261,16,0.4,18,0.3,17.9,10,0,0,24,high,,zucchina,0,0
+pomodorini,Pomodorini / pomodori freschi,verdura,g,100,18,0.9,3.9,2.6,1.2,0.2,0.03,0.05,0.07,0,0.0,5,237,10,0.3,11,0.2,14,42,0,0,15,high,,pomodoro,0,0
+pomodori_secchi,Pomodori secchi,verdura,g,100,258,14.1,55.8,37.6,12.3,3.0,0.43,0.75,1.05,0,0.06,2095,3427,110,9.1,194,2.0,39,87,0,0,68,medium,,pomodoro,0,0
+funghi,Funghi champignon,verdura,g,100,22,3.1,3.3,2.0,1.0,0.3,0.05,0.07,0.1,0,0.0,5,318,3,0.5,9,0.5,2.1,0,0.2,0,17,high,non e' una pianta ma conta nella diversita' vegetale,fungo,0,0
+olive,Olive nere/verdi,verdura,g,100,145,1.0,3.8,0.5,3.3,15.3,2.0,11.17,1.22,0,0.06,1550,42,88,3.3,11,0.2,1,20,0,0,3,medium,,oliva,1,0
+insalata_mista,Insalata mista in foglia,verdura,g,100,17,1.4,2.9,1.0,1.8,0.2,0.03,0.05,0.07,0,0.06,28,230,40,0.8,14,0.2,15,300,0,0,80,medium,lattuga/misticanza,lattuga,0,0
+cetriolo,Cetriolo,verdura,g,100,15,0.7,3.6,1.7,0.5,0.1,0.04,0.02,0.03,0,0.0,2,147,16,0.3,13,0.2,2.8,5,0,0,7,high,,cetriolo,0,0
+mais_dolce,Mais dolce,verdura,g,100,86,3.3,19.0,3.2,2.7,1.4,0.2,0.35,0.49,0,0.02,15,270,2,0.5,37,0.5,6.8,9,0,0,42,high,,mais,0,0
+aglio,Aglio,spezie,g,100,149,6.4,33.1,1.0,2.1,0.5,0.09,0.22,0.17,0,0.02,17,401,181,1.7,25,1.2,31,0,0,0,3,high,si usa a spicchi,aglio,0,0
+basilico,Basilico fresco,spezie,g,100,23,3.2,2.7,0.3,1.6,0.6,0.04,0.27,0.21,0,0.32,4,295,177,3.2,64,0.8,18,264,0,0,68,high,,basilico,0,0
+prezzemolo,Prezzemolo fresco,spezie,g,100,36,3.0,6.3,0.9,3.3,0.8,0.13,0.36,0.28,0,0.01,56,554,138,6.2,50,1.1,133,421,0,0,152,high,,prezzemolo,0,0
+limone,Limone (succo di uno spicchio),frutta,g,100,29,1.1,9.3,2.5,2.8,0.3,0.04,0.1,0.07,0,0.03,2,138,26,0.6,8,0.1,53,1,0,0,11,high,,limone,0,0
+melone,Melone / cantalupo,frutta,g,100,34,0.8,8.2,7.9,0.9,0.2,0.05,0.07,0.05,0,0.03,16,267,9,0.2,12,0.2,36.7,169,0,0,21,high,,melone,0,0
+fragole,Fragole,frutta,g,100,32,0.7,7.7,4.9,2.0,0.3,0.02,0.1,0.07,0,0.07,1,153,16,0.4,13,0.1,58.8,1,0,0,24,high,,fragola,0,0
+mirtilli,Mirtilli,frutta,g,100,57,0.7,14.5,10.0,2.4,0.3,0.03,0.1,0.07,0,0.06,1,77,6,0.3,6,0.2,9.7,3,0,0,6,high,,mirtillo,0,0
+mango,Mango,frutta,g,100,60,0.8,15.0,13.7,1.6,0.4,0.09,0.14,0.1,0,0.05,1,168,11,0.2,10,0.1,36.4,54,0,0,43,high,,mango,0,0
+succo_frutta,Succo di frutta,bevande,ml,100,46,0.5,10.9,10.0,0.2,0.1,0.02,0.03,0.01,0.003,0.0,4,150,10,0.2,8,0.1,25,10,0,0,15,medium,,frutta,0,1
+caffe_espresso,Caffe' espresso,bevande,unit,1,2,0.1,0.0,0,0,0,0.0,0,0,0,0.0,2,115,2,0.1,8,0.0,0,0,0,0,0,high,"~30 ml, senza zucchero",caffe,0,0
+petto_pollo,Petto di pollo cotto,proteine,g,100,165,31.0,0,0,0,3.6,1.0,1.44,0.72,0,0.03,74,256,15,1.0,29,1.0,0,9,0.1,0.3,4,high,,,0,0
+carne_maiale,Carne di maiale (braciola) cotta,proteine,g,100,242,27.0,0,0,0,14.0,5.0,6.3,1.4,0.07,0.05,62,362,19,0.9,28,2.4,0,2,0.7,0.7,5,medium,,,0,0
+carne_macinata_manzo,Carne macinata di manzo cotta,proteine,g,100,250,26.0,0,0,0,15.0,6.0,6.6,0.6,0.75,0.04,72,318,18,2.6,21,6.0,0,0,0.1,2.5,9,medium,,,0,0
+salsiccia,Salsiccia di maiale cotta,proteine,g,100,325,18.0,1.5,0.5,0,28.0,10.0,12.6,2.8,0.14,0.1,900,240,15,1.2,18,2.2,0,0,0.5,1.0,3,medium,,,0,1
+prosciutto_cotto,Prosciutto cotto,proteine,g,100,145,19.8,1.0,1.0,0,7.0,2.4,3.15,0.7,0.035,0.05,900,300,10,0.8,20,1.8,0,0,0.6,0.8,3,medium,,,0,1
+prosciutto_crudo,Prosciutto crudo,proteine,g,100,268,26.0,0.5,0.5,0,18.0,6.3,8.1,1.8,0.09,0.1,2570,470,15,1.5,25,2.8,0,0,0.8,1.2,3,medium,,,1,1
+tonno_scatola,Tonno in scatola sgocciolato,proteine,g,100,128,25.5,0,0,0,2.5,0.7,0.62,0.88,0,0.28,320,240,15,1.3,30,0.8,0,5,2.0,2.2,4,high,al naturale,,0,0
+mozzarella,Mozzarella vaccina,latticini,g,100,253,18.7,2.2,1.0,0,19.0,11.0,5.32,0.76,0.76,0.2,486,76,505,0.2,20,2.9,0,150,0.4,1.3,7,high,,,1,0
+burrata,Burrata,latticini,g,100,300,17.0,2.0,1.5,0,25.0,15.0,7,1,1,0.25,420,90,420,0.2,18,2.5,0,180,0.4,1.1,6,medium,,,1,0
+feta,Feta,latticini,g,100,264,14.2,4.1,4.1,0,21.3,14.9,4.11,0.59,0.852,0.3,1116,62,493,0.7,19,2.9,0,125,0.4,1.7,32,high,,,1,0
+formaggio_semistagionato,Formaggio semistagionato,latticini,g,100,370,25.0,1.5,1.0,0,29.0,18.5,7.16,1.02,1.16,0.3,650,110,750,0.3,30,3.5,0,250,0.5,1.4,20,medium,tipo asiago/fontina,,1,0
+yogurt_bianco_intero,Yogurt bianco intero,latticini,g,100,61,3.5,4.7,4.7,0,3.3,2.1,0.82,0.12,0.132,0.03,46,155,121,0.1,12,0.6,0.5,27,0.1,0.4,7,high,,,1,0
+panna_montata,Panna montata,latticini,g,100,340,2.1,3.5,3.4,0,36.0,23.0,8.86,1.27,1.44,0.15,35,90,70,0.1,8,0.3,0.6,300,0.6,0.3,5,medium,,,0,0
+ragu_carne,Ragu' di carne,proteine,g,100,140,10.0,5.0,4.0,1.2,8.5,3.2,3.57,1.19,0.085,0.05,420,300,25,1.5,20,2.0,5,40,0,1.0,10,low,stima: carne + passata + soffritto,pomodoro,0,0
+pizza_margherita,Pizza margherita intera,cereali,unit,1,850,35.0,105.0,10.0,6.0,30.0,13.0,7.22,8.43,0.15,0.3,1900,600,550,4.5,90,4.0,10,250,0.4,1.0,90,low,stima su una pizza da pizzeria (~350 g),frumento,1,0
+burrito,Burrito,cereali,unit,1,520,22.0,60.0,4.0,7.0,20.0,7.0,5.58,6.52,0.1,0.2,1100,600,180,3.5,70,3.0,10,80,0.2,0.8,80,low,tortilla + fagioli + riso + condimenti,frumento,0,1
+crostata_frutta,Crostata di frutta,dolci,g,100,330,4.5,50.0,28.0,1.8,12.0,5.5,4.08,1.44,0.18,0.1,180,120,35,1.2,15,0.5,4,80,0.3,0.2,15,low,,frumento,0,1
+cornetto_crema,Cornetto/pasticcino con crema,dolci,unit,1,320,5.5,36.0,16.0,1.3,17.0,9.0,5.2,1.78,0.34,0.1,230,90,50,1.3,12,0.5,1,90,0.4,0.3,25,low,~80 g,frumento,0,1
+biscotto,Biscotto secco,dolci,unit,1,45,0.7,6.5,2.5,0.2,1.8,0.9,0.59,0.21,0.027,0.02,35,20,8,0.2,3,0.1,0,10,0,0,3,medium,~10 g,frumento,0,1
+cheesecake,Cheesecake,dolci,g,100,320,5.5,30.0,22.0,0.8,20.0,11.0,6,1,0.7,0.1,250,110,80,0.7,12,0.5,1,180,0.5,0.3,12,low,,frumento,1,1
+torta_cioccolato,Torta al cioccolato densa,dolci,g,100,400,6.0,45.0,32.0,3.5,22.0,12.0,6.5,2.29,0.33,0.1,220,250,60,2.5,50,1.2,0,80,0.3,0.2,15,low,,cacao,0,1
+sformato_verdure,Sformato salato di verdure,verdura,g,100,130,7.0,10.0,3.0,2.5,6.5,2.5,1.56,2.18,0,0.08,300,320,90,1.2,25,0.9,8,150,0.4,0.3,35,low,il suo 'savory bake': verdure + uova + formaggio,verdura_mista,0,0
+psyllium,Psillio in polvere,integratori,g,100,200,1.5,85.0,0,80.0,0.5,0.05,0.15,0.15,0,0,30,200,100,2.0,60,1.0,0,0,0,0,10,medium,quasi tutta fibra solubile,psillio,0,1
+ravioli_ricotta,Ravioli ricotta e spinaci,cereali,g,100,270,10.0,36.0,2.0,2.5,9.0,4.5,1.89,2.21,0.045,0.05,420,150,120,1.8,30,1.0,1,90,0.2,0.3,30,low,freschi,frumento,0,1
+riso_carnaroli,Riso carnaroli crudo,cereali,g,100,358,7.0,78.0,0.3,1.4,0.9,0.2,0.27,0.32,0.005,0.02,5,120,25,0.9,30,1.3,0,0,0,0,10,medium,peso a crudo,riso,0,0
+burro,Burro,grassi,g,100,717,0.9,0.1,0.1,0,81.1,51.4,20.12,3.09,3.244,0.32,11,24,24,0.0,2,0.1,0,684,1.5,0.2,3,high,,,0,0
+arrosticini,Arrosticini di pecora,proteine,g,100,270,25.0,0,0,0,19.0,8.5,7.48,1.12,1.14,0.15,320,290,15,1.9,23,3.6,0,0,0.4,2.4,5,medium,,,0,0
+bistecca_manzo,Bistecca di manzo alla griglia,proteine,g,100,271,26.0,0,0,0,18.0,7.2,7.92,0.72,0.9,0.05,60,330,18,2.6,24,4.5,0,0,0.2,2.6,8,medium,,,0,0
+pesce_bianco,"Pesce bianco (branzino, orata)",proteine,g,100,124,20.0,0,0,0,4.6,1.0,1.29,1.56,0,0.6,80,320,30,0.5,32,0.7,0,15,4.0,1.8,8,high,,,0,0
+cappuccino,Cappuccino,bevande,unit,1,75,4.0,5.5,5.5,0,3.9,2.4,1.04,0.19,0.117,0.03,50,190,140,0.1,15,0.5,1.0,35,0.1,0.6,6,medium,~150 ml di latte,,1,0
+torta_semplice,"Torta da forno (crostata, ciambella)",dolci,g,100,360,5.5,50.0,26.0,1.5,15.0,7.0,5.1,1.8,0.225,0.1,200,110,45,1.1,14,0.5,1,110,0.4,0.2,14,low,,frumento,0,1
+zuppa_vellutata,Vellutata di verdure,verdura,ml,100,55,1.8,7.5,3.0,2.0,1.8,0.6,0.45,0.63,0,0.04,280,260,35,0.7,18,0.3,9,220,0,0,25,low,,verdura_mista,0,0
+polenta_cotta,Polenta cotta,cereali,g,100,85,1.9,18.0,0.4,1.7,0.8,0.12,0.24,0.28,0.004,0.01,2,74,2,0.6,30,0.4,0,3,0,0,6,medium,"dalla farina, 1:4",mais,0,0
+panino_farcito,Panino farcito (bar),cereali,unit,1,420,18.0,45.0,4.0,3.0,18.0,7.0,4.7,5.49,0.09,0.1,900,260,180,2.4,35,1.8,2,120,0.3,0.8,60,low,~180 g,frumento,1,1
+pizza_base,Pizza rossa senza mozzarella (base),cereali,unit,1,700,22.0,110.0,8.0,6.5,20.0,3.5,6,7,0.1,0.2,1700,520,120,4.2,85,2.2,10,90,0,0,85,low,"~330 g, base + pomodoro + filo d'olio",frumento,1,0
+bresaola,Bresaola,proteine,g,100,151,33.1,0.4,0.4,0,2.0,0.8,0.88,0.08,0.1,0.03,1600,500,15,2.4,30,3.7,0,0,0.5,1.6,4,high,,,1,1
+mozzarella_proteica,Mozzarella proteica (light),latticini,g,100,150,24.0,1.5,1.5,0,6.0,4.0,1.33,0.19,0.24,0.1,400,90,480,0.2,20,3.0,0,60,0.2,1.0,7,medium,"alta in proteine, meno grassa della vaccina",,1,0
+gelato_cono,Gelato artigianale in cono,dolci,g,100,215,3.5,26.0,24.0,0.8,10.5,6.5,2.53,0.89,0.158,0.05,60,180,120,0.4,18,0.5,1,90,0.2,0.3,8,medium,"due gusti, cono compreso ~150 g",,1,0
+guanciale,Guanciale,proteine,g,100,655,8.0,0,0,0,69.0,25.0,31.05,6.9,0.345,0.3,1200,150,10,0.6,8,1.2,0,0,0.5,0.6,2,medium,,,1,1
+polpette_legumi,Polpette/burger di legumi fatti in casa,legumi,g,100,175,9.5,20.0,2.0,6.0,5.5,0.80,1.1,2.48,0,0.15,240,380,55,2.6,50,1.4,3,60,0,0,110,low,"composito: legumi + verdure, cotto in padella",legume_misto,0,0
+chapati,Chapati / roti integrale,cereali,g,100,297,9.0,55.0,1.5,7.0,4.0,0.90,1.2,1.4,0.02,0.06,220,220,40,3.0,90,1.5,0,0,0,0,25,medium,pane piatto indiano di farina integrale,frumento,0,0
+momo_nepalese,Momo nepalesi al vapore,cereali,g,100,200,8.0,26.0,1.5,1.8,7.0,2.50,1.93,2.25,0.035,0.05,420,190,30,1.6,22,1.0,3,25,0.1,0.4,20,low,"ravioli al vapore, ripieno misto verdure/carne",frumento,0,0
+noodles_saltati,Noodles saltati con verdure (chow mein),cereali,g,100,180,5.5,26.0,2.0,2.0,6.0,1.00,1.8,2.1,0.03,0.05,480,160,25,1.4,25,0.6,8,120,0,0,30,low,peso da cotto,frumento,0,1
+masala_chai,Masala chai (te' al latte zuccherato),bevande,ml,100,60,1.8,9.0,8.5,0,1.8,1.10,0.49,0.09,0.054,0.01,25,90,65,0.1,8,0.2,0,18,0.05,0.25,3,low,te' nero con latte e zucchero,te,1,0
+fave,Fave sgusciate,legumi,g,100,88,7.6,11.7,1.8,5.4,0.7,0.11,0.14,0.32,0,0.03,25,250,22,1.9,33,0.9,5,15,0,0,100,medium,"fresche o surgelate, sgusciate",fava,0,0
+babka_mandorle,Babka / girella lievitata cioccolato e mandorle,dolci,g,100,400,7.0,45.0,20.0,2.5,21.0,10.00,7.19,2.65,0.315,0.10,260,190,60,1.8,40,0.8,0,130,0.5,0.2,30,low,"dolce da pasticceria, stima",frumento,1,1
+arancia,Arancia media,frutta,unit,1,62,1.2,15.4,12.2,3.1,0.2,0.02,0.07,0.05,0,0.01,0,237,52,0.1,13,0.1,70,11,0,0,39,high,~130 g edibili · ~140 g edibili,arancia,0,0
+broccoli,Broccoli,verdura,g,100,35,2.4,7.2,1.4,3.3,0.4,0.04,0.1,0.14,0,0.13,41,293,40,0.7,21,0.4,65,63,0,0,108,high,cotti al vapore · vale anche per i cavolini di Bruxelles,broccolo,0,0
+piselli_verdi,Piselli verdi lessati/surgelati,verdura,g,100,81,5.4,14.5,5.7,5.1,0.4,0.07,0.1,0.14,0,0.04,5,244,25,1.5,33,1.2,20,38,0,0,65,high,peso da cotti,pisello,0,0
+panettone,Panettone,dolci,g,100,370,7.0,52.0,25.0,2.0,15.0,8.5,4.17,1.43,0.3,0.05,250,220,60,1.5,20,0.8,0,150,0.6,0.3,30,low,con uvetta e canditi,frumento,1,1
+dal_cotto,Dal indiano cotto,legumi,g,100,120,6.0,15.0,1.5,5.0,3.5,0.60,0.7,1.57,0,0.05,300,300,30,2.2,40,1.0,2,20,0,0,90,low,zuppa di lenticchie speziata gia' cotta,lenticchia,0,0
+naan,Pane piatto indiano (naan/chapati/puri),cereali,g,100,310,8.5,50.0,3.5,2.2,8.0,2.50,2.37,2.77,0.04,0.05,480,130,80,2.5,25,0.9,0,0,0,0,60,medium,vale per naan roti chapati e puri,frumento,1,0
+dosa,Dosa / idli (riso e lenticchie fermentati),cereali,g,100,165,4.0,30.0,0.8,1.5,3.0,0.60,0.9,1.05,0.015,0.02,250,90,20,1.2,25,0.6,0,0,0,0,20,low,pastella fermentata di riso e lenticchie,riso,1,0
+mandarino,Mandarino,frutta,unit,1,42,0.6,10.4,8.4,1.4,0.2,0.03,0.07,0.05,0,0.01,2,133,30,0.1,9,0.06,21,27,0,0,13,high,~80 g edibili,mandarino,0,0
+melagrana,Melagrana (chicchi),frutta,g,100,83,1.7,18.7,13.7,4.0,1.2,0.12,0.42,0.3,0,0.00,3,236,10,0.3,12,0.35,10.2,0,0,0,38,high,solo gli arilli,melograno,0,0
+mela,Mela,frutta,unit,1,78,0.4,20.6,15.5,3.6,0.3,0.04,0.1,0.07,0,0.01,2,161,9,0.2,8,0.06,7,5,0,0,5,high,~150 g,mela,0,0
+kiwi,Kiwi,frutta,g,100,61,1.1,14.7,9.0,3.0,0.5,0.03,0.17,0.12,0,0.04,3,312,34,0.3,17,0.14,92.7,4,0,0,25,high,,kiwi,0,0
+zucca,Zucca,verdura,g,100,26,1.0,6.5,2.8,0.5,0.1,0.05,0.02,0.03,0,0.01,1,340,21,0.8,12,0.32,9,426,0,0,16,high,,zucca,0,0
+miele,Miele,dolci,g,100,304,0.3,82.4,82.1,0.2,0.0,0.00,0,0,0,0.00,4,52,6,0.4,2,0.22,0.5,0,0,0,2,high,,,0,0
+salame,Salame,proteine,g,100,390,25.0,1.0,0.5,0,32.0,12.0,14.4,3.2,0.16,0.30,1800,380,12,1.4,20,3.0,0,0,0.6,1.5,2,medium,,,1,1
+salmone_affumicato,Salmone affumicato,proteine,g,100,117,18.3,0,0,0,4.3,0.90,1.5,1.29,0,1.40,1880,175,11,0.9,18,0.30,0,26,17.1,3.3,2,high,,,0,1
+filetto_crosta,Filetto in crosta (Beef Wellington),proteine,g,100,300,16.0,15.0,1.0,1.0,20.0,9.0,8.06,1.54,0.6,0.10,400,270,25,2.0,20,3.0,1,120,0.4,1.5,20,low,manzo + sfoglia + funghi,frumento,0,0
+panzerotto,Panzerotto / fritto ripieno,cereali,unit,1,430,12.0,42.0,3.0,2.0,23.0,8.0,6.45,7.52,0.115,0.10,700,180,200,2.0,25,1.5,3,90,0.2,0.4,40,low,~150 g di pasta fritta ripiena,frumento,0,1
+gallette_farro,Gallette di farro,cereali,g,100,380,11.0,74.0,1.0,5.5,3.0,0.6,0.9,1.05,0.015,0.05,25,240,25,2.0,90,2.0,0,0,0,0,25,medium,,farro,0,1
+fagioli_stufati,Fagioli stufati in salsa di pomodoro,legumi,g,100,94,4.8,16.9,5.2,4.9,0.5,0.10,0.1,0.23,0,0.05,400,296,46,1.4,31,0.6,0,1,0,0,29,medium,"baked beans in scatola, tipo colazione britannica",fagiolo,0,1
+bacon,Bacon / pancetta affumicata cotta,proteine,g,100,541,37.0,1.4,0,0,41.8,13.70,18.81,4.18,0.209,0.10,1717,565,11,1.4,32,3.5,0,11,0.4,0.9,2,medium,,,1,1
+scone,Scone,cereali,g,100,360,7.5,54.0,10.0,2.0,12.5,7.50,2.05,2.39,0.062,0.10,450,120,120,2.0,15,0.6,0,110,0.3,0.2,40,low,"scone britannico, stima",frumento,0,1
+injera,Injera (pane di teff fermentato),cereali,g,100,170,4.5,35.0,0.5,4.0,1.0,0.20,0.3,0.35,0.005,0.03,180,180,25,3.0,80,1.2,0,0,0,0,20,low,pane etiope di pastella di teff fermentata,teff,1,0
+kebab_wrap,Kebab in piadina (durum),cereali,unit,1,650,32.0,60.0,5.0,4.0,30.0,9.00,9,10.5,0.15,0.20,1500,500,150,4.0,60,4.0,8,80,0.3,1.5,60,low,"~350 g: pane piatto, carne di kebab, insalata e salsa",frumento,0,1
+strudel_mele,Strudel di mele,dolci,g,100,280,3.5,40.0,20.0,2.2,11.5,5.00,3.91,1.38,0.172,0.08,180,140,25,0.9,10,0.3,3,90,0.2,0.1,10,low,,frumento,0,1
+spirulina,Spirulina in polvere,integratori,g,100,290,57.5,23.9,3.1,3.6,7.7,2.65,2.31,2.31,0,0.82,1048,1363,120,28.5,195,2.0,10.1,29,0,0,94,medium,si usa a cucchiaini,spirulina,0,1
+cavolo_rosso,Cavolo cappuccio rosso,verdura,g,100,31,1.4,7.4,3.8,2.1,0.2,0.02,0.05,0.07,0,0.03,27,243,45,0.8,16,0.2,57,56,0,0,18,high,vale anche marinato in agrodolce,cavolo_rosso,0,0
+cavolfiore,Cavolfiore,verdura,g,100,25,1.9,5.0,1.9,2.0,0.3,0.13,0.07,0.09,0,0.02,30,299,22,0.4,15,0.3,48,0,0,0,57,high,,cavolfiore,0,0
+birra,Birra chiara,bevande,ml,100,43,0.5,3.6,0.0,0,0,0.00,0,0,0,0.00,4,27,4,0.0,6,0.0,0,0,0,0.02,6,high,birra bionda ~5%,orzo,1,0
+salmone,Salmone fresco cotto,proteine,g,100,206,22.1,0,0,0,12.4,3.10,4.34,3.72,0,2.02,61,384,9,0.3,29,0.4,0,12,13.1,3.2,26,high,,,0,0
+pera,Pera media,frutta,unit,1,101,0.6,27.1,17.4,5.5,0.2,0.02,0.07,0.05,0,0.01,2,206,16,0.3,13,0.2,7.5,2,0,0,13,high,~180 g edibili,pera,0,0
+cinnamon_roll,Cinnamon roll (girella alla cannella),dolci,unit,1,380,6.5,52.0,24.0,2.0,16.0,8.0,5.24,1.8,0.32,0.05,320,120,60,1.8,18,0.6,0,100,0.4,0.2,40,low,"~100 g, brioche lievitata con burro e zucchero",frumento,1,1
+patatine_fritte,Patatine fritte,verdura,g,100,312,3.4,41.0,0.3,3.8,15.0,2.30,5.25,6.75,0,0.06,210,580,15,0.8,25,0.4,9,0,0,0,25,low,patate fritte in olio di semi,patata,0,1
+barbabietola,Barbabietola rossa cotta,verdura,g,100,44,1.7,10.0,8.0,2.0,0.2,0.03,0.05,0.07,0,0.01,78,305,16,0.8,23,0.35,3.6,2,0,0,80,high,vale anche frullata negli impasti,barbabietola,0,0
+cavolo_nero,Cavolo nero,verdura,g,100,35,2.9,4.4,0.8,4.1,0.6,0.09,0.15,0.21,0,0.18,38,350,150,1.6,33,0.4,93,500,0,0,62,high,,cavolo_nero,0,0
+anguria,Anguria,frutta,g,100,30,0.6,7.6,6.2,0.4,0.15,0.02,0.05,0.04,0,0.00,1,112,7,0.24,10,0.10,8.1,28,0,0,3,high,,anguria,0,0
+vitello_tonnato,Vitello tonnato,proteine,g,100,230,20.0,2.0,1.0,0.2,16.0,2.8,7.06,5.49,0,0.20,380,300,20,1.5,25,2.5,0,25,0.6,1.2,12,low,stima: vitello magro con salsa di tonno maionese e capperi (circa 60/40). Nessuna delle due parti sta a catalogo da sola,,0,0
+coca_cola,Coca Cola (classica),bevande,ml,100,42,0,10.6,10.6,0,0,0,0,0,0,0,4,2,2,0,1,0,0,0,0,0,0,high,valori di etichetta. Una lattina sono 330 ml = 139 kcal,,0,1
+asparagi,Asparagi cotti,verdura,g,100,22,2.4,4.1,1.3,2.0,0.2,0.05,0.05,0.07,0,0.01,14,224,23,0.9,14,0.6,8,50,0,0,149,medium,"lessati o al vapore, senza condimento",asparago,0,0
+funghi_porcini,Porcini,verdura,g,100,27,3.1,3.3,1.0,2.5,0.4,0.06,0.1,0.14,0,0,5,318,3,0.5,10,0.5,2,0,0.2,0,17,low,freschi. Voce sua e non champignon perche' il contatore delle piante diverse conta le specie,porcino,0,0
+granola,Granola,cereali,g,100,450,10.0,60.0,20.0,7.0,18.0,3.0,6.3,6.3,0,0.2,30,350,60,3.0,110,2.2,0,0,0,0,30,low,varia molto per marca: controlla l'etichetta. Un cucchiaino sono circa 5 g,avena,0,1
+pesto_genovese,Pesto alla genovese,grassi,g,100,550,6.0,6.0,1.5,1.5,55.0,8.5,33,7.7,0,0.4,800,200,180,1.5,40,1.0,3,80,0,0.2,20,low,"stima: basilico, olio, pinoli, formaggio. Cambia molto fra industriale e fatto in casa",basilico,0,0
+stracchino,Stracchino,latticini,g,100,300,15.0,1.5,1.5,0,26.0,17.0,6.06,0.87,1.04,0.2,480,100,350,0.2,20,1.8,0,230,0.4,0.9,20,medium,,,1,0
+ragu_cervo,Ragu' di cervo,proteine,g,100,120,13.1,1.8,1.4,0.5,6.4,1.23,2.82,0.38,0.128,0.06,253,285,9,2.1,18,1.2,3,15,0,3.5,7,low,"ricavato dagli ingredienti: 55 g di cervo crudo + 30 g di passata + 8 g di soffritto + 5 g di olio per 100 g di sugo. Rispetto al ragu' di manzo ha meno grasso e piu' proteine, ferro e B12: la selvaggina e' magra",pomodoro,0,0

@@ -104,12 +104,15 @@ FIELDS = ["date", "kcal", "protein_g", "carb_g", "sugar_g", "fiber_g", "fat_g",
           # Anche queste fanno ~100, e quello che manca e' fibra e alcol, che le
           # 4/4/9 non contano.
           "pct_kcal_protein", "pct_kcal_carb", "pct_kcal_fat",
-          # DI CHE GRASSO sono fatti i grassi. Esistono solo dove Cronometer ha
-          # pesato la giornata intera: il database interno ha `satfat_g` e basta,
-          # e mono/poli/trans non si possono ricostruire senza inventarli. Dove non
-          # c'e' la misura la cella resta VUOTA, non zero — zero grammi di trans e
-          # "non lo sappiamo" sono due cose diverse, e la seconda e' la nostra.
-          "mono_g", "poly_g", "trans_g",
+          # DI CHE GRASSO sono fatti i grassi. Fino al 17/08/2026 esistevano solo dove
+          # Cronometer aveva pesato la giornata intera — quattro giorni al mese — perche'
+          # il database interno conosceva i soli saturi. Ora il catalogo porta anche mono,
+          # poli e trans, RICOSTRUITI da profili di acidi grassi noti
+          # (tools/food/profili_grassi.py), e la serie esiste su ogni giorno con del cibo.
+          # Restano due cose diverse, e `fat_split_src` dice sempre quale: dove Cronometer
+          # ha pesato vince la MISURA, altrove e' una RICOSTRUZIONE. Dove non c'e' ne'
+          # l'una ne' l'altra la cella resta vuota, non zero.
+          "mono_g", "poly_g", "trans_g", "fat_split_mis",
           ] + ["cnt_" + k for k in TALLY]
 
 
@@ -387,9 +390,21 @@ def main():
                for q in ("plant", "dairy", "animal", "other")},
             "pct_upf": round(100.0 * upf_kcal.get(k, 0.0) / (t["kcal"] or 1), 1),
             **macro_split(t),
-            **{c: (round(fat_split[k][s], 2) if k in fat_split else "")
-               for c, s in (("mono_g", "mono_g"), ("poly_g", "poly_g"),
-                            ("trans_g", "trans_g"))},
+            # DI CHE GRASSO, su OGNI giorno e non solo sui pochi pesati.
+            # Dove Cronometer ha pesato la giornata la misura vince; altrove si usa la
+            # ricostruzione dai profili di acidi grassi del catalogo. `fat_split_src`
+            # dice sempre quale dei due si sta guardando: sono due cose diverse e la
+            # pagina non deve poterle confondere.
+            **{c: round(fat_split[k][sv], 2) if k in fat_split
+                  else (round(t[cat], 2) if t.get(cat) else "")
+               for c, sv, cat in (("mono_g", "mono_g", "monounsat_g"),
+                                  ("poly_g", "poly_g", "polyunsat_g"),
+                                  ("trans_g", "trans_g", "transfat_g"))},
+            # 1 = pesato da Cronometer, 0 = ricostruito dal catalogo. NUMERICO e non
+            # una parola: la pagina carica queste colonne come serie di numeri, e una
+            # stringa qui dentro fa cadere il build con un ValueError che sembra
+            # tutt'altro (successo il 17/08/2026, costato mezz'ora).
+            "fat_split_mis": (1 if k in fat_split else 0) if (k in fat_split or t.get("fat_g")) else "",
             **{"cnt_" + key: round(tally[k].get(key, 0.0), 2) for key in TALLY},
         })
         cur += timedelta(days=1)

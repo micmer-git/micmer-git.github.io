@@ -28,7 +28,12 @@ BALANCE_CSV = DERIVED / "energy_balance.csv"
 
 # I nutrienti tracciati, nell'ordine in cui compaiono ovunque.
 MACROS = ("kcal", "protein_g", "carb_g", "sugar_g", "fiber_g", "fat_g",
-          "satfat_g", "omega3_g")
+          # DI CHE GRASSO. Dal 17/08/2026 il catalogo li porta tutti e tre e non solo
+          # i saturi, quindi il conto si puo' fare su OGNI giorno e non solo sui quattro
+          # al mese pesati da Cronometer. Sono RICOSTRUITI da profili di acidi grassi
+          # noti (tools/food/profili_grassi.py), non misurati: dove Cronometer c'e', la
+          # misura vince, e la serie dichiara quale dei due sta guardando.
+          "satfat_g", "monounsat_g", "polyunsat_g", "transfat_g", "omega3_g")
 MICROS = ("sodium_mg", "potassium_mg", "calcium_mg", "iron_mg", "magnesium_mg",
           "zinc_mg", "vitc_mg", "vita_ug", "vitd_ug", "b12_ug", "folate_ug")
 NUTRIENTS = MACROS + MICROS
@@ -36,7 +41,9 @@ NUTRIENTS = MACROS + MICROS
 LABELS = {
     "kcal": "Energia", "protein_g": "Proteine", "carb_g": "Carboidrati",
     "sugar_g": "di cui zuccheri", "fiber_g": "Fibre", "fat_g": "Grassi",
-    "satfat_g": "di cui saturi", "omega3_g": "Omega 3 (ALA)",
+    "satfat_g": "di cui saturi", "monounsat_g": "di cui monoinsaturi",
+    "polyunsat_g": "di cui polinsaturi", "transfat_g": "di cui trans",
+    "omega3_g": "Omega 3 (ALA)",
     "sodium_mg": "Sodio", "potassium_mg": "Potassio", "calcium_mg": "Calcio",
     "iron_mg": "Ferro", "magnesium_mg": "Magnesio", "zinc_mg": "Zinco",
     "vitc_mg": "Vitamina C", "vita_ug": "Vitamina A", "vitd_ug": "Vitamina D",
