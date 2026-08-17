@@ -162,6 +162,25 @@ insensate):
       d(FatMax)/d(CHO%)  = (70.3 − 54.9) / (10 − 59) = −0.314 %VO2max per punto
       d(ln MFO)/d(CHO%)  = ln(1.54/0.67) / (10 − 59) = −0.0170 per punto
 
+**E dal 2026-08-17 anche l'asse dei GRASSI** (chiesto da Michele: "cerca di
+capire se puoi migliorare quel modello anche in base ai grassi assunti durante
+quel periodo specifico"). Non e' un parametro nuovo: e' lo stesso studio letto
+sull'altra macro. I due bracci di FASTER stavano a **69% vs 25% dell'energia da
+grassi**, e arrivavano agli stessi due valori di MFO e FatMax:
+
+      d(FatMax)/d(FAT%)  = (70.3 − 54.9) / (69 − 25) = +0.350 %VO2max per punto
+      d(ln MFO)/d(FAT%)  = ln(1.54/0.67) / (69 − 25) = +0.0189 per punto
+
+I due assi pesano meta' ciascuno, sulla stessa finestra di 60 giorni. **Perche'
+non basta il carboidrato**: usando solo il CHO si assume implicitamente che
+tutto quello che non e' carboidrato sia grasso, cioe' che le proteine siano
+costanti. Con proteine costanti i due termini danno lo stesso identico numero
+(gli scostamenti dalle rispettive dieta di riferimento — 50% CHO e 35% grassi —
+sono uguali e opposti), quindi il secondo asse non sposta niente dove non c'e'
+niente da sapere: **agisce solo nei mesi in cui la quota proteica si muove**, e
+in questo diario si muove. `--check` stampa l'escursione delle proteine
+residue, che e' esattamente la misura di quanto valga la differenza.
+
 La conversione da %VO2max a %FCmax usa la pendenza ricavata dai bordi della zona
 di Achten 2002 stessa — (79−68)/(72−55) = **0.647 %FCmax per %VO2max** — che per
 inciso coincide con la relazione di Swain (1994), 0.64. Autoconsistente.
@@ -187,9 +206,15 @@ producano l'effetto di venti mesi di chetogenica.
      risultato e la meno fondata.
   c) La finestra mobile e' di 60 giorni perche' l'adattamento della macchina
      ossidativa e' lento (FASTER parla di mesi), non perche' 60 sia calibrato.
-  d) Il diario copre **dal 2024-08-11**. Prima di quella data non c'e' asse
-     carboidrati: il FatMax resta al valore nudo di Achten, e la colonna
-     `fatmax_shift_bpm` e' 0 per costruzione, non perche' la dieta fosse neutra.
+  d) Il diario copre **dal 2024-08-11**. Prima di quella data non c'e' ne' asse
+     carboidrati ne' asse grassi: il FatMax resta al valore nudo di Achten, e la
+     colonna `fatmax_shift_bpm` e' 0 per costruzione, non perche' la dieta fosse
+     neutra.
+  e) Meta' delle calorie del diario sono RICOSTRUITE (`fill_defaults.py`) e non
+     osservate. Il secondo asse legge la stessa sorgente del primo, quindi non
+     aggiunge incertezza — ma nemmeno la toglie: dove la giornata e' ricostruita,
+     la quota di grassi e' quella dei pasti abituali, non di quello che e' stato
+     mangiato. Sui giorni Cronometer e' misurata.
 
 --- Assunzione 5: come si ricava un istogramma di FC da 7 numeri ---------------
 
@@ -369,6 +394,29 @@ CHO_REF_PCT = 50.0              # ancoraggio: dieta occidentale non manipolata
 D_FATMAX_D_CHO = (70.3 - 54.9) / (10.0 - 59.0)          # -0.314 %VO2max/punto
 D_LNMFO_D_CHO = math.log(1.54 / 0.67) / (10.0 - 59.0)   # -0.0170 /punto
 CHO_WIN = 60                    # giorni: l'adattamento ossidativo e' lento
+
+# --- e i GRASSI assunti, dallo stesso studio (chiesto il 2026-08-17) ---------
+# Fino a qui il modello leggeva UNA SOLA macro: i carboidrati. Non era una svista —
+# la disponibilita' di carboidrati e' il regolatore vero — ma era un'assunzione
+# nascosta: usando solo il CHO si sta implicitamente dicendo che tutto quello che
+# non e' carboidrato e' grasso, cioe' che le PROTEINE sono costanti. Nel diario di
+# Michele non lo sono: la quota proteica si muove di parecchi punti fra un mese di
+# carico e uno di scarico, e in quei mesi la stessa quota di carboidrati corrisponde
+# a diete di grasso diverse.
+#
+# I due bracci di FASTER danno anche l'asse dei grassi, e sono gli STESSI soggetti e
+# gli STESSI due numeri di arrivo: il gruppo low-carb stava a 69 %E di grassi, quello
+# high-carb a 25 %E. Quindi la pendenza sul grasso non e' un parametro nuovo da
+# tarare, e' la stessa evidenza letta sull'altro asse.
+FAT_REF_PCT = 35.0              # 50 CHO + 35 grassi + 15 proteine = 100, la dieta di riferimento
+D_FATMAX_D_FAT = (70.3 - 54.9) / (69.0 - 25.0)          # +0.350 %VO2max/punto
+D_LNMFO_D_FAT = math.log(1.54 / 0.67) / (69.0 - 25.0)   # +0.0189 /punto
+# I due assi pesano la meta' ciascuno. Con proteine costanti la media dei due da'
+# ESATTAMENTE quello che dava il carboidrato da solo (i due scostamenti sono uguali e
+# opposti per costruzione), quindi il cambio non sposta niente dove non c'e' niente
+# da sapere: agisce solo nei mesi in cui le proteine si muovono, che sono l'unica
+# informazione che prima si buttava via.
+W_CHO, W_FAT = 0.5, 0.5
 # Il diario e' corto e la pendenza viene da un cross-sectional: si tiene lo
 # spostamento dentro il range di FatMax davvero osservato in letteratura.
 FATMAX_CLAMP_VO2 = (45.0, 75.0)
@@ -508,20 +556,46 @@ def cho_pct_of_energy(row):
     return 100.0 * 4.0 * carb / kcal
 
 
-def fatmax_for(hrmax, cho_pct):
+def fat_pct_of_energy(row):
+    """% dell'energia da grassi in un giorno di diario. 9 kcal/g."""
+    kcal, fat = num(row, "kcal"), num(row, "fat_g")
+    if not kcal or fat is None:
+        return None
+    return 100.0 * 9.0 * fat / kcal
+
+
+def fatmax_for(hrmax, cho_pct, fat_pct=None):
     """FatMax (bpm), MFO (g/min) e lo spostamento, data la dieta abituale.
 
+    Legge DUE macro, non una: i carboidrati abituali e i grassi abituali, ognuno col
+    proprio scostamento dalla dieta di riferimento e con la pendenza che i due bracci
+    di FASTER danno sul proprio asse. Vedi il blocco di costanti: con proteine
+    costanti i due termini coincidono, e la differenza compare solo quando le
+    proteine si muovono — che e' esattamente il caso che la versione a un asse sola
+    non poteva vedere.
+
     Se `cho_pct` e' None (nessun diario) si resta sui valori nudi di Achten e lo
-    spostamento e' 0 PER COSTRUZIONE, non perche' la dieta fosse neutra.
+    spostamento e' 0 PER COSTRUZIONE, non perche' la dieta fosse neutra. Se c'e' il
+    carboidrato ma non il grasso — non capita, escono dalla stessa riga di diario, ma
+    non e' un motivo per non reggerlo — si ricade sul solo asse disponibile invece di
+    dimezzare lo scostamento, che sarebbe una diluizione silenziosa.
     """
     base_hr = FATMAX_PCT_HRMAX * hrmax
-    if cho_pct is None:
+    if cho_pct is None and fat_pct is None:
         return base_hr, MFO_BASE, 0.0
-    d_cho = cho_pct - CHO_REF_PCT
-    vo2 = FATMAX_BASE_PCT_VO2 + D_FATMAX_D_CHO * d_cho
-    vo2 = min(max(vo2, FATMAX_CLAMP_VO2[0]), FATMAX_CLAMP_VO2[1])
+    terms = []                       # (peso, d_vo2, d_lnmfo)
+    if cho_pct is not None:
+        d = cho_pct - CHO_REF_PCT
+        terms.append((W_CHO, D_FATMAX_D_CHO * d, D_LNMFO_D_CHO * d))
+    if fat_pct is not None:
+        d = fat_pct - FAT_REF_PCT
+        terms.append((W_FAT, D_FATMAX_D_FAT * d, D_LNMFO_D_FAT * d))
+    wtot = sum(t[0] for t in terms)
+    d_vo2 = sum(t[0] * t[1] for t in terms) / wtot
+    d_lnmfo = sum(t[0] * t[2] for t in terms) / wtot
+    vo2 = min(max(FATMAX_BASE_PCT_VO2 + d_vo2, FATMAX_CLAMP_VO2[0]), FATMAX_CLAMP_VO2[1])
     shift = (vo2 - FATMAX_BASE_PCT_VO2) * HRMAX_PER_VO2MAX / 100.0 * hrmax
-    return base_hr + shift, MFO_BASE * math.exp(D_LNMFO_D_CHO * d_cho), shift
+    return base_hr + shift, MFO_BASE * math.exp(d_lnmfo), shift
 
 
 def activity_fat(a, hr_fatmax, mfo, hrmax):
@@ -624,6 +698,8 @@ def build():
 
     # --- carboidrati abituali: media mobile a 60 giorni della quota di energia
     cho_day = {d: cho_pct_of_energy(r) for d, r in series.items()}
+    # --- e i grassi abituali, stessa finestra: escono dalla stessa riga di diario
+    fat_day = {d: fat_pct_of_energy(r) for d, r in series.items()}
 
     # --- FCmax: non e' una misura, e' l'impostazione dell'atleta su Intervals,
     # riapplicata all'indietro su tutto l'archivio (185 su 2.238 attivita' su
@@ -648,7 +724,8 @@ def build():
         if not d or not hrmax:
             continue
         cho = rolling(cho_day, d, CHO_WIN)
-        hr_fm, mfo, _shift = fatmax_for(hrmax, cho)
+        fatp = rolling(fat_day, d, CHO_WIN)
+        hr_fm, mfo, _shift = fatmax_for(hrmax, cho, fatp)
         r = activity_fat(a, hr_fm, mfo, hrmax)
         if not r:
             continue
@@ -731,9 +808,11 @@ def build():
 
         # --- FatMax (modello) -------------------------------------------------
         cho = rolling(cho_day, d, CHO_WIN)
+        fatp = rolling(fat_day, d, CHO_WIN)
         hrmax = last_hrmax = hrmax_day.get(d, last_hrmax)
-        hr_fm, mfo, shift = fatmax_for(hrmax, cho)
+        hr_fm, mfo, shift = fatmax_for(hrmax, cho, fatp)
         row["cho_pct_60d"] = round(cho, 1) if cho is not None else ""
+        row["fat_pct_60d"] = round(fatp, 1) if fatp is not None else ""
         row["fatmax_hr"] = round(hr_fm)
         row["fatmax_lo_hr"] = round(hr_fm - (FATMAX_PCT_HRMAX - ZONE_LO_PCT) * hrmax)
         row["fatmax_hi_hr"] = round(hr_fm + (ZONE_HI_PCT - FATMAX_PCT_HRMAX) * hrmax)
@@ -764,7 +843,7 @@ def build():
 
 
 FIELDS = (["date", "temp_c", "temp_min_c", "temp_max_c", "temp_n",
-           "cho_pct_60d", "fatmax_hr", "fatmax_lo_hr", "fatmax_hi_hr",
+           "cho_pct_60d", "fat_pct_60d", "fatmax_hr", "fatmax_lo_hr", "fatmax_hi_hr",
            "fatmax_shift_bpm", "mfo_g_min", "fat_g_est", "cho_g_est",
            "fatmax_min", "train_min", "n_act", "hr_fit", "mm", "mm_n"]
           + ["mm_" + k for k, *_ in PESI])
@@ -814,10 +893,19 @@ def report(res):
           "dello stesso studio: torna.")
     sh = [float(r["fatmax_shift_bpm"]) for r in rows if r["cho_pct_60d"] != ""]
     chos = [float(r["cho_pct_60d"]) for r in rows if r["cho_pct_60d"] != ""]
+    fats = [float(r["fat_pct_60d"]) for r in rows if r.get("fat_pct_60d") not in ("", None)]
     if sh:
         print(f"  carboidrati abituali ({CHO_WIN} gg): {min(chos):.0f}–{max(chos):.0f} %E "
               f"(mediana {statistics.median(chos):.0f}) → spostamento del FatMax "
               f"{min(sh):+.1f}…{max(sh):+.1f} bpm")
+        if fats:
+            print(f"  grassi abituali ({CHO_WIN} gg): {min(fats):.0f}–{max(fats):.0f} %E "
+                  f"(mediana {statistics.median(fats):.0f}) — dal 2026-08-17 il modello "
+                  f"legge questo asse insieme al carboidrato")
+            # quanto vale davvero il secondo asse: le proteine sono il residuo
+            pr = [100.0 - c - f for c, f in zip(chos, fats)]
+            print(f"  → proteine residue {min(pr):.0f}–{max(pr):.0f} %E: e' l'escursione "
+                  f"che la versione a un asse solo assumeva costante")
         print(f"  ma solo su {len(sh)} giorni su {len(rows)}: il diario parte dal "
               f"{DIET_FROM}, prima lo spostamento e' 0 per costruzione.")
     fg = [float(r["fat_g_est"]) for r in rows if r["fat_g_est"] != ""]

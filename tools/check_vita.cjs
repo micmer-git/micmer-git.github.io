@@ -253,12 +253,14 @@ if (ran) {
      Il posto dei controlli che si farebbero a occhio. Senza browser si misurano:
      ogni segno dentro il proprio viewBox, ogni etichetta dell'asse y dentro la sua
      gronda (il modo in cui "50.000" finisce tagliato a meta'), e nessuna coppia di
-     etichette sull'asse x che si sovrappone. La larghezza di un glifo IBM Plex Mono
-     a font-size 8 e' ~4.85px: **la stessa costante che usa la pagina** (TICKW) per
+     etichette sull'asse x che si sovrappone. La larghezza di un glifo monospazio a
+     font-size 10 e' ~6.05px: **la stessa costante che usa la pagina** (TICKW) per
      dimensionare la gronda, quindi il controllo misura la stessa cosa che il disegno
      assume. Se la' cambia il corpo del testo, va cambiata anche qui, o il check
-     smette di vedere le sovrapposizioni invece di segnalarle. */
-  const GLYPH = 4.85;
+     smette di vedere le sovrapposizioni invece di segnalarle.
+     Dal 17/08/2026 gli assi sono a corpo 10 e non piu' 8 (AXIS_FS in build_vita.py):
+     a 8 px le etichette non si leggevano da telefono. */
+  const GLYPH = 6.05;
   const outside = [], clipped = [], collide = [];
   for (const [n, t] of K.MOUNTED) {
     const svg = n.box._kids.find(c => c.tagName === "svg");
@@ -305,6 +307,49 @@ if (ran) {
     (clipped.length ? ` — ${clipped.length}, es. ${clipped[0]}` : ""));
   ok(collide.length === 0, `nessuna sovrapposizione fra etichette dell'asse x` +
     (collide.length ? ` — ${collide.length}, es. ${collide[0]}` : ""));
+
+  /* ------------------------------------- 2c. gli otto ottavi (chiesti il 17/08/2026)
+     Sono barre nere alte 3px, una per ottavo della finestra, col numero della media
+     sopra. Tre modi in cui si rompono senza che nessuno se ne accorga, e quindi tre
+     controlli: sparire del tutto (una `frames:false` di troppo, o un renderer che non
+     li chiama piu'), diventare nove perche' l'arrotondamento degli ottavi ha sbagliato
+     un giro, e il numero che sborda dal suo ottavo e finisce addosso al vicino. */
+  let framed = 0, tooMany = [], spill = [];
+  for (const [n, t] of K.MOUNTED) {
+    const svg = n.box._kids.find(c => c.tagName === "svg");
+    if (!svg) continue;
+    const kids = svg.descendants();
+    const bars = kids.filter(c => c.tagName === "rect" && c.attrs.fill === "var(--ink)" &&
+      parseFloat(c.attrs.height) === 3);
+    if (!bars.length) continue;
+    framed++;
+    if (bars.length > 8) tooMany.push(`${t.title}: ${bars.length} ottavi`);
+    /* Il numero puo' essere piu' largo del suo ottavo — la pagina se ne accorge e
+       stampa una etichetta ogni due invece che una per ottavo. Quello che NON puo'
+       succedere e' che due numeri disegnati si tocchino, o che uno esca dalla scheda:
+       si misurano quelli, non la regola che dovrebbe averli evitati. */
+    const [, , VW] = svg.attrs.viewBox.split(/\s+/).map(Number);
+    const lab = kids.filter(c => c.tagName === "text" && c.attrs["font-weight"] === "700")
+      .map(c => { const lw = (c.textContent || "").length * GLYPH;
+        return { l:parseFloat(c.attrs.x) - lw / 2, r:parseFloat(c.attrs.x) + lw / 2,
+                 y:parseFloat(c.attrs.y), s:c.textContent }; })
+      .sort((a, b) => a.l - b.l);
+    for (const q of lab) {
+      if (q.l < -0.5 || q.r > VW + 0.5)
+        spill.push(`${t.title}: "${q.s}" esce dalla scheda (${q.l.toFixed(0)}→${q.r.toFixed(0)} su ${VW})`);
+    }
+    for (let i = 1; i < lab.length; i++) {
+      /* stessa riga = stessa altezza: due numeri a quote diverse non si toccano */
+      if (Math.abs(lab[i].y - lab[i - 1].y) > 6) continue;
+      if (lab[i].l < lab[i - 1].r + 1)
+        spill.push(`${t.title}: "${lab[i - 1].s}" e "${lab[i].s}" si toccano`);
+    }
+  }
+  ok(framed > 0, `gli otto ottavi sono disegnati (${framed} riquadri)`);
+  ok(tooMany.length === 0, `mai piu' di otto ottavi per riquadro` +
+    (tooMany.length ? ` — ${tooMany[0]}` : ""));
+  ok(spill.length === 0, `i numeri degli ottavi non si toccano e non escono dalla scheda` +
+    (spill.length ? ` — ${spill.length}, es. ${spill[0]}` : ""));
 
   /* --------------------------------------- 3. medie delle ultime due settimane */
   const N = D.n;
@@ -868,11 +913,27 @@ if (ran) {
     }
     ok(wrong.length === 0, "ogni coppia notevole regge ancora il proprio r" +
       (wrong.length ? ` — da riscrivere: ${wrong.join(" · ")}` : ""));
+    /* La barra: dieci pastiglie nel DOM, ma solo TRE a schermo (17/08/2026 — dieci
+       tesi in fila non si leggevano, si saltavano). Il controllo tiene tutte e due
+       le meta' del patto: che le sette in piu' ci siano ancora, e che siano
+       nascoste. Contate col `class`, perche' l'errore probabile qui e' esattamente
+       che qualcuno tolga `cx-hid` "per vederle tutte" e riporti il muro di prima. */
     const chips = document.getElementById("compare-presets");
-    ok(chips._kids.length === CMP.presets.length + 1,
-      `la barra ha le dieci pastiglie più lo slot libero (${chips._kids.length})`);
+    ok(chips._kids.length === CMP.presets.length + 2,
+      `la barra ha le dieci pastiglie, il bottone «altre» e lo slot libero (${chips._kids.length})`);
+    const hid = chips._kids.filter(b => /(^| )cx-hid( |$)/.test(b.className || ""));
+    ok(hid.length === CMP.presets.length - 3,
+      `tre pastiglie a schermo, le altre ${hid.length} dietro un bottone`);
+    const tog = chips._kids.find(b => /(^| )cx-tog( |$)/.test(b.className || ""));
+    ok(!!tog && chips.attrs["data-open"] === "0", "il gruppo delle altre parte chiuso");
+    if (tog) {
+      tog.fire("click");
+      const chips2 = document.getElementById("compare-presets");
+      ok(chips2.attrs["data-open"] === "1", "e il bottone «altre» lo apre davvero");
+      chips2._kids.find(b => /(^| )cx-tog( |$)/.test(b.className || "")).fire("click");
+    }
     /* lo slot "questa e' mia": due, non venti, e devono sopravvivere alla visita */
-    const add = chips._kids[chips._kids.length - 1];
+    const add = document.getElementById("compare-presets")._kids.slice(-1)[0];
     add.fire("click"); add.fire("click"); add.fire("click");
     ok(CMP.mine.length === 2, `gli slot personali si fermano a due (${CMP.mine.length})`);
     ok(/cxmine/.test(Object.keys(LS).join(",")), "e sono salvati per la visita dopo");
@@ -1063,7 +1124,12 @@ if (ran) {
    girato sul fatto nuovo — e vale sempre la stessa cosa: questi quattro devono
    restare identici a `C` in tools/build_vita.py, che disegna i PNG. Sono un registro
    solo letto da due parti; se divergono, pagina e immagini dicono due colori diversi. */
-const PAL = { "--s1": "#1a73e8", "--s2": "#d93025", "--s3": "#137333", "--s4": "#8430ce" };
+/* Dal 17/08/2026 i primi tre sono i colori LETTERALI della home (io-blue, io-red,
+   io-green portato a 4:1 perche' #34A853 sta a 2,8 e sotto 3:1 una linea da 2px non
+   e' un oggetto grafico leggibile). Il quarto resta viola: il quarto colore della
+   home e' il giallo, e il giallo li' e' sempre un FONDO dietro testo nero, mai un
+   tratto — a 1,7:1 come linea non esisterebbe. */
+const PAL = { "--s1": "#4285f4", "--s2": "#ea4335", "--s3": "#1e8e3e", "--s4": "#8430ce" };
 for (const [k, v] of Object.entries(PAL)) {
   ok(new RegExp(k + ":\\s*" + v, "i").test(html), `CSS ${k} = ${v} (slot validato)`);
 }

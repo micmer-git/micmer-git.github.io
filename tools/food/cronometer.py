@@ -107,6 +107,24 @@ NUTRIENT_MAP = {
     "folate_ug": ("Folate (µg)", 1.0),
 }
 
+# --- di che grasso sono fatti i grassi ---------------------------------------
+# Chiesto il 2026-08-17: "vorrei che mostri i grassi divisi tra saturi, insaturi e
+# trans". Il database interno (foods.csv) ha SOLO `satfat_g`: mono, poli e trans
+# non ci sono, e non e' una dimenticanza — non esiste una fonte per riempirli su
+# 400 alimenti senza inventarli. Cronometer invece li misura tutti e quattro.
+#
+# Quindi la scomposizione dei grassi esiste **solo dove Cronometer ha pesato il
+# giorno intero**, ed e' misurata; altrove non esiste, e resta vuota invece di
+# essere ricostruita. E' la stessa regola di tutta la repo: meglio un pezzo di
+# serie mancante che un pezzo di serie che finge. Va in un dizionario suo e non
+# in NUTRIENT_MAP perche' quelle chiavi devono restare esattamente le colonne di
+# `common.NUTRIENTS`, che sono quelle che il database interno sa produrre.
+FAT_SPLIT_MAP = {
+    "mono_g": ("Monounsaturated (g)", 1.0),
+    "poly_g": ("Polyunsaturated (g)", 1.0),
+    "trans_g": ("Trans-Fats (g)", 1.0),
+}
+
 MEAL_IT = {"Breakfast": "colazione", "Lunch": "pranzo", "Dinner": "cena",
            "Snacks": "spuntino", "Bike": "in bici", "'-": "non_specificato",
            "Total": "totale"}
@@ -297,9 +315,10 @@ def load():
             if not d or num(r.get("Energy (kcal)")) is None:
                 continue
             vals = {}
-            for nut, (col, factor) in NUTRIENT_MAP.items():
-                v = num(r.get(col))
-                vals[nut] = (v * factor) if v is not None else 0.0
+            for m in (NUTRIENT_MAP, FAT_SPLIT_MAP):
+                for nut, (col, factor) in m.items():
+                    v = num(r.get(col))
+                    vals[nut] = (v * factor) if v is not None else 0.0
             if g == "Total":
                 day_tot[d] = vals
             else:
@@ -385,6 +404,11 @@ def build():
 
         out[d] = {
             "nutrients": {k: round(v, 3) for k, v in tot.items()},
+            # la scomposizione dei grassi viaggia a parte, e solo per i giorni pieni:
+            # su un giorno parziale la somma delle tre non e' il grasso della giornata,
+            # e una composizione che non somma al suo totale non e' una composizione
+            "fat_split": ({k: round(tot.get(k, 0.0), 2)
+                           for k in ("satfat_g",) + tuple(FAT_SPLIT_MAP)} if full else None),
             "slots": sorted(slots),
             "partial_nutrients": {k: round(v, 3) for k, v in partial.items()},
             "meals": detail,

@@ -106,7 +106,11 @@ METAB_COLS = ("temp_c", "temp_min_c", "temp_max_c",
               # confrontano — due ore e venti minuti fanno grammi diversi senza che
               # sia cambiato niente. La pagina li divide per `train_min` e disegna
               # il TASSO, g/min, che e' la grandezza di cui parla la letteratura.
-              "fat_g_est", "train_min", "mfo_g_min", "cho_pct_60d",
+              # `fat_pct_60d` e' il secondo asse della dieta, aggiunto il 17/08/2026:
+              # il modello non legge piu' solo i carboidrati abituali ma anche i
+              # grassi abituali. Serve in pagina per poter DIRE su cosa poggia la
+              # stima, invece di lasciarlo scritto solo nel sorgente del modello.
+              "fat_g_est", "train_min", "mfo_g_min", "cho_pct_60d", "fat_pct_60d",
               "mm", "mm_n")
 
 # The athlete. Intervals.icu also accepts "0" for "whoever owns the key", but the
@@ -122,12 +126,16 @@ OLDEST = "2012-01-01"
 # da due parti, e se divergono i grafici PNG e la pagina dicono due colori diversi.
 # Resta vero il principio: il colore non porta MAI l'identita' da solo — ogni serie e'
 # nominata nel proprio titolo o nella propria legenda.
+# Dal 17/08/2026 sono i colori LETTERALI della home (io-blue, io-red, io-green),
+# con i due scostamenti spiegati per esteso accanto a --s1..--s4 nel TEMPLATE:
+# il verde e' portato a 4:1 perche' #34A853 sotto 3:1 non e' un tratto leggibile,
+# e il quarto slot resta viola perche' il quarto colore della home e' un FONDO.
 C = {
-    "blue": "#1a73e8",
-    "orange": "#d93025",
-    "aqua": "#137333",
-    "yellow": "#8430ce",    # non e' piu' giallo: il giallo e' l'accento del sito, e in mezzo ai dati si spacciava per una serie
-    "red": "#c5221f",       # the negative arm of Forma — a diverging pole, not a series
+    "blue": "#4285f4",
+    "orange": "#ea4335",
+    "aqua": "#1e8e3e",
+    "yellow": "#8430ce",    # non e' piu' giallo: il giallo I/O e' un fondo, e in mezzo ai dati si spacciava per una serie
+    "red": "#ea4335",       # the negative arm of Forma — a diverging pole, not a series
 }
 
 # Sport buckets. Six raw types collapse to four so a stack never needs a fifth hue.
@@ -764,13 +772,25 @@ TEMPLATE = r"""<!DOCTYPE html>
                   contiene nero e' la prossima mezz'ora persa da qualcuno. */
     --bg:#f8f9fa; --paper:#ffffff; --paper-2:#f1f3f4;
     --ink:#202124; --ink-soft:#3c4043; --muted:#5f6368;
-    --accent:#202124; --rule:rgba(32,33,36,.20);
-    --grid:rgba(32,33,36,.09); --axis:rgba(32,33,36,.22);
-    /* categorical slots 1-4, passi chiari, validati contro --paper */
-    --s1:#1a73e8; --s2:#d93025; --s3:#137333; --s4:#8430ce; --neg:#c5221f;
+    --accent:#202124; --rule:rgba(32,33,36,.30);
+    --grid:rgba(32,33,36,.10); --axis:rgba(32,33,36,.30);
+    /* Categorical slots 1-4. Dal 17/08/2026 sono i colori LETTERALI della home
+       (`tailwind.config` di index.html: io-blue #4285F4, io-red #EA4335,
+       io-green #34A853), tranne due scostamenti misurati e voluti:
+         --s3 e' #1e8e3e e non #34A853 perche' il verde I/O sta a 2,8:1 sul bianco
+              e una linea da 2px sotto 3:1 non e' un oggetto grafico leggibile
+              (WCAG 1.4.11). Stessa famiglia, quattro decimi di luminanza in meno.
+         --s4 resta viola: il quarto colore della home e' il GIALLO, e il giallo
+              I/O sta a 1,7:1 — li' e' un FONDO dietro testo nero, mai un tratto.
+              Il giallo torna dov'e' nato, in --io-yellow, e fa da riempimento.
+       Il registro dei colori resta uno: `SCH` in pagina legge queste variabili e
+       `C` in build_vita.py disegna i PNG con gli stessi valori. */
+    --s1:#4285f4; --s2:#ea4335; --s3:#1e8e3e; --s4:#8430ce; --neg:#ea4335;
+    --io-yellow:#fbbc04; --io-green:#34a853;
     /* l'ombra secca della home: nessuna sfocatura, e' quella che fa lo stile */
     --neo:4px 4px 0 0 rgba(32,33,36,1); --neo-sm:2px 2px 0 0 rgba(32,33,36,1);
   }
+  ::selection{background:var(--io-yellow); color:#000}
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth;max-width:100%;overflow-x:hidden;overflow-x:clip}
   body{
@@ -783,8 +803,8 @@ TEMPLATE = r"""<!DOCTYPE html>
   body::before{
     content:""; position:fixed; inset:0; pointer-events:none; z-index:-1;
     background-image:
-      linear-gradient(to right,rgba(32,33,36,.055) 1px,transparent 1px),
-      linear-gradient(to bottom,rgba(32,33,36,.055) 1px,transparent 1px);
+      linear-gradient(to right,rgba(32,33,36,.075) 1px,transparent 1px),
+      linear-gradient(to bottom,rgba(32,33,36,.075) 1px,transparent 1px);
     background-size:24px 24px;
     -webkit-mask-image:linear-gradient(to bottom,#000 0,transparent 62vh);
     mask-image:linear-gradient(to bottom,#000 0,transparent 62vh);
@@ -806,12 +826,12 @@ TEMPLATE = r"""<!DOCTYPE html>
     display:inline-block; background:var(--paper); color:var(--ink);
     border:3px solid var(--ink); box-shadow:var(--neo); padding:2px 18px 0}
   .sub{color:var(--ink-soft); max-width:36em; margin:16px auto 0;
-    font-size:.97rem}
+    font-size:1.08rem}
 
   /* ---------- headline numbers ---------- */
   .headline-stats{max-width:1000px; margin:30px auto 0; display:grid; gap:16px}
   .headline-group{border-top:1px solid var(--rule); padding-top:10px}
-  .headline-label{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.56rem;
+  .headline-label{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.72rem;
     letter-spacing:.17em; text-transform:uppercase; color:var(--accent); text-align:center;
     margin-bottom:10px}
   .totals{display:grid; grid-template-columns:repeat(auto-fit,minmax(112px,1fr));
@@ -819,41 +839,42 @@ TEMPLATE = r"""<!DOCTYPE html>
   .total{text-align:center}
   .total .n{font-family:'VT323',ui-monospace,monospace; font-size:1.95rem; font-weight:700; color:var(--accent);
     font-variant-numeric:tabular-nums; line-height:1.1}
-  .total .l{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.58rem; letter-spacing:.13em;
+  .total .l{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.7rem; letter-spacing:.11em;
     text-transform:uppercase; color:var(--muted); margin-top:4px; overflow-wrap:anywhere}
   .total{border:0;background:transparent;color:inherit;font:inherit;padding:5px;min-width:0}
   button.total{cursor:pointer;border-radius:7px}
   button.total:hover{background:var(--paper);outline:1px solid var(--rule)}
-  .total .d{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;font-size:.55rem;margin-top:3px;color:var(--ink-soft)}
+  .total .d{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;font-size:.68rem;margin-top:3px;color:var(--ink-soft)}
   .total .d.up{color:var(--s3)} .total .d.down{color:var(--neg)}
-  .fortnight{margin:15px auto 0;max-width:900px;text-align:center;color:var(--muted);font-size:.78rem}
+  .fortnight{margin:15px auto 0;max-width:900px;text-align:center;color:var(--muted);font-size:.9rem}
 
   /* ---------- correlatore libero ---------- */
-  .compare{max-width:1000px; margin:18px auto 22px; border:1px solid var(--rule);
-    border-radius:9px; background:var(--paper); padding:16px 18px 13px}
+  .compare{max-width:1000px; margin:18px auto 22px; border:2px solid var(--ink);
+    border-radius:0; box-shadow:var(--neo-sm); background:var(--paper);
+    padding:16px 18px 13px}
   .compare-controls{display:flex; align-items:end; justify-content:center; flex-wrap:wrap;
     gap:10px 14px}
   .compare-controls label{display:grid; gap:4px; font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;
-    font-size:.54rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+    font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted)}
   .compare-controls select{min-width:180px; max-width:280px; border:1px solid var(--rule);
     border-radius:6px; background:var(--paper-2); color:var(--ink); padding:7px 28px 7px 9px;
-    font:500 .72rem ui-monospace,'SFMono-Regular',Menlo,monospace}
+    font:500 .84rem ui-monospace,'SFMono-Regular',Menlo,monospace}
   .compare-controls select:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   .compare-body{display:grid; grid-template-columns:minmax(0,1fr) 160px; gap:14px;
     align-items:center; margin-top:14px}
   .compare-plot{min-height:280px}
   .compare-plot svg{display:block; width:100%; height:280px; overflow:hidden}
   .compare-result{border-left:1px solid var(--rule); padding-left:14px}
-  .compare-result b{display:block; font:700 1.8rem 'VT323',ui-monospace,monospace; color:var(--accent)}
-  .compare-result span{display:block; font:500 .59rem ui-monospace,'SFMono-Regular',Menlo,monospace;
+  .compare-result b{display:block; font:700 2.15rem 'VT323',ui-monospace,monospace; color:var(--accent)}
+  .compare-result span{display:block; font:500 .72rem ui-monospace,'SFMono-Regular',Menlo,monospace;
     color:var(--ink-soft); margin:3px 0}
-  .compare-result p{font-size:.75rem; line-height:1.45; color:var(--muted); margin-top:10px}
+  .compare-result p{font-size:.87rem; line-height:1.45; color:var(--muted); margin-top:10px}
   /* i dieci preset: pastiglie, non un menu a tendina. Il titolo di ognuna e' la
      TESI, non i nomi delle due serie — "il caldo si paga il mattino dopo" dice
      perche' guardarla, "Heat strain contro FC a riposo" no. */
   .cx-presets{display:flex; flex-wrap:wrap; gap:6px; justify-content:center;
     margin:0 0 12px}
-  .cx-presets button{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.6rem;
+  .cx-presets button{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.72rem;
     letter-spacing:.05em; color:var(--ink-soft); background:transparent; cursor:pointer;
     border:1px solid var(--rule); border-radius:999px; padding:5px 11px; line-height:1.3}
   .cx-presets button:hover{border-color:var(--accent); color:var(--ink)}
@@ -861,18 +882,40 @@ TEMPLATE = r"""<!DOCTYPE html>
     background:var(--accent)}
   .cx-presets button.cx-add{border-style:dashed}
   .cx-presets button i{font-style:normal; opacity:.55; margin-left:6px}
-  .cx-claim{max-width:70ch; margin:0 auto 12px; text-align:center; font-size:.88rem;
+  /* TRE PASTIGLIE A SCHERMO, NON TREDICI (17/08/2026, Michele: "ci sono un sacco di
+     bottoni, c'e' un casino di test... qualcosa di un pochettino piu' curato e piu'
+     compatto"). Le altre sette restano — sono il risultato del setaccio su 2.958
+     combinazioni e buttarle sarebbe buttare il lavoro — ma dietro un bottone solo.
+     Sono NASCOSTE, non smontate: restano nel DOM, nel Tab e nella ricerca di pagina,
+     e la pastiglia attiva riapre il gruppo da sola se sta li' dentro. */
+  .cx-presets .cx-hid{display:none}
+  .cx-presets[data-open="1"] .cx-hid{display:inline-block}
+  .cx-presets button.cx-tog{border-style:dotted; color:var(--muted)}
+  .cx-presets button.cx-tog:hover{color:var(--ink)}
+  .cx-presets button.cx-own{border-color:var(--accent)}
+  /* i quattro menu a tendina: la strada lunga, e quindi chiusa. Chi arriva qui vuole
+     leggere una tesi, non compilare un modulo a quattro campi. */
+  .cx-pick{max-width:1000px; margin:0 auto 12px}
+  .cx-pick > summary{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;
+    font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
+    cursor:pointer; list-style:none; text-align:center}
+  .cx-pick > summary::-webkit-details-marker{display:none}
+  .cx-pick > summary::before{content:"▸ "}
+  .cx-pick[open] > summary::before{content:"▾ "}
+  .cx-pick > summary:hover{color:var(--ink)}
+  .cx-pick .compare-controls{margin-top:11px}
+  .cx-claim{max-width:70ch; margin:0 auto 12px; text-align:center; font-size:1rem;
     line-height:1.55; color:var(--ink-soft)}
   .cx-claim:empty{display:none}
   .cx-claim b{color:var(--accent); font-weight:500}
   .cx-claim em{color:var(--muted); font-style:italic}
-  .compare-note{font-size:.72rem; line-height:1.5; color:var(--muted); margin-top:9px;
+  .compare-note{font-size:.85rem; line-height:1.5; color:var(--muted); margin-top:9px;
     text-align:center}
   /* L'avviso "e' solo trend" non e' un errore: e' il risultato. Prende l'arancio
      degli avvisi, quello di conferma resta muto — una conferma non deve gridare. */
   .compare-result .cmp-warn{color:var(--s2); border-left:2px solid var(--s2);
-    padding-left:8px; margin-top:9px; font-size:.7rem}
-  .compare-result .cmp-ok{color:var(--ink-soft); margin-top:9px; font-size:.7rem}
+    padding-left:8px; margin-top:9px; font-size:.82rem}
+  .compare-result .cmp-ok{color:var(--ink-soft); margin-top:9px; font-size:.82rem}
   .compare-result .cmp-warn strong{color:var(--s2); font-weight:600}
 
   /* ---------- range control ---------- */
@@ -880,14 +923,27 @@ TEMPLATE = r"""<!DOCTYPE html>
      della vista. Stessa classe di bottone perche' sono la stessa cosa — due scelte
      che ridisegnano tutto — e due stili diversi avrebbero solo insinuato che una
      conta meno dell'altra. */
-  .controls{display:flex; gap:8px 20px; justify-content:center; align-items:center;
-    flex-wrap:wrap; margin:30px 0 6px}
+  /* LA BARRA RESTA APPESA IN CIMA (17/08/2026, Michele: "la divisione fra due anni e
+     un anno sempre visibile come toggle anche se scrollo in basso"). La finestra
+     temporale governa TUTTI i quaranta riquadri insieme: doverla andare a ricercare
+     tremila pixel piu' su e' il motivo per cui la si cambiava una volta sola e poi si
+     scorreva con quella. Il fondo e' quasi opaco apposta: sotto ci scorrono grafici, e
+     una barra trasparente sopra un disegno in movimento non e' leggera, e' illeggibile.
+     --bar-h e' l'altezza che questa barra si prende: la legge la striscia congelata
+     della ridgeline per non finirci sotto. */
+  :root{--bar-h:54px}
+  .controls{position:sticky; top:0; z-index:8;
+    display:flex; gap:8px 18px; justify-content:center; align-items:center;
+    flex-wrap:wrap; margin:30px -20px 8px; padding:9px 20px;
+    background:rgba(248,249,250,.95);
+    -webkit-backdrop-filter:blur(7px); backdrop-filter:blur(7px);
+    border-bottom:2px solid var(--ink)}
   .controls .ranges{margin:0}
-  .viewsw{border-left:1px solid var(--rule); padding-left:20px}
+  .viewsw{border-left:2px solid var(--ink); padding-left:18px}
   .ranges{display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:30px 0 6px}
   .ranges button{
-    font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.66rem; letter-spacing:.14em;
-    text-transform:uppercase; padding:7px 15px; border-radius:999px; cursor:pointer;
+    font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.78rem; letter-spacing:.12em;
+    text-transform:uppercase; padding:8px 16px; border-radius:999px; cursor:pointer;
     background:transparent; border:1px solid var(--rule); color:var(--ink-soft);
     transition:border-color .15s,color .15s,background .15s;
   }
@@ -906,20 +962,20 @@ TEMPLATE = r"""<!DOCTYPE html>
   body[data-view="compatta"] .panel,
   body[data-view="compatta"] h2.band,
   body[data-view="compatta"] .band-sub{display:none}
-  .cx-note{text-align:left; color:var(--muted); font-size:.8rem;
+  .cx-note{text-align:left; color:var(--muted); font-size:.92rem;
     max-width:56em; margin:14px auto 0; line-height:1.55; display:flex; gap:10px;
     align-items:baseline; flex-wrap:wrap}
   /* i gesti stanno accanto ai comandi, non in un paragrafo tre schermate piu' su */
   .cx-note .cx-gesti{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;
-    font-size:.62rem; letter-spacing:.04em; color:var(--muted);
+    font-size:.74rem; letter-spacing:.04em; color:var(--muted);
     border-left:1px solid var(--rule); padding-left:10px}
   .cx-note .cx-gesti b{color:var(--ink-soft); font-weight:600}
   @media(max-width:640px){ .cx-note .cx-gesti{border-left:0; padding-left:0} }
   .cx-note strong{color:var(--ink-soft); font-weight:500}
   .cx-wrap{display:grid; grid-template-columns:minmax(0,1fr) 214px; gap:14px;
     align-items:start; margin-top:14px}
-  .cx-main{min-width:0; background:var(--paper); border:1px solid var(--rule);
-    border-radius:7px; padding:0 13px 9px}
+  .cx-main{min-width:0; background:var(--paper); border:2px solid var(--ink);
+    border-radius:0; box-shadow:var(--neo-sm); padding:0 13px 9px}
   /* Le corsie congelate restano appiccicate in cima al pannello mentre il resto
      scorre: e' l'unico modo per confrontare una serie con una che sta ottocento
      pixel piu' in basso senza tenerla a memoria.
@@ -929,15 +985,15 @@ TEMPLATE = r"""<!DOCTYPE html>
      sfumatura al posto del filetto. Il fondo resta comunque quasi opaco — sotto ci
      scorrono le corsie, e una striscia appiccicata trasparente sopra un disegno in
      movimento non e' leggera, e' illeggibile. */
-  .cx-pin{position:sticky; top:0; z-index:4; background:rgba(33,29,22,.93);
+  .cx-pin{position:sticky; top:var(--bar-h); z-index:4; background:rgba(255,255,255,.94);
     -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px);
-    box-shadow:0 7px 10px -9px rgba(0,0,0,.75); margin:0 -13px; padding:5px 13px 4px}
+    box-shadow:0 7px 10px -9px rgba(32,33,36,.5); margin:0 -13px; padding:5px 13px 4px}
   .cx-pin.off{display:none}
   .cx-pin-top{display:flex; align-items:center; gap:9px; flex-wrap:wrap}
-  .cx-pin-h{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.5rem; letter-spacing:.14em;
+  .cx-pin-h{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.62rem; letter-spacing:.14em;
     text-transform:uppercase; color:var(--accent); opacity:.85}
   .cx-chips{display:flex; gap:5px; flex-wrap:wrap}
-  .cx-chip{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.55rem; letter-spacing:.08em;
+  .cx-chip{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem; letter-spacing:.06em;
     padding:3px 9px; border-radius:999px; cursor:pointer; background:transparent;
     border:1px solid var(--rule); color:var(--ink-soft)}
   .cx-chip:hover{border-color:var(--accent); color:var(--ink)}
@@ -945,16 +1001,17 @@ TEMPLATE = r"""<!DOCTYPE html>
   .cx-plot{padding-top:9px}
   .cx-plot rect:focus-visible,.cx-pin-plot rect:focus-visible{outline:2px solid var(--accent);
     outline-offset:-2px}
-  .cx-foot{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.53rem; letter-spacing:.06em;
+  .cx-foot{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem; letter-spacing:.05em;
     color:var(--muted); margin-top:5px; line-height:1.5}
-  .cx-rail{position:sticky; top:8px; max-height:calc(100vh - 20px); overflow:auto;
-    background:var(--paper); border:1px solid var(--rule); border-radius:7px;
-    padding:9px 10px 11px}
+  .cx-rail{position:sticky; top:calc(var(--bar-h) + 8px);
+    max-height:calc(100vh - var(--bar-h) - 20px); overflow:auto;
+    background:var(--paper); border:2px solid var(--ink); border-radius:0;
+    box-shadow:var(--neo-sm); padding:9px 10px 11px}
   /* I due comandi che governano gli interruttori stanno SOPRA gli interruttori, non
      in una didascalia: "somma" cambia cosa fa il click successivo, e un modo che non
      si vede mentre si clicca non esiste. */
   .cx-rail-h{display:flex; gap:5px; margin-bottom:8px}
-  .cx-rail-h button{flex:1; font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.55rem;
+  .cx-rail-h button{flex:1; font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem;
     letter-spacing:.08em; padding:3px 6px; border-radius:4px; cursor:pointer;
     background:transparent; border:1px solid var(--rule); color:var(--ink-soft)}
   .cx-rail-h button:hover{border-color:var(--accent); color:var(--ink)}
@@ -962,14 +1019,14 @@ TEMPLATE = r"""<!DOCTYPE html>
     color:var(--bg); font-weight:600}
   .cx-rail-h button:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   .cx-grp{margin-bottom:9px}
-  .cx-grp-h{font-family:'Plus Jakarta Sans',system-ui,sans-serif; font-weight:800; font-size:.6rem; letter-spacing:.18em;
+  .cx-grp-h{font-family:'Plus Jakarta Sans',system-ui,sans-serif; font-weight:800; font-size:.72rem; letter-spacing:.15em;
     text-transform:uppercase; color:var(--accent); margin-bottom:4px}
   /* la voce isolata e' l'unica accesa: si marca, o "isola" e "ho spento tutto il
      resto a mano" hanno lo stesso aspetto */
   .cx-sw[data-iso="1"]{border-color:var(--accent); color:var(--ink)}
   .cx-sw{display:flex; align-items:center; gap:6px; width:100%; text-align:left;
-    font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.6rem; letter-spacing:.03em;
-    padding:3px 5px; border-radius:4px; cursor:pointer; background:transparent;
+    font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.72rem; letter-spacing:.02em;
+    padding:4px 5px; border-radius:4px; cursor:pointer; background:transparent;
     border:1px solid transparent; color:var(--ink-soft);
     transition:color .15s,border-color .15s}
   .cx-sw::before{content:""; width:9px; height:9px; border-radius:2px; flex:none;
@@ -999,14 +1056,20 @@ TEMPLATE = r"""<!DOCTYPE html>
      diverse — che e' l'unica cosa che una griglia di riquadri non lascia fare.
      Il prezzo e' l'altezza, quindi ogni riquadro e' basso e il titolo, il numero
      di oggi e il grafico stanno sulla stessa riga dove c'e' spazio. */
-  .panel{display:flex; flex-direction:column; gap:8px; margin:20px 0 0}
+  .panel{display:flex; flex-direction:column; gap:12px; margin:22px 0 0}
+  /* Il riquadro e' una SCHEDA DELLA HOME: filetto nero da 2px, spigolo vivo, ombra
+     secca. Prima era un rettangolo bianco con un bordo al 20 % e l'angolo stondato —
+     onesto ma anonimo, e infatti dal telefono la pagina non sembrava di questo sito
+     (Michele, 17/08/2026: "il background e i colori piu' vicini all'indice"). */
   .tile{
-    position:relative; background:var(--paper); border:1px solid var(--rule);
-    border-radius:7px; padding:9px 13px 7px; transition:border-color .16s,background .16s;
-    min-width:0; display:grid; grid-template-columns:170px 1fr; gap:0 16px;
+    position:relative; background:var(--paper); border:2px solid var(--ink);
+    border-radius:0; box-shadow:var(--neo-sm);
+    padding:10px 14px 8px; transition:box-shadow .16s,transform .16s,background .16s;
+    min-width:0; display:grid; grid-template-columns:180px 1fr; gap:0 16px;
     align-items:center;
   }
-  .tile:hover{border-color:rgba(162,100,1,.4); background:var(--paper-2)}
+  .tile:hover{border-color:var(--ink); background:var(--paper-2);
+    box-shadow:var(--neo); transform:translate(-1px,-1px)}
   .t-side{min-width:0}
   .t-head{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap}
   /* La pastiglia di provenienza. E' la terza regola di casa resa visibile: un numero
@@ -1014,7 +1077,7 @@ TEMPLATE = r"""<!DOCTYPE html>
      `dataNote`, con sette formulazioni diverse per tre concetti, e solo su 9 riquadri
      su 42. Ora e' un vocabolario chiuso, obbligatorio, e la stessa parola vuol sempre
      dire la stessa cosa. Non c'e' colore nuovo: sono gli slot dei grafici. */
-  .t-src{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.5rem;
+  .t-src{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.62rem;
     letter-spacing:.13em; text-transform:uppercase; font-weight:600; padding:2px 7px;
     border-radius:999px; border:1px solid currentColor; opacity:.85; white-space:nowrap;
     align-self:center; cursor:pointer; background:none}
@@ -1023,33 +1086,33 @@ TEMPLATE = r"""<!DOCTYPE html>
   .t-src[data-src="modello"]{color:var(--s1)}
   .t-src[data-src="stima"]{color:var(--s2)}
   .t-src:hover,.t-src:focus-visible{opacity:1}
-  .t-title{font-family:'VT323',ui-monospace,monospace; font-size:1.3rem; font-weight:600;
+  .t-title{font-family:'VT323',ui-monospace,monospace; font-size:1.55rem; font-weight:600;
     letter-spacing:.02em; line-height:1.2}
-  .t-now{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:1.15rem; font-weight:600;
+  .t-now{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:1.3rem; font-weight:600;
     font-variant-numeric:tabular-nums; color:var(--accent); line-height:1.15; margin-top:3px}
-  .t-now small{display:block; font-size:.55rem; letter-spacing:.1em;
+  .t-now small{display:block; font-size:.68rem; letter-spacing:.08em;
     text-transform:uppercase; color:var(--muted); font-weight:400; margin-top:1px}
   .t-legend{display:flex; gap:9px; flex-wrap:wrap; margin:3px 0 0;
-    font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.54rem; letter-spacing:.06em;
+    font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem; letter-spacing:.05em;
     text-transform:uppercase; color:var(--ink-soft)}
   .t-legend i{display:inline-block; width:8px; height:8px; border-radius:2px;
     margin-right:4px; vertical-align:-1px}
   /* le leve dell'indice microbiota: l'emoji dice quale, il numero quanto e' tirata */
   .t-shift{display:flex; gap:11px; flex-wrap:wrap; margin-top:5px; font-size:.95rem}
-  .t-shift b{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem; font-weight:600}
+  .t-shift b{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.8rem; font-weight:600}
   /* La parola accanto all'emoji. Prima stava solo dentro `title=`, e su un telefono
      non c'e' hover: quel testo non e' mai comparso a nessuno. */
-  .t-shift .sh-l{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.5rem;
+  .t-shift .sh-l{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.62rem;
     letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-style:normal}
   svg.plot{width:100%; height:auto; display:block; touch-action:pan-y; overflow:hidden}
-  .t-foot{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.53rem; letter-spacing:.06em;
+  .t-foot{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem; letter-spacing:.05em;
     color:var(--muted); margin-top:3px; line-height:1.45; grid-column:1/-1}
-  .t-empty{font-style:italic; color:var(--muted); font-size:.8rem; padding:14px 0;
+  .t-empty{font-style:italic; color:var(--muted); font-size:.92rem; padding:14px 0;
     text-align:center}
 
   /* ---------- data fallback ---------- */
   details.data{margin-top:4px; grid-column:1/-1}
-  details.data summary{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.55rem;
+  details.data summary{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem;
     letter-spacing:.1em; text-transform:uppercase; color:var(--muted); cursor:pointer;
     list-style:none}
   details.data summary::-webkit-details-marker{display:none}
@@ -1057,95 +1120,95 @@ TEMPLATE = r"""<!DOCTYPE html>
   details.data[open] summary::before{content:"▾ "; }
   details.data summary:hover{color:var(--ink-soft)}
   /* la didascalia sta qui dentro, non sotto il titolo: si legge quando si vuole */
-  .d-cap{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.56rem; letter-spacing:.06em;
+  .d-cap{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.7rem; letter-spacing:.05em;
     color:var(--ink-soft); margin:6px 0 0; line-height:1.5}
   .d-cap:empty{display:none}
   .d-cap b{color:var(--muted); font-weight:500}
   /* la nota di metodo: piu' lunga, quindi corpo di testo e non monospazio */
   .d-note{display:block; margin-top:7px; font-family:'Plus Jakarta Sans',system-ui,sans-serif;
-    font-size:.86rem; letter-spacing:0; line-height:1.55; color:var(--ink-soft);
+    font-size:.96rem; letter-spacing:0; line-height:1.55; color:var(--ink-soft);
     border-left:2px solid var(--rule); padding-left:11px}
   table.fallback{width:100%; border-collapse:collapse; margin-top:6px; font-size:.72rem;
     font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-variant-numeric:tabular-nums}
   table.fallback th,table.fallback td{text-align:right; padding:2px 0 2px 8px;
-    border-bottom:1px solid rgba(162,100,1,.12); color:var(--ink-soft); white-space:nowrap}
+    border-bottom:1px solid rgba(32,33,36,.14); color:var(--ink-soft); white-space:nowrap}
   table.fallback th:first-child,table.fallback td:first-child{text-align:left; padding-left:0}
   table.fallback th{color:var(--muted); font-weight:500}
 
   /* ---------- il popup della giornata ---------- */
-  .sheet{position:fixed; inset:0; z-index:20; display:none; background:rgba(10,9,6,.72);
+  .sheet{position:fixed; inset:0; z-index:20; display:none; background:rgba(32,33,36,.55);
     backdrop-filter:blur(2px); padding:4vh 14px; overflow-y:auto}
   .sheet.on{display:block}
   .sheet-in{position:relative; max-width:760px; margin:0 auto; background:var(--paper);
-    border:1px solid var(--rule); border-radius:9px; padding:20px 22px 24px;
-    box-shadow:0 20px 60px rgba(0,0,0,.6)}
+    border:2px solid var(--ink); border-radius:0; padding:20px 22px 24px;
+    box-shadow:6px 6px 0 0 rgba(32,33,36,1)}
   .sheet h3{font-family:'VT323',ui-monospace,monospace; font-size:1.95rem; font-weight:700; margin:0}
-  .sheet .when{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.6rem; letter-spacing:.16em;
+  .sheet .when{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.72rem; letter-spacing:.14em;
     text-transform:uppercase; color:var(--accent)}
   .sheet-x{position:absolute; top:12px; right:12px; background:none; border:0; cursor:pointer;
     color:var(--muted); font-size:1.5rem; line-height:1; padding:4px 8px}
   .sheet-x:hover{color:var(--ink)}
   .sheet-hd{padding-right:34px}
-  .sheet h4{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.6rem; letter-spacing:.17em;
+  .sheet h4{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.72rem; letter-spacing:.14em;
     text-transform:uppercase; color:var(--accent); font-weight:600; margin:20px 0 7px;
     border-top:1px solid var(--rule); padding-top:11px}
   .kv{display:grid; grid-template-columns:repeat(auto-fit,minmax(94px,1fr)); gap:10px 14px}
   .kv div b{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.95rem; color:var(--ink);
     font-variant-numeric:tabular-nums; display:block}
-  .kv div span{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.52rem; letter-spacing:.1em;
+  .kv div span{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.65rem; letter-spacing:.08em;
     text-transform:uppercase; color:var(--muted)}
   .acts li{list-style:none; display:flex; justify-content:space-between; gap:12px;
-    padding:6px 0; border-bottom:1px solid rgba(162,100,1,.12); flex-wrap:wrap}
+    padding:6px 0; border-bottom:1px solid rgba(32,33,36,.14); flex-wrap:wrap}
   .acts a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--rule)}
   .acts a:hover{color:var(--accent)}
-  .acts em{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.66rem; color:var(--muted);
+  .acts em{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.76rem; color:var(--muted);
     font-style:normal; white-space:nowrap}
   .meal{margin-bottom:9px}
-  .meal .mname{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.55rem; letter-spacing:.14em;
+  .meal .mname{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem; letter-spacing:.12em;
     text-transform:uppercase; color:var(--ink-soft)}
   .meal ul{list-style:none; margin-top:3px}
-  .meal li{display:flex; justify-content:space-between; gap:10px; font-size:.86rem;
+  .meal li{display:flex; justify-content:space-between; gap:10px; font-size:.94rem;
     color:var(--ink-soft); padding:1px 0}
-  .meal li i{font-style:normal; font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem;
+  .meal li i{font-style:normal; font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.78rem;
     color:var(--muted); white-space:nowrap}
   .meal li.asm{opacity:.62}
   .meal li.asm::after{content:" ricostruito"; font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;
     font-size:.5rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted)}
   .bars{display:grid; gap:4px}
   .bar{display:grid; grid-template-columns:96px 1fr 46px; gap:9px; align-items:center;
-    font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.62rem; color:var(--ink-soft)}
+    font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.74rem; color:var(--ink-soft)}
   .bar u{text-decoration:none; color:var(--muted)}
   .bar div{height:7px; border-radius:99px; background:rgba(32,33,36,.09); overflow:hidden}
   .bar div i{display:block; height:100%; border-radius:99px}
   .bar b{text-align:right; color:var(--ink); font-variant-numeric:tabular-nums;
     font-weight:500}
-  .insight-list .bar{grid-template-columns:minmax(0,1fr) auto; border-bottom:1px solid rgba(162,100,1,.12);
+  .insight-list .bar{grid-template-columns:minmax(0,1fr) auto; border-bottom:1px solid rgba(32,33,36,.14);
     padding:7px 0; gap:4px 12px}
   .insight-list .bar b{min-width:118px; white-space:nowrap}
   .insight-list .bar .target-track{display:block; position:relative; grid-column:1/-1;
     width:100%; height:9px; overflow:visible; background:rgba(32,33,36,.09)}
   .insight-list .bar .target-track i{transition:width .18s ease}
   .insight-list .bar .target-track mark{position:absolute; top:-3px; bottom:-3px; width:2px;
-    padding:0; background:var(--ink); box-shadow:0 0 0 1px rgba(10,9,6,.52)}
-  .insight-list .bar small{grid-column:1/-1; color:var(--muted); font-size:.52rem;
+    padding:0; background:var(--ink); box-shadow:0 0 0 1px rgba(255,255,255,.85)}
+  .insight-list .bar small{grid-column:1/-1; color:var(--muted); font-size:.64rem;
     letter-spacing:.04em; text-align:right}
-  .insight-list .bar.sel{background:rgba(226,201,143,.07); margin:0 -9px;
+  .insight-list .bar.sel{background:rgba(251,188,4,.18); margin:0 -9px;
     padding-left:9px; padding-right:9px; border-left:2px solid var(--accent)}
-  .insight-chart{margin:13px 0 8px; border:1px solid var(--rule); border-radius:7px;
+  .insight-chart{margin:13px 0 8px; border:2px solid var(--ink); border-radius:0;
     background:var(--paper-2); padding:8px 9px 6px; overflow:hidden}
   .insight-chart svg{display:block; width:100%; height:auto; overflow:hidden}
   .insight-chart .legend{display:flex; justify-content:space-between; gap:12px;
-    font:500 .52rem ui-monospace,'SFMono-Regular',Menlo,monospace; letter-spacing:.08em; color:var(--muted)}
+    font:500 .65rem ui-monospace,'SFMono-Regular',Menlo,monospace; letter-spacing:.07em; color:var(--muted)}
   .food-intake{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:5px 14px}
   .food-intake .food-row{display:grid; grid-template-columns:minmax(0,1fr) auto;
-    gap:1px 9px; padding:6px 0; border-bottom:1px solid rgba(162,100,1,.12)}
-  .food-intake .food-row span{min-width:0; color:var(--ink-soft); font-size:.78rem;
+    gap:1px 9px; padding:6px 0; border-bottom:1px solid rgba(32,33,36,.14)}
+  .food-intake .food-row span{min-width:0; color:var(--ink-soft); font-size:.87rem;
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-  .food-intake .food-row b{font:600 .67rem ui-monospace,'SFMono-Regular',Menlo,monospace; color:var(--ink);
+  .food-intake .food-row b{font:600 .78rem ui-monospace,'SFMono-Regular',Menlo,monospace; color:var(--ink);
     white-space:nowrap; font-variant-numeric:tabular-nums}
-  .food-intake .food-row small{grid-column:1/-1; font:500 .49rem ui-monospace,'SFMono-Regular',Menlo,monospace;
+  .food-intake .food-row small{grid-column:1/-1; font:500 .61rem ui-monospace,'SFMono-Regular',Menlo,monospace;
     color:var(--muted); letter-spacing:.04em}
-  .hint{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.53rem; letter-spacing:.09em;
+  .hint{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.66rem; letter-spacing:.08em;
     color:var(--muted); text-align:center; margin-top:9px}
 
   /* ---------- il diario: la giornata sfogliabile e annotabile ---------- */
@@ -1154,28 +1217,28 @@ TEMPLATE = r"""<!DOCTYPE html>
      mette insieme tavola, motore e gamba in una lettura sola, e chi apre /vita
      nove volte su dieci vuole quella, non ventisette grafici. La scheda dice il
      verdetto; il rapporto intero e' dietro il bottone. */
-  .coach-card{margin:26px 0 0; border:1px solid var(--rule); border-left:3px solid var(--accent);
-    border-radius:10px; background:var(--paper); padding:17px 20px 18px}
-  .coach-k{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.55rem; letter-spacing:.24em;
+  .coach-card{margin:26px 0 0; border:2px solid var(--ink); border-left:8px solid var(--io-yellow);
+    border-radius:0; box-shadow:var(--neo); background:var(--paper); padding:17px 20px 18px}
+  .coach-k{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem; letter-spacing:.2em;
     text-transform:uppercase; color:var(--muted)}
-  .coach-card h2{font-family:'VT323',ui-monospace,monospace; font-size:1.32rem; font-weight:700;
+  .coach-card h2{font-family:'VT323',ui-monospace,monospace; font-size:1.62rem; font-weight:700;
     letter-spacing:.01em; margin:3px 0 6px}
-  .coach-lead{font-size:1rem; line-height:1.6; color:var(--ink-soft); max-width:74ch;
+  .coach-lead{font-size:1.08rem; line-height:1.6; color:var(--ink-soft); max-width:74ch;
     margin:0 0 12px}
   .coach-lead b{color:var(--accent); font-weight:500}
-  .coach-card button{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.62rem;
+  .coach-card button{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.75rem;
     letter-spacing:.15em; text-transform:uppercase; color:var(--ink);
     background:var(--paper); border:1px solid var(--accent); border-radius:99px;
     padding:9px 20px; cursor:pointer; transition:background .16s,color .16s}
-  .coach-card button:hover{background:var(--accent); color:#0a0906}
+  .coach-card button:hover{background:var(--accent); color:#fff}
   /* il rapporto dentro il pannello */
-  .cr-when{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.55rem; letter-spacing:.16em;
+  .cr-when{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem; letter-spacing:.14em;
     text-transform:uppercase; color:var(--muted); padding-right:34px}
   .cr-verdict{font-size:1.06rem; line-height:1.62; margin:10px 0 4px; color:var(--ink)}
   .cr-verdict b{color:var(--accent); font-weight:500}
   .cr-sec{margin:24px 0 0; border-top:1px solid var(--rule); padding-top:15px}
   .cr-sec > h4{font-family:'VT323',ui-monospace,monospace; font-size:1.02rem; font-weight:700; margin:0 0 2px}
-  .cr-sec > p.cr-sub{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.55rem;
+  .cr-sec > p.cr-sub{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem;
     letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin:0 0 12px}
   .cr-item{margin:0 0 15px; padding-left:13px; border-left:2px solid var(--rule)}
   .cr-item.hot{border-left-color:var(--accent)}
@@ -1184,23 +1247,23 @@ TEMPLATE = r"""<!DOCTYPE html>
     font-family:'Plus Jakarta Sans',system-ui,sans-serif; line-height:1.35}
   .cr-item p{margin:0; font-size:.92rem; line-height:1.58; color:var(--ink-soft)}
   .cr-num{display:block; margin-top:5px; font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;
-    font-size:.58rem; letter-spacing:.08em; color:var(--muted)}
+    font-size:.7rem; letter-spacing:.08em; color:var(--muted)}
   .cr-num b{color:var(--accent); font-weight:500}
   .cr-do{display:block; margin-top:6px; font-size:.9rem; line-height:1.5; color:var(--ink)}
   .cr-do::before{content:"→ "; color:var(--accent)}
   .cr-limits{margin:24px 0 0; border-top:1px solid var(--rule); padding-top:14px;
     font-size:.86rem; line-height:1.55; color:var(--muted)}
-  .cr-limits h4{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.55rem; letter-spacing:.16em;
+  .cr-limits h4{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem; letter-spacing:.14em;
     text-transform:uppercase; color:var(--muted); margin:0 0 7px}
   .cr-limits li{margin:0 0 5px}
   .diary-open{display:flex; align-items:center; justify-content:center; gap:11px;
     flex-wrap:wrap; margin:16px 0 0}
-  .diary-open button{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.62rem;
+  .diary-open button{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.75rem;
     letter-spacing:.15em; text-transform:uppercase; color:var(--ink);
     background:var(--paper); border:1px solid var(--accent); border-radius:99px;
     padding:9px 20px; cursor:pointer; transition:background .16s,color .16s}
-  .diary-open button:hover{background:var(--accent); color:#0a0906}
-  .diary-open span{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.53rem;
+  .diary-open button:hover{background:var(--accent); color:#fff}
+  .diary-open span{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.66rem;
     letter-spacing:.08em; color:var(--muted)}
   .dnav{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:12px 0 4px}
   .dnav button,.d-act{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.6rem;
@@ -1209,11 +1272,11 @@ TEMPLATE = r"""<!DOCTYPE html>
   .dnav button:hover,.d-act:hover{border-color:var(--accent); color:var(--ink)}
   .dnav input[type=date]{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem;
     color:var(--ink); background:var(--paper-2); border:1px solid var(--rule);
-    border-radius:5px; padding:5px 8px; color-scheme:dark}
+    border-radius:5px; padding:5px 8px; color-scheme:light}
   .dnav .grow{flex:1 1 auto}
   /* una riga del pasto: nome, quantita' modificabile, kcal, e il cestino */
   .d-row{display:grid; grid-template-columns:minmax(0,1fr) 74px 62px 26px; gap:8px;
-    align-items:center; padding:4px 0; border-bottom:1px solid rgba(162,100,1,.1)}
+    align-items:center; padding:4px 0; border-bottom:1px solid rgba(32,33,36,.12)}
   .d-row>span{min-width:0; font-size:.84rem; color:var(--ink-soft); overflow:hidden;
     text-overflow:ellipsis; white-space:nowrap}
   .d-row input{width:100%; font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.7rem;
@@ -1245,7 +1308,7 @@ TEMPLATE = r"""<!DOCTYPE html>
     padding:5px 8px; flex:0 1 180px; min-width:0}
   .dstate input:focus{outline:none; border-color:var(--accent)}
   .dstate button{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.6rem; letter-spacing:.1em;
-    color:#0a0906; background:var(--accent); border:0; border-radius:4px;
+    color:#fff; background:var(--accent); border:0; border-radius:4px;
     padding:6px 12px; cursor:pointer}
   /* in che pasto finisce quello che aggiungi */
   .d-meal{display:flex; align-items:center; flex-wrap:wrap; gap:5px; margin:2px 0 6px}
@@ -1255,7 +1318,7 @@ TEMPLATE = r"""<!DOCTYPE html>
     background:none; border:1px solid var(--rule); border-radius:99px; padding:4px 10px;
     cursor:pointer}
   .d-meal button:hover{color:var(--ink); border-color:var(--accent)}
-  .d-meal button.on{color:#0a0906; background:var(--accent); border-color:var(--accent)}
+  .d-meal button.on{color:#fff; background:var(--accent); border-color:var(--accent)}
   .d-pre{display:flex; flex-wrap:wrap; gap:6px; margin:7px 0 2px}
   .d-pre button{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.62rem; color:var(--ink-soft);
     background:var(--paper-2); border:1px solid var(--rule); border-radius:99px;
@@ -1267,7 +1330,7 @@ TEMPLATE = r"""<!DOCTYPE html>
     border-radius:5px; padding:7px 9px; margin-top:8px}
   .d-search:focus{outline:none; border-color:var(--accent)}
   .d-out{width:100%; min-height:104px; font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;
-    font-size:.62rem; line-height:1.6; color:var(--ink-soft); background:#0e0d09;
+    font-size:.62rem; line-height:1.6; color:var(--ink-soft); background:var(--paper-2);
     border:1px solid var(--rule); border-radius:5px; padding:9px 10px; margin-top:8px;
     white-space:pre; overflow:auto; resize:vertical}
   .d-acts{display:flex; gap:8px; flex-wrap:wrap; margin-top:9px}
@@ -1278,43 +1341,59 @@ TEMPLATE = r"""<!DOCTYPE html>
     .d-row>span{white-space:normal}
   }
 
-  /* ---------- tooltip ---------- */
+  /* ---------- tooltip ----------
+     Era un riquadro NERO (#0e0d09) con dentro testo grigio scuro: nato per la carta
+     scura, dopo il 16/08/2026 era rimasto li' a scrivere #3c4043 su quasi-nero,
+     cioe' niente. Adesso e' una scheda della home: carta bianca, filetto nero da
+     2px, ombra secca. */
   .tip{position:fixed; z-index:9; pointer-events:none; opacity:0; transition:opacity .1s;
-    background:#0e0d09; border:1px solid var(--rule); border-radius:5px; padding:6px 10px;
-    font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem; line-height:1.55;
-    color:var(--ink-soft); max-width:240px; box-shadow:0 6px 20px rgba(0,0,0,.5)}
+    background:var(--paper); border:2px solid var(--ink); border-radius:0; padding:7px 11px;
+    font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.8rem; line-height:1.55;
+    color:var(--ink-soft); max-width:260px; box-shadow:var(--neo-sm)}
   .tip.on{opacity:1}
-  .tip .v{color:var(--accent); font-weight:600}
-  .tip .d{color:var(--muted); font-size:.62rem; letter-spacing:.06em}
+  .tip .v{color:var(--ink); font-weight:700}
+  .tip .d{color:var(--muted); font-size:.72rem; letter-spacing:.06em}
 
   /* ---------- le tre pagine-racconto, in cima ---------- */
   .tracks{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
     gap:12px; margin:30px 0 0}
-  .track{position:relative; display:block; text-decoration:none; border-radius:7px;
-    border:1px solid var(--rule); background:var(--paper); padding:14px 16px 12px;
+  .track{position:relative; display:block; text-decoration:none; border-radius:0;
+    border:2px solid var(--ink); box-shadow:var(--neo-sm); background:var(--paper);
+    padding:14px 16px 12px;
     transition:border-color .16s,background .16s,transform .16s; overflow:hidden}
   .track::before{content:""; position:absolute; inset:0 auto 0 0; width:3px; background:var(--a)}
   .track:hover{border-color:var(--a); background:var(--paper-2); transform:translateY(-2px)}
   .track:focus-visible{outline:2px solid var(--a); outline-offset:3px}
-  .track .k{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.56rem; letter-spacing:.19em;
+  .track .k{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem; letter-spacing:.16em;
     text-transform:uppercase; color:var(--a)}
-  .track h3{font-family:'VT323',ui-monospace,monospace; font-size:1.12rem; font-weight:700; margin:4px 0 0}
-  .track p{color:var(--ink-soft); font-size:.85rem; line-height:1.5; margin-top:5px}
+  .track h3{font-family:'VT323',ui-monospace,monospace; font-size:1.35rem; font-weight:700; margin:4px 0 0}
+  .track p{color:var(--ink-soft); font-size:.94rem; line-height:1.5; margin-top:5px}
   .track .nums{display:flex; gap:14px; flex-wrap:wrap; margin-top:9px}
-  .track .nums b{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.82rem; font-weight:600;
+  .track .nums b{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.94rem; font-weight:600;
     color:var(--ink); font-variant-numeric:tabular-nums; display:block}
-  .track .nums span{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.5rem;
+  .track .nums span{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.63rem;
     letter-spacing:.1em; text-transform:uppercase; color:var(--muted)}
   @media(prefers-reduced-motion:reduce){.track{transition:none}.track:hover{transform:none}}
 
-  /* ---------- sections ---------- */
-  h2.band{font-family:'VT323',ui-monospace,monospace; font-size:1.25rem; letter-spacing:.2em;
-    text-transform:uppercase; color:var(--accent); text-align:center; font-weight:600;
-    margin:36px 0 2px}
+  /* ---------- sections ----------
+     Il titolo di sezione e' un blocco pieno col filetto nero e l'ombra secca, come i
+     riquadri colorati della home. Il colore ruota fra i quattro della palette I/O e
+     NON codifica niente: e' l'unico posto della pagina in cui un colore non e' un
+     dato, ed e' anche il motivo per cui li' dentro il testo e' sempre nero. */
+  h2.band{font-family:'VT323',ui-monospace,monospace; font-size:1.7rem; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--ink); text-align:center; font-weight:600;
+    margin:40px auto 8px; display:block; width:max-content; max-width:100%;
+    background:var(--band-c,var(--io-yellow)); border:2px solid var(--ink);
+    box-shadow:var(--neo-sm); padding:3px 20px 0}
+  h2.band[data-c="blu"]{--band-c:#aecbfa}
+  h2.band[data-c="rosso"]{--band-c:#f6aea9}
+  h2.band[data-c="verde"]{--band-c:#a8dab5}
+  h2.band[data-c="viola"]{--band-c:#d7aefb}
+  h2.band[data-c="giallo"]{--band-c:#fdd663}
   /* Una riga sola, a sinistra, sotto il titolo: e' un'ETICHETTA di sezione. Centrata e in
      corsivo su 52em era una didascalia da saggio, ed e' meta' dell'impressione che
      Michele ha fotografato dal telefono il 16/08/2026 ("quanto cavolo di testo"). */
-  .band-sub{text-align:left; color:var(--muted); font-size:.82rem;
+  .band-sub{text-align:left; color:var(--ink-soft); font-size:.96rem;
     max-width:52em; margin:0 auto}
 
   /* ---------- ⓘ: il come si legge, dietro un tocco ----------
@@ -1337,9 +1416,10 @@ TEMPLATE = r"""<!DOCTYPE html>
   /* ---------- also / footer ---------- */
   .also{margin-top:44px; text-align:center}
   .also a{display:inline-block; margin:6px 6px; padding:7px 15px; border-radius:999px;
-    border:1px solid var(--rule); color:var(--ink-soft); text-decoration:none; font-size:.85rem}
+    border:2px solid var(--ink); color:var(--ink); text-decoration:none; font-size:.94rem;
+    box-shadow:var(--neo-sm); background:var(--paper)}
   .also a:hover{border-color:var(--accent); color:var(--ink)}
-  footer{margin-top:34px; text-align:center; color:var(--muted); font-size:.78rem;
+  footer{margin-top:34px; text-align:center; color:var(--muted); font-size:.88rem;
     line-height:1.7}
   @media(prefers-reduced-motion:reduce){*{transition:none !important}}
   /* Sotto i 720px la colonna laterale del riquadro non ci sta piu' accanto al
@@ -1356,8 +1436,11 @@ TEMPLATE = r"""<!DOCTYPE html>
     body{padding:26px 11px 64px; font-size:17px}
     .totals{grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px 8px}
     .total .n{font-size:1.25rem}
+    /* la barra appesa segue il padding del telefono, o il suo fondo lascia scoperti
+       undici pixel per parte e sotto ci passano i grafici */
+    .controls{margin-left:-11px; margin-right:-11px; padding-left:11px; padding-right:11px}
     .ranges{gap:6px}
-    .ranges button{padding:6px 12px; font-size:.62rem}
+    .ranges button{padding:7px 13px; font-size:.72rem}
     /* i due gruppi vanno a capo: il filetto di separazione, in verticale, taglierebbe
        la riga sbagliata */
     .viewsw{border-left:0; padding-left:0}
@@ -1369,12 +1452,16 @@ TEMPLATE = r"""<!DOCTYPE html>
     .compare-result p{grid-column:1/-1}
     .sheet{padding:8vh 0 0; align-items:flex-end}
     .sheet.on{display:flex}
+    /* dal telefono e' un foglio che sale dal basso: spigolo vivo come tutto il resto,
+       e senza ombra secca — un'ombra sfalsata di 6px su un pannello a filo del bordo
+       si vedrebbe solo come una striscia nera tagliata */
     .sheet-in{width:100%; max-height:92vh; overflow-y:auto; margin:auto 0 0;
-      border-radius:13px 13px 0 0; padding:18px 15px calc(20px + env(safe-area-inset-bottom))}
+      border-radius:0; border-bottom:0; box-shadow:none;
+      padding:18px 15px calc(20px + env(safe-area-inset-bottom))}
     .sheet h3{font-size:1.22rem; line-height:1.2; padding-right:32px}
-    .sheet .when{padding-right:34px; font-size:.54rem}
+    .sheet .when{padding-right:34px; font-size:.66rem}
     .insight-list .bar{grid-template-columns:minmax(0,1fr) minmax(96px,auto); gap:4px 8px}
-    .insight-list .bar b{text-align:right; min-width:0; white-space:normal; font-size:.58rem}
+    .insight-list .bar b{text-align:right; min-width:0; white-space:normal; font-size:.7rem}
     .food-intake{grid-template-columns:1fr}
   }
 </style>
@@ -1418,46 +1505,49 @@ TEMPLATE = r"""<!DOCTYPE html>
 
 <section class="compact" id="compact" aria-label="Vista compatta"></section>
 
-<h2 class="band">Carico</h2>
+<h2 class="band" data-c="blu">Carico</h2>
 <p class="band-sub">Quanto lavoro c'è addosso, e quanto ne è già stato smaltito.</p>
 <main class="panel" id="panel-carico"></main>
 
-<h2 class="band">Notte</h2>
+<h2 class="band" data-c="viola">Notte</h2>
 <p class="band-sub">Il sonno come lo misura l'orologio — dal 2025 in poi.</p>
 <main class="panel" id="panel-notte"></main>
 
-<h2 class="band">Recupero</h2>
+<h2 class="band" data-c="rosso">Recupero</h2>
 <p class="band-sub">Cosa dice il cuore al mattino, prima che cominci qualsiasi cosa.</p>
 <main class="panel" id="panel-recupero"></main>
 
-<h2 class="band">Metabolismo</h2>
+<h2 class="band" data-c="verde">Metabolismo</h2>
 <p class="band-sub">Un sensore vero, tre modelli, due misure — le stime valgono la loro
 variazione, non il loro livello (±40 %).<span id="ico-band-metabolismo"></span></p>
 <main class="panel" id="panel-metabolismo"></main>
 
-<h2 class="band">Volume</h2>
+<h2 class="band" data-c="giallo">Volume</h2>
 <p class="band-sub">Le ore, i chilometri, il dislivello — e come si dividono.</p>
 <main class="panel" id="panel-volume"></main>
 
-<h2 class="band">Incroci</h2>
+<h2 class="band" data-c="blu">Incroci</h2>
 <p class="band-sub">Dieci coppie uscite da <strong>2.958 combinazioni</strong> — quattro
 sono zeri, e sono il risultato più solido che ci sia.<span id="ico-band-incroci"></span></p>
 <section class="compare" aria-label="Confronta due misure">
   <div class="cx-presets" id="compare-presets" role="group" aria-label="Coppie notevoli"></div>
   <p class="cx-claim" id="compare-claim"></p>
-  <div class="compare-controls">
-    <label>Asse X<select id="compare-x"></select></label>
-    <label>Asse Y<select id="compare-y"></select></label>
-    <label>Tempo<select id="compare-lag">
-      <option value="0">stesso giorno</option>
-      <option value="1">Y il giorno dopo</option>
-    </select></label>
-    <label>Come<select id="compare-mode">
-      <option value="lv">livelli</option>
-      <option value="d1">variazioni giorno su giorno</option>
-      <option value="d7">variazioni settimana su settimana</option>
-    </select></label>
-  </div>
+  <details class="cx-pick">
+    <summary>scegli tu le due misure</summary>
+    <div class="compare-controls">
+      <label>Asse X<select id="compare-x"></select></label>
+      <label>Asse Y<select id="compare-y"></select></label>
+      <label>Tempo<select id="compare-lag">
+        <option value="0">stesso giorno</option>
+        <option value="1">Y il giorno dopo</option>
+      </select></label>
+      <label>Come<select id="compare-mode">
+        <option value="lv">livelli</option>
+        <option value="d1">variazioni giorno su giorno</option>
+        <option value="d7">variazioni settimana su settimana</option>
+      </select></label>
+    </div>
+  </details>
   <div class="compare-body">
     <div class="compare-plot" id="compare-plot"></div>
     <div class="compare-result" id="compare-result"></div>
@@ -1465,7 +1555,7 @@ sono zeri, e sono il risultato più solido che ci sia.<span id="ico-band-incroci
   <p class="compare-note">Associazione, non causa.<span id="ico-incrocio"></span></p>
 </section>
 
-<h2 class="band" id="cibo">Tavola</h2>
+<h2 class="band" data-c="giallo" id="cibo">Tavola</h2>
 <p class="band-sub">Cosa entra, contro cosa serve — <strong>ricostruito</strong> al
 <strong>75 %</strong>, quindi una base, non un totale.<span id="ico-band-tavola"></span></p>
 <main class="panel" id="panel-tavola"></main>
@@ -1674,20 +1764,32 @@ const nice = (lo, hi) => {
   return { lo:Math.floor(lo / step) * step, hi:Math.ceil(hi / step) * step, step };
 };
 
-/* Room for the y labels, measured rather than assumed. At font-size 8 an IBM Plex
-   Mono glyph is ~4.85px wide, so a five-figure tick ("50.000") needs 38px where a
-   two-figure one needs 20 — a fixed gutter either clips the big numbers or wastes a
-   tenth of a 320px tile on the small ones. Every axis below sizes its own. */
-const TICKW = 4.85;
+/* Room for the y labels, measured rather than assumed. Un glifo monospazio e' largo
+   ~0.606 volte il corpo, quindi a font-size 10 sono ~6.05px: un tick da cinque cifre
+   ("50.000") chiede 47px dove uno da due ne chiede 21 — una gronda fissa o taglia i
+   numeri grandi o butta un decimo di una scheda da 320px su quelli piccoli. Ogni asse
+   qui sotto si dimensiona la sua.
+
+   IL CORPO E' 10 E NON PIU' 8 (17/08/2026, Michele: "non si legge quasi nulla dei
+   sottotitoli e anche dei labels"). Otto pixel su uno schermo di telefono sono un
+   grigio, non un numero. Chi lo cambia deve cambiare TRE cose insieme, o il disegno e
+   il controllo smettono di misurare la stessa pagina:
+     · AXIS_FS qui sotto, che e' il corpo vero degli assi;
+     · TICKW, che e' 0.606 x AXIS_FS;
+     · GLYPH in tools/check_vita.cjs, che deve valere quanto TICKW — e' il modo in cui
+       il check vede le etichette tagliate e quelle che si sovrappongono. */
+const AXIS_FS = 10;
+const TICKW = 6.05;
 const yTicks = (yd, fmt) => {
   const out = [];
   for (let v = yd.lo; v <= yd.hi + 1e-9; v += yd.step) out.push([v, String(fmt(v))]);
   return out;
 };
-const padFor = ticks => Math.min(62, Math.max(24,
+const padFor = ticks => Math.min(76, Math.max(26,
   Math.ceil(Math.max(...ticks.map(t => t[1].length)) * TICKW) + 9));
 const axisText = (x, y, s, anchor) => el("text", { x, y, "text-anchor":anchor,
-  fill:"var(--muted)", "font-size":"8", "font-family":"ui-monospace,'SFMono-Regular',Menlo,monospace" });
+  fill:"var(--muted)", "font-size":String(AXIS_FS),
+  "font-family":"ui-monospace,'SFMono-Regular',Menlo,monospace" });
 function yAxis(svg, ticks, Y, l, right) {
   for (const [v, lab] of ticks) {
     const y = Y(v);
@@ -1728,8 +1830,8 @@ function gapBands(svg, X, x0, x1, top, ih) {
     svg.appendChild(el("rect", { x:xa, y:top, width:xb - xa, height:ih,
       fill:"none", stroke, "stroke-width":1, "stroke-dasharray":"2 3" }));
     if (xb - xa > 46) {
-      const t = el("text", { x:(xa + xb) / 2, y:top + 10, "text-anchor":"middle",
-        fill:"var(--muted)", "font-size":"7.5", "letter-spacing":".08em",
+      const t = el("text", { x:(xa + xb) / 2, y:top + 11, "text-anchor":"middle",
+        fill:"var(--muted)", "font-size":"9", "letter-spacing":".08em",
         "font-family":"ui-monospace,'SFMono-Regular',Menlo,monospace" });
       t.textContent = label; svg.appendChild(t);
     }
@@ -1759,7 +1861,9 @@ function xDates(svg, X, W, H, x0, x1, iw) {
 function frame(svg, W, H, xdom, ydom, opts = {}) {
   const yd = nice(ydom[0], ydom[1]);
   const ticks = yTicks(yd, opts.ytick || (v => nf(v, yd.step < 1 ? 1 : 0)));
-  const P = { l:padFor(ticks), r:6, t:8, b:16 };
+  /* b passa da 16 a 19: le date sull'asse x sono cresciute da 8 a 10 px e con 16
+     l'ultima riga di glifi finiva a filo del viewBox */
+  const P = { l:padFor(ticks), r:6, t:8, b:19 };
   const iw = W - P.l - P.r, ih = H - P.t - P.b;
   const [x0, x1] = xdom;
   const X = v => P.l + (x1 === x0 ? iw / 2 : (v - x0) / (x1 - x0) * iw);
@@ -1770,6 +1874,79 @@ function frame(svg, W, H, xdom, ydom, opts = {}) {
   yAxis(svg, ticks, Y, P.l, W - P.r);
   if (opts.xticks !== false) xDates(svg, X, W, H, x0, x1, iw);
   return { X, Y, P, iw, ih, yd };
+}
+
+/* ------------------------------------------------------------- gli otto ottavi
+   Michele, 17/08/2026: «qualsiasi periodo che sto mostrando venga diviso in 8 frame.
+   Ho una barra orizzontale in quel x + delta x, col valore medio e sopra il numerino
+   che identifica qual e' il valore medio. Mi sembra che Whoop faccia una roba del
+   genere in alcuni grafici.»
+
+   E' la lettura che manca a una nuvola e a un istogramma: sono fatti per mostrare la
+   FORMA, e la forma non risponde a "quanto, in questo pezzo di anno". La media mobile
+   nemmeno — e' un valore che cambia tutti i giorni, quindi si legge dove sta, non
+   quanto vale. Gli otto ottavi rispondono a quella domanda sola, con un numero solo
+   per ottavo, e sono confrontabili fra loro perche' i tratti sono uguali per
+   costruzione: la finestra si divide in ottavi di PIXEL, non di dati, quindi l'ottavo
+   e' sempre un ottavo anche dove i giorni mancano.
+
+   Tre scelte che vale la pena non ripensare da capo:
+   · **la barra e' nera, non del colore della serie.** Non e' una sesta serie: e' una
+     annotazione sopra le altre. Il nero e' l'accento del sito, ed e' l'unico colore
+     della pagina che il check garantisce a ΔE >= 15 da ogni slot — cioe' l'unico che
+     non si puo' scambiare per un dato;
+   · **il numero ha un alone di carta** (paint-order:stroke): senza, cadendo sopra la
+     nuvola di punti diventava illeggibile proprio negli ottavi piu' pieni;
+   · **l'ottavo senza dati non disegna niente.** Una barra a zero li' sarebbe un buco
+     travestito da zero, che e' la bugia contro cui e' costruita mezza pagina. */
+const FRAMES = 8;
+function eighths(svg, g, pts, from, to, fmt, opts = {}) {
+  const n = FRAMES, span = (to - from + 1) / n;
+  if (!(span >= 1)) return null;
+  const acc = Array.from({ length:n }, () => ({ s:0, c:0 }));
+  for (const [x, v] of pts) {
+    if (v === null || v === undefined || !isFinite(v)) continue;
+    let k = Math.floor((x - from) / span);
+    if (k < 0) k = 0; if (k >= n) k = n - 1;
+    acc[k].s += v; acc[k].c++;
+  }
+  const w = g.iw / n;
+  /* le etichette: se in un ottavo non ci sta il numero piu' lungo, se ne stampa una
+     ogni due. Meglio quattro numeri veri che otto sovrapposti. */
+  const labs = acc.map(a => a.c ? String(fmt(a.s / a.c)) : "");
+  const wide = Math.max(...labs.map(s => s.length)) * TICKW + 6;
+  const every = wide <= w ? 1 : 2;
+  const out = [];
+  acc.forEach((a, k) => {
+    if (!a.c) return;
+    const v = a.s / a.c, y = g.Y(v);
+    if (!isFinite(y)) return;
+    /* la media di un ottavo puo' cadere fuori dalla scala disegnata: nelle nuvole il
+       dominio y lo detta la media mobile, non gli estremi. Fuori non si disegna —
+       una barra schiacciata contro il bordo direbbe un valore che non e' quello. */
+    if (v < g.yd.lo || v > g.yd.hi) return;
+    const x = g.P.l + w * k;
+    const r = el("rect", { x:x + 1.5, y:y - 1.5, width:Math.max(2, w - 3), height:3,
+      fill:"var(--ink)", opacity:".82", style:"cursor:pointer" });
+    const a0 = Math.round(from + k * span), a1 = Math.round(from + (k + 1) * span) - 1;
+    r.addEventListener("pointerenter", ev => showTip(ev.clientX, ev.clientY,
+      `<span class="d">ottavo ${k + 1} di ${n} · ${fmtDate(a0)} → ${fmtDate(Math.min(a1, to))}</span>` +
+      `<br>media <span class="v">${fmt(v)}</span>`));
+    r.addEventListener("pointerleave", hideTip);
+    svg.appendChild(r);
+    if (k % every) return;
+    /* sopra la barra, tranne quando la barra e' gia' in cima: li' il numero
+       uscirebbe dal viewBox, e sotto ci si legge uguale */
+    const up = y - 7 >= g.P.t + AXIS_FS;
+    const t = el("text", { x:x + w / 2, y: up ? y - 6 : y + AXIS_FS + 5,
+      "text-anchor":"middle", fill:"var(--ink)", "font-size":String(AXIS_FS),
+      "font-weight":"700", "font-family":"ui-monospace,'SFMono-Regular',Menlo,monospace",
+      stroke:"var(--paper)", "stroke-width":"3.2", "paint-order":"stroke",
+      "stroke-linejoin":"round" });
+    t.textContent = labs[k]; svg.appendChild(t);
+    out.push({ k, v });
+  });
+  return out;
 }
 
 /* A path that BREAKS on nulls rather than bridging them. */
@@ -2134,6 +2311,11 @@ function rLines(svg, W, H, t, from, to) {
     const p = s.vals[i - from]; return p && p[1] !== null
       ? `<i style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${s.col};margin-right:5px"></i>${s.name} <span class="v">${(t.fmt || FMT.num0)(p[1])}</span>` : null;
   }).filter(Boolean).join("<br>"));
+  /* Gli ottavi SOLO se la serie e' una. Con due o piu' linee una barra nera sola non
+     direbbe di quale sta facendo la media, e otto barre per serie sarebbero
+     ventiquattro segni neri sopra il disegno: peggio del problema che risolvono. */
+  if (t.frames !== false && series.length === 1)
+    eighths(svg, g, series[0].vals, from, to, t.fmt || FMT.num0);
   return {
     stats:stats(series[0].vals.map(p => p[1])),
     table:tableOf(series, from, to, t.fmt),
@@ -2164,9 +2346,14 @@ function rDiverge(svg, W, H, t, from, to) {
     const s = p[1] >= 0 ? "fresco" : "carico";
     return `${t.name} <span class="v">${(t.fmt || FMT.num0)(p[1])}</span><br><span class="d">${s}</span>`;
   });
+  /* qui l'ottavo dice una cosa in piu' del solito: la media della forma su un ottavo
+     e' il segno di quel periodo — sopra zero si e' stati in credito, sotto in debito */
+  if (t.frames !== false) eighths(svg, g, vals, from, to, t.fmt || FMT.num0);
   return { stats:stats(vals.map(p => p[1])), table:tableOf([{ name:t.name, vals }], from, to, t.fmt) };
 }
-const C_POS = "#3987e5", C_NEG = "#e66767";
+/* i due poli della Forma: non sono serie, sono un segno. Prendono gli stessi due
+   colori della home che tutta la pagina usa per credito e debito. */
+const C_POS = "var(--s1)", C_NEG = "var(--neg)";
 
 function rBars(svg, W, H, t, from, to) {
   const plan = bucketPlan(from, to);
@@ -2190,6 +2377,11 @@ function rBars(svg, W, H, t, from, to) {
     r.addEventListener("click", () => openDay(o.i));
     svg.appendChild(r);
   }
+  /* gli otto ottavi si calcolano sulle COLONNE, non sui giorni: l'asse y qui porta
+     una somma per settimana o per mese, e la media dei giorni starebbe su un altro
+     asse — un numero giusto letto contro la scala sbagliata. */
+  if (t.frames !== false) eighths(svg, g, b.map(o => [o.i, o.v]), from, to,
+    t.fmt || FMT.num0);
   return { stats:stats(b.map(o => o.v)), plan,
     table:`<tr><th>${plan.label}</th><th>${t.name}</th></tr>` +
       b.slice(-40).reverse().map(o => `<tr><td>${bucketLabel(o.k, plan.step)}</td><td>${(t.fmt || FMT.num0)(o.v)}</td></tr>`).join("") };
@@ -2199,11 +2391,26 @@ function rBars(svg, W, H, t, from, to) {
 function rStack(svg, W, H, t, from, to) {
   const plan = bucketPlan(from, to);
   const cols = t.cols, names = t.names;
-  const per = t.arrs.map(a => aggregate(a, from, to, "sum", plan.step));
-  const keys = per[0] ? per[0].map(o => o.k) : [];
+  /* `how` di solito e' "sum": una composizione di quantita' si somma. Ma dove la
+     serie e' RADA — la scomposizione dei grassi esiste su un centinaio di giorni
+     misurati — la somma del mese direbbe soprattutto quanti giorni sono stati
+     misurati quel mese, e un mese con tre giorni sembrerebbe un mese di digiuno.
+     Con "mean" ogni colonna e' "un giorno misurato di quel mese", che e' la sola
+     cosa vera che si puo' dire quando la copertura non e' piena. */
+  const per = t.arrs.map(a => aggregate(a, from, to, t.how || "sum", plan.step));
+  /* Le colonne si appaiano per CHIAVE, non per posizione. Appaiandole per posizione
+     — com'era fino al 17/08/2026 — si assumeva che ogni serie della pila producesse
+     esattamente gli stessi bidoni nello stesso ordine: vero finche' tutte le pile
+     erano somme su serie complete, falso appena una serie ha una copertura sua. La
+     prima pila con una serie rada ha sollevato `p[j].v of undefined`, e l'ha presa
+     `check_vita.cjs` invece della pagina viva. Si tiene l'INTERSEZIONE: una
+     composizione a cui manca un pezzo non e' una composizione con un pezzo a zero. */
+  const maps = per.map(p => new Map(p.map(o => [o.k, o])));
+  const keys = (per[0] || []).map(o => o.k).filter(k => maps.every(m => m.has(k)));
   if (!keys.length) return null;
-  const rows = keys.map((k, j) => ({ k, i:per[0][j].i,
-    parts:per.map(p => (t.scale ? t.scale(p[j].v) : p[j].v) || 0) }));
+  const rows = keys.map(k => ({ k, i:maps[0].get(k).i,
+    parts:maps.map(m => { const v = m.get(k).v;
+      return (t.scale ? t.scale(v) : v) || 0; }) }));
   const hi = Math.max(...rows.map(r => r.parts.reduce((a, b) => a + b, 0)));
   if (!(hi > 0)) return null;
   const g = frame(svg, W, H, [from, to], [0, hi], { ytick:t.ytick });
@@ -2290,15 +2497,23 @@ function rCloud(svg, W, H, t, from, to) {
       svg.appendChild(el("circle", { cx:g.X(x), cy:g.Y(y), r,
         fill:t.col, opacity:".38" }));
   }
+  /* La media mobile e' piu' trasparente di prima (17/08/2026: "magari le medie mobili
+     un po' piu' trasparenti"). Non e' un ripensamento estetico: da quando sopra ci
+     passano gli otto ottavi, la linea non e' piu' la lettura principale del riquadro
+     ma il suo sfondo di andamento, e a piena opacita' litigava col numero nero. */
   svg.appendChild(el("path", { d:pathOf(mean.map((v, k) => [from + k, v]), g.X, g.Y),
-    fill:"none", stroke:t.col, "stroke-width":2.2, "stroke-linejoin":"round",
-    "stroke-linecap":"round" }));
+    fill:"none", stroke:t.col, "stroke-width":2.2, opacity:".5",
+    "stroke-linejoin":"round", "stroke-linecap":"round" }));
   crosshair(svg, g, W, H, from, to, i => {
     const v = arr[i], m = mean[i - from];
     if (v === null && m === null) return null;
     return `${t.name} <span class="v">${(t.fmt || FMT.num0)(v)}</span>` +
       (m !== null ? `<br><span class="d">media ${t.win || 7} gg ${(t.fmt || FMT.num0)(m)}</span>` : "");
   });
+  /* DOPO il mirino, non prima: il mirino stende un rettangolo trasparente su tutto il
+     grafico per catturare il puntatore, e qualunque cosa disegnata sotto smette di
+     rispondere al passaggio del mouse. */
+  if (t.frames !== false) eighths(svg, g, pts, from, to, t.fmt || FMT.num0);
   return { stats:stats(nums), outside,
     table:tableOf([{ name:t.name, vals:pts }], from, to, t.fmt, true) };
 }
@@ -2842,7 +3057,14 @@ const monthTick = v => { const d = dayDate(Math.round(v));
   return MON[d.getMonth()] + " " + String(d.getFullYear()).slice(2); };
 const S = D.sports;
 const SC = ["var(--s1)", "var(--s2)", "var(--s3)", "var(--s4)"];
-const SCH = [C_POS, "#d95926", "#199e70", "#c98500"];
+/* SCH ERA UN SECONDO ELENCO DI COLORI, e come ogni secondo elenco era rimasto
+   indietro: conteneva ancora #d95926 / #199e70 / #c98500, cioe' i passi nati per la
+   carta scura di prima del 16/08/2026. Meta' delle serie della pagina — fitness,
+   fatica, temperatura, FatMax, le quote della tavola — usciva quindi in ocra e
+   ruggine mentre i riquadri che leggevano `SC` uscivano nei colori nuovi: due
+   tavolozze nella stessa colonna, ed e' la prima cosa che si vedeva scendendo.
+   Ora e' lo STESSO array: un colore si cambia in :root e cambia in pagina. */
+const SCH = SC;
 
 /* ------------------------------------------------- due conteggi e un indice
    Non esistono come serie da nessuna parte: si costruiscono qui, una volta, dalla
@@ -2972,6 +3194,59 @@ const fatRate = (() => {
   }
   if (i0 === null) return null;
   D.first.fat_rate = i0;
+  return o;
+})();
+
+/* Quanto vale davvero il secondo asse della dieta: le PROTEINE residue, cioe' quello
+   che il modello a un asse solo assumeva costante. Si calcola qui invece di scriverlo
+   nel piede a mano — un numero congelato in una frase invecchia senza dirlo. */
+function protResidue() {
+  const M = D.metab || {};
+  if (!Array.isArray(M.cho_pct_60d) || !Array.isArray(M.fat_pct_60d)) return "la quota proteica";
+  const v = [];
+  for (let i = 0; i < N; i++) {
+    const c = M.cho_pct_60d[i], f = M.fat_pct_60d[i];
+    if (c === null || c === undefined || f === null || f === undefined) continue;
+    v.push(100 - c - f);
+  }
+  if (v.length < 30) return "la quota proteica";
+  return `la quota proteica, che qui si muove fra il ${nf(Math.min(...v), 0)} e il ` +
+    `${nf(Math.max(...v), 0)} % dell'energia`;
+}
+
+/* -------------------------------------------- i grammi bruciati DENTRO la banda
+   Michele, 17/08/2026: «vorrei anche un grafico che, considerando i minuti dentro
+   la banda, mostri i grassi bruciati ogni giorno».
+
+   Si ricava dai due numeri che il modello metabolico gia' scrive, senza aggiungere
+   nessuna ipotesi nuova:
+
+       grammi in banda = minuti dentro la banda FatMax x MFO di quel giorno
+
+   `mfo_g_min` e' il picco di ossidazione, cioe' quanto si brucia AL CENTRO della
+   banda. Dentro la banda ma ai bordi si brucia meno — la parabola di `fatox` scende
+   fino al 90 % del picco ai due estremi, che e' la definizione stessa di banda —
+   quindi questo numero e' un **tetto**, non una media: sta entro il 10 % sopra il
+   vero, e sopra, mai sotto. Sta scritto anche nel piede del riquadro, perche' un
+   tetto letto come una media e' il modo in cui un modello diventa un vanto.
+
+   Perche' tenerlo separato da `fat_g_est`, che sono i grammi di TUTTA la giornata:
+   quello risponde a "quanto grasso ho ossidato", questo a "quanto ne ho ossidato
+   nel posto in cui volevo ossidarlo". Sono la stessa fisiologia guardata da due
+   parti, e la loro distanza e' quanto allenamento e' finito fuori banda. */
+const fatBand = (() => {
+  const M = D.metab || {};
+  if (!Array.isArray(M.fatmax_min) || !Array.isArray(M.mfo_g_min)) return null;
+  const o = new Array(N).fill(null);
+  let i0 = null;
+  for (let i = 0; i < N; i++) {
+    const m = M.fatmax_min[i], r = M.mfo_g_min[i];
+    if (m === null || m === undefined || r === null || r === undefined) continue;
+    o[i] = m * r;
+    if (i0 === null) i0 = i;
+  }
+  if (i0 === null) return null;
+  D.first.fat_band = i0;
   return o;
 })();
 
@@ -3191,7 +3466,7 @@ function metabTiles() {
   if (has("temp_c") && has("temp_min_c") && has("temp_max_c")) {
     t.push({ panel:"metabolismo", cls:"wide", h:190, first:"mb_temp_c",
       src:"misurato", title:"Temperatura", cap:"sensore al polso durante l'uscita · banda min–max del giorno, media mobile 30 giorni",
-      legend:[["Media dell'uscita", SCH[1]], ["Fra minimo e massimo", "rgba(217,89,38,.35)"]],
+      legend:[["Media dell'uscita", SCH[1]], ["Fra minimo e massimo", "rgba(234,67,53,.35)"]],
       now:() => lastMean(M.temp_c, 30), nowFmt:v => nf(v, 1) + " °C", nowUnit:"media 30 gg",
       kind:rBand, spec:{ name:"Temperatura", mid:M.temp_c, lo:M.temp_min_c, hi:M.temp_max_c,
         col:SCH[1], win:30, fmt:v => nf(v, 1) + " °C" },
@@ -3223,7 +3498,7 @@ function metabTiles() {
   if (has("fatmax_hr") && has("fatmax_lo_hr") && has("fatmax_hi_hr")) {
     t.push({ panel:"metabolismo", cls:"wide", h:180, first:"mb_fatmax_hr",
       src:"modello", title:"FatMax", cap:"battiti al minuto · la banda in cui il modello mette il massimo consumo di grassi",
-      legend:[["FatMax", SCH[2]], ["Banda", "rgba(25,158,112,.35)"]],
+      legend:[["FatMax", SCH[2]], ["Banda", "rgba(30,142,62,.35)"]],
       now:() => lastMean(M.fatmax_hr, 45), nowFmt:FMT.num0, nowUnit:"bpm, media 45 gg",
       kind:rBand, spec:{ name:"FatMax", mid:M.fatmax_hr, lo:M.fatmax_lo_hr, hi:M.fatmax_hi_hr,
         col:SCH[2], win:45, fmt:FMT.bpm },
@@ -3247,6 +3522,27 @@ function metabTiles() {
         "qui sopra. Il 2022 è vuoto perché mancano le attività, non perché si andasse forte." });
   }
 
+  /* i minuti in banda diventano grammi: e' la domanda che i minuti da soli non
+     chiudono — "e quindi quanto grasso e' andato via?" */
+  if (fatBand) {
+    t.push({ panel:"metabolismo", h:170, first:"fat_band",
+      src:"modello", title:"Grassi bruciati in banda",
+      cap:"minuti dentro il FatMax × MFO di quel giorno · grammi, sommati al mese",
+      now:() => { const s = stats(fatBand.slice(N - 90).filter(v => v !== null));
+        return s ? s.mean : null; },
+      nowFmt:v => nf(v, 0), nowUnit:"g al giorno, ultimi 90 gg",
+      kind:rBars, spec:{ name:"Grassi in banda", arr:fatBand, how:"sum",
+        col:"var(--s3)", fmt:v => nf(v, 0) + " g" },
+      dataNote:"modello, non una misura",
+      foot:"<strong>È un tetto, non una media.</strong> <span class=\"mono\">mfo_g_min</span> è " +
+        "l'ossidazione al <em>centro</em> della banda; ai due bordi la parabola del modello scende " +
+        "al 90 % del picco — è la definizione stessa di banda — quindi il vero sta fra questo " +
+        "numero e il 90 % di questo numero, e mai sopra. Sotto ci sono le stesse ipotesi del " +
+        "FatMax e degli stessi ±40 %: <strong>vale la sua variazione, non il suo livello</strong>. " +
+        "La distanza fra questo riquadro e i grammi di tutta la giornata è l'allenamento finito " +
+        "fuori banda." });
+  }
+
   /* --- i grammi, e la sola cosa misurata che ci gira intorno --------------- */
 
   if (fatRate) {
@@ -3262,7 +3558,13 @@ function metabTiles() {
         "di quel giorno. Quello che la letteratura chiama <span class=\"mono\">MFO</span> è un " +
         "tasso, non un totale: 0,52 g/min per un maschio allenato a digiuno (Achten 2003), e " +
         "qui si sta sotto perché la media di un'uscita comprende i tratti sopra la banda, dove " +
-        "l'ossidazione dei grassi crolla. I giorni sotto i venti minuti non entrano." });
+        "l'ossidazione dei grassi crolla. I giorni sotto i venti minuti non entrano. " +
+        "<strong>Dal 17/08/2026 il modello legge due macro e non una</strong>: non solo i " +
+        "carboidrati abituali dei 60 giorni prima, ma anche i <strong>grassi</strong> abituali " +
+        "dello stesso periodo. Le due pendenze escono dai due bracci dello stesso studio " +
+        "(FASTER, Volek 2016: 10 % contro 59 % di carboidrati, cioè 69 % contro 25 % di grassi). " +
+        "A proteine costanti i due assi dicono la stessa cosa: la differenza la fa " +
+        protResidue() + ", ed è esattamente quello che la versione a un asse solo assumeva fermo." });
   }
 
   if (aero) {
@@ -3528,6 +3830,67 @@ function nutriTiles() {
     ] },
     foot:"Atwater: proteine e carboidrati 4 kcal/g, grassi 9. La quota è sul totale delle tre macro, non sulle kcal del giorno — le kcal arrivano dal database alimenti o da Cronometer e i due conti non tornano mai identici. È una composizione: uno sale solo se un altro scende." });
 
+  /* ---- E DI CHE GRASSO SONO FATTI I GRASSI (chiesto il 17/08/2026) --------
+     Il riquadro qui sopra dice quanta energia veniva dai grassi. Questo dice di che
+     grassi si trattava, che e' la domanda dopo — e l'unica delle due che si possa
+     collegare a qualcosa di clinico.
+
+     Esiste SOLO sui giorni in cui Cronometer ha pesato la giornata intera, ed e'
+     l'unico riquadro della Tavola marcato `misurato` invece che `ricostruito`:
+     `foods.csv` ha `satfat_g` e basta, e mono, poli e trans non si possono riempire
+     su quattrocento alimenti senza inventarli. Dove non c'e' la misura la serie e'
+     vuota, non zero.
+
+     La quarta fetta non e' un ripiego, e' il resto vero: la somma delle tre misurate
+     sta sotto al grasso totale del giorno perche' il database di Cronometer non
+     classifica ogni alimento, e quel divario si dichiara invece di spalmarlo sugli
+     insaturi — spalmarlo li' sarebbe un dato mancante travestito da dato. */
+  if (has("trans_g") && has("mono_g") && has("poly_g")) {
+    const mono = N_.mono_g, poly = N_.poly_g, tr = N_.trans_g;
+    /* tutte e quattro le fette vivono sugli STESSI giorni, e sono i giorni pesati.
+       I saturi il database li conosce su tutti e 788 i giorni, ma prendere quelli
+       qui dentro impilerebbe una media su tutto il mese sotto tre medie sui soli
+       giorni misurati: la colonna sarebbe alta per un motivo e divisa per un altro. */
+    const sat = new Array(N).fill(null), unsat = new Array(N).fill(null),
+          rest = new Array(N).fill(null);
+    let nSplit = 0;
+    for (let i = 0; i < N; i++) {
+      if (tr[i] === null || tr[i] === undefined) continue;
+      const m = mono[i] || 0, p = poly[i] || 0, s = N_.satfat_g[i] || 0, x = tr[i] || 0;
+      sat[i] = s;
+      unsat[i] = m + p;
+      rest[i] = Math.max(0, (N_.fat_g[i] || 0) - s - m - p - x);
+      nSplit++;
+    }
+    t.push({ panel:"tavola", h:180, first:"n_trans_g", src:"misurato",
+      title:"Di che grasso", cap:"grammi al giorno · media dei giorni pesati del mese",
+      legend:[["Saturi", "var(--s2)"], ["Insaturi", "var(--s3)"],
+              ["Trans", "var(--s4)"], ["Non classificato", "var(--muted)"]],
+      /* Gli ULTIMI 30 GIORNI PESATI, non gli ultimi 30 giorni: una media mobile a
+         finestra fissa qui non si accende mai, perche' i giorni misurati sono quattro
+         al mese e `rolling` chiede almeno un terzo della finestra piena — per costruzione,
+         e giustamente. Qui la finestra si conta in misure, che e' l'unita' vera di
+         questa serie. */
+      now:() => { const v = [];
+        for (let i = N - 1; i >= 0 && v.length < 30; i--)
+          if (tr[i] !== null && tr[i] !== undefined) v.push(tr[i]);
+        return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; },
+      nowFmt:v => nf(v, 2), nowUnit:"g di trans, ultimi 30 giorni pesati",
+      kind:rStack, spec:{ how:"mean", arrs:[sat, unsat, tr, rest],
+        names:["Saturi", "Insaturi", "Trans", "Non classificato"],
+        cols:["var(--s2)", "var(--s3)", "var(--s4)", "var(--muted)"],
+        fmt:v => nf(v, 1) + " g" },
+      dataNote:"solo i giorni pesati su Cronometer",
+      foot:`<strong>${nf(nSplit)} giorni</strong>, quelli in cui Cronometer ha pesato la ` +
+        "giornata intera: è l'unico riquadro misurato di questa sezione. Il database interno " +
+        "conosce solo i <strong>saturi</strong>; mono, poli e trans arrivano da lì e da nessun " +
+        "altro posto, quindi negli altri giorni la serie è vuota invece di essere ricostruita. " +
+        "«Insaturi» è mono + poli. <strong>«Non classificato» è il grasso vero a cui Cronometer " +
+        "non assegna una classe</strong>: sommarlo agli insaturi avrebbe fatto quadrare il conto " +
+        "dicendo una cosa che non si sa. I trans stanno sotto il grammo quasi ogni giorno — " +
+        "l'OMS raccomanda meno dell'1 % dell'energia, cioè circa 3 g." });
+  }
+
   /* ---- quali cibi muovono la flora: heatmap alimenti × generi ------------ */
   const FF = D.floraFoods || [];
   if (FF.length && GEN.length >= 5) {
@@ -3754,6 +4117,12 @@ const RIDGE = (() => {
       aero && aero.day, 45, v => nf(v, 2));
   add("Metabolismo", "var(--s2)", "fatrate", "Grassi al minuto",
       fatRate, 45, v => nf(v, 2) + " g/min");
+  /* i grammi in banda entrano nel registro come tutte le altre: da qui la corsia
+     nella vista compatta e la voce nel menu del correlatore escono da sole. Stessa
+     circolarita' di `fatrate` — nasce dal modello che gia' legge la dieta — quindi
+     incrociarla con la tavola e' un controllo di coerenza, non una scoperta. */
+  add("Metabolismo", "var(--s2)", "fatband", "Grassi bruciati in banda",
+      fatBand, 30, v => nf(v, 0) + " g");
   return out;
 })();
 
@@ -4480,7 +4849,14 @@ infoReg("finestra", "Che cosa cambia la finestra temporale",
    serie, non da dove comincia l'archivio: il carico dal 2019, sonno e HRV dal 2025. I
    riquadri della stessa schermata quindi <strong>non coprono lo stesso periodo</strong>.</p>
    <p>Con una finestra scelta, è la stessa su tutti. Dove la serie non arriva così
-   indietro, il riquadro parte da dove può.</p>`);
+   indietro, il riquadro parte da dove può.</p>
+   <p><strong>Le otto barre nere</strong> dividono in <strong>ottavi</strong> la finestra
+   che stai guardando: ognuna sta all'altezza della media del suo ottavo, e il numero
+   sopra è quella media. Cambiando finestra cambiano di significato — otto ottavi di due
+   anni sono trimestri, otto ottavi di un trimestre sono undici giorni l'uno. Sono nere
+   e non colorate perché <em>non sono una serie</em>: sono una nota sopra le altre.
+   Un ottavo senza dati non disegna niente, e uno la cui media cade fuori dalla scala
+   nemmeno.</p>`);
 icoNode(document.getElementById("ranges"), "finestra", "la finestra temporale");
 
 /* ------------------------------------------------------ confronto selezionabile
@@ -4718,10 +5094,18 @@ function cxApply(p){
   compareLag.value=String(p.lag||0); compareMode.value=p.mode||"lv";
   cxActive=p.k; drawCompare(); cxPaint(); return true;
 }
+/* Quante pastiglie restano a schermo. Tre e non dieci: la barra era la prima cosa
+   che si vedeva della sezione, e dieci tesi in fila non si leggono — si saltano.
+   Le altre sette stanno dietro «altre 7», e il gruppo si apre da solo se quella
+   attiva e' fra loro (arrivarci da un ⓘ o da un preferito e non vedersela accesa
+   sarebbe peggio di non nasconderle affatto). */
+const CX_SHOW = 3;
+let cxOpen = false;
+
 function cxPaint(){
   cxHostP.innerHTML="";
-  const chip=(p,mine)=>{
-    const b=mk("button",mine?"cx-own":null,cxHostP,p.t);
+  const chip=(p,mine,hid)=>{
+    const b=mk("button",[mine?"cx-own":null,hid?"cx-hid":null].filter(Boolean).join(" ")||null,cxHostP,p.t);
     b.setAttribute("type","button");
     /* l'etichetta dice che RAZZA di risultato e', prima ancora di aprirlo: uno
        zero, un cablaggio e un campione piccolo si guardano in tre modi diversi */
@@ -4735,8 +5119,21 @@ function cxPaint(){
     }
     return b;
   };
-  for(const p of CX_PRESETS) if(compareByKey.has(p.x)&&compareByKey.has(p.y)) chip(p,false);
-  for(const p of cxMine) chip(p,true);
+  const live=CX_PRESETS.filter(p=>compareByKey.has(p.x)&&compareByKey.has(p.y));
+  const hidden=live.slice(CX_SHOW);
+  /* se quella accesa sta fra le nascoste, il gruppo si apre: una pastiglia premuta
+     e invisibile e' un comando che dice il contrario di quello che sta facendo */
+  if(hidden.some(p=>p.k===cxActive)) cxOpen=true;
+  live.forEach((p,i)=>chip(p,false,i>=CX_SHOW));
+  for(const p of cxMine) chip(p,true,false);
+  if(hidden.length){
+    const tog=mk("button","cx-tog",cxHostP,cxOpen?"− meno":`+ altre ${hidden.length}`);
+    tog.setAttribute("type","button");
+    tog.setAttribute("aria-pressed",cxOpen?"true":"false");
+    tog.setAttribute("aria-controls","compare-presets");
+    tog.addEventListener("click",()=>{ cxOpen=!cxOpen; cxPaint(); });
+  }
+  cxHostP.setAttribute("data-open",cxOpen?"1":"0");
   if(cxMine.length<CX_MAX_MINE){
     const add=mk("button","cx-add",cxHostP,"+ questa è mia");
     add.setAttribute("type","button");

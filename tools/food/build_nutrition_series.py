@@ -104,6 +104,12 @@ FIELDS = ["date", "kcal", "protein_g", "carb_g", "sugar_g", "fiber_g", "fat_g",
           # Anche queste fanno ~100, e quello che manca e' fibra e alcol, che le
           # 4/4/9 non contano.
           "pct_kcal_protein", "pct_kcal_carb", "pct_kcal_fat",
+          # DI CHE GRASSO sono fatti i grassi. Esistono solo dove Cronometer ha
+          # pesato la giornata intera: il database interno ha `satfat_g` e basta,
+          # e mono/poli/trans non si possono ricostruire senza inventarli. Dove non
+          # c'e' la misura la cella resta VUOTA, non zero — zero grammi di trans e
+          # "non lo sappiamo" sono due cose diverse, e la seconda e' la nostra.
+          "mono_g", "poly_g", "trans_g",
           ] + ["cnt_" + k for k in TALLY]
 
 
@@ -189,6 +195,8 @@ def main():
         import json as _json
         cron = _json.loads(CRONOMETER.read_text(encoding="utf-8"))
     cron_full = {d for d, v in cron.items() if v.get("full")}
+    # la scomposizione dei grassi: solo giorni pieni, cioe' solo dove e' misurata
+    fat_split = {d: v["fat_split"] for d, v in cron.items() if v.get("fat_split")}
     cron_slots = {d: set(v.get("slots") or ()) for d, v in cron.items()
                   if not v.get("full")}
 
@@ -379,6 +387,9 @@ def main():
                for q in ("plant", "dairy", "animal", "other")},
             "pct_upf": round(100.0 * upf_kcal.get(k, 0.0) / (t["kcal"] or 1), 1),
             **macro_split(t),
+            **{c: (round(fat_split[k][s], 2) if k in fat_split else "")
+               for c, s in (("mono_g", "mono_g"), ("poly_g", "poly_g"),
+                            ("trans_g", "trans_g"))},
             **{"cnt_" + key: round(tally[k].get(key, 0.0), 2) for key in TALLY},
         })
         cur += timedelta(days=1)
