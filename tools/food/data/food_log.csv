@@ -476,3 +476,27 @@ date,meal,food_id,qty,note,source
 2026-08-16,pranzo,coca_cola,330,"«una coca cola», dichiarata a voce. Voce nuova a catalogo: prima non era scrivibile. Una lattina, 330 ml = 139 kcal",dichiarato
 2026-08-16,spuntino,cheesecake,120,"«torta cheesecake», dichiarata a voce senza quantita. 120 g e l unica fetta che abbia mai registrato",dichiarato
 2026-08-16,spuntino,torta_semplice,120,"«torta alle pesche», dichiarata a voce. Torta da forno, la voce che a catalogo copre crostate e ciambelle: le pesche dentro non spostano granche (330 contro 360 kcal/100 g). 120 g e la fetta che ha gia dichiarato",dichiarato
+2026-08-16,cena,strudel_mele,120,"«uno strudel», dichiarato a voce. Nessuna quantita precedente nel registro: 120 g e una fetta",dichiarato
+2026-08-16,cena,ravioli_ricotta,200,«ravioli con sugo di cervo». 200 g e l unica quantita che abbia mai registrato per i ravioli,dichiarato
+2026-08-16,cena,patate,250,«una patata». 250 g e una delle due quantita che ha gia dichiarato (l altra 350),dichiarato
+2026-08-16,cena,formaggio_semistagionato,100,"«100 g di castelmagno», quantita dichiarata da lui. Il castelmagno non e a catalogo: formaggio semistagionato e il proxy per nome e per numeri, la stessa scelta del 16/08 a pranzo",dichiarato
+2026-08-16,cena,uovo_intero,1,"«un uovo», dichiarato a voce",dichiarato
+2026-08-16,cena,ragu_cervo,150,"«ravioli con sugo di cervo». Voce sua, cercata invece che approssimata: prima era reso con ragu_carne, ma la selvaggina e un altra cosa — 120 kcal contro 140, 13,1 g di proteine contro 10, e il doppio di ferro e B12. Ricavata dagli ingredienti: 55 g di cervo crudo, 30 g di passata, 8 g di soffritto,",dichiarato
+2026-08-17,colazione,pane_bianco,160,"«praticamente due pezzi di pane bianco». 80 g e la sua unica quantita dichiarata per il pane bianco (2 volte), quindi due pezzi sono 160 g",dichiarato
+2026-08-17,colazione,marmellata_fragola,20,"«un po di marmellate frutti di bosco». A catalogo c e solo quella di fragole: proxy, cambia poco (zuccheri e calorie sono gli stessi). 20 g e la sua quantita piu frequente",dichiarato
+2026-08-17,colazione,burro,10,"«10 g di burro», quantita dichiarata da lui",dichiarato
+2026-08-17,colazione,yogurt_bianco_intero,150,"«150 g di yogurt», quantita dichiarata da lui",dichiarato
+2026-08-17,colazione,pesca,1,"«una pesca», dichiarata a voce",dichiarato
+2026-08-17,colazione,cappuccino,2,"«due cappuccini in mattinata», dichiarati a voce",dichiarato
+2026-08-17,colazione,granola,5,"«un po di granola, proprio un cucchiaino». Voce nuova a catalogo: un cucchiaino sono circa 5 g",dichiarato
+2026-08-17,colazione,focaccia,225,"«una focaccia con il pesto di quelle liguri, non una focaccia intera; una con prosciutto e stracchino. Considera una porzione e mezza di quelle al taglio». 150 g e la porzione che ha gia dichiarato, quindi 1,5 porzioni sono 225 g, per tutti e due i pezzi insieme",dichiarato
+2026-08-17,colazione,pesto_genovese,20,"il pesto sulla prima focaccia. Voce nuova a catalogo, stima: 20 g e una spalmata su un pezzo",dichiarato
+2026-08-17,spuntino,recipe:panino_peanut_marmellata,2,"«durante la bici soliti due panini». «Soliti» rimanda alla ricetta che ha dichiarato lui: pane integrale, burro d arachidi e marmellata",dichiarato
+2026-08-17,spuntino,banana,3,«due banane» nel primo messaggio piu «un altra banana» nel secondo: tre in tutto,dichiarato
+2026-08-17,spuntino,crostata_frutta,120,«un pezzo di crostata». 120 g e la fetta che ha gia dichiarato tre volte,dichiarato
+2026-08-17,cena,asparagi,300,"«300 g di asparagi cotti», quantita dichiarata da lui. Voce nuova a catalogo",dichiarato
+2026-08-17,cena,uovo_intero,4,"«4 uova», quantita dichiarata da lui",dichiarato
+2026-08-17,cena,funghi_porcini,60,«una manciata di porcini». 60 g e la quantita piu piccola che abbia gia dichiarato per i funghi. Voce sua e non champignon: il contatore delle piante diverse conta le specie,dichiarato
+2026-08-17,pranzo,prosciutto_cotto,50,"«50 g di cotto», quantita dichiarata da lui. IN AGGIUNTA, non ripieno: corretto da Michele il 17/08 — «erano mangiate col pane bianco, non in ripieno». La focaccia col prosciutto resta una cosa a parte",dichiarato
+2026-08-17,pranzo,formaggio_semistagionato,40,"«40 g di formaggio», mangiato col pane bianco. Non e lo stracchino della focaccia: quello e dentro i 225 g di focaccia. 40 g e anche la sua quantita piu frequente per questa voce",dichiarato
+2026-08-17,pranzo,pane_bianco,300,"«fai anche 300 g di pane bianco», quantita dichiarata da lui: e il pane su cui sono andati il cotto e il formaggio. Si AGGIUNGE ai 160 g della colazione alla Fauniera, che erano i «due pezzi» di un altro momento — in tutto 460 g nella giornata",dichiarato
