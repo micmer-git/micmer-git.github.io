@@ -511,3 +511,16 @@ date,meal,food_id,qty,note,source
 2026-08-18,spuntino,pera,1,"«probabilmente una pera»: sua parola, «probabilmente». Assunto",assunto
 2026-08-18,cena,latte_ps,200,"«stanotte un latte parzialmente scremato». Annunciato la mattina: assunto. 200 ml e' la tazza, stimata",assunto
 2026-08-18,cena,recipe:panino_peanut_marmellata,1,"«il panino solito peanut butter e marmellata», stanotte. Annunciato la mattina: assunto",assunto
+2026-08-18,pranzo,insalata_mista,80,annotato dal diario di /vita,dichiarato
+2026-08-18,pranzo,bresaola,30,poca,dichiarato
+2026-08-18,pranzo,grana_padano,10,nell'insalata,dichiarato
+2026-08-18,pranzo,carote,50,annotato dal diario di /vita,dichiarato
+2026-08-18,pranzo,hummus,150,"hummus di lupini, 150 g dichiarati",dichiarato
+2026-08-18,pranzo,peperoni,150,un peperone,dichiarato
+2026-08-18,pranzo,cipolla,50,mezza cipolla,dichiarato
+2026-08-18,pranzo,pane_bianco,120,"due fette fatte in casa, 120 g dichiarati",dichiarato
+2026-08-18,merenda,pesca,1,annotato dal diario di /vita,dichiarato
+2026-08-18,merenda,polenta_cotta,100,"100 g dichiarati, letti come polenta cotta",dichiarato
+2026-08-18,merenda,grana_padano,10,un cucchiaio,dichiarato
+2026-08-18,cena,dal_cotto,300,"il solito dahl ma con ceci, non lenticchie",dichiarato
+2026-08-18,cena,focaccia,80,"un pezzo, al pesto",dichiarato
