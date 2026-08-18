@@ -5664,6 +5664,7 @@ window.CRUSCOTTO.diary = {
 drawAll();
 let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawAll, 160); });
 </script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "24fb0c5b538b4448b1281261e5e329a0"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
 """

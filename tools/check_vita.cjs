@@ -49,12 +49,18 @@ const ok = (cond, msg) => { (cond ? notes : fails).push((cond ? "ok   " : "FAIL 
    nel sorgente. Si controlla che i tag siano esattamente due e che lo script
    arrivi in fondo. */
 {
-  const opens = (html.match(/<script>/g) || []).length;
+  // Il payload della pagina e' inline in UN blocco <script> senza attributi: se
+  // dentro ci finisse un "</script" il browser chiuderebbe li' e meta' pagina
+  // sparirebbe. Il controllo e' quello, e si esprime come TAG BILANCIATI — non
+  // come "un solo script", che era vero per caso finche' non ne e' arrivato un
+  // secondo legittimo (il beacon di Cloudflare, che ha type='module').
+  const payload = (html.match(/<script>/g) || []).length;
+  const opens = (html.match(/<script[\s>]/g) || []).length;
   const closes = (html.match(/<\/script>/g) || []).length;
   const body = (html.match(/<script>([\s\S]*?)<\/script>/) || [])[1] || "";
-  const okTags = opens === 1 && closes === 1;
+  const okTags = payload === 1 && opens === closes;
   (okTags ? notes : fails).push((okTags ? "ok   " : "FAIL ") +
-    `un solo blocco <script> (aperti ${opens}, chiusi ${closes}) — nessun "</script" nel payload`);
+    `un solo blocco payload su ${opens} script, tag bilanciati (chiusi ${closes}) — nessun "</script" dentro`);
   const ends = /drawAll\(\);/.test(body.slice(-400));
   (ends ? notes : fails).push((ends ? "ok   " : "FAIL ") +
     `lo script arriva in fondo (${(body.length / 1024).toFixed(0)} KB, chiude su drawAll)`);

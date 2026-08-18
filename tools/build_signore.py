@@ -1280,6 +1280,9 @@ def render(D, gen):
         "<script>const SIGNORE=" + json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
         + ";</script>",
         "<script>" + PAGE_JS + "</script>",
+        # Il beacon sta nel TEMPLATE, non nell'uscita: scritto sulla pagina
+        # generata, il prossimo build lo cancellerebbe in silenzio.
+        "<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{\"token\": \"24fb0c5b538b4448b1281261e5e329a0\"}'></script><!-- End Cloudflare Web Analytics -->",
         "</body>\n</html>",
     ]
     return "\n".join(p for p in parts if p)
