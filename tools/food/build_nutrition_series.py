@@ -355,8 +355,30 @@ def main():
         ferm7 = sum(1 for j in range(7)
                     if (cur - timedelta(days=j)).isoformat() in ferm_days)
 
+        # --- il fabbisogno di carboidrati, e quanto ci si puo' credere ---------
+        # VERIFICATO il 18/08/2026 (Michele: "verifica anche carbo stimati dal carico
+        # se precisi"), confrontando la mediana del modello con le fasce pubblicate
+        # (Burke et al. 2011 / linee guida ACSM), raggruppando gli 788 giorni per ORE
+        # DI MOVIMENTO vere invece che per TSS:
+        #
+        #   ore/giorno      n     modello      letteratura   esito
+        #   poco o niente   18    3,0 g/kg      3-5 g/kg     dentro, al bordo basso
+        #   circa un'ora   100    5,0 g/kg      5-7 g/kg     dentro, al bordo basso
+        #   una-tre ore    508    6,2 g/kg      6-10 g/kg    dentro, al bordo basso
+        #   oltre tre ore  162   10,0 g/kg      8-12 g/kg    dentro, ma TAPPATO
+        #
+        # Sta dentro in tutte e quattro le fasce, e sta sempre sul BORDO BASSO. Il
+        # che vuol dire che lo "scarto carboidrati" della pagina, se sbaglia, sbaglia
+        # per difetto: il buco vero e' quello mostrato o piu' grande, mai piu' piccolo.
+        #
+        # Il tappo passa da 10 a 12 g/kg. Dieci non veniva da nessuna parte — la fascia
+        # per chi si muove oltre le tre ore arriva a 12 — e mordeva su 101 giorni su
+        # 788 (13 %): appiattiva proprio le giornate piu' grosse, cioe' quelle in cui
+        # la domanda "quanto mi e' mancato" ha una risposta interessante. Il pavimento
+        # resta 3: e' il fondo della fascia "poco o niente", ed e' giusto che un giorno
+        # fermo non chieda zero carboidrati.
         tss = tss_of.get(k, 0.0)
-        g_per_kg = max(3.0, min(10.0, 3.0 + 0.03 * tss))
+        g_per_kg = max(3.0, min(12.0, 3.0 + 0.03 * tss))
         carb_target = weight * g_per_kg
 
         kcal_tot = t["kcal"] or 1.0

@@ -115,17 +115,46 @@ class Node {
     fn(Object.assign({ target: this, currentTarget: this }, ev || {}));
     return true;
   }
-  getBoundingClientRect() { return { width: SHIM_W, height: 180, top: 0, left: 0, right: SHIM_W, bottom: 180 }; }
-  get clientWidth() { return SHIM_W; }
+  /* Un nodo dentro un ramo `display:none` misura ZERO, come nel browser vero.
+     Non e' pedanteria: e' la trappola scritta in state/open-loops.md, quella per cui
+     il segmented control era stato scartato il 16/08. Un riquadro ridisegnato mentre
+     la sua sezione e' nascosta misura 0, ricade sui 240px di sicurezza, e resta largo
+     240 anche quando la sezione torna visibile. Con uno shim che risponde SHIM_W
+     sempre, quel bug non si puo' vedere da qui — e infatti non si vedeva. */
+  get _hidden() {
+    for (let n = this; n; n = n.parent)
+      if (n.style && n.style.display === "none") return true;
+    return false;
+  }
+  getBoundingClientRect() { const w = this._hidden ? 0 : SHIM_W;
+    return { width: w, height: this._hidden ? 0 : 180, top: 0, left: 0, right: w, bottom: 180 }; }
+  get clientWidth() { return this._hidden ? 0 : SHIM_W; }
   /* the only descendant walk the page does is over ranges' direct children */
   descendants() { return this._kids.flatMap(c => [c, ...c.descendants()]); }
 }
 
 const byId = {};
+/* La pagina vera annida ogni pannello dentro la sua sezione:
+     <section class="sec" id="sec-notte"> … <main id="panel-notte"> … </section>
+   Qui i nodi nascono a richiesta e sarebbero tutti orfani, quindi nascondere una
+   sezione non nasconderebbe niente e il controllo sul ripiego a 240px non
+   proverebbe niente. Il legame si ricrea a mano: e' l'UNICO pezzo di struttura
+   che questo DOM finto conosce, ed e' qui perche' e' l'unico che serve a un
+   controllo. Se domani la pagina annida altro, va aggiunto qui. */
+const NIDO = id => {
+  const m = /^panel-(.+)$/.exec(id) || (/^(compare|coach)$/.test(id) ? [, "incroci"] : null);
+  return m ? "sec-" + (m[1] === "compare" || m[1] === "coach" ? "incroci" : m[1]) : null;
+};
 const document = {
   createElement: t => new Node(t),
   createElementNS: (ns, t) => new Node(t, ns),
-  getElementById: id => byId[id] || (byId[id] = new Node("div")),
+  getElementById: id => {
+    if (byId[id]) return byId[id];
+    const n = byId[id] = new Node("div");
+    const padre = NIDO(id);
+    if (padre) document.getElementById(padre).appendChild(n);
+    return n;
+  },
   body: new Node("body"),
   addEventListener() {},
 };
@@ -260,7 +289,10 @@ if (ran) {
      smette di vedere le sovrapposizioni invece di segnalarle.
      Dal 17/08/2026 gli assi sono a corpo 10 e non piu' 8 (AXIS_FS in build_vita.py):
      a 8 px le etichette non si leggevano da telefono. */
-  const GLYPH = 6.05;
+  const GLYPH = 6.05, GLYPH_FS = 10;
+  /* il numero della media e' piu' grande dell'etichetta d'asse: MEAN_FS in
+     build_vita.py. Se cambia la', va cambiato qui, o le collisioni non si vedono. */
+  const MEAN_FS = 12;
   const outside = [], clipped = [], collide = [];
   for (const [n, t] of K.MOUNTED) {
     const svg = n.box._kids.find(c => c.tagName === "svg");
@@ -309,47 +341,141 @@ if (ran) {
     (collide.length ? ` — ${collide.length}, es. ${collide[0]}` : ""));
 
   /* ------------------------------------- 2c. gli otto ottavi (chiesti il 17/08/2026)
-     Sono barre nere alte 3px, una per ottavo della finestra, col numero della media
-     sopra. Tre modi in cui si rompono senza che nessuno se ne accorga, e quindi tre
-     controlli: sparire del tutto (una `frames:false` di troppo, o un renderer che non
-     li chiama piu'), diventare nove perche' l'arrotondamento degli ottavi ha sbagliato
-     un giro, e il numero che sborda dal suo ottavo e finisce addosso al vicino. */
-  let framed = 0, tooMany = [], spill = [];
-  for (const [n, t] of K.MOUNTED) {
-    const svg = n.box._kids.find(c => c.tagName === "svg");
-    if (!svg) continue;
-    const kids = svg.descendants();
-    const bars = kids.filter(c => c.tagName === "rect" && c.attrs.fill === "var(--ink)" &&
-      parseFloat(c.attrs.height) === 3);
-    if (!bars.length) continue;
-    framed++;
-    if (bars.length > 8) tooMany.push(`${t.title}: ${bars.length} ottavi`);
-    /* Il numero puo' essere piu' largo del suo ottavo — la pagina se ne accorge e
-       stampa una etichetta ogni due invece che una per ottavo. Quello che NON puo'
-       succedere e' che due numeri disegnati si tocchino, o che uno esca dalla scheda:
-       si misurano quelli, non la regola che dovrebbe averli evitati. */
-    const [, , VW] = svg.attrs.viewBox.split(/\s+/).map(Number);
-    const lab = kids.filter(c => c.tagName === "text" && c.attrs["font-weight"] === "700")
-      .map(c => { const lw = (c.textContent || "").length * GLYPH;
-        return { l:parseFloat(c.attrs.x) - lw / 2, r:parseFloat(c.attrs.x) + lw / 2,
-                 y:parseFloat(c.attrs.y), s:c.textContent }; })
-      .sort((a, b) => a.l - b.l);
-    for (const q of lab) {
-      if (q.l < -0.5 || q.r > VW + 0.5)
-        spill.push(`${t.title}: "${q.s}" esce dalla scheda (${q.l.toFixed(0)}→${q.r.toFixed(0)} su ${VW})`);
+     Una fascia sotto il grafico, otto barre nere, il numero della media sopra ognuna,
+     e una SCALA PROPRIA con i suoi due estremi a destra.
+
+     Il 18/08 Michele ha scritto «on mobile le medie valori sopra barre sono rotte», e
+     il check non l'aveva visto: girava a una larghezza sola, e soprattutto misurava le
+     collisioni solo fra etichette alla stessa altezza — sulla scala del grafico le otto
+     stavano a otto altezze diverse, quindi non venivano mai confrontate fra loro. Ora
+     la fascia ha una riga sua e le altezze sono comparabili, e il controllo gira a DUE
+     larghezze: 340 px (telefono) e 1040 (portatile).
+
+     Quattro modi di romperle, quattro controlli: sparire del tutto, diventare nove,
+     uscire dalla scheda, e sovrapporsi fra loro. */
+  const scanOttavi = etichetta => {
+    let framed = 0; const tooMany = [], spill = [];
+    for (const [n, t] of K.MOUNTED) {
+      const svg = n.box._kids.find(c => c.tagName === "svg");
+      if (!svg) continue;
+      const kids = svg.descendants();
+      const bars = kids.filter(c => c.tagName === "rect" && c.attrs.fill === "var(--ink)" &&
+        parseFloat(c.attrs.height) === 3);
+      if (!bars.length) continue;
+      framed++;
+      if (bars.length > 8) tooMany.push(`[${etichetta}] ${t.title}: ${bars.length} ottavi`);
+      const [, , VW] = svg.attrs.viewBox.split(/\s+/).map(Number);
+      const lab = kids.filter(c => c.tagName === "text" && c.attrs["font-weight"] === "700")
+        .map(c => { const lw = (c.textContent || "").length * GLYPH * (MEAN_FS / GLYPH_FS);
+          return { l:parseFloat(c.attrs.x) - lw / 2, r:parseFloat(c.attrs.x) + lw / 2,
+                   y:parseFloat(c.attrs.y), s:c.textContent }; })
+        .sort((a, b) => a.l - b.l);
+      for (const q of lab) {
+        if (q.l < -0.5 || q.r > VW + 0.5)
+          spill.push(`[${etichetta}] ${t.title}: "${q.s}" esce dalla scheda (${q.l.toFixed(0)}→${q.r.toFixed(0)} su ${VW})`);
+      }
+      for (let i = 1; i < lab.length; i++) {
+        /* dentro la fascia le etichette stanno su due righe al massimo (sopra la
+           barra o sotto): due a piu' di MEAN_FS di distanza non si toccano */
+        if (Math.abs(lab[i].y - lab[i - 1].y) > MEAN_FS) continue;
+        if (lab[i].l < lab[i - 1].r + 1)
+          spill.push(`[${etichetta}] ${t.title}: "${lab[i - 1].s}" e "${lab[i].s}" si toccano`);
+      }
     }
-    for (let i = 1; i < lab.length; i++) {
-      /* stessa riga = stessa altezza: due numeri a quote diverse non si toccano */
-      if (Math.abs(lab[i].y - lab[i - 1].y) > 6) continue;
-      if (lab[i].l < lab[i - 1].r + 1)
-        spill.push(`${t.title}: "${lab[i - 1].s}" e "${lab[i].s}" si toccano`);
-    }
+    return { framed, tooMany, spill };
+  };
+  const oW = SHIM_W;
+  const passate = [];
+  for (const w of [340, 1040]) {
+    SHIM_W = w;
+    try { K.setRange("sempre"); } catch (e) { fails.push(`FAIL ottavi a ${w}px: ${e}`); }
+    passate.push([w + "px", scanOttavi(w + "px")]);
   }
-  ok(framed > 0, `gli otto ottavi sono disegnati (${framed} riquadri)`);
+  SHIM_W = oW;
+  K.setRange("sempre");
+  const framedTot = Math.min(...passate.map(([, r]) => r.framed));
+  const tooMany = passate.flatMap(([, r]) => r.tooMany);
+  const spill = passate.flatMap(([, r]) => r.spill);
+  ok(framedTot > 0, `gli otto ottavi sono disegnati a ogni larghezza (${framedTot} riquadri)`);
   ok(tooMany.length === 0, `mai piu' di otto ottavi per riquadro` +
     (tooMany.length ? ` — ${tooMany[0]}` : ""));
-  ok(spill.length === 0, `i numeri degli ottavi non si toccano e non escono dalla scheda` +
+  ok(spill.length === 0, `i numeri degli ottavi reggono a 340 e a 1040 px` +
     (spill.length ? ` — ${spill.length}, es. ${spill[0]}` : ""));
+
+  /* --------------------------------- 2d. le sezioni per tema, e la trappola nota
+     Michele, 18/08/2026: «si potrebbe avere uno slider o qualcosa per raccogliere i
+     grafici per temi». Un segmented control era gia' stato PROVATO e scartato il
+     16/08 per una ragione precisa (state/open-loops.md): un riquadro ridisegnato
+     mentre la sua colonna e' `display:none` misura zero, ricade sui 240px di
+     sicurezza e ci resta anche dopo, e il check non se ne accorgeva perche' contava
+     il montaggio, non il layout.
+     Adesso il DOM finto risponde 0 sui rami nascosti (vedi Node._hidden), quindi la
+     trappola e' riproducibile: si sceglie una sezione, si guarda la larghezza VERA
+     dei disegni, e un 240 qualunque e' il bug. */
+  const SEC = K.sections;
+  ok(!!SEC, "il selettore delle sezioni e' esposto");
+  if (SEC) {
+    const vb = ([n]) => { const svg = n.box._kids.find(c => c.tagName === "svg");
+      return svg ? Number(svg.attrs.viewBox.split(/\s+/)[2]) : null; };
+    const stretti = [], vuoti = [];
+    for (const [k] of SEC.list) {
+      SEC.set(k);
+      for (const m of K.MOUNTED) {
+        const [n, t] = m;
+        const visibile = k === "tutte" || t.panel === k;
+        if (!visibile) continue;
+        const w = vb(m);
+        if (w === null) { vuoti.push(`${k}: ${t.title} senza disegno`); continue; }
+        if (w <= 240) stretti.push(`${k}: ${t.title} disegnato a ${w}px (il ripiego)`);
+      }
+    }
+    SEC.set("tutte");
+    ok(vuoti.length === 0, `ogni riquadro della sezione scelta viene disegnato` +
+      (vuoti.length ? ` — ${vuoti.length}, es. ${vuoti[0]}` : ""));
+    ok(stretti.length === 0,
+      `nessun riquadro cade sui 240px di ripiego cambiando sezione` +
+      (stretti.length ? ` — ${stretti.length}, es. ${stretti[0]}` : ` (${SEC.list.length} sezioni)`));
+    ok(SEC.get() === "tutte", "e si torna a «tutte»");
+  }
+
+  /* --------------------------------- 2e. il testo: quanto e' lungo, e come e' scritto
+     Michele, 18/08/2026: «vedi qui come altrove se testi redundant o troppo sbrodolati?
+     ... altro esempio di ai slop». Due controlli, e nessuno dei due e' di gusto.
+
+     Il primo e' una soglia sulla nota di metodo. La potatura del 16/08 aveva portato le
+     note da 6.749 a 3.173 caratteri e la piu' lunga da 577 a 213; due giorni dopo la piu'
+     lunga era gia' 828, cresciuta un pezzo per volta senza che nessuno se ne accorgesse.
+     600 e' largo — non taglia niente di quello che c'e' ora — ed e' li' per fermare la
+     prossima crescita, non per premiare questa.
+
+     Il secondo e' il chiasmo bandito da core/40-writing.md il 22/04/2026: «non e' X, e' Y»,
+     «non solo X ma Y». Vale per il testo che si LEGGE, quindi si guardano le note di
+     metodo, le didascalie e le tesi del correlatore — non i commenti del sorgente. */
+  const strip0 = s => String(s).replace(/<[^>]+>/g, "");
+  const testo = [];
+  for (const [n, t] of K.MOUNTED) {
+    testo.push([t.title + " · nota", strip0(n.foot.innerHTML) + " " + strip0(n.cap.innerHTML)]);
+  }
+  for (const p of (K.compare && K.compare.presets) || []) {
+    testo.push([p.t + " · tesi", strip0(p.why || "")]);
+  }
+  const lunghe = testo.filter(([, v]) => v.length > 600)
+    .map(([k, v]) => `${k} (${v.length})`);
+  ok(lunghe.length === 0, `nessuna nota di metodo oltre i 600 caratteri` +
+    (lunghe.length ? ` — ${lunghe.join(", ")}` : ` (${testo.length} testi, la piu' lunga ${Math.max(...testo.map(([, v]) => v.length))})`));
+
+  const CHIASMI = [
+    /non (?:è|e') (?:un |una |il |la |lo |l')?[^.;:!?]{0,60}[:,] (?:è|e'|sono)\b/i,
+    /non solo [^.;:!?]{0,45}, ma\b/i,
+    /(?:è|e') [^.;:!?]{0,45}, non (?:un|una|il|la|lo|l'|quello|il suo)\b/i,
+  ];
+  const slop = [];
+  for (const [k, v] of testo) {
+    for (const r of CHIASMI) { const m = r.exec(v); if (m) { slop.push(`${k}: «${m[0].trim()}»`); break; } }
+  }
+  ok(slop.length === 0,
+    `nessun chiasmo AI nel testo che si legge (core/40-writing.md)` +
+    (slop.length ? ` — ${slop.length}: ${slop.join(" · ")}` : ""));
 
   /* --------------------------------------- 3. medie delle ultime due settimane */
   const N = D.n;
@@ -424,18 +550,36 @@ if (ran) {
     ["Temperatura", /non è il meteo/i],
     ["Heat strain", /indice costruito/i],
     ["FatMax", /è un modello/i],
-    ["Minuti dentro la banda", /modello/i],
     ["Momento metabolico", /componenti/i],
     ["Mezze maratone", /21,0975/],
     ["Salite lunghe", /mediana/i],
-    /* i quattro dell'ossidazione dei grassi: due modelli e due misure, e la
+    /* i tre dell'ossidazione dei grassi: due modelli e una misura, e la
        differenza deve restare scritta nel piede di ognuno */
     ["Grassi al minuto", /vale la sua variazione/i],
-    ["Passo contro battito", /a parità di battito/i],
+    ["Grassi bruciati in banda", /tetto/i],
     ["Efficienza aerobica", /ma sale anche se/i],
-    ["Il caldo", /non c'è niente da pesare/i],
   ];
-  const strip0 = s => String(s).replace(/<[^>]+>/g, "");
+  /* --- e i sei che Michele ha tolto il 18/08/2026 -------------------------
+     «alcuni grafici sono inutili». Il controllo non si cancella, si gira: erano
+     riquadri, adesso devono NON esserci. Serve perche' cinque di questi sei sono
+     ancora calcolabili — i dati ci sono tutti — e il modo tipico in cui tornano e'
+     che qualcuno rilegga il sorgente, veda la serie viva e "rimetta" il riquadro
+     senza sapere che era una decisione.
+       · Sonno per giorno della settimana — un baffo per giorno, sempre uguale
+       · Minuti dentro la banda           — sostituito da «Grassi bruciati in banda»
+       · Passo contro battito / Il caldo  — nuvole per attivita', due schermate per
+                                            dire due volte quello che dice l'efficienza
+       · Chilometri                       — gia' in testata e nel correlatore
+       · Distanza contro dislivello       — una nuvola che dice "le salite salgono" */
+  const TOLTI = ["Sonno per giorno della settimana", "Minuti dentro la banda",
+                 "Passo contro battito", "Il caldo", "Chilometri",
+                 "Distanza contro dislivello"];
+  const tornati = TOLTI.filter(x => K.MOUNTED.some(([, t]) => t.title === x));
+  ok(tornati.length === 0,
+    `i sei riquadri tolti il 18/08 restano fuori` +
+    (tornati.length ? ` — sono tornati: ${tornati.join(", ")}` : ` (${TOLTI.length})`));
+
+
   for (const [title, must] of NEW_TILES) {
     const m = K.MOUNTED.find(([, t]) => t.title === title);
     ok(!!m, `il riquadro "${title}" è in pagina`);
