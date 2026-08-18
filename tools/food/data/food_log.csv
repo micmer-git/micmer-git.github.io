@@ -500,3 +500,14 @@ date,meal,food_id,qty,note,source
 2026-08-17,pranzo,prosciutto_cotto,50,"«50 g di cotto», quantita dichiarata da lui. IN AGGIUNTA, non ripieno: corretto da Michele il 17/08 — «erano mangiate col pane bianco, non in ripieno». La focaccia col prosciutto resta una cosa a parte",dichiarato
 2026-08-17,pranzo,formaggio_semistagionato,40,"«40 g di formaggio», mangiato col pane bianco. Non e lo stracchino della focaccia: quello e dentro i 225 g di focaccia. 40 g e anche la sua quantita piu frequente per questa voce",dichiarato
 2026-08-17,pranzo,pane_bianco,300,"«fai anche 300 g di pane bianco», quantita dichiarata da lui: e il pane su cui sono andati il cotto e il formaggio. Si AGGIUNGE ai 160 g della colazione alla Fauniera, che erano i «due pezzi» di un altro momento — in tutto 460 g nella giornata",dichiarato
+2026-08-17,cena,pera,1,"«ieri prima di andare a dormire una pera»: dichiarata il 18/08 su Mission Control (ordine #14), si aggiunge alla giornata gia' registrata",dichiarato
+2026-08-17,cena,mousse_proteica_cioccolato,1,"«la mousse proteica 160 kcal al cioccolato», prima di dormire. Voce nuova a catalogo: le kcal sono le sue, le macro tornano a 160",dichiarato
+2026-08-18,colazione,recipe:porridge_banana_cioccolato_peanut,1,«solito porridge»: rimanda alla ricetta che ha dichiarato lui,dichiarato
+2026-08-18,colazione,mela,1,«una mela»,dichiarato
+2026-08-18,colazione,pesca,1,«una pesca»,dichiarato
+2026-08-18,spuntino,cappuccino,1,«il cappuccio ... al sorso bocconi»,dichiarato
+2026-08-18,spuntino,recipe:croissant_mirtilli,1,«croissant ai mirtilli al sorso bocconi». Ricetta nuova: croissant vuoto + 25 g di confettura di mirtilli,dichiarato
+2026-08-18,spuntino,yogurt_greco_0,200,"«ovviamente poi mangero' 200 g di yogurt greco»: detto in anticipo alle 06:25, quindi ASSUNTO e non osservato. Se non e' successo, va tolto",assunto
+2026-08-18,spuntino,pera,1,"«probabilmente una pera»: sua parola, «probabilmente». Assunto",assunto
+2026-08-18,cena,latte_ps,200,"«stanotte un latte parzialmente scremato». Annunciato la mattina: assunto. 200 ml e' la tazza, stimata",assunto
+2026-08-18,cena,recipe:panino_peanut_marmellata,1,"«il panino solito peanut butter e marmellata», stanotte. Annunciato la mattina: assunto",assunto

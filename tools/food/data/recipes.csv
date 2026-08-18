@@ -323,3 +323,5 @@ pizza_semplice,"Pizza bresaola, rucola e grana",1,pizza_base,1,"la sua pizza abi
 pizza_semplice,"Pizza bresaola, rucola e grana",1,bresaola,70,"la sua pizza abituale, dichiarata il 2026-08-11"
 pizza_semplice,"Pizza bresaola, rucola e grana",1,rucola,30,"la sua pizza abituale, dichiarata il 2026-08-11"
 pizza_semplice,"Pizza bresaola, rucola e grana",1,grana_padano,25,"la sua pizza abituale, dichiarata il 2026-08-11"
+croissant_mirtilli,Croissant ai mirtilli,1,croissant_vuoto,1,"il guscio: la voce a catalogo e' il croissant vuoto"
+croissant_mirtilli,Croissant ai mirtilli,1,marmellata_mirtilli,25,"il ripieno. 25 g e' la spalmata di una brioche da bar, stimata"
