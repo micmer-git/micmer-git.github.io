@@ -1144,13 +1144,18 @@ TEMPLATE = r"""<!DOCTYPE html>
   .t-shift .sh-l{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.62rem;
     letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-style:normal}
   svg.plot{width:100%; height:auto; display:block; touch-action:pan-y; overflow:hidden}
+  /* La riga di sotto: provenienza della finestra a sinistra, «dati» a destra, sullo
+     stesso rigo. Aperto, «dati» si riprende la larghezza intera. */
+  .t-bottom{grid-column:1/-1; display:flex; flex-wrap:wrap; align-items:baseline;
+    justify-content:space-between; gap:2px 12px; margin-top:3px}
+  details.data[open]{flex:1 0 100%}
   .t-foot{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem; letter-spacing:.05em;
-    color:var(--muted); margin-top:3px; line-height:1.45; grid-column:1/-1}
+    color:var(--muted); margin-top:0; line-height:1.45; min-width:0}
   .t-empty{font-style:italic; color:var(--muted); font-size:.92rem; padding:14px 0;
     text-align:center}
 
   /* ---------- data fallback ---------- */
-  details.data{margin-top:4px; grid-column:1/-1}
+  details.data{margin-top:0; min-width:0}
   details.data summary{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem;
     letter-spacing:.1em; text-transform:uppercase; color:var(--muted); cursor:pointer;
     list-style:none}
@@ -1506,9 +1511,30 @@ TEMPLATE = r"""<!DOCTYPE html>
     .secsel span{display:none}
   }
   @media(max-width:560px){
-    body{padding:26px 11px 64px; font-size:17px}
-    .totals{grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px 8px}
-    .total .n{font-size:1.25rem}
+    body{padding:16px 11px 60px; font-size:17px}
+    /* TRE COLONNE, NON DUE (Michele, ordine #22 del 19/08/2026: «invece di due colonne
+       magari tre per essere più compatto… insomma più compatto, più in linea»).
+       A 390 px restano 368 di riga utile: tre colonne da 117 con 8 di gronda ci stanno,
+       e le tre file che si risparmiano sono duecento pixel di pagina in cima. Il corpo
+       delle cifre scende con loro, o «12.274» andrebbe a capo dentro la sua colonna —
+       una cifra spezzata a meta' e' peggio di una cifra piccola. */
+    .totals{grid-template-columns:repeat(3,minmax(0,1fr)); gap:11px 6px}
+    .total{padding:3px 1px}
+    .total .n{font-size:1.1rem}
+    .total .l{font-size:.58rem; letter-spacing:.06em; margin-top:2px}
+    .total .d{font-size:.58rem; margin-top:1px}
+    .headline-stats{margin-top:18px; gap:12px}
+    .headline-label{margin-bottom:7px}
+    h1{font-size:clamp(2.6rem,13vw,5.6rem)}
+    .sub{margin-top:10px; font-size:1rem}
+    .fortnight{margin-top:9px}
+    /* i titoli di sezione: quaranta pixel di aria sopra ognuno, per sette sezioni,
+       sono duecentottanta pixel di scorrimento che non dicono niente */
+    h2.band{margin:24px auto 6px}
+    .panel{margin-top:14px; gap:10px}
+    .tile{padding:8px 11px 7px}
+    .coach-card{margin-top:18px; padding:12px 14px 13px}
+    .coach-lead{font-size:1.02rem; line-height:1.5; margin-bottom:9px}
     /* la barra appesa segue il padding del telefono, o il suo fondo lascia scoperti
        undici pixel per parte e sotto ci passano i grafici */
     .controls{margin-left:-11px; margin-right:-11px; padding-left:11px; padding-right:11px}
@@ -1548,6 +1574,14 @@ TEMPLATE = r"""<!DOCTYPE html>
 </header>
 
 <div class="headline-stats" id="totals">
+  <!-- Il corpo per primo, che e' la richiesta letterale dell'ordine #22 («le
+       statistiche in alto di corpo»). Nasce nascosto: peso e massa grassa esistono
+       solo se la bilancia ha parlato, e un gruppo con tre trattini in cima alla
+       pagina sarebbe peggio di nessun gruppo. -->
+  <section class="headline-group" id="grp-body" aria-labelledby="headline-body-label" hidden>
+    <div class="headline-label" id="headline-body-label">Corpo</div>
+    <div class="totals" id="totals-body"></div>
+  </section>
   <section class="headline-group" aria-labelledby="headline-recovery-label">
     <div class="headline-label" id="headline-recovery-label">Sonno &amp; attività</div>
     <div class="totals" id="totals-recovery"></div>
@@ -1817,6 +1851,27 @@ function rolling(arr, from, to, w) {
       const v = arr[j]; if (v !== null && v !== undefined) { s += v; n++; }
     }
     out.push(n >= Math.max(2, w / 3) ? s / n : null);
+  }
+  return out;
+}
+/* Media su una serie RADA, con la finestra CENTRATA.
+   `rolling` chiede che un terzo della finestra sia pieno, ed e' giusto per un dato
+   giornaliero: su una serie che esiste un giorno su sette non si accende mai. La
+   scomposizione dei grassi e' cosi' — un centinaio di giornate pesate su settecento —
+   e sceglierne la forma non e' un dettaglio: la somma del mese direbbe soprattutto
+   quanti giorni sono stati misurati quel mese. Qui la finestra si conta in giorni ma
+   la soglia si conta in MISURE, e sotto `minN` misure non si disegna niente invece di
+   tirare una riga attraverso il vuoto. Centrata e non trascinata perche' questa non e'
+   una lettura da orologio, e' la composizione di un periodo. */
+function sparse(arr, from, to, win, minN) {
+  const half = Math.floor((win || 90) / 2), soglia = minN || 4, out = [];
+  for (let i = from; i <= to; i++) {
+    let s = 0, n = 0;
+    for (let j = Math.max(from, i - half); j <= Math.min(to, i + half); j++) {
+      const v = arr[j];
+      if (v !== null && v !== undefined && isFinite(v)) { s += v; n++; }
+    }
+    out.push(n >= soglia ? s / n : null);
   }
   return out;
 }
@@ -2430,8 +2485,31 @@ function rLines(svg, W, H, t, from, to) {
   let lo = Math.min(...all), hi = Math.max(...all);
   if (t.zero) lo = Math.min(0, lo);
   const g = frame(svg, W, H, [from, to], [lo, hi], { ytick:t.ytick, strip:t.frames !== false });
+  /* ---- LA COMPOSIZIONE SI LEGGE COL LIVELLO, NON COL TREMOLIO ---------------
+     `medie:true` e' la forma chiesta da Michele il 19/08/2026 (ordine #23) per i
+     riquadri di composizione — «di che grasso», «da dove arrivano le calorie» e
+     quant'altro: «linea dietro un po' trasparente, poi media di ogni linea
+     orizzontale». Non e' una forma nuova: e' la grammatica di casa, quella di
+     valseriana (`site/_report.js`, dove la misura grezza sta a `w 0.7` e
+     `opacita 0.35` e sopra ci passa la lettura) e quella che questa pagina usa
+     gia' nel popup delle medie (`meanLine` in `totals()`).
+     Cinque serie a piena opacita' su centosettanta pixel di telefono sono cinque
+     tremolii sovrapposti: quello che si vuole sapere da una composizione e' a che
+     ALTEZZA sta ognuna, e l'altezza e' la media. Quindi la serie va dietro, sottile
+     e trasparente, e davanti resta una riga orizzontale per ognuna.
+     I numeri NON si stampano nel disegno: cinque etichette allo stesso bordo
+     destro si toccherebbero appena due medie si avvicinano. Vanno in legenda, che
+     e' l'unico posto dove il nome e il colore stanno gia' insieme al numero. */
+  const medie = t.medie === true;
+  const fmtL = t.fmt || FMT.num0;
+  const avg = vals => { const v = vals.map(p => p[1])
+      .filter(x => x !== null && x !== undefined && isFinite(x));
+    return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
   for (const s of series) {
-    if (s.area) {
+    /* con le medie il riempimento sotto la prima serie non serve piu' a niente:
+       era li' per dire "questa e' la fetta grossa", e adesso lo dice la riga
+       orizzontale piu' in alto. Restando, coprirebbe di tinta le altre quattro. */
+    if (s.area && !medie) {
       const base = g.Y(Math.max(g.yd.lo, 0));
       const d = pathOf(s.vals, g.X, g.Y);
       if (d) {
@@ -2445,8 +2523,19 @@ function rLines(svg, W, H, t, from, to) {
        quinta, e il tratteggio lo dice prima della legenda. Non e' decorazione: una
        linea piena in mezzo a una composizione si legge come parte della somma. */
     svg.appendChild(el("path", Object.assign({ d:pathOf(s.vals, g.X, g.Y), fill:"none",
-      stroke:s.col, "stroke-width":s.w || 2, "stroke-linejoin":"round",
-      "stroke-linecap":"round" }, s.dash ? { "stroke-dasharray":s.dash } : {})));
+      stroke:s.col, "stroke-width":medie ? 1 : (s.w || 2), "stroke-linejoin":"round",
+      "stroke-linecap":"round" },
+      medie ? { opacity:".32" } : {},
+      s.dash ? { "stroke-dasharray":s.dash } : {})));
+  }
+  const livelli = [];
+  if (medie) for (const s of series) {
+    const v = avg(s.vals);
+    if (v === null || !isFinite(v) || v < g.yd.lo || v > g.yd.hi) continue;
+    const y = g.Y(v);
+    svg.appendChild(el("line", { x1:g.P.l, x2:g.P.l + g.iw, y1:y, y2:y,
+      stroke:s.col, "stroke-width":1.8, "stroke-linecap":"round" }));
+    livelli.push({ name:s.name, col:s.col, v });
   }
   crosshair(svg, g, W, H, from, to, i => series.map(s => {
     const p = s.vals[i - from]; return p && p[1] !== null
@@ -2462,6 +2551,9 @@ function rLines(svg, W, H, t, from, to) {
   return {
     stats:stats(series[0].vals.map(p => p[1])),
     table:tableOf(series, from, to, t.fmt),
+    /* la legenda si riscrive col numero accanto al nome: cambiando finestra
+       temporale cambia la media, e una legenda ferma direbbe la cosa sbagliata */
+    medie:livelli.length ? livelli.map(o => [o.name, o.col, fmtL(o.v)]) : null,
   };
 }
 
@@ -3570,7 +3662,7 @@ function nutriTiles() {
     legend:[["Vegetale", SCH[2]], ["Latticini", SCH[0]], ["Animale", SCH[1]],
             ["Altro", SCH[3]], ["Ultra-processato", "var(--muted)"]],
     now:() => lastMean(N_.pct_plant, 7), nowFmt:v => nf(v, 0) + " %", nowUnit:"vegetale, 7 gg",
-    kind:rLines, spec:{ zero:true, fmt:v => nf(v, 0) + " %", series:[
+    kind:rLines, spec:{ zero:true, medie:true, frames:false, fmt:v => nf(v, 0) + " %", series:[
       { name:"Vegetale", col:SCH[2], area:true, get:(a, b) => rolling(N_.pct_plant, a, b, 7).map((v, k) => [a + k, v]) },
       { name:"Latticini", col:SCH[0], get:(a, b) => rolling(N_.pct_dairy, a, b, 7).map((v, k) => [a + k, v]) },
       { name:"Animale", col:SCH[1], get:(a, b) => rolling(N_.pct_animal, a, b, 7).map((v, k) => [a + k, v]) },
@@ -3587,7 +3679,7 @@ function nutriTiles() {
     src:"ricostruito", title:"Di cosa erano fatte", cap:"% dell'energia da macro · le tre fanno cento",
     legend:[["Carboidrati", SCH[0]], ["Grassi", SCH[3]], ["Proteine", SCH[2]]],
     now:() => lastMean(N_.pct_kcal_carb, 7), nowFmt:v => nf(v, 0) + " %", nowUnit:"carboidrati, 7 gg",
-    kind:rLines, spec:{ zero:true, fmt:v => nf(v, 0) + " %", series:[
+    kind:rLines, spec:{ zero:true, medie:true, frames:false, fmt:v => nf(v, 0) + " %", series:[
       { name:"Carboidrati", col:SCH[0], area:true, get:(a, b) => rolling(N_.pct_kcal_carb, a, b, 7).map((v, k) => [a + k, v]) },
       { name:"Grassi", col:SCH[3], get:(a, b) => rolling(N_.pct_kcal_fat, a, b, 7).map((v, k) => [a + k, v]) },
       { name:"Proteine", col:SCH[2], get:(a, b) => rolling(N_.pct_kcal_protein, a, b, 7).map((v, k) => [a + k, v]) },
@@ -3624,8 +3716,24 @@ function nutriTiles() {
       rest[i] = Math.max(0, (N_.fat_g[i] || 0) - s - m - p - x);
       nSplit++;
     }
+    /* Il denominatore e' la somma delle CINQUE fette di quel giorno, non `fat_g`:
+       cosi' le quote fanno cento per costruzione anche nei giorni in cui il totale
+       del database e le fette non tornano all'ultimo decimo, e nessuna riga
+       orizzontale si mette a galleggiare per un errore di arrotondamento. */
+    const quotaDi = arr => {
+      const q = new Array(N).fill(null);
+      for (let i = 0; i < N; i++) {
+        if (sat[i] === null) continue;
+        const tot = sat[i] + (mono[i] || 0) + (poly[i] || 0) + (tr[i] || 0) + rest[i];
+        if (tot > 0) q[i] = 100 * ((arr[i] || 0) / tot);
+      }
+      return q;
+    };
+    const quotaSat = quotaDi(sat);
+    const serieQuota = arr => { const q = quotaDi(arr);
+      return (a, b) => sparse(q, a, b, 90, 4).map((v, k) => [a + k, v]); };
     t.push({ panel:"tavola", h:180, first:"n_trans_g", src:"ricostruito",
-      title:"Di che grasso", cap:"quota del grasso del giorno · media del mese",
+      title:"Di che grasso", cap:"quota del grasso del giorno · media su 90 giorni di misure",
       legend:[["Saturi", "var(--s2)"], ["Monoinsaturi", "var(--s3)"],
               ["Polinsaturi", "var(--s1)"], ["Trans", "var(--s4)"],
               ["Non classificato", "var(--muted)"]],
@@ -3636,14 +3744,27 @@ function nutriTiles() {
          questa serie. */
       now:() => { const v = [];
         for (let i = N - 1; i >= 0 && v.length < 30; i--)
-          if (tr[i] !== null && tr[i] !== undefined) v.push(tr[i]);
+          if (quotaSat[i] !== null) v.push(quotaSat[i]);
         return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; },
-      nowFmt:v => nf(v, 2), nowUnit:"g di trans, ultimi 30 giorni pesati",
-      kind:rStack, spec:{ how:"mean", pct:true, arrs:[sat, mono, poly, tr, rest],
-        names:["Saturi", "Monoinsaturi", "Polinsaturi", "Trans", "Non classificato"],
-        cols:["var(--s2)", "var(--s3)", "var(--s1)", "var(--s4)", "var(--muted)"],
-        fmt:v => nf(v, 1) + " g" },
-      foot:`<strong>${nf(nSplit)} giorni</strong> con del cibo. Dal 17/08/2026 il catalogo ` + "porta anche mono, poli e trans, <strong>ricostruiti</strong> da profili di acidi "
+      nowFmt:v => nf(v, 0) + " %", nowUnit:"saturi, ultimi 30 giorni pesati",
+      /* Dal 19/08/2026 (ordine #23) non e' piu' una pila di centocinque colonne
+         settimanali larghe due pixel: e' la forma di casa — la quota di ogni acido
+         grasso come linea sottile e trasparente, e sopra la sua media come riga
+         orizzontale. Su una pila in percentuale l'occhio deve misurare lo SPESSORE di
+         una fascia che galleggia sopra le altre; qui ogni quota parte dallo stesso
+         zero, e due quote si confrontano guardando due righe. */
+      kind:rLines, spec:{ zero:true, medie:true, frames:false,
+        fmt:v => nf(v, 0) + " %", series:[
+          { name:"Saturi", col:"var(--s2)", get:serieQuota(sat) },
+          { name:"Monoinsaturi", col:"var(--s3)", get:serieQuota(mono) },
+          { name:"Polinsaturi", col:"var(--s1)", get:serieQuota(poly) },
+          { name:"Trans", col:"var(--s4)", get:serieQuota(tr) },
+          { name:"Non classificato", col:"var(--muted)", get:serieQuota(rest) },
+        ] },
+      foot:`<strong>${nf(nSplit)} giorni</strong> pesati. Ogni linea è la quota di quel giorno` + " sul grasso totale, spianata su una finestra di 90 giorni che si conta in misure e "
+        + "non in giorni: sotto quattro giornate pesate nella finestra la linea si "
+        + "interrompe invece di attraversare il vuoto. Dal 17/08/2026 il catalogo "
+        + "porta anche mono, poli e trans, <strong>ricostruiti</strong> da profili di acidi "
         + "grassi noti: olio d'oliva per tre quarti monoinsaturo, noci per tre quarti "
         + "polinsature, burro e formaggio con un 4 % di trans di ruminante. Sui giorni "
         + "pesati da Cronometer la ricostruzione dà 34/32/18 % contro 31/31/17 misurati, "
@@ -3696,7 +3817,15 @@ function nutriTiles() {
         step = s_;
         if (aggregate(STRIP[0][1], a, b, "mean", s_).length <= room) break;
       }
-      const weeks = aggregate(STRIP[0][1], a, b, "mean", step).map(o => o.i);
+      /* L'INDICE DEL GIORNO E LA CHIAVE DEL SECCHIO NON SONO LO STESSO NUMERO, e su
+         passo settimanale sembravano esserlo (`bucketKey(i,"w")` torna proprio i).
+         Da qui l'asse x scriveva "undefined -285" appena la finestra diventava larga
+         abbastanza da passare ai mesi — cioe' su tre finestre su quattro — perche'
+         `bucketLabel` riceveva un indice di giorno dove aspettava una chiave.
+         Le celle si cercano per indice (`o.i`), le etichette si scrivono dalla chiave
+         (`o.k`), e sono due liste parallele. */
+      const secchi = aggregate(STRIP[0][1], a, b, "mean", step);
+      const weeks = secchi.map(o => o.i), chiavi = secchi.map(o => o.k);
       if (weeks.length < 4) return null;
       const rowsData = STRIP.map(([name, arr]) => {
         const agg = aggregate(arr, a, b, "mean", step);
@@ -3705,13 +3834,13 @@ function nutriTiles() {
         return { name, byI, vals, arr };
       });
       return rGrid(svg, W, H, {
-        rows:rowsData, cols:weeks.map(i => ({ name:bucketLabel(i, step).replace("sett. del ", "") })),
+        rows:rowsData, cols:chiavi.map(k => ({ name:bucketLabel(k, step).replace("sett. del ", "") })),
         vmax:1, diverging:false, labMax:96, labB:70, maxColLabels:10,
         cell:(i, j) => { const r = rowsData[i], v = r.byI.get(weeks[j]);
           if (v === null || v === undefined || !r.vals.length) return null;
           const pos = r.vals.filter(x => x <= v).length / r.vals.length;
           return { v:pos, day:weeks[j],
-            tip:`<span class="d">${bucketLabel(weeks[j], step)}</span><br>${r.name} <span class="v">${nf(v, 1)}</span>` +
+            tip:`<span class="d">${bucketLabel(chiavi[j], step)}</span><br>${r.name} <span class="v">${nf(v, 1)}</span>` +
                 `<br><span class="d">${nf(pos * 100, 0)}° percentile della sua storia</span>` }; },
         summary:() => `${rowsData.length} serie · ${weeks.length} ${step === "w" ? "settimane" : step === "m" ? "mesi" : "anni"}`,
         table:() => `<tr><th>serie</th><th>min</th><th>mediana</th><th>max</th></tr>` +
@@ -4173,14 +4302,22 @@ function tileNode(t) {
      didascalia e cosa sia esattamente il numero grande stanno un clic sotto, in
      "dati", insieme alla tabella. Chi vuole leggere apre, chi vuole guardare no. */
   const shift = t.shifters ? mk("div", "t-shift", side) : null;
+  let lg = null;
   if (t.legend) {
-    const lg = mk("div", "t-legend", side);
+    lg = mk("div", "t-legend", side);
     lg.innerHTML = t.legend.map(([n, c]) =>
       `<span><i style="background:${c}"></i>${n}</span>`).join("");
   }
   const box = mk("div", "figbox", art);
-  const foot = mk("div", "t-foot", art);
-  const det = mk("details", "data", art);
+  /* La riga della finestra e il bottone «dati» stanno nello STESSO rigo, non uno
+     sotto l'altro: erano due righe da diciotto pixel per riquadro, cioe' oltre
+     seicento pixel di pagina su trentacinque riquadri, spesi per due stringhe corte
+     che ci stanno affiancate anche a 390 px (Michele, ordine #22: «più compatto, più
+     in linea»). Quando «dati» si apre, la tabella riprende la riga intera da sola —
+     `details.data[open]{flex-basis:100%}` — quindi non si comprime niente. */
+  const bot = mk("div", "t-bottom", art);
+  const foot = mk("div", "t-foot", bot);
+  const det = mk("details", "data", bot);
   const sum = mk("summary", null, det, "dati");
   const cap = mk("p", "d-cap", det);
   const tbl = mk("table", "fallback", det);
@@ -4188,7 +4325,7 @@ function tileNode(t) {
   /* si tiene il riferimento, non lo si ricerca: `children` nel browser e' una
      HTMLCollection e non ha .find() — cercarlo li' uccideva l'intero script, cioe'
      la pagina senza nemmeno un grafico */
-  return { art, head, now, box, foot, sum, cap, tbody, shift };
+  return { art, head, now, box, foot, sum, cap, tbody, shift, lg };
 }
 
 /* Taglia una nota di metodo alla fine di una frase, entro il tetto, e solo se il pezzo
@@ -4226,7 +4363,14 @@ function tagliaNota(h) {
 
 function drawTile(n, t) {
   n.box.innerHTML = "";
-  const W = Math.max(240, n.box.clientWidth || n.art.clientWidth - 32 || 360), H = t.h;
+  const W = Math.max(240, n.box.clientWidth || n.art.clientWidth - 32 || 360);
+  /* Sul telefono il disegno e' piu' basso di un ottavo. Il viewBox e' largo quanto
+     il contenitore, quindi il TESTO dentro al grafico non rimpicciolisce con lui —
+     cambia solo quanta altezza si prende il tracciato, e quello che si guadagna e'
+     un riquadro in piu' a schermata su trentacinque riquadri (ordine #22). Sotto i
+     150 non si scende: li' dentro ci sono ancora i 34 pixel della fascia delle
+     medie, e comprimerla la renderebbe illeggibile invece che compatta. */
+  const H = W < 420 && t.h > 150 ? Math.max(150, Math.round(t.h * .86)) : t.h;
   const svg = el("svg", { class:"plot", viewBox:`0 0 ${W} ${H}`,
     role:"img", "aria-label":t.title + " — " + t.cap });
   const [from, to] = windowFor(t.first ? daysOf(t.first) : 0,
@@ -4277,6 +4421,11 @@ function drawTile(n, t) {
     if (res.outside) bits.push(`${res.outside} fuori scala`);
   }
   n.foot.innerHTML = t.noFoot ? "" : bits.join(" · ");
+  /* la legenda porta la media di ogni linea: e' il numero che la riga orizzontale
+     disegna, e nel grafico non ci sta senza sovrapporsi (vedi `medie` in rLines) */
+  if (n.lg && res && res.medie)
+    n.lg.innerHTML = res.medie.map(([nm, c, v]) =>
+      `<span><i style="background:${c}"></i>${nm} <b>${v}</b></span>`).join("");
   n.sum.textContent = t.dataNote ? `dati · ${t.dataNote}` : "dati";
   /* LA NOTA DI METODO, TAGLIATA AL VERDETTO.
      Erano fino a 577 caratteri l'una, e nove riquadri su 42 (tutti nel metabolismo) si
@@ -5258,9 +5407,40 @@ document.getElementById("tracks").innerHTML = (D.tracks || []).map(t => `
     ["proteine",F.protein_g,v=>nf(v,0)+" g",0,1],["carboidrati",F.carb_g,v=>nf(v,0)+" g",0,1],
     ["fibre",F.fiber_g,v=>nf(v,1)+" g",0,1],["vegetale",F.pct_plant,v=>nf(v,0)+"%",0,1]];
   const items=defs.map(([label,arr,fmt,invert,food])=>{const now=mean(arr,N-14,N-1),prior=mean(arr,N-28,N-15);return{label,arr,now,prior,d:delta(now,prior),fmt,invert,food};}).filter(x=>x.now!=null);
-  const render=xs=>xs.map(x=>{const good=x.d!=null&&(x.invert?x.d<0:x.d>0),tag=x.food?"button":"div";return `<${tag} class="total" ${x.food?`type="button" data-food="${x.label}"`:''}><div class="n">${x.fmt(x.now)}</div><div class="l">${x.label}</div><div class="d ${x.d==null?'':good?'up':'down'}">${fd(x.d)} vs prima</div></${tag}>`;}).join("");
+  const render=xs=>xs.map(x=>{const good=x.d!=null&&(x.invert?x.d<0:x.d>0),tag=x.food?"button":"div";return `<${tag} class="total" ${x.food?`type="button" data-food="${x.label}"`:''}><div class="n">${x.fmt(x.now)}</div><div class="l">${x.label}</div><div class="d ${x.d==null||x.neutro?'':good?'up':'down'}">${fd(x.d)} vs prima</div></${tag}>`;}).join("");
   document.getElementById("totals-recovery").innerHTML=render(items.filter(x=>!x.food));
   document.getElementById("totals-food").innerHTML=render(items.filter(x=>x.food));
+
+  /* ---- IL CORPO, IN CIMA (ordine #22) --------------------------------------
+     Peso e massa grassa non si misurano come il resto di questa pagina: non li
+     scrive un orologio ogni notte, li scrive una bilancia quando ci si sale. In
+     undici anni sono sessantacinque pesate, e l'ultima puo' essere di un mese fa —
+     quindi una media sugli ultimi quattordici giorni qui sarebbe vuota quasi
+     sempre, e il gruppo non comparirebbe mai.
+     Percio' il numero e' l'ULTIMA MISURA e lo scarto e' sulla pesata precedente,
+     con la data scritta nell'etichetta del gruppo: cosi' nessuno legge un peso di
+     cinque settimane fa credendolo di stanotte. La massa magra e' derivata dalle
+     due misure dello stesso giorno, non da un'altra fonte. */
+  (function corpo(){
+    const ultima=arr=>{for(let i=N-1;i>=0;i--){const v=arr&&arr[i];if(v!=null&&isFinite(v))return{i,v};}return null;};
+    const prima=(arr,pre)=>{for(let i=pre-1;i>=0;i--){const v=arr&&arr[i];if(v!=null&&isFinite(v))return{i,v};}return null;};
+    const magra=(D.weight||[]).map((w,i)=>{const f=(D.bodyfat||[])[i];
+      return w!=null&&f!=null&&isFinite(w)&&isFinite(f)?w*(1-f/100):null;});
+    const defsC=[["peso",D.weight,v=>nf(v,1)+" kg"],["massa grassa",D.bodyfat,v=>nf(v,1)+"%"],
+      ["massa magra",magra,v=>nf(v,1)+" kg"]];
+    const xs=defsC.map(([label,arr,fmt])=>{const u=ultima(arr);if(!u)return null;
+      const p=prima(arr,u.i);
+      return{label,now:u.v,d:p?delta(u.v,p.v):null,fmt,neutro:1,i:u.i};}).filter(Boolean);
+    if(!xs.length)return;
+    const box=document.getElementById("totals-body");if(!box)return;
+    box.innerHTML=render(xs);
+    const grp=document.getElementById("grp-body");
+    if(grp&&grp.removeAttribute)grp.removeAttribute("hidden");
+    const lab=document.getElementById("headline-body-label");
+    const q=Math.max(...xs.map(x=>x.i));
+    if(lab)lab.textContent="Corpo · ultima misura "+
+      new Date(D0.getTime()+q*DAY).toLocaleDateString("it-IT",{day:"numeric",month:"short",year:"numeric"});
+  })();
   function insights(wanted){
     const extra=[["zuccheri",F.sugar_g,v=>nf(v,0)+" g"],["magnesio",F.magnesium_mg,v=>nf(v,0)+" mg"],
       ["potassio",F.potassium_mg,v=>nf(v,0)+" mg"],["sodio",F.sodium_mg,v=>nf(v,0)+" mg"],
