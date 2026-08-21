@@ -524,3 +524,46 @@ date,meal,food_id,qty,note,source
 2026-08-18,merenda,grana_padano,10,un cucchiaio,dichiarato
 2026-08-18,cena,dal_cotto,300,"il solito dahl ma con ceci, non lenticchie",dichiarato
 2026-08-18,cena,focaccia,80,"un pezzo, al pesto",dichiarato
+2026-08-19,cena,banana,1,«notte prima» del giorno 20: letta come tarda serata del 19,dichiarato
+2026-08-19,cena,burro_arachidi_sgrassato,20,quantita' stimata: non dichiarata,dichiarato
+2026-08-19,cena,gallette_riso,18,"«2 gallette», ~9 g l'una",dichiarato
+2026-08-19,cena,pane_bianco,60,«pane e marmellata»: quantita' stimata,dichiarato
+2026-08-19,cena,marmellata_fragola,20,quantita' stimata,dichiarato
+2026-08-19,cena,latte_ps,200,"«latte», letto come il suo parzialmente scremato; 200 ml e' la tazza",dichiarato
+2026-08-19,cena,yogurt_greco_0,150,quantita' stimata,dichiarato
+2026-08-20,colazione,recipe:porridge_banana_cioccolato_peanut,1,«solito porridge»,dichiarato
+2026-08-20,colazione,pesca,1,dichiarata,dichiarato
+2026-08-20,spuntino,mousse_proteica_cioccolato,1,Michele ha dichiarato 90 kcal; la voce di catalogo ne porta 160 (confidence low). DA RICONCILIARE,dichiarato
+2026-08-20,spuntino,pane_bianco,100,"panino speck e mirtilli, 160 g totali dichiarati: il pane",dichiarato
+2026-08-20,spuntino,prosciutto_crudo,40,"lo speck del panino: il catalogo non ha lo speck, reso col prosciutto crudo",dichiarato
+2026-08-20,spuntino,mirtilli,20,i mirtilli del panino,dichiarato
+2026-08-20,merenda,banana,1,dichiarata,dichiarato
+2026-08-20,merenda,pera,1,dichiarata,dichiarato
+2026-08-20,merenda,pesca,1,dichiarata,dichiarato
+2026-08-20,merenda,cappuccino,1,dichiarato,dichiarato
+2026-08-20,cena,carote,60,"zuppa di verdure: le verdure sono dichiarate, i grammi stimati",dichiarato
+2026-08-20,cena,sedano,40,"zuppa di verdure: le verdure sono dichiarate, i grammi stimati",dichiarato
+2026-08-20,cena,fagioli_cannellini,80,"«fagioli» della zuppa, letti come cannellini in scatola",dichiarato
+2026-08-20,cena,pane_bianco,100,"«due pezzi di pane», ~50 g l'uno",dichiarato
+2026-08-20,cena,carne_macinata_manzo,100,"«100 g di goulash»: il catalogo non ha il goulash, reso con manzo cotto — sovrastima la carne e non conta il sugo",dichiarato
+2026-08-20,cena,funghi,100,dichiarati,dichiarato
+2026-08-20,cena,polenta_cotta,100,dichiarata,dichiarato
+2026-08-20,cena,banana,1,dichiarata,dichiarato
+2026-08-20,cena,torta_semplice,100,«una fetta di torta alle mele»,dichiarato
+2026-08-20,cena,lupini,125,«ieri a cena e oggi a pranzo tot 250 g»: divisi a meta',dichiarato
+2026-08-20,cena,peperoni,75,un peperone (~150 g) diviso fra la cena del 20 e il pranzo del 21,dichiarato
+2026-08-20,cena,cipolla,50,una cipolla (~100 g) divisa fra la cena del 20 e il pranzo del 21,dichiarato
+2026-08-20,cena,melone,100,due fette (~200 g) divise fra la cena del 20 e il pranzo del 21,dichiarato
+2026-08-21,colazione,uovo_intero,3,«3 uova»,dichiarato
+2026-08-21,colazione,pane_bianco,120,"«3 pezzi di pane bianco», ~40 g l'uno: quantita' stimata",dichiarato
+2026-08-21,colazione,prosciutto_cotto,100,dichiarato,dichiarato
+2026-08-21,colazione,formaggio_semistagionato,15,«una fetta molto sottile»: quantita' stimata,dichiarato
+2026-08-21,colazione,marmellata_fragola,30,dichiarata,dichiarato
+2026-08-21,colazione,latte_ps,250,"«250 ml di latte», letto come il suo parzialmente scremato",dichiarato
+2026-08-21,colazione,yogurt_bianco_intero,100,«100 g yogurt intero»,dichiarato
+2026-08-21,pranzo,lupini,125,«ieri a cena e oggi a pranzo tot 250 g»: divisi a meta',dichiarato
+2026-08-21,pranzo,peperoni,75,un peperone (~150 g) diviso fra la cena del 20 e il pranzo del 21,dichiarato
+2026-08-21,pranzo,cipolla,50,una cipolla (~100 g) divisa fra la cena del 20 e il pranzo del 21,dichiarato
+2026-08-21,pranzo,melone,100,due fette (~200 g) divise fra la cena del 20 e il pranzo del 21,dichiarato
+2026-08-21,pranzo,torta_semplice,80,"«fetta di carrot cake», resa con la torta da forno generica: l'unica torta di carote in catalogo e' PROTEICA e attribuirebbe proteine non dichiarate",dichiarato
+2026-08-21,pranzo,barretta_proteica,1,"«200 kcal 20 g protein con caramello salato», come dichiarati",dichiarato
