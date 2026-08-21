@@ -75,8 +75,19 @@ toccare). Deriva il secondo elenco dal primo.
 
 ```bash
 python tools/build_vita.py --offline   # se hai toccato /vita o il cibo
-node tools/check_vita.cjs              # 170+ controlli, niente rete, pochi secondi
+node tools/check_vita.cjs              # 250+ controlli, niente rete, pochi secondi
+node tools/check_home.cjs              # se hai toccato index.html (la home)
 ```
+
+⚠️ **La home è React transpilato dal browser, e una virgola sbagliata la spegne
+rispondendo 200.** `index.html` tiene il JSX dentro un `<script type="text/babel">`
+che compila `@babel/standalone` preso da unpkg: se non compila, `#root` resta vuoto
+e la pagina bianca risponde **200 con 80 KB**. Il 18/08/2026 due apostrofi dritti
+dentro una stringa fra apici singoli l'hanno tenuta giù **due giorni** con ogni
+segnale verde. `check_home.cjs` fa la stessa transpilazione sul file, senza browser,
+e gira anche in CI (`.github/workflows/check-home.yml`) a ogni push che tocchi la
+home. Vuole `npm i --no-save @babel/standalone`; senza, esce **2** (saltato) invece
+di fingere di aver controllato.
 
 `check_vita.cjs` è l'unica cosa fra un grafico rotto e un'ora di quel grafico in
 produzione: la pagina è un file solo e nient'altro se ne accorgerebbe. Quando un

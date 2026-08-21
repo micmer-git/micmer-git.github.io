@@ -1,0 +1,45 @@
+name: La home compila
+
+# `index.html` e' React in JSX transpilato DAL BROWSER: se non compila, `#root`
+# resta vuoto e la pagina bianca risponde 200 con 80 KB. Nessun health check e
+# nessun `curl` se ne accorgono — il 18/08/2026 il sito e' stato giu' due giorni
+# con ogni segnale verde, per due apostrofi dentro una stringa fra apici singoli.
+#
+# Qui la stessa transpilazione si fa sul file, senza browser. Non impedisce il
+# push: dice entro un minuto che quello che e' appena andato online e' bianco,
+# invece di lasciarlo scoprire a Michele due giorni dopo.
+#
+# I path sono filtrati apposta: l'Action oraria committa su main ogni ora e
+# senza filtro questo job girerebbe 24 volte al giorno su un file che non ha
+# toccato nessuno.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "index.html"
+      - "tools/check_home.cjs"
+      - ".github/workflows/check-home.yml"
+  pull_request:
+    paths:
+      - "index.html"
+      - "tools/check_home.cjs"
+  workflow_dispatch:
+
+jobs:
+  compila:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # Senza il pacchetto lo script esce 2 ("saltato"), che in locale e' giusto
+      # ma qui sarebbe un controllo che non controlla: installarlo in un passo a
+      # parte fa fallire il job se l'installazione non riesce.
+      - name: Babel
+        run: npm i --no-save --no-audit --no-fund @babel/standalone
+
+      - name: La home compila
+        run: node tools/check_home.cjs
