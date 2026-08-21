@@ -82324,3 +82324,298 @@ ok   --accent #202124 contro gli slot dei grafici: peggiore --s4 ΔE 34.6 (minim
 ```
 
 esito: tutti passati (263 ok)
+
+## 2026-08-21 17:51 — build
+
+```
+span: 2015-03-29 → 2026-08-21  (4164 giorni)
+  ctl        4164 valori (3767 non nulli)  dal 2015-03-29
+  load       4164 valori (2335 non nulli)  dal 2015-08-26
+  sleep       560 valori (560 non nulli)  dal 2025-01-21
+  score       560 valori (560 non nulli)  dal 2025-01-21
+  hrv         560 valori (560 non nulli)  dal 2025-01-21
+  rhr         578 valori (578 non nulli)  dal 2025-01-20
+  steps       578 valori (578 non nulli)  dal 2025-01-20
+  weight       65 valori (65 non nulli)  dal 2025-01-21
+  bodyfat      53 valori (53 non nulli)  dal 2025-06-27
+  metab.temp_c       1661 valori  dal 2015-03-29 al 2026-08-21
+  metab.fatmax_hr    4164 valori  dal 2015-03-29 al 2026-08-21
+  metab.fatmax_min   1613 valori  dal 2016-06-05 al 2026-08-21
+  metab.mm            804 valori  dal 2024-06-04 al 2026-08-21
+  metab.mm_n         4164 valori  dal 2015-03-29 al 2026-08-21
+  acts       2978 attività
+  attività per anno: 2015:7 2016:48 2017:75 2018:65 2019:106 2020:354 2021:392 2022:394 2023:365 2024:387 2025:489 2026:296
+  buchi ≥45 giorni senza attività: 4 → 2015-03-30→2015-09-21, 2015-09-26→2016-02-03, 2016-08-18→2017-01-08, 2018-11-21→2019-01-14
+```
+
+pagina: scritta (2818 KB)
+
+## 2026-08-21 17:51 — check_vita.cjs
+
+```
+ok   un solo blocco payload su 2 script, tag bilanciati (chiusi 2) — nessun "</script" dentro
+ok   lo script arriva in fondo (2756 KB, chiude su drawAll)
+ok   lo script inline gira senza eccezioni
+ok   window.CRUSCOTTO esposto
+ok   ogni riquadro dichiarato e' montato (35/35)
+ok   almeno 32 riquadri (35)
+ok   ogni riquadro dichiara la provenienza (35/35)
+ok   il vocabolario e' usato davvero, non una parola sola: modello 9 · misurato 13 · stima 1 · ricostruito 12
+ok   il registro degli ⓘ ha 27 voci
+ok   ogni tipo di provenienza ha la sua scheda
+ok   e c'e' anche la scheda per il caso 'nessuno l'ha dichiarata'
+ok   finestra "2a": nessun renderer solleva eccezioni
+info  finestra "2a": 0 riquadri senza dati
+ok   finestra "1a": nessun renderer solleva eccezioni
+info  finestra "1a": 0 riquadri senza dati
+ok   finestra "3m": nessun renderer solleva eccezioni
+info  finestra "3m": 0 riquadri senza dati
+ok   finestra "sempre": nessun renderer solleva eccezioni
+ok   finestra "sempre": nessun riquadro vuoto
+ok   nessuna coordinata NaN/Infinity negli SVG (46634 nodi controllati)
+ok   ogni <path> ha un tracciato reale (330 path)
+ok   nessun segno fuori dal proprio viewBox
+ok   nessuna etichetta dell'asse y tagliata dalla gronda
+ok   nessuna sovrapposizione fra etichette dell'asse x
+ok   gli otto ottavi sono disegnati a ogni larghezza (30 riquadri)
+ok   mai piu' di otto ottavi per riquadro
+ok   i numeri degli ottavi reggono a 340 e a 1040 px
+ok   il selettore delle sezioni e' esposto
+ok   ogni riquadro della sezione scelta viene disegnato
+ok   nessun riquadro cade sui 240px di ripiego cambiando sezione (8 sezioni)
+ok   e si torna a «tutte»
+ok   nessuna nota di metodo oltre i 600 caratteri (45 testi, la piu' lunga 363)
+ok   nessun chiasmo AI nel testo che si legge (core/40-writing.md)
+ok   testata 14 giorni: sonno
+ok   testata 14 giorni: HRV
+ok   testata 14 giorni: FC riposo
+ok   testata 14 giorni: allenamento
+ok   testata 14 giorni: chilometri
+ok   testata 14 giorni: kcal
+ok   testata 14 giorni: proteine
+ok   testata 14 giorni: carboidrati
+ok   testata 14 giorni: fibre
+ok   testata 14 giorni: vegetale
+ok   ogni media dichiara il confronto con i 14 giorni precedenti
+ok   le metriche alimentari aprono gli insight
+ok   il popup delle medie mostra le barre colorate rispetto al target
+ok   la barra delle kcal usa e dichiara il target del profilo
+ok   il popup elenca gli alimenti aggregati delle ultime due settimane
+ok   l'inventario recente contiene peanut butter e latte corretti
+ok   i conteggi separano consumi osservati e ricostruiti
+ok   il correlatore offre almeno venti serie selezionabili
+ok   il correlatore disegna la nuvola di punti iniziale
+ok   il correlatore dichiara r
+ok   dislivello totale plausibile: 1.877.655 m
+ok   ogni riquadro ha la tabella di ripiego
+ok   ogni didascalia sta dentro il pannello «dati»
+ok   nessun «media 7 gg» stampato accanto al numero grande
+ok   ogni riquadro multi-serie ha la legenda (10 riquadri)
+ok   i sei riquadri tolti il 18/08 restano fuori (6)
+ok   il riquadro "Temperatura" è in pagina
+ok   "Temperatura" non solleva
+ok   "Temperatura" disegna qualcosa (non è un riquadro vuoto)
+ok   "Temperatura" ha la sua tabella di ripiego
+ok   "Temperatura" dichiara cosa è, dentro «dati» (cerco /non è il meteo/i)
+ok   "Temperatura" non rimette la nota di metodo sotto il grafico
+ok   "Temperatura" ha il suo numero di testa
+ok   il riquadro "Heat strain" è in pagina
+ok   "Heat strain" non solleva
+ok   "Heat strain" disegna qualcosa (non è un riquadro vuoto)
+ok   "Heat strain" ha la sua tabella di ripiego
+ok   "Heat strain" dichiara cosa è, dentro «dati» (cerco /indice costruito/i)
+ok   "Heat strain" non rimette la nota di metodo sotto il grafico
+ok   "Heat strain" ha il suo numero di testa
+ok   il riquadro "FatMax" è in pagina
+ok   "FatMax" non solleva
+ok   "FatMax" disegna qualcosa (non è un riquadro vuoto)
+ok   "FatMax" ha la sua tabella di ripiego
+ok   "FatMax" dichiara cosa è, dentro «dati» (cerco /è un modello/i)
+ok   "FatMax" non rimette la nota di metodo sotto il grafico
+ok   "FatMax" ha il suo numero di testa
+ok   il riquadro "Momento metabolico" è in pagina
+ok   "Momento metabolico" non solleva
+ok   "Momento metabolico" disegna qualcosa (non è un riquadro vuoto)
+ok   "Momento metabolico" ha la sua tabella di ripiego
+ok   "Momento metabolico" dichiara cosa è, dentro «dati» (cerco /componenti/i)
+ok   "Momento metabolico" non rimette la nota di metodo sotto il grafico
+ok   "Momento metabolico" ha il suo numero di testa
+ok   il riquadro "Mezze maratone" è in pagina
+ok   "Mezze maratone" non solleva
+ok   "Mezze maratone" disegna qualcosa (non è un riquadro vuoto)
+ok   "Mezze maratone" ha la sua tabella di ripiego
+ok   "Mezze maratone" dichiara cosa è, dentro «dati» (cerco /21,0975/)
+ok   "Mezze maratone" non rimette la nota di metodo sotto il grafico
+ok   "Mezze maratone" ha il suo numero di testa
+ok   il riquadro "Salite lunghe" è in pagina
+ok   "Salite lunghe" non solleva
+ok   "Salite lunghe" disegna qualcosa (non è un riquadro vuoto)
+ok   "Salite lunghe" ha la sua tabella di ripiego
+ok   "Salite lunghe" dichiara cosa è, dentro «dati» (cerco /mediana/i)
+ok   "Salite lunghe" non rimette la nota di metodo sotto il grafico
+ok   "Salite lunghe" ha il suo numero di testa
+ok   il riquadro "Grassi al minuto" è in pagina
+ok   "Grassi al minuto" non solleva
+ok   "Grassi al minuto" disegna qualcosa (non è un riquadro vuoto)
+ok   "Grassi al minuto" ha la sua tabella di ripiego
+ok   "Grassi al minuto" dichiara cosa è, dentro «dati» (cerco /vale la sua variazione/i)
+ok   "Grassi al minuto" non rimette la nota di metodo sotto il grafico
+ok   "Grassi al minuto" ha il suo numero di testa
+ok   il riquadro "Grassi bruciati in banda" è in pagina
+ok   "Grassi bruciati in banda" non solleva
+ok   "Grassi bruciati in banda" disegna qualcosa (non è un riquadro vuoto)
+ok   "Grassi bruciati in banda" ha la sua tabella di ripiego
+ok   "Grassi bruciati in banda" dichiara cosa è, dentro «dati» (cerco /tetto/i)
+ok   "Grassi bruciati in banda" non rimette la nota di metodo sotto il grafico
+ok   "Grassi bruciati in banda" ha il suo numero di testa
+ok   il riquadro "Efficienza aerobica" è in pagina
+ok   "Efficienza aerobica" non solleva
+ok   "Efficienza aerobica" disegna qualcosa (non è un riquadro vuoto)
+ok   "Efficienza aerobica" ha la sua tabella di ripiego
+ok   "Efficienza aerobica" dichiara cosa è, dentro «dati» (cerco /ma sale anche se/i)
+ok   "Efficienza aerobica" non rimette la nota di metodo sotto il grafico
+ok   "Efficienza aerobica" ha il suo numero di testa
+ok   il momento metabolico è arrivato in pagina
+ok   nessun giorno disegnato poggia su meno di 4 componenti (0 violazioni)
+ok   579 giorni disegnati, 225 scartati sotto soglia
+ok   e la didascalia dice qual è la soglia
+ok   window.CRUSCOTTO.compact esposto
+ok   l'interruttore di vista e' in pagina (#viewsw)
+ok   l'interruttore ha due posizioni (2)
+ok   senza preferenza salvata si parte dalla vista estesa
+ok   29 serie dichiarate per la ridgeline
+ok   setView(compatta) commuta la vista e marca il body (e' cio' che il CSS legge)
+ok   la scelta della vista finisce in localStorage
+ok   una sola posizione dell'interruttore risulta premuta
+ok   la pagina dichiara che ogni corsia e' riscalata sulla propria storia
+ok   compatta: nessuna coordinata NaN/Infinity
+ok   compatta: nessun segno fuori dal viewBox, tracciati compresi
+ok   compatta: nessuna etichetta sovrapposta sulla stessa riga
+info  compatta su 1040 px, finestra "sempre": 29 corsie, alto 2476 px
+ok   compatta: almeno sette corsie in colonna (29)
+ok   compatta: ogni corsia mostrata ha il proprio nome scritto sulla linea
+ok   pin(ctl) congela la serie
+ok   la corsia congelata resta nella ridgeline principale (non viene spostata via)
+ok   la corsia congelata e' marcata nel DOM (data-pinned)
+ok   e compare nella striscia appiccicata in cima
+ok   piu' serie congelabili insieme (2)
+ok   anche nella striscia il nome sta sulla linea
+ok   le congelate finiscono in localStorage
+ok   sganciandole spariscono dalla striscia e la striscia si chiude
+ok   un interruttore per serie (29/29)
+ok   gli interruttori sono raggruppati per sezione (Carico, Notte, Recupero, Corpo, Volume, Tavola, Metabolismo)
+ok   spegnere un interruttore toglie una corsia dal disegno (29 → 28)
+ok   "Fitness (CTL)" non e' piu' fra le corsie disegnate
+ok   e la sua etichetta e' sparita dall'SVG
+ok   la serie spenta finisce in localStorage
+ok   riaccendendolo la corsia torna
+ok   "tutte" riaccende ogni serie (29)
+ok   un click isola "Fitness (CTL)": resta disegnata solo lei
+ok   e nella ridgeline c'e' davvero una corsia sola
+ok   l'isolamento finisce in localStorage
+ok   l'interruttore isolato e' marcato (data-iso), non solo premuto
+ok   un click su un'altra voce sposta l'isolamento su "Fatica (ATL)"
+ok   e la precedente smette di essere marcata
+ok   la stessa voce una seconda volta rimette tutto
+ok   ⌘/Ctrl-click ne accende una seconda senza sciogliere la selezione
+ok   e un secondo modificato la rispegne
+ok   il modo "somma" si accende e lo dichiara (aria-pressed)
+ok   in modo somma un click semplice spegne una voce sola invece di isolare
+ok   spegnendo il modo somma e riaccendendo tutto si torna al punto di partenza
+ok   la pagina dichiara che un click isola
+ok   la pagina dichiara come accenderne piu' di una (modificatore e modo somma)
+ok   i due comandi "tutte" e "somma" sono in pagina
+ok   i gesti sono annunciati come chip, accanto al disegno
+ok   nessuna tesi e' scritta due volte nel rapporto
+ok   l'intestazione della vista compatta e' una riga, non un saggio (173 caratteri)
+ok   e il metodo per intero e' dietro l'ⓘ, non perso
+ok   26 corsie su 29 hanno del vuoto da dichiarare
+ok   24 corsie cominciano visibilmente dopo il bordo sinistro
+ok   ogni corsia con del vuoto lo dichiara con un tratteggio
+ok   e il giorno in cui comincia porta il suo trattino verticale
+ok   anche i buchi in mezzo sono tratteggiati (5 corsie spezzate: Temperatura, Heat strain, Efficienza aerobica, Grassi al minuto, Grassi bruciati in banda)
+ok   almeno una corsia e' marcata come rada (Peso, Massa grassa, Efficienza aerobica)
+ok   ogni corsia rada lo scrive nella propria etichetta
+ok   e nessuna corsia densa se lo prende
+ok   le corsie hanno il loro occlusore (44 riempimenti)
+ok   l'occlusione e' scesa sotto .70 (max 0.62) — era .88, la "scatola"
+ok   ma non sotto .50 (min 0.62): piu' in basso le due corsie sovrapposte pesano uguale e la sovrapposizione perde il davanti
+ok   la corsia congelata si marca ingrossando il tratto
+ok   e prende un alone trasparente, non un bordo
+ok   mentre le altre si ritirano — il congelamento e' contrasto, non un riquadro
+ok   e dentro una corsia non c'e' nessun rettangolo pieno: congelare non aggiunge riquadri
+ok   si torna alla vista estesa
+ok   tornando all'estesa nessun riquadro solleva
+ok   tornando all'estesa nessun riquadro resta vuoto
+ok   openDay() esiste
+ok   il dettaglio giornaliero e' inlineato (792 giorni)
+ok   il popup si riempie su tutti i giorni provati (40/40, veri + ricostruiti)
+ok   il popup mostra la sezione "corpo" su almeno un giorno
+ok   il popup mostra la sezione "allenamento" su almeno un giorno
+ok   il popup mostra la sezione "tavola" su almeno un giorno
+ok   il popup mostra la sezione "micro" su almeno un giorno
+ok   openDay() regge un giorno senza diario alimentare
+ok   almeno un'attivita' nel popup linka a intervals.icu con un id vero
+ok   window.CRUSCOTTO.compare esposto
+ok   ogni corsia della ridgeline si puo' incrociare (45 serie)
+ok   la serie "heat" e' fra quelle confrontabili
+ok   la serie "temp" e' fra quelle confrontabili
+ok   la serie "mm" e' fra quelle confrontabili
+ok   il selettore livelli/variazioni e' in pagina
+ok   r calcolabile sia sui livelli sia sulle variazioni
+ok   livelli e variazioni danno r diversi (0.94 contro 0.97)
+ok   r resta dentro [-1, 1]
+ok   le 10 coppie notevoli puntano a serie vive
+ok   dieci coppie notevoli (10)
+ok   ogni coppia dice perché guardarla
+ok   ogni coppia notevole regge ancora il proprio r
+ok   la barra ha le dieci pastiglie, il bottone «altre» e lo slot libero (12)
+ok   tre pastiglie a schermo, le altre 7 dietro un bottone
+ok   il gruppo delle altre parte chiuso
+ok   e il bottone «altre» lo apre davvero
+ok   gli slot personali si fermano a due (2)
+ok   e sono salvati per la visita dopo
+ok   window.CRUSCOTTO.coach esposto
+ok   il rapporto ha del testo (7.2 KB)
+ok   nessun NaN o undefined nel rapporto
+ok   il rapporto ha la sezione "La tavola"
+ok   il rapporto ha la sezione "Il motore"
+ok   il rapporto ha la sezione "La gamba"
+ok   il rapporto ha la sezione "Cosa questo rapporto non sa"
+ok   ogni associazione porta il suo r e il suo n
+ok   il rapporto dichiara i propri limiti (modello, ricostruito, non è un referto)
+ok   la scheda in cima porta già il verdetto
+ok   e senza NaN
+ok   il bottone apre il rapporto
+ok   window.CRUSCOTTO.diary esposto
+ok   data → indice → data torna su tutti i 711 giorni con del cibo
+ok   il popup apre il giorno chiesto, non quello prima
+ok   ogni riga di pasto dichiara la propria quantita' (8792 dal diario, 2442 da Cronometer)
+ok   ogni alimento del diario e' nel catalogo (179 voci)
+ok   i giorni Cronometer arrivano nel popup (2442 righe misurate)
+ok   il payload non porta piu' dati che nessuno legge
+ok   il diario si apre senza sollevare
+ok   il diario elenca le righe del giorno (22)
+ok   il diario ha il selettore di data per sfogliare
+ok   nel diario non c'e' nessun campo scrivibile, a parte il calendario per sfogliare
+ok   i bottoni del diario sono solo di navigazione (7)
+ok   aprire il diario non chiama piu' nessun Worker (0 richieste)
+ok   e la pagina non espone piu' nemmeno il modo di scrivere
+ok   il diario dice dove si annota adesso
+ok   le righe portano ancora la row_key a tre pezzi (colazione|uovo_intero|0)
+ok   il 2022 non e' piu' un buco: 394 attivita' in pagina
+ok   e il 2022 e' marcato "carico ricostruito" (2021-10-19→2023-04-27)
+ok   e tutte e 394 portano il carico segnato come stimato (394)
+ok   4 buchi ≥45 giorni dichiarati: 2015-03-30→2015-09-21, 2015-09-26→2016-02-03, 2016-08-18→2017-01-08, 2018-11-21→2019-01-14
+ok   CSS --s1 = #4285f4 (slot validato)
+ok   CSS --s2 = #ea4335 (slot validato)
+ok   CSS --s3 = #1e8e3e (slot validato)
+ok   CSS --s4 = #8430ce (slot validato)
+ok   CSS --paper = #ffffff (il fondo su cui la tavolozza e' stata validata)
+ok   --muted #5f6368 su #ffffff: 6.05:1 (minimo 4,5 per il testo piccolo)
+ok   l'accento si chiama --accent, e di --gold non e' rimasto niente in pagina
+ok   --accent #202124 su #ffffff: 16.10:1
+ok   --accent #202124 contro gli slot dei grafici: peggiore --s4 ΔE 34.6 (minimo 15, o l'accento si spaccia per una serie)
+```
+
+esito: tutti passati (263 ok)
