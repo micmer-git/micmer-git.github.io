@@ -63,6 +63,63 @@ for _s in (sys.stdout, sys.stderr):
 
 CACHE = os.path.join(HERE, ".cruscotto_cache.json")
 
+REGISTRO = os.path.join(FOOD, "data", "food_log.csv")
+SALUTE = "salute.json"
+# Due giorni interi di silenzio. Uno solo non dice niente: oggi e' in corso, e
+# ieri puo' essere raccontato domattina. Tre erano gia' troppi — e' il buco che
+# e' passato inosservato dal 19 al 21/08/2026.
+GIORNI_A_SECCO = 2
+
+
+def salute_del_diario(dove):
+    """Scrive quanti giorni sono che nel registro non entra niente.
+
+    Serve perche' un registro a digiuno e uno sano si assomigliano troppo:
+    `fill_defaults.py` ricostruisce i pasti abituali nei giorni muti, quindi la
+    pagina mostra numeri anche quando nessuno ha annotato nulla, l'Action resta
+    verde e il Worker risponde `ok:true` con la casella vuota. Nessuno di quei
+    tre segnali sa distinguere «non ha mangiato niente di diverso dal solito» da
+    «non lo sta piu' scrivendo nessuno».
+
+    Qui la differenza diventa un fatto pubblico e leggibile da fuori, cosi' che
+    `bin/check-health.ps1` del repo agents la trovi ogni giorno. Vale la regola
+    di casa: osservato e ricostruito non sono la stessa cosa, e questo file dice
+    quale dei due si sta guardando.
+    """
+    import datetime as _dt
+    import json as _json
+
+    giorni = set()
+    righe = 0
+    with open(REGISTRO, encoding="utf-8") as f:
+        next(f, None)
+        for riga in f:
+            g = riga.split(",", 1)[0].strip()
+            if len(g) == 10 and g[4] == "-":
+                giorni.add(g)
+                righe += 1
+
+    ultimo = max(giorni) if giorni else None
+    oggi = _dt.date.today()
+    secco = ((oggi - _dt.date.fromisoformat(ultimo)).days if ultimo else 9999)
+
+    stato = {
+        "ok": secco <= GIORNI_A_SECCO,
+        "ultimo_giorno": ultimo,
+        "giorni_a_secco": secco,
+        "soglia": GIORNI_A_SECCO,
+        "righe": righe,
+        "giorni": len(giorni),
+        "letto": oggi.isoformat(),
+        # Dal 2026-08-14 /vita e' pubblica e si legge soltanto: si annota da
+        # Mission Control, che e' dietro login e parla con lo stesso Worker.
+        "dove_si_annota": "https://micmer-mission.pages.dev — pannello Vita",
+    }
+    p = os.path.join(dove, SALUTE)
+    with open(p, "w", encoding="utf-8") as f:
+        _json.dump(stato, f, ensure_ascii=False, indent=1)
+    return stato
+
 
 def run(script, *args, optional=False):
     """`optional=True` = se lo script fallisce si prosegue invece di uscire.
@@ -121,9 +178,17 @@ def main():
         print(f"\n· metabolismo.py SALTATO: manca {CACHE}"
               f"\n  (rigenerala con tools/sync_intervals.py — quella la rete la usa)")
 
+    stato = salute_del_diario(DATA)
+    if stato["ok"]:
+        print(f"\n· diario alimentare: nutrito — ultimo giorno {stato['ultimo_giorno']}")
+    else:
+        print(f"\n· ⚠ DIARIO A SECCO: {stato['giorni_a_secco']} giorni senza una riga "
+              f"(ultimo {stato['ultimo_giorno']}). La pagina intanto mostra i pasti "
+              f"ricostruiti, che e' il motivo per cui non se ne accorge nessuno.")
+
     print("\nfile pubblicati in vita/cibo/data/:")
     for f in ("nutrition.csv", "days.json", "microbiome.csv", "flora_foods.csv",
-              "metabolismo.csv"):
+              "metabolismo.csv", SALUTE):
         p = os.path.join(DATA, f)
         print(f"  {f:<18} {os.path.getsize(p) // 1024:5d} KB" if os.path.exists(p)
               else f"  {f:<18} MANCANTE")
