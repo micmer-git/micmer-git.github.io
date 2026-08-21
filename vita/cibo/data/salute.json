@@ -1,10 +1,10 @@
 {
- "ok": false,
- "ultimo_giorno": "2026-08-18",
- "giorni_a_secco": 3,
+ "ok": true,
+ "ultimo_giorno": "2026-08-21",
+ "giorni_a_secco": 0,
  "soglia": 2,
- "righe": 525,
- "giorni": 91,
+ "righe": 568,
+ "giorni": 94,
  "letto": "2026-08-21",
  "dove_si_annota": "https://micmer-mission.pages.dev — pannello Vita"
 }
