@@ -2014,7 +2014,9 @@ function frame(svg, W, H, xdom, ydom, opts = {}) {
      `strip` e' la fascia delle medie, quando il riquadro la chiede: sta FRA il disegno
      e le date, e si prende la sua altezza dal grafico invece di sovrapporsi. */
   const strip = opts.strip ? EIGHTH_H : 0;
-  const P = { l:padFor(ticks), r:opts.strip ? EIGHTH_RPAD : 6, t:8, b:19 + strip };
+  /* `rpad`: il posto per un asse secondario a destra — le medie di `rLines` ci
+     scrivono i loro valori (ordine #23) e senza spazio finirebbero fuori viewBox. */
+  const P = { l:padFor(ticks), r:opts.rpad || (opts.strip ? EIGHTH_RPAD : 6), t:8, b:19 + strip };
   const iw = W - P.l - P.r, ih = H - P.t - P.b;
   const [x0, x1] = xdom;
   const X = v => P.l + (x1 === x0 ? iw / 2 : (v - x0) / (x1 - x0) * iw);
@@ -2053,6 +2055,10 @@ function frame(svg, W, H, xdom, ydom, opts = {}) {
 const FRAMES = 8;
 /* Altezza della fascia, e quanto spazio si prende a destra per i suoi due estremi. */
 const EIGHTH_H = 34, EIGHTH_RPAD = 30;
+/* L'asse secondario delle medie (ordine #23): il posto a destra basta a «100 %» a
+   corpo MEDIE_FS piu' il trattino che ricongiunge un'etichetta spostata alla sua
+   riga. Il corpo resta quello degli assi: e' un asse, non un'annotazione. */
+const MEDIE_FS = 10, MEDIE_RPAD = 40;
 
 /* Disegna la fascia delle otto medie sotto al grafico di `g`.
    `pts` sono coppie [indice giorno, valore] nella stessa unita' dell'asse y del
@@ -2484,7 +2490,6 @@ function rLines(svg, W, H, t, from, to) {
   if (!all.length) return null;
   let lo = Math.min(...all), hi = Math.max(...all);
   if (t.zero) lo = Math.min(0, lo);
-  const g = frame(svg, W, H, [from, to], [lo, hi], { ytick:t.ytick, strip:t.frames !== false });
   /* ---- LA COMPOSIZIONE SI LEGGE COL LIVELLO, NON COL TREMOLIO ---------------
      `medie:true` e' la forma chiesta da Michele il 19/08/2026 (ordine #23) per i
      riquadri di composizione — «di che grasso», «da dove arrivano le calorie» e
@@ -2497,10 +2502,14 @@ function rLines(svg, W, H, t, from, to) {
      tremolii sovrapposti: quello che si vuole sapere da una composizione e' a che
      ALTEZZA sta ognuna, e l'altezza e' la media. Quindi la serie va dietro, sottile
      e trasparente, e davanti resta una riga orizzontale per ognuna.
-     I numeri NON si stampano nel disegno: cinque etichette allo stesso bordo
-     destro si toccherebbero appena due medie si avvicinano. Vanno in legenda, che
-     e' l'unico posto dove il nome e il colore stanno gia' insieme al numero. */
+     I numeri stanno su un ASSE SECONDARIO a destra, uno per riga, centrati sulla
+     propria riga — «devono essere nel grafico stesso, semplicemente sul secondario
+     asse, non sotto» (Michele, 19/08, ordine #23; la prima versione li metteva in
+     legenda). Due medie vicine si toccherebbero: le etichette si distanziano di
+     quel tanto che serve, e un trattino ricongiunge ognuna alla sua riga vera. */
   const medie = t.medie === true;
+  const g = frame(svg, W, H, [from, to], [lo, hi],
+    { ytick:t.ytick, strip:t.frames !== false, rpad:medie ? MEDIE_RPAD : 0 });
   const fmtL = t.fmt || FMT.num0;
   const avg = vals => { const v = vals.map(p => p[1])
       .filter(x => x !== null && x !== undefined && isFinite(x));
@@ -2537,6 +2546,33 @@ function rLines(svg, W, H, t, from, to) {
       stroke:s.col, "stroke-width":1.8, "stroke-linecap":"round" }));
     livelli.push({ name:s.name, col:s.col, v });
   }
+  /* L'ASSE SECONDARIO: il valore di ogni media al bordo destro, centrato sulla sua
+     riga. Due medie vicine si toccherebbero: ogni etichetta spinge la successiva di
+     un corpo intero, il gruppo rientra se sfora il fondo, e quando una si stacca
+     dalla sua altezza vera un trattino del suo colore la ricongiunge alla riga. */
+  if (livelli.length) {
+    const gap = MEDIE_FS + 1, xr = g.P.l + g.iw, low = g.P.t + g.ih;
+    const lab = livelli.map(o => ({ ...o, y0:g.Y(o.v), y:g.Y(o.v) }))
+      .sort((a, b) => a.y0 - b.y0);
+    for (let i = 1; i < lab.length; i++)
+      lab[i].y = Math.max(lab[i].y, lab[i - 1].y + gap);
+    if (lab[lab.length - 1].y > low) {
+      lab[lab.length - 1].y = low;
+      for (let i = lab.length - 2; i >= 0; i--)
+        lab[i].y = Math.min(lab[i].y, lab[i + 1].y - gap);
+    }
+    for (const o of lab) {
+      if (Math.abs(o.y - o.y0) > 1.5)
+        svg.appendChild(el("line", { x1:xr + 1, x2:xr + 5, y1:o.y0, y2:o.y,
+          stroke:o.col, "stroke-width":1, opacity:".7" }));
+      const tx = el("text", { x:xr + 7, y:o.y + MEDIE_FS * .36, fill:o.col,
+        "font-size":String(MEDIE_FS), "font-weight":"700",
+        "font-family":"ui-monospace,'SFMono-Regular',Menlo,monospace",
+        stroke:"var(--paper)", "stroke-width":"3", "paint-order":"stroke",
+        "stroke-linejoin":"round" });
+      tx.textContent = fmtL(o.v); svg.appendChild(tx);
+    }
+  }
   crosshair(svg, g, W, H, from, to, i => series.map(s => {
     const p = s.vals[i - from]; return p && p[1] !== null
       ? `<i style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${s.col};margin-right:5px"></i>${s.name} <span class="v">${(t.fmt || FMT.num0)(p[1])}</span>` : null;
@@ -2551,9 +2587,6 @@ function rLines(svg, W, H, t, from, to) {
   return {
     stats:stats(series[0].vals.map(p => p[1])),
     table:tableOf(series, from, to, t.fmt),
-    /* la legenda si riscrive col numero accanto al nome: cambiando finestra
-       temporale cambia la media, e una legenda ferma direbbe la cosa sbagliata */
-    medie:livelli.length ? livelli.map(o => [o.name, o.col, fmtL(o.v)]) : null,
   };
 }
 
@@ -4073,7 +4106,7 @@ function ridgeRuns(pts) {
 
 /* Disegna la ridgeline e restituisce l'SVG piu' i riferimenti a ogni corsia: il
    chiamante non deve ricercare niente nel documento che ha appena costruito. */
-function drawRidge(lanes, W, from, to, step, showAxis, pinnedSet) {
+function drawRidge(lanes, W, from, to, step, showAxis, pinnedSet, nums) {
   const amp = step * RIDGE_OVER;
   const P = { l:10, r:10, t:5, b:showAxis ? 18 : 6 };
   const iw = Math.max(40, W - P.l - P.r);
@@ -4166,6 +4199,54 @@ function drawRidge(lanes, W, from, to, step, showAxis, pinnedSet) {
         "stroke-linecap":"round", opacity:on ? "1" : dim ? ".45" : ".92" }));
     }
 
+    /* ---- LE MEDIE A OTTAVI, ANCHE QUI (ordine #23, 19/08/2026) --------------
+       «Questo tipo di grafico deve essere riprodotto poi nella compatta con le
+       barre orizzontali, cosi' che io possa confrontare in modo visivo se uno e'
+       sceso di un tot» — e l'esempio suo era proprio il punteggio del sonno.
+       Sono le stesse barre di `eighths`: la finestra divisa in otto tratti uguali
+       di pixel, una barra all'altezza della media di ogni tratto, nere perche'
+       annotazione e non serie. Il numero NON si stampa su venti corsie — venti
+       righe da otto numeri sarebbero la nebbia che questa vista esiste per
+       evitare: sta nella striscia delle congelate (`nums`), dove le corsie sono
+       poche e c'e' il posto, e nel tooltip di ogni corsia. */
+    const span8 = (to - from + 1) / FRAMES;
+    let ott = null, ottNums = 0;
+    if (span8 >= 1 && s._min !== null) {
+      const acc8 = Array.from({ length:FRAMES }, () => ({ s:0, c:0 }));
+      for (const p of L.pts) {
+        if (p[2] === null || !isFinite(p[2])) continue;
+        let q = Math.floor((p[0] - from) / span8);
+        if (q < 0) q = 0; if (q >= FRAMES) q = FRAMES - 1;
+        acc8[q].s += p[2]; acc8[q].c++;
+      }
+      ott = acc8.map(a => a.c ? a.s / a.c : null);
+      const w8 = iw / FRAMES;
+      const labs8 = ott.map(v => v === null ? "" : String(s.fmt(v)));
+      const wide8 = Math.max(...labs8.map(x => x.length)) * TICKW + 6;
+      const every8 = Math.max(1, Math.ceil(wide8 / w8));
+      ott.forEach((v, q) => {
+        if (v === null) return;   /* ottavo senza dati: niente, mai uno zero */
+        const u = Math.max(0, Math.min(1, (v - s._lo) / (s._hi - s._lo)));
+        const y = Y(u), x8 = P.l + w8 * q;
+        /* un tratto, non un rect: dentro una corsia l'unico rettangolo ammesso e'
+           la zona sensibile trasparente (check «congelare non aggiunge riquadri») */
+        g.appendChild(el("line", { x1:x8 + 1.5, x2:x8 + 1.5 + Math.max(2, w8 - 3),
+          y1:y, y2:y, stroke:"var(--ink)", "stroke-width":2.5,
+          opacity:on ? ".8" : dim ? ".12" : ".45", "pointer-events":"none" }));
+        if (!nums || q % every8) return;
+        const cx8 = x8 + w8 / 2;
+        if (cx8 - wide8 / 2 < 2 || cx8 + wide8 / 2 > W - 2) return;
+        const t8 = el("text", { x:cx8,
+          y:Math.min(base - 2, Math.max(base - step + 9, y - 4)),
+          "text-anchor":"middle", fill:"var(--ink)", "font-size":"10",
+          "font-weight":"700",
+          "font-family":"ui-monospace,'SFMono-Regular',Menlo,monospace",
+          stroke:"var(--paper)", "stroke-width":"3", "paint-order":"stroke",
+          "stroke-linejoin":"round", "pointer-events":"none" });
+        t8.textContent = labs8[q]; g.appendChild(t8); ottNums++;
+      });
+    }
+
     /* una serie RADA: pochi punti veri distribuiti su tanti giorni, che la media
        mobile centrata unisce in una linea continua. La linea non e' falsa — e' una
        media — ma sembra una misura quotidiana, e non lo e': il peso sono 65 pesate
@@ -4242,13 +4323,21 @@ function drawRidge(lanes, W, from, to, step, showAxis, pinnedSet) {
       for (const p of L.pts) if (p[1] !== null &&
         (!best || Math.abs(p[0] - i) < Math.abs(best[0] - i))) best = p;
       if (!best) { hideTip(); return; }
+      /* l'ottavo su cui sta il puntatore: il tooltip porta anche la sua media,
+         perche' nella colonna delle venti corsie la barra c'e' ma il numero no */
+      const q8 = ott ? Math.max(0, Math.min(FRAMES - 1,
+        Math.floor((best[0] - from) / span8))) : -1;
       showTip(ev.clientX, ev.clientY,
         `<span class="d">${fmtDate(Math.round(best[0]))}</span><br>` +
         `${s.name} <span class="v">${s.fmt(best[2])}</span><br>` +
         `<span class="d">${nf(best[1] * 100, 0)} % della sua escursione` +
         (sparse ? ` · serie rada: ${nf(nRaw)} misure in ${nf(cover)} giorni, ` +
                   `la linea è la loro media mobile` : "") +
-        `<br>${pinnedSet.has(s.key) ? "clicca per sganciarla" : "clicca per congelarla"}` +
+        `</span>` +
+        (q8 >= 0 && ott && ott[q8] !== null
+          ? `<br>media dell'ottavo ${q8 + 1}/8 <span class="v">${s.fmt(ott[q8])}</span>`
+          : "") +
+        `<br><span class="d">${pinnedSet.has(s.key) ? "clicca per sganciarla" : "clicca per congelarla"}` +
         `</span>`);
     });
     hit.addEventListener("pointerleave", hideTip);
@@ -4257,7 +4346,7 @@ function drawRidge(lanes, W, from, to, step, showAxis, pinnedSet) {
 
     svg.appendChild(g);
     refs.push({ key:s.key, name:s.name, labelText:labText, sparse, nRaw,
-      i0, i1, voidPx, startGapPx, g, label, base, pinned:on });
+      i0, i1, voidPx, startGapPx, g, label, base, pinned:on, ott, ottNums });
   });
   /* Le bande "nessun dato" vanno SOPRA le corsie, non sotto come nei riquadri
      estesi: qui i riempimenti sono opachi all'88 % e una banda sotto ventiquattro
@@ -4421,11 +4510,6 @@ function drawTile(n, t) {
     if (res.outside) bits.push(`${res.outside} fuori scala`);
   }
   n.foot.innerHTML = t.noFoot ? "" : bits.join(" · ");
-  /* la legenda porta la media di ogni linea: e' il numero che la riga orizzontale
-     disegna, e nel grafico non ci sta senza sovrapporsi (vedi `medie` in rLines) */
-  if (n.lg && res && res.medie)
-    n.lg.innerHTML = res.medie.map(([nm, c, v]) =>
-      `<span><i style="background:${c}"></i>${nm} <b>${v}</b></span>`).join("");
   n.sum.textContent = t.dataNote ? `dati · ${t.dataNote}` : "dati";
   /* LA NOTA DI METODO, TAGLIATA AL VERDETTO.
      Erano fino a 577 caratteri l'una, e nove riquadri su 42 (tutti nel metabolismo) si
@@ -4695,7 +4779,9 @@ function drawCompact() {
   cxChips.innerHTML = "";
   if (pinned.length) {
     cxPinBox.classList.remove("off");
-    cxPinLast = drawRidge(pinned, W, from, to, RIDGE_PIN_STEP, false, PIN);
+    /* `nums`: nella striscia i numeri delle medie a ottavi si stampano — le
+       corsie congelate sono poche, e sono li' proprio per essere confrontate */
+    cxPinLast = drawRidge(pinned, W, from, to, RIDGE_PIN_STEP, false, PIN, true);
     cxPinPlot.appendChild(cxPinLast.svg);
     for (const L of pinned) {
       const c = mk("button", "cx-chip", cxChips, "✕ " + L.s.name);
