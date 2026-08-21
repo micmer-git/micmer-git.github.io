@@ -1,5 +1,12 @@
 {
  "ok": true,
+ "partizione": {
+  "ok": true,
+  "scarto_max": 0.1,
+  "giorno_peggiore": "2024-06-22",
+  "giorni_fuori": 0,
+  "tolleranza": 1.0
+ },
  "ultimo_giorno": "2026-08-21",
  "giorni_a_secco": 0,
  "soglia": 2,

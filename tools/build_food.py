@@ -71,6 +71,51 @@ SALUTE = "salute.json"
 GIORNI_A_SECCO = 2
 
 
+QUATTRO = ("pct_plant", "pct_dairy", "pct_animal", "pct_other")
+# Un punto percentuale. Le quattro quote si arrotondano a un decimale, quindi uno
+# scarto di 0,1 e' l'arrotondamento e non un errore; mezzo punto e' gia' sospetto,
+# uno intero vuol dire che una caloria e' finita in due fette o in nessuna.
+TOLLERANZA_PARTIZIONE = 1.0
+
+
+def partizione_delle_calorie(dove):
+    """Le quattro quote di «Da dove arrivano le calorie» devono fare cento.
+
+    «Attento che la somma li' deve essere 100%» (Michele, 21/08/2026, ordine #23).
+    Vegetale, latticini, animale e altro sono una **partizione**: ogni caloria sta
+    in una fetta sola. Se un alimento nuovo entra in foods.csv senza il campo
+    `plant`, la sua quota sparisce da tutte e quattro e il riquadro mente di
+    quel tanto, senza che nessun disegno se ne accorga — la somma non e' scritta
+    da nessuna parte, quindi non c'e' niente che stoni.
+
+    L'ultra-processato NON entra nel conto: attraversa tutte e quattro (un
+    cornetto e' vegetale e ultra-processato insieme), quindi sommarlo con loro
+    darebbe piu' di cento per costruzione.
+    """
+    import csv as _csv
+
+    p = os.path.join(dove, "nutrition.csv")
+    peggio, giorno, fuori = 0.0, None, 0
+    with open(p, encoding="utf-8") as f:
+        for r in _csv.DictReader(f):
+            if not all(c in r for c in QUATTRO):
+                return {"ok": None, "perche": "nutrition.csv non porta le quattro quote"}
+            try:
+                s = sum(float(r[c]) for c in QUATTRO)
+            except (ValueError, TypeError):
+                continue
+            if s == 0:                      # giorno senza cibo: non e' una partizione rotta
+                continue
+            d = abs(s - 100.0)
+            if d > peggio:
+                peggio, giorno = d, next(iter(r.values()))
+            if d > TOLLERANZA_PARTIZIONE:
+                fuori += 1
+    return {"ok": fuori == 0, "scarto_max": round(peggio, 3),
+            "giorno_peggiore": giorno, "giorni_fuori": fuori,
+            "tolleranza": TOLLERANZA_PARTIZIONE}
+
+
 def salute_del_diario(dove):
     """Scrive quanti giorni sono che nel registro non entra niente.
 
@@ -103,8 +148,12 @@ def salute_del_diario(dove):
     oggi = _dt.date.today()
     secco = ((oggi - _dt.date.fromisoformat(ultimo)).days if ultimo else 9999)
 
+    part = partizione_delle_calorie(dove)
     stato = {
-        "ok": secco <= GIORNI_A_SECCO,
+        # Due cose in un segnale solo, e i campi sotto dicono quale delle due:
+        # che il diario riceva ancora righe, e che le quattro quote facciano cento.
+        "ok": secco <= GIORNI_A_SECCO and part.get("ok") is not False,
+        "partizione": part,
         "ultimo_giorno": ultimo,
         "giorni_a_secco": secco,
         "soglia": GIORNI_A_SECCO,
@@ -179,6 +228,15 @@ def main():
               f"\n  (rigenerala con tools/sync_intervals.py — quella la rete la usa)")
 
     stato = salute_del_diario(DATA)
+    p = stato["partizione"]
+    if p.get("ok") is False:
+        print(f"\n· ⚠ LE QUATTRO QUOTE NON FANNO CENTO: {p['giorni_fuori']} giorni oltre "
+              f"{p['tolleranza']} punti, il peggiore {p['giorno_peggiore']} "
+              f"({p['scarto_max']}). Di solito e' un alimento nuovo in foods.csv "
+              f"senza il campo `plant`.")
+    elif p.get("ok"):
+        print(f"\n· le quattro quote fanno cento (scarto massimo {p['scarto_max']} punti)")
+
     if stato["ok"]:
         print(f"\n· diario alimentare: nutrito — ultimo giorno {stato['ultimo_giorno']}")
     else:
