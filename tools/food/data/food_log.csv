@@ -579,3 +579,13 @@ date,meal,food_id,qty,note,source
 2026-08-21,spuntino,latte_scremato,200,"«latte scremato», non il parzialmente scremato delle altre volte: voce nuova in catalogo. 200 ml e' la tazza, stimata",dichiarato
 2026-08-21,spuntino,banana,2,«2 banane»,dichiarato
 2026-08-22,colazione,recipe:porridge_banana_cioccolato_peanut,1,«stamattina solito porridge»,dichiarato
+2026-08-22,spuntino,mousse_proteica_cioccolato,1,Michele ha dichiarato 90 kcal il 20/08; la voce di catalogo ne porta 160 (confidence low). DA RICONCILIARE,dichiarato
+2026-08-22,spuntino,cappuccino,1,«sorsi e bocconi cappuccino»,dichiarato
+2026-08-22,spuntino,cornetto_crema,1.5,"«1.5x brioches crema con frutta» da Sorsi e Bocconi. La frutta sopra non e' contata a parte: non e' stato detto quale, e inventarla sarebbe peggio di lasciarla fuori (sono poche decine di kcal)",dichiarato
+2026-08-22,spuntino,banana,2,«2 banane»,dichiarato
+2026-08-22,spuntino,pesca,1,«1 pesca»,dichiarato
+2026-08-22,pranzo,ceci_scatola,240,"«ceci 240g», letti come in scatola sgocciolati: e' la forma con cui sono sempre stati registrati (250, 250, 220, 200 g nei piatti di luglio e agosto)",dichiarato
+2026-08-22,pranzo,spinaci,150,"dichiarati, quantita' stimata",dichiarato
+2026-08-22,pranzo,pomodorini,150,«pomodoro» non specificato: letto come pomodori freschi. Se era passata si corregge con un set,dichiarato
+2026-08-22,pranzo,cipolla,100,«cipolle»: quantita' stimata,dichiarato
+2026-08-22,pranzo,pane_integrale,70,"«MAGARI anche 1 fetta pane integrale 70g»: detto come intenzione, non come fatto. Se non l'hai mangiata, e' la prima riga da togliere",dichiarato
