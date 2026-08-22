@@ -1322,6 +1322,35 @@ if (ran) {
       }
     }
 
+    /* ---- l'uscita, e cosa chiede alla tavola (ordine #22) -------------------
+       Su un giorno con un'uscita il diario deve dire che uscita era e quanti
+       carboidrati quel carico chiede. Il giorno si sceglie qui: `dayK` e' l'ultimo
+       con del cibo e potrebbe essere un giorno di riposo, e un controllo che passa
+       perche' non ha trovato niente da guardare non e' un controllo. */
+    if (PAY && PAY.acts && PAY.nutri && PAY.nutri.carb_target_g) {
+      const conUscita = new Map();
+      PAY.acts.forEach(a => conUscita.set(a[0], (conUscita.get(a[0]) || 0) + 1));
+      const giorni = [...conUscita.keys()].filter(ix => {
+        const g = PAY.days[dia.iso(ix)];
+        return g && (typeof g === "string" || g.meals);
+      }).sort((a, b) => b - a);
+      if (!giorni.length) {
+        ok(false, "nessun giorno con uscita E cibo: il controllo non ha potuto guardare niente");
+      } else {
+        const ix = giorni[0];
+        dia.open(ix);
+        const testo = node.descendants().map(n => n.textContent || "").join(" ");
+        ok(/uscita/i.test(testo),
+          `il diario di un giorno con allenamento nomina l'uscita (${dia.iso(ix)})`);
+        ok(/carboidrati/.test(testo) && /\d+\s*g di carboidrati/.test(testo),
+          "e dice quanti grammi di carboidrati chiede quel carico");
+        /* il numero non e' inventato: e' la serie carb_target_g di quel giorno */
+        const t = Math.round(PAY.nutri.carb_target_g[ix]);
+        ok(testo.includes(String(t)),
+          `e il numero e' quello della serie, non uno a caso (${t} g)`);
+      }
+    }
+
     dia.close();
   }
 

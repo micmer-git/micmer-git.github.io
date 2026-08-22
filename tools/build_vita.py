@@ -492,6 +492,12 @@ def build_payload(raw):
             int(round((a.get("gap") or 0) * 100)),
             # il termometro dell'orologio, e solo all'aperto: dentro misura il garage
             int(round((a.get("average_temp") or 0) * 10)) if not indoor else 0,
+            # [10] le calorie dell'uscita, come le da' Intervals. Servono al diario
+            # (ordine #22: «le calorie bruciate e i grammi di carboidrati che
+            # dovrebbero essere assunti»). Zero = non misurate — capita sulle
+            # attivita' ricostruite dall'export Strava — e in quel caso il diario
+            # non scrive uno zero, non scrive niente.
+            int(round(a.get("calories") or 0)),
         ])
         anames.append([a.get("name") or "", a.get("id") or "",
                        a.get("strava_id") or ""])
@@ -5897,6 +5903,56 @@ function diaryRender() {
     let tss = 0, nact = 0;
     D.acts.forEach(a => { if (a[0] === i) { nact++; tss += a[5] || 0; } });
     if (nact) push(nf(tss, 0), nact === 1 ? "tss · 1 uscita" : `tss · ${nact} uscite`);
+  }
+
+  /* ---- L'USCITA, e cosa chiede alla tavola (ordine #22, 21/08/2026) --------
+     «Le informazioni dell'uscita dovrebbero essere in modo visibile: che tipo di
+     uscita è stata, le statistiche, le calorie bruciate e i grammi di carboidrati
+     che dovrebbero essere assunti, nel riassunto del diario.»
+
+     Il fabbisogno di carboidrati e' gia' pesato sul carico e non da oggi: la serie
+     `carb_target_g` lo stima dal TSS del giorno con `g/kg = 3 + 0,03 · TSS`,
+     tagliata in [3, 10] — 3 g/kg da fermo, ~6 attorno a un TSS di 100, fino a 10
+     nelle giornate grosse. Quello che mancava era mostrarlo QUI, accanto a cosa si
+     e' mangiato, invece che solo dentro un riquadro in fondo alla pagina.
+
+     Le calorie dell'uscita si mostrano solo se Intervals le ha misurate: sulle
+     attivita' ricostruite dall'export Strava valgono zero, e uno zero scritto
+     sembra un'uscita senza dispendio invece di un dato che non c'e'. */
+  if (diarioGiorni === 1) {
+    const uscite = D.acts.map((a, j) => [a, j]).filter(([a]) => a[0] === i);
+    const NU = D.nutri || {};
+    const tgt = NU.carb_target_g && NU.carb_target_g[i];
+    if (uscite.length || (tgt !== null && tgt !== undefined && isFinite(tgt))) {
+      mk("h4", null, diaryIn, uscite.length ? "L'uscita, e cosa chiede alla tavola"
+                                            : "Cosa chiede la tavola");
+      const ul = mk("ul", "acts", diaryIn);
+      for (const [a, j] of uscite) {
+        const li = mk("li", null, ul);
+        const nome = ((D.anames || [])[j] || [])[0] || ((D.sports || [])[a[1]] || "uscita");
+        mk("span", null, li, nome);
+        const bits = [];
+        if (a[2]) bits.push(hhmm(a[2] / 60));
+        if (a[3]) bits.push(nf(a[3] / 1000, 1) + " km");
+        if (a[4]) bits.push(nf(a[4]) + " m");
+        if (a[5]) bits.push(nf(a[5], 0) + " tss");
+        if (a[10]) bits.push(nf(a[10]) + " kcal");
+        mk("em", null, li, bits.join(" · "));
+      }
+      if (tgt !== null && tgt !== undefined && isFinite(tgt)) {
+        const avuti = day && day.tot ? day.tot.carb_g : null;
+        const gap = avuti === null || avuti === undefined ? null : avuti - tgt;
+        const p = mk("p", "hint", diaryIn);
+        p.textContent =
+          `Con questo carico il fabbisogno stimato è di ${nf(tgt, 0)} g di carboidrati` +
+          (avuti === null || avuti === undefined ? "."
+            : `, e ne risultano ${nf(avuti, 0)}: ` +
+              (Math.abs(gap) < 15 ? "in linea."
+                : gap > 0 ? `${nf(gap, 0)} g in più.` : `${nf(-gap, 0)} g in meno.`)) +
+          " La stima è 3 g/kg da fermo e sale col TSS fino a 10 nelle giornate grosse:" +
+          " è un ordine di grandezza per leggere lo scarto, non una prescrizione.";
+      }
+    }
   }
   if (kv.length) {
     mk("h4", null, diaryIn, diarioGiorni > 1 ? "Corpo, media al giorno" : "Corpo");
