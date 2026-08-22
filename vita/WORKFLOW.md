@@ -150,3 +150,12 @@ It is decision support, not diagnosis or medical treatment.
 - Always surface provenance/observed share beside a nutrition inference. Prefer
   repeated effects, sensible lags and adequate overlap over the largest absolute
   `r` found by searching many pairs.
+- The official coach diary has a separate **short-horizon RHR radar**. Its anchor is
+  predeclared (resting HR), then screened against the other live series using 7-day
+  rolling means in the latest 28 days versus the preceding 28. Four non-overlapping
+  weekly means would give only `n=4`, so they must never be presented as a reliable
+  correlation. Rolling points are autocorrelated too: a finding enters the diary only
+  with at least 18 paired days in both windows, `|r| >= .45`, and the same sign after
+  removing at least three of the four weeks one at a time. Nutrition is excluded when
+  observed energy coverage is below 70%. Report recent `r`, prior `r`, their delta and
+  leave-one-week-out stability; call it exploratory, never causal.

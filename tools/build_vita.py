@@ -5448,6 +5448,52 @@ const coachIn = document.getElementById("coach-in");
 /* variazione percentuale fra due medie: la usano sia i dati sia il testo */
 const coachPc = (a, b) => (a == null || b == null || !b) ? null : 100 * (a - b) / Math.abs(b);
 
+/* Radar corto, con un'ipotesi dichiarata prima di guardare i risultati: FC a
+   riposo contro ogni altra misura. Quattro medie settimanali darebbero n=4 e r
+   quasi arbitrari; usiamo invece la media mobile a 7 giorni dentro due finestre
+   consecutive di 28 giorni. Le finestre sovrapposte autocorrelano i punti, quindi
+   n non viene spacciato per 28 osservazioni indipendenti: il segnale entra nel
+   diario solo se conserva il segno togliendo a turno ciascuna delle quattro
+   settimane. E' uno screening esplorativo, non un test causale. */
+const coachRoll7 = arr => {
+  const out=new Array(N).fill(null);
+  for(let i=6;i<N;i++){
+    const v=[]; for(let j=i-6;j<=i;j++) if(arr&&arr[j]!=null&&isFinite(arr[j])) v.push(arr[j]);
+    if(v.length>=4) out[i]=v.reduce((s,x)=>s+x,0)/v.length;
+  }
+  return out;
+};
+const coachCorrWindow = (a,b,lo,hi,skipWeek=-1) => {
+  const pts=[];
+  for(let i=Math.max(0,lo);i<=Math.min(N-1,hi);i++){
+    if(skipWeek>=0 && Math.floor((i-lo)/7)===skipWeek) continue;
+    if(a[i]!=null&&b[i]!=null&&isFinite(a[i])&&isFinite(b[i])) pts.push([a[i],b[i]]);
+  }
+  return {r:pearson(pts),n:pts.length};
+};
+function coachRhrRadar(observedFoodPct){
+  if(!compareByKey.has("rhr") || N<56) return [];
+  const anchor=coachRoll7(compareByKey.get("rhr")[3]), recentLo=N-28, recentHi=N-1;
+  const priorLo=N-56, priorHi=N-29, out=[];
+  for(const s of compareSeries){
+    if(s[0]==="rhr" || (s[1]==="Tavola" && !(observedFoodPct>=70))) continue;
+    const y=coachRoll7(s[3]);
+    const now=coachCorrWindow(anchor,y,recentLo,recentHi);
+    const before=coachCorrWindow(anchor,y,priorLo,priorHi);
+    if(now.n<18 || before.n<18 || now.r==null || before.r==null) continue;
+    const signs=[];
+    for(let w=0;w<4;w++){
+      const z=coachCorrWindow(anchor,y,recentLo,recentHi,w).r;
+      if(z!=null && Math.abs(z)>=.15) signs.push(Math.sign(z)===Math.sign(now.r));
+    }
+    const stable=signs.filter(Boolean).length, delta=now.r-before.r;
+    if(stable<3 || Math.abs(now.r)<.45) continue;
+    out.push({key:s[0],name:s[2],section:s[1],r:now.r,prior:before.r,delta,
+      n:now.n,priorN:before.n,stable,score:Math.abs(now.r)+Math.min(1,Math.abs(delta))*.45});
+  }
+  return out.sort((a,b)=>b.score-a.score).slice(0,3);
+}
+
 function coachData(){
   const F = D.nutri || {}, M = D.metab || {};
   const vals = a => (a || []).filter(v => v != null && isFinite(v)).sort((a,b) => a-b);
@@ -5482,6 +5528,7 @@ function coachData(){
   } return null;})();
   const baseLo=latestWellness==null?0:Math.max(0,latestWellness-42), baseHi=latestWellness==null?0:latestWellness-1;
   const rz=(a,i)=>i==null?null:robustZ(a[i],a.slice(baseLo,baseHi+1));
+  const foodPct=cov14.y ? 100*cov14.x/cov14.y : null;
   return {
     ctl:D.ctl[N - 1], atl:D.atl[N - 1],
     forma:(D.ctl[N - 1] == null || D.atl[N - 1] == null) ? null : D.ctl[N - 1] - D.atl[N - 1],
@@ -5490,7 +5537,7 @@ function coachData(){
     kcal, kcal28:m28(F.kcal), prot:m14(F.protein_g), fib:m14(F.fiber_g),
     carb:m14(F.carb_g), gap:m14(F.carb_gap_g), gapAll:mean(F.carb_gap_g, 0, N - 1),
     sug:m14(F.sugar_g), upf:m14(F.pct_upf), plant:m14(F.pct_plant),
-    oss:cov14.y ? 100*cov14.x/cov14.y : null, obsDays:cov14.n,
+    oss:foodPct, obsDays:cov14.n,
     sonno:m14(D.sleep), hrv:m14(D.hrv), rhr:m14(D.rhr), passi:m14(D.steps),
     fat:fatRate ? lastMean(fatRate, 45) : null,
     ef:aero ? lastMean(aero.day, 45) : null,
@@ -5508,6 +5555,7 @@ function coachData(){
     /* Somme sugli stessi giorni: il precedente rapporto divideva due medie con
        calendari non allineati e poteva alterare la quota osservata. */
     ossTot:covAll.y ? 100*covAll.x/covAll.y : null, ossTotDays:covAll.n,
+    rhrRadar:coachRhrRadar(foodPct),
   };
 }
 
@@ -5541,6 +5589,14 @@ function coachInsights(c){
     p:c.gap<0?"Sui giorni abbastanza osservati, l'apporto resta sotto il fabbisogno stimato.":"La disponibilità glucidica recente è compatibile con il fabbisogno stimato.",
     num:`scarto 14 gg <b>${n0(c.gap)} g/g</b> · copertura osservata ${n0(c.oss)} %`,
     doit:c.gap<0?"Metti la quota mancante nel pasto prima o dopo la seduta più lunga.":"Non aumentare i carboidrati per inerzia: mantienili attorno alle sedute chiave."});
+  const rc=(c.rhrRadar||[])[0];
+  if(rc) out.push({priority:82+Math.abs(rc.delta)*20,cls:"",
+    h:`FC a riposo: il legame corto più netto è con ${rc.name}`,
+    p:`Sulle medie mobili a 7 giorni il segnale recente è <b>${rc.r<0?"inverso":"diretto"}</b> e ${Math.abs(rc.delta)>=.25?"diverso":"simile"} dal mese precedente.`,
+    num:`ultime 4 sett. r ${nf(rc.r,2)} · 4 sett. prima ${nf(rc.prior,2)} · Δ ${rc.delta>=0?"+":""}${nf(rc.delta,2)} · stabile ${rc.stable}/4`,
+    doit:Math.abs(rc.delta)>=.25
+      ? `Osserva ${rc.name.toLowerCase()} insieme alla FC a riposo per un'altra settimana: il cambio di regime vale più del singolo mattino.`
+      : `Usa ${rc.name.toLowerCase()} come contesto della FC a riposo, non come causa né soglia automatica.`});
   return out.sort((a,b)=>b.priority-a.priority).slice(0,3);
 }
 
@@ -5563,7 +5619,7 @@ function coachHtml(){
 <h3 id="coach-t">L'opinione del coach</h3>
 ${top?`<p class="cr-verdict"><b>${top.h}.</b> ${top.doit}</p>`:`<p class="cr-verdict">Nessun segnale recente supera la soglia decisionale.</p>`}
 <div class="cr-sec">${insights.map(x=>item(x.cls,x.h,x.p,x.num,x.doit)).join("")}</div>
-<div class="cr-limits"><p><b>Provenienza</b> · alimentazione 14 gg ${c.oss==null?"—":n0(c.oss)+" % osservata"} · archivio ${c.ossTot==null?"—":n0(c.ossTot)+" % osservato"} (${n0(c.ossTotDays)} giorni allineati) · resto ricostruito. Grassi/min: modello ±40 %. Carico 2022: stimato. Relazioni esplorative, non cause; nessun risultato estratto dalla ricerca di 2.958 coppie entra nel verdetto.</p></div>`;
+<div class="cr-limits"><p><b>Provenienza</b> · alimentazione 14 gg ${c.oss==null?"—":n0(c.oss)+" % osservata"} · archivio ${c.ossTot==null?"—":n0(c.ossTot)+" % osservato"} (${n0(c.ossTotDays)} giorni allineati) · resto ricostruito. Grassi/min: modello ±40 %. Carico 2022: stimato. Radar FC: medie mobili 7 gg, ultime 4 settimane vs 4 precedenti, stabilità togliendo una settimana alla volta; esplorativo, non causale.</p></div>`;
 }
 
 function openCoach(){

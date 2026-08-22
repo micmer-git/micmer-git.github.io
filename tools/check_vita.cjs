@@ -1124,14 +1124,20 @@ if (ran) {
     ok(cards <= 3, `non piu' di tre insight (${cards})`);
     ok(/Provenienza/.test(bare) && /±40/.test(bare) && /ricostruit/i.test(bare),
       "provenienza e incertezza restano nel footer compatto");
-    ok(/nessun risultato estratto dalla ricerca/i.test(bare) && !/r -?0,\d\d · n \d/.test(bare),
-      "le correlazioni mined non entrano nel verdetto");
+    ok(!/2\.958|2958/.test(bare) && !/r -?0,\d\d · n \d/.test(bare),
+      "le correlazioni mined storiche non entrano nel verdetto");
     const coachLegacy=["Sono medie di una serie", "<h4>La tavola</h4>",
       "<h4>Il motore</h4>", "<h4>La gamba</h4>", "Cosa questo rapporto non sa",
       "Il carico tira il cibo"];
     ok(coachLegacy.every(t=>!script.includes(t)),
       "filler, vecchi header e prosa legacy sono assenti anche dal codice spedito");
     const cd=CO.data();
+    ok(Array.isArray(cd.rhrRadar),
+      "il coach espone il radar FC a riposo sulle ultime quattro settimane");
+    ok(cd.rhrRadar.every(x => x.n >= 18 && x.priorN >= 18 && x.stable >= 3 && Math.abs(x.r) >= .45),
+      "il radar corto filtra campione, stabilita' e intensita' del segnale");
+    ok(/medie mobili 7 gg, ultime 4 settimane vs 4 precedenti/.test(bare),
+      "il diario dichiara finestra e confronto del radar FC");
     if(cd.oss != null && cd.oss < 70)
       ok(!/scarto 14 gg/.test(bare), "sotto il 70% osservato il gap glucidico non diventa insight");
     const lead = document.getElementById("coach-lead");
