@@ -54,3 +54,6 @@ Timeline.json
 Timeline*.json
 *Timeline*.json
 !vita/spostamenti/data/private/Timeline.json.gz.aes256gcm
+
+# sonda locale della home: ha il percorso di puppeteer cablato a una macchina sola
+tools/prova-home.cjs
