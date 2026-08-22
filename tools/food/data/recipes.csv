@@ -325,3 +325,6 @@ pizza_semplice,"Pizza bresaola, rucola e grana",1,rucola,30,"la sua pizza abitua
 pizza_semplice,"Pizza bresaola, rucola e grana",1,grana_padano,25,"la sua pizza abituale, dichiarata il 2026-08-11"
 croissant_mirtilli,Croissant ai mirtilli,1,croissant_vuoto,1,"il guscio: la voce a catalogo e' il croissant vuoto"
 croissant_mirtilli,Croissant ai mirtilli,1,marmellata_mirtilli,25,"il ripieno. 25 g e' la spalmata di una brioche da bar, stimata"
+protein_choco_latte,Protein choco latte,1,latte_proteico,300,"quantita' NON dichiarata: 300 ml come nella ricetta latte_cioccolato_proteico"
+protein_choco_latte,Protein choco latte,1,cacao_100,20,dichiarato da Michele il 22/08/2026
+protein_choco_latte,Protein choco latte,1,proteine_whey,25,dichiarato da Michele il 22/08/2026

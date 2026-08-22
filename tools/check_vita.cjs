@@ -1450,22 +1450,69 @@ if (ran) {
       const pastiAp = node.descendants().filter(x => x.tagName === "details" &&
         /(^| )meal( |$)/.test(x.className || ""));
 
-      /* 1. gli ingredienti scendono dal piu' calorico */
-      let ordinati = true, dove = null;
+      /* 1. IL PIU' CALORICO IN CIMA — ma la proprieta' vera e' a DUE livelli, e la
+         prima versione di questo controllo ne chiedeva una che il disegno non ha
+         mai promesso.
+
+         Chiedeva una discesa PIATTA su tutto il pasto. Ma le voci di una ricetta
+         stanno insieme sotto il suo nome — e' quello che Michele aveva chiesto
+         nell'ordine #22 — quindi un pasto non e' una lista, e' una lista di
+         gruppi: i gruppi in ordine di peso, e dentro ogni gruppo le voci in ordine
+         di peso. Un cornetto da 480 kcal viene prima del «Protein choco latte» che
+         ne fa 324, e le tre voci del latte (183, 95, 46) stanno tutte li' dentro:
+         la 46 che precede una banana da 214 NON e' un difetto, e' il gruppo che
+         finisce.
+
+         Il 22/08/2026 il controllo sbagliato ha bocciato una giornata perfettamente
+         ordinata, e avrebbe fermato l'Action oraria appena qualcuno avesse
+         committato quei CSV. Qui si controllano le due proprieta' separate, che
+         sono quelle che il disegno promette davvero. */
+      const kcalDiRiga = (x) => {
+        const em = x.descendants().find(y => y.tagName === "em");
+        const m = /([\d.]+)\s*kcal/.exec((em && em.textContent) || "");
+        return m ? parseFloat(m[1]) : null;
+      };
+      const eRiga = (x) => /(^| )d-row( |$)/.test(x.className || "");
+      const eGruppo = (x) => /(^| )mrec( |$)/.test(x.className || "");
+
+      let dentro = true, dentroDove = null;
+      let fra = true, fraDove = null;
       for (const p of pastiAp) {
-        const kc = p.descendants()
-          .filter(x => /(^| )d-row( |$)/.test(x.className || ""))
-          .map(x => {
-            const em = x.descendants().find(y => y.tagName === "em");
-            const m = /([\d.]+)\s*kcal/.exec((em && em.textContent) || "");
-            return m ? parseFloat(m[1]) : null;
-          }).filter(v => v !== null);
-        for (let i = 1; i < kc.length; i++) {
-          if (kc[i] > kc[i - 1] + 0.5) { ordinati = false; dove = kc.join(", "); }
+        // i gruppi nell'ordine in cui stanno a schermo: una voce sciolta e' un
+        // gruppo di se' stessa, una ricetta e' un gruppo delle sue voci
+        const gruppi = [];
+        for (const c of p._kids) {
+          if (eRiga(c)) {
+            const v = kcalDiRiga(c);
+            if (v !== null) gruppi.push({ nome: "", voci: [v] });
+          } else if (eGruppo(c)) {
+            const voci = c.descendants().filter(eRiga).map(kcalDiRiga)
+              .filter(v => v !== null);
+            const b = c.descendants().find(y => y.tagName === "b");
+            if (voci.length) gruppi.push({ nome: (b && b.textContent) || "ricetta", voci });
+          }
+        }
+        for (const g of gruppi) {
+          for (let i = 1; i < g.voci.length; i++) {
+            if (g.voci[i] > g.voci[i - 1] + 0.5) {
+              dentro = false;
+              dentroDove = (g.nome || "voci sciolte") + ": " + g.voci.join(", ");
+            }
+          }
+        }
+        const pesi = gruppi.map(g => g.voci.reduce((a, v) => a + v, 0));
+        for (let i = 1; i < pesi.length; i++) {
+          if (pesi[i] > pesi[i - 1] + 0.5) {
+            fra = false;
+            fraDove = pesi.map((v, k) => (gruppi[k].nome ? gruppi[k].nome + " " : "") + v)
+              .join(" \u2192 ");
+          }
         }
       }
-      ok(ordinati, "gli ingredienti di un pasto scendono dal piu' calorico" +
-        (ordinati ? "" : " \u2014 trovato " + dove));
+      ok(dentro, "dentro un gruppo le voci scendono dalla piu' calorica" +
+        (dentro ? "" : " \u2014 " + dentroDove));
+      ok(fra, "e i gruppi di un pasto scendono dal piu' pesante" +
+        (fra ? "" : " \u2014 " + fraDove));
 
       /* 2. i grammi arrotondati: 66,6667 non e' una misura.
          Il separatore da guardare e' la VIRGOLA e solo quella: la pagina scrive in

@@ -589,3 +589,12 @@ date,meal,food_id,qty,note,source
 2026-08-22,pranzo,pomodorini,150,«pomodoro» non specificato: letto come pomodori freschi. Se era passata si corregge con un set,dichiarato
 2026-08-22,pranzo,cipolla,100,«cipolle»: quantita' stimata,dichiarato
 2026-08-22,pranzo,pane_integrale,70,"«MAGARI anche 1 fetta pane integrale 70g»: detto come intenzione, non come fatto. Se non l'hai mangiata, e' la prima riga da togliere",dichiarato
+2026-08-22,spuntino,recipe:protein_choco_latte,1,"«25g proteine in polvere + latte proteico 70g/1l (ricetta protein choco latte)», coi 20 g di cacao della stessa riga. Ordine MC #41",dichiarato
+2026-08-22,spuntino,frutti_di_bosco,100,«frutti di bosco 100g». Ordine MC #41,dichiarato
+2026-08-22,spuntino,gallette_farro,18,"«2 gallette farro», ~9 g l'una come le gallette del 19/08. Ordine MC #41",dichiarato
+2026-08-22,spuntino,miele,40,"«2 cucchiai miele», 20 g l'uno: il cucchiaino del 14/08 valeva 15 g. Quantita' stimata. Ordine MC #41",dichiarato
+2026-08-22,spuntino,banana,1,"«una banana con un cucchiaino di peanut butter»: si somma alle 2 banane gia' registrate oggi, che erano un'altra dichiarazione. Ordine MC #41",dichiarato
+2026-08-22,spuntino,burro_arachidi_sgrassato,8,"«un cucchiaino di peanut butter»: il cucchiaio vale 15 g (14 e 15/08), il cucchiaino circa la meta'. Ordine MC #41",dichiarato
+2026-08-22,cena,pane_integrale,140,"«stasera avo toast 2 uova e mezza»: scomposto invece di usare la ricetta avocado_toast, che porta 3 uova. Il pane della ricetta, 2 fette. Dichiarato prima di mangiarlo. Ordine MC #41",dichiarato
+2026-08-22,cena,avocado,100,"«stasera avo toast»: l'avocado della ricetta. Dichiarato prima di mangiarlo. Ordine MC #41",dichiarato
+2026-08-22,cena,uovo_intero,2.5,"«2 uova e mezza». Dichiarato prima di mangiarlo. Ordine MC #41",dichiarato
