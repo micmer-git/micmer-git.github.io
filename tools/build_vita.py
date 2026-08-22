@@ -5450,21 +5450,38 @@ const coachPc = (a, b) => (a == null || b == null || !b) ? null : 100 * (a - b) 
 
 function coachData(){
   const F = D.nutri || {}, M = D.metab || {};
+  const vals = a => (a || []).filter(v => v != null && isFinite(v)).sort((a,b) => a-b);
+  const median = a => { const v=vals(a), n=v.length; return n ? (n%2 ? v[(n-1)/2] : (v[n/2-1]+v[n/2])/2) : null; };
+  const robustZ = (v, a) => {
+    const med=median(a); if(v==null || med==null) return null;
+    const mad=median(vals(a).map(x=>Math.abs(x-med)));
+    return mad ? .6745*(v-med)/mad : null;
+  };
+  const sumAligned = (a, b, lo, hi) => {
+    let x=0, y=0, n=0;
+    for(let i=Math.max(0,lo);i<=Math.min(N-1,hi);i++) if((b||[])[i]!=null && isFinite(b[i])) {
+      x += ((a||[])[i]!=null && isFinite(a[i])) ? a[i] : 0; y += b[i]; n++;
+    }
+    return {x,y,n};
+  };
   const mean = (a, lo, hi) => { const s = stats((a || []).slice(Math.max(0, lo), hi + 1));
     return s ? s.mean : null; };
   const m14 = a => mean(a, N - 14, N - 1), m28 = a => mean(a, N - 28, N - 15);
-  /* r e n di una coppia, dalle stesse funzioni del comparatore: il rapporto non
-     puo' dire un numero diverso da quello che si legge scegliendo la stessa coppia */
-  const rn = (xk, yk, lag, k) => {
-    const sx = compareByKey.get(xk), sy = compareByKey.get(yk);
-    if (!sx || !sy) return null;
-    const pts = pairsFor(sx, sy, k || 0, lag || 0, 0, N - 1);
-    const r = pearson(pts);
-    return r === null ? null : { r, n:pts.length };
-  };
   const mins = new Array(N).fill(0);
-  D.acts.forEach(a => { if (a[0] >= 0 && a[0] < N) mins[a[0]] += (a[2] || 0) / 60; });
+  const tss = new Array(N).fill(0);
+  D.acts.forEach(a => { if (a[0] >= 0 && a[0] < N) { mins[a[0]] += (a[2] || 0) / 60; tss[a[0]] += a[5] || 0; } });
   const obs = m14(F.kcal_observed), kcal = m14(F.kcal);
+  const cov14=sumAligned(F.kcal_observed,F.kcal,N-14,N-1);
+  const covAll=sumAligned(F.kcal_observed,F.kcal,0,N-1);
+  const load7=tss.slice(Math.max(0,N-7)), load28=tss.slice(Math.max(0,N-35),Math.max(0,N-7));
+  const sum=a=>a.reduce((s,v)=>s+(v||0),0), avg=a=>a.length?sum(a)/a.length:null;
+  const sd=a=>{const m=avg(a);return m==null?null:Math.sqrt(avg(a.map(v=>(v-m)*(v-m))));};
+  const latestWellness=(()=>{for(let i=N-1;i>=Math.max(0,N-3);i--){
+    const n=[D.sleep[i],D.hrv[i],D.rhr[i]].filter(v=>v!=null&&isFinite(v)).length;
+    if(n>=2)return i;
+  } return null;})();
+  const baseLo=latestWellness==null?0:Math.max(0,latestWellness-42), baseHi=latestWellness==null?0:latestWellness-1;
+  const rz=(a,i)=>i==null?null:robustZ(a[i],a.slice(baseLo,baseHi+1));
   return {
     ctl:D.ctl[N - 1], atl:D.atl[N - 1],
     forma:(D.ctl[N - 1] == null || D.atl[N - 1] == null) ? null : D.ctl[N - 1] - D.atl[N - 1],
@@ -5473,39 +5490,58 @@ function coachData(){
     kcal, kcal28:m28(F.kcal), prot:m14(F.protein_g), fib:m14(F.fiber_g),
     carb:m14(F.carb_g), gap:m14(F.carb_gap_g), gapAll:mean(F.carb_gap_g, 0, N - 1),
     sug:m14(F.sugar_g), upf:m14(F.pct_upf), plant:m14(F.pct_plant),
-    oss:(obs != null && kcal) ? 100 * obs / kcal : null,
+    oss:cov14.y ? 100*cov14.x/cov14.y : null, obsDays:cov14.n,
     sonno:m14(D.sleep), hrv:m14(D.hrv), rhr:m14(D.rhr), passi:m14(D.steps),
     fat:fatRate ? lastMean(fatRate, 45) : null,
     ef:aero ? lastMean(aero.day, 45) : null,
     fatmaxHr:M.fatmax_hr ? M.fatmax_hr[N - 1] : null,
     fatmaxMin:mean(M.fatmax_min, N - 90, N - 1),
-    rGap:rn("load", "carbgap", 0, 0), rHeat:rn("heat", "rhr", 1, 0),
-    rPassi:rn("steps", "gain", 0, 0), rCarico:rn("load", "hrv", 1, 0),
-    rSonno:rn("sleep", "hrv", 0, 0), rHrvRhr:rn("hrv", "rhr", 0, 0),
-    rTemp:rn("temp", "ef", 0, 0), rCibo:rn("kcal", "hours", 1, 7),
-    /* Il migliore della categoria "il cibo di ieri spiega il mattino di oggi": si
-       cerca fra TUTTE le serie della tavola contro le tre del recupero, invece di
-       scriverne una a mano. Cosi' la frase "nessuna arriva a 0,15" e' verificata a
-       ogni build, e se un giorno una ci arrivasse il rapporto lo direbbe da solo. */
-    best:(() => {
-      let best = null;
-      for (const s of compareSeries) {
-        if (s[1] !== "Tavola") continue;
-        for (const y of ["hrv", "rhr", "sleep"]) {
-          const f = rn(s[0], y, 1, 0);
-          if (f && f.n >= 200 && (!best || Math.abs(f.r) > Math.abs(best.r)))
-            best = { r:f.r, n:f.n, x:s[2], y:compareByKey.get(y)[2] };
-        }
-      }
-      return best;
-    })(),
-    /* quota osservata su TUTTO l'archivio, non sulle ultime due settimane */
-    ossTot:(() => {
-      const o = stats((F.kcal_observed || []).filter(v => v !== null && v !== undefined));
-      const t = stats((F.kcal || []).filter(v => v !== null && v !== undefined));
-      return (o && t && t.mean) ? 100 * o.mean / t.mean : null;
-    })(),
+    load7:sum(load7), load7eq:load28.length ? sum(load28)/load28.length*7 : null,
+    ramp:load28.length && sum(load28) ? 100*(sum(load7)-sum(load28)/load28.length*7)/(sum(load28)/load28.length*7) : null,
+    monotony:(load7.length>=6 && sd(load7)) ? avg(load7)/sd(load7) : null,
+    wellnessDay:latestWellness,
+    sleepNow:latestWellness==null?null:D.sleep[latestWellness],
+    hrvNow:latestWellness==null?null:D.hrv[latestWellness],
+    rhrNow:latestWellness==null?null:D.rhr[latestWellness],
+    zSleep:rz(D.sleep,latestWellness), zHrv:rz(D.hrv,latestWellness), zRhr:rz(D.rhr,latestWellness),
+    sleepBase:latestWellness==null?null:median(D.sleep.slice(baseLo,baseHi+1)),
+    /* Somme sugli stessi giorni: il precedente rapporto divideva due medie con
+       calendari non allineati e poteva alterare la quota osservata. */
+    ossTot:covAll.y ? 100*covAll.x/covAll.y : null, ossTotDays:covAll.n,
   };
+}
+
+function coachInsights(c){
+  const n0=v=>v==null?"—":nf(v,0), n1=v=>v==null?"—":nf(v,1);
+  const out=[];
+  const zs=[c.zSleep==null?null:-c.zSleep,c.zHrv==null?null:-c.zHrv,c.zRhr]
+    .filter(v=>v!=null&&isFinite(v));
+  const bad=zs.filter(v=>v>=1).length, good=zs.filter(v=>v<=-1).length;
+  const discordant=bad>0&&good>0;
+  if(zs.length>=2 && (bad>0 || good>0)) out.push({priority:discordant?100:95,cls:bad>=2?"hot":"",
+    h:discordant?"Il recupero è discordante":"I segnali di recupero si muovono insieme",
+    p:discordant
+      ? "Un indicatore rassicura e almeno uno segnala costo: <b>la sola HRV non è un via libera</b>."
+      : bad>=2 ? "Almeno due segnali personali sono peggiori del consueto: il dato è più credibile del singolo numero."
+      : "Almeno due segnali personali sono migliori del consueto: il recupero è coerente, non affidato a una sola metrica.",
+    num:`sonno ${c.sleepNow==null?"—":hhmm(c.sleepNow)} (z ${n1(c.zSleep)}) · HRV ${n0(c.hrvNow)} (z ${n1(c.zHrv)}) · FC ${n0(c.rhrNow)} (z ${n1(c.zRhr)})`,
+    doit:bad>0?"Oggi decidi l'intensità sul segnale peggiore, non sulla media.":"Il recupero consente il piano previsto; non aggiungere volume solo perché i numeri sono buoni."});
+  if(c.ramp!=null && (Math.abs(c.ramp)>=15 || (c.monotony!=null&&c.monotony>=2))) out.push({
+    priority:Math.abs(c.ramp)+(c.monotony||0)*10,cls:c.ramp>25||c.monotony>=2?"hot":"",
+    h:c.monotony>=2?"Il carico è alto e poco variato":"Il carico ha cambiato marcia",
+    p:c.monotony>=2
+      ? "A parità di TSS, sette giorni simili lasciano meno spazio di recupero di una settimana alternata."
+      : `<b>Gli ultimi 7 giorni sono ${c.ramp>=0?"sopra":"sotto"}</b> il ritmo delle quattro settimane precedenti.`,
+    num:`7 gg <b>${n0(c.load7)} TSS</b> · equivalente precedente ${n0(c.load7eq)} · ${c.ramp>=0?"+":""}${n0(c.ramp)} % · monotonia ${n1(c.monotony)}`,
+    doit:c.ramp>15||c.monotony>=2?"La prossima seduta deve creare contrasto: facile o riposo, non un altro giorno medio.":"Mantieni il carico; non compensare il calo in una sola seduta."});
+  /* Il gap glucidico include una ricostruzione: diventa insight soltanto quando almeno
+     il 70% dell'energia recente è osservato. Sotto soglia è provenance, non fisiologia. */
+  if(c.oss>=70 && c.gap!=null && Math.abs(c.gap)>=30) out.push({priority:70+Math.min(20,Math.abs(c.gap)/10),cls:c.gap<0?"hot":"",
+    h:c.gap<0?"Il carburante non segue il carico":"I carboidrati coprono il carico",
+    p:c.gap<0?"Sui giorni abbastanza osservati, l'apporto resta sotto il fabbisogno stimato.":"La disponibilità glucidica recente è compatibile con il fabbisogno stimato.",
+    num:`scarto 14 gg <b>${n0(c.gap)} g/g</b> · copertura osservata ${n0(c.oss)} %`,
+    doit:c.gap<0?"Metti la quota mancante nel pasto prima o dopo la seduta più lunga.":"Non aumentare i carboidrati per inerzia: mantienili attorno alle sedute chiave."});
+  return out.sort((a,b)=>b.priority-a.priority).slice(0,3);
 }
 
 function coachHtml(){
@@ -5518,115 +5554,16 @@ function coachHtml(){
     (num ? `<span class="cr-num">${num}</span>` : "") +
     (doit ? `<span class="cr-do">${doit}</span>` : "") + `</p></div>`;
 
-  /* --- il verdetto: tre righe, e cambiano col dato ------------------------- */
-  const freschezza = c.forma == null ? "" : c.forma > 5
-    ? `Sei <b>fresco</b> (forma ${n0(c.forma)}): è una finestra per caricare, non per riposare.`
-    : c.forma < -15
-    ? `Sei <b>sotto</b> (forma ${n0(c.forma)}): stai scavando, e a questa profondità il conto arriva.`
-    : `Forma ${n0(c.forma)}, cioè in equilibrio: né una scusa per fermarsi né il momento di alzare.`;
-  const tavola = c.gap == null ? "" : c.gap < -60
-    ? ` A tavola mancano <b>${n0(-c.gap)} g di carboidrati al giorno</b> sul fabbisogno stimato delle ultime due settimane, ed è lì che si perde più roba.`
-    : ` A tavola i carboidrati stanno a ${n0(Math.abs(c.gap))} g dal fabbisogno stimato: per una volta non è quello il problema.`;
-  const verdict = freschezza + tavola;
-
+  /* Il diario ufficiale non e' un saggio: massimo tre segnali, ordinati per
+     decision value. Tutto il resto resta nei grafici e nei metadati. */
+  const insights=coachInsights(c);
+  const top=insights[0];
   return `<button class="sheet-x" type="button" aria-label="Chiudi" onclick="closeCoach()">×</button>
-<div class="cr-when">rapporto generato dal dato di ${fmtDate(N - 1)}</div>
+<div class="cr-when">${fmtDate(N-1)} · aggiornamento automatico</div>
 <h3 id="coach-t">L'opinione del coach</h3>
-<p class="cr-verdict">${verdict}</p>
-
-<div class="cr-sec">
-  <h4>La tavola</h4>
-  <p class="cr-sub">ultime due settimane · ${c.oss == null ? "" : n0(c.oss) + " % osservato, il resto ricostruito"}</p>
-  ${item("hot", "Il carico tira il cibo, ma i carboidrati non lo seguono",
-    "È l'associazione più forte di tutta la sezione alimentare che non sia cablaggio del " +
-    "database, e ha il segno scomodo: <b>più sale il carico, più lo scarto di carboidrati " +
-    "diventa negativo</b>. Il fabbisogno cresce con i TSS, l'alimentazione insegue e non " +
-    "arriva. Le kcal totali invece salgono con l'allenamento: si mangia altro, nel " +
-    "giorno sbagliato.",
-    `scarto medio 14 gg <b>${n0(c.gap)} g/g</b> · sull'archivio ${n0(c.gapAll)} g/g · carico → scarto ${rr(c.rGap)}`,
-    "I carboidrati vanno messi <em>dentro e attorno</em> alle uscite lunghe, non spalmati sulla giornata. È l'unica raccomandazione di questo rapporto che i dati sostengano davvero.")}
-  ${item("", "Proteine e fibre: dove si sta",
-    `Le ultime due settimane danno <b>${n0(c.prot)} g di proteine</b> e <b>${n1(c.fib)} g di fibre</b> ` +
-    `al giorno, su ${n0(c.kcal)} kcal (${c.kcal28 == null ? "—" : (coachPc(c.kcal, c.kcal28) >= 0 ? "+" : "") + n0(coachPc(c.kcal, c.kcal28)) + " % rispetto alle due precedenti"}). ` +
-    "Sono medie di una serie per metà ricostruita: vanno lette come ordine di grandezza, " +
-    "non come un conteggio.",
-    `vegetale ${n0(c.plant)} % · ultra-processato ${n0(c.upf)} % · zuccheri ${n0(c.sug)} g/g`,
-    "")}
-  ${item("nil", "Quello che il cibo non fa: il recupero",
-    "Nessuna serie della tavola sposta HRV, sonno o frequenza a riposo del giorno dopo. " +
-    "Zuccheri, fibre, magnesio, piante, ultra-processato: nessuna arriva a 0,15 con più " +
-    "di cinquecento giorni in comune. Non vuol dire che mangiare non conti — vuol dire che " +
-    "<b>non conta su questa scala</b>, quella del giorno dopo, ed è esattamente la scala " +
-    "su cui viene venduto.",
-    c.best ? `il meno debole di tutti: ${c.best.x.toLowerCase()} → ${c.best.y.toLowerCase()} del giorno dopo, <b>r ${nf(c.best.r, 2)}</b> su n ${nf(c.best.n)}` : "",
-    "Smettere di cercare l'effetto di ieri sera nel numero di stamattina.")}
-</div>
-
-<div class="cr-sec">
-  <h4>Il motore</h4>
-  <p class="cr-sub">ossidazione dei grassi · modello e misura, tenuti separati</p>
-  ${item("hot", "A parità di battito, il passo non si muove dal 2023",
-    "La domanda era se la capacità di bruciare grassi stia cambiando. La risposta " +
-    "onesta che questi dati sanno dare: <b>no, non da tre anni</b>. Nelle bande di " +
-    "frequenza confrontabili (140-150 e 150-160 bpm) il passo corretto per la pendenza " +
-    "sta fermo intorno a 3,6 m/s dal 2023. L'efficienza complessiva sale dal 2019 — da " +
-    "1,30 a 1,49 m/min per battito — ma quasi tutta la salita è <em>frequenza più bassa " +
-    "a passo simile</em>, non passo più alto a frequenza pari.",
-    `efficienza, media 45 gg <b>${c.ef == null ? "—" : nf(c.ef, 2)} m/min per battito</b> · grassi stimati ${c.fat == null ? "—" : nf(c.fat, 2)} g/min`,
-    "Se l'obiettivo è spostarlo davvero, serve lavoro specifico sotto la banda FatMax (" + n0(c.fatmaxHr) + " bpm), continuo e lungo — non altro volume misto.")}
-  ${item("hot", "Il caldo si paga il mattino dopo, non durante",
-    "È il solo segnale di recupero non nullo dell'intero archivio, e va nella direzione " +
-    "meno intuitiva. <b>Durante</b> l'uscita il caldo non tocca il rapporto fra passo e " +
-    "battito — perché col caldo si rallenta, e rallentando la frequenza torna dov'era. " +
-    "<b>Dopo</b>, sì: le giornate con più gradi-ora di caldo pesato lasciano una frequenza " +
-    "a riposo più alta la mattina seguente.",
-    `caldo → FC a riposo di domani <b>${rr(c.rHeat)}</b> · temperatura → efficienza ${rr(c.rTemp)}`,
-    "In estate il costo va contato sul giorno dopo, non sul cronometro del giorno stesso.")}
-  ${item("", "I minuti in banda FatMax sono volume travestito",
-    "Il tempo passato nella banda correla 0,71 col carico: conta quanto si è stati " +
-    "fuori. Guardarlo come se misurasse l'adattamento aerobico è il tipo di errore che " +
-    "questa pagina esiste per non fare.",
-    `media ultimi 90 giorni ${c.fatmaxMin == null ? "—" : n0(c.fatmaxMin) + " min/giorno"}`,
-    "")}
-</div>
-
-<div class="cr-sec">
-  <h4>La gamba</h4>
-  <p class="cr-sub">carico, volume, e cosa ne resta al mattino</p>
-  ${item("", "Dove sei adesso",
-    `Fitness ${n0(c.ctl)}, fatica ${n0(c.atl)}, forma ${n0(c.forma)}. Nelle ultime due ` +
-    `settimane <b>${n0(c.ore14)} minuti al giorno</b> di movimento` +
-    (dOre == null ? "" : `, ${dOre >= 0 ? "+" : ""}${n1(dOre)} ore al giorno rispetto alle due precedenti`) +
-    `. Nell'ultimo anno ${n0(c.half)} mezze maratone; negli ultimi novanta giorni ${n0(c.climb)} salite lunghe.`,
-    `sonno ${c.sonno == null ? "—" : hhmm(c.sonno)} · HRV ${n0(c.hrv)} ms · FC a riposo ${n0(c.rhr)} bpm · ${n0(c.passi)} passi`,
-    "")}
-  ${/* DERIVATI, non ricopiati. Queste tre tesi vivevano in DUE posti — qui e in
-       CX_PRESETS — ed erano gia' andate in deriva: «Mangiare oggi non compra
-       l'allenamento di domani» esisteva identica nel titolo e diversa nel corpo,
-       perche' qualcuno ne aveva riscritta una sola. Adesso il registro e' uno: il
-       preset. Quarta regola di CLAUDE.md. */
-    [["passi-salita", "hot", `passi → dislivello <b>${rr(c.rPassi)}</b>`],
-     ["carico-hrv", "nil", `carico → HRV di domani ${rr(c.rCarico)} · sonno → HRV ${rr(c.rSonno)} · HRV ↔ FC a riposo <b>${rr(c.rHrvRhr)}</b>`],
-     ["cibo-domani", "nil", `kcal → ore di domani, variazioni settimanali ${rr(c.rCibo)}`]]
-    .map(([k, tag, num]) => {
-      const pr = CX_PRESETS.find(p => p.k === k);
-      return pr ? item(tag, pr.t, pr.why, num, pr.doit || "") : "";
-    }).join("")}
-</div>
-
-<div class="cr-limits">
-  <h4>Cosa questo rapporto non sa</h4>
-  <ul>
-    <li>${c.ossTot == null ? "Buona parte" : "Il " + n0(100 - c.ossTot) + " %"} delle calorie
-      è <strong>ricostruito</strong>, non pesato — nelle ultime due settimane l'osservato è
-      ${c.oss == null ? "—" : n0(c.oss) + " %"}.</li>
-    <li>Grassi al minuto: <strong>modello</strong> Achten-Jeukendrup, ±40 % sul livello.</li>
-    <li>Sonno, HRV, FC a riposo, passi: esistono dal <strong>21 gennaio 2025</strong>.</li>
-    <li>Carico 2022: <strong>ricostruito</strong> da un export Strava.</li>
-    <li>Associazioni, non cause: 2.958 coppie cercate.</li>
-    <li><strong>Non è un parere medico</strong>, e non c'è nessun medico dietro.</li>
-  </ul>
-</div>`;
+${top?`<p class="cr-verdict"><b>${top.h}.</b> ${top.doit}</p>`:`<p class="cr-verdict">Nessun segnale recente supera la soglia decisionale.</p>`}
+<div class="cr-sec">${insights.map(x=>item(x.cls,x.h,x.p,x.num,x.doit)).join("")}</div>
+<div class="cr-limits"><p><b>Provenienza</b> · alimentazione 14 gg ${c.oss==null?"—":n0(c.oss)+" % osservata"} · archivio ${c.ossTot==null?"—":n0(c.ossTot)+" % osservato"} (${n0(c.ossTotDays)} giorni allineati) · resto ricostruito. Grassi/min: modello ±40 %. Carico 2022: stimato. Relazioni esplorative, non cause; nessun risultato estratto dalla ricerca di 2.958 coppie entra nel verdetto.</p></div>`;
 }
 
 function openCoach(){
@@ -5645,19 +5582,9 @@ coachSheet.addEventListener("click", ev => { if (ev.target === coachSheet) close
    se uno non apre niente, quella riga da sola deve gia' valere la visita */
 (function coachLeadLine(){
   const c = coachData();
-  const bits = [];
-  if (c.forma != null) bits.push(c.forma > 5
-    ? `<b>fresco</b> (forma ${nf(c.forma, 0)})`
-    : c.forma < -15 ? `<b>sotto</b> (forma ${nf(c.forma, 0)})`
-    : `in equilibrio (forma ${nf(c.forma, 0)})`);
-  if (c.gap != null) bits.push(c.gap < -60
-    ? `<b>${nf(-c.gap, 0)} g di carboidrati</b> sotto il fabbisogno`
-    : `carboidrati a ${nf(Math.abs(c.gap), 0)} g dal fabbisogno`);
-  if (c.ef != null) bits.push(`efficienza ${nf(c.ef, 2)} m/min per battito`);
-  /* La coda che c'era qui — «Dieci righe su cosa dicono i numeri, cosa non dicono…» —
-     erano 102 caratteri su 198 che non contenevano un dato: pubblicita' del bottone che
-     sta tre righe sotto e che dice gia' «Leggi il rapporto». */
-  coachLead.innerHTML = bits.join(" · ");
+  const top=coachInsights(c)[0];
+  coachLead.innerHTML=top ? `<b>${top.h}.</b> ${top.doit}` :
+    "Nessun segnale recente supera la soglia decisionale.";
 })();
 window.CRUSCOTTO.coach = { data:coachData, html:coachHtml, open:openCoach, close:closeCoach };
 

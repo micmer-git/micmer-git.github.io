@@ -1108,26 +1108,37 @@ if (ran) {
   }
 
   /* ------------------------------------------- 5c-ter. l'opinione del coach
-     Il rapporto non ha nemmeno un numero scritto a mano: se una serie sparisce,
-     al posto della cifra deve uscire un trattino, mai "NaN" o "undefined" — che
-     e' il modo tipico in cui un testo generato smette di dire la verita' senza
-     smettere di sembrare autorevole. */
+     E' un diario decisionale, non un saggio: al massimo tre segnali ordinati, un
+     solo finding nel lead, e provenance compatta. Le correlazioni pescate dal
+     comparatore esplorativo non devono diventare consigli. */
   const CO = K.coach;
   ok(!!CO, "window.CRUSCOTTO.coach esposto");
   if (CO) {
     let html = "";
     try { html = CO.html(); } catch (e) { fails.push("FAIL il rapporto solleva: " + (e && e.stack || e)); }
     const bare = String(html).replace(/<[^>]+>/g, "");
-    ok(html.length > 2000, `il rapporto ha del testo (${(html.length / 1000).toFixed(1)} KB)`);
+    ok(html.length > 450 && html.length < 3500,
+      `il rapporto e' denso, non un saggio (${(html.length / 1000).toFixed(1)} KB)`);
     ok(!/NaN|undefined/.test(html), "nessun NaN o undefined nel rapporto");
-    for (const t of ["La tavola", "Il motore", "La gamba", "Cosa questo rapporto non sa"])
-      ok(bare.includes(t), `il rapporto ha la sezione "${t}"`);
-    ok(/r -?0,\d\d · n \d/.test(bare), "ogni associazione porta il suo r e il suo n");
-    ok(/±40/.test(bare) && /ricostruit/i.test(bare) && /non è un parere medico/i.test(bare),
-      "il rapporto dichiara i propri limiti (modello, ricostruito, non è un referto)");
+    const cards=(html.match(/class="cr-item /g)||[]).length;
+    ok(cards <= 3, `non piu' di tre insight (${cards})`);
+    ok(/Provenienza/.test(bare) && /±40/.test(bare) && /ricostruit/i.test(bare),
+      "provenienza e incertezza restano nel footer compatto");
+    ok(/nessun risultato estratto dalla ricerca/i.test(bare) && !/r -?0,\d\d · n \d/.test(bare),
+      "le correlazioni mined non entrano nel verdetto");
+    const coachLegacy=["Sono medie di una serie", "<h4>La tavola</h4>",
+      "<h4>Il motore</h4>", "<h4>La gamba</h4>", "Cosa questo rapporto non sa",
+      "Il carico tira il cibo"];
+    ok(coachLegacy.every(t=>!script.includes(t)),
+      "filler, vecchi header e prosa legacy sono assenti anche dal codice spedito");
+    const cd=CO.data();
+    if(cd.oss != null && cd.oss < 70)
+      ok(!/scarto 14 gg/.test(bare), "sotto il 70% osservato il gap glucidico non diventa insight");
     const lead = document.getElementById("coach-lead");
     ok(/\S/.test(String(lead.innerHTML)), "la scheda in cima porta già il verdetto");
     ok(!/NaN|undefined/.test(String(lead.innerHTML)), "e senza NaN");
+    ok(String(lead.innerHTML).replace(/<[^>]+>/g, "").length < 280,
+      "il lead resta un finding e un'azione");
     document.getElementById("coach-btn").fire("click");
     ok(document.getElementById("coach").classList.contains("on"),
       "il bottone apre il rapporto");
