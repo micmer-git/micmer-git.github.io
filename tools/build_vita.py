@@ -372,6 +372,35 @@ def build_payload(raw):
 
     d0 = datetime.strptime(well[0]["id"], "%Y-%m-%d").date()
     dN = datetime.strptime(well[-1]["id"], "%Y-%m-%d").date()
+
+    # L'asse arriva fino all'ultimo giorno CON DEL CIBO, non solo fino all'ultimo
+    # giorno di Intervals.
+    #
+    # E' il bug del diario sfasato di un giorno, aperto dal 16/08/2026. Il cibo si
+    # annota oggi; le attivita' arrivano da Intervals, che sul calendario wellness
+    # puo' fermarsi a ieri. Quando il cibo corre piu' avanti, la sua data cade oltre
+    # `n`: `diaryIdxOf` torna null, `diaryLastWithFood` non ci arriva mai perche'
+    # parte da n-1, e il popup apre il giorno PRIMA di quello chiesto. In CI non si
+    # vedeva perche' li' il sync di Intervals gira sempre prima e la serie arriva a
+    # oggi; si vedeva solo a chi buildava `--offline`, cioe' proprio chi ci lavora.
+    # Il 22/08/2026 e' scattato per davvero, appena registrata una colazione di oggi.
+    #
+    # I giorni in piu' hanno wellness a null, che la pagina gia' sa disegnare (le
+    # serie si spezzano sui null invece di scavalcarli). Meglio un giorno senza
+    # sonno che un giorno di cibo irraggiungibile.
+    if os.path.exists(DAYS):
+        try:
+            with open(DAYS, encoding="utf-8") as fh:
+                _giorni = [k for k in json.load(fh) if not k.startswith("_")]
+            if _giorni:
+                dCibo = datetime.strptime(max(_giorni), "%Y-%m-%d").date()
+                if dCibo > dN:
+                    print(f"  asse esteso al {dCibo}: il cibo corre {(dCibo - dN).days} "
+                          f"giorno/i piu' avanti di Intervals")
+                    dN = dCibo
+        except (ValueError, json.JSONDecodeError, OSError):
+            pass          # un days.json illeggibile non deve impedire la build
+
     n = (dN - d0).days + 1
     idx = {}
     for r in well:
