@@ -1,0 +1,114 @@
+# Daily Dozen — le dodici caselle che Michael Greger (How Not to Die, 2015; app Dr. Greger's
+# Daily Dozen) consiglia di spuntare ogni giorno. Questo file mappa le dodici categorie sugli
+# id VERI di foods.csv: e' una tabella di appartenenza, non un punteggio.
+#
+# Le porzioni sono quelle di Greger, convertite in grammi (lui parla in cup e tablespoon):
+#   fagioli               3 porzioni/giorno · 130 g cotti (mezza tazza) · 60 g di hummus · 50 g a secco
+#   frutti_di_bosco       1 porzione/giorno · 70 g freschi o surgelati · 30 g secchi
+#   altra_frutta          3 porzioni/giorno · 1 frutto medio · 80 g a pezzi · 40 g secca
+#   crucifere             1 porzione/giorno · 45 g tritate
+#   verdure_foglia_verde  2 porzioni/giorno · 30 g crude · 90 g cotte
+#   altre_verdure         2 porzioni/giorno · 80 g
+#   semi_di_lino          1 porzione/giorno · 10 g MACINATI (interi passano interi)
+#   noci_e_semi           1 porzione/giorno · 30 g · 32 g di burro di frutta secca
+#   erbe_e_spezie         1 porzione/giorno · 1 g di curcuma (un quarto di cucchiaino) + qualunque altra
+#   cereali_integrali     3 porzioni/giorno · 100 g cotti · 40 g di pane · 50 g a crudo
+#   bevande               5 porzioni/giorno · 340 ml (un bicchiere grande) — acqua, te', caffe'
+#   esercizio             1 porzione/giorno · 90 min moderati o 40 min vigorosi — NON e' un alimento
+#
+# ⚠️ La colonna porzione_g e' in grammi per gli alimenti a peso e in MILLILITRI per le bevande;
+# per le voci che il catalogo tiene a unita' (banana, mela, arancia, pera, pesca, mandarino,
+# caffe') il numero e' il peso indicativo di una porzione, non il conteggio dei pezzi.
+#
+# Fuori dalle dodici per scelta di Greger, non per dimenticanza: succhi di frutta (anche al
+# 100%), patate bianche, fritti, cereali raffinati, dolci, alcolici, tutto quello che viene
+# dagli animali. Sta scritto nelle note delle righe che ci si avvicinano, e in RIFERIMENTI.md.
+#
+# Un parser deve saltare le righe che cominciano con '#'.
+categoria,food_id,porzione_g,nota
+fagioli,lenticchie_secche,50,"peso a crudo: 50 g secchi fanno circa mezza tazza da cotti"
+fagioli,ceci_secchi,50,"peso a crudo"
+fagioli,ceci_scatola,130,
+fagioli,piselli_secchi,50,"peso a crudo; Greger conta esplicitamente split peas fra i fagioli"
+fagioli,fagioli_neri_scatola,130,
+fagioli,fagioli_cannellini,130,
+fagioli,fagioli_stufati,130,"i baked beans in scatola contano, ma sono zuccherati e salati: Greger li mette fra i legumi con riserva"
+fagioli,lupini,130,
+fagioli,fave,130,
+fagioli,edamame,130,
+fagioli,tofu,130,"Greger conta il tofu fra i fagioli, non fra le proteine"
+fagioli,hummus,60,"un quarto di tazza: la porzione di hummus e' meta' di quella dei fagioli interi perche' e' piu' densa"
+fagioli,dal_cotto,130,
+fagioli,polpette_legumi,130,"composito casalingo: conta per la parte di legume, che e' la maggioranza"
+fagioli,soia_granulare,25,"peso a secco: reidratata triplica"
+fagioli,pasta_piselli,50,"peso a crudo. E' pasta di legume: conta qui, non fra i cereali"
+fagioli,farina_ceci,50,"il catalogo la tiene fra i cereali perche' ci si fa la farinata, ma e' cece macinato"
+frutti_di_bosco,frutti_di_bosco,70,"mezza tazza, freschi o surgelati: i surgelati valgono quanto i freschi"
+frutti_di_bosco,mirtilli,70,
+frutti_di_bosco,fragole,70,"Greger le conta fra i frutti di bosco anche se botanicamente non lo sono"
+altra_frutta,mela,150,"un frutto medio; il catalogo la tiene a unita' (~150 g)"
+altra_frutta,pera,180,"un frutto medio (~180 g edibili)"
+altra_frutta,banana,120,"un frutto medio (~120 g edibili)"
+altra_frutta,arancia,130,"un frutto medio (~130 g edibili)"
+altra_frutta,mandarino,80,"un mandarino e' piccolo: due fanno una porzione piena"
+altra_frutta,pesca,150,"un frutto medio (~150 g edibili)"
+altra_frutta,kiwi,80,
+altra_frutta,mango,80,
+altra_frutta,melagrana,80,"solo gli arilli, come nel catalogo"
+altra_frutta,melone,80,
+altra_frutta,anguria,80,
+altra_frutta,datteri,40,"un quarto di tazza di frutta secca: la porzione e' meta' di quella fresca perche' e' disidratata"
+crucifere,broccoli,45,"mezza tazza tritati. Greger chiede di masticarli bene o tagliarli 40 minuti prima di cuocerli: e' cosi' che si forma il sulforafano"
+crucifere,cavolfiore,45,
+crucifere,cavolo_rosso,45,
+crucifere,cavolo_nero,45,"il cavolo nero spunta due caselle: crucifera E foglia verde. Vale una volta per ciascuna, non due volte nella stessa"
+crucifere,rucola,45,"anche la rucola e' una crucifera (Eruca sativa, Brassicaceae), e spunta due caselle come il cavolo nero"
+verdure_foglia_verde,spinaci,30,"30 g crude oppure 90 g cotte"
+verdure_foglia_verde,rucola,30,
+verdure_foglia_verde,insalata_mista,30,"lattuga e misticanza contano, ma sono le foglie meno dense: Greger spinge verso quelle scure"
+verdure_foglia_verde,cavolo_nero,30,"30 g crudo oppure 90 g cotto"
+altre_verdure,carote,80,
+altre_verdure,cipolla,80,
+altre_verdure,peperoni,80,
+altre_verdure,melanzane,80,
+altre_verdure,zucchine,80,
+altre_verdure,fagiolini,80,
+altre_verdure,piselli_verdi,80,
+altre_verdure,pomodorini,80,
+altre_verdure,passata_pomodoro,80,
+altre_verdure,pomodori_secchi,20,"disidratati: 20 g valgono circa 80 g di pomodoro fresco"
+altre_verdure,zucca,80,
+altre_verdure,barbabietola,80,
+altre_verdure,cetriolo,80,
+altre_verdure,sedano,80,
+altre_verdure,asparagi,80,
+altre_verdure,patate_dolci,80,"la patata DOLCE conta fra le verdure; quella bianca no (vedi la nota su patate)"
+altre_verdure,avocado,80,"il catalogo lo tiene fra le verdure, Greger lo elenca fra i frutti: contarlo qui e' una scelta di questo file, non una regola sua"
+altre_verdure,funghi,80,"i funghi non sono piante ma Greger li conta fra le altre verdure"
+altre_verdure,funghi_porcini,80,
+altre_verdure,zuppa_vellutata,240,"composito: conta per la parte di verdura, che e' quasi tutta"
+altre_verdure,sformato_verdure,150,"composito: verdure + uova + formaggio. Conta solo la parte vegetale"
+semi_di_lino,,10,"⚠️ NESSUN food_id: i semi di lino NON sono nel catalogo. E' l'unica delle dodici categorie a zero coperture, e non perche' Michele non li mangi ma perche' non c'e' la voce. Serve un `semi_lino` in foods.csv (macinati: interi passano interi e non contano)"
+noci_e_semi,mandorle,30,"un quarto di tazza"
+noci_e_semi,noci,30,"Greger le mette davanti a tutte le altre: sono la fonte vegetale di ALA piu' densa del catalogo"
+noci_e_semi,burro_arachidi_sgrassato,16,"due cucchiai di burro di arachidi sono 32 g, ma questo e' sgrassato in polvere: meta' peso per pari proteine, e i grassi buoni non ci sono piu'. Conta a meta'"
+erbe_e_spezie,curry_polvere,1,"il curry contiene curcuma: e' la voce del catalogo piu' vicina a quello che Greger chiede (un quarto di cucchiaino di curcuma al giorno). Manca la curcuma pura"
+erbe_e_spezie,cumino_semi,1,
+erbe_e_spezie,basilico,2,"fresco: la porzione a peso e' piu' alta di quella di una spezia secca"
+erbe_e_spezie,prezzemolo,5,
+erbe_e_spezie,aglio,3,"uno spicchio. Il catalogo lo tiene fra le spezie; Greger lo elenca fra le altre verdure. Contarlo qui e' una scelta di questo file"
+cereali_integrali,pasta_integrale,50,"peso a crudo: 50 g fanno circa mezza tazza cotta"
+cereali_integrali,avena_fiocchi,40,
+cereali_integrali,crusca_avena,20,"e' solo la crusca: mezza porzione, non e' un chicco intero"
+cereali_integrali,pane_integrale,40,"una fetta"
+cereali_integrali,pane_segale,40,"vale come integrale solo se e' segale intera: il pane di segale scuro spesso e' farina raffinata piu' colorante"
+cereali_integrali,quinoa,50,"peso a crudo"
+cereali_integrali,farro_perlato,50,"peso a crudo. Perlato vuol dire che la crusca e' stata tolta: e' a meta' strada, non un integrale pieno"
+cereali_integrali,chapati,40,"farina integrale: e' il pane piatto indiano che conta davvero, non il naan"
+cereali_integrali,injera,50,"il teff si macina intero: l'injera e' integrale per costruzione"
+cereali_integrali,polenta_mais,40,"peso a crudo, e conta solo se la farina e' integrale (bramata integrale). Quella comune e' degerminata"
+cereali_integrali,granola,40,"avena intera, ma spesso zuccherata e ultraprocessata: conta il cereale, non lo zucchero che ci sta intorno"
+bevande,caffe_espresso,340,"Greger conta un bicchiere da 340 ml; un espresso e' 30 ml. Servono piu' tazze per una porzione, e la caffeina arriva prima del volume"
+bevande,masala_chai,340,"il te' e' fra le bevande che Greger consiglia per primo; lo zucchero del chai no"
+bevande,cappuccino,150,"mezza porzione: e' latte, non acqua"
+esercizio,,,"NON e' un alimento e non ha food_id. Greger chiede 90 minuti di attivita' moderata o 40 vigorosa al giorno. Il dato per spuntare questa casella esiste gia' in /vita ma da un'altra parte: sono le attivita' di intervals.icu (activities.csv), non il diario alimentare. Chi disegna il grafico deve andarselo a prendere li'"
