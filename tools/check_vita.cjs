@@ -378,7 +378,7 @@ if (ran) {
      Quattro modi di romperle, quattro controlli: sparire del tutto, diventare nove,
      uscire dalla scheda, e sovrapporsi fra loro. */
   const scanOttavi = etichetta => {
-    let framed = 0; const tooMany = [], spill = [];
+    let framed = 0; const tooMany = [], spill = [], muti = [], senzaRiga = [], grosse = [];
     for (const [n, t] of K.MOUNTED) {
       const svg = n.box._kids.find(c => c.tagName === "svg");
       if (!svg) continue;
@@ -388,6 +388,30 @@ if (ran) {
       if (!bars.length) continue;
       framed++;
       if (bars.length > 8) tooMany.push(`[${etichetta}] ${t.title}: ${bars.length} ottavi`);
+      /* ---- 22/08/2026: le tre cose annotate a mano sul riquadro «raccontato» ----
+         (a) OGNI ottavo ha il suo numero. Prima le etichette si stampavano una ogni
+             `every` quando non ci stavano in fila, e un ottavo senza numero si legge
+             identico a un ottavo senza dati. Ora scendono su due corsie, e il conto
+             deve tornare barra per barra.
+         (b) le stesse medie stanno ANCHE sul grafico principale, come trattini neri
+             sopra il filetto che separa la fascia dal disegno. Michele: «Medie non
+             su grafico principale».
+         (c) «round intelligently»: sopra le diecimila si passa alle migliaia con la
+             «k», quindi nella fascia non deve comparire nessun intero a cinque cifre
+             — che in italiano si scrive "16.732" ed e' proprio quello che c'era. */
+      const numeri = kids.filter(c => c.tagName === "text" && c.attrs["font-weight"] === "700");
+      if (numeri.length !== bars.length)
+        muti.push(`[${etichetta}] ${t.title}: ${bars.length} ottavi ma ${numeri.length} numeri`);
+      for (const q of numeri) {
+        if (/(^|[^\d])\d{2,}\.\d{3}([^\d]|$)/.test(q.textContent || ""))
+          grosse.push(`[${etichetta}] ${t.title}: "${q.textContent}" non e' arrotondato alle migliaia`);
+      }
+      const filetto = kids.find(c => c.tagName === "line" && c.attrs.stroke === "var(--rule)");
+      const sopra = kids.filter(c => c.tagName === "line" && c.attrs.stroke === "var(--ink)" &&
+        c.attrs.opacity === ".42" && filetto &&
+        parseFloat(c.attrs.y1) < parseFloat(filetto.attrs.y1));
+      if (sopra.length !== bars.length)
+        senzaRiga.push(`[${etichetta}] ${t.title}: ${bars.length} ottavi ma ${sopra.length} medie sul disegno`);
       const [, , VW] = svg.attrs.viewBox.split(/\s+/).map(Number);
       const lab = kids.filter(c => c.tagName === "text" && c.attrs["font-weight"] === "700")
         .map(c => { const lw = (c.textContent || "").length * GLYPH * (MEAN_FS / GLYPH_FS);
@@ -406,7 +430,7 @@ if (ran) {
           spill.push(`[${etichetta}] ${t.title}: "${lab[i - 1].s}" e "${lab[i].s}" si toccano`);
       }
     }
-    return { framed, tooMany, spill };
+    return { framed, tooMany, spill, muti, senzaRiga, grosse };
   };
   const oW = SHIM_W;
   const passate = [];
@@ -425,6 +449,85 @@ if (ran) {
     (tooMany.length ? ` — ${tooMany[0]}` : ""));
   ok(spill.length === 0, `i numeri degli ottavi reggono a 340 e a 1040 px` +
     (spill.length ? ` — ${spill.length}, es. ${spill[0]}` : ""));
+  const muti = passate.flatMap(([, r]) => r.muti);
+  const senzaRiga = passate.flatMap(([, r]) => r.senzaRiga);
+  const grosse = passate.flatMap(([, r]) => r.grosse);
+  ok(muti.length === 0, `ogni ottavo porta il suo numero, anche a 340px` +
+    (muti.length ? ` — ${muti.length}, es. ${muti[0]}` : ""));
+  ok(senzaRiga.length === 0, `le otto medie sono disegnate anche sul grafico principale` +
+    (senzaRiga.length ? ` — ${senzaRiga.length}, es. ${senzaRiga[0]}` : ""));
+  ok(grosse.length === 0, `i numeri degli ottavi sono arrotondati con criterio` +
+    (grosse.length ? ` — ${grosse.length}, es. ${grosse[0]}` : ""));
+
+  /* --------------------------- 2c-bis. le medie dei riquadri di COMPOSIZIONE
+     Michele, 22/08/2026, a matita rossa sopra «Di che grasso»: le medie erano rette
+     orizzontali su due anni mentre le serie si muovevano, e i segni indicavano dove
+     avrebbero dovuto muoversi. Adesso sono la stessa spezzata a ottavi del resto
+     della pagina, con i raccordi verticali.
+
+     Il controllo non guarda lo stile: guarda che la media SI MUOVA. Una retta e una
+     spezzata sono lo stesso tipo di nodo — quello che le distingue e' che la seconda
+     ha piu' di una quota. Quindi: per ogni serie di un riquadro `medie:true` deve
+     esistere un path con almeno due «y» diverse, e non deve esistere nessuna <line>
+     colorata che attraversi tutto il disegno, che e' esattamente la forma vecchia. */
+  const COMPOSTI = ["Da dove arrivano le calorie", "Di cosa erano fatte", "Di che grasso"];
+  const piatte = [], immobili = [];
+  for (const [n, t] of K.MOUNTED) {
+    if (!COMPOSTI.includes(t.title)) continue;
+    const svg = n.box._kids.find(c => c.tagName === "svg");
+    if (!svg) continue;
+    const kids = svg.descendants();
+    const [, , VW] = svg.attrs.viewBox.split(/\s+/).map(Number);
+    /* la forma vecchia: una riga orizzontale colorata larga quasi quanto il disegno */
+    for (const c of kids) {
+      if (c.tagName !== "line") continue;
+      const y1 = parseFloat(c.attrs.y1), y2 = parseFloat(c.attrs.y2);
+      const dx = Math.abs(parseFloat(c.attrs.x2) - parseFloat(c.attrs.x1));
+      /* solo i colori che una SERIE puo' prendere: gli slot del grafico, il grigio
+         dell'ultra-processato e il rosso del negativo. Assi, griglia e filetti sono
+         righe orizzontali lunghe per mestiere, e confonderli con una media sarebbe
+         un controllo che grida sempre. */
+      if (y1 === y2 && dx > VW * .5 && /^var\(--(s\d|muted|neg)\)$/.test(c.attrs.stroke || ""))
+        piatte.push(`${t.title}: media orizzontale su tutta la finestra (${c.attrs.stroke})`);
+    }
+    /* la forma nuova: una spezzata a gradini per serie, ognuna con piu' di una quota */
+    const quote = kids.filter(c => c.tagName === "path" && c.attrs["stroke-width"] === "1.8")
+      .map(c => new Set(((c.attrs.d || "").match(/ ([\d.]+)(?= |$)/g) || []).map(s => s.trim())).size);
+    if (!quote.length || quote.some(q => q < 2))
+      immobili.push(`${t.title}: media a una quota sola (${quote.join(", ") || "nessuna"})`);
+  }
+  ok(piatte.length === 0, `nessuna media disegnata come retta su tutta la finestra` +
+    (piatte.length ? ` — ${piatte.length}, es. ${piatte[0]}` : ` (${COMPOSTI.length} riquadri)`));
+  ok(immobili.length === 0, `le medie dei riquadri di composizione seguono il movimento` +
+    (immobili.length ? ` — ${immobili.length}, es. ${immobili[0]}` : ""));
+
+  /* --------------------------- 2c-ter. la media mobile dei carboidrati
+     «Moving averages?? ;)» — Michele, 22/08/2026, sul riquadro dei carboidrati. Due
+     serie giornaliere di grammi senza lettura sopra.
+     Il controllo misura la cosa vera, non la presenza di un path in piu': la linea
+     che si legge deve essere PIU' LISCIA di quella grezza. Si somma il salto fra un
+     giorno e il successivo su entrambe; una media mobile a 7 giorni taglia quella
+     somma di parecchie volte, e se qualcuno rimettesse la grezza davanti il rapporto
+     tornerebbe a 1 e il controllo morderebbe. */
+  {
+    const m = [...K.MOUNTED].find(([, t]) => t.title === "Carboidrati contro fabbisogno");
+    const svg = m && m[0].box._kids.find(c => c.tagName === "svg");
+    const ys = p => (String(p.attrs.d || "").match(/[ML][\d.]+ ([\d.]+)/g) || [])
+      .map(s => parseFloat(s.split(" ")[1]));
+    const scabro = p => { const a = ys(p); let s = 0;
+      for (let i = 1; i < a.length; i++) s += Math.abs(a[i] - a[i - 1]); return s; };
+    const linee = svg ? svg.descendants().filter(c => c.tagName === "path" &&
+      c.attrs.fill === "none" && !c.attrs["stroke-dasharray"]) : [];
+    const grezze = linee.filter(c => c.attrs.opacity === ".26");
+    const lette = linee.filter(c => c.attrs.opacity === undefined);
+    ok(grezze.length === 2 && lette.length === 2,
+      `i carboidrati hanno la loro media mobile sopra il dato del giorno` +
+      ` (${grezze.length} grezze, ${lette.length} letture)`);
+    const rap = grezze.length && lette.length
+      ? scabro(grezze[0]) / Math.max(1, scabro(lette[0])) : 0;
+    ok(rap > 3, `e la media mobile e' davvero piu' liscia del giorno per giorno` +
+      ` (${rap.toFixed(1)}× meno saliscendi, minimo 3)`);
+  }
 
   /* --------------------------------- 2d. le sezioni per tema, e la trappola nota
      Michele, 18/08/2026: «si potrebbe avere uno slider o qualcosa per raccogliere i
@@ -1364,11 +1467,19 @@ if (ran) {
       ok(ordinati, "gli ingredienti di un pasto scendono dal piu' calorico" +
         (ordinati ? "" : " \u2014 trovato " + dove));
 
-      /* 2. i grammi arrotondati: 66.6667 non e' una misura */
+      /* 2. i grammi arrotondati: 66,6667 non e' una misura.
+         Il separatore da guardare e' la VIRGOLA e solo quella: la pagina scrive in
+         italiano (`toLocaleString("it-IT")`), dove il punto separa le migliaia.
+         Tagliando su entrambi, il primo potassio sopra i mille — "25.681" mg — si
+         presentava come un numero con tre decimali e faceva fallire il controllo su
+         un dato perfettamente arrotondato. Non e' una tolleranza allargata: e'
+         l'unita' di misura del controllo, che era sbagliata. Trovato il 22/08/2026,
+         quando un rebuild con le attivita' del giorno ha superato quella soglia per
+         la prima volta. */
       const lunghi = node.descendants()
         .filter(x => x.tagName === "b" && /^[\d.,]+$/.test((x.textContent || "").trim()))
         .map(x => (x.textContent || "").trim())
-        .filter(t => (t.split(/[.,]/)[1] || "").length > 1);
+        .filter(t => (t.split(",")[1] || "").length > 1);
       ok(lunghi.length === 0,
         "nessuna quantita' con piu' di un decimale" +
         (lunghi.length ? " \u2014 " + lunghi.slice(0, 4).join(", ") : ""));

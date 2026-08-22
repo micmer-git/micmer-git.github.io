@@ -1934,6 +1934,25 @@ function rolling(arr, from, to, w) {
   }
   return out;
 }
+/* La stessa media mobile, ma su coppie [indice, valore] gia' prese. `rolling` lavora
+   sugli array del payload e va bene finche' la serie e' una colonna; le serie di
+   `rLines` arrivano invece dalla loro `get`, che puo' averle gia' derivate — uno
+   scarto, una quota, una somma di due colonne — e in quel caso l'array grezzo da
+   passare a `rolling` non esiste da nessuna parte. Stessa soglia (un terzo della
+   finestra pieno, e almeno due giorni) perche' due medie mobili con due soglie
+   diverse nella stessa pagina sarebbero due cose che si chiamano uguale. */
+function rollPts(pts, w) {
+  const out = [];
+  for (let i = 0; i < pts.length; i++) {
+    let s = 0, n = 0;
+    for (let j = Math.max(0, i - w + 1); j <= i; j++) {
+      const v = pts[j][1];
+      if (v !== null && v !== undefined && isFinite(v)) { s += v; n++; }
+    }
+    out.push([pts[i][0], n >= Math.max(2, w / 3) ? s / n : null]);
+  }
+  return out;
+}
 /* Media su una serie RADA, con la finestra CENTRATA.
    `rolling` chiede che un terzo della finestra sia pieno, ed e' giusto per un dato
    giornaliero: su una serie che esiste un giorno su sette non si accende mai. La
@@ -2145,9 +2164,14 @@ const MEDIE_FS = 10, MEDIE_RPAD = 40;
    riquadro; `fmt` le formatta. Torna l'elenco delle medie, o null se non ce n'e'
    nessuna — cosi' chi chiama puo' dirlo nel piede invece di far sparire la fascia
    in silenzio. */
-function eighths(svg, g, pts, from, to, fmt, opts = {}) {
-  const n = FRAMES, span = (to - from + 1) / n;
-  if (!g.strip || !(span >= 1)) return null;
+/* Le otto medie di una serie, in ottavi di PIXEL. Sta a se' perche' la usano in due:
+   `eighths` per la fascia sotto il grafico, e `rLines` con `medie:true` per la
+   spezzata dentro il grafico. Un secondo conteggio scritto a fianco sarebbe la
+   quarta regola di CLAUDE.md violata alla lettera: "ottavo" deve voler dire la
+   stessa cosa nei due posti, e il modo di garantirlo e' che il conto sia uno solo. */
+function eighthMeans(pts, from, to, n = FRAMES) {
+  const span = (to - from + 1) / n;
+  if (!(span >= 1)) return null;
   const acc = Array.from({ length:n }, () => ({ s:0, c:0 }));
   for (const [x, v] of pts) {
     if (v === null || v === undefined || !isFinite(v)) continue;
@@ -2156,8 +2180,16 @@ function eighths(svg, g, pts, from, to, fmt, opts = {}) {
     acc[k].s += v; acc[k].c++;
   }
   const mean = acc.map(a => a.c ? a.s / a.c : null);
+  return mean.some(v => v !== null && isFinite(v)) ? { mean, span } : null;
+}
+
+function eighths(svg, g, pts, from, to, fmt, opts = {}) {
+  const n = FRAMES;
+  if (!g.strip) return null;
+  const e = eighthMeans(pts, from, to, n);
+  if (!e) return null;
+  const { mean, span } = e;
   const vals = mean.filter(v => v !== null && isFinite(v));
-  if (!vals.length) return null;
 
   /* ---- LA SCALA PROPRIA -------------------------------------------------
      Il secondo asse e' tutto il punto (Michele, 18/08/2026: «secondary axis for
@@ -2177,13 +2209,56 @@ function eighths(svg, g, pts, from, to, fmt, opts = {}) {
   const Y2 = v => top + H2 - (v - lo) / (hi - lo) * H2;
 
   const w = g.iw / n;
-  const labs = mean.map(v => v === null ? "" : String(fmt(v)));
-  /* Il passo delle etichette si CALCOLA, non e' uno-o-due. Con MEAN_FS a 13 e un
-     riquadro da telefono un ottavo e' largo 36px e "1.146 TSS" ne chiede 77:
-     stampandone una ogni due si sovrapponevano lo stesso, ed e' esattamente il
-     "le medie valori sopra barre sono rotte" del 18/08. */
-  const wide = Math.max(...labs.map(x => x.length)) * TICKW * (MEAN_FS / AXIS_FS) + 5;
-  const every = Math.max(1, Math.ceil(wide / w));
+  /* ---- «ROUND INTELLIGENTLY» (Michele, 22/08/2026, sul riquadro «raccontato») ----
+     Il numero di un ottavo non serve a certificare una cifra: serve a leggere la
+     differenza fra quell'ottavo e gli altri sette. Le cifre che DISTINGUONO sono
+     quelle dell'AMPIEZZA fra le otto medie, non quelle del loro livello — fra 15.486
+     e 16.732 l'informazione sta nella terza cifra, la quinta e' rumore che ruba
+     larghezza e fa saltare le etichette vicine.
+     Due mosse, e nessuna delle due inventa precisione che non c'e':
+     · si tolgono i decimali che l'ampiezza non giustifica, ma **mai piu' di quanti
+       ne porta il formato del riquadro**: quello resta la scelta editoriale, e
+       aggiungerne uno per "precisione" farebbe diventare 32 piante un 31,6;
+     · sopra le diecimila si passa alle migliaia con la «k», perche' li' la quinta
+       cifra non la legge nessuno e la differenza fra due ottavi si vede lo stesso.
+     Vale solo per i formati NUMERICI: "20h 35'" non si arrotonda a mano, e il test
+     lo riconosce dal fatto che dopo il numero non viene uno spazio ma una lettera. */
+  const numerico = /^-?[\d.]+(?:,\d+)?(?:\s|$)/.test(String(fmt(1234.5)));
+  const parti = String(fmt(vals[0])).match(/^(-?[\d.]+(?:,\d+)?)(.*)$/);
+  const suf = numerico && parti ? parti[2] : "";
+  const dFmt = ((String(fmt(1 / 3)).split(",")[1] || "").match(/^\d*/) || [""])[0].length;
+  const spanM = Math.max(...vals) - Math.min(...vals);
+  const magn = Math.max(...vals.map(Math.abs));
+  const dOk = Math.min(dFmt, spanM >= 20 ? 0 : spanM >= 2 ? 1 : 2);
+  const kilo = magn >= 1e4;
+  const corto = (v, unita) => (kilo ? nf(v / 1000, spanM >= 2000 ? 0 : 1) + "k"
+                                    : nf(v, dOk)) + (unita ? suf : "");
+  /* Le scritture possibili, dalla piu' ricca alla piu' spiccia. Si prende la prima
+     che sta in due corsie; dove l'arrotondamento non morde (la maggior parte dei
+     riquadri) la prima e' identica a quella di prima, e infatti non cambia niente. */
+  const scritture = numerico ? [v => corto(v, true), v => corto(v, false)]
+                             : [v => String(fmt(v))];
+  let labs = null, wide = 0;
+  for (const scrivi of scritture) {
+    labs = mean.map(v => v === null ? "" : scrivi(v));
+    wide = Math.max(...labs.map(x => x.length)) * TICKW * (MEAN_FS / AXIS_FS) + 5;
+    if (wide <= 2 * w) break;
+  }
+  /* ---- NESSUN OTTAVO SENZA IL SUO NUMERO -----------------------------------
+     Michele, stesso foglio: «non centrato tutti i valori (alcuni mancano?)».
+     Mancavano davvero. Il passo delle etichette si calcolava (`every`) e chi non ci
+     stava in fila veniva SALTATO — ma un ottavo senza numero, a vederlo, e' identico
+     a un ottavo senza dati, e distinguere il vuoto dal nulla e' mezzo scopo di questa
+     pagina. Adesso quando la riga non basta i numeri prendono DUE corsie, pari sul
+     bordo alto della fascia e dispari sul basso: ognuno resta centrato sulla sua
+     barra, e ci sono tutti e otto. Fra due pari consecutivi c'e' il doppio dello
+     spazio, ed e' esattamente la condizione su cui la scelta della scrittura qui
+     sopra si e' fermata — le due cose vanno lette insieme o nessuna delle due sta
+     in piedi. `every` resta come ultimo ripiego per il caso che non si e' mai visto:
+     un'etichetta piu' larga di due ottavi anche dopo essere stata accorciata. */
+  const corsie = wide > w ? 2 : 1;
+  const yHi = top + MEAN_FS - 1, yLo = top + g.strip - 3;
+  const every = Math.max(1, Math.ceil(wide / (corsie * w)));
 
   /* il filetto che separa la fascia dal disegno: e' li' per dire "da qui in giu'
      e' un'altra scala", quindi non e' decorazione e non si toglie */
@@ -2195,6 +2270,25 @@ function eighths(svg, g, pts, from, to, fmt, opts = {}) {
     t.textContent = fmt(v); t.setAttribute("font-size", String(AXIS_FS - 1));
     svg.appendChild(t);
   }
+
+  /* ---- E LE MEDIE TORNANO ANCHE SUL DISEGNO --------------------------------
+     Michele, 22/08/2026: «Medie non su grafico principale». La fascia sotto non
+     sparisce, e la ragione per cui esiste resta intera: la sua scala propria e'
+     l'unica cosa che impedisce a otto medie fra 41 e 46 TSS di sembrare identiche
+     (ordine #23, 18/08). Ma per sapere a che LIVELLO stava un ottavo bisognava
+     saltare fra due disegni con due assi diversi, e quel salto e' il difetto.
+     Quindi gli stessi otto valori tornano dove stanno i dati, sulla scala del
+     grafico: otto trattini neri e tenui, uno per ottavo, larghi quanto il loro
+     ottavo. Staccati e non uniti — sono otto letture di otto pezzi d'anno, non una
+     serie che passa di li'; unirli li farebbe leggere come una nona curva.
+     Il numero resta scritto una volta sola, nella fascia: due volte sarebbe rumore,
+     e sarebbe anche il numero letto contro due scale diverse. */
+  mean.forEach((v, k) => {
+    if (v === null || !isFinite(v) || v < g.yd.lo || v > g.yd.hi) return;
+    const y = g.Y(v), x = g.P.l + w * k;
+    svg.appendChild(el("line", { x1:x + 1.5, x2:x + w - 1.5, y1:y, y2:y,
+      stroke:"var(--ink)", "stroke-width":1.6, opacity:".42", "stroke-linecap":"round" }));
+  });
 
   const out = [];
   mean.forEach((v, k) => {
@@ -2213,8 +2307,13 @@ function eighths(svg, g, pts, from, to, fmt, opts = {}) {
     /* Il numero sta SEMPRE sopra la sua barra, e sempre DENTRO la fascia: la riga di
        base si aggrappa al bordo alto quando la barra e' troppo in cima. Mettendolo
        sotto — com'era — un ottavo alto finiva a due pixel dalle date dell'asse x, e
-       il check lo prendeva come sovrapposizione: aveva ragione. */
-    const t = el("text", { x:x + w / 2, y:Math.max(top + MEAN_FS - 1, y - 5),
+       il check lo prendeva come sovrapposizione: aveva ragione.
+       Su due corsie la riga non segue piu' la barra ma il bordo della fascia: e' il
+       prezzo per averli tutti e otto, e si paga volentieri perche' l'altezza della
+       barra e' gia' disegnata dalla barra — il numero deve solo essere leggibile e
+       stare sopra la sua colonna. */
+    const t = el("text", { x:x + w / 2,
+      y:corsie === 2 ? (k % 2 ? yLo : yHi) : Math.max(yHi, y - 5),
       "text-anchor":"middle", fill:"var(--ink)", "font-size":String(MEAN_FS),
       "font-weight":"700", "font-family":"ui-monospace,'SFMono-Regular',Menlo,monospace",
       stroke:"var(--paper)", "stroke-width":"3.2", "paint-order":"stroke",
@@ -2707,40 +2806,79 @@ function rLines(svg, W, H, t, from, to) {
   const g = frame(svg, W, H, [from, to], [lo, hi],
     { ytick:t.ytick, strip:t.frames !== false, rpad:medie ? MEDIE_RPAD : 0 });
   const fmtL = t.fmt || FMT.num0;
-  const avg = vals => { const v = vals.map(p => p[1])
-      .filter(x => x !== null && x !== undefined && isFinite(x));
-    return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
   for (const s of series) {
+    /* `mm`: la media mobile davanti alla serie grezza. Michele, 22/08/2026, sul
+       riquadro dei carboidrati: «Moving averages?? ;)». Aveva ragione a chiederlo
+       li': due serie giornaliere di grammi sono due pettini che si attraversano, e
+       l'unica cosa che si vede e' che si attraversano. Tutto il resto della sezione
+       la lettura ce l'ha gia' — le nuvole con la loro trascinata, le composizioni
+       con `medie:true` — e questo riquadro era rimasto indietro e basta.
+       La grezza non si butta: resta dietro, sottile e trasparente, perche' e' li'
+       che si vede quanto ballano i giorni. Davanti passa la lettura. E' la stessa
+       grammatica di valseriana (`site/_report.js`, misura a `opacita 0.35`). */
+    const mm = t.mm ? rollPts(s.vals, t.mm) : null;
+    const testa = mm || s.vals;
     /* con le medie il riempimento sotto la prima serie non serve piu' a niente:
        era li' per dire "questa e' la fetta grossa", e adesso lo dice la riga
        orizzontale piu' in alto. Restando, coprirebbe di tinta le altre quattro. */
     if (s.area && !medie) {
       const base = g.Y(Math.max(g.yd.lo, 0));
-      const d = pathOf(s.vals, g.X, g.Y);
+      const d = pathOf(testa, g.X, g.Y);
       if (d) {
-        const first = s.vals.find(p => p[1] !== null), last = [...s.vals].reverse().find(p => p[1] !== null);
+        const first = testa.find(p => p[1] !== null), last = [...testa].reverse().find(p => p[1] !== null);
         svg.appendChild(el("path", { d:d + " L" + g.X(last[0]) + " " + base +
           " L" + g.X(first[0]) + " " + base + " Z", fill:s.col, opacity:".14" }));
       }
     }
+    if (mm) svg.appendChild(el("path", { d:pathOf(s.vals, g.X, g.Y), fill:"none",
+      stroke:s.col, "stroke-width":.9, opacity:".26", "stroke-linejoin":"round",
+      "stroke-linecap":"round" }));
     /* `dash`: per le serie che stanno su un ASSE DIVERSO dalle altre del riquadro.
        L'ultra-processato attraversa le quattro quote d'origine invece di essere la
        quinta, e il tratteggio lo dice prima della legenda. Non e' decorazione: una
        linea piena in mezzo a una composizione si legge come parte della somma. */
-    svg.appendChild(el("path", Object.assign({ d:pathOf(s.vals, g.X, g.Y), fill:"none",
+    svg.appendChild(el("path", Object.assign({ d:pathOf(testa, g.X, g.Y), fill:"none",
       stroke:s.col, "stroke-width":medie ? 1 : (s.w || 2), "stroke-linejoin":"round",
       "stroke-linecap":"round" },
       medie ? { opacity:".32" } : {},
       s.dash ? { "stroke-dasharray":s.dash } : {})));
   }
   const livelli = [];
+  /* ---- LA MEDIA DEVE SEGUIRE IL MOVIMENTO ---------------------------------
+     Michele, 22/08/2026, a matita rossa sopra «Di che grasso»: le righe erano
+     ORIZZONTALI su tutta la finestra mentre le serie sotto salivano e scendevano, e
+     i segni rossi indicavano dove la riga avrebbe dovuto muoversi. Una retta su due
+     anni risponde a «quanto vale in media», che qui non e' la domanda: la domanda e'
+     se la quota di saturi stia scendendo — e a quella una retta non puo' rispondere
+     per costruzione, qualunque siano i dati sotto.
+     Quindi la riga diventa la stessa spezzata a OTTAVI che il resto della pagina usa
+     gia': otto tratti, uno per ottavo, e il confronto fra riquadri torna a funzionare
+     («confronta con gli altri riquadri, dove le medie sono a ottavi»). Qui i tratti
+     sono UNITI dai raccordi verticali, al contrario dei trattini staccati della
+     fascia: li' sono otto letture separate di una serie sola, qui e' una sola quota
+     di composizione che cambia livello, e spezzarla la farebbe sembrare intermittente.
+     Il numero a destra e' quello dell'ULTIMO ottavo, non piu' la media dei due anni:
+     e' il valore a cui la riga ARRIVA al bordo destro, cioe' l'unica cosa che
+     un'etichetta appesa li' possa onestamente dire. Chi vuole la media intera la
+     trova nella tabella DATI del riquadro. */
   if (medie) for (const s of series) {
-    const v = avg(s.vals);
-    if (v === null || !isFinite(v) || v < g.yd.lo || v > g.yd.hi) continue;
-    const y = g.Y(v);
-    svg.appendChild(el("line", { x1:g.P.l, x2:g.P.l + g.iw, y1:y, y2:y,
-      stroke:s.col, "stroke-width":1.8, "stroke-linecap":"round" }));
-    livelli.push({ name:s.name, col:s.col, v });
+    const e = eighthMeans(s.vals, from, to);
+    if (!e) continue;
+    const w8 = g.iw / FRAMES;
+    let d = "", pen = false, ultimo = null;
+    e.mean.forEach((v, k) => {
+      if (v === null || !isFinite(v)) { pen = false; return; }
+      const y = g.Y(Math.min(g.yd.hi, Math.max(g.yd.lo, v)));
+      const xa = g.P.l + w8 * k, xb = xa + w8;
+      d += (pen ? "L" : "M") + xa.toFixed(1) + " " + y.toFixed(1) +
+           " L" + xb.toFixed(1) + " " + y.toFixed(1) + " ";
+      pen = true; ultimo = v;
+    });
+    if (!d) continue;
+    svg.appendChild(el("path", { d:d.trim(), fill:"none", stroke:s.col,
+      "stroke-width":1.8, "stroke-linejoin":"round", "stroke-linecap":"round" }));
+    if (ultimo !== null && ultimo >= g.yd.lo && ultimo <= g.yd.hi)
+      livelli.push({ name:s.name, col:s.col, v:ultimo });
   }
   /* L'ASSE SECONDARIO: il valore di ogni media al bordo destro, centrato sulla sua
      riga. Due medie vicine si toccherebbero: ogni etichetta spinge la successiva di
@@ -3811,11 +3949,15 @@ function nutriTiles() {
     foot:"Cereali, legumi, frutta secca, erbe e spezie contano." });
 
   t.push({ panel:"tavola", h:146, first:"n_carb_g", src:"ricostruito", title:"Carboidrati contro fabbisogno",
-    cap:"ingeriti e stimati dal TSS del giorno",
+    cap:"ingeriti e stimati dal TSS del giorno · media mobile 7 giorni",
     legend:[["Ingeriti", SCH[0]], ["Stimati dal carico", SCH[1]]],
     now:() => lastMean(N_.carb_gap_g, 7),
     nowFmt:v => (v > 0 ? "+" : "") + nf(v, 0), nowUnit:"g di scarto, 7 gg",
-    kind:rLines, spec:{ zero:true, fmt:v => nf(v, 0) + " g", series:[
+    /* `mm:7` per l'annotazione di Michele del 22/08 («Moving averages?? ;)»). Sette
+       giorni e non quattordici perche' e' la finestra che questo riquadro dichiara
+       gia' nel suo numero grande — «g di scarto, 7 gg» — e due finestre diverse
+       nello stesso riquadro sono due letture che non tornano fra loro. */
+    kind:rLines, spec:{ zero:true, mm:7, fmt:v => nf(v, 0) + " g", series:[
       { name:"Ingeriti", col:SCH[0], area:true, get:(a, b) => N_.carb_g.slice(a, b + 1).map((v, k) => [a + k, v]) },
       { name:"Stimati dal carico", col:SCH[1], get:(a, b) => N_.carb_target_g.slice(a, b + 1).map((v, k) => [a + k, v]) },
     ] },
