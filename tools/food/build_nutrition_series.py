@@ -61,6 +61,34 @@ CRONOMETER = common.DERIVED / "cronometer_days.json"
 VITAMINS = ("vitc_mg", "vita_ug", "vitd_ug", "b12_ug", "folate_ug")
 MINERALS = ("potassium_mg", "calcium_mg", "iron_mg", "magnesium_mg", "zinc_mg")
 
+# I nutrienti che il diario mostra PER PASTO (ordine #22, 21/08/2026): le tre righe
+# della testata del pasto, piu' tutti quelli che hanno un fabbisogno in profile.json,
+# perche' sono esattamente quelli di cui si puo' dire «che percentuale mi ha dato».
+# NON sono tutti i 22: sodio, zuccheri e la scomposizione dei grassi hanno un tetto,
+# non un obiettivo, e un tetto per pasto non vuol dire niente — si supera nel giorno,
+# non nella colazione. L'ordine e' quello dell'array emesso in `mn`, e viaggia nel
+# payload come `_mn`: e' l'unico posto dove sta scritto, quindi non puo' divergere.
+MEAL_NUTRIENTS = ("kcal", "protein_g", "carb_g", "fat_g", "fiber_g", "omega3_g",
+                  "potassium_mg", "calcium_mg", "iron_mg", "magnesium_mg", "zinc_mg",
+                  "vitc_mg", "vita_ug", "vitd_ug", "b12_ug", "folate_ug")
+
+
+def arrotonda(v):
+    """Un decimale sui numeri grandi, tre sui piccoli.
+
+    Un decimale fisso e' abbastanza per 2.619,5 kcal e non lo e' per 0,7 g di
+    omega-3: li' l'arrotondamento vale il 7 % del valore. Finche' le percentuali
+    di fabbisogno le calcolava solo Python — sul totale VERO, prima di arrotondare
+    — non si vedeva. Da quando le ricalcola anche la pagina, partendo dal numero
+    arrotondato, le due risposte divergevano: omega-3 al 35 % secondo la pagina e
+    al 37 % secondo il payload, a due centimetri di distanza nello stesso riquadro.
+    Il check di /vita lo ha preso al primo giro.
+
+    Tre decimali sui piccoli costano pochi byte — sono pochi numeri — e tolgono
+    la divergenza alla radice invece di allargare la tolleranza del controllo.
+    """
+    return round(v, 1) if abs(v) >= 10 else round(v, 3)
+
 PLANT_TARGET = 30      # la regola dei 30 vegetali diversi a settimana
 FIBER_TARGET = 30.0    # g/giorno, come da profile.json
 
@@ -205,6 +233,12 @@ def main():
 
     # dettaglio per il popup: per giorno, i pasti con dentro gli alimenti veri
     detail = defaultdict(lambda: defaultdict(list))
+    # I nutrienti PER PASTO, non solo per giorno (ordine #22): «una roba tipo
+    # chronometer che ci ha la colazione con le statistiche totali della colazione».
+    # Non si possono riderivare a valle dalle voci gia' emesse: quelle di Cronometer
+    # — 2.442 su 11.234 — non portano ne' food_id ne' quantita' numerica, solo una
+    # stringa gia' formattata. Quindi si accumulano qui, dove i numeri ci sono.
+    meal_nut = defaultdict(lambda: defaultdict(lambda: {n: 0.0 for n in common.NUTRIENTS}))
     per_day = defaultdict(lambda: {n: 0.0 for n in common.NUTRIENTS})
     plants_of = defaultdict(set)
     kcal_src = defaultdict(lambda: defaultdict(float))
@@ -225,12 +259,15 @@ def main():
             unknown.add(r["food_id"])
             continue
         qty = float(r["qty"])
+        pasto = r.get("meal") or "non_specificato"
         for n in common.NUTRIENTS:
-            per_day[d][n] += f["per_unit"][n] * qty
+            c = f["per_unit"][n] * qty
+            per_day[d][n] += c
+            meal_nut[d][pasto][n] += c
         kcal = f["per_unit"]["kcal"] * qty
         kcal_src[d]["assumed" if r.get("source") == "assunto" else "observed"] += kcal
         items[d] += 1
-        detail[d][r.get("meal") or "non_specificato"].append({
+        detail[d][pasto].append({
             "n": f["name"],
             # id e quantita' NUMERICA dell'alimento. Prima usciva solo la stringa
             # gia' formattata ("150 g"), che basta a disegnare un pasto ma non a
@@ -302,6 +339,12 @@ def main():
                 src_kcal[d][q] = float((v.get("shares") or {}).get(q) or 0.0)
             upf_kcal[d] = float((v.get("shares") or {}).get("upf") or 0.0)
             detail[d] = {m: list(it) for m, it in (v.get("meals") or {}).items()}
+            # Il giorno pieno di Cronometer SOSTITUISCE la ricostruzione, quindi i
+            # totali per pasto si sostituiscono anche loro: sommarli lascerebbe
+            # dentro i pasti ipotizzati che quel giorno non esistono piu'.
+            meal_nut[d] = defaultdict(lambda: {n: 0.0 for n in common.NUTRIENTS})
+            for m, vals in (v.get("meal_nut") or {}).items():
+                meal_nut[d][m] = {n: float(vals.get(n) or 0.0) for n in common.NUTRIENTS}
         else:
             # parziale: le fasce vere si sommano a quello che resta della ricostruzione,
             # e le quote/specie si accumulano invece di azzerare quelle rimaste in piedi
@@ -315,6 +358,11 @@ def main():
             for m, it in (v.get("meals") or {}).items():
                 if m in (v.get("slots") or ()) or m == "in bici":
                     detail[d][m] = list(it)
+                    # solo le fasce che Cronometer sostituisce davvero: le altre
+                    # restano quelle della ricostruzione, totali compresi
+                    vals = (v.get("meal_nut") or {}).get(m)
+                    if vals is not None:
+                        meal_nut[d][m] = {n: float(vals.get(n) or 0.0) for n in common.NUTRIENTS}
         if v.get("fermented"):
             ferm_days.add(d)
 
@@ -571,7 +619,7 @@ def main():
                                        for it in detail[k][m] if it["r"]}),
                     "piatti": [{"m": m, "f": f, "n": nome, "q": q}
                                for (m, f), (nome, q) in sorted(piatti.items())],
-                    "tot": {n: round(t[n], 1) for n in common.NUTRIENTS},
+                    "tot": {n: arrotonda(t[n]) for n in common.NUTRIENTS},
                     "pct": {n: round(100.0 * t[n] / rda[n]) for n in common.NUTRIENTS
                             if rda.get(n)},
                     "cap": {n: round(100.0 * t[n] / v)
@@ -584,15 +632,34 @@ def main():
                 continue
             days[k] = {
                 "meals": {m: v for m, v in detail[k].items()},
-                "tot": {n: round(t[n], 1) for n in common.NUTRIENTS},
+                "tot": {n: arrotonda(t[n]) for n in common.NUTRIENTS},
                 "pct": {n: round(100.0 * t[n] / rda[n]) for n in common.NUTRIENTS
                         if rda.get(n)},
                 "cap": {n: round(100.0 * t[n] / v)
                         for n, v in profile["limits_abs"].items() if v},
+                # I nutrienti PER PASTO (ordine #22). Stanno accanto a `meals` invece
+                # che dentro, cosi' la forma di `meals` — una lista di voci — non
+                # cambia e la pagina che la disegna non se ne accorge.
+                #
+                # Sono un ARRAY nell'ordine di MEAL_NUTRIENTS, dichiarato una volta
+                # sola in `_mn`, non un oggetto con le chiavi per esteso. Con le
+                # chiavi days.json passava da 1,6 a 3,3 MB — raddoppiato — e quel
+                # file la pagina se lo inlina tutto: erano i NOMI a pesare, ripetuti
+                # duemilaottocento volte, non i numeri.
+                #
+                # Le percentuali di fabbisogno NON si emettono: si ricavano dividendo
+                # per `foodProfile.rda`, che la pagina ha gia'. Emetterle sarebbe un
+                # secondo elenco della stessa cosa — la quarta regola della repo — e
+                # sarebbe il secondo a restare indietro.
+                "mn": {m: [arrotonda(mn[n]) for n in MEAL_NUTRIENTS]
+                       for m, mn in meal_nut[k].items() if mn["kcal"] > 0},
                 "obs": r["kcal_observed"], "asm": r["kcal_assumed"],
             }
         # le forme dedotte tornano indietro come oggetti veri, indicizzati per id
         days["_p"] = {pid: json.loads(sig) for sig, pid in profiles.items()}
+        # l'ordine degli array `mn`, scritto una volta sola: chi legge un pasto sa
+        # cosa sono i suoi sedici numeri senza che nessuno debba ricordarselo
+        days["_mn"] = list(MEAL_NUTRIENTS)
         p = Path(args.export_days)
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text(json.dumps(days, ensure_ascii=False, separators=(",", ":")),

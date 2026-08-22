@@ -412,6 +412,14 @@ def build():
             "slots": sorted(slots),
             "partial_nutrients": {k: round(v, 3) for k, v in partial.items()},
             "meals": detail,
+            # I nutrienti per pasto, con le chiavi italiane di `meals` (ordine #22:
+            # i totali della colazione, non solo quelli del giorno). Qui esistono
+            # gia' — `meal_tot` li somma per calcolare i giorni parziali — e vanno
+            # emessi perche' a valle NON si possono riderivare: le voci di
+            # Cronometer portano `q` come stringa gia' formattata ("1 cup"), senza
+            # food_id ne' quantita' numerica.
+            "meal_nut": {MEAL_IT.get(g, g.lower()): {n: round(v, 3) for n, v in vals.items()}
+                         for g, vals in (meal_tot.get(d) or {}).items()},
             "meal_kcal": {MEAL_IT.get(g, g.lower()): round(v["kcal"])
                           for g, v in (meal_tot.get(d) or {}).items()},
             "plants": sorted(plants),

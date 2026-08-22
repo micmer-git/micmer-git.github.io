@@ -563,6 +563,16 @@ def build_payload(raw):
         food_profile = {k: source_profile.get(k) for k in
                         ("weight_kg", "reference_kcal", "protein_g_per_kg",
                          "rda", "limits")}
+        # Il fabbisogno proteico non sta in profile.json: si DERIVA dal peso
+        # (`weight_kg * protein_g_per_kg`), e finora quel calcolo viveva solo in
+        # food/common.py, cioe' solo lato build. Da quando il diario mostra la
+        # percentuale di fabbisogno per pasto (ordine #22) la pagina deve poterlo
+        # dividere anche lei, e senza questa riga le proteine sarebbero l'unico
+        # nutriente senza percentuale — proprio quello che si guarda per primo.
+        if isinstance(food_profile.get("rda"), dict) and source_profile.get("weight_kg"):
+            food_profile["rda"] = dict(food_profile["rda"])
+            food_profile["rda"]["protein_g"] = round(
+                source_profile["weight_kg"] * source_profile.get("protein_g_per_kg", 1.6), 1)
 
     payload = {
         "built": date.today().isoformat(),
@@ -1218,6 +1228,29 @@ TEMPLATE = r"""<!DOCTYPE html>
   .meal li.asm{opacity:.62}
   .meal li.asm::after{content:" ricostruito"; font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;
     font-size:.5rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted)}
+  /* Il pasto si apre: in testa i suoi totali, dentro le voci e le percentuali.
+     Chiuso di default — «se schiaccio vedo i singoli contributi» — cosi' la
+     giornata si legge come cinque righe invece che come trenta. */
+  details.meal>summary{list-style:none; cursor:pointer; display:flex; gap:10px;
+    justify-content:space-between; align-items:baseline; padding:2px 0;
+    border-bottom:1px solid rgba(32,33,36,.10)}
+  details.meal>summary::-webkit-details-marker{display:none}
+  details.meal>summary .mname::before{content:"▸ "}
+  details.meal[open]>summary .mname::before{content:"▾ "}
+  details.meal>summary em{font-style:normal; white-space:nowrap;
+    font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.76rem;
+    color:var(--muted); font-variant-numeric:tabular-nums}
+  /* la ricetta come sotto-gruppo delle sue voci, col proprio subtotale */
+  .mrec{margin:5px 0 2px}
+  .mrec>b{display:flex; justify-content:space-between; gap:10px; font-weight:500;
+    font-size:.82rem; color:var(--ink-soft)}
+  .mrec>b s{text-decoration:none; font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;
+    font-size:.74rem; color:var(--muted); white-space:nowrap}
+  .mrec ul{margin-left:11px; border-left:1px solid rgba(32,33,36,.13); padding-left:8px}
+  .mdens{margin-top:7px}
+  .bar.dens{grid-template-columns:96px 1fr 46px 40px}
+  .bar.dens s{text-decoration:none; text-align:right; color:var(--muted);
+    font-variant-numeric:tabular-nums}
   .bars{display:grid; gap:4px}
   .bar{display:grid; grid-template-columns:96px 1fr 46px; gap:9px; align-items:center;
     font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.74rem; color:var(--ink-soft)}
@@ -2174,13 +2207,58 @@ const CAP_IT = { sodium_mg:"Sodio", satfat_g:"Grassi saturi", sugar_g:"Zuccheri"
    qualcuno dimentichera' di allineare: `_mg` -> mg, `_ug` -> µg, `_g` -> g */
 const UNI_IT = k => { const u = k.split("_").pop(); return u === "ug" ? "µg" : u; };
 
-function bar(label, pct, cap) {
+function bar(label, pct, cap, dens) {
   const w = Math.max(0, Math.min(100, pct));
   /* oltre il 100 % la barra resta piena: misura una copertura. Sui tetti
      (sodio, saturi, zuccheri) il colore vira quando si sfonda. */
   const col = cap ? (pct > 100 ? "var(--neg)" : "var(--s4)")
                   : (pct >= 100 ? "var(--s3)" : pct >= 50 ? "var(--s4)" : "var(--s2)");
-  return `<div class="bar"><u>${label}</u><div><i style="width:${w}%;background:${col}"></i></div><b>${nf(pct, 0)}%</b></div>`;
+  /* `dens` e' la densita' del nutriente in quel pasto: quanta parte del fabbisogno
+     ha dato per ogni parte di calorie che e' costato. E' la quarta colonna, e sta
+     accanto alla percentuale perche' le due si leggono insieme: 30 % del ferro e'
+     un buon 30 se e' costato il 10 delle calorie, ed e' un cattivo 30 se ne e'
+     costato il 40. */
+  return `<div class="bar${dens ? " dens" : ""}"><u>${label}</u>` +
+    `<div><i style="width:${w}%;background:${col}"></i></div><b>${nf(pct, 0)}%</b>` +
+    (dens ? `<s>${dens}</s>` : "") + `</div>`;
+}
+
+/* ---- la regola della densita' nutrizionale --------------------------------
+   Sta scritta in tools/food/profile.json, campo `_note`, ed e' la stessa che
+   regge lo score di densita' del catalogo:
+
+       score = (% del fabbisogno soddisfatto) / (% delle kcal di riferimento)
+
+   Su una dieta di riferimento da `reference_kcal`, 100 kcal valgono il 3,85 %:
+   un alimento che copre il 3,85 % di un nutriente ha score 1, cioe' densita'
+   media. Il doppio fa 2. Applicata a un PASTO risponde alla domanda vera — «per
+   quello che mi e' costato in calorie, quanto mi ha dato?» — che la sola
+   percentuale non risponde. */
+function densita(pctNutriente, kcalPasto, kcalRif) {
+  if (!kcalPasto || !kcalRif) return null;
+  const quotaKcal = 100 * kcalPasto / kcalRif;
+  if (quotaKcal <= 0) return null;
+  return pctNutriente / quotaKcal;
+}
+
+/* I nutrienti di un pasto: l'array compatto `mn` riletto con l'ordine dichiarato
+   in `_mn`, e le percentuali di fabbisogno divise qui invece che nel payload —
+   `rda` e' gia' in `foodProfile`, ed emetterle sarebbe un secondo elenco della
+   stessa cosa. Torna null se quel pasto non ha numeri (le giornate ricostruite
+   non ne hanno: hanno lo schema, non la misura). */
+function mealStats(day, m) {
+  const ord = (D.days || {})._mn, arr = ((day && day.mn) || {})[m];
+  if (!ord || !arr) return null;
+  const rda = ((D.foodProfile || {}).rda) || {};
+  const rif = (D.foodProfile || {}).reference_kcal || 0;
+  const tot = {}, pct = {}, den = {};
+  ord.forEach((n, i) => { tot[n] = arr[i]; });
+  for (const n of ord) {
+    if (!rda[n]) continue;
+    pct[n] = Math.round(100 * tot[n] / rda[n]);
+    den[n] = densita(pct[n], tot.kcal, rif);
+  }
+  return { tot, pct, den };
 }
 
 /* La chiave di `days.json` e' una data di calendario, e va scritta con i campi
@@ -2277,9 +2355,55 @@ function openDay(i) {
         (day.asm ? ` · ${nf(Math.round(100 * day.obs / (day.obs + day.asm)))}% osservato` : "") +
         `</h4>`;
       for (const m of keys) {
-        h += `<div class="meal"><div class="mname">${MEAL_IT[m] || m}</div><ul>` +
-          meals[m].map(it => `<li class="${it.a ? "asm" : ""}"><span>${it.n}${it.r ? ` <u style="color:var(--muted);text-decoration:none">· ${it.r}</u>` : ""}</span><i>${qtxt(it)} · ${nf(it.kcal)} kcal</i></li>`).join("") +
-          `</ul></div>`;
+        const st = mealStats(day, m);
+        const voce = it => `<li class="${it.a ? "asm" : ""}"><span>${it.n}</span>` +
+          `<i>${qtxt(it)} · ${nf(it.kcal)} kcal</i></li>`;
+
+        /* Le voci di una stessa ricetta stanno INSIEME, sotto il suo nome e il suo
+           subtotale — «scrivi fiocchi d'avena, porridge, banana, che mi ripeti la
+           ricetta sotto ognuna». Prima il nome della ricetta era appiccicato a ogni
+           riga, quindi «Porridge» compariva cinque volte di fila e non si capiva
+           quanto pesasse tutto insieme. Le voci sciolte restano dove sono. */
+        const gruppi = [];
+        for (const it of meals[m]) {
+          const capo = gruppi.length ? gruppi[gruppi.length - 1] : null;
+          if (it.r && capo && capo.r === it.r) { capo.items.push(it); continue; }
+          gruppi.push({ r: it.r || "", items: [it] });
+        }
+        const corpo = gruppi.map(g => {
+          if (!g.r) return `<ul>${g.items.map(voce).join("")}</ul>`;
+          const k = g.items.reduce((s, it) => s + (it.kcal || 0), 0);
+          return `<div class="mrec"><b><span>${g.r}</span><s>${nf(k)} kcal</s></b>` +
+            `<ul>${g.items.map(voce).join("")}</ul></div>`;
+        }).join("");
+
+        /* La testata: quanto pesa il pasto, prima di aprirlo. Se i numeri non ci
+           sono (giornata senza `mn`) si mostra solo la somma delle kcal delle voci,
+           che c'e' sempre — meglio un dato solo che una testata che mente. */
+        const kcalVoci = meals[m].reduce((s, it) => s + (it.kcal || 0), 0);
+        const cap = st
+          ? `${nf(st.tot.kcal)} kcal · P ${nf(st.tot.protein_g, 0)} · C ${nf(st.tot.carb_g, 0)} · G ${nf(st.tot.fat_g, 0)}`
+          : `${nf(kcalVoci)} kcal`;
+
+        let dentro = corpo;
+        if (st) {
+          /* «che tipo di percentuale mi ha dato per ogni micro, macro, vitamine
+             rispetto alle percentuali di calorie»: la percentuale di fabbisogno del
+             pasto, e accanto la densita'. */
+          const nn = Object.keys(st.pct);
+          dentro += `<div class="mdens"><div class="bars">` +
+            nn.map(n => {
+              const d = st.den[n];
+              return bar(NUTRI_IT[n] || n, st.pct[n], false,
+                d === null ? "" : "×" + nf(d, d < 10 ? 1 : 0));
+            }).join("") +
+            `</div><p class="hint">La colonna a destra è la <b>densità</b>: quanta parte ` +
+            `del fabbisogno questo pasto ha dato per ogni parte di calorie che è costato. ` +
+            `×1 è la media della dieta di riferimento (${nf((D.foodProfile || {}).reference_kcal)} kcal), ` +
+            `×2 il doppio.</p></div>`;
+        }
+        h += `<details class="meal"><summary><span class="mname">${MEAL_IT[m] || m}</span>` +
+          `<em>${cap}</em></summary>${dentro}</details>`;
       }
       const macro = ["protein_g", "carb_g", "fiber_g", "fat_g"];
       h += `<h4>Macro e micro, in % del fabbisogno</h4><div class="bars">` +
@@ -5811,17 +5935,83 @@ function diaryRender() {
   if (!rows.length) {
     mk("p", "d-empty", diaryIn, "Nessun pasto registrato per questo giorno.");
   } else {
-    let cur = null, box = null;
+    /* IL PASTO SI APRE, come su Chronometer (ordine #22, 21/08/2026):
+       «magari fai una roba tipo chronometer che ci ha la colazione con le statistiche
+       totali della colazione e le ricette. Se schiaccio vedo i singoli contributi».
+
+       Chiuso di default: una giornata raccontata bene sono trenta righe, e trenta
+       righe non si leggono. Chiusa e' cinque righe con sopra quanto pesa ognuna;
+       aperta e' quello che c'era prima, piu' le percentuali di fabbisogno DEL PASTO.
+
+       Le voci di una stessa ricetta stanno insieme sotto il suo nome e il suo
+       subtotale, invece di ripetere «· Porridge» su cinque righe di fila senza mai
+       dire quanto pesa il porridge. */
+    /* Le voci si raggruppano per RICETTA dentro il pasto, e il gruppo si tiene
+       tutte le sue righe anche se nel registro non sono contigue — bastava
+       aggiungere un alimento in mezzo per spezzare il porridge in due porridge,
+       ognuno col subtotale dell'altro. Qui l'ordine dei gruppi e' quello di prima
+       comparsa, cosi' la giornata si legge ancora nell'ordine in cui e' successa. */
+    const gruppiDi = pasto => {
+      const ord = [], per = new Map();
+      for (const r of rows) {
+        if (r.meal !== pasto) continue;
+        const k = r.recipe || ("#sciolta" + ord.length);   /* sciolta: gruppo per se' */
+        if (!per.has(k)) { per.set(k, { r: r.recipe || "", items: [] }); ord.push(k); }
+        per.get(k).items.push(r);
+      }
+      return ord.map(k => per.get(k));
+    };
+
+    let cur = null, box = null, det = null;
     for (const r of rows) {
       if (r.meal !== cur) {
         cur = r.meal;
-        box = mk("div", "meal", diaryIn);
-        mk("div", "mname", box, MEAL_IT[cur] || cur);
+        det = mk("details", "meal", diaryIn);
+        const sum = mk("summary", null, det);
+        mk("span", "mname", sum, MEAL_IT[cur] || cur);
+        const st = mealStats(day, cur);
+        const kcalPasto = rows.filter(x => x.meal === cur)
+                              .reduce((s, x) => s + (x.kcal || 0), 0);
+        mk("em", null, sum, st
+          ? `${nf(st.tot.kcal)} kcal · P ${nf(st.tot.protein_g, 0)} · C ${nf(st.tot.carb_g, 0)} · G ${nf(st.tot.fat_g, 0)}`
+          : `${nf(kcalPasto)} kcal`);
+        box = det;
+        /* le voci, gruppo per gruppo: la ricetta col suo nome e il suo subtotale,
+           le sciolte da sole */
+        for (const g of gruppiDi(cur)) {
+          let dove = det;
+          if (g.r) {
+            const w = mk("div", "mrec", det);
+            const cap = mk("b", null, w);
+            mk("span", null, cap, g.r);
+            mk("s", null, cap,
+               `${nf(g.items.reduce((s, x) => s + (x.kcal || 0), 0))} kcal`);
+            dove = mk("div", null, w);
+          }
+          for (const x of g.items) {
+            const row = mk("div", ["d-row", x.asm ? "asm" : ""].filter(Boolean).join(" "), dove);
+            mk("span", null, row, x.n);
+            mk("b", null, row, String(x.q));
+            mk("em", null, row, `${unitOf(x.f) === "unit" ? "×" : unitOf(x.f)} · ${nf(x.kcal)} kcal`);
+          }
+        }
+        if (st) {
+          const d = mk("div", "mdens", det);
+          const bars = mk("div", "bars", d);
+          bars.innerHTML = Object.keys(st.pct).map(n => {
+            const q = st.den[n];
+            return bar(NUTRI_IT[n] || n, st.pct[n], false,
+              q === null ? "" : "×" + nf(q, q < 10 ? 1 : 0));
+          }).join("");
+          mk("p", "hint", d, "A destra la densità: quanta parte del fabbisogno questo "
+            + "pasto ha dato per ogni parte di calorie che è costato. ×1 è la media "
+            + `della dieta di riferimento (${nf((D.foodProfile || {}).reference_kcal)} kcal).`);
+          /* le barre stanno DOPO le voci, ed e' voluto: prima cosa si e' mangiato,
+             poi cosa ha dato */
+        }
       }
-      const row = mk("div", ["d-row", r.asm ? "asm" : ""].filter(Boolean).join(" "), box);
-      mk("span", null, row, r.n + (r.recipe ? ` · ${r.recipe}` : ""));
-      mk("b", null, row, String(r.q));
-      mk("em", null, row, `${unitOf(r.f) === "unit" ? "×" : unitOf(r.f)} · ${nf(r.kcal)} kcal`);
+      /* le righe le ha gia' scritte `gruppiDi` quando il pasto e' nato: qui non
+         resta niente da fare, e il ciclo serve solo a riconoscere il pasto dopo */
     }
   }
   }

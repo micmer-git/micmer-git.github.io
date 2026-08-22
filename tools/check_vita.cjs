@@ -43,6 +43,24 @@ const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
 const fails = [], notes = [];
 const ok = (cond, msg) => { (cond ? notes : fails).push((cond ? "ok   " : "FAIL ") + msg); };
 
+/* ---- la pagina e' PIU' NUOVA del generatore -------------------------------
+   Il 22/08/2026 `build_vita.py` e' morto su un errore di sintassi e questo check
+   e' passato lo stesso, con 265 ok: stava misurando l'index.html del giro prima.
+   Un check verde su un artefatto vecchio e' peggio di un check rosso, perche'
+   convince. In CI non capita — la Action si ferma sul build — ma in locale il
+   build e il check sono due comandi, e fra i due ci si distrae. */
+{
+  const gen = path.join(__dirname, "build_vita.py");
+  if (fs.existsSync(gen)) {
+    const dp = fs.statSync(PAGE).mtimeMs, dg = fs.statSync(gen).mtimeMs;
+    const min = Math.round((dg - dp) / 60000);
+    ok(dp >= dg,
+      "la pagina e' stata rigenerata dopo l'ultima modifica di build_vita.py" +
+      (dp >= dg ? "" : ` — index.html e' vecchio di ${min} min: il build e' fallito? ` +
+        "rilancia python tools/build_vita.py --offline"));
+  }
+}
+
 /* Il payload viene inlineato dentro <script>: se un nome di attivita' o di
    alimento contenesse "</script" il browser chiuderebbe li' il blocco e la pagina
    resterebbe senza JS — cioe' senza un solo grafico, senza nessun errore visibile
@@ -1238,6 +1256,71 @@ if (ran) {
     const conFood = dia.rows(dayK).rows.find(r => r.f);
     ok(conFood && conFood.id.split("|").length === 3,
       `le righe portano ancora la row_key a tre pezzi (${conFood ? conFood.id : "nessuna"})`);
+
+    /* ---- il pasto si apre, e la sua testata dice il vero (ordine #22) --------
+       Tre invarianti, e la terza e' quella che conta davvero: le percentuali di
+       fabbisogno del GIORNO le calcola Python e le scrive in days.json, quelle del
+       PASTO le calcola la pagina dividendo per `foodProfile.rda`. Sono due formule
+       per la stessa cosa, in due linguaggi: se divergono, il diario mostra due
+       verita' diverse a due centimetri di distanza. Qui si rifa' il conto del
+       giorno con la formula DELLA PAGINA e si pretende che torni quella di Python. */
+    const K = sandbox.CRUSCOTTO, PAY = K.D || K.payload || null;
+    const pasti = node.descendants().filter(n => n.tagName === "details" &&
+      /(^| )meal( |$)/.test(n.className || ""));
+    ok(pasti.length > 0, `ogni pasto e' un blocco apribile (${pasti.length})`);
+    ok(pasti.every(p => p.descendants().some(c => c.tagName === "summary")),
+      "e ogni pasto ha la sua testata, che si legge senza aprirlo");
+
+    const conTot = pasti.filter(p => {
+      const s = p.descendants().find(c => c.tagName === "summary");
+      return s && /\d+\s*kcal/.test((s.descendants().map(x => x.textContent || "").join(" ")));
+    });
+    ok(conTot.length === pasti.length,
+      `la testata di ogni pasto porta le sue kcal (${conTot.length}/${pasti.length})`);
+
+    if (PAY && PAY.days && PAY.days._mn && PAY.foodProfile) {
+      const g = PAY.days[dayK];
+      const rda = PAY.foodProfile.rda || {};
+      if (g && g.mn && g.pct) {
+        const ord = PAY.days._mn;
+        // somma dei pasti, nutriente per nutriente
+        const somma = {};
+        for (const m in g.mn) ord.forEach((n, i) => { somma[n] = (somma[n] || 0) + g.mn[m][i]; });
+        // la formula della PAGINA sul totale del giorno
+        const mio = {}, loro = {};
+        for (const n of ord) {
+          if (!rda[n]) continue;
+          mio[n] = Math.round(100 * (g.tot[n] || 0) / rda[n]);
+          loro[n] = g.pct[n];
+        }
+        const diversi = Object.keys(mio).filter(n => loro[n] !== undefined &&
+          Math.abs(mio[n] - loro[n]) > 1);
+        ok(diversi.length === 0,
+          "le percentuali che calcola la pagina coincidono con quelle scritte da Python"
+          + (diversi.length ? ` — divergono su ${diversi.map(n =>
+              `${n} ${mio[n]} vs ${loro[n]}`).join(", ")}` : ` (${Object.keys(mio).length} nutrienti)`));
+
+        // e i pasti coprono il giorno: se un pasto sparisse, la somma lo direbbe
+        const kIdx = ord.indexOf("kcal");
+        const kPasti = Object.values(g.mn).reduce((s, a) => s + a[kIdx], 0);
+        const kVoci = Object.values(g.meals || {}).flat()
+          .reduce((s, it) => s + (it.kcal || 0), 0);
+        ok(Math.abs(kPasti - kVoci) <= Math.max(5, Object.values(g.meals || {}).flat().length),
+          `i totali dei pasti tornano alle voci che mostrano (${Math.round(kPasti)} vs ${kVoci} kcal)`);
+
+        // la regola della densita', rifatta a mano su un nutriente
+        const rif = PAY.foodProfile.reference_kcal;
+        const m0 = Object.keys(g.mn)[0], a0 = g.mn[m0];
+        const nProt = ord.indexOf("protein_g");
+        if (rif && rda.protein_g && a0[kIdx] > 0) {
+          const pct = 100 * a0[nProt] / rda.protein_g;
+          const atteso = pct / (100 * a0[kIdx] / rif);
+          ok(isFinite(atteso) && atteso > 0,
+            `la densita' si calcola sulla regola di profile.json (proteine di ${m0}: ` +
+            `${atteso.toFixed(1)}x)`);
+        }
+      }
+    }
 
     dia.close();
   }
