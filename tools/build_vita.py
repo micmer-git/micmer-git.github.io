@@ -1282,6 +1282,18 @@ TEMPLATE = r"""<!DOCTYPE html>
   .mrec>b s{text-decoration:none; font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;
     font-size:.74rem; color:var(--muted); white-space:nowrap}
   .mrec ul{margin-left:11px; border-left:1px solid rgba(32,33,36,.13); padding-left:8px}
+  /* La ripartizione dei macro come UNA striscia sola (ordine #27): tre blocchi
+     larghi quanto la loro quota di energia. Si guarda come si guarda una torta,
+     senza leggere tre numeri e sommarli con l'occhio. I colori sono quelli delle
+     serie, cosi' proteine e carboidrati qui e nei grafici sono la stessa cosa. */
+  .macro-striscia{display:flex; height:18px; border-radius:99px; overflow:hidden;
+    margin:7px 0 2px; background:rgba(32,33,36,.06)}
+  .macro-striscia b{display:flex; align-items:center; justify-content:center;
+    font:500 .62rem ui-monospace,'SFMono-Regular',Menlo,monospace; color:var(--paper);
+    min-width:0; overflow:hidden; white-space:nowrap}
+  .macro-striscia b.p{background:var(--s1)}
+  .macro-striscia b.c{background:var(--s2)}
+  .macro-striscia b.g{background:var(--s4)}
   .mdens{margin-top:7px}
   .bar.dens{grid-template-columns:96px 1fr 46px 40px}
   .bar.dens s{text-decoration:none; text-align:right; color:var(--muted);
@@ -2269,6 +2281,31 @@ function bar(label, pct, cap, dens) {
    media. Il doppio fa 2. Applicata a un PASTO risponde alla domanda vera — «per
    quello che mi e' costato in calorie, quanto mi ha dato?» — che la sola
    percentuale non risponde. */
+/* IL SEMAFORO DELLA DENSITA' (ordine #27): «devi mettere le emoji di buon GPT,
+   tipo verde, rosso, giallo, al posto dei 0,7 o quant'altro».
+
+   Aveva ragione: «x0,7» chiede di sapere cos'e' uno, e chi apre il diario alle
+   sette di sera non lo sa. Un pallino lo si legge senza istruzioni. Il numero non
+   sparisce, si sposta nel `title`: chi lo vuole ce l'ha, chi non lo vuole non se
+   lo trova davanti.
+
+   Le soglie stanno attorno a UNO, che e' la densita' media della dieta di
+   riferimento, con una banda di indifferenza in mezzo: sopra 1,5 il pasto ha dato
+   di quel nutriente piu' di quanto sia costato in calorie, sotto 0,7 di meno. Fra
+   i due e' nella media, e colorare di giallo un pasto normale sarebbe un allarme
+   inventato. */
+const SEMAFORO = [
+  [1.5, '🟢', 'denso: ne da\u2019 piu\u2019 di quanto costa'],
+  [0.7, '🟡', 'nella media'],
+  [0,   '🔴', 'diluito: costa piu\u2019 di quanto ne da\u2019'],
+];
+
+function semaforo(d) {
+  if (d === null || d === undefined || !isFinite(d)) return null;
+  for (const s of SEMAFORO) if (d >= s[0]) return { emoji: s[1], che: s[2] };
+  return null;
+}
+
 function densita(pctNutriente, kcalPasto, kcalRif) {
   if (!kcalPasto || !kcalRif) return null;
   const quotaKcal = 100 * kcalPasto / kcalRif;
@@ -6044,7 +6081,16 @@ function diaryRender() {
         if (!per.has(k)) { per.set(k, { r: r.recipe || "", items: [] }); ord.push(k); }
         per.get(k).items.push(r);
       }
-      return ord.map(k => per.get(k));
+      /* «Per quanto riguarda la lista degli ingredienti, metti quelli piu' calorici
+         in cima» (ordine #27). Vale dentro il gruppo e fra i gruppi: quello che pesa
+         si legge per primo, le briciole finiscono in fondo dove stanno bene. L'ordine
+         di prima non diceva niente a nessuno — era quello in cui erano state scritte
+         le righe nel registro. */
+      const gr = ord.map(k => per.get(k));
+      const kcalDi = g => g.items.reduce((s, x) => s + (x.kcal || 0), 0);
+      for (const g of gr) g.items.sort((a, b) => (b.kcal || 0) - (a.kcal || 0));
+      gr.sort((a, b) => kcalDi(b) - kcalDi(a));
+      return gr;
     };
 
     let cur = null, box = null, det = null;
@@ -6076,21 +6122,47 @@ function diaryRender() {
           for (const x of g.items) {
             const row = mk("div", ["d-row", x.asm ? "asm" : ""].filter(Boolean).join(" "), dove);
             mk("span", null, row, x.n);
-            mk("b", null, row, String(x.q));
+            /* «Devi fare un rounding dei grammi» (ordine #27). 66.6667 g non e' una
+               misura: e' l'aritmetica di una ricetta scalata, uscita allo scoperto.
+               Un decimale sotto i 10 — mezza banana, 1,5 brioche — e nessuno sopra. */
+            mk("b", null, row, nf(x.q, x.q < 10 ? 1 : 0));
             mk("em", null, row, `${unitOf(x.f) === "unit" ? "×" : unitOf(x.f)} · ${nf(x.kcal)} kcal`);
           }
         }
         if (st) {
+          /* «Magari mi dai un overview piu' visuale della distribuzione proteina,
+             carbo, grassi» (ordine #27). Una striscia sola, larga quanto il pasto:
+             le tre quote si guardano come si guarda una torta, senza leggere tre
+             numeri e sommarli con l'occhio. Le percentuali sono di ENERGIA, non di
+             peso — 4 kcal al grammo per proteine e carboidrati, 9 per i grassi —
+             perche' la domanda e' da dove arrivano le calorie, non quanto pesa
+             quello che si e' mangiato. */
+          const kp = st.tot.protein_g * 4, kc = st.tot.carb_g * 4, kg = st.tot.fat_g * 9;
+          const tot3 = kp + kc + kg;
+          if (tot3 > 0) {
+            const macro = mk("div", "macro-striscia", det);
+            for (const [q, cls, et] of [[kp, "p", "proteine"], [kc, "c", "carboidrati"],
+                                        [kg, "g", "grassi"]]) {
+              const parte = 100 * q / tot3;
+              if (parte < 0.5) continue;
+              const b = mk("b", cls, macro, Math.round(parte) + "%");
+              b.setAttribute("style", "width:" + parte.toFixed(1) + "%");
+              b.setAttribute("title", et + ": " + Math.round(parte) + "% delle calorie del pasto");
+            }
+          }
           const d = mk("div", "mdens", det);
           const bars = mk("div", "bars", d);
           bars.innerHTML = Object.keys(st.pct).map(n => {
-            const q = st.den[n];
-            return bar(NUTRI_IT[n] || n, st.pct[n], false,
-              q === null ? "" : "×" + nf(q, q < 10 ? 1 : 0));
+            const q = st.den[n], sem = semaforo(q);
+            return bar(NUTRI_IT[n] || n, st.pct[n], false, sem
+              ? `<span title="densità ×${nf(q, q < 10 ? 1 : 0)} — ${sem.che}">${sem.emoji}</span>`
+              : "");
           }).join("");
-          mk("p", "hint", d, "A destra la densità: quanta parte del fabbisogno questo "
-            + "pasto ha dato per ogni parte di calorie che è costato. ×1 è la media "
-            + `della dieta di riferimento (${nf((D.foodProfile || {}).reference_kcal)} kcal).`);
+          mk("p", "hint", d, `A destra la densità: ${SEMAFORO[0][1]} il pasto ha dato `
+            + `più di quel nutriente di quanto sia costato in calorie, ${SEMAFORO[1][1]} è `
+            + `nella media, ${SEMAFORO[2][1]} costa più di quanto dia. Il numero esatto `
+            + `sta sul pallino. Il metro è la dieta di riferimento da `
+            + `${nf((D.foodProfile || {}).reference_kcal)} kcal.`);
           /* le barre stanno DOPO le voci, ed e' voluto: prima cosa si e' mangiato,
              poi cosa ha dato */
         }

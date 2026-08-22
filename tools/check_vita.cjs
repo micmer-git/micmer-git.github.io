@@ -1322,6 +1322,79 @@ if (ran) {
       }
     }
 
+    /* ---- le quattro cose dell'ordine #27 ------------------------------------
+       Ordine per calorie, arrotondamento, semaforo, striscia dei macro. Sono
+       tutte cose che si vedono a occhio, e che a occhio si smette di guardare
+       dopo una settimana: qui restano vere anche fra sei mesi. */
+    {
+      const pastiAp = node.descendants().filter(x => x.tagName === "details" &&
+        /(^| )meal( |$)/.test(x.className || ""));
+
+      /* 1. gli ingredienti scendono dal piu' calorico */
+      let ordinati = true, dove = null;
+      for (const p of pastiAp) {
+        const kc = p.descendants()
+          .filter(x => /(^| )d-row( |$)/.test(x.className || ""))
+          .map(x => {
+            const em = x.descendants().find(y => y.tagName === "em");
+            const m = /([\d.]+)\s*kcal/.exec((em && em.textContent) || "");
+            return m ? parseFloat(m[1]) : null;
+          }).filter(v => v !== null);
+        for (let i = 1; i < kc.length; i++) {
+          if (kc[i] > kc[i - 1] + 0.5) { ordinati = false; dove = kc.join(", "); }
+        }
+      }
+      ok(ordinati, "gli ingredienti di un pasto scendono dal piu' calorico" +
+        (ordinati ? "" : " \u2014 trovato " + dove));
+
+      /* 2. i grammi arrotondati: 66.6667 non e' una misura */
+      const lunghi = node.descendants()
+        .filter(x => x.tagName === "b" && /^[\d.,]+$/.test((x.textContent || "").trim()))
+        .map(x => (x.textContent || "").trim())
+        .filter(t => (t.split(/[.,]/)[1] || "").length > 1);
+      ok(lunghi.length === 0,
+        "nessuna quantita' con piu' di un decimale" +
+        (lunghi.length ? " \u2014 " + lunghi.slice(0, 4).join(", ") : ""));
+
+      /* 3. il semaforo al posto del numero nudo. Non si controlla QUALE emoji —
+         quello e' gusto, e cambiarlo non deve far fallire un check — ma che il
+         numero non sia rimasto li' nudo E che non sia sparito: deve stare nel
+         title, se no si e' persa l'informazione invece di spostarla. */
+      /* Le barre di un pasto si scrivono con innerHTML, quindi nel DOM finto NON
+         sono nodi: si guarda la stringa del contenitore, che e' l'unica cosa che
+         esiste davvero. Cercarle come nodi passava sempre, perche' non ne trovava
+         nessuna \u2014 un controllo che non guarda niente e' peggio di nessun controllo. */
+      const html = pastiAp.flatMap(p => p.descendants())
+        .filter(x => /(^| )bars( |$)/.test(x.className || ""))
+        .map(x => x.innerHTML || "").join("");
+      ok(!!html, "le barre di un pasto ci sono (" + html.length + " caratteri)");
+      if (html) {
+        ok(/title="densit/.test(html),
+          "la densita' esatta non e' sparita: sta nel title del pallino");
+        const nudi = (html.match(/<s>[^<]*<\/s>/g) || [])
+          .filter(t => /^<s>\s*\u00d7?[\d.,]+\s*<\/s>$/.test(t));
+        ok(nudi.length === 0,
+          "e al suo posto non c'e' piu' un numero nudo" +
+          (nudi.length ? " \u2014 " + nudi.slice(0, 3).join(" ") : ""));
+      }
+
+      /* 4. la striscia dei macro, e le tre quote fanno cento */
+      const strisce = pastiAp.flatMap(p => p.descendants())
+        .filter(x => /(^| )macro-striscia( |$)/.test(x.className || ""));
+      ok(strisce.length > 0, "la ripartizione dei macro e' una striscia (" + strisce.length + ")");
+      let peggio = 0;
+      for (const st2 of strisce) {
+        let somma = 0;
+        for (const b of st2.descendants().filter(x => x.tagName === "b")) {
+          const m = /width:([\d.]+)%/.exec(b.attrs.style || "");
+          if (m) somma += parseFloat(m[1]);
+        }
+        peggio = Math.max(peggio, Math.abs(somma - 100));
+      }
+      ok(strisce.length === 0 || peggio < 1.5,
+        "e le tre quote fanno cento (scarto massimo " + peggio.toFixed(1) + " punti)");
+    }
+
     /* ---- l'uscita, e cosa chiede alla tavola (ordine #22) -------------------
        Su un giorno con un'uscita il diario deve dire che uscita era e quanti
        carboidrati quel carico chiede. Il giorno si sceglie qui: `dayK` e' l'ultimo
