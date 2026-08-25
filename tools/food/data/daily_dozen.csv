@@ -92,6 +92,7 @@ semi_di_lino,,10,"⚠️ NESSUN food_id: i semi di lino NON sono nel catalogo. E
 noci_e_semi,mandorle,30,"un quarto di tazza"
 noci_e_semi,noci,30,"Greger le mette davanti a tutte le altre: sono la fonte vegetale di ALA piu' densa del catalogo"
 noci_e_semi,burro_arachidi_sgrassato,16,"due cucchiai di burro di arachidi sono 32 g, ma questo e' sgrassato in polvere: meta' peso per pari proteine, e i grassi buoni non ci sono piu'. Conta a meta'"
+noci_e_semi,semi_misti,30,"il mix di semi sullo yogurt: lino e chia dentro contano, ma solo se MACINATI - interi passano interi, ed e' il motivo per cui questa riga non spunta anche la casella semi_di_lino"
 erbe_e_spezie,curry_polvere,1,"il curry contiene curcuma: e' la voce del catalogo piu' vicina a quello che Greger chiede (un quarto di cucchiaino di curcuma al giorno). Manca la curcuma pura"
 erbe_e_spezie,cumino_semi,1,
 erbe_e_spezie,basilico,2,"fresco: la porzione a peso e' piu' alta di quella di una spezia secca"

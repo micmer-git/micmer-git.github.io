@@ -598,3 +598,52 @@ date,meal,food_id,qty,note,source
 2026-08-22,cena,pane_integrale,140,"«stasera avo toast 2 uova e mezza»: scomposto invece di usare la ricetta avocado_toast, che porta 3 uova. Il pane della ricetta, 2 fette. Dichiarato prima di mangiarlo. Ordine MC #41",dichiarato
 2026-08-22,cena,avocado,100,"«stasera avo toast»: l'avocado della ricetta. Dichiarato prima di mangiarlo. Ordine MC #41",dichiarato
 2026-08-22,cena,uovo_intero,2.5,"«2 uova e mezza». Dichiarato prima di mangiarlo. Ordine MC #41",dichiarato
+2026-08-22,spuntino,pane_bianco,60,"«nella notte 22-23 il solito latte con un pane e marmellate, burro d'arachidi e una banana»: messa sul 22, come si e' fatto per la notte 21-22. «un pane» senza tipo: bianco come il 21. Quantita' stimata. Ordine MC #47",dichiarato
+2026-08-22,spuntino,marmellata_fragola,20,"«marmellate» della notte 22-23: quantita' stimata, 20 g come le altre notti. Ordine MC #47",dichiarato
+2026-08-22,spuntino,burro_arachidi_sgrassato,15,"il burro d'arachidi della notte 22-23: un cucchiaio, 15 g come il 14 e 15/08. Ordine MC #47",dichiarato
+2026-08-22,spuntino,latte_ps,200,"«il solito latte» della notte 22-23: parzialmente scremato (il 21 aveva specificato «scremato», qui no). 200 ml, la tazza gia' stimata le altre notti. Ordine MC #47",dichiarato
+2026-08-22,spuntino,banana,1,"«e una banana», notte 22-23. Ordine MC #47",dichiarato
+2026-08-23,colazione,recipe:porridge_banana_cioccolato_peanut,1,«oltre al solito porridge la mattina». Ordine MC #47,dichiarato
+2026-08-23,spuntino,banana,1,la banana della mattinata del 23. Ordine MC #47,dichiarato
+2026-08-23,spuntino,pane_integrale,70,"«una fetta di pane», tipo non specificato: letto integrale, che e' il suo piu' frequente. 70 g a fetta e' l'equivalenza che ha gia' dichiarato nella ricetta avocado toast. Ordine MC #47",dichiarato
+2026-08-23,spuntino,burro_arachidi_sgrassato,15,"«un cucchiaio di burro d'arachidi»: 15 g, come il 14 e 15/08. Ordine MC #47",dichiarato
+2026-08-23,spuntino,pesca,1,«una pesca». Ordine MC #47,dichiarato
+2026-08-23,spuntino,cornetto_crema,1,«una croissant con la crema». Ordine MC #47,dichiarato
+2026-08-23,spuntino,crostata_frutta,50,"«una crostatina con la crema»: la crostatina alla crema non e' a catalogo, la crostata di frutta e' la voce piu' vicina per impasto e macro (sposta gli zuccheri della frutta al posto della crema, non le calorie). 50 g = una monoporzione, stimata. Ordine MC #47",dichiarato
+2026-08-23,spuntino,frutti_di_bosco,80,«un po' di frutti di bosco»: quantita' stimata. Ordine MC #47,dichiarato
+2026-08-23,pranzo,fiocchi_latte_magri,150,"«150 g di fiocchi proteici, quelli da 67 kcal»: voce nuova a catalogo (fiocchi di latte magri), le 67 kcal/100 g sono le sue. Ordine MC #47",dichiarato
+2026-08-23,pranzo,proteine_whey,12,«12 g di proteine». Ordine MC #47,dichiarato
+2026-08-23,pranzo,pomodorini,250,«250 g di pomodorini misti con un po' di origano»: l'origano non e' a catalogo e non sposta niente. Ordine MC #47,dichiarato
+2026-08-23,pranzo,pane_integrale,140,"«due fette di pane»: 70 g a fetta, tipo non specificato letto integrale come al mattino. Ordine MC #47",dichiarato
+2026-08-23,merenda,mela,1,"«una mela», pomeriggio del 23. Ordine MC #47",dichiarato
+2026-08-23,merenda,pane_integrale,70,"«una fetta di pane», pomeriggio: 70 g, stessa lettura del mattino. Ordine MC #47",dichiarato
+2026-08-23,merenda,spinaci,200,«palak 200g»: palak e' lo spinacio. Peso dichiarato. Ordine MC #47,dichiarato
+2026-08-23,merenda,farro_perlato,25,"«70 g di farro cotto»: il catalogo pesa il farro A CRUDO (340 kcal/100 g) e cotto pesa circa 2,8 volte tanto, quindi 70 g cotti valgono ~25 g a crudo. Registrare 70 avrebbe quasi triplicato il piatto. Ordine MC #47",dichiarato
+2026-08-23,merenda,olive,20,«con qualche oliva»: quantita' stimata. Ordine MC #47,dichiarato
+2026-08-23,merenda,banana,1,"la seconda banana del 23, pomeriggio. Ordine MC #47",dichiarato
+2026-08-23,merenda,gallette_riso,10,«una galletta»: ~10 g come il 14/08. Tipo non specificato: riso. Ordine MC #47,dichiarato
+2026-08-23,merenda,yogurt_greco_0,150,«150 g di yogurt greco». Ordine MC #47,dichiarato
+2026-08-23,merenda,semi_misti,15,"«con un mix di semi»: voce nuova a catalogo, quale mix non e' detto. 15 g stimati. ATTENZIONE: la frase prosegue con «e una manciata» e li' si interrompe - la manciata di COSA non e' stata registrata, va chiesta. Ordine MC #47",dichiarato
+2026-08-23,merenda,farina_ceci,30,«30 g di farina di ceci con acqua»: la sua farinata. Peso dichiarato. Ordine MC #47,dichiarato
+2026-08-23,merenda,pera,1,«e una pera». Ordine MC #47,dichiarato
+2026-08-23,spuntino,cornetto_crema,1.2,"«ieri sera una torta anche tipo mille sfoglie piccola», detto il 24 e quindi riferito alla sera del 23. Il millefoglie non e' a catalogo: cornetto/pasticcino con crema e' la voce piu' vicina (sfoglia lievitata + crema), 1,2 unita' ~ 95 g per un millefoglie piccolo. Messo fra gli spuntini e NON a cena, perche' era un dolce dopo cena e la cena del 23 non l'ha raccontata: occupare quella fascia avrebbe cancellato la ricostruzione invece di aggiungerci un dolce. Ordine MC #47",dichiarato
+2026-08-24,colazione,recipe:porridge_banana_cioccolato_peanut,1,«il solito porridge alla mattina». Ordine MC #47,dichiarato
+2026-08-24,spuntino,gallette_riso,27,"«3 gallette»: ~9 g l'una, come il 19 e il 22/08. Ordine MC #47",dichiarato
+2026-08-24,spuntino,banana,1,«una banana» dello snack di mattina. Ordine MC #47,dichiarato
+2026-08-24,spuntino,burro_arachidi_sgrassato,8,"«un cucchiaino di peanut butter come snack»: il cucchiaino vale ~8 g, il cucchiaio 15. Ordine MC #47",dichiarato
+2026-08-24,spuntino,uovo_intero,1,«un uovo sodo». Ordine MC #47,dichiarato
+2026-08-24,spuntino,pesca,1,«e una pesca». Ordine MC #47,dichiarato
+2026-08-24,pranzo,uovo_intero,2.5,"«a pranzo mangero' una tortiglia di patate e cipolle e uova. Considera tipo due uova e mezza». Dichiarato in ANTICIPO la mattina del 24. L'ordine #46 riporta com'e' andato davvero il pranzo del 24, ma quel testo non e' piu' leggibile dal pannello (ordine chiuso): se e' cambiato qualcosa, questa e' la prima riga da correggere. Ordine MC #47",dichiarato
+2026-08-24,pranzo,patate,300,"«due patate»: ~150 g l'una, stimate. Dichiarato in anticipo, vedi la riga delle uova. Ordine MC #47",dichiarato
+2026-08-24,pranzo,cipolla,50,«e meta' cipolla»: ~50 g stimati (la cipolla intera del 22/08 valeva 100 g). Ordine MC #47,dichiarato
+2026-08-24,pranzo,avocado,150,"«con un avocado»: intero, ~150 g edibili - non i 100 g della ricetta avocado toast, li' e' mezzo. Ordine MC #47",dichiarato
+2026-08-24,pranzo,pane_integrale,70,"«e un pezzo di pane»: 70 g, la sua fetta. Ordine MC #47",dichiarato
+2026-08-24,spuntino,barretta_proteica,1,"«la barretta in bici»: il carburante vero dell'uscita Mercatorum del 24 (2h02, 42 km, 1152 m). Sostituisce il panino automatico che la regola delle uscite oltre l'ora avrebbe messo qui. Ordine MC #48",dichiarato
+2026-08-24,spuntino,pane_integrale,140,"«le fette in bici»: due fette da 70 g, quantita' STIMATA - l'ordine #46 col testo esatto non e' piu' leggibile dal pannello, e' arrivata solo la sintesi dell'ordine #48. Insieme alla barretta sostituisce il panino automatico dell'uscita in bici. Ordine MC #48",dichiarato
+2026-08-24,spuntino,banana,1,"«banana e peanut butter post-ride», dopo l'uscita Mercatorum. Si somma alla banana della mattina. Ordine MC #48",dichiarato
+2026-08-24,spuntino,burro_arachidi_sgrassato,15,"«peanut butter post-ride»: un cucchiaio, 15 g. Quantita' stimata. Ordine MC #48",dichiarato
+2026-08-24,cena,recipe:pizza_semplice,1,"«stasera mangero' una pizza senza mozzarella, bresaola, rucola e grana»: e' esattamente la ricetta pizza_semplice (base + 70 g bresaola + 30 g rucola + 25 g grana), quella che ha dichiarato l'11/08. Detto in anticipo. Ordine MC #47",dichiarato
+2026-08-24,spuntino,pane_bianco,60,"«durante la notte sempre il solito spuntino con pane, latte e peanut butter e marmellata»: notte 24-25, messa sul 24 come tutte le altre notti. Quantita' stimata. Ordine MC #47",dichiarato
+2026-08-24,spuntino,latte_ps,200,"il latte della notte 24-25: 200 ml, la tazza stimata. Ordine MC #47",dichiarato
+2026-08-24,spuntino,burro_arachidi_sgrassato,15,"il peanut butter della notte 24-25: un cucchiaio, 15 g. Ordine MC #47",dichiarato
+2026-08-24,spuntino,marmellata_fragola,20,la marmellata della notte 24-25: 20 g stimati. Ordine MC #47,dichiarato

@@ -1,5 +1,5 @@
 {
- "ok": false,
+ "ok": true,
  "partizione": {
   "ok": true,
   "scarto_max": 0.1,
@@ -7,11 +7,11 @@
   "giorni_fuori": 0,
   "tolleranza": 1.0
  },
- "ultimo_giorno": "2026-08-22",
- "giorni_a_secco": 3,
+ "ultimo_giorno": "2026-08-24",
+ "giorni_a_secco": 1,
  "soglia": 2,
- "righe": 599,
- "giorni": 95,
+ "righe": 648,
+ "giorni": 97,
  "letto": "2026-08-25",
  "dove_si_annota": "https://micmer-mission.pages.dev — pannello Vita"
 }
