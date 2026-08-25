@@ -647,3 +647,19 @@ date,meal,food_id,qty,note,source
 2026-08-24,spuntino,latte_ps,200,"il latte della notte 24-25: 200 ml, la tazza stimata. Ordine MC #47",dichiarato
 2026-08-24,spuntino,burro_arachidi_sgrassato,15,"il peanut butter della notte 24-25: un cucchiaio, 15 g. Ordine MC #47",dichiarato
 2026-08-24,spuntino,marmellata_fragola,20,la marmellata della notte 24-25: 20 g stimati. Ordine MC #47,dichiarato
+2026-08-25,colazione,recipe:porridge_banana_cioccolato_peanut,1,«solito porridge mattina»; ricetta abituale già dichiarata,dichiarato
+2026-08-25,pranzo,riso_bianco,70,«riso alla messicana 200 g»: interpretato come peso cotto; ~70 g crudi. Se i 200 g erano solo riso cotto oltre a fagioli e peperoni questa equivalenza resta corretta,dichiarato
+2026-08-25,pranzo,fagioli_neri_scatola,60,componente stimata dentro 200 g di riso alla messicana con fagioli e peperoni,dichiarato
+2026-08-25,pranzo,peperoni,50,componente stimata dentro 200 g di riso alla messicana con fagioli e peperoni,dichiarato
+2026-08-25,pranzo,farina_ceci,120,quantità dichiarata,dichiarato
+2026-08-25,pranzo,pomodorini,450,«3 pomodori»: ~150 g ciascuno come convenzione del registro,dichiarato
+2026-08-25,spuntino,pera,1.5,«2 piccole pere»: equivalenti a ~1.5 pere medie del catalogo,dichiarato
+2026-08-25,spuntino,banana,2,due banane dichiarate oltre alla banana già inclusa nel porridge,dichiarato
+2026-08-25,cena,patate,300,«2 patate»: ~150 g ciascuna come convenzione recente del registro,dichiarato
+2026-08-25,cena,uovo_intero,3,tre uova dichiarate,dichiarato
+2026-08-25,cena,cipolla,100,«1 cipolla»: ~100 g come convenzione del registro,dichiarato
+2026-08-25,spuntino,pesca,1,una pesca dichiarata,dichiarato
+2026-08-25,spuntino,mela,0.5,mezza mela dichiarata,dichiarato
+2026-08-25,spuntino,protein_pudding_90,1,protein pudding da 90 kcal; marca e macro non dichiarati,dichiarato
+2026-08-25,spuntino,gallette_riso,18,«due gallette»: ~9 g ciascuna come convenzione del registro,dichiarato
+2026-08-25,spuntino,latte_scremato,100,100 ml di latte; letto scremato dal contesto abituale recente,dichiarato

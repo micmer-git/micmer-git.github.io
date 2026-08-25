@@ -5803,17 +5803,29 @@ document.getElementById("tracks").innerHTML = (D.tracks || []).map(t => `
 /* ------------------------------------------------------------- headline */
 (function totals() {
   const F=D.nutri||{}, mean=(a,lo,hi)=>{const s=stats((a||[]).slice(Math.max(0,lo),hi+1));return s?s.mean:null;};
+  /* Il cibo può correre avanti all'orologio. Se negli ultimi 14 giorni di calendario
+     ci sono meno di sette misure wellness, la testata usa i 14 giorni che finiscono
+     sull'ultima misura reale; non fa sparire sonno/HRV/FC solo perché il diario è più
+     fresco. Allenamento e tavola restano invece ancorati a oggi. */
+  const window14=(arr,anchorLast)=>{
+    let hi=N-1;
+    if(anchorLast){
+      const recent=(arr||[]).slice(Math.max(0,N-14),N).filter(v=>v!=null&&isFinite(v));
+      if(recent.length<7) for(let i=N-1;i>=0;i--) if(arr&&arr[i]!=null&&isFinite(arr[i])){hi=i;break;}
+    }
+    return {now:mean(arr,hi-13,hi),prior:mean(arr,hi-27,hi-14),hi};
+  };
   const delta=(a,b)=>a==null||b==null||b===0?null:100*(a-b)/Math.abs(b);
   const fd=d=>d==null?"—":`${d>=0?"+":""}${nf(d,0)}%`;
   const km=new Array(N).fill(0), mins=new Array(N).fill(0), tss=new Array(N).fill(0);
   D.acts.forEach(a=>{if(a[0]>=0&&a[0]<N){mins[a[0]]+=(a[2]||0)/60;km[a[0]]+=(a[3]||0)/1000;tss[a[0]]+=a[5]||0;}});
-  const defs=[["sonno",D.sleep,hhmm,0,0],["HRV",D.hrv,v=>nf(v,0)+" ms",0,0],
-    ["FC riposo",D.rhr,v=>nf(v,0)+" bpm",1,0],["passi",D.steps,v=>nf(v,0),0,0],
+  const defs=[["sonno",D.sleep,hhmm,0,0,1],["HRV",D.hrv,v=>nf(v,0)+" ms",0,0,1],
+    ["FC riposo",D.rhr,v=>nf(v,0)+" bpm",1,0,1],["passi",D.steps,v=>nf(v,0),0,0,1],
     ["allenamento",mins,v=>nf(v,0)+" min/g",0,0],["chilometri",km,v=>nf(v,1)+" km/g",0,0],
     ["carico",tss,v=>nf(v,0)+" TSS/g",0,0],["kcal",F.kcal,v=>nf(v,0),0,1],
     ["proteine",F.protein_g,v=>nf(v,0)+" g",0,1],["carboidrati",F.carb_g,v=>nf(v,0)+" g",0,1],
     ["fibre",F.fiber_g,v=>nf(v,1)+" g",0,1],["vegetale",F.pct_plant,v=>nf(v,0)+"%",0,1]];
-  const items=defs.map(([label,arr,fmt,invert,food])=>{const now=mean(arr,N-14,N-1),prior=mean(arr,N-28,N-15);return{label,arr,now,prior,d:delta(now,prior),fmt,invert,food};}).filter(x=>x.now!=null);
+  const items=defs.map(([label,arr,fmt,invert,food,anchorLast])=>{const w=window14(arr,anchorLast);return{label,arr,now:w.now,prior:w.prior,d:delta(w.now,w.prior),fmt,invert,food,through:w.hi};}).filter(x=>x.now!=null);
   const render=xs=>xs.map(x=>{const good=x.d!=null&&(x.invert?x.d<0:x.d>0),tag=x.food?"button":"div";return `<${tag} class="total" ${x.food?`type="button" data-food="${x.label}"`:''}><div class="n">${x.fmt(x.now)}</div><div class="l">${x.label}</div><div class="d ${x.d==null||x.neutro?'':good?'up':'down'}">${fd(x.d)} vs prima</div></${tag}>`;}).join("");
   document.getElementById("totals-recovery").innerHTML=render(items.filter(x=>!x.food));
   document.getElementById("totals-food").innerHTML=render(items.filter(x=>x.food));
