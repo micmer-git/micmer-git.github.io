@@ -630,7 +630,7 @@ date,meal,food_id,qty,note,source
 2026-08-24,colazione,recipe:porridge_banana_cioccolato_peanut,1,«il solito porridge alla mattina». Ordine MC #47,dichiarato
 2026-08-24,spuntino,gallette_riso,27,"«3 gallette»: ~9 g l'una, come il 19 e il 22/08. Ordine MC #47",dichiarato
 2026-08-24,spuntino,banana,1,«una banana» dello snack di mattina. Ordine MC #47,dichiarato
-2026-08-24,spuntino,burro_arachidi_sgrassato,8,"«un cucchiaino di peanut butter come snack»: il cucchiaino vale ~8 g, il cucchiaio 15. Ordine MC #47",dichiarato
+2026-08-24,spuntino,burro_arachidi,8,"«un cucchiaino di peanut butter come snack»: il cucchiaino vale ~8 g, il cucchiaio 15 - grammatura CONFERMATA da Michele il 25/08 (ordine MC #53). Tipo corretto in crema normale: «a parte a colazione solitamente e' burro arachidi normale»",dichiarato
 2026-08-24,spuntino,uovo_intero,1,«un uovo sodo». Ordine MC #47,dichiarato
 2026-08-24,spuntino,pesca,1,«e una pesca». Ordine MC #47,dichiarato
 2026-08-24,pranzo,uovo_intero,2.5,"«a pranzo mangero' una tortiglia di patate e cipolle e uova. Considera tipo due uova e mezza». Dichiarato in ANTICIPO la mattina del 24. L'ordine #46 riporta com'e' andato davvero il pranzo del 24, ma quel testo non e' piu' leggibile dal pannello (ordine chiuso): se e' cambiato qualcosa, questa e' la prima riga da correggere. Ordine MC #47",dichiarato
@@ -639,13 +639,13 @@ date,meal,food_id,qty,note,source
 2026-08-24,pranzo,avocado,150,"«con un avocado»: intero, ~150 g edibili - non i 100 g della ricetta avocado toast, li' e' mezzo. Ordine MC #47",dichiarato
 2026-08-24,pranzo,pane_integrale,70,"«e un pezzo di pane»: 70 g, la sua fetta. Ordine MC #47",dichiarato
 2026-08-24,spuntino,barretta_proteica,1,"«la barretta in bici»: il carburante vero dell'uscita Mercatorum del 24 (2h02, 42 km, 1152 m). Sostituisce il panino automatico che la regola delle uscite oltre l'ora avrebbe messo qui. Ordine MC #48",dichiarato
-2026-08-24,spuntino,pane_integrale,140,"«le fette in bici»: due fette da 70 g, quantita' STIMATA - l'ordine #46 col testo esatto non e' piu' leggibile dal pannello, e' arrivata solo la sintesi dell'ordine #48. Insieme alla barretta sostituisce il panino automatico dell'uscita in bici. Ordine MC #48",dichiarato
+2026-08-24,spuntino,pane_integrale,140,"«le fette in bici»: due fette da 70 g, CONFERMATE da Michele il 25/08 (ordine MC #53) - non piu' una stima. Insieme alla barretta sostituisce il panino automatico dell'uscita in bici. Ordine MC #48",dichiarato
 2026-08-24,spuntino,banana,1,"«banana e peanut butter post-ride», dopo l'uscita Mercatorum. Si somma alla banana della mattina. Ordine MC #48",dichiarato
-2026-08-24,spuntino,burro_arachidi_sgrassato,15,"«peanut butter post-ride»: un cucchiaio, 15 g. Quantita' stimata. Ordine MC #48",dichiarato
+2026-08-24,spuntino,burro_arachidi,15,"«peanut butter post-ride»: un cucchiaio, 15 g - CONFERMATO da Michele il 25/08 (ordine MC #53). Tipo corretto in crema normale, non polvere sgrassata",dichiarato
 2026-08-24,cena,recipe:pizza_semplice,1,"«stasera mangero' una pizza senza mozzarella, bresaola, rucola e grana»: e' esattamente la ricetta pizza_semplice (base + 70 g bresaola + 30 g rucola + 25 g grana), quella che ha dichiarato l'11/08. Detto in anticipo. Ordine MC #47",dichiarato
 2026-08-24,spuntino,pane_bianco,60,"«durante la notte sempre il solito spuntino con pane, latte e peanut butter e marmellata»: notte 24-25, messa sul 24 come tutte le altre notti. Quantita' stimata. Ordine MC #47",dichiarato
 2026-08-24,spuntino,latte_ps,200,"il latte della notte 24-25: 200 ml, la tazza stimata. Ordine MC #47",dichiarato
-2026-08-24,spuntino,burro_arachidi_sgrassato,15,"il peanut butter della notte 24-25: un cucchiaio, 15 g. Ordine MC #47",dichiarato
+2026-08-24,spuntino,burro_arachidi,15,"il peanut butter della notte 24-25: un cucchiaio, 15 g. Tipo corretto in crema normale (commento all'ordine MC #53)",dichiarato
 2026-08-24,spuntino,marmellata_fragola,20,la marmellata della notte 24-25: 20 g stimati. Ordine MC #47,dichiarato
 2026-08-25,colazione,recipe:porridge_banana_cioccolato_peanut,1,«solito porridge mattina»; ricetta abituale già dichiarata,dichiarato
 2026-08-25,pranzo,riso_bianco,70,«riso alla messicana 200 g»: interpretato come peso cotto; ~70 g crudi. Se i 200 g erano solo riso cotto oltre a fagioli e peperoni questa equivalenza resta corretta,dichiarato
@@ -663,3 +663,32 @@ date,meal,food_id,qty,note,source
 2026-08-25,spuntino,protein_pudding_90,1,protein pudding da 90 kcal; marca e macro non dichiarati,dichiarato
 2026-08-25,spuntino,gallette_riso,18,«due gallette»: ~9 g ciascuna come convenzione del registro,dichiarato
 2026-08-25,spuntino,latte_scremato,100,100 ml di latte; letto scremato dal contesto abituale recente,dichiarato
+2026-08-26,colazione,recipe:porridge_banana_cioccolato_peanut,1,«oltre alla colazione solita»: la ricetta abituale del mattino. Ordine MC #61,dichiarato
+2026-08-26,colazione,banana,1,"«una banana» oltre alla colazione solita: si somma a quella gia' dentro il porridge, come il 25/08. Ordine MC #61",dichiarato
+2026-08-26,colazione,pesca,2,«e due pesche» oltre alla colazione solita. Ordine MC #61,dichiarato
+2026-08-26,pranzo,pane_integrale,140,"«il solito avocado toast»: le due fette della ricetta avocado_toast. La ricetta NON e' usata come tale perche' lui la corregge («pero' con due uova»), e la ricetta ne porta tre. Ordine MC #61",dichiarato
+2026-08-26,pranzo,avocado,100,"l'avocado dell'avocado toast: 100 g, mezzo, come nella ricetta a catalogo. Ordine MC #61",dichiarato
+2026-08-26,pranzo,uovo_intero,2,"«pero' con due uova»: due, non le tre della ricetta avocado_toast. Ordine MC #61",dichiarato
+2026-08-26,pranzo,albume,100,«e 100 ml di bianco d'uovo»: quantita' dichiarata. Ordine MC #61,dichiarato
+2026-08-26,spuntino,proteine_whey,40,"«il pomeriggio sempre il pasticcio che ti ho detto»: stessa preparazione della colazione del 27. Michele dichiara 65 g di polveri IN TOTALE; lo spacco 40 proteine / 25 avena e' STIMATO, solo il totale e' suo. Ordine MC #61",dichiarato
+2026-08-26,spuntino,avena_fiocchi,25,"l'avena del pasticcio del pomeriggio: 25 g, parte stimata dei 65 g di polveri dichiarati. Ordine MC #61",dichiarato
+2026-08-26,spuntino,carote,60,"le carote del pasticcio del pomeriggio: lette come carota VERA, non in polvere; 60 g stimati. Se erano polvere disidratata il valore va rivisto. Ordine MC #61",dichiarato
+2026-08-26,spuntino,fragole,50,"le fragole del pasticcio del pomeriggio: lette come frutta vera, 50 g stimati. Ordine MC #61",dichiarato
+2026-08-26,spuntino,latte_ps,100,"il latte del pasticcio: «un po' di latte» e' detto per quello del 27, e questo e' «sempre il pasticcio che ti ho detto». 100 ml stimati. Ordine MC #61",dichiarato
+2026-08-26,spuntino,pesca,1,«e una pesca» del pomeriggio. Ordine MC #61,dichiarato
+2026-08-26,spuntino,recipe:panino_peanut_marmellata,2,"«durante il giro in bici due panini»: stessa lettura del 17/08, dove «soliti due panini» rimandava a questa ricetta. NOTA: la ricetta porta burro_arachidi_sgrassato, ma dal commento all'ordine #53 fuori colazione e' crema normale — correzione da fare sulla ricetta, non su questa riga. Ordine MC #61",dichiarato
+2026-08-26,spuntino,cappuccino,1,"«un latte macchiato»: il latte macchiato non e' a catalogo, il cappuccino (~150 ml, stessa base latte+caffe') e' la voce piu' vicina. Ordine MC #61",dichiarato
+2026-08-26,spuntino,crostata_frutta,120,"«una crostata»: 120 g, la fetta che ha gia' dichiarato piu' volte. E' la «torta» annunciata in anticipo nell'ordine #55. Ordine MC #61",dichiarato
+2026-08-26,spuntino,mela,1,"«dopo la bici una mela»: snack post-uscita, distinto da quello della notte. Ordine MC #61",dichiarato
+2026-08-26,spuntino,banana,1,«dopo la bici una banana». Si somma alla banana della colazione. Ordine MC #61,dichiarato
+2026-08-26,spuntino,gallette_riso,18,"«dopo la bici due gallette»: ~9 g l'una, come da convenzione del registro. Ordine MC #61",dichiarato
+2026-08-26,spuntino,burro_arachidi,15,"«e un cucchiaio di peanut butter» dopo la bici: 15 g, crema normale — fuori colazione e' quella (commento all'ordine #53). Ordine MC #61",dichiarato
+2026-08-26,cena,protein_pudding_90,1,"«a cena il patin proteico»: letto come il protein pudding da 90 kcal gia' a catalogo, lo stesso del 25/08. Ordine MC #61",dichiarato
+2026-08-26,cena,pera,1,«e una pera». Ordine MC #61,dichiarato
+2026-08-26,spuntino,banana,1,"«nella notte ancora una banana»: notte 26-27, messa sul 26 come tutte le altre notti del registro. Ordine MC #61",dichiarato
+2026-08-26,spuntino,gallette_riso,18,"«due gallette» della notte 26-27: ~9 g l'una. Ordine MC #61",dichiarato
+2026-08-27,colazione,proteine_whey,40,"«colazione del 27, solita: nella notte un pasticcio di polveri di proteina, avena, carote e fragola. Considera in totale 65 g di polveri». Mangiato di notte ma messo sul 27 perche' e' Michele stesso a chiamarlo «colazione del 27»: la convenzione notte-sul-giorno-prima vale quando la data la decide chi annota, non lui. Lo spacco 40 proteine / 25 avena e' STIMATO, i 65 g totali sono dichiarati. Ordine MC #61",dichiarato
+2026-08-27,colazione,avena_fiocchi,25,"l'avena del pasticcio: 25 g, parte stimata dei 65 g di polveri dichiarati. Ordine MC #61",dichiarato
+2026-08-27,colazione,carote,60,"le carote del pasticcio: lette come carota VERA, non in polvere; 60 g stimati. Ordine MC #61",dichiarato
+2026-08-27,colazione,fragole,50,"le fragole del pasticcio: lette come frutta vera, 50 g stimati. Ordine MC #61",dichiarato
+2026-08-27,colazione,latte_ps,100,«un po' di latte»: 100 ml stimati. Ordine MC #61,dichiarato

@@ -113,3 +113,4 @@ bevande,caffe_espresso,340,"Greger conta un bicchiere da 340 ml; un espresso e' 
 bevande,masala_chai,340,"il te' e' fra le bevande che Greger consiglia per primo; lo zucchero del chai no"
 bevande,cappuccino,150,"mezza porzione: e' latte, non acqua"
 esercizio,,,"NON e' un alimento e non ha food_id. Greger chiede 90 minuti di attivita' moderata o 40 vigorosa al giorno. Il dato per spuntare questa casella esiste gia' in /vita ma da un'altra parte: sono le attivita' di intervals.icu (activities.csv), non il diario alimentare. Chi disegna il grafico deve andarselo a prendere li'"
+noci_e_semi,burro_arachidi,32,"due cucchiai di burro di arachidi sono 32 g: questa e' la crema intera, quindi vale la porzione piena (la versione sgrassata in polvere conta a meta')"
