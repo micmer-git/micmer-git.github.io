@@ -727,3 +727,6 @@ date,meal,food_id,qty,note,source
 2026-08-27,spuntino,banana,1,"«una banana» della notte 27-28. Si somma a quella del reintegro post-corsa e a quella dentro il porridge. Ordine MC #63",dichiarato
 2026-08-27,spuntino,gallette_riso,18,"«due gallette» della notte 27-28: ~9 g l'una, convenzione del registro. Ordine MC #63",dichiarato
 2026-08-27,spuntino,yogurt_greco_0,150,"«150 g di yoghurt greco» della notte 27-28: quantita' dichiarata. Ordine MC #63",dichiarato
+2026-08-24,pranzo,insalata_mista,60,"«un po' di insalata»: le parole dell'ordine MC #46, rilette il 28/08. Era l'unica voce del pranzo del 24 mai registrata - il dettato in anticipo dell'ordine #47 non la nominava. 60 g stimati, la porzione di foglia non e' dichiarata. Ordine MC #46",dichiarato
+2026-08-24,spuntino,banana,1,"«post ride: una banana con un po' di peanut butter E POI LA STESSA COSA»: il reintegro del 24 e' stato fatto due volte, non una. Questa e' la seconda banana, gemella della riga qui sopra. Ordine MC #46",dichiarato
+2026-08-24,spuntino,burro_arachidi,15,"il peanut butter del secondo reintegro post-ride del 24: un cucchiaio, 15 g, crema normale come fuori colazione (commento all'ordine #53). Ordine MC #46",dichiarato
