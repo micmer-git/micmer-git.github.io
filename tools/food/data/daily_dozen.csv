@@ -115,3 +115,5 @@ bevande,cappuccino,150,"mezza porzione: e' latte, non acqua"
 esercizio,,,"NON e' un alimento e non ha food_id. Greger chiede 90 minuti di attivita' moderata o 40 vigorosa al giorno. Il dato per spuntare questa casella esiste gia' in /vita ma da un'altra parte: sono le attivita' di intervals.icu (activities.csv), non il diario alimentare. Chi disegna il grafico deve andarselo a prendere li'"
 noci_e_semi,burro_arachidi,32,"due cucchiai di burro di arachidi sono 32 g: questa e' la crema intera, quindi vale la porzione piena (la versione sgrassata in polvere conta a meta')"
 altre_verdure,carciofi,80,
+altre_verdure,carote_fermentate,80,"stessa casella e stessa porzione della carota cruda: per Greger la fermentazione non cambia categoria. In pratica non spuntera' quasi mai da sola - se ne mangiano 10 g alla volta, non 80"
+crucifere,cavolo_rosso_fermentato,45,"il cavolo rosso resta una crucifera anche da crauto. Riga che mancava: la voce fermentata e' nata il 26/08/2026, dopo che questa tabella era gia' stata scritta il 22/08, e senza questa riga i crauti sparivano dal conteggio delle crucifere"
