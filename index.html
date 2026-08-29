@@ -246,51 +246,51 @@
         .story-kicker { margin-bottom: 12px; font-family: 'VT323', monospace; font-size: 18px; letter-spacing: .08em; text-transform: uppercase; }
         .story-title { font-size: clamp(52px, 13vw, 76px); font-weight: 800; line-height: .82; letter-spacing: -.07em; }
         .story-title em { font-family: Georgia, serif; font-weight: 400; }
-        .story-orbit { position: relative; width: 132px; height: 132px; margin: 16px 0 auto; border: 2px solid currentColor; border-radius: 50%; animation: storySpin 12s linear infinite; }
-        .story-orbit::before { content: ''; position: absolute; inset: 26px -8px; border: 2px solid currentColor; border-radius: 50%; transform: rotate(55deg); }
-        .story-orbit::after { content: '✦'; position: absolute; inset: 0; display: grid; place-items: center; font-size: 40px; animation: storySpin 12s linear infinite reverse; }
+        .story-hand-stage { display: grid; width: 132px; height: 132px; margin: 12px 0 auto; place-items: center; border: 3px solid currentColor; border-radius: 28px; background: rgba(255,255,255,.72); box-shadow: 7px 7px 0 currentColor; transform: rotate(-3deg); }
+        .story-hand { width: 72px; height: 72px; stroke-width: 1.6; transform-origin: 76% 82%; animation: storyWave 1.9s ease-in-out infinite; }
         .story-foot { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-top: auto; padding-top: 24px; font-size: 14px; font-weight: 700; line-height: 1.35; }
         .story-arrow { font-size: 34px; animation: storyNudge 1.7s ease-in-out infinite; }
-        .story-options { display: grid; gap: 9px; margin-top: auto; }
-        .story-choice {
-            display: grid;
-            grid-template-columns: 34px 1fr auto;
-            align-items: center;
-            gap: 10px;
-            min-height: 68px;
-            width: 100%;
-            padding: 10px 13px;
-            border: 2px solid currentColor;
-            border-radius: 13px;
-            background: transparent;
-            color: inherit;
-            text-align: left;
-            cursor: pointer;
-            transition: transform .18s, background-color .18s, color .18s;
-        }
-        .story-choice:hover { transform: translateX(4px); background: #FBBC04; color: #202124; }
-        .story-choice strong { display: block; font-size: 14px; }
-        .story-choice small { display: block; margin-top: 2px; opacity: .62; }
-        .story-match { display: flex; align-items: center; gap: 12px; padding: 13px; border: 2px solid #202124; border-radius: 14px; background: rgba(255,255,255,.76); color: #202124; text-decoration: none; box-shadow: 3px 3px 0 #202124; transition: transform .18s, box-shadow .18s; }
-        .story-match:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #202124; }
-        .story-match-index { display: grid; width: 40px; height: 40px; flex: 0 0 auto; place-items: center; border: 2px solid #202124; background: #FBBC04; font-family: 'VT323', monospace; font-size: 20px; }
-        .story-match strong { display: block; font-size: 16px; }
-        .story-match small { display: block; margin-top: 3px; line-height: 1.2; opacity: .68; }
-        .story-pill-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: auto; }
-        .story-pill { min-height: 92px; padding: 14px; border: 2px solid currentColor; border-radius: 14px; }
-        .story-pill span { display: block; margin-bottom: 18px; font-family: 'VT323', monospace; opacity: .58; }
-        .story-pill strong { font-size: 15px; line-height: 1.05; }
+        .story-project-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: auto; }
+        .story-project-card { display: flex; min-height: 132px; flex-direction: column; justify-content: space-between; padding: 14px; border: 2px solid #202124; border-radius: 15px; background: rgba(255,255,255,.82); color: #202124; text-decoration: none; box-shadow: 4px 4px 0 #202124; transition: transform .18s, box-shadow .18s; }
+        .story-project-card:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #202124; }
+        .story-project-card svg { width: 28px; height: 28px; }
+        .story-project-card strong { display: block; font-size: 15px; line-height: 1.05; }
+        .story-project-card small { display: block; margin-top: 5px; font-size: 11px; line-height: 1.18; opacity: .64; }
+        .story-feature-list { display: grid; gap: 10px; margin-top: auto; }
+        .story-feature { display: grid; grid-template-columns: 52px 1fr auto; align-items: center; gap: 12px; min-height: 88px; padding: 12px; border: 2px solid #202124; border-radius: 15px; background: rgba(255,255,255,.82); color: #202124; text-decoration: none; box-shadow: 4px 4px 0 #202124; transition: transform .18s, box-shadow .18s; }
+        .story-feature:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #202124; }
+        .story-feature-icon { display: grid; width: 52px; height: 52px; place-items: center; border: 2px solid #202124; border-radius: 12px; background: #FBBC04; }
+        .story-feature strong { display: block; font-size: 16px; line-height: 1.05; }
+        .story-feature small { display: block; margin-top: 5px; font-size: 12px; line-height: 1.2; opacity: .66; }
+        .story-stat { display: inline-flex; align-items: baseline; gap: 8px; margin: 14px 0; padding: 8px 11px; border: 2px solid currentColor; border-radius: 99px; font-family: 'VT323', monospace; font-size: 19px; }
+        .story-stat strong { font-size: 30px; line-height: 1; }
+        .story-press-strip { display: grid; grid-auto-columns: 72%; grid-auto-flow: column; gap: 10px; margin: 12px -20px 0; padding: 2px 20px 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+        .story-press-strip::-webkit-scrollbar { display: none; }
+        .story-press-card { position: relative; height: 160px; overflow: hidden; border: 2px solid #202124; border-radius: 15px; background: #fff; color: #202124; box-shadow: 4px 4px 0 #202124; scroll-snap-align: start; }
+        .story-press-card img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+        .story-press-card span { position: absolute; right: 8px; bottom: 8px; left: 8px; padding: 6px 8px; border: 2px solid #202124; background: #FBBC04; font-family: 'VT323', monospace; font-size: 17px; line-height: 1; }
+        .story-contact-row { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: auto; padding-top: 14px; }
         .story-cta { display: flex; align-items: center; justify-content: space-between; min-height: 60px; padding: 0 20px; border: 2px solid #202124; border-radius: 99px; background: #202124; color: #fff; font-weight: 800; text-decoration: none; box-shadow: 4px 4px 0 rgba(32,33,36,.25); }
+        .story-contact-row .story-cta { min-height: 54px; padding: 0 14px; font-size: 13px; }
+        .story-cta-whatsapp { background: #25D366; color: #202124; }
         .story-enter { width: 100%; padding: 12px; border: 0; background: transparent; color: inherit; font-weight: 800; cursor: pointer; }
         .story-replay { border: 2px solid #202124; background: #FBBC04; padding: 8px 12px; font-family: 'VT323', monospace; font-size: 20px; box-shadow: 2px 2px 0 #202124; cursor: pointer; }
 
         @keyframes storyTimer { from { transform: scaleX(0); } to { transform: scaleX(1); } }
         @keyframes storyIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes storySpin { to { transform: rotate(360deg); } }
+        @keyframes storyWave { 0%, 100% { transform: rotate(-10deg); } 35% { transform: rotate(18deg); } 65% { transform: rotate(-4deg); } }
         @keyframes storyNudge { 50% { transform: translateX(7px); } }
         @media (max-width: 520px) {
             .story-gate { padding: 0; }
             .story-frame { width: 100%; height: 100dvh; border: 0; border-radius: 0; box-shadow: none; }
+        }
+        @media (max-height: 720px) {
+            .story-body { padding-top: 14px; }
+            .story-title { font-size: clamp(42px, 10vw, 58px) !important; }
+            .story-project-card { min-height: 108px; }
+            .story-feature { min-height: 76px; }
+            .story-press-card { height: 128px; }
+            .story-contact-row { padding-top: 8px; }
         }
         @media (prefers-reduced-motion: reduce) {
             .story-frame *, .story-frame *::before, .story-frame *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
@@ -336,7 +336,9 @@
         Moon,
         Map,
         BarChart3,
-        Users
+        Users,
+        Hand,
+        MessageCircle
       } from 'lucide-react';
 
       // --- Data Content ---
@@ -1176,39 +1178,19 @@
           );
         };
 
-        const storyProjectSets = {
-          ai: [
-            { name: 'Semaforo', note: 'AI utile, nata durante otto minuti di rosso', url: 'https://micmer-git.github.io/semaforo' },
-            { name: 'Microbiome Lab', note: 'Alimentazione e microbioma, con evidenze', url: 'https://github.com/micmer-git/microbiome-lab' },
-            { name: 'Quantum Lab', note: 'Ricerca AI-assisted, revisioni comprese', url: 'https://github.com/micmer-git/quantum-lab' }
-          ],
-          engineering: [
-            { name: 'Particleworks Europe', note: 'Simulazione CFD raccontata con chiarezza', url: 'https://github.com/micmer-git/pw-website' },
-            { name: 'Quantum Lab', note: 'Rigore, ricerca e processi aperti', url: 'https://github.com/micmer-git/quantum-lab' },
-            { name: 'Semaforo', note: 'Un problema fisico trasformato in prodotto', url: 'https://micmer-git.github.io/semaforo' }
-          ],
-          stories: [
-            { name: 'Futuro Fortissimo', note: 'Natura, tecnologia e umanità', url: 'https://futurofortissimo.github.io/' },
-            { name: 'Gazzaniga – Orezzo', note: 'Undici anni di salite in una storia', url: './gazzaniga-orezzo/' },
-            { name: 'Sogni di un unno', note: 'Un diario notturno, sogno per sogno', url: './sogni-di-un-unno/' }
-          ],
-          wild: [
-            { name: 'League of Strava', note: 'Sport, dati e game design', url: 'https://leagueofstrava.lovable.app/' },
-            { name: 'Microbiome Lab', note: 'Un laboratorio interattivo sul corpo', url: 'https://github.com/micmer-git/microbiome-lab' },
-            { name: 'Futuro Fortissimo', note: 'Una mappa per idee difficili da classificare', url: 'https://futurofortissimo.github.io/' }
-          ]
-        };
-
         const StoryOverlay = ({ isOpen, onClose }) => {
           const [slide, setSlide] = useState(0);
-          const [interest, setInterest] = useState('wild');
           const pointerStart = useRef(null);
-          const colors = ['#FBBC04', '#202124', '#f8f9fa', '#EA4335', '#34A853'];
-          const textColors = ['#202124', '#ffffff', '#202124', '#202124', '#202124'];
+          const colors = ['#FBBC04', '#F8F9FA', '#8AB4F8', '#EA4335', '#34A853'];
+          const textColors = ['#202124', '#202124', '#202124', '#202124', '#202124'];
           const lastSlide = 4;
 
-          const next = () => setSlide(current => current === 1 ? current : Math.min(lastSlide, current + 1));
+          const next = () => setSlide(current => Math.min(lastSlide, current + 1));
           const previous = () => setSlide(current => Math.max(0, current - 1));
+
+          useEffect(() => {
+            if (isOpen) setSlide(0);
+          }, [isOpen]);
 
           useEffect(() => {
             if (!isOpen) return;
@@ -1222,23 +1204,17 @@
           }, [isOpen, onClose]);
 
           useEffect(() => {
-            if (!isOpen || slide === 1 || slide === lastSlide) return;
+            if (!isOpen || slide === lastSlide) return;
             const timer = window.setTimeout(next, slide === 0 ? 7600 : 9000);
             return () => window.clearTimeout(timer);
           }, [isOpen, slide]);
 
           if (!isOpen) return null;
-          const selectedProjects = storyProjectSets[interest];
-
-          const choose = (value) => {
-            setInterest(value);
-            window.setTimeout(() => setSlide(2), 160);
-          };
 
           const handlePointerUp = (event) => {
             const start = pointerStart.current;
             pointerStart.current = null;
-            if (!start || event.target.closest('button, a')) return;
+            if (!start || event.target.closest('button, a, .story-press-strip')) return;
             const deltaX = event.clientX - start.x;
             const deltaY = event.clientY - start.y;
             if (Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY)) {
@@ -1276,66 +1252,64 @@
                 <div key={slide} className="story-body">
                   {slide === 0 && (
                     <>
-                      <div className="story-orbit" aria-hidden="true"></div>
-                      <p className="story-kicker">Piacere, Michele.</p>
-                      <h2 className="story-title">Facciamo<br />una cosa<br /><em>fortissima?</em></h2>
-                      <div className="story-foot"><span>Ingegnere, autore e costruttore di prototipi. Ti racconto come lavoro — in cinque storie.</span><span className="story-arrow">→</span></div>
+                      <div className="story-hand-stage" aria-hidden="true"><Hand className="story-hand" /></div>
+                      <p className="story-kicker">Ciao, sono Michele.</p>
+                      <h2 className="story-title">Dati,<br />territori<br /><em>e storie.</em></h2>
+                      <div className="story-foot"><span>Progetti concreti per rendere visibili mobilità, sport e memoria. Te li racconto in cinque storie.</span><span className="story-arrow">→</span></div>
                     </>
                   )}
 
                   {slide === 1 && (
                     <>
-                      <p className="story-kicker">01 / Partiamo da te</p>
-                      <h2 className="story-title" style={{fontSize:'clamp(46px, 11vw, 66px)'}}>Cosa ti ha<br />portato qui?</h2>
-                      <div className="story-options">
-                        <button className="story-choice" onClick={() => choose('ai')}><Cpu size={24}/><span><strong>AI che diventa prodotto</strong><small>Prototipi utili, in fretta</small></span><span>↗</span></button>
-                        <button className="story-choice" onClick={() => choose('engineering')}><Zap size={24}/><span><strong>Ingegneria e simulazione</strong><small>Capire prima di costruire</small></span><span>↗</span></button>
-                        <button className="story-choice" onClick={() => choose('stories')}><BookOpen size={24}/><span><strong>Storie che orientano</strong><small>Tecnologia, cultura, futuro</small></span><span>↗</span></button>
-                        <button className="story-choice" onClick={() => choose('wild')}><Heart size={24}/><span><strong>Una cosa mai vista</strong><small>Partiamo dalla domanda strana</small></span><span>↗</span></button>
+                      <p className="story-kicker">01 / Cose fatte</p>
+                      <h2 className="story-title" style={{fontSize:'clamp(46px, 11vw, 66px)'}}>Quattro<br />progetti,<br /><em>da aprire.</em></h2>
+                      <div className="story-project-grid">
+                        <a className="story-project-card" href="https://bike2work.pages.dev/" target="_blank" rel="noreferrer"><Bike/><span><strong>Bike2Work</strong><small>Il tragitto casa-lavoro diventa dato.</small></span></a>
+                        <a className="story-project-card" href="https://valseriana.pages.dev/" target="_blank" rel="noreferrer"><Map/><span><strong>Mobilità Val Seriana</strong><small>Frequenze, fermate e connessioni.</small></span></a>
+                        <a className="story-project-card" href="https://sempredicorsa.pages.dev/" target="_blank" rel="noreferrer"><BarChart3/><span><strong>Sempre di corsa</strong><small>Decenni di risultati da esplorare.</small></span></a>
+                        <a className="story-project-card" href="https://www.larecastello.com/storia/50-anni/" target="_blank" rel="noreferrer"><Archive/><span><strong>Recastello</strong><small>Archivio, scansione e curatela.</small></span></a>
                       </div>
                     </>
                   )}
 
                   {slide === 2 && (
                     <>
-                      <p className="story-kicker">02 / La tua selezione</p>
-                      <h2 className="story-title" style={{fontSize:'clamp(42px, 10vw, 60px)'}}>Tre porte.<br />Quale apriamo?</h2>
-                      <div className="story-options">
-                        {selectedProjects.map((project, index) => (
-                          <a key={project.name} href={project.url} target="_blank" rel="noreferrer" className="story-match">
-                            <span className="story-match-index">0{index + 1}</span>
-                            <span className="flex-1"><strong>{project.name}</strong><small>{project.note}</small></span>
-                            <ArrowUpRight size={20}/>
-                          </a>
-                        ))}
+                      <p className="story-kicker">02 / Mobilità che si misura</p>
+                      <h2 className="story-title" style={{fontSize:'clamp(44px, 10vw, 62px)'}}>Dal percorso<br />alla scelta.</h2>
+                      <div className="story-stat"><strong>2</strong><span>progetti sul territorio</span></div>
+                      <div className="story-feature-list">
+                        <a className="story-feature" href="https://bike2work.pages.dev/" target="_blank" rel="noreferrer"><span className="story-feature-icon"><Bike/></span><span><strong>Bike2Work</strong><small>Raccontare il commuting attraverso mappe e dati vissuti.</small></span><ArrowUpRight/></a>
+                        <a className="story-feature" href="https://valseriana.pages.dev/" target="_blank" rel="noreferrer"><span className="story-feature-icon"><Map/></span><span><strong>Mobilità Val Seriana</strong><small>Leggere il trasporto pubblico con un colpo d'occhio.</small></span><ArrowUpRight/></a>
                       </div>
-                      <button className="story-enter" onClick={() => setSlide(1)}>↶ Cambia interesse</button>
                     </>
                   )}
 
                   {slide === 3 && (
                     <>
-                      <p className="story-kicker">03 / Chi sono, in breve</p>
-                      <h2 className="story-title" style={{fontSize:'clamp(43px, 10vw, 64px)'}}>Rigoroso<br />dove serve.<br /><em>Curioso ovunque.</em></h2>
-                      <div className="story-pill-grid">
-                        <div className="story-pill"><span>01</span><strong>Simulazione<br />e digital twin</strong></div>
-                        <div className="story-pill"><span>02</span><strong>AI e<br />prototipi</strong></div>
-                        <div className="story-pill"><span>03</span><strong>Strategia<br />e prodotto</strong></div>
-                        <div className="story-pill"><span>04</span><strong>Scrittura<br />e speaking</strong></div>
+                      <p className="story-kicker">03 / Memoria che si esplora</p>
+                      <h2 className="story-title" style={{fontSize:'clamp(43px, 10vw, 62px)'}}>Un archivio<br />non deve<br /><em>dormire.</em></h2>
+                      <div className="story-stat"><strong>66.518</strong><span>arrivi digitalizzati</span></div>
+                      <div className="story-feature-list">
+                        <a className="story-feature" href="https://sempredicorsa.pages.dev/" target="_blank" rel="noreferrer"><span className="story-feature-icon"><BarChart3/></span><span><strong>Sempre di corsa</strong><small>Risultati storici trasformati in ricerca e visualizzazione.</small></span><ArrowUpRight/></a>
+                        <a className="story-feature" href="https://www.larecastello.com/storia/50-anni/" target="_blank" rel="noreferrer"><span className="story-feature-icon"><Archive/></span><span><strong>La Recastello</strong><small>Scansione, trascrizione e curatela di cinquant'anni.</small></span><ArrowUpRight/></a>
                       </div>
-                      <p className="story-foot">La missione: rendere il futuro comprensibile, desiderabile e costruibile.</p>
                     </>
                   )}
 
                   {slide === 4 && (
                     <>
-                      <Globe size={38} className="mb-8" />
-                      <p className="story-kicker">04 / Tocca a noi</p>
-                      <h2 className="story-title">Hai una<br />sfida che<br /><em>suona bene?</em></h2>
-                      <div className="mt-auto space-y-3 pt-8">
-                        <a className="story-cta" href="https://www.linkedin.com/in/michelemerelli/" target="_blank" rel="noreferrer"><span>Proponimi un progetto</span><ArrowUpRight size={22}/></a>
-                        <button className="story-enter" onClick={onClose}>Entra nel sito ↓</button>
+                      <p className="story-kicker">04 / Dicono di me</p>
+                      <h2 className="story-title" style={{fontSize:'clamp(45px, 10vw, 62px)'}}>Storie che<br /><em>fanno notizia.</em></h2>
+                      <div className="story-press-strip" aria-label="Rassegna stampa, scorri orizzontalmente">
+                        <article className="story-press-card"><img src="./assets/press/eco-articolo.webp" alt="Articolo de L'Eco di Bergamo"/><span>L'Eco di Bergamo</span></article>
+                        <article className="story-press-card"><img src="./assets/press/il-giornale-articolo.webp" alt="Articolo de Il Giornale"/><span>Il Giornale</span></article>
+                        <article className="story-press-card"><img src="./assets/press/al-vento-articolo.webp" alt="Articolo di Al Vento"/><span>Al Vento</span></article>
                       </div>
+                      <div className="story-contact-row">
+                        <a className="story-cta story-cta-whatsapp" href="https://wa.me/393487024985?text=Ciao%20Michele%2C%20vorrei%20parlarti%20di%20un%20progetto" target="_blank" rel="noreferrer"><span>WhatsApp</span><MessageCircle size={20}/></a>
+                        <a className="story-cta" href="mailto:michelemerelli.8@gmail.com?subject=Un%20progetto%20insieme"><span>Email</span><Mail size={20}/></a>
+                      </div>
+                      <button className="story-enter" onClick={onClose}>Entra nel sito ↓</button>
                     </>
                   )}
                 </div>
