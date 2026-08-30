@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
+  <title>Illustrazioni micmer</title>
+  <defs>
+    <filter id="ruvido" x="-18%" y="-18%" width="136%" height="136%">
+      <feTurbulence type="fractalNoise" baseFrequency=".022 .065" numOctaves="2" seed="23" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="4.2" xChannelSelector="R" yChannelSelector="B"/>
+    </filter>
+    <filter id="carta" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency=".75" numOctaves="3" seed="9" result="n"/>
+      <feColorMatrix in="n" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 .11 0" result="s"/>
+      <feBlend in="SourceGraphic" in2="s" mode="multiply"/>
+    </filter>
+    <style>
+      .asset{display:none}.asset:target{display:inline}.r{filter:url(#ruvido)}.g{filter:url(#carta)}
+      .linea{fill:none;stroke-linecap:round;stroke-linejoin:round}
+    </style>
+  </defs>
+
+  <g id="michele" class="asset r">
+    <path d="M42 207c4-55 34-88 79-88 46 0 75 33 78 88Z" fill="#315c4f"/>
+    <circle cx="120" cy="86" r="58" fill="#efbd74"/>
+    <path d="M66 79c3-43 28-66 63-62 31 4 48 26 47 61-17-7-31-18-41-33-16 20-39 31-69 34Z" fill="#25382f"/>
+    <path d="M76 87h35v24H78c-8 0-10-24-2-24Zm53 0h35c8 0 6 24-2 24h-33Z" fill="#f8f0df" stroke="#25382f" stroke-width="7"/>
+    <path d="M111 96h18m-9 15c-2 9-6 14-11 17m-13 8c15 12 34 12 49 0" class="linea" stroke="#25382f" stroke-width="7"/>
+    <path d="M163 151c23-12 43-4 46 16-18 11-35 6-46-16Z" fill="#e86f5b"/>
+  </g>
+
+  <g id="insieme" class="asset r">
+    <path d="M26 46h82v71H26Zm106 0h82v71h-82ZM26 135h82v70H26Zm106 0h82v70h-82Z" fill="#f8f0df" stroke="#25382f" stroke-width="7"/>
+    <path d="m44 92 15-22 12 13 18-26M150 87c16-24 31-24 47 0M47 170h42m-32-14v29m93-23 24-15 21 18-20 23Z" class="linea" stroke="#315c4f" stroke-width="9"/>
+    <circle cx="65" cy="151" r="10" fill="#e86f5b"/><circle cx="175" cy="76" r="11" fill="#efc849"/>
+  </g>
+
+  <g id="bici" class="asset r">
+    <circle cx="63" cy="164" r="39" fill="#f8f0df" stroke="#25382f" stroke-width="9"/>
+    <circle cx="178" cy="164" r="39" fill="#f8f0df" stroke="#25382f" stroke-width="9"/>
+    <path d="m63 164 39-73 31 73H63l25-47h70l20 47m-78-73h31m19-17 16 2" class="linea" stroke="#e86f5b" stroke-width="10"/>
+    <path d="M33 66c30-21 57-26 82-15 20 9 39 8 77-9" class="linea" stroke="#73aebb" stroke-width="15" opacity=".55"/>
+  </g>
+
+  <g id="valle" class="asset r">
+    <path d="m17 188 56-92 34 48 43-91 73 135Z" fill="#6f9168"/>
+    <path d="m17 188 56-92 34 48 43-91 73 135" class="linea" stroke="#25382f" stroke-width="9"/>
+    <path d="M30 196c43-31 67-22 91-50 25-29 42-22 86-55" class="linea" stroke="#efc849" stroke-width="12" stroke-dasharray="17 13"/>
+    <circle cx="31" cy="196" r="15" fill="#e86f5b"/><circle cx="207" cy="91" r="15" fill="#73aebb"/>
+  </g>
+
+  <g id="corsa" class="asset r">
+    <circle cx="132" cy="43" r="24" fill="#efbd74"/>
+    <path d="m119 73-25 52 37 24 35-48m-67 21-43 25m74 2-27 66m28-65 52 43m-39-95 48 21" class="linea" stroke="#25382f" stroke-width="17"/>
+    <path d="M24 209h194" class="linea" stroke="#e86f5b" stroke-width="10"/>
+    <path d="M37 42h61m-72 28h50" class="linea" stroke="#73aebb" stroke-width="8" opacity=".8"/>
+  </g>
+
+  <g id="archivio" class="asset r">
+    <path d="M40 48h140v159H40Z" fill="#f8f0df" stroke="#25382f" stroke-width="8"/>
+    <path d="M64 28h136v157H64Z" fill="#efc849" stroke="#25382f" stroke-width="8"/>
+    <path d="M88 68h84M88 96h64M88 126h77M88 154h48" class="linea" stroke="#315c4f" stroke-width="9"/>
+    <circle cx="177" cy="170" r="34" fill="#e86f5b"/>
+    <path d="m161 170 11 11 23-29" class="linea" stroke="#f8f0df" stroke-width="9"/>
+  </g>
+
+  <g id="libro" class="asset r">
+    <path d="M27 48c36-15 66-7 93 17v143c-27-24-57-32-93-17Zm186 0c-36-15-66-7-93 17v143c27-24 57-32 93-17Z" fill="#f8f0df" stroke="#25382f" stroke-width="8"/>
+    <path d="M120 65v143M50 82c18-5 34-1 49 9m-49 26c18-5 34-1 49 9m42-44c18-10 35-13 52-8m-52 43c18-10 35-13 52-8" class="linea" stroke="#e86f5b" stroke-width="8"/>
+  </g>
+
+  <g id="app" class="asset r">
+    <rect x="63" y="19" width="114" height="202" rx="29" fill="#f8f0df" stroke="#25382f" stroke-width="9"/>
+    <path d="M84 60h72v72H84Z" fill="#73aebb"/>
+    <circle cx="103" cy="161" r="16" fill="#efc849"/><circle cx="143" cy="161" r="16" fill="#e86f5b"/>
+    <path d="M101 199h38" class="linea" stroke="#315c4f" stroke-width="8"/>
+  </g>
+
+  <g id="dati" class="asset r">
+    <path d="M31 204V45m0 159h183" class="linea" stroke="#25382f" stroke-width="9"/>
+    <path d="M55 178v-37h30v37Zm50 0V94h30v84Zm50 0V57h30v121Z" fill="#73aebb"/>
+    <path d="m49 111 44-34 35 17 64-57" class="linea" stroke="#e86f5b" stroke-width="10"/>
+    <circle cx="49" cy="111" r="9" fill="#efc849"/><circle cx="192" cy="37" r="9" fill="#efc849"/>
+  </g>
+
+  <g id="stampa" class="asset r">
+    <path d="M35 49h170v151H35Z" fill="#f8f0df" stroke="#25382f" stroke-width="8"/>
+    <path d="M55 70h130v29H55Z" fill="#efc849"/>
+    <path d="M55 118h55v58H55Z" fill="#73aebb"/>
+    <path d="M128 121h54m-54 22h54m-54 22h39" class="linea" stroke="#315c4f" stroke-width="8"/>
+    <path d="M69 84h101" class="linea" stroke="#25382f" stroke-width="8"/>
+  </g>
+
+  <g id="viaggio" class="asset r">
+    <circle cx="119" cy="129" r="79" fill="#73aebb" stroke="#25382f" stroke-width="8"/>
+    <path d="M71 74c24 8 33 23 28 46-4 19 5 28 27 27 24-1 34 12 29 39M119 50c-9 26-3 46 19 59 18 10 35 8 55-7" class="linea" stroke="#f8f0df" stroke-width="13"/>
+    <path d="m36 49 52 18-27 14-11 27-8-29-25-12Z" fill="#e86f5b"/>
+  </g>
+
+  <g id="risorse" class="asset r">
+    <path d="M26 72h73l16 20h99v111H26Z" fill="#efc849" stroke="#25382f" stroke-width="8"/>
+    <path d="M42 49h71l15 21h70v22h-83L99 72H42Z" fill="#f8f0df" stroke="#25382f" stroke-width="8"/>
+    <path d="m78 143 31 28 57-61" class="linea" stroke="#315c4f" stroke-width="14"/>
+  </g>
+
+  <g id="scintilla" class="asset">
+    <path d="M120 19v202M19 120h202M49 49l142 142M191 49 49 191" class="linea" stroke="#efc849" stroke-width="10"/>
+    <circle cx="120" cy="120" r="18" fill="#f8f0df" stroke="#315c4f" stroke-width="7"/>
+  </g>
+</svg>

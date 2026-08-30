@@ -66,7 +66,7 @@
     </script>
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=VT323&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650;9..144,750&family=IBM+Plex+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Schibsted+Grotesk:wght@400;500;600;700;800&family=VT323&display=swap" rel="stylesheet">
     
     <!-- Babel Standalone -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -276,6 +276,68 @@
         .story-enter { width: 100%; padding: 12px; border: 0; background: transparent; color: inherit; font-weight: 800; cursor: pointer; }
         .story-replay { border: 2px solid #202124; background: #FBBC04; padding: 8px 12px; font-family: 'VT323', monospace; font-size: 20px; box-shadow: 2px 2px 0 #202124; cursor: pointer; }
 
+        /* Ordine #65 — la mano di Mercatorum, con soggetti micmer.
+           Un solo sprite ruvido alimenta carosello, preview e tessere della home. */
+        .story-frame {
+            --story-ink: #25382f;
+            --story-paper: #f8f0df;
+            --story-coral: #e86f5b;
+            --story-yellow: #efc849;
+            --story-sky: #73aebb;
+            --story-leaf: #6f9168;
+            border: 1px solid color-mix(in srgb, var(--story-ink) 55%, transparent);
+            border-radius: 34px;
+            font-family: 'Schibsted Grotesk', sans-serif;
+            box-shadow: 9px 11px 0 color-mix(in srgb, var(--story-ink) 88%, transparent), 0 30px 90px rgba(0,0,0,.34);
+        }
+        .story-grain { opacity: .075; background-size: 4px 4px; }
+        .story-bars { gap: 7px; padding: 16px 18px 0; }
+        .story-bar { height: 3px; border-radius: 0; }
+        .story-head { padding: 12px 18px 0; }
+        .story-avatar { border-radius: 43% 57% 49% 51% / 54% 44% 56% 46%; background: var(--story-paper); font-family: 'IBM Plex Mono', monospace; }
+        .story-close { width: 48px; height: 48px; }
+        .story-body { padding: 18px 22px 22px; }
+        .story-kicker { margin-bottom: 9px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; letter-spacing: .11em; }
+        .story-title { font-family: 'Fraunces', Georgia, serif; font-size: clamp(50px, 12vw, 70px); font-weight: 650; line-height: .88; letter-spacing: -.055em; }
+        .story-title em { font-family: inherit; font-weight: 500; }
+        .story-foot { align-items: center; gap: 14px; padding-top: 14px; font-size: 15px; font-weight: 600; }
+        .story-arrow { display: grid; flex: 0 0 48px; width: 48px; height: 48px; place-items: center; border: 1px solid currentColor; border-radius: 50%; font-size: 27px; }
+        .story-art-stage { position: relative; display: grid; height: auto; flex: 0 0 clamp(190px, 28vh, 244px); margin: -4px -2px 10px; place-items: center; isolation: isolate; }
+        .story-art-stage::before { content: ''; position: absolute; inset: 9% 7% 2% 5%; z-index: -1; border-radius: 49% 51% 42% 58% / 44% 38% 62% 56%; background: color-mix(in srgb, var(--story-paper) 84%, transparent); transform: rotate(-3deg); }
+        .story-art { width: 72%; height: 100%; object-fit: contain; transform: rotate(2deg); animation: storyFloat 7s 400ms ease-in-out infinite alternate; }
+        .story-art-stage::after { content: ''; position: absolute; right: 3%; bottom: 6%; width: 61px; height: 61px; background: url('./assets/illustrazioni-micmer.svg#scintilla') center/contain no-repeat; transform: rotate(8deg); }
+        .story-project-grid { gap: 11px; margin-top: 14px; }
+        .story-project-card { min-height: 148px; padding: 13px; border: 1px solid color-mix(in srgb, var(--story-ink) 72%, transparent); border-radius: 18px; background: color-mix(in srgb, var(--story-paper) 94%, transparent); box-shadow: 4px 5px 0 color-mix(in srgb, var(--story-ink) 88%, transparent); }
+        .story-project-card:hover { box-shadow: 6px 7px 0 color-mix(in srgb, var(--story-ink) 88%, transparent); }
+        .story-project-card img { width: 68px; height: 68px; object-fit: contain; align-self: flex-end; }
+        .story-project-card strong { font-family: 'Fraunces', Georgia, serif; font-size: 18px; font-weight: 650; }
+        .story-project-card small { font-size: 12px; line-height: 1.25; opacity: .72; }
+        .story-scene { position: relative; display: grid; grid-template-columns: 1fr 1fr; height: 205px; margin: 4px 0 12px; align-items: center; }
+        .story-scene::before { content: ''; position: absolute; inset: 8% 2%; z-index: -1; border-radius: 42% 58% 55% 45% / 55% 39% 61% 45%; background: color-mix(in srgb, var(--story-paper) 76%, transparent); transform: rotate(2deg); }
+        .story-scene img { width: 126%; height: 185px; object-fit: contain; }
+        .story-scene img:first-child { justify-self: end; transform: rotate(-6deg) translateX(11%); }
+        .story-scene img:last-child { justify-self: start; transform: rotate(7deg) translateX(-11%); }
+        .story-feature-list { gap: 9px; margin-top: 0; }
+        .story-feature { min-height: 72px; grid-template-columns: 60px 1fr auto; border: 1px solid color-mix(in srgb, var(--story-ink) 72%, transparent); border-radius: 16px; background: color-mix(in srgb, var(--story-paper) 94%, transparent); box-shadow: 3px 4px 0 color-mix(in srgb, var(--story-ink) 88%, transparent); }
+        .story-feature:hover { box-shadow: 5px 6px 0 color-mix(in srgb, var(--story-ink) 88%, transparent); }
+        .story-feature-icon { width: 60px; height: 60px; border: 0; border-radius: 0; background: transparent; }
+        .story-feature-icon img { width: 60px; height: 60px; object-fit: contain; }
+        .story-feature strong { font-family: 'Fraunces', Georgia, serif; font-size: 18px; font-weight: 650; }
+        .story-feature small { font-size: 12px; opacity: .72; }
+        .story-stat { margin: 9px 0; border-width: 1px; border-radius: 13px; font-family: 'IBM Plex Mono', monospace; font-size: 14px; }
+        .story-stat strong { font-family: 'Fraunces', Georgia, serif; font-size: 30px; }
+        .story-press-wrap { position: relative; }
+        .story-press-mark { position: absolute; right: -3px; top: -76px; z-index: 2; width: 92px; height: 92px; object-fit: contain; transform: rotate(7deg); pointer-events: none; }
+        .story-press-card { border-width: 1px; border-radius: 17px; box-shadow: 3px 4px 0 var(--story-ink); }
+        .story-press-card span { border-width: 1px; background: var(--story-yellow); font-family: 'IBM Plex Mono', monospace; font-size: 13px; }
+        .story-cta { min-height: 52px; border-width: 1px; border-radius: 14px; background: var(--story-ink); box-shadow: 3px 4px 0 rgba(37,56,47,.22); }
+        .story-cta-whatsapp { background: var(--story-leaf); color: #fff; }
+        .story-enter { min-height: 48px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; }
+        .tile-asset { width: 46px; height: 46px; flex: 0 0 46px; object-fit: contain; transform: rotate(-3deg); transition: transform .22s cubic-bezier(.34,1.4,.5,1); }
+        .group:hover .tile-asset { transform: rotate(3deg) scale(1.08); }
+
+        @keyframes storyFloat { to { transform: translateY(-6px) rotate(-1deg); } }
+
         @keyframes storyTimer { from { transform: scaleX(0); } to { transform: scaleX(1); } }
         @keyframes storyIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes storyWave { 0%, 100% { transform: rotate(-10deg); } 35% { transform: rotate(18deg); } 65% { transform: rotate(-4deg); } }
@@ -283,14 +345,18 @@
         @media (max-width: 520px) {
             .story-gate { padding: 0; }
             .story-frame { width: 100%; height: 100dvh; border: 0; border-radius: 0; box-shadow: none; }
+            .story-art-stage { flex-basis: min(31dvh, 240px); }
         }
         @media (max-height: 720px) {
             .story-body { padding-top: 14px; }
             .story-title { font-size: clamp(42px, 10vw, 58px) !important; }
             .story-project-card { min-height: 108px; }
-            .story-feature { min-height: 76px; }
+            .story-feature { min-height: 72px; }
             .story-press-card { height: 128px; }
             .story-contact-row { padding-top: 8px; }
+            .story-art-stage { flex-basis: 170px; }
+            .story-scene { height: 142px; }
+            .story-scene img { height: 145px; }
         }
         @media (prefers-reduced-motion: reduce) {
             .story-frame *, .story-frame *::before, .story-frame *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
@@ -1181,7 +1247,7 @@
         const StoryOverlay = ({ isOpen, onClose }) => {
           const [slide, setSlide] = useState(0);
           const pointerStart = useRef(null);
-          const colors = ['#FBBC04', '#F8F9FA', '#8AB4F8', '#EA4335', '#34A853'];
+          const colors = ['#efc849', '#e9dfcc', '#8fb7be', '#e79672', '#88a27a'];
           const textColors = ['#202124', '#202124', '#202124', '#202124', '#202124'];
           const lastSlide = 4;
 
@@ -1252,7 +1318,7 @@
                 <div key={slide} className="story-body">
                   {slide === 0 && (
                     <>
-                      <div className="story-hand-stage" aria-hidden="true"><Hand className="story-hand" /></div>
+                      <div className="story-art-stage" aria-hidden="true"><img className="story-art" src="./assets/illustrazioni-micmer.svg#michele" alt="" /></div>
                       <p className="story-kicker">Ciao, sono Michele.</p>
                       <h2 className="story-title">Dati,<br />territori<br /><em>e storie.</em></h2>
                       <div className="story-foot"><span>Progetti concreti per rendere visibili mobilità, sport e memoria. Te li racconto in cinque storie.</span><span className="story-arrow">→</span></div>
@@ -1264,10 +1330,10 @@
                       <p className="story-kicker">01 / Cose fatte</p>
                       <h2 className="story-title" style={{fontSize:'clamp(46px, 11vw, 66px)'}}>Quattro<br />progetti,<br /><em>da aprire.</em></h2>
                       <div className="story-project-grid">
-                        <a className="story-project-card" href="https://bike2work.pages.dev/" target="_blank" rel="noreferrer"><Bike/><span><strong>Bike2Work</strong><small>Il tragitto casa-lavoro diventa dato.</small></span></a>
-                        <a className="story-project-card" href="https://valseriana.pages.dev/" target="_blank" rel="noreferrer"><Map/><span><strong>Mobilità Val Seriana</strong><small>Frequenze, fermate e connessioni.</small></span></a>
-                        <a className="story-project-card" href="https://sempredicorsa.pages.dev/" target="_blank" rel="noreferrer"><BarChart3/><span><strong>Sempre di corsa</strong><small>Decenni di risultati da esplorare.</small></span></a>
-                        <a className="story-project-card" href="https://www.larecastello.com/storia/50-anni/" target="_blank" rel="noreferrer"><Archive/><span><strong>Recastello</strong><small>Archivio, scansione e curatela.</small></span></a>
+                        <a className="story-project-card" href="https://bike2work.pages.dev/" target="_blank" rel="noreferrer"><img src="./assets/illustrazioni-micmer.svg#bici" alt=""/><span><strong>Bike2Work</strong><small>Il tragitto casa-lavoro diventa dato.</small></span></a>
+                        <a className="story-project-card" href="https://valseriana.pages.dev/" target="_blank" rel="noreferrer"><img src="./assets/illustrazioni-micmer.svg#valle" alt=""/><span><strong>Mobilità Val Seriana</strong><small>Frequenze, fermate e connessioni.</small></span></a>
+                        <a className="story-project-card" href="https://sempredicorsa.pages.dev/" target="_blank" rel="noreferrer"><img src="./assets/illustrazioni-micmer.svg#corsa" alt=""/><span><strong>Sempre di corsa</strong><small>Decenni di risultati da esplorare.</small></span></a>
+                        <a className="story-project-card" href="https://www.larecastello.com/storia/50-anni/" target="_blank" rel="noreferrer"><img src="./assets/illustrazioni-micmer.svg#archivio" alt=""/><span><strong>Recastello</strong><small>Archivio, scansione e curatela.</small></span></a>
                       </div>
                     </>
                   )}
@@ -1277,9 +1343,10 @@
                       <p className="story-kicker">02 / Mobilità che si misura</p>
                       <h2 className="story-title" style={{fontSize:'clamp(44px, 10vw, 62px)'}}>Dal percorso<br />alla scelta.</h2>
                       <div className="story-stat"><strong>2</strong><span>progetti sul territorio</span></div>
+                      <div className="story-scene" aria-hidden="true"><img src="./assets/illustrazioni-micmer.svg#bici" alt=""/><img src="./assets/illustrazioni-micmer.svg#valle" alt=""/></div>
                       <div className="story-feature-list">
-                        <a className="story-feature" href="https://bike2work.pages.dev/" target="_blank" rel="noreferrer"><span className="story-feature-icon"><Bike/></span><span><strong>Bike2Work</strong><small>Raccontare il commuting attraverso mappe e dati vissuti.</small></span><ArrowUpRight/></a>
-                        <a className="story-feature" href="https://valseriana.pages.dev/" target="_blank" rel="noreferrer"><span className="story-feature-icon"><Map/></span><span><strong>Mobilità Val Seriana</strong><small>Leggere il trasporto pubblico con un colpo d'occhio.</small></span><ArrowUpRight/></a>
+                        <a className="story-feature" href="https://bike2work.pages.dev/" target="_blank" rel="noreferrer"><span className="story-feature-icon"><img src="./assets/illustrazioni-micmer.svg#bici" alt=""/></span><span><strong>Bike2Work</strong><small>Raccontare il commuting attraverso mappe e dati vissuti.</small></span><ArrowUpRight/></a>
+                        <a className="story-feature" href="https://valseriana.pages.dev/" target="_blank" rel="noreferrer"><span className="story-feature-icon"><img src="./assets/illustrazioni-micmer.svg#valle" alt=""/></span><span><strong>Mobilità Val Seriana</strong><small>Leggere il trasporto pubblico con un colpo d'occhio.</small></span><ArrowUpRight/></a>
                       </div>
                     </>
                   )}
@@ -1289,9 +1356,10 @@
                       <p className="story-kicker">03 / Memoria che si esplora</p>
                       <h2 className="story-title" style={{fontSize:'clamp(43px, 10vw, 62px)'}}>Un archivio<br />non deve<br /><em>dormire.</em></h2>
                       <div className="story-stat"><strong>66.518</strong><span>arrivi digitalizzati</span></div>
+                      <div className="story-scene" aria-hidden="true"><img src="./assets/illustrazioni-micmer.svg#corsa" alt=""/><img src="./assets/illustrazioni-micmer.svg#archivio" alt=""/></div>
                       <div className="story-feature-list">
-                        <a className="story-feature" href="https://sempredicorsa.pages.dev/" target="_blank" rel="noreferrer"><span className="story-feature-icon"><BarChart3/></span><span><strong>Sempre di corsa</strong><small>Risultati storici trasformati in ricerca e visualizzazione.</small></span><ArrowUpRight/></a>
-                        <a className="story-feature" href="https://www.larecastello.com/storia/50-anni/" target="_blank" rel="noreferrer"><span className="story-feature-icon"><Archive/></span><span><strong>La Recastello</strong><small>Scansione, trascrizione e curatela di cinquant'anni.</small></span><ArrowUpRight/></a>
+                        <a className="story-feature" href="https://sempredicorsa.pages.dev/" target="_blank" rel="noreferrer"><span className="story-feature-icon"><img src="./assets/illustrazioni-micmer.svg#corsa" alt=""/></span><span><strong>Sempre di corsa</strong><small>Risultati storici trasformati in ricerca e visualizzazione.</small></span><ArrowUpRight/></a>
+                        <a className="story-feature" href="https://www.larecastello.com/storia/50-anni/" target="_blank" rel="noreferrer"><span className="story-feature-icon"><img src="./assets/illustrazioni-micmer.svg#archivio" alt=""/></span><span><strong>La Recastello</strong><small>Scansione, trascrizione e curatela di cinquant'anni.</small></span><ArrowUpRight/></a>
                       </div>
                     </>
                   )}
@@ -1300,10 +1368,13 @@
                     <>
                       <p className="story-kicker">04 / Dicono di me</p>
                       <h2 className="story-title" style={{fontSize:'clamp(45px, 10vw, 62px)'}}>Storie che<br /><em>fanno notizia.</em></h2>
-                      <div className="story-press-strip" aria-label="Rassegna stampa, scorri orizzontalmente">
-                        <article className="story-press-card"><img src="./assets/press/eco-articolo.webp" alt="Articolo de L'Eco di Bergamo"/><span>L'Eco di Bergamo</span></article>
-                        <article className="story-press-card"><img src="./assets/press/il-giornale-articolo.webp" alt="Articolo de Il Giornale"/><span>Il Giornale</span></article>
-                        <article className="story-press-card"><img src="./assets/press/al-vento-articolo.webp" alt="Articolo di Al Vento"/><span>Al Vento</span></article>
+                      <div className="story-press-wrap">
+                        <img className="story-press-mark" src="./assets/illustrazioni-micmer.svg#stampa" alt="" aria-hidden="true"/>
+                        <div className="story-press-strip" aria-label="Rassegna stampa, scorri orizzontalmente">
+                          <article className="story-press-card"><img src="./assets/press/eco-articolo.webp" alt="Articolo de L'Eco di Bergamo"/><span>L'Eco di Bergamo</span></article>
+                          <article className="story-press-card"><img src="./assets/press/il-giornale-articolo.webp" alt="Articolo de Il Giornale"/><span>Il Giornale</span></article>
+                          <article className="story-press-card"><img src="./assets/press/al-vento-articolo.webp" alt="Articolo di Al Vento"/><span>Al Vento</span></article>
+                        </div>
                       </div>
                       <div className="story-contact-row">
                         <a className="story-cta story-cta-whatsapp" href="https://wa.me/393487024985?text=Ciao%20Michele%2C%20vorrei%20parlarti%20di%20un%20progetto" target="_blank" rel="noreferrer"><span>WhatsApp</span><MessageCircle size={20}/></a>
@@ -1461,7 +1532,7 @@
                     <div className="absolute inset-0 bg-grid-pattern opacity-20"></div>
                     <div className="relative z-10 w-full flex items-center justify-between gap-3 p-4 md:p-6">
                         <div className="flex items-center gap-3">
-                            <span className="text-2xl">📚</span>
+                            <img className="tile-asset" src="./assets/illustrazioni-micmer.svg#libro" alt="" />
                             <h3 className="font-pixel text-4xl md:text-5xl leading-none">FUTURO FORTISSIMO</h3>
                         </div>
                         <div className="w-10 h-10 bg-brand-dark/10 flex items-center justify-center rounded-none">
@@ -1478,7 +1549,7 @@
                   >
                     <div className="flex items-center justify-between w-full p-4 md:p-6">
                         <div className="flex items-center gap-3">
-                            <span className="text-2xl">🧭</span>
+                            <img className="tile-asset" src="./assets/illustrazioni-micmer.svg#app" alt="" />
                             <h3 className="font-pixel text-3xl md:text-4xl leading-none text-brand-dark">MICMER APPS</h3>
                         </div>
                         <div className="w-10 h-10 bg-black/10 flex items-center justify-center">
@@ -1495,7 +1566,7 @@
                   >
                     <div className="flex items-center justify-between w-full p-4 md:p-6">
                         <div className="flex items-center gap-3">
-                            <span className="text-2xl">📊</span>
+                            <img className="tile-asset" src="./assets/illustrazioni-micmer.svg#dati" alt="" />
                             <h3 className="font-pixel text-3xl md:text-4xl leading-none text-white">PROGETTI</h3>
                         </div>
                         <div className="w-10 h-10 bg-black/10 flex items-center justify-center">
@@ -1512,7 +1583,7 @@
                   >
                     <div className="flex items-center justify-between w-full p-4 md:p-6">
                         <div className="flex items-center gap-3">
-                            <span className="text-2xl">📰</span>
+                            <img className="tile-asset" src="./assets/illustrazioni-micmer.svg#stampa" alt="" />
                             <h3 className="font-pixel text-3xl md:text-4xl leading-none">STAMPA</h3>
                         </div>
                         <div className="w-10 h-10 bg-io-blue/10 flex items-center justify-center">
@@ -1529,7 +1600,7 @@
                   >
                     <div className="flex items-center justify-between w-full p-4 md:p-6">
                         <div className="flex items-center gap-3">
-                            <span className="text-2xl">✈️</span>
+                            <img className="tile-asset" src="./assets/illustrazioni-micmer.svg#viaggio" alt="" />
                             <h3 className="font-pixel text-3xl md:text-4xl leading-none">VIAGGI</h3>
                         </div>
                         <div className="w-10 h-10 bg-black/10 flex items-center justify-center">
@@ -1548,7 +1619,7 @@
                     <div className="relative z-10 flex flex-col justify-between h-full p-4 md:p-6">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <span className="text-2xl">📂</span>
+                                <img className="tile-asset" src="./assets/illustrazioni-micmer.svg#risorse" alt="" />
                                 <h3 className="font-pixel text-3xl md:text-4xl leading-none">RISORSE</h3>
                             </div>
                             <div className="w-10 h-10 bg-black/10 flex items-center justify-center">

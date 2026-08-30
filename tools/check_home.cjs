@@ -73,6 +73,31 @@ for (const file of PAGINE) {
   const html = fs.readFileSync(file, "utf8");
   const bs = blocchi(html);
 
+  if (rel === "index.html") {
+    const sprite = path.join(ROOT, "assets", "illustrazioni-micmer.svg");
+    const ids = ["michele", "bici", "valle", "corsa", "archivio", "libro", "app", "dati", "stampa", "viaggio", "risorse"];
+    const emojiSegnaposto = /[📚🧭📊📰✈️📂]/u;
+    if (!fs.existsSync(sprite)) {
+      console.log("ROTTA index.html: manca lo sprite illustrato assets/illustrazioni-micmer.svg");
+      rotte++;
+    } else {
+      const svg = fs.readFileSync(sprite, "utf8");
+      const mancanti = ids.filter((id) => !svg.includes(`id="${id}"`) || !html.includes(`illustrazioni-micmer.svg#${id}`));
+      if (mancanti.length) {
+        console.log(`ROTTA index.html: illustrazioni mancanti o non usate — ${mancanti.join(", ")}`);
+        rotte++;
+      }
+      if (!svg.includes("feTurbulence") || !svg.includes("feDisplacementMap")) {
+        console.log("ROTTA index.html: lo sprite ha perso la grana ruvida della firma illustrata");
+        rotte++;
+      }
+    }
+    if (emojiSegnaposto.test(html)) {
+      console.log("ROTTA index.html: sono tornate emoji segnaposto nelle card narrative");
+      rotte++;
+    }
+  }
+
   if (!bs.length) {
     /* Una home che smette di essere JSX e' una notizia, non un successo
        silenzioso: se il blocco sparisce il controllo non protegge piu' niente
