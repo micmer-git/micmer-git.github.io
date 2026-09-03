@@ -685,6 +685,14 @@ if (ran) {
     ["Grassi al minuto", /vale la sua variazione/i],
     ["Grassi bruciati in banda", /tetto/i],
     ["Efficienza aerobica", /ma sale anche se/i],
+    /* i due dell'ORAC (ordine MC #31, 03/09/2026): il numero e' una misura IN
+       VITRO che l'USDA ha ritirato nel 2012, e il catalogo ne copre meno di due
+       terzi delle calorie. Sono due avvertenze su un numero, non due spiegazioni
+       dell'interfaccia: la REGOLA GENERALE di core/70-design.md le tiene. */
+    ["ORAC", /ritirato questa tabella/i],
+    ["Quanto dell'ORAC si vede", /il catalogo sa leggere/i],
+    /* e i dodici di Greger (ordine MC #32) */
+    ["I dodici del dottor Greger", /non sono misurabili da qui/i],
   ];
   /* --- e i sei che Michele ha tolto il 18/08/2026 -------------------------
      «alcuni grafici sono inutili». Il controllo non si cancella, si gira: erano

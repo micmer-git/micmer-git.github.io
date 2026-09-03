@@ -153,6 +153,10 @@ def load_foods():
                 "plant": (row.get("plant") or "").strip(),
                 "fermented": (row.get("fermented") or "0").strip() == "1",
                 "upf": (row.get("upf") or "0").strip() == "1",
+                # quanto pesa UN pezzo, per le voci che il catalogo tiene a unita'.
+                # 0 = non si sa, e allora l'alimento resta fuori dai conti che
+                # ragionano in grammi (ORAC, Daily Dozen) invece di valere un grammo.
+                "grammi_pezzo": float(row.get("grammi_pezzo") or 0),
                 "per_unit": {n: float(row.get(n) or 0) / ref for n in NUTRIENTS},
             }
     return foods
@@ -186,6 +190,94 @@ def load_recipes():
 
 
 PHOTO_BATCHES = DATA / "photo_batches"
+
+# I due file di riferimento nati il 27-28/08/2026 e rimasti INERTI fino al
+# 03/09/2026 (ordini MC #31 e #32). Sono tabelle di appartenenza e di valori, non
+# di consumo: da soli non dicono niente, e servono a build_nutrition_series.py per
+# tirar fuori due serie giornaliere. Il perche' di ogni numero sta in RIFERIMENTI.md.
+ORAC_CSV = DATA / "orac.csv"
+DAILY_DOZEN_CSV = DATA / "daily_dozen.csv"
+
+# Le dodici caselle nell'ordine di Greger, e quante porzioni al giorno ne chiede.
+# VERIFICATE sulla fonte (https://nutritionfacts.org/daily-dozen/) il 03/09/2026:
+# fagioli 3, bacche 1, altra frutta 3, crucifere 1, foglie verdi 2, altre verdure 2,
+# lino 1, frutta secca e semi 1, erbe e spezie 1, cereali integrali 3, bevande 5
+# (60 oz, cioe' cinque bicchieri da 12 oz), esercizio 1.
+#
+# L'ordine sta QUI e in nessun altro posto: la pagina disegna dodici righe e se le
+# leggesse da una sua lista, quella lista resterebbe indietro alla prima modifica.
+DAILY_DOZEN = (
+    ("fagioli", 3), ("frutti_di_bosco", 1), ("altra_frutta", 3), ("crucifere", 1),
+    ("verdure_foglia_verde", 2), ("altre_verdure", 2), ("semi_di_lino", 1),
+    ("noci_e_semi", 1), ("erbe_e_spezie", 1), ("cereali_integrali", 3),
+    ("bevande", 5), ("esercizio", 1),
+)
+DAILY_DOZEN_IT = {
+    "fagioli": "Fagioli e legumi", "frutti_di_bosco": "Frutti di bosco",
+    "altra_frutta": "Altra frutta", "crucifere": "Crucifere",
+    "verdure_foglia_verde": "Foglie verdi", "altre_verdure": "Altre verdure",
+    "semi_di_lino": "Semi di lino", "noci_e_semi": "Frutta secca e semi",
+    "erbe_e_spezie": "Erbe e spezie", "cereali_integrali": "Cereali integrali",
+    "bevande": "Bevande", "esercizio": "Esercizio",
+}
+
+
+def _righe_csv_commentato(path):
+    """Le righe di un CSV che comincia con un blocco di commenti `#`.
+
+    `orac.csv` e `daily_dozen.csv` portano in testa la loro fonte e le loro
+    avvertenze, che e' il motivo per cui si possono leggere senza aprire un altro
+    file. csv.DictReader da solo prenderebbe il primo `#` come intestazione.
+    """
+    if not path.exists():
+        return []
+    righe = [l for l in path.read_text(encoding="utf-8").splitlines()
+             if l.strip() and not l.lstrip().startswith("#")]
+    return list(csv.DictReader(righe)) if righe else []
+
+
+def load_orac():
+    """orac.csv -> {food_id: (valore µmol TE/100 g, confidence)}.
+
+    ⚠️ Il valore e' SEMPRE per 100 g o 100 ml, anche per gli alimenti che il catalogo
+    tiene a unita' (banana, mela, uovo). Chi lo usa deve moltiplicare per i grammi
+    veri, non per la quantita' del diario: una banana e' 1 nel diario e ~120 g nel
+    piatto, e sbagliare qui fa un errore di due ordini di grandezza in un numero che
+    nessuno sa a memoria — cioe' un errore che non si vede.
+    """
+    out = {}
+    for r in _righe_csv_commentato(ORAC_CSV):
+        try:
+            out[r["food_id"]] = (float(r["orac_umol_te_100g"]),
+                                 (r.get("confidence") or "").strip())
+        except (TypeError, ValueError):
+            continue
+    return out
+
+
+def load_daily_dozen():
+    """daily_dozen.csv -> {categoria: {food_id: grammi di UNA porzione}}.
+
+    Un alimento puo' comparire in piu' categorie (cavolo nero e rucola sono insieme
+    crucifere e foglie verdi): spunta una casella per ciascuna, mai due volte la
+    stessa. Le righe senza food_id sono le caselle scoperte — `semi_di_lino`, che
+    nel catalogo non esiste, ed `esercizio`, che non e' un alimento — e restano
+    fuori dalla mappa apposta: chi disegna deve poter distinguere «zero porzioni»
+    da «questa casella non e' misurabile da qui».
+    """
+    out = {}
+    for r in _righe_csv_commentato(DAILY_DOZEN_CSV):
+        fid = (r.get("food_id") or "").strip()
+        cat = (r.get("categoria") or "").strip()
+        if not fid or not cat:
+            continue
+        try:
+            porz = float(r["porzione_g"])
+        except (TypeError, ValueError, KeyError):
+            continue
+        if porz > 0:
+            out.setdefault(cat, {})[fid] = porz
+    return out
 
 
 def load_food_log():

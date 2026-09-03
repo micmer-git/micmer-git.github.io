@@ -141,7 +141,30 @@ FIELDS = ["date", "kcal", "protein_g", "carb_g", "sugar_g", "fiber_g", "fat_g",
           # ha pesato vince la MISURA, altrove e' una RICOSTRUZIONE. Dove non c'e' ne'
           # l'una ne' l'altra la cella resta vuota, non zero.
           "mono_g", "poly_g", "trans_g", "fat_split_mis",
+          # ORAC: la capacita' antiossidante in vitro del giorno, in micromol Trolox
+          # equivalenti. `orac_cov_pct` e' la quota di calorie del giorno che arriva
+          # da alimenti per cui un valore ORAC esiste davvero: senza, un totale basso
+          # e un catalogo bucato hanno lo stesso aspetto. Vuote — non zero — dove il
+          # giorno lo ha scritto Cronometer, che non porta food_id.
+          "orac", "orac_cov_pct",
+          # Le dodici caselle di Greger, in PORZIONI del giorno. Anche queste vuote
+          # sui giorni di Cronometer, per la stessa ragione.
+          ] + ["dd_" + c for c, _ in common.DAILY_DOZEN] + [
+          # quante prese di integratore, che fino al 03/09/2026 il registro non
+          # sapeva contare perche' non ne aveva nessuna
+          "suppl_n",
           ] + ["cnt_" + k for k in TALLY]
+
+
+# Esercizio, la dodicesima casella: non e' un alimento e il diario non lo sa. Greger
+# chiede 90 minuti moderati OPPURE 40 vigorosi, quindi un minuto vigoroso vale 2,25
+# minuti moderati e la casella si spunta con `min_mod/90 + min_vig/40`.
+# Il taglio fra moderato e vigoroso e' l'`intensity` di Intervals (l'intensity factor):
+# 0,75 e' la soglia dichiarata qui e da nessun'altra parte. Sotto — o dove l'intensity
+# manca — l'uscita conta come moderata, che e' il verso prudente.
+ESERCIZIO_IF = 0.75
+MIN_MODERATI = 90.0
+MIN_VIGOROSI = 40.0
 
 
 def macro_split(t):
@@ -199,6 +222,36 @@ def load_tss():
     return tss
 
 
+def load_esercizio():
+    """{giorno: porzioni della casella `esercizio` dei Daily Dozen}.
+
+    E' l'unica delle dodici che NON si legge nel diario alimentare: il dato sta in
+    activities.csv, cioe' in intervals.icu. Sta scritto anche in daily_dozen.csv, che
+    per questa categoria lascia il food_id vuoto apposta.
+    """
+    out = defaultdict(float)
+    for path in (common.ACTIVITIES_CSV, common.ACTIVITIES_BACKFILL_CSV):
+        if not path.exists():
+            continue
+        with path.open(encoding="utf-8", newline="") as fh:
+            for r in csv.DictReader(fh):
+                d = (r.get("date") or "")[:10]
+                if not d:
+                    continue
+                try:
+                    minuti = float(r.get("moving_time_s") or 0) / 60.0
+                except ValueError:
+                    continue
+                if minuti <= 0:
+                    continue
+                try:
+                    inten = float(r.get("intensity") or 0)
+                except ValueError:
+                    inten = 0.0
+                out[d] += minuti / (MIN_VIGOROSI if inten >= ESERCIZIO_IF else MIN_MODERATI)
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true")
@@ -213,6 +266,9 @@ def main():
     weight = profile["weight_kg"]
     rows = load_rows()
     tss_of = load_tss()
+    orac_of = common.load_orac()
+    dozen_of = common.load_daily_dozen()
+    eserc_of = load_esercizio()
 
     # ---- Cronometer: dove il cibo e' stato pesato davvero, la ricostruzione esce --
     # Un giorno PIENO (>=3 pasti, >=1500 kcal) si sostituisce per intero. Un giorno
@@ -248,6 +304,11 @@ def main():
     tally = defaultdict(lambda: defaultdict(float))
     items = defaultdict(int)
     unknown = set()
+    orac_day = defaultdict(float)        # µmol TE del giorno
+    orac_kcal = defaultdict(float)       # kcal che vengono da alimenti CON un valore ORAC
+    dd_day = defaultdict(lambda: defaultdict(float))   # porzioni per casella
+    suppl_day = defaultdict(int)
+    senza_orac = defaultdict(float)      # kcal per alimento scoperto, per il rapporto
 
     for r in rows:
         d = r["date"]
@@ -318,6 +379,32 @@ def main():
             if r["food_id"] in ids:
                 tally[d][key] += qty / ids[r["food_id"]]
 
+        # ---- ORAC e Daily Dozen ragionano in GRAMMI, il diario in pezzi ------
+        # `grammi_pezzo` esiste solo per le voci a unita' (una banana = 120 g) ed e'
+        # ricavato dal catalogo stesso, kcal del pezzo su kcal per 100 g dell'USDA.
+        # Dove manca, l'alimento resta FUORI da tutti e due i conti invece di valere
+        # un grammo: un pezzo di pizza senza peso non e' mezzo grammo di pizza.
+        grammi = qty * f["grammi_pezzo"] if f["unit"] == "unit" else (
+            qty if f["unit"] in ("g", "ml") else 0.0)
+        if grammi:
+            v = orac_of.get(r["food_id"])
+            if v is not None:
+                orac_day[d] += v[0] * grammi / 100.0
+                orac_kcal[d] += kcal
+            elif kcal:
+                senza_orac[r["food_id"]] += kcal
+            for cat, mappa in dozen_of.items():
+                porz = mappa.get(r["food_id"])
+                if porz:
+                    dd_day[d][cat] += grammi / porz
+        if f["group"] == "integratori" and not f["per_unit"]["kcal"]:
+            # Un integratore vero e proprio, cioe' una voce del gruppo che non porta
+            # calorie: whey, barrette e tortini stanno nello stesso gruppo ma sono
+            # cibo, e contarli qui direbbe che Michele prende sei integratori al
+            # giorno. La discriminante e' che di un integratore vero non si sa nulla:
+            # zero kcal perche' l'etichetta non c'e'.
+            suppl_day[d] += 1
+
     if unknown:
         print(f"  ! alimenti sconosciuti, ignorati: {sorted(unknown)}", file=sys.stderr)
 
@@ -370,6 +457,13 @@ def main():
         n_full = len(cron_full)
         print(f"  Cronometer: {len(cron)} giorni misurati — {n_full} interi, "
               f"{len(cron) - n_full} parziali (solo le fasce registrate)")
+
+    # Prima del primo integratore registrato la colonna e' VUOTA, non zero. Fino al
+    # 03/09/2026 il registro non aveva nessun modo di annotare un integratore: uno
+    # zero su quei giorni direbbe «non ne ha preso nessuno», che e' una cosa che
+    # nessuno sa. Senza questa riga il riquadro nasceva con due anni di zeri piatti e
+    # un solo picco in fondo — un grafico che dice del catalogo, non della persona.
+    primo_suppl = min(suppl_day) if suppl_day else None
 
     days = sorted(per_day)
     if not days:
@@ -475,6 +569,27 @@ def main():
             # stringa qui dentro fa cadere il build con un ValueError che sembra
             # tutt'altro (successo il 17/08/2026, costato mezz'ora).
             "fat_split_mis": (1 if k in fat_split else 0) if (k in fat_split or t.get("fat_g")) else "",
+            # ORAC e Daily Dozen: VUOTI, non zero, dove il giorno lo ha scritto
+            # Cronometer per intero. Le sue voci non portano food_id — solo una
+            # stringa gia' formattata — quindi non c'e' niente da cercare in
+            # orac.csv, e uno zero li' vorrebbe dire «quel giorno non ha mangiato
+            # niente di colorato» invece di «da qui non si vede». E' la stessa
+            # regola dei buchi nei grafici: un buco resta un buco.
+            "orac": ("" if k in cron_full else round(orac_day.get(k, 0.0))),
+            "orac_cov_pct": ("" if k in cron_full else
+                             round(100.0 * orac_kcal.get(k, 0.0) / (t["kcal"] or 1), 1)),
+            # L'ESERCIZIO fa eccezione e non si svuota mai: non viene dal diario ma
+            # da intervals.icu, quindi su un giorno di Cronometer si sa lo stesso.
+            # Una casella senza NESSUN alimento mappato resta VUOTA per sempre, e
+            # non a zero: `semi_di_lino` non ha una voce in foods.csv, quindi «zero
+            # porzioni» li' vorrebbe dire «non ne ha mangiati», che non e' quello
+            # che si sa — quello che si sa e' che il catalogo non li conosce.
+            **{"dd_" + c: (round(eserc_of.get(k, 0.0), 2) if c == "esercizio"
+                           else "" if (c not in dozen_of or k in cron_full)
+                           else round(dd_day[k].get(c, 0.0), 2))
+               for c, _ in common.DAILY_DOZEN},
+            "suppl_n": ("" if (k in cron_full or primo_suppl is None or k < primo_suppl)
+                        else suppl_day.get(k, 0)),
             **{"cnt_" + key: round(tally[k].get(key, 0.0), 2) for key in TALLY},
         })
         cur += timedelta(days=1)
@@ -497,6 +612,30 @@ def main():
     for q, lab in (("pct_plant", "vegetale"), ("pct_dairy", "latticini"),
                    ("pct_upf", "ultra-processato"), ("pct_animal", "animale")):
         print(f"  quota {lab:<18} {avg(q):5.1f} % delle kcal")
+    # ---- ORAC e Daily Dozen: quanto se ne vede davvero -----------------------
+    con_orac = [r for r in out if r["orac"] != "" and r["kcal"]]
+    if con_orac:
+        cov = sum(r["orac_cov_pct"] for r in con_orac) / len(con_orac)
+        print(f"  ORAC medio      {sum(r['orac'] for r in con_orac) / len(con_orac):7.0f} "
+              f"µmol TE  (su {len(con_orac)} giorni; copre il {cov:.0f} % delle kcal, "
+              f"{len(orac_of)} alimenti a listino)")
+        peggiori = sorted(senza_orac.items(), key=lambda x: -x[1])[:5]
+        if peggiori:
+            print("    scoperti che pesano di piu': " +
+                  ", ".join(f"{f} ({k / 1000:.0f}k kcal)" for f, k in peggiori))
+    ultimi = [r for r in out[-7:] if r["dd_fagioli"] != ""]
+    if ultimi:
+        print("  Daily Dozen, ultimi 7 giorni (porzioni medie / prescritte):")
+        for c, target in common.DAILY_DOZEN:
+            vals = [r["dd_" + c] for r in ultimi if r["dd_" + c] != ""]
+            if not vals:
+                continue
+            m = sum(vals) / len(vals)
+            print(f"    {common.DAILY_DOZEN_IT[c]:<22} {m:5.2f} / {target}"
+                  f"   {'OK' if m >= target else ''}")
+    con_suppl = sum(1 for r in out if r["suppl_n"] not in ("", 0))
+    print(f"  integratori: {con_suppl} giorni con almeno una presa registrata")
+
     print("  conteggi (totale sul periodo):")
     for key, (lab, _ids) in TALLY.items():
         print(f"    {sum(r['cnt_' + key] for r in out):8.0f}  {lab}")

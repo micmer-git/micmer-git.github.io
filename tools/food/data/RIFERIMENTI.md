@@ -2,8 +2,15 @@
 
 Due tabelle di riferimento aggiunte il **22/08/2026** per l'ordine #27 di Michele:
 mostrare l'ORAC nel tempo, e vedere se e quando i Daily Dozen del dottor Greger
-vengono rispettati. Sono **solo dati**: nessuno script della pipeline li legge ancora,
-`build_food.py` e `build_vita.py` non sono stati toccati.
+vengono rispettati.
+
+> **AGGANCIATE il 04/09/2026** (ordini MC #31 e #32). Per dodici giorni sono state
+> quello che questa riga diceva: solo dati, che nessuno leggeva. Adesso le legge
+> `tools/food/common.py` (`load_orac`, `load_daily_dozen`), le somma
+> `build_nutrition_series.py` in quindici colonne nuove di `nutrition.csv` — `orac`,
+> `orac_cov_pct` e dodici `dd_*` — e le disegna `build_vita.py` in tre riquadri della
+> sezione Tavola: **ORAC**, **Quanto dell'ORAC si vede** e **I dodici del dottor
+> Greger**, una griglia 12 x 7.
 
 Le due tabelle si agganciano a `foods.csv` per `food_id`. Ogni id e' stato verificato
 contro il catalogo: **zero id fantasma** in entrambi i file.
@@ -163,11 +170,48 @@ totale.
 
 ## 3. Cosa serve per chiudere il cerchio
 
-1. `semi_lino` e `curcuma` in `foods.csv`: due voci, e due caselle su dodici smettono di
-   essere strutturalmente vuote.
-2. Una voce `acqua` (o un modo di registrarla), per la casella bevande.
-3. Chi consuma questi file deve distinguere **`high`/`medium` da `low`** nel disegno, come
-   gia' si fa in `/vita` fra osservato, ricostruito e stimato — e' la terza regola della
-   repo, e vale anche qui.
-4. Il grafico ORAC deve portarsi addosso la nota che il caffe' manca e che il totale e'
-   quindi sottostimato.
+Aggiornato il **04/09/2026**, chiudendo gli ordini #31 e #32.
+
+**Fatto:**
+
+- Il grafico ORAC porta addosso la sua avvertenza — tabella ritirata dall'USDA nel 2012,
+  misura in vitro — e accanto ha un **secondo riquadro che dice quanto ne copre il
+  catalogo**: sugli ultimi mesi e' il **57 % delle calorie**, e sotto quella riga il primo
+  grafico non sta misurando la dieta ma la parte di dieta che si sa leggere. Il buco del
+  caffe' e dei cereali raffinati e' scritto nel piede, non dedotto.
+- Il PDF della *Release 2* e' stato **riletto per intero** e otto voci nuove citano il
+  numero NDB della tabella: pane integrale (1421), pane di avena ai semi (1318), pane di
+  segale (1963), fiocchi d'avena (1708), granola (2294), rucola (1904), olio extravergine
+  (372), mais dolce (728). `burro_arachidi` e' passato dall'analogia con l'arachide cruda
+  (3166) alla voce diretta *Peanut butter, smooth* (3432), e la sua confidenza da `medium`
+  a `high`. Il catalogo ORAC passa da 58 a **67 voci**.
+- Le porzioni del Daily Dozen sono state **verificate su nutritionfacts.org/daily-dozen**:
+  le dodici caselle e i loro numeri tornano tutti; la porzione di bevanda era 340 ml ed e'
+  355 (12 oz, 60 oz al giorno in tutto).
+- **Tre porzioni erano girate al contrario.** Le note dicevano «conta a meta'» ma il numero
+  faceva contare doppio, perche' `porzione_g` e' il peso che vale UNA porzione: burro
+  d'arachidi sgrassato 16 -> 64, cappuccino 150 -> 710, crusca d'avena 20 -> 80. Sul
+  sgrassato era un fattore quattro, e nel verso di far sembrare piena una casella vuota.
+- **`grammi_pezzo` in `foods.csv`.** ORAC e Daily Dozen ragionano in grammi, il diario in
+  pezzi: senza, una banana valeva 1 g di banana. Il peso e' ricavato dal catalogo stesso —
+  kcal del pezzo diviso kcal per 100 g dell'USDA — quindi non e' un numero in piu' da
+  credere sulla parola. Dove manca, l'alimento resta fuori dai due conti invece di valere
+  un grammo.
+- La regola delle caselle multiple e' **dichiarata** in testa a `daily_dozen.csv`: un
+  alimento puo' stare in piu' caselle e ne spunta una per ciascuna, mai due volte la stessa.
+
+**Resta da fare:**
+
+1. `semi_lino` e `curcuma` in `foods.csv`. La riga dei semi di lino sulla griglia e' oggi
+   **vuota, non a zero**, ed e' la lettura giusta finche' la voce non esiste — ma resta una
+   casella su dodici che non si puo' spuntare per un difetto del catalogo.
+2. Una voce `acqua`, o un modo di registrarla: la casella bevande sta a zero perche' l'acqua
+   non si annota, non perche' Michele non la beva.
+3. Il **caffe'** in `orac.csv`. E' spesso il primo contributore di ORAC di una giornata e
+   manca ancora: il catalogo tiene `caffe_espresso` a 30 ml e il valore USDA e' del caffe'
+   filtro, con un fattore di concentrazione fra i due che nessuno qui sa ricostruire.
+4. Distinguere `high`/`medium` da `low` **nel disegno**, non solo nel CSV. Oggi il riquadro
+   ORAC dichiara la copertura in calorie ma non la qualita' della fonte voce per voce.
+5. La **varieta' della mela**. Il catalogo ne tiene una sola e generica; l'USDA va da 2589
+   (fuji) a 4275 (red delicious). Il 03/09/2026 Michele ha dichiarato una renetta, e il
+   registro non ha avuto dove metterla.
