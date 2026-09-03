@@ -13,7 +13,8 @@
 #   noci_e_semi           1 porzione/giorno · 30 g · 32 g di burro di frutta secca
 #   erbe_e_spezie         1 porzione/giorno · 1 g di curcuma (un quarto di cucchiaino) + qualunque altra
 #   cereali_integrali     3 porzioni/giorno · 100 g cotti · 40 g di pane · 50 g a crudo
-#   bevande               5 porzioni/giorno · 340 ml (un bicchiere grande) — acqua, te', caffe'
+#   bevande               5 porzioni/giorno · 355 ml (12 oz) — 60 oz al giorno in tutto: acqua,
+#                         te' verde, te' d'ibisco. Il caffe' Greger lo tollera, non lo consiglia
 #   esercizio             1 porzione/giorno · 90 min moderati o 40 min vigorosi — NON e' un alimento
 #
 # ⚠️ La colonna porzione_g e' in grammi per gli alimenti a peso e in MILLILITRI per le bevande;
@@ -23,6 +24,16 @@
 # Fuori dalle dodici per scelta di Greger, non per dimenticanza: succhi di frutta (anche al
 # 100%), patate bianche, fritti, cereali raffinati, dolci, alcolici, tutto quello che viene
 # dagli animali. Sta scritto nelle note delle righe che ci si avvicinano, e in RIFERIMENTI.md.
+#
+# VERIFICATO SULLA FONTE il 03/09/2026 (ordine MC #32) su https://nutritionfacts.org/daily-dozen/ :
+# le dodici caselle e i loro numeri di porzioni tornano tutti. Corrette due cose che questo file
+# aveva approssimato: la porzione di bevanda e' 12 oz = 355 ml (non 340) e il totale dichiarato
+# da Greger e' 60 oz al giorno; il cappuccino, che qui conta mezza porzione, passa da 150 a 178.
+#
+# LA REGOLA DELLE CASELLE MULTIPLE, dichiarata: un alimento PUO' stare in piu' caselle, e allora
+# ne spunta una per ciascuna - mai due volte la stessa. Vale per cavolo_nero e rucola, che sono
+# insieme crucifere e foglie verdi, e per cavolo_rosso_fermentato. Il conto si fa per CASELLA:
+# 30 g di rucola valgono una porzione di foglie verdi E 30/45 di porzione di crucifere.
 #
 # Un parser deve saltare le righe che cominciano con '#'.
 categoria,food_id,porzione_g,nota
@@ -91,7 +102,7 @@ altre_verdure,sformato_verdure,150,"composito: verdure + uova + formaggio. Conta
 semi_di_lino,,10,"⚠️ NESSUN food_id: i semi di lino NON sono nel catalogo. E' l'unica delle dodici categorie a zero coperture, e non perche' Michele non li mangi ma perche' non c'e' la voce. Serve un `semi_lino` in foods.csv (macinati: interi passano interi e non contano)"
 noci_e_semi,mandorle,30,"un quarto di tazza"
 noci_e_semi,noci,30,"Greger le mette davanti a tutte le altre: sono la fonte vegetale di ALA piu' densa del catalogo"
-noci_e_semi,burro_arachidi_sgrassato,16,"due cucchiai di burro di arachidi sono 32 g, ma questo e' sgrassato in polvere: meta' peso per pari proteine, e i grassi buoni non ci sono piu'. Conta a meta'"
+noci_e_semi,burro_arachidi_sgrassato,64,"due cucchiai di burro di arachidi sono 32 g, ma questo e' sgrassato in polvere: meta' peso per pari proteine, e i grassi buoni non ci sono piu'. Conta a meta', quindi ne servono 64 g per una porzione - il 03/09/2026 questa cella diceva 16, che faceva contare il doppio invece della meta'"
 noci_e_semi,semi_misti,30,"il mix di semi sullo yogurt: lino e chia dentro contano, ma solo se MACINATI - interi passano interi, ed e' il motivo per cui questa riga non spunta anche la casella semi_di_lino"
 erbe_e_spezie,curry_polvere,1,"il curry contiene curcuma: e' la voce del catalogo piu' vicina a quello che Greger chiede (un quarto di cucchiaino di curcuma al giorno). Manca la curcuma pura"
 erbe_e_spezie,cumino_semi,1,
@@ -100,7 +111,7 @@ erbe_e_spezie,prezzemolo,5,
 erbe_e_spezie,aglio,3,"uno spicchio. Il catalogo lo tiene fra le spezie; Greger lo elenca fra le altre verdure. Contarlo qui e' una scelta di questo file"
 cereali_integrali,pasta_integrale,50,"peso a crudo: 50 g fanno circa mezza tazza cotta"
 cereali_integrali,avena_fiocchi,40,
-cereali_integrali,crusca_avena,20,"e' solo la crusca: mezza porzione, non e' un chicco intero"
+cereali_integrali,crusca_avena,80,"e' solo la crusca: mezza porzione, non e' un chicco intero. 80 g = due volte i 40 g di una porzione piena"
 cereali_integrali,pane_integrale,40,"una fetta"
 cereali_integrali,pane_segale,40,"vale come integrale solo se e' segale intera: il pane di segale scuro spesso e' farina raffinata piu' colorante"
 cereali_integrali,quinoa,50,"peso a crudo"
@@ -109,11 +120,13 @@ cereali_integrali,chapati,40,"farina integrale: e' il pane piatto indiano che co
 cereali_integrali,injera,50,"il teff si macina intero: l'injera e' integrale per costruzione"
 cereali_integrali,polenta_mais,40,"peso a crudo, e conta solo se la farina e' integrale (bramata integrale). Quella comune e' degerminata"
 cereali_integrali,granola,40,"avena intera, ma spesso zuccherata e ultraprocessata: conta il cereale, non lo zucchero che ci sta intorno"
-bevande,caffe_espresso,340,"Greger conta un bicchiere da 340 ml; un espresso e' 30 ml. Servono piu' tazze per una porzione, e la caffeina arriva prima del volume"
-bevande,masala_chai,340,"il te' e' fra le bevande che Greger consiglia per primo; lo zucchero del chai no"
-bevande,cappuccino,150,"mezza porzione: e' latte, non acqua"
+bevande,caffe_espresso,355,"Greger conta un bicchiere da 355 ml (12 oz); un espresso e' 30 ml. Servono piu' tazze per una porzione, e la caffeina arriva prima del volume"
+bevande,masala_chai,355,"il te' e' fra le bevande che Greger consiglia per primo; lo zucchero del chai no"
+bevande,cappuccino,710,"mezza porzione: e' latte, non acqua. 710 = due bicchieri da 355 ml, cioe' un cappuccino da 150 ml vale 0,21 porzioni"
 esercizio,,,"NON e' un alimento e non ha food_id. Greger chiede 90 minuti di attivita' moderata o 40 vigorosa al giorno. Il dato per spuntare questa casella esiste gia' in /vita ma da un'altra parte: sono le attivita' di intervals.icu (activities.csv), non il diario alimentare. Chi disegna il grafico deve andarselo a prendere li'"
 noci_e_semi,burro_arachidi,32,"due cucchiai di burro di arachidi sono 32 g: questa e' la crema intera, quindi vale la porzione piena (la versione sgrassata in polvere conta a meta')"
 altre_verdure,carciofi,80,
 altre_verdure,carote_fermentate,80,"stessa casella e stessa porzione della carota cruda: per Greger la fermentazione non cambia categoria. In pratica non spuntera' quasi mai da sola - se ne mangiano 10 g alla volta, non 80"
 crucifere,cavolo_rosso_fermentato,45,"il cavolo rosso resta una crucifera anche da crauto. Riga che mancava: la voce fermentata e' nata il 26/08/2026, dopo che questa tabella era gia' stata scritta il 22/08, e senza questa riga i crauti sparivano dal conteggio delle crucifere"
+cereali_integrali,pane_avena_semi,40,"una fetta. Greger conta l'avena fra i cereali integrali; se la farina di base fosse raffinata non conterebbe, e l'etichetta di questo pane non c'e'"
+altre_verdure,verdure_miste_saltate,80,"composito: e' un contorno saltato di cavolo, carota, germogli e bambu'. Conta per la parte di verdura, che qui e' quasi tutto"

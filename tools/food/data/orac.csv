@@ -22,6 +22,14 @@
 #
 # Un parser deve saltare le righe che cominciano con '#'.
 # Chi manca non e' dimenticato: e' senza un valore difendibile. Vedi RIFERIMENTI.md.
+#
+# Il PDF della Release 2 e' stato riletto per intero il 03/09/2026 (ordine MC #31): le righe
+# aggiunte quel giorno citano il numero NDB della tabella e la scomposizione H + L, cosi' chi
+# ricontrolla cerca la riga e non il nome. La tabella NON contiene caffe', pasta, riso, pane
+# bianco, latte, formaggi, yogurt, uova e carne: quelle voci del catalogo restano senza valore
+# per assenza di dato, non per dimenticanza, e per gli alimenti animali lo zero e' la risposta
+# giusta. Per caffe' e cereali raffinati invece NON lo e': il totale giornaliero e'
+# sistematicamente sottostimato, e la pagina lo scrive sotto il grafico.
 food_id,orac_umol_te_100g,fonte,confidence
 cumino_semi,76800,"USDA 2010 R2 — Spices, cumin seed. Si usa a pizzichi: sul totale giornaliero pesa pochissimo nonostante il numero enorme",high
 cacao_100,55653,"USDA 2010 R2 — Cocoa, dry powder, unsweetened",high
@@ -38,24 +46,31 @@ melagrana,4479,"USDA 2010 R2 — Pomegranates, raw",medium
 mandorle,4454,"USDA 2010 R2 — Nuts, almonds",high
 fragole,4302,"USDA 2010 R2 — Strawberries, raw",high
 datteri,3895,"USDA 2010 R2 — Dates, deglet noor. I medjool stanno a 2387: se la varieta' conta, il valore quasi si dimezza",medium
+burro_arachidi,3432,"USDA 2010 R2 — Peanut butter, smooth (NDB 16098), Total-ORAC 3432 (N=3). Riscritta il 03/09/2026 (ordine MC #31): prima questa riga citava «Nuts, peanuts, all types, raw» (3166) per analogia, ma la tabella la crema di arachidi ce l'ha come voce SUA. Sostituire un'analogia con la voce diretta e' il motivo per cui la confidenza sale da medium a high",high
 mela,3049,"USDA 2010 R2 — Apples, raw, with skin. Le varieta' vanno da 2589 (fuji) a 4275 (red delicious): sbucciata perde gran parte del valore",medium
 pera,2941,"USDA 2010 R2 — Pears, raw",medium
 dal_cotto,2480,"derivato: lenticchie secche 7282 riscalate per il rapporto di densita' calorica del catalogo (353 kcal a crudo contro 120 del dal cotto, fattore 2,94). Non tiene conto di quanto la cottura lunga ne distrugge",low
 fagioli_cannellini,2420,"derivato: USDA 2010 R2 — Beans, kidney, red, raw 8459, riscalato per la reidratazione (333 kcal a secco contro 95 in scatola, fattore 3,5). Il cannellino non ha una voce sua nella tabella",low
 fagioli_stufati,2400,"derivato: stessa catena dei cannellini, con un passaggio di analogia in piu' (fagiolo bianco stimato sul fagiolo rosso). E' il valore piu' debole del file",low
+granola,2294,"USDA 2010 R2 — Cereals ready-to-eat, granola, low-fat, with raisins (NDB 99450), Total-ORAC 2294 (H 2168 + L 126, N=1). L'uvetta della voce USDA ci mette del suo: una granola senza frutta secca sta piu' in basso",medium
 cavolo_rosso,2252,"USDA 2010 R2 — Cabbage, red, raw",high
 fagioli_neri_scatola,2140,"derivato: USDA 2010 R2 — Beans, black, mature seeds, raw 8040, riscalato per la reidratazione (341 kcal a secco contro 91 in scatola, fattore 3,75)",low
 arancia,2103,"USDA 2010 R2 — Oranges, raw, all commercial varieties",medium
+pane_segale,1963,"USDA 2010 R2 — Bread, pumpernickel (NDB 18044), Total-ORAC 1963 (H 1835 + L 128, N=1). Il pumpernickel e' segale integrale scura: se il pane di segale di Michele fosse farina raffinata colorata, questo valore e' troppo alto",medium
 avocado,1933,"USDA 2010 R2 — Avocados, raw, Hass",medium
 pesca,1922,"USDA 2010 R2 — Peaches, raw",medium
+rucola,1904,"USDA 2010 R2 — Arugula (rocket), raw (NDB 11959), Total-ORAC 1904 (N=12, da 1012 a 2373). Una delle poche voci con dodici campioni: la forchetta e' larga, la media e' solida",high
 cavolo_nero,1770,"USDA 2010 R2 — Kale, raw",high
 barbabietola,1767,"USDA 2010 R2 — Beets, raw. Il catalogo la tiene cotta: lessata ne perde una parte nell'acqua",medium
+avena_fiocchi,1708,"USDA 2010 R2 — Cereals, oats, old fashioned, uncooked (NDB 97103), Total-ORAC 1708 (H 1402 + L 306, N=1). Peso a crudo, come il catalogo. I fiocchi rapidi della stessa tabella (NDB 99455) stanno a 2169: la differenza fra i due tagli e' del 27 %",high
 asparagi,1644,"USDA 2010 R2 — Asparagus, cooked. Crudi stanno a 2150, ed e' uno dei casi in cui la differenza si vede",high
 mandarino,1620,"USDA 2010 R2 — Tangerines (mandarin oranges), raw",medium
 olive,1520,"USDA 2010 R2 — Olives, ripe, canned",medium
 spinaci,1513,"USDA 2010 R2 — Spinach, raw",high
 insalata_mista,1447,"USDA 2010 R2 — Lettuce, green leaf, raw. Secondo la foglia va da 438 (iceberg) a 2380 (foglia rossa): questa voce e' una misticanza, quindi sta in mezzo",medium
+pane_integrale,1421,"USDA 2010 R2 — Bread, Multi-Grain, includes whole-grain (NDB 18035), Total-ORAC 1421 (H 1298 + L 123, N=1). E' la voce piu' vicina al pane integrale italiano che la tabella abbia: il pane bianco non c'e' affatto, ed e' il motivo per cui pane_bianco resta senza valore invece di prendere questo",medium
 broccoli,1362,"USDA 2010 R2 — Broccoli, raw. Il catalogo li tiene cotti al vapore, che e' la cottura che ne conserva di piu'",medium
+pane_avena_semi,1318,"USDA 2010 R2 — Bread, Oatnut (NDB 99448), Total-ORAC 1318 (H 1224 + L 94, N=1). E' pane di avena con frutta secca, cioe' esattamente la famiglia del pane di avena ai semi. I semi veri sposterebbero il valore verso l'alto, quindi la stima e' per difetto",medium
 prezzemolo,1301,"USDA 2010 R2 — Parsley, fresh",high
 limone,1225,"USDA 2010 R2 — Lemons, raw, without peel. Il catalogo intende il succo di uno spicchio: il numero e' per 100 g di frutto",medium
 patate,1058,"USDA 2010 R2 — Potatoes, white, flesh and skin, raw",medium
@@ -69,16 +84,17 @@ kiwi,862,"USDA 2010 R2 — Kiwifruit, green, raw",medium
 ceci_secchi,847,"USDA 2010 R2 — Chickpeas, mature seeds, raw. Sorprendentemente basso per un legume: e' un dato vero della tabella, non un refuso",medium
 peperoni,821,"USDA 2010 R2 — Peppers, sweet, red, raw",medium
 fagiolini,759,"USDA 2010 R2 — Beans, snap, green, raw",medium
+mais_dolce,728,"USDA 2010 R2 — Corn, sweet, yellow, raw (NDB 11167), Total-ORAC 728 (N=1). Il catalogo lo tiene in scatola: la voce USDA e' il chicco crudo, quindi questo tira verso l'alto",medium
 carote,697,"USDA 2010 R2 — Carrots, raw. Cotte scendono a 317",high
 funghi,691,"USDA 2010 R2 — Mushrooms, white, raw",medium
 funghi_porcini,691,"analogia con i champignon (USDA 2010 R2 — Mushrooms, white, raw): il porcino non e' nella tabella. La letteratura lo da' piu' alto, quindi questo e' probabilmente un valore per difetto",low
 passata_pomodoro,650,"derivato: pomodoro crudo 367 riscalato per la concentrazione del catalogo (32 kcal contro 18, fattore 1,78). Il licopene regge bene la cottura, quindi il verso della stima e' ragionevole",low
 sedano,552,"USDA 2010 R2 — Celery, raw",medium
 zucca,483,"USDA 2010 R2 — Pumpkin, raw",medium
+olio_evo,372,"USDA 2010 R2 — Olive oil, extra-virgin (NDB 99423), Total-ORAC 372 (N=43, da 146 a 1150). La forchetta e' enorme perche' i polifenoli dell'olio dipendono da cultivar, raccolta e eta' della bottiglia: un extravergine fresco e amaro sta in cima, uno di un anno in fondo",medium
 pomodorini,367,"USDA 2010 R2 — Tomatoes, red, ripe, raw",high
-ceci_scatola,310,"derivato: ceci secchi 847 riscalati per la reidratazione (378 kcal a secco contro 139 in scatola, fattore 2,72)",low
 melone,315,"USDA 2010 R2 — Melons, cantaloupe, raw",high
+ceci_scatola,310,"derivato: ceci secchi 847 riscalati per la reidratazione (378 kcal a secco contro 139 in scatola, fattore 2,72)",low
 cetriolo,214,"USDA 2010 R2 — Cucumber, with peel, raw. Sbucciato scende ancora",medium
 zucchine,180,"USDA 2010 R2 — Squash, summer, all varieties, raw. Valore basso e poco citato: la zucchina e' quasi tutta acqua",low
 anguria,142,"USDA 2010 R2 — Watermelon, raw. E' il fondo della tabella fra la frutta, ed e' giusto che si veda",high
-burro_arachidi,3166,"USDA 2010 R2 — Nuts, peanuts, all types, raw. La crema e' l'arachide macinata: stesso ordine di grandezza, ma tostatura e zucchero aggiunto lo abbassano un po'",medium

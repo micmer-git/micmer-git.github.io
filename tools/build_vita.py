@@ -2342,8 +2342,13 @@ function pathOf(pts, X, Y) {
    o da una giornata strana. */
 const sheet = document.getElementById("sheet");
 const sheetIn = document.getElementById("sheet-in");
+/* `merenda` e `integratori` mancavano, e senza il loro nome la scheda del giorno
+   scriveva la chiave grezza. `integratori` e' un pasto nato il 03/09/2026 (ordine
+   MC #80): un integratore non e' una colazione ne' uno spuntino, e la sua ora non
+   e' quasi mai dichiarata. */
 const MEAL_IT = { colazione:"Colazione", pranzo:"Pranzo", cena:"Cena",
-  spuntino:"Spuntino", non_specificato:"Non specificato" };
+  spuntino:"Spuntino", merenda:"Merenda", integratori:"Integratori",
+  non_specificato:"Non specificato" };
 const NUTRI_IT = { protein_g:"Proteine", carb_g:"Carboidrati", fiber_g:"Fibre",
   fat_g:"Grassi", omega3_g:"Omega 3", potassium_mg:"Potassio", calcium_mg:"Calcio",
   iron_mg:"Ferro", magnesium_mg:"Magnesio", zinc_mg:"Zinco", vitc_mg:"Vit. C",
@@ -2518,7 +2523,8 @@ function openDay(i) {
       `</div>`;
   } else if (day) {
     const meals = day.meals || {};
-    const order = ["colazione", "pranzo", "cena", "spuntino", "non_specificato"];
+    const order = ["colazione", "spuntino", "pranzo", "merenda", "cena",
+                   "integratori", "non_specificato"];
     const keys = order.filter(m => meals[m]).concat(
       Object.keys(meals).filter(m => !order.includes(m)));
     if (keys.length) {
@@ -3910,6 +3916,19 @@ function nutriTiles() {
   if (!N_.kcal) return [];
   const has = k => Array.isArray(N_[k]);
   const t = [];
+  /* Gli ultimi sette giorni con del cibo dentro la finestra. Non "gli ultimi sette
+     giorni di calendario": i giorni scritti da Cronometer non portano food_id,
+     quindi le dodici caselle lì sono vuote, e sette colonne per metà vuote sono
+     peggio di sette colonne piene di una settimana un po' più indietro. */
+  const ddGiorni = (a, b) => {
+    if (!has("dd_fagioli")) return [];
+    const lo = a === undefined ? 0 : a, hi = b === undefined ? N - 1 : b, out = [];
+    for (let i = hi; i >= lo && out.length < 7; i--) {
+      const v = N_.dd_fagioli[i];
+      if (v !== null && v !== undefined) out.push(i);
+    }
+    return out.reverse();
+  };
   const MICR = D.microbes || {};
   const GEN = [["Faecalibacterium", "🌾"], ["Bacteroides", "🥩"], ["Prevotella", "🌱"],
                ["Bifidobacterium", "🍶"], ["Roseburia", "🌾"], ["Blautia", "🌱"],
@@ -4008,6 +4027,137 @@ function nutriTiles() {
               ["🍶", "fermentati", at(M.drv_ferment)], ["⚙️", "ultra-proc.", at(M.drv_upf), 1]]
         .filter(x => x[2] !== null);
     } });
+
+  /* ---- ORAC: la densità di polifenoli, con la sua avvertenza attaccata -----
+     Il numero da solo mente in due modi opposti, e tutti e due stanno nel piede:
+     l'USDA ha ritirato la tabella perché l'in vitro non predice l'in vivo, e il
+     catalogo copre meno di metà delle calorie, quindi il totale è basso per
+     costruzione. Sono avvertenze su un numero, non spiegazioni dell'interfaccia. */
+  if (has("orac")) t.push({ panel:"tavola", h:146, first:"n_orac",
+    src:"ricostruito", title:"ORAC",
+    cap:"µmol Trolox equivalenti al giorno · media mobile 7 giorni",
+    now:() => lastMean(N_.orac, 7), nowFmt:FMT.num0, nowUnit:"µmol TE, media 7 gg",
+    kind:rCloud, spec:{ name:"ORAC", arr:N_.orac, col:"var(--s2)", fmt:FMT.num0,
+      zero:true, win:7 },
+    dataNote:"misura in vitro, non un effetto",
+    foot:"<strong>L'USDA ha ritirato questa tabella nel 2012</strong>, e la ragione conta: " +
+      "l'ORAC si misura in provetta, i polifenoli che lo generano vengono in gran parte " +
+      "metabolizzati o non assorbiti, e il numero era diventato un argomento di vendita per " +
+      "succhi e integratori. Un ORAC alto <em>non</em> è una promessa di salute: si legge come " +
+      "il contatore delle piante diverse, cioè come una spia di quanto la dieta peschi da " +
+      "piante colorate. Valori da <em>USDA Database for the ORAC of Selected Foods, Release 2</em> " +
+      "(2010), voce per voce in <span class=\"mono\">tools/food/data/orac.csv</span>. " +
+      "<strong>Il totale è sottostimato per costruzione</strong>: la tabella USDA non ha caffè, " +
+      "pasta, riso, pane bianco né latticini, e la copertura vera del giorno è la seconda " +
+      "serie del riquadro qui sotto." });
+
+  if (has("orac_cov_pct")) t.push({ panel:"tavola", h:146, first:"n_orac_cov_pct",
+    src:"ricostruito", title:"Quanto dell'ORAC si vede",
+    cap:"% delle calorie del giorno che viene da alimenti con un valore ORAC · media 7 giorni",
+    now:() => lastMean(N_.orac_cov_pct, 7), nowFmt:v => nf(v, 0) + " %",
+    nowUnit:"kcal coperte, 7 gg",
+    kind:rCloud, spec:{ name:"Copertura", arr:N_.orac_cov_pct, col:"var(--s4)",
+      fmt:v => nf(v, 0) + " %", zero:true, win:7 },
+    dataNote:"quanto ne copre il catalogo",
+    foot:"Sotto questa riga il grafico sopra non sta misurando la dieta: sta misurando la parte " +
+      "di dieta che il catalogo sa leggere. Le due cose si allontanano nei giorni di pasta, pane " +
+      "bianco e caffè, che valgono zero perché il dato non esiste, non perché non abbiano " +
+      "antiossidanti." });
+
+  /* ---- I dodici del dottor Greger, settimana per settimana -----------------
+     Dodici righe e sette colonne: è la forma della domanda, che non è "quanto
+     ORAC ho fatto" ma "quali caselle ho spuntato e quali no". Le prescritte sono
+     di Greger, verificate su nutritionfacts.org; le porzioni in grammi sono la
+     conversione dalle sue cup e tablespoon, e stanno in daily_dozen.csv. */
+  const DDZ = [["fagioli", "Fagioli e legumi", 3], ["frutti_di_bosco", "Frutti di bosco", 1],
+               ["altra_frutta", "Altra frutta", 3], ["crucifere", "Crucifere", 1],
+               ["verdure_foglia_verde", "Foglie verdi", 2], ["altre_verdure", "Altre verdure", 2],
+               ["semi_di_lino", "Semi di lino", 1], ["noci_e_semi", "Frutta secca e semi", 1],
+               ["erbe_e_spezie", "Erbe e spezie", 1], ["cereali_integrali", "Cereali integrali", 3],
+               ["bevande", "Bevande", 5], ["esercizio", "Esercizio", 1]];
+  /* Le dodici righe ci sono SEMPRE tutte e dodici, anche quando la serie non
+     esiste: `semi_di_lino` non ha un solo alimento nel catalogo, quindi la sua
+     colonna in nutrition.csv e' vuota da cima a fondo. Filtrare via le righe senza
+     dati farebbe sparire proprio la casella che ha piu' bisogno di essere vista —
+     e l'elenco si chiama «i dodici». Le celle restano bianche, e il piede dice
+     perche'. */
+  if (has("dd_fagioli")) t.push({ panel:"tavola", cls:"wide", h:330, first:"n_dd_fagioli",
+    src:"ricostruito", title:"I dodici del dottor Greger",
+    cap:"porzioni del giorno contro quelle prescritte · gli ultimi 7 giorni con del cibo",
+    dataNote:"dodici caselle, verificate sulla fonte",
+    /* Il numero di testa e' «quante caselle rispetta NELLA SETTIMANA», non ieri:
+       il Daily Dozen e' una routine, e un giorno solo la racconta male — il 4
+       settembre, che e' un giorno tutto ricostruito, ne dice tre, la settimana
+       cinque. La finestra e' la stessa che disegna la griglia qui sotto. */
+    now:() => { const g = ddGiorni(); if (!g.length) return null;
+      return DDZ.filter(([k, , tg]) => {
+        const s = N_["dd_" + k]; if (!s) return false;
+        const v = g.map(i => s[i]).filter(x => x !== null && x !== undefined);
+        return v.length && v.reduce((a, b) => a + b, 0) / v.length >= tg;
+      }).length; },
+    nowFmt:FMT.num0, nowUnit:"caselle su 12, media 7 giorni",
+    kind:(svg, W, H, spec, a, b) => {
+      const g = ddGiorni(a, b);
+      if (g.length < 2) return null;
+      return rGrid(svg, W, H, {
+        rows:DDZ.map(([, lab]) => ({ name:lab })),
+        cols:g.map(i => ({ name:DOW[(dayDate(i).getDay() + 6) % 7] + " " + dayDate(i).getDate() })),
+        vmax:1, diverging:false, labMax:130, labB:40, maxColLabels:7,
+        cell:(i, j) => { const [k, lab, tg] = DDZ[i], s = N_["dd_" + k];
+          const v = s ? s[g[j]] : null;
+          if (v === null || v === undefined) return null;
+          const q = Math.min(1, v / tg);
+          return { v:q, day:g[j], txt:v >= 10 ? nf(v, 0) : nf(v, 1),
+            tip:`<span class="d">${fmtDate(g[j])}</span><br>${lab} ` +
+                `<span class="v">${nf(v, 1)}</span> su ${tg}` +
+                (v >= tg ? "<br><span class=\"d\">casella piena</span>" : "") }; },
+        summary:() => { let pieni = 0, tot = 0;
+          DDZ.forEach(([k, , tg]) => g.forEach(i => { const s = N_["dd_" + k];
+            const v = s ? s[i] : null;
+            if (v !== null && v !== undefined) { tot++; if (v >= tg) pieni++; } }));
+          return `${pieni} caselle piene su ${tot} · ${g.length} giorni`; },
+        table:() => `<tr><th>casella</th><th>media</th><th>prescritte</th><th>giorni pieni</th></tr>` +
+          DDZ.map(([k, lab, tg]) => { const s = N_["dd_" + k];
+            const vs = (s ? g.map(i => s[i]) : [])
+              .filter(v => v !== null && v !== undefined);
+            if (!vs.length) return `<tr><td>${lab}</td><td>&mdash;</td><td>${tg}</td><td>nessun alimento a catalogo</td></tr>`;
+            const m = vs.reduce((x, y) => x + y, 0) / vs.length;
+            return `<tr><td>${lab}</td><td>${nf(m, 1)}</td><td>${tg}</td>` +
+                   `<td>${vs.filter(v => v >= tg).length} / ${vs.length}</td></tr>`; }).join("") },
+        a, b);
+    }, spec:{},
+    foot:"<strong>Due caselle non sono misurabili da qui</strong>: i <em>semi di lino</em> non " +
+      "esistono nel catalogo — quella riga è vuota, non a zero — e le <em>bevande</em> " +
+      "restano a zero perché l'acqua non si annota, non perché non la beva. " +
+      "Un alimento può stare in più caselle e allora ne spunta una per ciascuna, mai " +
+      "due volte la stessa: cavolo nero e rucola sono insieme crucifere e foglie verdi. " +
+      "L'<em>esercizio</em> non viene dal diario ma da intervals.icu — 90 minuti moderati o 40 " +
+      "vigorosi fanno una porzione, e la soglia fra i due è un intensity factor di 0,75. " +
+      "Le porzioni in grammi sono la conversione dalle cup e tablespoon di Greger e stanno in " +
+      "<span class=\"mono\">tools/food/data/daily_dozen.csv</span>, riga per riga." });
+
+  /* ---- gli integratori, che fino al 3 settembre 2026 il registro non aveva --
+     Il riquadro NON compare finche' non c'e' un mese di storia. Con due giorni una
+     serie non e' un grafico: e' un picco solo, e la pagina ha gia' un controllo che
+     boccia i riquadri che non disegnano niente — giustamente, perche' un riquadro
+     vuoto e' peggio di un riquadro che non c'e'.
+     Intanto gli integratori si vedono lo stesso, e nel posto dove si guardano: la
+     scheda del giorno li apre come pasto suo, «Integratori», accanto a colazione e
+     cena. Quando il mese c'e', il riquadro si accende da solo. */
+  const supplGiorni = has("suppl_n")
+    ? N_.suppl_n.reduce((a, v) => a + (v === null || v === undefined ? 0 : 1), 0) : 0;
+  if (supplGiorni >= 28) t.push({ panel:"tavola", h:170, first:"n_suppl_n",
+    src:"misurato", title:"Integratori",
+    cap:"prese registrate · sommate al mese",
+    now:() => { let s = 0; for (let i = 0; i < N; i++) s += N_.suppl_n[i] || 0; return s; },
+    nowFmt:FMT.num0, nowUnit:"prese, in tutto",
+    kind:rBars, spec:{ name:"Integratori", arr:N_.suppl_n, how:"sum", col:"var(--s3)",
+      fmt:v => nf(v, 0) },
+    foot:"Conta le prese, <strong>non quello che c'è dentro</strong>: di Orax Core e Daily Dose " +
+      "non esiste una scheda pubblica da citare, quindi le celle dei nutrienti nel catalogo sono " +
+      "vuote — un dato che manca, non uno zero. Con la foto dell'etichetta diventano vitamine e " +
+      "minerali veri e rientrano negli indici. Si annotano dal pannello Vita di Mission Control, " +
+      "come tutto il resto del diario." });
 
   /* La matrice 3×3: tre input della tavola contro tre uscite del recupero.
      Nove ipotesi guardate insieme — se ne mostrassi solo la più forte starei
@@ -5936,7 +6086,8 @@ document.getElementById("tracks").innerHTML = (D.tracks || []).map(t => `
    perdere quello che stai scrivendo, dicendolo. */
 const diaryEl = document.getElementById("diary");
 const diaryIn = document.getElementById("diary-in");
-const MEAL_SORT = ["colazione", "spuntino", "pranzo", "merenda", "cena", "non_specificato"];
+const MEAL_SORT = ["colazione", "spuntino", "pranzo", "merenda", "cena",
+                   "integratori", "non_specificato"];
 /* I macro che il diario disegna a barre. Le kcal non ci sono: stanno gia' nel
    titolo della tavola, e ripeterle qui direbbe due volte la stessa cosa. */
 const MACRO_BARRE = ["protein_g", "carb_g", "fiber_g", "fat_g"];
