@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matrice — Vita di Michele Merelli</title>
+<meta name="description" content="206 alimenti sui numeri che l'etichetta non stampa: proteine per caloria, carboidrati diviso fibra, potassio, ORAC. E quali di questi finiscono davvero nel piatto.">
+<link rel="canonical" href="https://micmer-git.github.io/vita/matrice/">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://micmer-git.github.io/vita/matrice/">
+<meta property="og:title" content="Matrice — Vita di Michele Merelli">
+<meta property="og:description" content="206 alimenti sui numeri che l'etichetta non stampa, e i 149 che finiscono davvero nel piatto.">
+<link rel="icon" type="image/png" href="../../favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* LO STESSO VESTITO DI /vita e della home: pixel art, ombre secche, palette
+       Google I/O. I valori non sono scelti qui, sono COPIATI da vita/index.html,
+       dove sono misurati: --muted sta a 5,9:1 sul bianco e i quattro slot
+       categorici stanno a ΔE >= 15 dall'accento. `node tools/check_matrice.cjs`
+       li rimisura, cosi' una copia che diverge si vede subito. */
+    --bg:#f8f9fa; --paper:#ffffff; --paper-2:#f1f3f4;
+    --ink:#202124; --ink-soft:#3c4043; --muted:#5f6368;
+    --accent:#202124; --rule:rgba(32,33,36,.30);
+    --grid:rgba(32,33,36,.10); --axis:rgba(32,33,36,.30);
+    --s1:#4285f4; --s2:#ea4335; --s3:#1e8e3e; --s4:#8430ce;
+    --io-yellow:#fbbc04;
+    --neo:4px 4px 0 0 rgba(32,33,36,1); --neo-sm:2px 2px 0 0 rgba(32,33,36,1);
+  }
+  ::selection{background:var(--io-yellow); color:#000}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{max-width:100%;overflow-x:hidden}
+  body{background:var(--bg);color:var(--ink);
+       font:400 16px/1.55 "Plus Jakarta Sans",system-ui,sans-serif;
+       -webkit-font-smoothing:antialiased}
+  main{max-width:1080px;margin:0 auto;padding:2rem 1rem 5rem}
+  a{color:inherit;text-underline-offset:3px}
+  nav{font:700 .72rem/1.2 "Plus Jakarta Sans",system-ui,sans-serif;
+      letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+  h1{font:800 clamp(2.6rem,9vw,4.4rem)/.95 "Plus Jakarta Sans",system-ui,sans-serif;
+     letter-spacing:-.04em;margin:.5rem 0 .6rem}
+  .lede{font-size:1.05rem;color:var(--ink-soft);max-width:44em}
+  .lede b{font-weight:700;color:var(--ink)}
+  .conto{font:400 1.6rem/1 VT323,ui-monospace,monospace;color:var(--muted);
+         margin-top:.9rem;letter-spacing:.02em}
+
+  .scheda{background:var(--paper);border:2px solid var(--ink);box-shadow:var(--neo);
+          padding:1.1rem;margin-top:1.6rem}
+  .comandi{display:flex;flex-wrap:wrap;gap:.9rem 1.2rem;align-items:flex-end}
+  .campo{display:flex;flex-direction:column;gap:.3rem;min-width:min(100%,15rem);flex:1 1 15rem}
+  .campo label{font:700 .68rem/1.2 "Plus Jakarta Sans",system-ui,sans-serif;
+               letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  select{font:500 .95rem "Plus Jakarta Sans",system-ui,sans-serif;color:var(--ink);
+         background:var(--paper-2);border:2px solid var(--ink);border-radius:0;
+         padding:.6rem .7rem;min-height:44px;width:100%;cursor:pointer}
+  .chips{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1rem}
+  .chip{font:600 .82rem "Plus Jakarta Sans",system-ui,sans-serif;background:var(--paper);
+        border:2px solid var(--ink);padding:.42rem .7rem;min-height:38px;cursor:pointer;
+        display:inline-flex;align-items:center;gap:.4rem}
+  .chip[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+  .chip .pallo{width:.62rem;height:.62rem;border-radius:50%;display:inline-block}
+  .spia{font:400 1.35rem/1 VT323,ui-monospace,monospace;color:var(--muted);
+        margin-left:auto;align-self:center;white-space:nowrap}
+
+  figure{margin:1.4rem 0 0}
+  svg{display:block;width:100%;height:auto;overflow:visible}
+  figcaption{font-size:.86rem;color:var(--muted);margin-top:.7rem;max-width:52em}
+  .legenda{display:flex;flex-wrap:wrap;gap:.5rem 1.1rem;margin-top:.9rem;
+           font-size:.82rem;color:var(--ink-soft);align-items:center}
+  .legenda span{display:inline-flex;align-items:center;gap:.4rem}
+  .legenda i{width:.75rem;height:.75rem;border-radius:50%;display:inline-block}
+
+  table{border-collapse:collapse;width:100%;margin-top:.4rem;font-size:.92rem}
+  caption{text-align:left;font:700 .72rem/1.2 "Plus Jakarta Sans",system-ui,sans-serif;
+          letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-bottom:.5rem}
+  th,td{text-align:left;padding:.42rem .5rem;border-bottom:1px solid var(--grid)}
+  th{font-weight:700;color:var(--muted);font-size:.74rem;letter-spacing:.06em;text-transform:uppercase}
+  td.num{text-align:right;font-family:VT323,ui-monospace,monospace;font-size:1.25rem}
+  .tab-avvolgi{overflow-x:auto}
+
+  .note{margin-top:2rem;font-size:.86rem;color:var(--muted);max-width:48em}
+  .note h2{font:800 1rem/1.3 "Plus Jakarta Sans",system-ui,sans-serif;color:var(--ink);
+           margin:1.4rem 0 .4rem;letter-spacing:-.01em}
+  .note p{margin:.5rem 0}
+  .avviso{border-left:4px solid var(--io-yellow);padding:.2rem 0 .2rem .8rem;
+          background:var(--paper);color:var(--ink-soft)}
+  @media (max-width:640px){ main{padding:1.5rem .8rem 4rem} .scheda{padding:.85rem} }
+</style>
+</head>
+<body>
+<main>
+  <nav><a href="../../">micmer</a> / <a href="../">vita</a> / matrice</nav>
+  <h1>Matrice</h1>
+  <p class="lede">Duecentosei alimenti messi sui numeri che sull'etichetta non ci sono: quante
+  proteine per caloria, quanti carboidrati per ogni grammo di fibra, quanto potassio, quanti
+  polifenoli. <b>Gli assi si cambiano</b>, e la nuvola si riordina.</p>
+  <p class="lede" style="margin-top:.6rem">La colonna che nessun'altra tabella può avere è
+  l'ultima: quali di questi finiscono <b>davvero</b> nel piatto, contati sul diario alimentare.</p>
+  <p class="conto" id="conto">—</p>
+
+  <section class="scheda">
+    <div class="comandi">
+      <div class="campo">
+        <label for="asseX">Asse orizzontale</label>
+        <select id="asseX"></select>
+      </div>
+      <div class="campo">
+        <label for="asseY">Asse verticale</label>
+        <select id="asseY"></select>
+      </div>
+      <p class="spia" id="spia">—</p>
+    </div>
+    <div class="chips" id="chips"></div>
+
+    <figure>
+      <svg id="grafico" role="img" aria-labelledby="didascalia"></svg>
+      <figcaption id="didascalia">—</figcaption>
+    </figure>
+    <div class="legenda" id="legenda"></div>
+  </section>
+
+  <section class="scheda">
+    <div class="tab-avvolgi">
+      <table id="classifica">
+        <caption id="titolo-classifica">I primi dieci</caption>
+        <thead><tr><th>Alimento</th><th>Famiglia</th><th style="text-align:right">Valore</th><th style="text-align:right">Volte nel piatto</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="note">
+    <h2>Da dove vengono i numeri</h2>
+    <p>I valori nutrizionali sono il catalogo di Vita (<code>tools/food/data/foods.csv</code>),
+    per 100 g di parte edibile. Dove la voce è un ingrediente secco — legumi, cereali, pasta —
+    il peso è <b>a crudo</b>, e sta scritto nella nota dell'alimento.</p>
+    <p>Le volte nel piatto vengono dal diario alimentare
+    (<code>tools/food/data/food_log.csv</code>): è il conto delle righe, non delle giornate,
+    e parte da quando il diario registra i singoli alimenti e non solo i totali.</p>
+
+    <h2>L'ORAC, e perché va guardato con le pinze</h2>
+    <p class="avviso">L'ORAC è una misura <b>in vitro</b>: si mette un estratto dell'alimento in
+    una provetta con un radicale e si guarda quanto ci mette a spegnersi. L'USDA ha pubblicato
+    la tabella nel 2007, l'ha aggiornata nel 2010 e l'ha <b>ritirata nel 2012</b>, dicendo che i
+    valori in vitro non predicono l'effetto nel corpo e che il marketing li usava per vendere
+    succhi. Un ORAC alto non è una promessa di salute: è una spia di quanto un alimento è denso
+    di polifenoli. <span id="copertura-orac"></span></p>
+
+    <h2>Chi manca, e perché</h2>
+    <p>Gli alimenti senza un valore per un asse <b>non compaiono</b> su quell'asse, invece di
+    comparire a zero: una cella vuota vuol dire «non lo sappiamo», e uno zero vuol dire «non ne
+    ha». Sugli assi «per 100 kcal» restano fuori anche gli alimenti che di calorie non ne hanno
+    — non si divide per zero.</p>
+    <p>Questa pagina è nata dall'ordine #87 del 4 settembre 2026.
+    <a href="../#cibo">La Tavola di Vita →</a></p>
+  </div>
+</main>
+
+<script>
+/* La Matrice: 206 alimenti, due assi che si scelgono, e una nuvola.
+ *
+ * ⚠️ COME E' SCRITTA, E PERCHE' COSI'.
+ * I nodi si costruiscono uno a uno e se ne tiene il riferimento — mai
+ * `innerHTML` su un contenitore gia' pieno. Due motivi, e nessuno dei due e'
+ * estetico: `tools/check_matrice.cjs` gira questo script in uno shim di DOM di
+ * poche righe, senza browser, e ogni `innerHTML +=` rilegge e ricostruisce il
+ * sottoalbero portandosi via gli ascoltatori dei nodi che c'erano prima.
+ */
+(function () {
+  "use strict";
+  var NS = "http://www.w3.org/2000/svg";
+  var el = function (t, a) {
+    var e = document.createElementNS(NS, t);
+    for (var k in (a || {})) if (a[k] !== null && a[k] !== undefined) e.setAttribute(k, a[k]);
+    return e;
+  };
+  var testo = function (t) { return document.createTextNode(t); };
+
+  /* ── LE MISURE ────────────────────────────────────────────────────────────
+   *
+   * Stanno QUI e in nessun altro posto: `build_matrice.py` emette solo i valori
+   * per 100 g, apposta. Due definizioni della stessa formula — una nel
+   * generatore e una nella pagina — divergono al primo ritocco, e diverge in
+   * silenzio perche' nessuna delle due sbaglia.
+   *
+   * `f` torna null quando la misura non ha senso per quell'alimento: manca il
+   * dato, oppure il denominatore e' zero. Un null non si disegna. */
+  var MISURE = [
+    { id: "prot_kcal", nome: "Proteine per 100 kcal", unita: "g",
+      dice: "quanto costa in calorie un grammo di proteina",
+      f: function (a) { return a.kcal > 0 && a.prot != null ? a.prot / a.kcal * 100 : null; } },
+    { id: "kcal", nome: "Densità calorica", unita: "kcal/100 g",
+      dice: "quanto pesa in calorie un etto di quella roba",
+      f: function (a) { return a.kcal != null ? a.kcal : null; } },
+    { id: "fib_kcal", nome: "Fibra per 100 kcal", unita: "g",
+      dice: "quanta fibra ti porti dietro per ogni caloria",
+      f: function (a) { return a.kcal > 0 && a.fib != null ? a.fib / a.kcal * 100 : null; } },
+    { id: "carb_fib", nome: "Carboidrati ÷ fibra", unita: "×",
+      dice: "la qualità del carboidrato: più è basso, più il carboidrato arriva accompagnato",
+      f: function (a) { return a.fib > 0 && a.carb != null ? a.carb / a.fib : null; } },
+    { id: "zuc_carb", nome: "Quota di zuccheri sui carboidrati", unita: "%",
+      dice: "quanta parte del carboidrato è già zucchero semplice",
+      f: function (a) { return a.carb > 0 && a.zuc != null ? a.zuc / a.carb * 100 : null; } },
+    { id: "sat_gras", nome: "Quota di saturi sui grassi", unita: "%",
+      dice: "com'è fatto il grasso, non quanto ce n'è",
+      f: function (a) { return a.gras > 0 && a.sat != null ? a.sat / a.gras * 100 : null; } },
+    { id: "k_kcal", nome: "Potassio per 100 kcal", unita: "mg",
+      dice: "il minerale che in una dieta occidentale manca quasi sempre",
+      f: function (a) { return a.kcal > 0 && a.k != null ? a.k / a.kcal * 100 : null; } },
+    { id: "fe_kcal", nome: "Ferro per 100 kcal", unita: "mg",
+      dice: "densità di ferro, senza guardare quanto se ne assorbe",
+      f: function (a) { return a.kcal > 0 && a.fe != null ? a.fe / a.kcal * 100 : null; } },
+    { id: "vitc_kcal", nome: "Vitamina C per 100 kcal", unita: "mg",
+      dice: "l'asse su cui la verdura cruda stacca tutto il resto",
+      f: function (a) { return a.kcal > 0 && a.vitc != null ? a.vitc / a.kcal * 100 : null; } },
+    { id: "orac_kcal", nome: "ORAC per 100 kcal", unita: "µmol TE",
+      dice: "densità di polifenoli — misura in vitro, ritirata dall'USDA nel 2012",
+      f: function (a) { return a.kcal > 0 && a.orac != null ? a.orac / a.kcal * 100 : null; } },
+    { id: "orac", nome: "ORAC per 100 g", unita: "µmol TE",
+      dice: "lo stesso numero senza dividere per le calorie: qui vincono le spezie",
+      f: function (a) { return a.orac != null ? a.orac : null; } }
+  ];
+
+  /* ── LE FAMIGLIE ──────────────────────────────────────────────────────────
+   *
+   * Undici gruppi sono undici colori, e undici colori su una nuvola sono una
+   * decorazione: nessuno li tiene a mente e nessuno li distingue a 390 px.
+   * Quindi quattro famiglie, che sono esattamente i quattro slot categorici
+   * gia' misurati contro il fondo della scheda, e il gruppo fine resta scritto
+   * nell'etichetta di ogni punto e nella tabella. */
+  var FAMIGLIE = [
+    { id: "pianta", nome: "Piante", slot: "--s3", gruppi: ["verdura", "frutta", "legumi", "spezie"] },
+    { id: "cereali", nome: "Cereali", slot: "--s1", gruppi: ["cereali"] },
+    { id: "animale", nome: "Animale", slot: "--s2", gruppi: ["proteine", "latticini"] },
+    { id: "altro", nome: "Grassi, dolci, resto", slot: "--s4", gruppi: ["grassi", "dolci", "bevande", "integratori"] }
+  ];
+  var famigliaDi = function (gruppo) {
+    for (var i = 0; i < FAMIGLIE.length; i++)
+      if (FAMIGLIE[i].gruppi.indexOf(gruppo) >= 0) return FAMIGLIE[i];
+    return FAMIGLIE[3];
+  };
+
+  var stile = typeof getComputedStyle === "function" ? getComputedStyle(document.documentElement) : null;
+  var tinta = function (slot) {
+    var v = stile ? String(stile.getPropertyValue(slot) || "").trim() : "";
+    /* Il ripiego non e' un colore a caso: sono gli stessi valori del :root, e
+       servono allo shim di DOM del check, che non calcola gli stili. */
+    return v || ({ "--s1": "#4285f4", "--s2": "#ea4335", "--s3": "#1e8e3e", "--s4": "#8430ce" })[slot];
+  };
+
+  var stato = { x: "kcal", y: "prot_kcal", famiglie: {}, soloMiei: false, dati: null };
+  FAMIGLIE.forEach(function (f) { stato.famiglie[f.id] = true; });
+
+  var misura = function (id) {
+    for (var i = 0; i < MISURE.length; i++) if (MISURE[i].id === id) return MISURE[i];
+    return MISURE[0];
+  };
+  var numero = function (v) {
+    if (v == null) return "—";
+    var a = Math.abs(v);
+    if (a >= 1000) return String(Math.round(v));
+    if (a >= 100) return v.toFixed(0);
+    if (a >= 10) return v.toFixed(1);
+    return v.toFixed(2);
+  };
+
+  // ── i comandi ─────────────────────────────────────────────────────────────
+  var selX = document.getElementById("asseX");
+  var selY = document.getElementById("asseY");
+  MISURE.forEach(function (m) {
+    [selX, selY].forEach(function (sel) {
+      var o = document.createElement("option");
+      o.value = m.id;
+      o.appendChild(document.createTextNode(m.nome));
+      sel.appendChild(o);
+    });
+  });
+  selX.value = stato.x; selY.value = stato.y;
+  selX.addEventListener("change", function () { stato.x = selX.value; disegna(); });
+  selY.addEventListener("change", function () { stato.y = selY.value; disegna(); });
+
+  var chips = document.getElementById("chips");
+  FAMIGLIE.forEach(function (f) {
+    var b = document.createElement("button");
+    b.className = "chip"; b.type = "button";
+    b.setAttribute("aria-pressed", "true");
+    var pallo = document.createElement("span");
+    pallo.className = "pallo";
+    pallo.style.background = tinta(f.slot);
+    b.appendChild(pallo);
+    b.appendChild(document.createTextNode(f.nome));
+    b.addEventListener("click", function () {
+      stato.famiglie[f.id] = !stato.famiglie[f.id];
+      b.setAttribute("aria-pressed", stato.famiglie[f.id] ? "true" : "false");
+      disegna();
+    });
+    chips.appendChild(b);
+  });
+  var bMiei = document.createElement("button");
+  bMiei.className = "chip"; bMiei.type = "button";
+  bMiei.setAttribute("aria-pressed", "false");
+  bMiei.appendChild(document.createTextNode("Solo quelli che mangio"));
+  bMiei.addEventListener("click", function () {
+    stato.soloMiei = !stato.soloMiei;
+    bMiei.setAttribute("aria-pressed", stato.soloMiei ? "true" : "false");
+    disegna();
+  });
+  chips.appendChild(bMiei);
+
+  // ── il disegno ────────────────────────────────────────────────────────────
+  var svg = document.getElementById("grafico");
+  var didascalia = document.getElementById("didascalia");
+  var spia = document.getElementById("spia");
+  var legenda = document.getElementById("legenda");
+  var corpoTabella = document.querySelector("#classifica tbody");
+  var titoloTabella = document.getElementById("titolo-classifica");
+
+  var vuota = function (n) { while (n.firstChild) n.removeChild(n.firstChild); };
+
+  /* Le tacche: numeri tondi dentro l'intervallo, mai piu' di cinque. Un asse con
+     nove etichette a 390 px e' un asse che si legge male su ogni schermo. */
+  var tacche = function (min, max) {
+    if (!(max > min)) return [min];
+    var passo = Math.pow(10, Math.floor(Math.log(max - min) / Math.LN10));
+    while ((max - min) / passo > 5) passo *= 2;
+    while ((max - min) / passo < 2.5) passo /= 2;
+    var t = [], v = Math.ceil(min / passo) * passo;
+    for (; v <= max + passo * 1e-9 && t.length < 8; v += passo) t.push(Math.round(v / passo) * passo);
+    return t;
+  };
+
+  function disegna() {
+    if (!stato.dati) return;
+    var mx = misura(stato.x), my = misura(stato.y);
+    var punti = [];
+    stato.dati.alimenti.forEach(function (a) {
+      var fam = famigliaDi(a.g);
+      if (!stato.famiglie[fam.id]) return;
+      if (stato.soloMiei && !a.volte) return;
+      var vx = mx.f(a), vy = my.f(a);
+      if (vx == null || vy == null || !isFinite(vx) || !isFinite(vy)) return;
+      punti.push({ a: a, fam: fam, x: vx, y: vy });
+    });
+
+    /* ⚠️ LA TELA CAMBIA FORMA SOTTO I 680 px, E NON E' UN VEZZO.
+     *
+     * Un viewBox 900x520 dentro una colonna da 374 px diventa un nastro alto
+     * 216: duecento punti dentro duecento pixel di altezza non sono un grafico,
+     * sono una riga colorata. Guardata a 390 px la prima versione faceva
+     * esattamente questo. Sul telefono la tela e' quasi quadrata e i caratteri
+     * sono piu' grandi in proporzione, perche' la larghezza in pixel veri e'
+     * meno della meta'. */
+    var stretto = (typeof window !== "undefined" && window.innerWidth || 1000) < 680;
+    var L = stretto ? 50 : 62, R = stretto ? 12 : 14, T = stretto ? 26 : 16, B = stretto ? 44 : 46;
+    var W = stretto ? 420 : 900, H = stretto ? 520 : 520;
+    var FS = stretto ? 15 : 13;
+    vuota(svg);
+    svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+    svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+
+    if (!punti.length) {
+      var niente = el("text", { x: W / 2, y: H / 2, "text-anchor": "middle",
+        fill: "var(--muted)", "font-size": 20, "font-family": "Plus Jakarta Sans, sans-serif" });
+      niente.appendChild(testo("Nessun alimento ha tutti e due questi valori."));
+      svg.appendChild(niente);
+      didascalia.textContent = "Con questi due assi e questi filtri non resta niente da disegnare.";
+      spia.textContent = "0 su " + stato.dati.conto.alimenti;
+      vuota(corpoTabella);
+      return;
+    }
+
+    var xs = punti.map(function (p) { return p.x; }), ys = punti.map(function (p) { return p.y; });
+    var x0 = Math.min.apply(null, xs), x1 = Math.max.apply(null, xs);
+    var y0 = Math.min.apply(null, ys), y1 = Math.max.apply(null, ys);
+    /* Un solo punto, o tutti uguali: senza questo l'intervallo e' zero, la scala
+       divide per zero e ogni coordinata diventa NaN — cioe' il grafico sparisce
+       senza dare errore, che e' il modo peggiore di rompersi. */
+    if (!(x1 > x0)) { x0 -= 1; x1 += 1; }
+    if (!(y1 > y0)) { y0 -= 1; y1 += 1; }
+    var px = function (v) { return L + (v - x0) / (x1 - x0) * (W - L - R); };
+    var py = function (v) { return H - B - (v - y0) / (y1 - y0) * (H - T - B); };
+
+    var g = el("g");
+    tacche(x0, x1).forEach(function (v) {
+      var X = px(v);
+      g.appendChild(el("line", { x1: X, y1: T, x2: X, y2: H - B, stroke: "var(--grid)", "stroke-width": 1 }));
+      var t = el("text", { x: X, y: H - B + 20, "text-anchor": "middle", fill: "var(--muted)",
+        "font-size": FS, "font-family": "Plus Jakarta Sans, sans-serif" });
+      t.appendChild(testo(numero(v)));
+      g.appendChild(t);
+    });
+    tacche(y0, y1).forEach(function (v) {
+      var Y = py(v);
+      g.appendChild(el("line", { x1: L, y1: Y, x2: W - R, y2: Y, stroke: "var(--grid)", "stroke-width": 1 }));
+      var t = el("text", { x: L - 8, y: Y + 4, "text-anchor": "end", fill: "var(--muted)",
+        "font-size": FS, "font-family": "Plus Jakarta Sans, sans-serif" });
+      t.appendChild(testo(numero(v)));
+      g.appendChild(t);
+    });
+    g.appendChild(el("line", { x1: L, y1: H - B, x2: W - R, y2: H - B, stroke: "var(--axis)", "stroke-width": 2 }));
+    g.appendChild(el("line", { x1: L, y1: T, x2: L, y2: H - B, stroke: "var(--axis)", "stroke-width": 2 }));
+
+    var etX = el("text", { x: W - R, y: H - 8, "text-anchor": "end", fill: "var(--ink-soft)",
+      "font-size": FS + 1, "font-weight": 700, "font-family": "Plus Jakarta Sans, sans-serif" });
+    etX.appendChild(testo(mx.nome + " · " + mx.unita));
+    g.appendChild(etX);
+    /* rotate(-90) e non rotate(90): un'etichetta d'asse si legge dal basso verso
+       l'alto, girando la testa a sinistra. Girata dall'altra parte si legge a
+       testa in giu', e sulla prima versione era cosi'. */
+    var etY = el("text", { x: 0, y: 0, transform: "translate(14," + (H - B) + ") rotate(-90)",
+      fill: "var(--ink-soft)", "font-size": FS + 1, "font-weight": 700,
+      "font-family": "Plus Jakarta Sans, sans-serif" });
+    etY.appendChild(testo(my.nome + " · " + my.unita));
+    g.appendChild(etY);
+    svg.appendChild(g);
+
+    /* L'ordine di disegno e' voluto: prima quelli che NON mangia, sotto, poi i
+       suoi sopra. Al contrario la nuvola di sfondo copre il segnale. */
+    var ordinati = punti.slice().sort(function (a, b) {
+      return (a.a.volte ? 1 : 0) - (b.a.volte ? 1 : 0);
+    });
+    ordinati.forEach(function (p) {
+      var suo = !!p.a.volte;
+      var r = suo ? Math.min(11, 4.5 + Math.sqrt(p.a.volte)) : 3.4;
+      var c = el("circle", {
+        cx: px(p.x).toFixed(2), cy: py(p.y).toFixed(2), r: r.toFixed(2),
+        fill: suo ? tinta(p.fam.slot) : "none",
+        stroke: tinta(p.fam.slot), "stroke-width": suo ? 1.5 : 1.4,
+        "fill-opacity": suo ? .82 : 0, "stroke-opacity": suo ? 1 : .45,
+        "data-id": p.a.id, "data-volte": p.a.volte || 0
+      });
+      var titolo = el("title");
+      titolo.appendChild(testo(
+        p.a.n + " (" + p.a.g + ") — " + mx.nome + ": " + numero(p.x) + " " + mx.unita +
+        " · " + my.nome + ": " + numero(p.y) + " " + my.unita +
+        (suo ? " · nel piatto " + p.a.volte + " volte" : " · mai nel diario")));
+      c.appendChild(titolo);
+      svg.appendChild(c);
+    });
+
+    /* I nomi scritti: i cinque piu' alti sull'asse verticale. Non di piu', o si
+       accavallano; e sono scritti, non solo colorati, perche' l'identita' non
+       puo' stare nel colore. */
+    /* ⚠️ UN'ETICHETTA CHE NE COPRE UN'ALTRA NON E' UN'ETICHETTA.
+     *
+     * Sulla prima versione «Tonno in scatola sgocciolato» e «Spirulina in
+     * polvere» finivano una sopra l'altra: due nomi illeggibili al posto di uno
+     * leggibile. Si tiene un elenco dei rettangoli gia' scritti e chi si
+     * sovrappone salta il turno — il punto resta, col suo nome nel tooltip. */
+    var scritte = [], quante = stretto ? 3 : 5, larghezzaChar = FS * 0.56;
+    punti.slice().sort(function (a, b) { return b.y - a.y; }).forEach(function (p) {
+      if (scritte.length >= quante) return;
+      var X = px(p.x), Y = py(p.y);
+      var verso = X > W * .72 ? -1 : 1;
+      var largo = p.a.n.length * larghezzaChar;
+      var x0 = verso > 0 ? X + 12 : X - 12 - largo;
+      var box = { a: x0, b: x0 + largo, c: Y - 22, d: Y - 4 };
+      for (var i = 0; i < scritte.length; i++) {
+        var s = scritte[i];
+        if (box.a < s.b + 6 && box.b > s.a - 6 && box.c < s.d + 4 && box.d > s.c - 4) return;
+      }
+      scritte.push(box);
+      var t = el("text", {
+        x: (verso > 0 ? X + 12 : X - 12).toFixed(2), y: (Y - 10).toFixed(2),
+        "text-anchor": verso > 0 ? "start" : "end", fill: "var(--ink)",
+        "font-size": FS, "font-weight": 700, "font-family": "Plus Jakarta Sans, sans-serif"
+      });
+      t.appendChild(testo(p.a.n));
+      svg.appendChild(t);
+    });
+
+    var miei = punti.filter(function (p) { return p.a.volte; }).length;
+    spia.textContent = punti.length + " su " + stato.dati.conto.alimenti + " · " + miei + " nel piatto";
+    didascalia.textContent = mx.nome + " (" + mx.dice + ") contro " + my.nome + " (" + my.dice +
+      "). Ogni cerchio è un alimento per 100 g: pieno se finisce nel piatto di Michele — " +
+      "e più grande quanto più spesso —, vuoto se sta nel catalogo e basta." +
+      (punti.length < stato.dati.conto.alimenti
+        ? " Restano fuori " + (stato.dati.conto.alimenti - punti.length) +
+          " alimenti: filtrati, oppure senza uno dei due valori."
+        : "");
+
+    vuota(legenda);
+    FAMIGLIE.forEach(function (f) {
+      if (!stato.famiglie[f.id]) return;
+      var s = document.createElement("span");
+      var i = document.createElement("i");
+      i.style.background = tinta(f.slot);
+      s.appendChild(i);
+      s.appendChild(document.createTextNode(f.nome));
+      legenda.appendChild(s);
+    });
+
+    // ── la classifica: la stessa cosa senza il grafico ──────────────────────
+    titoloTabella.textContent = "I primi dieci per " + my.nome.toLowerCase();
+    vuota(corpoTabella);
+    punti.slice().sort(function (a, b) { return b.y - a.y; }).slice(0, 10).forEach(function (p) {
+      var tr = document.createElement("tr");
+      var celle = [
+        /* La nota si taglia a 48 caratteri: «peso a crudo» ci sta tutta, e i
+           tre paragrafi di provenienza di certe voci no. Su una colonna da 390
+           px una nota intera fa una riga alta uno schermo, e la classifica
+           smette di essere una classifica. */
+        [p.a.n + (p.a.nota ? " (" + (p.a.nota.length > 48 ? p.a.nota.slice(0, 47) + "…" : p.a.nota) + ")" : ""), false],
+        [p.a.g, false],
+        [numero(p.y) + " " + my.unita, true],
+        [p.a.volte ? String(p.a.volte) : "—", true]
+      ];
+      celle.forEach(function (c) {
+        var td = document.createElement("td");
+        if (c[1]) td.className = "num";
+        td.appendChild(document.createTextNode(c[0]));
+        tr.appendChild(td);
+      });
+      corpoTabella.appendChild(tr);
+    });
+  }
+
+  function accendi(d) {
+    stato.dati = d;
+    document.getElementById("conto").textContent =
+      d.conto.alimenti + " alimenti · " + d.conto.mangiati + " nel piatto · " +
+      d.conto.con_orac + " con un ORAC";
+    document.getElementById("copertura-orac").textContent =
+      "Qui l'ORAC lo hanno " + d.conto.con_orac + " alimenti su " + d.conto.alimenti +
+      ": chi manca non è dimenticato, è senza un valore difendibile.";
+    disegna();
+  }
+  window.MATRICE = { accendi: accendi, disegna: disegna, stato: stato, MISURE: MISURE, FAMIGLIE: FAMIGLIE };
+
+  if (typeof fetch === "function") {
+    fetch("data/matrice.json").then(function (r) { return r.json(); }).then(accendi)
+      .catch(function (e) {
+        document.getElementById("conto").textContent = "I dati non sono arrivati: " + e.message;
+      });
+  }
+})();
+</script>
+</body>
+</html>
