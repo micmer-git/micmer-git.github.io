@@ -28,8 +28,15 @@
 # ricontrolla cerca la riga e non il nome. La tabella NON contiene caffe', pasta, riso, pane
 # bianco, latte, formaggi, yogurt, uova e carne: quelle voci del catalogo restano senza valore
 # per assenza di dato, non per dimenticanza, e per gli alimenti animali lo zero e' la risposta
-# giusta. Per caffe' e cereali raffinati invece NON lo e': il totale giornaliero e'
-# sistematicamente sottostimato, e la pagina lo scrive sotto il grafico.
+# giusta. Per i cereali raffinati invece NON lo e': il totale giornaliero resta
+# sottostimato, e la pagina lo scrive sotto il grafico.
+#
+# Il caffe' e' l'eccezione (05/09/2026, ordine MC #83), ed e' l'UNICA riga che non viene
+# dall'USDA. Il catalogo tiene l'espresso a 30 ml, e il valore che circola come «USDA» (2780)
+# e' del caffe' filtro: la riga e' una stima a tre strade, scritta per intero in `fonte`,
+# con confidence low. E' l'unico caso in cui un numero derivato vale piu' di un buco: senza,
+# il primo contributore della giornata valeva zero. Una prova in check_vita.cjs pretende che
+# la riga ci sia e che resti dichiarata `low` finche' nessuno porta un ORAC misurato.
 food_id,orac_umol_te_100g,fonte,confidence
 cumino_semi,76800,"USDA 2010 R2 — Spices, cumin seed. Si usa a pizzichi: sul totale giornaliero pesa pochissimo nonostante il numero enorme",high
 cacao_100,55653,"USDA 2010 R2 — Cocoa, dry powder, unsweetened",high
@@ -37,6 +44,7 @@ curry_polvere,48504,"USDA 2010 R2 — Spices, curry powder",high
 cioccolato_fondente_50,20823,"USDA 2010 R2 — Candies, chocolate, dark, 45-59% cacao solids",medium
 cioccolato_fondente_85,20816,"USDA 2010 R2 — Candies, chocolate, dark, 70-85% cacao solids. Nella tabella USDA le due fasce di fondente danno quasi lo stesso valore: sopra il 45% il cacao non e' piu' il fattore limitante",medium
 noci,13541,"USDA 2010 R2 — Nuts, walnuts, English",high
+caffe_espresso,10000,"STIMA, non USDA: la tabella R2 non ha il caffe'. Il catalogo tiene l'espresso a 30 ml, e il valore che circola come USDA e' del filtro: 2780 µmol TE/100 ml (Coffee, Arabica medium roasting, filter brewed; provenienza incerta, non e' nel PDF R2). Da li' tre strade indipendenti: (a) dose di polvere per ml, 7 g in 30 ml contro 60 g/L del filtro, fattore 3,9 -> 10.800 (Sanchez-Gonzalez 2005, Food Chem 90:133, trova la stessa resa antiossidante per grammo di polvere fra filtro ed espresso); (b) rapporto FRAP espresso/filtro di Carlsen 2010 (Nutr J 9:3, la tabella dei 3100 alimenti): 14,2 contro 2,5 mmol/100 g, fattore 5,7 -> 15.800; (c) TEAC dell'espresso 36,5 mmol Trolox/L (Yashin 2013, Antioxidants 2:230, tab. 3) per il rapporto ORAC/TEAC tipico degli alimenti, 2-3x -> 7.300-11.000. Si tiene 10.000, cifra tonda perche' e' una stima con un margine di circa il 50 per cento: una tazzina da 30 ml vale 3.000 µmol TE, quanto 100 g di mela. Chi trova un ORAC misurato sull'espresso sostituisca la riga e alzi la confidenza",low
 lenticchie_secche,7282,"USDA 2010 R2 — Lentils, raw. Il catalogo le tiene a crudo come l'USDA: i valori sono confrontabili",high
 aglio,5346,"USDA 2010 R2 — Garlic, raw",high
 frutti_di_bosco,5000,"media dei quattro frutti di bosco USDA 2010 R2 (mirtillo 4669, fragola 4302, lampone 5065, mora 5905): il mix surgelato non ha una voce sua e la proporzione fra le bacche cambia per marca",medium

@@ -4048,9 +4048,10 @@ function nutriTiles() {
       "il contatore delle piante diverse, cioè come una spia di quanto la dieta peschi da " +
       "piante colorate. Valori da <em>USDA Database for the ORAC of Selected Foods, Release 2</em> " +
       "(2010), voce per voce in <span class=\"mono\">tools/food/data/orac.csv</span>. " +
-      "<strong>Il totale è sottostimato per costruzione</strong>: la tabella USDA non ha caffè, " +
+      "<strong>Il totale è sottostimato per costruzione</strong>: la tabella USDA non ha " +
       "pasta, riso, pane bianco né latticini, e la copertura vera del giorno è la seconda " +
-      "serie del riquadro qui sotto." });
+      "serie del riquadro qui sotto. <strong>Il caffè è l'unica riga stimata</strong>, non " +
+      "USDA: 3.000 µmol TE a tazzina, ricavati dal caffè filtro con un margine di circa il 50 %." });
 
   if (has("orac_cov_pct")) t.push({ panel:"tavola", h:146, first:"n_orac_cov_pct",
     src:"ricostruito", title:"Quanto dell'ORAC si vede",
@@ -4061,8 +4062,8 @@ function nutriTiles() {
       fmt:v => nf(v, 0) + " %", zero:true, win:7 },
     dataNote:"quanto ne copre il catalogo",
     foot:"Sotto questa riga il grafico sopra non sta misurando la dieta: sta misurando la parte " +
-      "di dieta che il catalogo sa leggere. Le due cose si allontanano nei giorni di pasta, pane " +
-      "bianco e caffè, che valgono zero perché il dato non esiste, non perché non abbiano " +
+      "di dieta che il catalogo sa leggere. Le due cose si allontanano nei giorni di pasta e pane " +
+      "bianco, che valgono zero perché il dato non esiste, non perché non abbiano " +
       "antiossidanti." });
 
   /* ---- I dodici del dottor Greger, settimana per settimana -----------------

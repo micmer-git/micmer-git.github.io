@@ -734,6 +734,46 @@ if (ran) {
     if (t.now) ok(/\S/.test(String(n.now.innerHTML)), `"${title}" ha il suo numero di testa`);
   }
 
+  /* --- il caffe' nell'ORAC (ordine MC #83, 05/09/2026) -----------------------
+     Fino al 05/09 il caffe' valeva zero: e' spesso il primo contributore della
+     giornata, e il buco era il numero sbagliato. La riga che lo chiude e' l'UNICA di
+     orac.csv che non viene dall'USDA — una stima a tre strade dal caffe' filtro — e
+     deve restare dichiarata tale in due posti: `low` nel CSV, e nel piede del
+     riquadro. Il controllo pretende che ci sia, che stia nella forchetta delle tre
+     strade (7.300-15.800 per 100 ml), che NON sia stata promossa in silenzio, e
+     che il piede non dica piu' «la tabella USDA non ha caffe'» — quella frase era
+     vera ieri e oggi sarebbe una bugia sotto un grafico. */
+  {
+    const oracCsv = fs.readFileSync(path.join(ROOT, "tools", "food", "data", "orac.csv"), "utf8")
+      .split(/\r?\n/).filter(l => l.trim() && !l.trimStart().startsWith("#"));
+    const caffe = oracCsv.find(l => l.startsWith("caffe_espresso,"));
+    ok(!!caffe, "orac.csv ha la riga del caffe' (caffe_espresso)");
+    if (caffe) {
+      const val = parseFloat(caffe.split(",")[1]);
+      ok(val >= 7300 && val <= 15800,
+        `il caffe' sta nella forchetta delle tre strade, 7.300-15.800 µmol TE/100 ml (è ${val})`);
+      ok(/,low\s*$/.test(caffe),
+        "il caffe' resta dichiarato `low`: non e' una voce USDA, e nessuno lo promuove senza un ORAC misurato");
+      ok(/Carlsen 2010/.test(caffe) && /Sanchez-Gonzalez 2005/.test(caffe),
+        "la derivazione del caffe' cita le sue fonti dentro `fonte`");
+    }
+    const orac = K.MOUNTED.find(([, t]) => t.title === "ORAC");
+    const cov = K.MOUNTED.find(([, t]) => t.title === "Quanto dell'ORAC si vede");
+    /* la nota di metodo (`foot:` nel sorgente) viene TAGLIATA al verdetto sotto
+       «dati» e il resto va dietro l'ⓘ (tagliaNota): la frase sul caffe' e' fonte,
+       non verdetto, quindi sta apposta nel resto. Si legge la nota intera dal
+       riquadro (t.foot), non il pezzo che resta a schermo. */
+    if (orac) {
+      const nota = strip0(orac[1].foot || "");
+      ok(/caffè è l'unica riga stimata/i.test(nota),
+        `la nota dell'ORAC dichiara il caffè come stima`);
+      ok(!/non ha caffè/i.test(nota),
+        `la nota dell'ORAC non dice più che la tabella non ha il caffè`);
+    }
+    if (cov) ok(!/caffè/i.test(strip0(cov[1].foot || "")),
+      `la nota della copertura non conta più il caffè fra i buchi`);
+  }
+
   /* il momento metabolico non si disegna sotto la soglia di componenti: e' la
      differenza fra "questo giorno vale −8" e "questo giorno varrebbe −8 se avessi
      tre delle sei cose che servono per dirlo" */

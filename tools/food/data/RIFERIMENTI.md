@@ -17,7 +17,7 @@ contro il catalogo: **zero id fantasma** in entrambi i file.
 
 ---
 
-## 1. `orac.csv` — 58 alimenti su 182
+## 1. `orac.csv` — 68 alimenti su 182
 
 ### La fonte
 
@@ -44,16 +44,20 @@ verdure, e il file lo dice riga per riga. Lo stesso avvertimento e' scritto in t
 
 | confidence | quante | cosa vuol dire |
 |---|---|---|
-| `high` | 22 | voce USDA diretta, ben documentata, alimento che corrisponde a quello del catalogo |
-| `medium` | 28 | voce USDA diretta ma con un'ambiguita' dichiarata (varieta', crudo contro cotto, mix), oppure analogia esplicita con un alimento molto simile |
-| `low` | 8 | stima ricavata da un valore noto, con la derivazione scritta per intero nella colonna `fonte` |
+| `high` | 25 | voce USDA diretta, ben documentata, alimento che corrisponde a quello del catalogo |
+| `medium` | 34 | voce USDA diretta ma con un'ambiguita' dichiarata (varieta', crudo contro cotto, mix), oppure analogia esplicita con un alimento molto simile |
+| `low` | 9 | stima ricavata da un valore noto, con la derivazione scritta per intero nella colonna `fonte` |
 
-Le otto stime `low` non sono numeri usciti dal nulla: sono tutte della forma *«valore USDA
+(Conteggi al 05/09/2026: `grep -v '^#' orac.csv | awk -F, '{print $NF}' | sort | uniq -c`.)
+
+Le nove stime `low` non sono numeri usciti dal nulla: sei sono della forma *«valore USDA
 del secco, riscalato per la reidratazione col rapporto di densita' calorica del catalogo»*
-(ceci in scatola, fagioli neri, cannellini, fagioli stufati, dal, passata) piu' due casi
-di analogia (porcini sui champignon, zucchine). **Ignorano quanto la cottura ne distrugge**,
-quindi tirano verso l'alto. La piu' debole e' `fagioli_stufati`, che ha due passaggi di
-analogia in fila: se un giorno servisse tagliare, quella e' la prima.
+(ceci in scatola, fagioli neri, cannellini, fagioli stufati, dal, passata), due sono casi
+di analogia (porcini sui champignon, zucchine), e una — il caffe' — e' l'unica riga del file
+che **non parte da una voce USDA**: parte dal caffe' filtro e arriva all'espresso per tre
+strade, vedi «I buchi che pesano davvero». Le prime otto **ignorano quanto la cottura ne
+distrugge**, quindi tirano verso l'alto. La piu' debole e' `fagioli_stufati`, che ha due
+passaggi di analogia in fila: se un giorno servisse tagliare, quella e' la prima.
 
 ### Copertura per gruppo del catalogo
 
@@ -68,20 +72,33 @@ analogia in fila: se un giorno servisse tagliare, quella e' la prima.
 | cereali | 0 | 40 | ❌ scoperto |
 | proteine | 0 | 21 | ❌ scoperto |
 | latticini | 0 | 16 | ❌ scoperto |
-| bevande | 0 | 7 | ❌ scoperto |
+| bevande | 1 | 7 | solo il caffe', ed e' una stima dichiarata (vedi sotto) |
 | integratori | 0 | 5 | ❌ scoperto |
 
 ### I buchi che pesano davvero
 
 Tre, e vanno detti perche' distorcono il grafico in modo prevedibile:
 
-1. **Il caffe'.** In una dieta reale il caffe' e' spesso il primo contributore di ORAC
-   della giornata. Non c'e' nel file perche' il catalogo ha `caffe_espresso` a unita' da
-   30 ml, mentre il valore che ricordo dalla tabella USDA e' per il caffe' filtro: fra i
-   due c'e' un fattore di concentrazione di 3-5x che non so ricostruire con onesta'.
-   Metterci un numero sbagliato per il tipo di caffe' sbagliato avrebbe spostato il
-   grafico piu' di quanto lo sposti lasciarlo fuori. **Il totale giornaliero e' quindi
-   sottostimato, e sistematicamente**: chi disegna il grafico lo scriva sotto.
+1. **Il caffe' — chiuso il 05/09/2026 (ordine MC #83), con una stima dichiarata.** In una
+   dieta reale il caffe' e' spesso il primo contributore di ORAC della giornata, e fino al
+   05/09 valeva zero: il catalogo ha `caffe_espresso` a unita' da 30 ml, il valore che
+   circola come «USDA» (2780 µmol TE/100 ml) e' del caffe' filtro e **non sta nel PDF
+   della Release 2**, riletto per intero il 03/09. Il fattore di concentrazione fra filtro
+   ed espresso, che il 04/09 «non sapevo ricostruire con onesta'», si ricostruisce per tre
+   strade indipendenti, e la riga le scrive tutte in `fonte`:
+   - la **dose di polvere per ml** (7 g in 30 ml contro 60 g/L del filtro, fattore 3,9)
+     da' 10.800; Sanchez-Gonzalez 2005 (*Food Chem* 90:133) trova la stessa resa
+     antiossidante per grammo di polvere fra filtro ed espresso, quindi il fattore e' quello;
+   - il **rapporto FRAP** espresso/filtro di Carlsen 2010 (*Nutr J* 9:3, la tabella dei
+     3100 alimenti: 14,2 contro 2,5 mmol/100 g, fattore 5,7) da' 15.800;
+   - il **TEAC dell'espresso** (36,5 mmol Trolox/L, Yashin 2013, *Antioxidants* 2:230)
+     per il rapporto ORAC/TEAC tipico degli alimenti, 2-3x, da' 7.300-11.000.
+   Si tiene **10.000 µmol TE/100 ml**, cifra tonda perche' e' una stima con un margine di
+   circa il 50 %: una tazzina vale 3.000, quanto 100 g di mela. E' l'unica riga del file
+   che non viene dall'USDA, sta a `low`, e `check_vita.cjs` pretende che resti `low` finche'
+   nessuno porta un ORAC misurato sull'espresso. La regola resta quella di prima — un
+   numero sbagliato sposta il grafico piu' di un buco — ma qui il buco era il numero
+   sbagliato: zero, sul primo contributore della giornata.
 2. **I cereali, tutti e 40.** Avena, pane integrale, quinoa, farro hanno un ORAC modesto
    ma non nullo, e non ho un valore R2 che sappia citare per nome. Il buco e' grande in
    numero di voci ma piccolo in contributo.
@@ -170,9 +187,15 @@ totale.
 
 ## 3. Cosa serve per chiudere il cerchio
 
-Aggiornato il **04/09/2026**, chiudendo gli ordini #31 e #32.
+Aggiornato il **05/09/2026** (ordine #83); prima il 04/09, chiudendo gli ordini #31 e #32.
 
 **Fatto:**
+
+- **Il caffe' e' nel file** (05/09/2026, ordine #83): `caffe_espresso` a 10.000 µmol TE/100 ml,
+  `low`, stima a tre strade dal caffe' filtro — la derivazione intera sta nella sezione
+  «I buchi che pesano davvero» e nella colonna `fonte`. Il piede del grafico non dice piu'
+  che il caffe' manca: dice che e' l'unica riga stimata. Il catalogo ORAC passa da 67 a
+  **68 voci**, e la casella bevande da 0/7 a 1/7.
 
 - Il grafico ORAC porta addosso la sua avvertenza — tabella ritirata dall'USDA nel 2012,
   misura in vitro — e accanto ha un **secondo riquadro che dice quanto ne copre il
