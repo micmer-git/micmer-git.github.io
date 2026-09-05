@@ -7,11 +7,11 @@
   "giorni_fuori": 0,
   "tolleranza": 1.0
  },
- "ultimo_giorno": "2026-09-03",
- "giorni_a_secco": 2,
+ "ultimo_giorno": "2026-09-04",
+ "giorni_a_secco": 1,
  "soglia": 2,
- "righe": 835,
- "giorni": 106,
+ "righe": 866,
+ "giorni": 107,
  "letto": "2026-09-05",
  "dove_si_annota": "https://micmer-mission.pages.dev — pannello Vita"
 }
