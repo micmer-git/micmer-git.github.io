@@ -233,6 +233,9 @@ ok(ran, "lo script inline gira senza eccezioni");
 if (ran) {
   const K = sandbox.CRUSCOTTO;
   ok(!!K, "window.CRUSCOTTO esposto");
+  const marathonCard = document.getElementById("marathon-card");
+  ok(!!marathonCard && html.includes('id="marathon-card"') && html.includes('href="../marathons/"'),
+    "Marathon Atlas è collegato da /vita come pannello");
   const D = K.D;
 
   /* -------------------------------------------------- 1. tutti i riquadri */
@@ -627,9 +630,10 @@ if (ran) {
       "la barra delle kcal usa e dichiara il target del profilo");
     ok(insightSheet.innerHTML.includes("Alimenti · ultime due settimane"),
       "il popup elenca gli alimenti aggregati delle ultime due settimane");
-    ok(insightSheet.innerHTML.includes("Burro di arachidi sgrassato in polvere") &&
-       insightSheet.innerHTML.includes("Latte parzialmente scremato"),
-      "l'inventario recente contiene peanut butter e latte corretti");
+    const recentFoods = (D.days && D.days._14foods) || [];
+    ok(recentFoods.length > 0 &&
+       recentFoods.slice(0, Math.min(5, recentFoods.length)).every(f => insightSheet.innerHTML.includes(f.name)),
+      "l'inventario recente rispecchia gli alimenti reali delle ultime due settimane");
     ok(insightSheet.innerHTML.includes("osservati") && insightSheet.innerHTML.includes("ricostruiti"),
       "i conteggi separano consumi osservati e ricostruiti");
   } catch (e) { fails.push(`FAIL popup delle medie: ${e && e.stack || e}`); }

@@ -735,9 +735,38 @@ def highlights():
     return out
 
 
+def marathon_summary():
+    path = os.path.join(ROOT, "marathons", "data", "races.json")
+    try:
+        with open(path, encoding="utf-8") as f:
+            races = json.load(f).get("races", [])
+    except (OSError, ValueError, AttributeError):
+        races = []
+    def clock(sec):
+        if sec is None:
+            return "—"
+        sec = int(round(sec))
+        return f"{sec // 3600}:{(sec // 60) % 60:02d}:{sec % 60:02d}"
+    official = [r for r in races if r.get("officialTime") is not None]
+    best = min(official, key=lambda r: r["officialTime"]) if official else None
+    latest = max(races, key=lambda r: r.get("date", "")) if races else None
+    return {
+        "count": len(races),
+        "best": clock(best.get("officialTime")) if best else "—",
+        "best_city": best.get("city", "—") if best else "—",
+        "latest": (latest.get("date", "—") if latest else "—"),
+        "latest_city": latest.get("city", "—") if latest else "—",
+    }
+
 def build_html(p):
     js = json.dumps(p, separators=(",", ":"))
-    return TEMPLATE.replace("__DATA__", js).replace("__BUILT__", p["built"])
+    m = marathon_summary()
+    return (TEMPLATE.replace("__DATA__", js).replace("__BUILT__", p["built"])
+            .replace("__M_COUNT__", str(m["count"]))
+            .replace("__M_BEST__", m["best"])
+            .replace("__M_BEST_CITY__", m["best_city"])
+            .replace("__M_LATEST__", m["latest"])
+            .replace("__M_LATEST_CITY__", m["latest_city"]))
 
 
 def main():
@@ -1389,6 +1418,25 @@ TEMPLATE = r"""<!DOCTYPE html>
   .diary-open button:hover{background:var(--accent); color:#fff}
   .diary-open span{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.66rem;
     letter-spacing:.08em; color:var(--muted)}
+  .marathon-card{margin:18px 0 0; border:2px solid var(--ink); border-left:8px solid var(--s1);
+    box-shadow:var(--neo); background:var(--paper); padding:16px 20px; display:grid;
+    grid-template-columns:minmax(0,1fr) auto auto; gap:24px; align-items:center; text-decoration:none}
+  .marathon-card:hover{background:var(--paper-2); transform:translate(-1px,-1px); box-shadow:var(--neo)}
+  .marathon-card h2{font-family:'VT323',ui-monospace,monospace; font-size:1.8rem; line-height:1;
+    margin:3px 0 4px; text-transform:uppercase}
+  .marathon-card p{font-size:.9rem; color:var(--ink-soft); line-height:1.5; max-width:62ch}
+  .marathon-stats{display:flex; gap:20px; align-items:center}
+  .marathon-stats span{font:500 .66rem ui-monospace,'SFMono-Regular',Menlo,monospace;
+    color:var(--muted); text-transform:uppercase; letter-spacing:.08em; white-space:nowrap}
+  .marathon-stats b{display:block; font:400 1.55rem 'VT323',ui-monospace,monospace;
+    color:var(--ink); letter-spacing:.02em; text-transform:none}
+  .marathon-go{font:600 .72rem ui-monospace,'SFMono-Regular',Menlo,monospace;
+    text-transform:uppercase; letter-spacing:.12em; white-space:nowrap}
+  @media(max-width:760px){
+    .marathon-card{grid-template-columns:1fr; gap:12px; padding:14px 16px}
+    .marathon-stats{justify-content:space-between; gap:10px}
+    .marathon-go{justify-self:start}
+  }
   /* il selettore del periodo, e le due tabelle che ha portato con se' */
   .dper{display:flex; gap:7px; align-items:baseline; flex-wrap:wrap; margin:12px 0 4px}
   .dper button{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem;
@@ -1684,6 +1732,19 @@ TEMPLATE = r"""<!DOCTYPE html>
   <button type="button" id="diary-btn">Apri il diario</button>
 </div>
 
+<a class="marathon-card" id="marathon-card" href="../marathons/" aria-label="Apri Marathon Atlas">
+  <div>
+    <div class="coach-k">archivio gare · 42,195 km</div>
+    <h2>Maratone</h2>
+    <p>Le gare vere, allineate sulla stessa distanza: percorso, passo, cuore e secondi guadagnati o persi.</p>
+  </div>
+  <div class="marathon-stats">
+    <span><b>__M_COUNT__</b>gare</span>
+    <span><b>__M_BEST__</b>miglior ufficiale · __M_BEST_CITY__</span>
+    <span><b>__M_LATEST__</b>ultima · __M_LATEST_CITY__</span>
+  </div>
+  <span class="marathon-go">Apri l'atlante ↗</span>
+</a>
 
 <div class="controls">
   <div class="ranges" id="ranges" role="group" aria-label="Finestra temporale"></div>
@@ -4349,7 +4410,7 @@ function nutriTiles() {
          (`o.k`), e sono due liste parallele. */
       const secchi = aggregate(STRIP[0][1], a, b, "mean", step);
       const weeks = secchi.map(o => o.i), chiavi = secchi.map(o => o.k);
-      if (weeks.length < 4) return null;
+      if (weeks.length < 2) return null;
       const rowsData = STRIP.map(([name, arr]) => {
         const agg = aggregate(arr, a, b, "mean", step);
         const byI = new Map(agg.map(o => [o.i, o.v]));
@@ -5551,12 +5612,12 @@ function drawCompare(){
    Ogni voce porta il suo r e il suo n scritti in chiaro: se un giorno cambiano, la
    frase accanto va riletta, e questo e' il punto. */
 const CX_PRESETS = [
-  { k:"caldo-rhr", doit:"Una giornata calda si paga il mattino dopo: se la FC a riposo è alta e ieri faceva caldo, è quello.", x:"heat", y:"rhr", lag:1, mode:"lv", tag:"·",
-    t:"Il caldo si paga il mattino dopo", s:"caldo → FC riposo",
-    why:"Fra tutte le cose che potrebbero muovere il recupero — carico, sonno, cibo — "+
-      "l'unica che si vede davvero è il <b>caldo</b>. Un'uscita calda alza la frequenza "+
-      "a riposo del giorno dopo, e regge anche sulle variazioni settimanali. È debole, "+
-      "ma è l'unico segnale non nullo di tutta questa sezione." },
+  { k:"caldo-rhr", doit:"Il caldo, da solo, non spiega più la FC a riposo del mattino dopo: nell'archivio aggiornato il segnale è sceso vicino allo zero.", x:"heat", y:"rhr", lag:1, mode:"lv", tag:"zero",
+    t:"Il caldo non spiega più il mattino dopo", s:"caldo → FC riposo",
+    why:"Con l'archivio aggiornato l'associazione tra <b>heat strain</b> e frequenza a "+
+      "riposo del giorno dopo è scesa vicino allo zero. Il preset resta proprio per "+
+      "mostrare che una relazione vista mesi fa può spegnersi quando arrivano nuovi dati: "+
+      "il numero viene ricalcolato a ogni build, non conservato come una storia da difendere." },
   { k:"passi-salita", doit:"Un giorno da pochi passi e tanto dislivello è un buon giorno. Il numero rosso sull'orologio, lì, non vuol dire niente.", x:"steps", y:"gain", lag:0, mode:"lv", tag:"·",
     t:"I passi non contano lo sport: lo sostituiscono", s:"passi → salita",
     why:"Più dislivello, <b>meno</b> passi — e non è un errore dell'orologio. Le giornate "+
