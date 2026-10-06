@@ -1,23 +1,23 @@
 food_id,name,kcal,share_pct,Faecalibacterium,Bacteroides,Prevotella,Bifidobacterium,Roseburia,Blautia,Ruminococcus,Eubacterium,Akkermansia,Lactobacillus
-pane_integrale,Pane integrale,251839,13.5,15.846,-3.444,16.724,15.958,12.29,8.373,10.084,9.792,14.247,16.204
-avena_fiocchi,Fiocchi d'avena,114827,6.16,7.077,-1.51,7.498,2.852,5.483,3.777,4.504,4.364,6.436,0.0
-lenticchie_secche,Lenticchie secche,112162,6.01,9.923,-2.706,9.923,5.112,7.818,4.511,6.315,6.315,7.518,0.0
-uovo_intero,Uovo intero medio,79950,4.29,0.0,3.644,-3.43,0.0,0.0,0.857,0.0,0.0,0.0,0.0
-burro_arachidi_sgrassato,Burro di arachidi sgrassato in polvere,78963,4.23,3.639,-0.517,6.29,0.647,3.363,2.956,3.933,2.626,1.999,-1.482
-banana,Banana media,78083,4.19,4.971,-1.092,5.236,2.062,3.858,2.612,3.164,3.076,4.441,0.0
-patate_dolci,Patate dolci,70138,3.76,4.955,-1.181,5.125,2.23,3.866,2.48,3.153,3.096,4.189,0.0
-yogurt_greco_0,Yogurt greco 0%,63148,3.39,0.0,2.878,-2.709,2.37,0.0,0.677,0.0,0.0,0.0,4.063
-pizza_base,Pizza rossa senza mozzarella (base),57120,3.06,2.31,-0.256,2.684,2.627,1.737,1.549,1.47,1.345,2.706,3.675
-marmellata_fragola,Marmellata di fragole,54238,2.91,0.111,0.622,2.257,-1.402,0.355,1.379,1.181,0.174,0.396,-1.018
-avocado,Avocado,42528,2.28,3.355,-0.859,3.411,1.623,2.631,1.599,2.135,2.116,2.684,0.0
-cioccolato_fondente_50,Cioccolato fondente 50%,42026,2.25,0.454,0.332,2.067,0.776,0.576,1.169,1.149,0.386,0.457,1.915
-pane_segale,Pane di segale scuro,41105,2.2,2.298,-0.444,2.481,2.382,1.77,1.288,1.462,1.402,2.207,2.645
-pizza_margherita,Pizza margherita intera,40112,2.15,1.517,-0.137,1.794,1.764,1.134,1.059,0.965,0.873,1.857,2.581
-ceci_scatola,Ceci in scatola sgocciolati,38344,2.06,3.213,-0.852,3.238,1.609,2.526,1.493,2.045,2.037,2.497,0.0
-gallette_farro,Gallette di farro,34816,1.87,0.501,0.224,1.82,-0.567,0.58,1.002,1.032,0.405,0.43,-0.653
-pasta_semola,Pasta di semola secca,30362,1.63,1.204,-0.126,1.406,0.239,0.904,0.817,0.766,0.699,1.429,0.0
-cornetto_crema,Cornetto/pasticcino con crema,30304,1.62,0.064,0.347,1.263,-0.781,0.2,0.771,0.661,0.099,0.222,-0.569
-torta_semplice,"Torta da forno (crostata, ciambella)",29532,1.58,0.066,0.337,1.234,-0.759,0.198,0.752,0.647,0.099,0.218,-0.554
-latte_intero,Latte intero,24269,1.3,0.0,1.106,-1.041,0.0,0.0,0.26,0.0,0.0,0.0,0.0
-riso_bianco,Riso bianco crudo,23436,1.26,0.791,-0.041,0.966,0.077,0.584,0.593,0.503,0.445,1.046,0.0
-farro_perlato,Farro perlato crudo,22113,1.19,1.174,-0.213,1.281,0.403,0.901,0.676,0.747,0.711,1.162,0.0
+pane_integrale,Pane integrale,252185,13.51,15.85,-3.445,16.727,15.962,12.293,8.375,10.086,9.794,14.25,16.208
+avena_fiocchi,Fiocchi d'avena,115021,6.16,7.081,-1.511,7.502,2.854,5.486,3.779,4.506,4.366,6.439,0.0
+lenticchie_secche,Lenticchie secche,112515,6.03,9.943,-2.712,9.943,5.122,7.834,4.52,6.327,6.327,7.533,0.0
+uovo_intero,Uovo intero medio,80184,4.29,0.0,3.65,-3.436,0.0,0.0,0.859,0.0,0.0,0.0,0.0
+burro_arachidi_sgrassato,Burro di arachidi sgrassato in polvere,79060,4.23,3.64,-0.517,6.29,0.647,3.363,2.956,3.933,2.626,1.999,-1.482
+banana,Banana media,78190,4.19,4.972,-1.092,5.237,2.063,3.859,2.612,3.164,3.076,4.442,0.0
+patate_dolci,Patate dolci,70367,3.77,4.965,-1.183,5.136,2.235,3.874,2.485,3.16,3.103,4.198,0.0
+yogurt_greco_0,Yogurt greco 0%,63266,3.39,0.0,2.88,-2.711,2.372,0.0,0.678,0.0,0.0,0.0,4.066
+pizza_base,Pizza rossa senza mozzarella (base),57120,3.06,2.308,-0.256,2.681,2.624,1.735,1.547,1.468,1.344,2.703,3.671
+marmellata_fragola,Marmellata di fragole,54238,2.9,0.11,0.622,2.254,-1.4,0.354,1.377,1.179,0.174,0.395,-1.017
+avocado,Avocado,42688,2.29,3.364,-0.862,3.419,1.628,2.638,1.603,2.141,2.122,2.691,0.0
+cioccolato_fondente_50,Cioccolato fondente 50%,42105,2.26,0.454,0.332,2.068,0.776,0.577,1.169,1.15,0.387,0.457,1.917
+pane_segale,Pane di segale scuro,41105,2.2,2.295,-0.444,2.478,2.379,1.768,1.286,1.461,1.4,2.205,2.642
+pizza_margherita,Pizza margherita intera,40112,2.15,1.515,-0.136,1.792,1.762,1.132,1.058,0.964,0.872,1.855,2.578
+ceci_scatola,Ceci in scatola sgocciolati,38344,2.05,3.21,-0.851,3.234,1.607,2.523,1.491,2.043,2.034,2.494,0.0
+gallette_farro,Gallette di farro,34884,1.87,0.502,0.224,1.822,-0.568,0.58,1.003,1.033,0.406,0.43,-0.654
+pasta_semola,Pasta di semola secca,30362,1.63,1.203,-0.126,1.405,0.238,0.903,0.816,0.766,0.698,1.427,0.0
+cornetto_crema,Cornetto/pasticcino con crema,30304,1.62,0.064,0.346,1.261,-0.781,0.2,0.77,0.66,0.099,0.222,-0.568
+torta_semplice,"Torta da forno (crostata, ciambella)",29532,1.58,0.066,0.336,1.232,-0.758,0.198,0.751,0.646,0.099,0.217,-0.554
+latte_intero,Latte intero,24324,1.3,0.0,1.107,-1.042,0.0,0.0,0.261,0.0,0.0,0.0,0.0
+riso_bianco,Riso bianco crudo,23436,1.26,0.79,-0.041,0.965,0.077,0.584,0.592,0.503,0.445,1.045,0.0
+farro_perlato,Farro perlato crudo,22113,1.18,1.173,-0.213,1.279,0.403,0.9,0.675,0.746,0.711,1.161,0.0
