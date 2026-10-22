@@ -1,32 +1,68 @@
 <!doctype html>
 <html lang="it">
+<head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Come sto? · Vita</title>
-<style>
-:root{color-scheme:light;--ink:#202124;--muted:#5f6368}*{box-sizing:border-box}body{margin:0;background:#f8f9fa;background-image:linear-gradient(#2021240d 1px,transparent 1px),linear-gradient(90deg,#2021240d 1px,transparent 1px);background-size:24px 24px;color:var(--ink);font:17px/1.65 system-ui,sans-serif}main{max-width:1080px;margin:auto;padding:36px 22px 70px}a{color:inherit}h1{font-size:clamp(2.5rem,7vw,4.8rem);line-height:1.1;margin:30px 0 18px}h2{font-size:1.35rem}section{background:white;border:2px solid var(--ink);box-shadow:4px 4px var(--ink);padding:24px;margin:28px 0}p{max-width:75ch}.muted,small{color:var(--muted)}select,button{font:inherit;padding:8px;border:1px solid var(--ink);background:#fff}select:focus-visible,a:focus-visible{outline:3px solid #4285f4;outline-offset:3px}.row{display:grid;grid-template-columns:200px 1fr 70px;align-items:center;gap:12px;margin:14px 0}.bar{height:18px;background:#e8f0fe}.bar span{display:block;height:100%;background:#245bb1}.keywords{font-size:.85rem;color:var(--muted)}svg{width:100%;height:auto}table{width:100%;border-collapse:collapse;font-size:.9rem}td,th{padding:9px;text-align:left;border-bottom:1px solid #ddd}.scroll{overflow-x:auto}summary{cursor:pointer;font-weight:600}#status{color:#5f6368}@media(max-width:600px){section{padding:16px}.row{grid-template-columns:1fr 65px}.bar{grid-column:1/-1;grid-row:auto}th,td{padding:7px}main{padding:22px 16px}}
-</style>
-<main>
-<nav><a href="../">← Vita</a> · <a href="../cibo/">Cibo</a></nav>
-<h1>Come sto?</h1>
-<p>Temi e parole nel tempo, dai ricordi scritti. Qui compaiono solo categorie generali e valori mensili: nessun brano, nome, luogo o episodio personale.</p>
-<p class="muted">Il tono descrive le parole usate nei testi. Non misura il benessere e non permette una diagnosi. Anche un ricordo felice può raccontare una giornata difficile.</p>
-<label for="year">Periodo </label><select id="year"><option value="all">Tutti gli anni disponibili</option></select>
-<p id="status" role="status">Caricamento dei dati aggregati…</p>
-<section><h2>Di cosa scrivo</h2><p>Quota delle sezioni che contengono almeno una parola della categoria. Una sezione può avere più temi.</p><div id="themes"></div><details><summary>Quali parole vengono contate?</summary><div id="keywords"></div></details></section>
-<section><h2>Il tono delle parole</h2><p>Da −1 (più parole negative) a +1 (più parole positive). Le lacune indicano dati insufficienti. Ogni mese richiede almeno tre sezioni con almeno due parole emotive riconosciute ciascuna.</p><div id="tone"></div><p class="muted">Lessico italiano fisso, senza comprensione di ironia, negazioni o contesto. Per esempio, “non sono felice” contiene comunque una parola positiva. Non viene assegnato un voto ai mesi privi di segnali.</p></section>
-<section><h2>Sport, fatica e cibo</h2><p id="correlation"></p><p>Le ore di attività sono la somma del registro sportivo e del recupero storico Strava. Mancanza di attività registrate significa dato assente. Le citazioni della stanchezza e del cibo restano temi del testo: non sono misure dello sforzo o dell’alimentazione.</p><p>Gli incroci con carico, sonno e nutrizione richiedono date verificate e una copertura sufficiente. Per il cibo occorre inoltre distinguere consumi osservati e ricostruiti. Nessuna relazione causale viene dedotta.</p><div class="scroll"><table><thead><tr><th>Mese</th><th>Sezioni</th><th>Tono lessicale</th><th>Sport (ore)</th></tr></thead><tbody id="months"></tbody></table></div></section>
-<section><h2>Copertura e metodo</h2><p id="coverage"></p><p>Le intestazioni brevi con date in italiano delimitano le sezioni. L’anno del file viene usato solo se non contraddice le date esplicite. Le sezioni identiche sono deduplicate; quelle con meno di 20 parole sono escluse. I mesi con meno di tre sezioni non vengono esportati. Le date estratte automaticamente possono riferirsi a ricordi precedenti: la cronologia richiede ancora una verifica locale.</p><p>La frequenza misura ciò che viene scritto, non tutto ciò che viene vissuto. Il PDF non è incluso, per evitare di contare una possibile copia degli stessi ricordi. L’archivio originale resta sul computer; il repository conserva il metodo e questi aggregati. Gli aggregati restano dati derivati da un diario personale.</p></section>
-</main>
-<script>
-const $=id=>document.getElementById(id);let data;
-const fmt=n=>n==null?'—':Number(n).toLocaleString('it-IT',{maximumFractionDigits:2});
-function render(){const rows=data.months.filter(r=>$('year').value==='all'||r.month.startsWith($('year').value));const total=rows.reduce((s,r)=>s+r.entries,0);$('status').textContent=`${rows.length} mesi visualizzati · ${total} sezioni nei mesi inclusi`;
-$('themes').replaceChildren();for(const theme of data.themes){const value=total?rows.reduce((s,r)=>s+r.themes[theme]*r.entries,0)/total:0;const row=document.createElement('div');row.className='row';const label=document.createElement('span');label.textContent=theme;const bar=document.createElement('div');bar.className='bar';const fill=document.createElement('span');fill.style.width=value+'%';bar.append(fill);const number=document.createElement('span');number.textContent=fmt(value)+'%';row.append(label,bar,number);$('themes').append(row)}
-const valid=rows.filter(r=>r.tone!=null);const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 960 260');svg.setAttribute('role','img');svg.setAttribute('aria-label','Tono lessicale mensile, punti separati senza interpolazione dei dati mancanti');const start=rows.length?Date.parse(rows[0].month+'-01'):0,end=rows.length?Date.parse(rows.at(-1).month+'-01'):0;let body='<line x1="55" y1="125" x2="920" y2="125" stroke="#aaa"/><text x="8" y="30">+1</text><text x="8" y="130">0</text><text x="8" y="230">−1</text>';
-for(const r of valid){const x=55+865*(Date.parse(r.month+'-01')-start)/(end-start||1),y=125-r.tone*100;body+=`<circle cx="${x}" cy="${y}" r="6" fill="#245bb1"><title>${r.month}: ${fmt(r.tone)} (${r.toneEntries} sezioni)</title></circle><text x="${x}" y="252" text-anchor="middle" font-size="12">${r.month}</text>`}svg.innerHTML=body;$('tone').replaceChildren(svg);if(!valid.length){const p=document.createElement('p');p.textContent='Nessun mese con copertura sufficiente nel periodo selezionato.';$('tone').append(p)}
-const paired=valid.filter(r=>r.sportHours!=null);$('correlation').textContent=`${paired.length} mesi hanno sia tono sia attività registrata nel periodo selezionato. Correlazione non calcolata: questa versione richiede una verifica delle date e della copertura prima di confrontare le serie.`;
-$('months').replaceChildren();for(const r of rows){const tr=document.createElement('tr');for(const v of [r.month,r.entries,fmt(r.tone),fmt(r.sportHours)]){const td=document.createElement('td');td.textContent=v;tr.append(td)}$('months').append(tr)}}
-fetch('data.json').then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.json()}).then(d=>{data=d;for(const year of [...new Set(d.months.map(r=>r.month.slice(0,4)))]){const option=document.createElement('option');option.value=year;option.textContent=year;$('year').append(option)}for(const [theme,words] of Object.entries(d.keywords)){const p=document.createElement('p');p.className='keywords';p.textContent=theme+': '+words.join(', ');$('keywords').append(p)}$('coverage').textContent=`${d.audit.documents} documenti Word letti; ${d.datedEntries} sezioni datate individuate; ${d.audit.months_suppressed||0} mesi esclusi per scarsa copertura. Metodo ${d.method}.`;$('year').addEventListener('change',render);render()}).catch(()=>{$('status').textContent='Dati non disponibili. Ricarica la pagina.'});
-</script>
+<meta name="description" content="Temi, emozioni e concetti dei ricordi scritti, lungo tutti gli anni. Solo aggregati generali da una lettura contestuale locale.">
+<title>Come sto? · Tutti gli anni · Vita</title>
+<link rel="icon" href="../../favicon.png"><link rel="stylesheet" href="trends.css">
+</head>
+<body><main>
+<nav aria-label="Navigazione"><a class="home" href="../../">MICMER.</a><div class="nav-right"><a href="../">← Vita</a><a href="../cibo/">Cibo</a><a href="#metodo">Metodo</a></div></nav>
+<header><div class="eyebrow">Vita / ricordi scritti / tutti gli anni</div>
+<h1>Come <span>sto?</span></h1>
+<p class="lead">Come cambiano le parole, i temi e il tono dei miei ricordi. Tutti gli anni, uno accanto all’altro.</p>
+<div class="source-line"><span id="corpus">Lettura contestuale dei testi</span><span>LLM locale, nessun brano pubblicato</span><span id="span-label">Cronologia completa</span></div>
+</header>
+<p id="status" class="loading" role="status">Caricamento dell’analisi…</p>
+<div id="content" hidden>
+<section class="panel section-anchor" id="tono" aria-labelledby="tone-title">
+<div class="panel-top"><div><div class="section-heading"><span class="section-number">01</span><h2 id="tone-title">Il tono, nel tempo</h2></div><p class="intro">La lettura contestuale distingue tono piacevole e spiacevole, anche quando convivono. La fascia mostra quanto varia fra i passaggi dello stesso anno.</p></div><span class="tag">INTERPRETAZIONE DEL TESTO</span></div>
+<div class="legend"><span><i class="swatch" style="background:#245bb1"></i>Tono medio</span><span><i class="swatch" style="background:#dbe7fa"></i>Minimo–massimo fra i passaggi</span><span><i class="swatch" style="background:#c6cbd2"></i>Quantità di testo analizzata</span></div>
+<div class="chart-scroll"><div id="tone-chart" class="timeline"></div></div>
+<div id="year-readout" class="readout" aria-live="polite">Passa su un anno, oppure usa Tab, per leggere tono, temi e copertura. Il grafico resta sempre completo.</div>
+<p class="chart-caption">La fascia non è un intervallo di confidenza. I vuoti sono assenza di dati databili, mai un valore zero. La media pesa i passaggi per numero di parole; testi più lunghi incidono di più. Il 2026 è ancora in corso.</p>
+<p class="inference">“Come sto?” è la domanda. Questi grafici descrivono come scrivo: il tono di un ricordo non misura il benessere di quel periodo.</p>
+</section>
+
+<section class="panel section-anchor" id="temi" aria-labelledby="topics-title">
+<div class="panel-top"><div><div class="section-heading"><span class="section-number">02</span><h2 id="topics-title">Di cosa scrivo, anno per anno</h2></div><p class="intro">Il modello riconosce il significato dei passaggi. Il colore indica la quota di sezioni in cui compare un tema; più temi possono coesistere.</p></div><div class="view-key">0% <i></i> 100%</div></div>
+<div class="chart-scroll"><div id="topic-chart" class="heatmap"></div></div>
+<p id="topic-summary" class="annual-summary"></p>
+<p class="chart-caption">Le categorie sono generali e prefissate. “Relazioni”, per esempio, non distingue persone o vicende. I riquadri tratteggiati indicano dati insufficienti.</p>
+</section>
+
+<div class="two-cols">
+<section class="panel" aria-labelledby="words-title"><div class="section-heading"><span class="section-number">03</span><h2 id="words-title">Le parole che ritornano</h2></div>
+<p class="intro">Parole effettivamente presenti nei testi, scelte da un vocabolario generale ammesso. Ogni linea usa la frequenza per 1.000 parole: gli anni più scritti non pesano di più solo perché sono lunghi.</p>
+<table class="word-table"><thead><tr><th scope="col">Parola</th><th scope="col">Occorrenze</th><th scope="col">Frequenza annuale</th></tr></thead><tbody id="word-trends"></tbody></table>
+<div class="axis-note"><span class="first-year"></span><span class="last-year"></span></div>
+<p class="chart-caption">Ogni parola ha la propria scala verticale. Il punto indica la frequenza, la lacuna un anno senza testi databili.</p>
+<details class="detail"><summary>I concetti riconosciuti dal modello</summary><p>Concetti generali interpretati nel contesto, anche espressi con sinonimi. La dimensione indica in quante sezioni compaiono.</p><div id="word-field" class="keyword-field"></div></details>
+</section>
+<section class="panel" aria-labelledby="emotions-title"><div class="section-heading"><span class="section-number">04</span><h2 id="emotions-title">Le sfumature emotive</h2></div>
+<p class="intro">Presenza nel corpus completo. Emozioni espresse dalla voce narrante, interpretate nel contesto. Una stessa sezione può esprimere serenità, stanchezza e preoccupazione.</p>
+<div id="emotions"></div>
+<details class="detail"><summary>Vedi l’evoluzione di tutte le emozioni</summary><div class="chart-scroll"><div id="emotion-chart" class="heatmap"></div></div></details>
+<p class="chart-caption">Le percentuali non sommano a 100. Descrivono la presenza nei testi, non la frequenza di uno stato d’animo nella vita quotidiana.</p>
+</section>
+</div>
+
+<section class="panel" aria-labelledby="connections-title"><div class="section-heading"><span class="section-number">05</span><h2 id="connections-title">Il corpo, sullo stesso calendario</h2></div>
+<p class="intro">Ore di sport registrate e stanchezza raccontata, affiancate agli stessi anni. Due misure diverse da leggere insieme, senza dedurne una causa.</p>
+<div class="chart-scroll"><div id="body-chart" class="timeline"></div></div>
+<p class="chart-caption">Sport: registro attività e recupero storico Strava. Stanchezza: quota di sezioni annotate dal modello. Anni non registrati o senza testi restano vuoti. Il 2026 è ancora in corso.</p>
+<p class="year-note">Il tema “Nutrizione” descrive ciò di cui scrivo. L’incrocio con cibo osservato, carico, sonno e HRV richiede date più precise e una verifica della copertura; qui non viene calcolata una correlazione.</p>
+</section>
+
+<section class="panel yellow section-anchor" id="metodo" aria-labelledby="method-title"><div class="section-heading"><span class="section-number">06</span><h2 id="method-title">Cosa c’è dietro ai grafici</h2></div>
+<div class="method-grid"><div><h3>Una lettura, non un dizionario</h3><p id="model-note"></p><p>Il modello legge ogni passaggio completo, fino a 1.800 parole per blocco. Interpreta negazioni e contesto e restituisce tono, attivazione, emozioni, temi e concetti. Le risposte possono contenere errori: non sono una valutazione clinica né una descrizione della personalità.</p></div>
+<div><h3>Solo categorie generali</h3><p>L’output ammette esclusivamente etichette prefissate e punteggi. Nessun nome, luogo, citazione, episodio personale o testo libero viene esportato. I ricordi originali restano sul computer; gli aggregati sono comunque dati derivati da un diario personale.</p></div>
+<div><h3>La copertura conta</h3><p id="coverage-note"></p><p>Il modello analizza anche i testi senza un anno affidabile, che contribuiscono solo alle frequenze complessive. I grafici annuali richiedono almeno tre sezioni. I dati sono disomogenei e il numero di sezioni non misura quanto un anno sia stato vissuto o ricordato.</p></div>
+<div><h3>Date e limiti</h3><p>Le date provengono dalle intestazioni italiane e dai timestamp inglesi dei testi. L’anno del file viene usato solo se coerente con le date esplicite. La cronologia è automatica e non ancora verificata a mano. Il Word del 2019 è vuoto: i testi del 2013 e del 2019 sono recuperati dal PDF. Le sezioni PDF già rappresentate nei Word vengono escluse tramite confronto di sequenze di parole.</p></div></div>
+<details class="detail"><summary>Tabella annuale e copertura dei dati</summary><div class="chart-scroll"><table class="data-table"><thead><tr><th>Anno</th><th>Sezioni</th><th>Passaggi</th><th>Parole</th><th>Tono</th><th>Attivazione</th></tr></thead><tbody id="annual-table"></tbody></table></div></details>
+</section>
+<footer class="footer">Vita / Come sto? · <span id="method-id"></span> · <a href="../">Torna a Vita</a></footer>
+</div>
+</main><script src="trends.js"></script></body>
 </html>
