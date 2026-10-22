@@ -18,3 +18,10 @@
 - Local browser at `/vita/come-sto/`: loaded 39 months / 157 included sections.
 - Year filter 2025: 4 months / 17 sections; chart bars updated. PASS.
 - Layout visually checked at 550 px viewport; no horizontal clipping in the visible section.
+
+## 2026-10-22 · delivery state
+- Git: code and sanitized aggregates backed up on `codex/vita-come-sto`.
+- Published site: unchanged; draft review before production.
+- Index: navigation updated in generated page and generator.
+- Memory: `vita/WORKFLOW.md` updated; handoff captured.
+- Initial diff whitespace check found a trailing blank line in the new handoff; removed before final check.
