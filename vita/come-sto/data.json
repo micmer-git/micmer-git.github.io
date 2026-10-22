@@ -1,0 +1,730 @@
+{
+  "method": "allowlist-it-v1",
+  "minimumEntries": 3,
+  "themes": [
+    "Movimento",
+    "Recupero",
+    "Nutrizione",
+    "Lavoro e studio",
+    "Relazioni",
+    "Natura e tempo libero",
+    "Riflessione"
+  ],
+  "keywords": {
+    "Movimento": [
+      "sport",
+      "corsa",
+      "correre",
+      "bici",
+      "bicicletta",
+      "ciclismo",
+      "nuoto",
+      "nuotare",
+      "allenamento",
+      "palestra",
+      "camminata",
+      "passeggiata",
+      "gara"
+    ],
+    "Recupero": [
+      "riposo",
+      "recupero",
+      "dormire",
+      "sonno",
+      "stanchezza",
+      "stanco",
+      "stanca",
+      "fatica",
+      "riposare"
+    ],
+    "Nutrizione": [
+      "cibo",
+      "mangiare",
+      "colazione",
+      "pranzo",
+      "cena",
+      "alimentazione",
+      "fame",
+      "cucina",
+      "cucinare"
+    ],
+    "Lavoro e studio": [
+      "lavoro",
+      "lavorare",
+      "ufficio",
+      "progetto",
+      "progetti",
+      "studio",
+      "studiare",
+      "imparare",
+      "ricerca"
+    ],
+    "Relazioni": [
+      "amici",
+      "amicizia",
+      "famiglia",
+      "insieme",
+      "compagnia",
+      "incontro",
+      "incontri",
+      "affetto"
+    ],
+    "Natura e tempo libero": [
+      "montagna",
+      "mare",
+      "natura",
+      "viaggio",
+      "viaggi",
+      "vacanza",
+      "vacanze",
+      "musica",
+      "leggere",
+      "libro",
+      "libri"
+    ],
+    "Riflessione": [
+      "pensare",
+      "pensiero",
+      "pensieri",
+      "riflettere",
+      "cambiamento",
+      "futuro",
+      "scelta",
+      "scelte",
+      "obiettivo",
+      "obiettivi"
+    ]
+  },
+  "months": [
+    {
+      "month": "2014-01",
+      "entries": 4,
+      "themes": {
+        "Movimento": 75.0,
+        "Recupero": 25.0,
+        "Nutrizione": 75.0,
+        "Lavoro e studio": 75.0,
+        "Relazioni": 100.0,
+        "Natura e tempo libero": 75.0,
+        "Riflessione": 50.0
+      },
+      "tone": null,
+      "toneEntries": 1,
+      "sportHours": null
+    },
+    {
+      "month": "2014-04",
+      "entries": 5,
+      "themes": {
+        "Movimento": 20.0,
+        "Recupero": 0.0,
+        "Nutrizione": 40.0,
+        "Lavoro e studio": 60.0,
+        "Relazioni": 80.0,
+        "Natura e tempo libero": 60.0,
+        "Riflessione": 60.0
+      },
+      "tone": null,
+      "toneEntries": 1,
+      "sportHours": null
+    },
+    {
+      "month": "2014-05",
+      "entries": 3,
+      "themes": {
+        "Movimento": 33.3,
+        "Recupero": 66.7,
+        "Nutrizione": 66.7,
+        "Lavoro e studio": 33.3,
+        "Relazioni": 66.7,
+        "Natura e tempo libero": 100.0,
+        "Riflessione": 66.7
+      },
+      "tone": null,
+      "toneEntries": 1,
+      "sportHours": null
+    },
+    {
+      "month": "2014-07",
+      "entries": 3,
+      "themes": {
+        "Movimento": 66.7,
+        "Recupero": 0.0,
+        "Nutrizione": 0.0,
+        "Lavoro e studio": 66.7,
+        "Relazioni": 100.0,
+        "Natura e tempo libero": 33.3,
+        "Riflessione": 33.3
+      },
+      "tone": null,
+      "toneEntries": 0,
+      "sportHours": null
+    },
+    {
+      "month": "2014-08",
+      "entries": 3,
+      "themes": {
+        "Movimento": 66.7,
+        "Recupero": 33.3,
+        "Nutrizione": 100.0,
+        "Lavoro e studio": 100.0,
+        "Relazioni": 100.0,
+        "Natura e tempo libero": 100.0,
+        "Riflessione": 33.3
+      },
+      "tone": null,
+      "toneEntries": 2,
+      "sportHours": null
+    },
+    {
+      "month": "2014-10",
+      "entries": 5,
+      "themes": {
+        "Movimento": 60.0,
+        "Recupero": 60.0,
+        "Nutrizione": 100.0,
+        "Lavoro e studio": 60.0,
+        "Relazioni": 100.0,
+        "Natura e tempo libero": 80.0,
+        "Riflessione": 20.0
+      },
+      "tone": null,
+      "toneEntries": 1,
+      "sportHours": null
+    },
+    {
+      "month": "2014-11",
+      "entries": 6,
+      "themes": {
+        "Movimento": 16.7,
+        "Recupero": 50.0,
+        "Nutrizione": 100.0,
+        "Lavoro e studio": 33.3,
+        "Relazioni": 66.7,
+        "Natura e tempo libero": 66.7,
+        "Riflessione": 33.3
+      },
+      "tone": null,
+      "toneEntries": 2,
+      "sportHours": null
+    },
+    {
+      "month": "2014-12",
+      "entries": 3,
+      "themes": {
+        "Movimento": 100.0,
+        "Recupero": 100.0,
+        "Nutrizione": 100.0,
+        "Lavoro e studio": 33.3,
+        "Relazioni": 66.7,
+        "Natura e tempo libero": 66.7,
+        "Riflessione": 66.7
+      },
+      "tone": null,
+      "toneEntries": 2,
+      "sportHours": null
+    },
+    {
+      "month": "2015-01",
+      "entries": 8,
+      "themes": {
+        "Movimento": 12.5,
+        "Recupero": 37.5,
+        "Nutrizione": 62.5,
+        "Lavoro e studio": 75.0,
+        "Relazioni": 62.5,
+        "Natura e tempo libero": 25.0,
+        "Riflessione": 12.5
+      },
+      "tone": null,
+      "toneEntries": 1,
+      "sportHours": null
+    },
+    {
+      "month": "2015-02",
+      "entries": 3,
+      "themes": {
+        "Movimento": 66.7,
+        "Recupero": 100.0,
+        "Nutrizione": 100.0,
+        "Lavoro e studio": 100.0,
+        "Relazioni": 100.0,
+        "Natura e tempo libero": 100.0,
+        "Riflessione": 66.7
+      },
+      "tone": 0.0,
+      "toneEntries": 3,
+      "sportHours": null
+    },
+    {
+      "month": "2015-03",
+      "entries": 3,
+      "themes": {
+        "Movimento": 33.3,
+        "Recupero": 100.0,
+        "Nutrizione": 33.3,
+        "Lavoro e studio": 33.3,
+        "Relazioni": 100.0,
+        "Natura e tempo libero": 100.0,
+        "Riflessione": 100.0
+      },
+      "tone": null,
+      "toneEntries": 0,
+      "sportHours": 3.3
+    },
+    {
+      "month": "2015-04",
+      "entries": 3,
+      "themes": {
+        "Movimento": 33.3,
+        "Recupero": 66.7,
+        "Nutrizione": 66.7,
+        "Lavoro e studio": 33.3,
+        "Relazioni": 100.0,
+        "Natura e tempo libero": 100.0,
+        "Riflessione": 100.0
+      },
+      "tone": null,
+      "toneEntries": 1,
+      "sportHours": null
+    },
+    {
+      "month": "2015-05",
+      "entries": 6,
+      "themes": {
+        "Movimento": 66.7,
+        "Recupero": 66.7,
+        "Nutrizione": 66.7,
+        "Lavoro e studio": 50.0,
+        "Relazioni": 66.7,
+        "Natura e tempo libero": 100.0,
+        "Riflessione": 66.7
+      },
+      "tone": 0.05,
+      "toneEntries": 4,
+      "sportHours": null
+    },
+    {
+      "month": "2015-06",
+      "entries": 7,
+      "themes": {
+        "Movimento": 42.9,
+        "Recupero": 57.1,
+        "Nutrizione": 28.6,
+        "Lavoro e studio": 57.1,
+        "Relazioni": 42.9,
+        "Natura e tempo libero": 85.7,
+        "Riflessione": 42.9
+      },
+      "tone": null,
+      "toneEntries": 2,
+      "sportHours": null
+    },
+    {
+      "month": "2015-07",
+      "entries": 10,
+      "themes": {
+        "Movimento": 60.0,
+        "Recupero": 80.0,
+        "Nutrizione": 60.0,
+        "Lavoro e studio": 60.0,
+        "Relazioni": 60.0,
+        "Natura e tempo libero": 50.0,
+        "Riflessione": 70.0
+      },
+      "tone": -0.056,
+      "toneEntries": 6,
+      "sportHours": null
+    },
+    {
+      "month": "2015-09",
+      "entries": 3,
+      "themes": {
+        "Movimento": 66.7,
+        "Recupero": 100.0,
+        "Nutrizione": 100.0,
+        "Lavoro e studio": 33.3,
+        "Relazioni": 66.7,
+        "Natura e tempo libero": 100.0,
+        "Riflessione": 66.7
+      },
+      "tone": null,
+      "toneEntries": 1,
+      "sportHours": 26.3
+    },
+    {
+      "month": "2015-10",
+      "entries": 4,
+      "themes": {
+        "Movimento": 50.0,
+        "Recupero": 50.0,
+        "Nutrizione": 100.0,
+        "Lavoro e studio": 25.0,
+        "Relazioni": 50.0,
+        "Natura e tempo libero": 75.0,
+        "Riflessione": 75.0
+      },
+      "tone": null,
+      "toneEntries": 1,
+      "sportHours": null
+    },
+    {
+      "month": "2015-12",
+      "entries": 3,
+      "themes": {
+        "Movimento": 66.7,
+        "Recupero": 66.7,
+        "Nutrizione": 100.0,
+        "Lavoro e studio": 66.7,
+        "Relazioni": 100.0,
+        "Natura e tempo libero": 100.0,
+        "Riflessione": 100.0
+      },
+      "tone": null,
+      "toneEntries": 1,
+      "sportHours": null
+    },
+    {
+      "month": "2016-01",
+      "entries": 3,
+      "themes": {
+        "Movimento": 66.7,
+        "Recupero": 66.7,
+        "Nutrizione": 100.0,
+        "Lavoro e studio": 100.0,
+        "Relazioni": 100.0,
+        "Natura e tempo libero": 66.7,
+        "Riflessione": 33.3
+      },
+      "tone": null,
+      "toneEntries": 0,
+      "sportHours": null
+    },
+    {
+      "month": "2016-03",
+      "entries": 3,
+      "themes": {
+        "Movimento": 100.0,
+        "Recupero": 66.7,
+        "Nutrizione": 33.3,
+        "Lavoro e studio": 66.7,
+        "Relazioni": 100.0,
+        "Natura e tempo libero": 66.7,
+        "Riflessione": 100.0
+      },
+      "tone": null,
+      "toneEntries": 1,
+      "sportHours": 32.6
+    },
+    {
+      "month": "2016-04",
+      "entries": 3,
+      "themes": {
+        "Movimento": 100.0,
+        "Recupero": 66.7,
+        "Nutrizione": 100.0,
+        "Lavoro e studio": 100.0,
+        "Relazioni": 100.0,
+        "Natura e tempo libero": 33.3,
+        "Riflessione": 66.7
+      },
+      "tone": null,
+      "toneEntries": 0,
+      "sportHours": 25.8
+    },
+    {
+      "month": "2016-12",
+      "entries": 3,
+      "themes": {
+        "Movimento": 66.7,
+        "Recupero": 66.7,
+        "Nutrizione": 66.7,
+        "Lavoro e studio": 66.7,
+        "Relazioni": 100.0,
+        "Natura e tempo libero": 100.0,
+        "Riflessione": 66.7
+      },
+      "tone": null,
+      "toneEntries": 2,
+      "sportHours": null
+    },
+    {
+      "month": "2017-01",
+      "entries": 3,
+      "themes": {
+        "Movimento": 33.3,
+        "Recupero": 0.0,
+        "Nutrizione": 100.0,
+        "Lavoro e studio": 100.0,
+        "Relazioni": 100.0,
+        "Natura e tempo libero": 100.0,
+        "Riflessione": 100.0
+      },
+      "tone": null,
+      "toneEntries": 0,
+      "sportHours": 17.5
+    },
+    {
+      "month": "2017-02",
+      "entries": 3,
+      "themes": {
+        "Movimento": 100.0,
+        "Recupero": 33.3,
+        "Nutrizione": 66.7,
+        "Lavoro e studio": 66.7,
+        "Relazioni": 100.0,
+        "Natura e tempo libero": 66.7,
+        "Riflessione": 100.0
+      },
+      "tone": null,
+      "toneEntries": 1,
+      "sportHours": 21.0
+    },
+    {
+      "month": "2017-05",
+      "entries": 3,
+      "themes": {
+        "Movimento": 33.3,
+        "Recupero": 0.0,
+        "Nutrizione": 33.3,
+        "Lavoro e studio": 66.7,
+        "Relazioni": 66.7,
+        "Natura e tempo libero": 33.3,
+        "Riflessione": 66.7
+      },
+      "tone": null,
+      "toneEntries": 0,
+      "sportHours": 14.6
+    },
+    {
+      "month": "2017-06",
+      "entries": 3,
+      "themes": {
+        "Movimento": 100.0,
+        "Recupero": 66.7,
+        "Nutrizione": 33.3,
+        "Lavoro e studio": 33.3,
+        "Relazioni": 66.7,
+        "Natura e tempo libero": 66.7,
+        "Riflessione": 33.3
+      },
+      "tone": null,
+      "toneEntries": 1,
+      "sportHours": 19.3
+    },
+    {
+      "month": "2017-08",
+      "entries": 5,
+      "themes": {
+        "Movimento": 80.0,
+        "Recupero": 80.0,
+        "Nutrizione": 60.0,
+        "Lavoro e studio": 60.0,
+        "Relazioni": 100.0,
+        "Natura e tempo libero": 100.0,
+        "Riflessione": 60.0
+      },
+      "tone": null,
+      "toneEntries": 1,
+      "sportHours": 27.4
+    },
+    {
+      "month": "2018-01",
+      "entries": 3,
+      "themes": {
+        "Movimento": 0.0,
+        "Recupero": 0.0,
+        "Nutrizione": 33.3,
+        "Lavoro e studio": 33.3,
+        "Relazioni": 66.7,
+        "Natura e tempo libero": 33.3,
+        "Riflessione": 100.0
+      },
+      "tone": null,
+      "toneEntries": 1,
+      "sportHours": 12.8
+    },
+    {
+      "month": "2018-05",
+      "entries": 3,
+      "themes": {
+        "Movimento": 33.3,
+        "Recupero": 0.0,
+        "Nutrizione": 66.7,
+        "Lavoro e studio": 33.3,
+        "Relazioni": 66.7,
+        "Natura e tempo libero": 66.7,
+        "Riflessione": 66.7
+      },
+      "tone": null,
+      "toneEntries": 2,
+      "sportHours": 0.3
+    },
+    {
+      "month": "2018-06",
+      "entries": 3,
+      "themes": {
+        "Movimento": 66.7,
+        "Recupero": 33.3,
+        "Nutrizione": 66.7,
+        "Lavoro e studio": 66.7,
+        "Relazioni": 100.0,
+        "Natura e tempo libero": 66.7,
+        "Riflessione": 66.7
+      },
+      "tone": null,
+      "toneEntries": 1,
+      "sportHours": 1.1
+    },
+    {
+      "month": "2020-11",
+      "entries": 3,
+      "themes": {
+        "Movimento": 66.7,
+        "Recupero": 33.3,
+        "Nutrizione": 66.7,
+        "Lavoro e studio": 33.3,
+        "Relazioni": 66.7,
+        "Natura e tempo libero": 33.3,
+        "Riflessione": 66.7
+      },
+      "tone": null,
+      "toneEntries": 1,
+      "sportHours": 38.8
+    },
+    {
+      "month": "2020-12",
+      "entries": 4,
+      "themes": {
+        "Movimento": 25.0,
+        "Recupero": 75.0,
+        "Nutrizione": 75.0,
+        "Lavoro e studio": 25.0,
+        "Relazioni": 75.0,
+        "Natura e tempo libero": 25.0,
+        "Riflessione": 0.0
+      },
+      "tone": null,
+      "toneEntries": 1,
+      "sportHours": 45.5
+    },
+    {
+      "month": "2021-01",
+      "entries": 3,
+      "themes": {
+        "Movimento": 66.7,
+        "Recupero": 33.3,
+        "Nutrizione": 66.7,
+        "Lavoro e studio": 100.0,
+        "Relazioni": 33.3,
+        "Natura e tempo libero": 33.3,
+        "Riflessione": 33.3
+      },
+      "tone": null,
+      "toneEntries": 2,
+      "sportHours": 38.7
+    },
+    {
+      "month": "2021-07",
+      "entries": 3,
+      "themes": {
+        "Movimento": 100.0,
+        "Recupero": 33.3,
+        "Nutrizione": 66.7,
+        "Lavoro e studio": 100.0,
+        "Relazioni": 100.0,
+        "Natura e tempo libero": 100.0,
+        "Riflessione": 33.3
+      },
+      "tone": null,
+      "toneEntries": 2,
+      "sportHours": 52.7
+    },
+    {
+      "month": "2024-08",
+      "entries": 7,
+      "themes": {
+        "Movimento": 71.4,
+        "Recupero": 0.0,
+        "Nutrizione": 85.7,
+        "Lavoro e studio": 14.3,
+        "Relazioni": 28.6,
+        "Natura e tempo libero": 85.7,
+        "Riflessione": 28.6
+      },
+      "tone": null,
+      "toneEntries": 1,
+      "sportHours": 74.5
+    },
+    {
+      "month": "2025-01",
+      "entries": 5,
+      "themes": {
+        "Movimento": 100.0,
+        "Recupero": 0.0,
+        "Nutrizione": 80.0,
+        "Lavoro e studio": 80.0,
+        "Relazioni": 0.0,
+        "Natura e tempo libero": 40.0,
+        "Riflessione": 40.0
+      },
+      "tone": null,
+      "toneEntries": 2,
+      "sportHours": 70.3
+    },
+    {
+      "month": "2025-03",
+      "entries": 4,
+      "themes": {
+        "Movimento": 100.0,
+        "Recupero": 50.0,
+        "Nutrizione": 100.0,
+        "Lavoro e studio": 100.0,
+        "Relazioni": 100.0,
+        "Natura e tempo libero": 50.0,
+        "Riflessione": 100.0
+      },
+      "tone": null,
+      "toneEntries": 0,
+      "sportHours": 85.1
+    },
+    {
+      "month": "2025-05",
+      "entries": 4,
+      "themes": {
+        "Movimento": 100.0,
+        "Recupero": 50.0,
+        "Nutrizione": 100.0,
+        "Lavoro e studio": 25.0,
+        "Relazioni": 100.0,
+        "Natura e tempo libero": 50.0,
+        "Riflessione": 75.0
+      },
+      "tone": null,
+      "toneEntries": 0,
+      "sportHours": 80.6
+    },
+    {
+      "month": "2025-06",
+      "entries": 4,
+      "themes": {
+        "Movimento": 75.0,
+        "Recupero": 25.0,
+        "Nutrizione": 100.0,
+        "Lavoro e studio": 50.0,
+        "Relazioni": 75.0,
+        "Natura e tempo libero": 50.0,
+        "Riflessione": 50.0
+      },
+      "tone": null,
+      "toneEntries": 0,
+      "sportHours": 78.2
+    }
+  ],
+  "audit": {
+    "documents": 12,
+    "ambiguous_headings": 9,
+    "months_suppressed": 51
+  },
+  "datedEntries": 232
+}

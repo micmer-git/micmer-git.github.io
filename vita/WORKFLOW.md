@@ -159,3 +159,11 @@ It is decision support, not diagnosis or medical treatment.
   removing at least three of the four weeks one at a time. Nutrition is excluded when
   observed energy coverage is below 70%. Report recent `r`, prior `r`, their delta and
   leave-one-week-out stability; call it exploratory, never causal.
+
+## Come sto? (2026-10-22)
+
+- Separate page: `vita/come-sto/`. Rebuild locally with `python tools/build_reflections.py <ZIP>`; never copy the ZIP or raw diary into this public repo. No external model/API processes the prose.
+- Only allowlisted topic/keyword labels and monthly aggregates are exported; minimum three sections per month. Lexical tone requires three sections with two emotion words each. No quotations, names, places, per-entry text or per-entry dates. This is data minimisation, not guaranteed anonymity.
+- Date parsing is provisional: short Italian date headings and non-conflicting single-year filenames; duplicate text removed, ambiguous sections excluded. PDF excluded. Validate chronology locally before any correlations. Tone ignores negation and context; never call it a mental-health measurement.
+- Activities include both `activities.csv` and `activities_backfill.csv`. No correlation coefficients are reported until chronology and coverage are verified. Food mentions are not measured intake.
+- Navigation exists in generated `vita/index.html` and its generator `tools/build_vita.py`, so hourly builds preserve it. Check evidence accumulates in `REFLECTIONS_CHECKS.md`.
