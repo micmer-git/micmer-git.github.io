@@ -1437,6 +1437,21 @@ TEMPLATE = r"""<!DOCTYPE html>
     .marathon-stats{justify-content:space-between; gap:10px}
     .marathon-go{justify-self:start}
   }
+  /* ---------- la fila di schede in cima: scorre di lato, ognuna si aggancia ---------- */
+  .deck{display:flex; gap:14px; overflow-x:auto; overscroll-behavior-x:contain;
+    scroll-snap-type:x mandatory; scroll-padding-left:4px; margin:22px -4px 0;
+    padding:4px 4px 16px; scrollbar-width:thin}
+  .deck:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+  .deck .deck-card{flex:0 0 min(86%,470px); scroll-snap-align:start; margin:0;
+    display:flex; flex-direction:column; justify-content:space-between; gap:12px;
+    align-items:flex-start; padding:16px 20px; box-sizing:border-box}
+  .deck .deck-card h2{margin:3px 0 4px}
+  .deck .deck-card .coach-lead{margin:0 0 4px}
+  .deck .marathon-card{grid-template-columns:none; text-decoration:none; color:inherit}
+  .deck .marathon-stats{width:100%; flex-wrap:wrap; justify-content:flex-start; gap:8px 22px}
+  .deck .marathon-stats span{white-space:normal}
+  .deck .marathon-card > div{min-width:0; max-width:100%}
+  .deck .marathon-card:hover{transform:none}
   /* il selettore del periodo, e le due tabelle che ha portato con se' */
   .dper{display:flex; gap:7px; align-items:baseline; flex-wrap:wrap; margin:12px 0 4px}
   .dper button{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem;
@@ -1721,18 +1736,25 @@ TEMPLATE = r"""<!DOCTYPE html>
 </div>
 <p class="fortnight">14 giorni · variazione sui 14 precedenti</p>
 
-<section class="coach-card" aria-labelledby="coach-h">
+<!-- Le schede in cima scorrono di lato (Michele, 23/10/2026): rapporto, diario, maratone,
+     sonno, come sto. Una fila sola invece di cinque blocchi impilati, e il primo grafico
+     torna dove uno se lo aspetta. -->
+<div class="deck" id="deck" role="region" aria-label="Schede: scorri di lato" tabindex="0">
+<section class="coach-card deck-card" aria-labelledby="coach-h">
   <div class="coach-k">il rapporto</div>
   <h2 id="coach-h">L'opinione del coach</h2>
   <p class="coach-lead" id="coach-lead"></p>
   <button type="button" id="coach-btn">Leggi il rapporto</button>
 </section>
 
-<div class="diary-open">
+<section class="coach-card deck-card" aria-labelledby="diary-h">
+  <div class="coach-k">il racconto</div>
+  <h2 id="diary-h">Il diario</h2>
+  <p class="coach-lead">Giornata per giornata: sonno, allenamento, pasti.</p>
   <button type="button" id="diary-btn">Apri il diario</button>
-</div>
+</section>
 
-<a class="marathon-card" id="marathon-card" href="../marathons/" aria-label="Apri Marathon Atlas">
+<a class="marathon-card deck-card" id="marathon-card" href="../marathons/" aria-label="Apri Marathon Atlas">
   <div>
     <div class="coach-k">archivio gare · 42,195 km</div>
     <h2>Maratone</h2>
@@ -1745,6 +1767,25 @@ TEMPLATE = r"""<!DOCTYPE html>
   </div>
   <span class="marathon-go">Apri l'atlante ↗</span>
 </a>
+
+<a class="marathon-card deck-card sleep-card" href="#sec-notte" aria-label="Vai alla sezione Notte">
+  <div>
+    <div class="coach-k">la notte</div>
+    <h2>Sonno</h2>
+    <p>Durata, fasi, HRV e frequenza a riposo come li misura l'orologio, dal 2025.</p>
+  </div>
+  <span class="marathon-go">Vai ai grafici ↓</span>
+</a>
+
+<a class="marathon-card deck-card" href="come-sto/" aria-label="Apri Come sto">
+  <div>
+    <div class="coach-k">ricordi scritti</div>
+    <h2>Come sto?</h2>
+    <p>2013–2026: il tono, i temi e le emozioni dei miei ricordi scritti.</p>
+  </div>
+  <span class="marathon-go">Apri ↗</span>
+</a>
+</div>
 
 <div class="controls">
   <div class="ranges" id="ranges" role="group" aria-label="Finestra temporale"></div>
@@ -1893,16 +1934,16 @@ const fmtDate = i => { const d = dayDate(i);
 /* Ranges. "sempre" is resolved per tile against that series' own first day, so a
    tile can never imply coverage it does not have. */
 const RANGES = [
-  { key:"2a",     label:"2 anni",    days:730 },
+  { key:"6m",     label:"6 mesi",    days:183 },
   { key:"1a",     label:"1 anno",    days:365 },
-  { key:"3m",     label:"trimestre", days:91 },
+  { key:"2a",     label:"2 anni",    days:730 },
   { key:"sempre", label:"sempre",    days:null },
 ];
-/* Due anni di default: e' la finestra in cui quasi tutte le serie esistono
+/* Sei mesi di default (Michele, 23/10/2026; prima erano due anni, e il trimestre e' stato sostituito): e' la finestra in cui quasi tutte le serie esistono
    davvero (sonno e HRV partono nel 2025), quindi e' quella in cui la colonna si
    legge tutta. "sempre" resta raggiungibile perche' il carico ha undici anni di
    storia e buttarli via sarebbe un peccato. */
-let range = "2a";
+let range = "6m";
 
 function windowFor(firstIdx, lastIdx) {
   const last = lastIdx === undefined || lastIdx === null ? N - 1 : lastIdx;
@@ -2175,10 +2216,10 @@ function frame(svg, W, H, xdom, ydom, opts = {}) {
      l'ultima riga di glifi finiva a filo del viewBox.
      `strip` e' la fascia delle medie, quando il riquadro la chiede: sta FRA il disegno
      e le date, e si prende la sua altezza dal grafico invece di sovrapporsi. */
-  const strip = opts.strip ? EIGHTH_H : 0;
+  const strip = 0;   /* le medie stanno DENTRO il grafico (Michele, 23/10/2026): niente fascia sotto */
   /* `rpad`: il posto per un asse secondario a destra — le medie di `rLines` ci
      scrivono i loro valori (ordine #23) e senza spazio finirebbero fuori viewBox. */
-  const P = { l:padFor(ticks), r:opts.rpad || (opts.strip ? EIGHTH_RPAD : 6), t:8, b:19 + strip };
+  const P = { l:padFor(ticks), r:opts.rpad || 6, t:8, b:19 + strip };
   const iw = W - P.l - P.r, ih = H - P.t - P.b;
   const [x0, x1] = xdom;
   const X = v => P.l + (x1 === x0 ? iw / 2 : (v - x0) / (x1 - x0) * iw);
@@ -2188,7 +2229,7 @@ function frame(svg, W, H, xdom, ydom, opts = {}) {
   if (opts.gaps !== false) gapBands(svg, X, x0, x1, P.t, ih);
   yAxis(svg, ticks, Y, P.l, W - P.r);
   if (opts.xticks !== false) xDates(svg, X, W, H, x0, x1, iw);
-  return { X, Y, P, iw, ih, yd, strip, W };
+  return { X, Y, P, iw, ih, yd, strip, eighths:!!opts.strip, W };
 }
 
 /* ------------------------------------------------------------- gli otto ottavi
@@ -2216,7 +2257,6 @@ function frame(svg, W, H, xdom, ydom, opts = {}) {
      travestito da zero, che e' la bugia contro cui e' costruita mezza pagina. */
 const FRAMES = 8;
 /* Altezza della fascia, e quanto spazio si prende a destra per i suoi due estremi. */
-const EIGHTH_H = 34, EIGHTH_RPAD = 30;
 /* L'asse secondario delle medie (ordine #23): il posto a destra basta a «100 %» a
    corpo MEDIE_FS piu' il trattino che ricongiunge un'etichetta spostata alla sua
    riga. Il corpo resta quello degli assi: e' un asse, non un'annotazione. */
@@ -2248,44 +2288,27 @@ function eighthMeans(pts, from, to, n = FRAMES) {
 
 function eighths(svg, g, pts, from, to, fmt, opts = {}) {
   const n = FRAMES;
-  if (!g.strip) return null;
+  if (!g.eighths) return null;
   const e = eighthMeans(pts, from, to, n);
   if (!e) return null;
   const { mean, span } = e;
   const vals = mean.filter(v => v !== null && isFinite(v));
-
-  /* ---- LA SCALA PROPRIA -------------------------------------------------
-     Il secondo asse e' tutto il punto (Michele, 18/08/2026: «secondary axis for
-     those cosi' vedo variazioni tra le medie in modo migliore»). Sull'asse del
-     grafico otto medie che stanno fra 41 e 46 TSS occupano quattro pixel su
-     centosettanta e sembrano identiche; qui la fascia si riscala sulle medie e
-     basta, e quei cinque TSS diventano venti pixel di dislivello.
-     Il prezzo e' che la fascia NON e' sulla scala del disegno sopra, e per questo
-     sta in una fascia sua sotto il grafico invece che sopra i dati: sovrapposte a
-     una scala diversa sarebbero una bugia grafica. I due estremi sono scritti a
-     destra, cosi' la scala non e' un'informazione nascosta. */
-  let lo = Math.min(...vals), hi = Math.max(...vals);
-  if (hi === lo) { const d = Math.abs(hi) * .05 || 1; lo -= d; hi += d; }
-  const pad = (hi - lo) * .18;
-  lo -= pad; hi += pad;
-  const top = g.P.t + g.ih + 5, H2 = g.strip - 5;
-  const Y2 = v => top + H2 - (v - lo) / (hi - lo) * H2;
-
   const w = g.iw / n;
-  /* ---- «ROUND INTELLIGENTLY» (Michele, 22/08/2026, sul riquadro «raccontato») ----
-     Il numero di un ottavo non serve a certificare una cifra: serve a leggere la
-     differenza fra quell'ottavo e gli altri sette. Le cifre che DISTINGUONO sono
-     quelle dell'AMPIEZZA fra le otto medie, non quelle del loro livello — fra 15.486
-     e 16.732 l'informazione sta nella terza cifra, la quinta e' rumore che ruba
-     larghezza e fa saltare le etichette vicine.
-     Due mosse, e nessuna delle due inventa precisione che non c'e':
-     · si tolgono i decimali che l'ampiezza non giustifica, ma **mai piu' di quanti
-       ne porta il formato del riquadro**: quello resta la scelta editoriale, e
-       aggiungerne uno per "precisione" farebbe diventare 32 piante un 31,6;
-     · sopra le diecimila si passa alle migliaia con la «k», perche' li' la quinta
-       cifra non la legge nessuno e la differenza fra due ottavi si vede lo stesso.
-     Vale solo per i formati NUMERICI: "20h 35'" non si arrotonda a mano, e il test
-     lo riconosce dal fatto che dopo il numero non viene uno spazio ma una lettera. */
+
+  /* ---- TUTTO DENTRO IL GRAFICO (Michele, 23/10/2026: «averages values and lines only
+     in graph») ----
+     La fascia sotto il disegno, con la sua scala propria e i suoi due estremi, e'
+     tolta: otto medie e le loro cifre stanno sulla scala del grafico, dove stanno i
+     dati, e per leggere un livello non si salta piu' fra due assi. Resta uno solo
+     dei motivi della fascia: il numero e' scritto una volta, sopra il suo trattino.
+     Il conto e' sempre `eighthMeans`, lo stesso di `rLines`. */
+
+  /* ---- «ROUND INTELLIGENTLY» (22/08/2026) ----
+     Il numero di un ottavo serve a leggere la differenza fra quell'ottavo e gli
+     altri sette, non a certificare una cifra: si tolgono i decimali che l'ampiezza
+     non giustifica (mai piu' di quanti ne porta il formato del riquadro) e sopra le
+     diecimila si passa alle migliaia con la «k». Vale solo per i formati NUMERICI:
+     "20h 35'" non si arrotonda a mano. */
   const numerico = /^-?[\d.]+(?:,\d+)?(?:\s|$)/.test(String(fmt(1234.5)));
   const parti = String(fmt(vals[0])).match(/^(-?[\d.]+(?:,\d+)?)(.*)$/);
   const suf = numerico && parti ? parti[2] : "";
@@ -2296,91 +2319,52 @@ function eighths(svg, g, pts, from, to, fmt, opts = {}) {
   const kilo = magn >= 1e4;
   const corto = (v, unita) => (kilo ? nf(v / 1000, spanM >= 2000 ? 0 : 1) + "k"
                                     : nf(v, dOk)) + (unita ? suf : "");
-  /* Le scritture possibili, dalla piu' ricca alla piu' spiccia. Si prende la prima
-     che sta in due corsie; dove l'arrotondamento non morde (la maggior parte dei
-     riquadri) la prima e' identica a quella di prima, e infatti non cambia niente. */
   const scritture = numerico ? [v => corto(v, true), v => corto(v, false)]
                              : [v => String(fmt(v))];
   let labs = null, wide = 0;
   for (const scrivi of scritture) {
     labs = mean.map(v => v === null ? "" : scrivi(v));
     wide = Math.max(...labs.map(x => x.length)) * TICKW * (MEAN_FS / AXIS_FS) + 5;
-    if (wide <= 2 * w) break;
+    if (wide <= w) break;
   }
-  /* ---- NESSUN OTTAVO SENZA IL SUO NUMERO -----------------------------------
-     Michele, stesso foglio: «non centrato tutti i valori (alcuni mancano?)».
-     Mancavano davvero. Il passo delle etichette si calcolava (`every`) e chi non ci
-     stava in fila veniva SALTATO — ma un ottavo senza numero, a vederlo, e' identico
-     a un ottavo senza dati, e distinguere il vuoto dal nulla e' mezzo scopo di questa
-     pagina. Adesso quando la riga non basta i numeri prendono DUE corsie, pari sul
-     bordo alto della fascia e dispari sul basso: ognuno resta centrato sulla sua
-     barra, e ci sono tutti e otto. Fra due pari consecutivi c'e' il doppio dello
-     spazio, ed e' esattamente la condizione su cui la scelta della scrittura qui
-     sopra si e' fermata — le due cose vanno lette insieme o nessuna delle due sta
-     in piedi. `every` resta come ultimo ripiego per il caso che non si e' mai visto:
-     un'etichetta piu' larga di due ottavi anche dopo essere stata accorciata. */
-  const corsie = wide > w ? 2 : 1;
-  const yHi = top + MEAN_FS - 1, yLo = top + g.strip - 3;
-  const every = Math.max(1, Math.ceil(wide / (corsie * w)));
-
-  /* il filetto che separa la fascia dal disegno: e' li' per dire "da qui in giu'
-     e' un'altra scala", quindi non e' decorazione e non si toglie */
-  svg.appendChild(el("line", { x1:g.P.l, x2:g.P.l + g.iw, y1:top - 3, y2:top - 3,
-    stroke:"var(--rule)", "stroke-width":1 }));
-  /* i due estremi della scala, a destra, piccoli */
-  for (const [v, dy] of [[hi, 3], [lo, 0]]) {
-    const t = axisText(g.P.l + g.iw + 4, Y2(v) + dy, "", "start");
-    t.textContent = fmt(v); t.setAttribute("font-size", String(AXIS_FS - 1));
-    svg.appendChild(t);
-  }
-
-  /* ---- E LE MEDIE TORNANO ANCHE SUL DISEGNO --------------------------------
-     Michele, 22/08/2026: «Medie non su grafico principale». La fascia sotto non
-     sparisce, e la ragione per cui esiste resta intera: la sua scala propria e'
-     l'unica cosa che impedisce a otto medie fra 41 e 46 TSS di sembrare identiche
-     (ordine #23, 18/08). Ma per sapere a che LIVELLO stava un ottavo bisognava
-     saltare fra due disegni con due assi diversi, e quel salto e' il difetto.
-     Quindi gli stessi otto valori tornano dove stanno i dati, sulla scala del
-     grafico: otto trattini neri e tenui, uno per ottavo, larghi quanto il loro
-     ottavo. Staccati e non uniti — sono otto letture di otto pezzi d'anno, non una
-     serie che passa di li'; unirli li farebbe leggere come una nona curva.
-     Il numero resta scritto una volta sola, nella fascia: due volte sarebbe rumore,
-     e sarebbe anche il numero letto contro due scale diverse. */
-  mean.forEach((v, k) => {
-    if (v === null || !isFinite(v) || v < g.yd.lo || v > g.yd.hi) return;
-    const y = g.Y(v), x = g.P.l + w * k;
-    svg.appendChild(el("line", { x1:x + 1.5, x2:x + w - 1.5, y1:y, y2:y,
-      stroke:"var(--ink)", "stroke-width":1.6, opacity:".42", "stroke-linecap":"round" }));
-  });
-
   const out = [];
+  const placed = [];
   mean.forEach((v, k) => {
-    if (v === null) return;                 /* ottavo senza dati: niente, mai uno zero */
-    const y = Y2(v), x = g.P.l + w * k;
-    const r = el("rect", { x:x + 1.5, y:y - 1.5, width:Math.max(2, w - 3), height:3,
-      fill:"var(--ink)", opacity:".85", style:"cursor:pointer" });
+    if (v === null || !isFinite(v)) return;   /* ottavo senza dati: niente, mai uno zero */
+    const x = g.P.l + w * k;
+    const inside = v >= g.yd.lo && v <= g.yd.hi;
+    const y = g.Y(Math.min(g.yd.hi, Math.max(g.yd.lo, v)));
     const a0 = Math.round(from + k * span), a1 = Math.round(from + (k + 1) * span) - 1;
-    r.addEventListener("pointerenter", ev => showTip(ev.clientX, ev.clientY,
+    const tip = ev => showTip(ev.clientX, ev.clientY,
       `<span class="d">ottavo ${k + 1} di ${n} · ${fmtDate(a0)} → ${fmtDate(Math.min(a1, to))}</span>` +
-      `<br>media <span class="v">${fmt(v)}</span>`));
-    r.addEventListener("pointerleave", hideTip);
-    svg.appendChild(r);
+      `<br>media <span class="v">${fmt(v)}</span>`);
+    svg.appendChild(el("line", { x1:x + 1.5, x2:x + w - 1.5, y1:y, y2:y,
+      stroke:"var(--ink)", "stroke-width":2.2, opacity:inside ? ".78" : ".3",
+      "stroke-linecap":"round" }));
+    /* una fascia di presa piu' larga del trattino, o sul telefono non si centra */
+    const hit = el("rect", { x:x, y:y - 9, width:w, height:18, fill:"transparent",
+      style:"cursor:pointer" });
+    hit.addEventListener("pointerenter", tip);
+    hit.addEventListener("pointerleave", hideTip);
+    svg.appendChild(hit);
     out.push({ k, v });
-    if (k % every) return;
-    /* Il numero sta SEMPRE sopra la sua barra, e sempre DENTRO la fascia: la riga di
-       base si aggrappa al bordo alto quando la barra e' troppo in cima. Mettendolo
-       sotto — com'era — un ottavo alto finiva a due pixel dalle date dell'asse x, e
-       il check lo prendeva come sovrapposizione: aveva ragione.
-       Su due corsie la riga non segue piu' la barra ma il bordo della fascia: e' il
-       prezzo per averli tutti e otto, e si paga volentieri perche' l'altezza della
-       barra e' gia' disegnata dalla barra — il numero deve solo essere leggibile e
-       stare sopra la sua colonna. */
-    const t = el("text", { x:x + w / 2,
-      y:corsie === 2 ? (k % 2 ? yLo : yHi) : Math.max(yHi, y - 5),
+    /* il numero va sopra il suo trattino; se li' tocca un altro numero o non c'e' posto,
+       sotto, e poi piu' in la'. Si prova una posizione dopo l'altra contro i numeri gia'
+       messi: niente corsie fisse, perche' con le medie sulla scala del grafico due
+       ottavi vicini possono stare a quote qualsiasi. */
+    const lw = labs[k].length * TICKW * (MEAN_FS / AXIS_FS);
+    const bottom = g.P.t + g.ih - 1;
+    const hit2 = yy => placed.some(q => Math.abs(q.y - yy) < MEAN_FS + 1 &&
+      x + w / 2 - lw / 2 < q.r + 1 && x + w / 2 + lw / 2 > q.l - 1);
+    const cand = [y - 5, y + MEAN_FS + 1, y - 5 - MEAN_FS - 1, y + 2 * MEAN_FS + 2]
+      .filter(yy => yy >= MEAN_FS - 1 && yy <= bottom);
+    const ty = cand.find(yy => !hit2(yy)) ?? cand[0] ?? y - 5;
+    placed.push({ y:ty, l:x + w / 2 - lw / 2, r:x + w / 2 + lw / 2 });
+    const t = el("text", { x:x + w / 2, y:ty,
       "text-anchor":"middle", fill:"var(--ink)", "font-size":String(MEAN_FS),
       "font-weight":"700", "font-family":"ui-monospace,'SFMono-Regular',Menlo,monospace",
       stroke:"var(--paper)", "stroke-width":"3.2", "paint-order":"stroke",
-      "stroke-linejoin":"round" });
+      "stroke-linejoin":"round", "pointer-events":"none" });
     t.textContent = labs[k]; svg.appendChild(t);
   });
   return out;
@@ -5447,10 +5431,10 @@ infoReg("finestra", "Che cosa cambia la finestra temporale",
    riquadri della stessa schermata quindi <strong>non coprono lo stesso periodo</strong>.</p>
    <p>Con una finestra scelta, è la stessa su tutti. Dove la serie non arriva così
    indietro, il riquadro parte da dove può.</p>
-   <p><strong>Le otto barre nere</strong> dividono in <strong>ottavi</strong> la finestra
-   che stai guardando: ognuna sta all'altezza della media del suo ottavo, e il numero
+   <p><strong>Gli otto trattini neri</strong> dividono in <strong>ottavi</strong> la finestra
+   che stai guardando: ognuno sta all'altezza della media del suo ottavo, sulla scala del grafico, e il numero
    sopra è quella media. Cambiando finestra cambiano di significato — otto ottavi di due
-   anni sono trimestri, otto ottavi di un trimestre sono undici giorni l'uno. Sono nere
+   anni sono trimestri, otto ottavi di sei mesi sono ventitre giorni l'uno. Sono nere
    e non colorate perché <em>non sono una serie</em>: sono una nota sopra le altre.
    Un ottavo senza dati non disegna niente, e uno la cui media cade fuori dalla scala
    nemmeno.</p>`);

@@ -242,6 +242,7 @@
         .story-avatar { display: grid; width: 40px; height: 40px; place-items: center; border: 2px solid currentColor; border-radius: 50%; background: #fff; font-family: 'VT323', monospace; font-size: 21px; font-weight: 700; }
         .story-close { display: grid; width: 40px; height: 40px; place-items: center; border: 0; border-radius: 50%; background: transparent; color: inherit; cursor: pointer; transition: transform .2s, background-color .2s; }
         .story-close:hover { background: rgba(32,33,36,.1); transform: rotate(4deg); }
+        .story-body.is-locked a { pointer-events: none; }
         .story-body { display: flex; min-height: 0; flex: 1; flex-direction: column; padding: 24px 20px 20px; animation: storyIn .5s cubic-bezier(.2,.8,.2,1) both; }
         .story-kicker { margin-bottom: 12px; font-family: 'VT323', monospace; font-size: 18px; letter-spacing: .08em; text-transform: uppercase; }
         .story-title { font-size: clamp(52px, 13vw, 76px); font-weight: 800; line-height: .82; letter-spacing: -.07em; }
@@ -1247,6 +1248,8 @@
         const StoryOverlay = ({ isOpen, onClose }) => {
           const [slide, setSlide] = useState(0);
           const pointerStart = useRef(null);
+          const swiped = useRef(false);
+          const [locked, setLocked] = useState(false);
           const colors = ['#efc849', '#e9dfcc', '#8fb7be', '#e79672', '#88a27a'];
           const textColors = ['#202124', '#202124', '#202124', '#202124', '#202124'];
           const lastSlide = 4;
@@ -1269,6 +1272,14 @@
             return () => window.removeEventListener('keydown', onKey);
           }, [isOpen, onClose]);
 
+          /* per mezzo secondo dal cambio di storia i link sotto il dito non rispondono:
+             cintura e bretelle contro il click fantasma */
+          useEffect(() => {
+            setLocked(true);
+            const timer = window.setTimeout(() => setLocked(false), 450);
+            return () => window.clearTimeout(timer);
+          }, [slide, isOpen]);
+
           useEffect(() => {
             if (!isOpen || slide === lastSlide) return;
             const timer = window.setTimeout(next, slide === 0 ? 7600 : 9000);
@@ -1277,6 +1288,13 @@
 
           if (!isOpen) return null;
 
+          /* Il passaggio di storia avviene sul CLICK, non sul pointerup. Prima `next()` girava
+             al pointerup: React ridisegnava subito la storia 2, e il click che il browser
+             spedisce dopo (sul telefono, nel punto toccato) cadeva sulla scheda di un
+             progetto che adesso stava li' sotto il dito — e il tap «avanti» apriva Bike2Work
+             o Recastello in una scheda nuova. Il click arriva a un solo elemento, e dopo di
+             lui niente piu' tocchi fantasma. Lo swipe resta sul pointerup e si mangia il
+             click che segue. */
           const handlePointerUp = (event) => {
             const start = pointerStart.current;
             pointerStart.current = null;
@@ -1284,9 +1302,13 @@
             const deltaX = event.clientX - start.x;
             const deltaY = event.clientY - start.y;
             if (Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY)) {
+              swiped.current = true;
               deltaX < 0 ? next() : previous();
-              return;
             }
+          };
+          const handleTap = (event) => {
+            if (swiped.current) { swiped.current = false; return; }
+            if (event.target.closest('button, a, .story-press-strip')) return;
             const bounds = event.currentTarget.getBoundingClientRect();
             event.clientX < bounds.left + bounds.width / 2 ? previous() : next();
           };
@@ -1299,8 +1321,9 @@
                 aria-modal="true"
                 aria-label={`Presentazione di Michele Merelli, storia ${slide + 1} di 5`}
                 style={{ backgroundColor: colors[slide], color: textColors[slide] }}
-                onPointerDown={(event) => { pointerStart.current = { x: event.clientX, y: event.clientY }; }}
+                onPointerDown={(event) => { swiped.current = false; pointerStart.current = { x: event.clientX, y: event.clientY }; }}
                 onPointerUp={handlePointerUp}
+                onClick={handleTap}
                 onPointerCancel={() => { pointerStart.current = null; }}
               >
                 <div className="story-grain"></div>
@@ -1315,7 +1338,7 @@
                   <button className="story-close" onClick={onClose} aria-label="Chiudi la presentazione"><X size={23} /></button>
                 </div>
 
-                <div key={slide} className="story-body">
+                <div key={slide} className={`story-body${locked ? ' is-locked' : ''}`}>
                   {slide === 0 && (
                     <>
                       <div className="story-art-stage" aria-hidden="true"><img className="story-art" src="./assets/illustrazioni-micmer.svg#michele" alt="" /></div>
