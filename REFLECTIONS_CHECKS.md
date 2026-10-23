@@ -98,3 +98,10 @@
 - Browser at491px: 35 trend cards, 14 annual points each, 3 insight cards, 0 period selectors; body scroll width491/491px. Method collapsed. Touching2026 reports7 sections /4715 words and preserves all14 years. PASS.
 - Independent source check of largest adjacent tone change: 2018→2019, delta -0.371; rounded display −0.37. This is a model estimate about writing, not wellbeing.
 - `python tools/check_reflections.py` and `node --check vita/come-sto/trends.js`: PASS. Public data unchanged; only presentation, retry UX and documentation updated. Publication explicitly authorized.
+
+## 2026-10-23 · online publication verification
+- PR54 merged as26308992a3e52e4ce76f26789c681c04a0d5b7b5; GitHub Pages build status: built, no error.
+- https://micmer-git.github.io/vita/come-sto/: HTML200 (text/html), data.json200 (application/json), trends.js200, trends.css200.
+- Published JSON and local JSON are identical objects:14 years,239619 analysed words. Raw byte hashes differed only because local file has3606 Windows CRLF line endings and published file uses LF. PASS.
+- Live browser: content visible, loading/error hidden,35 charts,3 insights,14 year controls;491px body and scroll width491px. Touching2026 works. PASS.
+- Parent https://micmer-git.github.io/vita/ contains the child navigation link. Main, published site, index navigation and operating memory aligned.
