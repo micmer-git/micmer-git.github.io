@@ -11,57 +11,34 @@
 <nav aria-label="Navigazione"><a class="home" href="../../">MICMER.</a><div class="nav-right"><a href="../">← Vita</a><a href="../cibo/">Cibo</a><a href="#metodo">Metodo</a></div></nav>
 <header><div class="eyebrow">Vita / ricordi scritti / tutti gli anni</div>
 <h1>Come <span>sto?</span></h1>
-<p class="lead">Come cambiano le parole, i temi e il tono dei miei ricordi. Tutti gli anni, uno accanto all’altro.</p>
+<p class="lead">2013–2026. Il tono, i temi e le emozioni dei miei ricordi scritti.</p>
 <div class="source-line"><span id="corpus">Lettura contestuale dei testi</span><span>LLM locale, nessun brano pubblicato</span><span id="span-label">Cronologia completa</span></div>
 </header>
 <p id="status" class="loading" role="status">Caricamento dell’analisi…</p>
 <div id="content" hidden>
+<section class="insights" aria-labelledby="changes-title"><div class="section-heading"><span class="section-number">NEL TESTO</span><h2 id="changes-title">Dove cambia di più</h2></div><div id="change-insights" class="insight-grid"></div><p class="chart-caption">Differenze fra stime annuali del modello. Copertura disomogenea; 2026 parziale.</p></section>
 <section class="panel section-anchor" id="tono" aria-labelledby="tone-title">
-<div class="panel-top"><div><div class="section-heading"><span class="section-number">01</span><h2 id="tone-title">Il tono, nel tempo</h2></div><p class="intro">La lettura contestuale distingue tono piacevole e spiacevole, anche quando convivono. La fascia mostra quanto varia fra i passaggi dello stesso anno.</p></div><span class="tag">INTERPRETAZIONE DEL TESTO</span></div>
+<div class="panel-top"><div><div class="section-heading"><span class="section-number">01</span><h2 id="tone-title">Il tono, nel tempo</h2></div><p class="intro">Media annuale e variabilità fra i passaggi. Tocca un anno per i dettagli.</p></div><span class="tag">INTERPRETAZIONE DEL TESTO</span></div>
 <div class="legend"><span><i class="swatch" style="background:#245bb1"></i>Tono medio</span><span><i class="swatch" style="background:#dbe7fa"></i>Minimo–massimo fra i passaggi</span><span><i class="swatch" style="background:#c6cbd2"></i>Quantità di testo analizzata</span></div>
 <div class="chart-scroll"><div id="tone-chart" class="timeline"></div></div>
 <div id="year-readout" class="readout" aria-live="polite">Passa su un anno, oppure usa Tab, per leggere tono, temi e copertura. Il grafico resta sempre completo.</div>
-<p class="chart-caption">La fascia non è un intervallo di confidenza. I vuoti sono assenza di dati databili, mai un valore zero. La media pesa i passaggi per numero di parole; testi più lunghi incidono di più. Il 2026 è ancora in corso.</p>
-<p class="inference">“Come sto?” è la domanda. Questi grafici descrivono come scrivo: il tono di un ricordo non misura il benessere di quel periodo.</p>
+<p class="chart-caption">Tono da −1 a +1, pesato per parole. Fascia: minimo–massimo, non confidenza. Vuoti = dati assenti.</p>
+<p class="inference">Il tono dei ricordi descrive la scrittura. Non misura il benessere di quel periodo.</p>
 </section>
 
-<section class="panel section-anchor" id="temi" aria-labelledby="topics-title">
-<div class="panel-top"><div><div class="section-heading"><span class="section-number">02</span><h2 id="topics-title">Di cosa scrivo, anno per anno</h2></div><p class="intro">Il modello riconosce il significato dei passaggi. Il colore indica la quota di sezioni in cui compare un tema; più temi possono coesistere.</p></div><div class="view-key">0% <i></i> 100%</div></div>
-<div class="chart-scroll"><div id="topic-chart" class="heatmap"></div></div>
-<p id="topic-summary" class="annual-summary"></p>
-<p class="chart-caption">Le categorie sono generali e prefissate. “Relazioni”, per esempio, non distingue persone o vicende. I riquadri tratteggiati indicano dati insufficienti.</p>
-</section>
+<section class="panel section-anchor" id="temi" aria-labelledby="topics-title"><div class="panel-top"><div><div class="section-heading"><span class="section-number">02</span><h2 id="topics-title">I temi, anno per anno</h2></div><p class="intro">Quota di sezioni in cui il modello riconosce il tema. Tutti i grafici: 0–100%.</p></div><span class="tag">9 TEMI · 14 ANNI</span></div><div id="topic-chart" class="trend-grid"></div></section>
+<section class="panel section-anchor" id="sfumature" aria-labelledby="emotions-title"><div class="panel-top"><div><div class="section-heading"><span class="section-number">03</span><h2 id="emotions-title">Le emozioni, nel tempo</h2></div><p class="intro">Quota di sezioni annotate. Più emozioni possono convivere; le percentuali non sommano a 100.</p></div><span class="tag">10 EMOZIONI · 14 ANNI</span></div><div id="emotion-chart" class="trend-grid emotion-trends"></div></section>
+<section class="panel" aria-labelledby="concepts-title"><div class="section-heading"><span class="section-number">04</span><h2 id="concepts-title">I concetti che oscillano di più</h2></div><p class="intro">Gli 8 concetti con la maggiore escursione annuale. Presenza interpretata nel contesto, scala 0–100%.</p><div id="concept-trends" class="trend-grid"></div></section>
+<section class="panel" aria-labelledby="words-title"><div class="section-heading"><span class="section-number">05</span><h2 id="words-title">Le parole che cambiano frequenza</h2></div><p class="intro">Le 8 parole con la maggiore escursione, fra quelle usate almeno 10 volte. Occorrenze per 1.000 parole; ogni grafico ha la propria scala.</p><div id="word-trends" class="trend-grid literal-trends"></div></section>
 
-<div class="two-cols">
-<section class="panel" aria-labelledby="words-title"><div class="section-heading"><span class="section-number">03</span><h2 id="words-title">Le parole che ritornano</h2></div>
-<p class="intro">Parole effettivamente presenti nei testi, scelte da un vocabolario generale ammesso. Ogni linea usa la frequenza per 1.000 parole: gli anni più scritti non pesano di più solo perché sono lunghi.</p>
-<table class="word-table"><thead><tr><th scope="col">Parola</th><th scope="col">Occorrenze</th><th scope="col">Frequenza annuale</th></tr></thead><tbody id="word-trends"></tbody></table>
-<div class="axis-note"><span class="first-year"></span><span class="last-year"></span></div>
-<p class="chart-caption">Ogni parola ha la propria scala verticale. Il punto indica la frequenza, la lacuna un anno senza testi databili.</p>
-<details class="detail"><summary>I concetti riconosciuti dal modello</summary><p>Concetti generali interpretati nel contesto, anche espressi con sinonimi. La dimensione indica in quante sezioni compaiono.</p><div id="word-field" class="keyword-field"></div></details>
-</section>
-<section class="panel" aria-labelledby="emotions-title"><div class="section-heading"><span class="section-number">04</span><h2 id="emotions-title">Le sfumature emotive</h2></div>
-<p class="intro">Presenza nel corpus completo. Emozioni espresse dalla voce narrante, interpretate nel contesto. Una stessa sezione può esprimere serenità, stanchezza e preoccupazione.</p>
-<div id="emotions"></div>
-<details class="detail"><summary>Vedi l’evoluzione di tutte le emozioni</summary><div class="chart-scroll"><div id="emotion-chart" class="heatmap"></div></div></details>
-<p class="chart-caption">Le percentuali non sommano a 100. Descrivono la presenza nei testi, non la frequenza di uno stato d’animo nella vita quotidiana.</p>
-</section>
-</div>
-
-<section class="panel" aria-labelledby="connections-title"><div class="section-heading"><span class="section-number">05</span><h2 id="connections-title">Il corpo, sullo stesso calendario</h2></div>
-<p class="intro">Ore di sport registrate e stanchezza raccontata, affiancate agli stessi anni. Due misure diverse da leggere insieme, senza dedurne una causa.</p>
+<section class="panel" aria-labelledby="connections-title"><div class="section-heading"><span class="section-number">06</span><h2 id="connections-title">Il corpo, sullo stesso calendario</h2></div>
+<p class="intro">Ore di sport registrate e stanchezza nei testi. Stessi anni, due misure diverse.</p>
 <div class="chart-scroll"><div id="body-chart" class="timeline"></div></div>
 <p class="chart-caption">Sport: registro attività e recupero storico Strava. Stanchezza: quota di sezioni annotate dal modello. Anni non registrati o senza testi restano vuoti. Il 2026 è ancora in corso.</p>
-<p class="year-note">Il tema “Nutrizione” descrive ciò di cui scrivo. L’incrocio con cibo osservato, carico, sonno e HRV richiede date più precise e una verifica della copertura; qui non viene calcolata una correlazione.</p>
+
 </section>
 
-<section class="panel yellow section-anchor" id="metodo" aria-labelledby="method-title"><div class="section-heading"><span class="section-number">06</span><h2 id="method-title">Cosa c’è dietro ai grafici</h2></div>
-<div class="method-grid"><div><h3>Una lettura, non un dizionario</h3><p id="model-note"></p><p>Il modello legge ogni passaggio completo, fino a 1.800 parole per blocco. Interpreta negazioni e contesto e restituisce tono, attivazione, emozioni, temi e concetti. Le risposte possono contenere errori: non sono una valutazione clinica né una descrizione della personalità.</p></div>
-<div><h3>Solo categorie generali</h3><p>L’output ammette esclusivamente etichette prefissate e punteggi. Nessun nome, luogo, citazione, episodio personale o testo libero viene esportato. I ricordi originali restano sul computer; gli aggregati sono comunque dati derivati da un diario personale.</p></div>
-<div><h3>La copertura conta</h3><p id="coverage-note"></p><p>Il modello analizza anche i testi senza un anno affidabile, che contribuiscono solo alle frequenze complessive. I grafici annuali richiedono almeno tre sezioni. I dati sono disomogenei e il numero di sezioni non misura quanto un anno sia stato vissuto o ricordato.</p></div>
-<div><h3>Date e limiti</h3><p>Le date provengono dalle intestazioni italiane e dai timestamp inglesi dei testi. L’anno del file viene usato solo se coerente con le date esplicite. La cronologia è automatica e non ancora verificata a mano. Il Word del 2019 è vuoto: i testi del 2013 e del 2019 sono recuperati dal PDF. Le sezioni PDF già rappresentate nei Word vengono escluse tramite confronto di sequenze di parole.</p></div></div>
-<details class="detail"><summary>Tabella annuale e copertura dei dati</summary><div class="chart-scroll"><table class="data-table"><thead><tr><th>Anno</th><th>Sezioni</th><th>Passaggi</th><th>Parole</th><th>Tono</th><th>Attivazione</th></tr></thead><tbody id="annual-table"></tbody></table></div></details>
-</section>
+<section class="panel yellow section-anchor" id="metodo" aria-labelledby="method-title"><details><summary id="method-title">Metodo, copertura e limiti</summary><div class="method-grid"><div><h3>Lettura locale</h3><p id="model-note"></p><p>Tutti i passaggi conservati, fino a 1.800 parole per blocco. Tono, emozioni e temi sono stime testuali: possono essere errati e non hanno valore clinico.</p></div><div><h3>Privacy</h3><p>Solo etichette generali e punteggi prefissati. Nessun brano, nome o episodio esportato. Gli originali restano sul computer.</p></div><div><h3>Copertura</h3><p id="coverage-note"></p><p>Almeno 3 sezioni per anno. Testi senza anno affidabile esclusi dai grafici. Le quote usano le sezioni come denominatore; non sono misure del tempo vissuto.</p></div><div><h3>Date e lettura dei grafici</h3><p>Cronologia automatica da intestazioni italiane e timestamp inglesi, non verificata a mano. PDF per integrare 2013 e 2019; duplicati Word esclusi. I vuoti interrompono le linee. Il 2026 è parziale.</p><p>I grafici mostrano tutti gli anni, senza selezione. Le variazioni confrontano stime annuali con quantità di testo diverse: nessuna relazione causale o correlazione calcolata.</p></div></div><details class="detail"><summary>Tabella annuale</summary><div class="chart-scroll"><table class="data-table"><thead><tr><th>Anno</th><th>Sezioni</th><th>Passaggi</th><th>Parole</th><th>Tono</th><th>Attivazione</th></tr></thead><tbody id="annual-table"></tbody></table></div></details></details></section>
 <footer class="footer">Vita / Come sto? · <span id="method-id"></span> · <a href="../">Torna a Vita</a></footer>
 </div>
 </main><script src="trends.js"></script></body>

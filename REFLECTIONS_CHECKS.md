@@ -73,3 +73,28 @@
 - Recovered 2019: 5 sections / 3363 words; clicking its year preserves all 14 controls. PASS.
 - Narrow app pane: body 547/547 px, timeline 477/477 px, viewBox 0 0 477 440. All 14 years fit without horizontal timeline scrolling. Desktop: body 1265/1265 px, timeline 1106/1106 px. PASS.
 - Git backup: updated existing branch and draft PR 54; no raw source/cache added. Production site unchanged. Index/generator navigation preserved; operating memory updated.
+
+## 2026-10-23 · hosting preflight
+- Local data endpoint `/vita/come-sto/data.json`: HTTP 200. Browser currently has content visible and load status hidden; reported fetch failure is not reproducible at this moment.
+- Canonical production `/vita/come-sto/`: HTTP 404 because draft PR54 is not merged. Existing Pages uses legacy main-branch root deployment; repository permits the authorized publication.
+- User explicitly requested online hosting and year-by-year/mobile visual emphasis; publishing after validation is authorized in this session.
+
+## 2026-10-23 · public export verification
+- Command: `python tools/check_reflections.py`
+- PASS: full retained-text coverage (239619 words), 14 annual aggregates including PDF 2013/2019 and English-timestamp 2023, fixed-label public schema, score bounds, no period selector, generator navigation.
+## 2026-10-23 · annual mobile visual redesign
+- Commands: `node --check vita/come-sto/trends.js`, `python tools/check_reflections.py`: PASS. Public data.json has no diff; no original diary read and no LLM rerun.
+- Mocked DOM execution at 270px: PASS, 9 theme charts, 10 emotion charts, 8 concept charts, 8 literal-word charts, 14 annual axis labels on each and 14 tone-year controls. Three computed textual change insights rendered. This checks execution/structure; real browser layout is verified separately by the parent agent.
+- Longitudinal views replace overall word/concept/emotion rankings. Topics/emotions/concepts use 0–100% scales; words use normalized annual per-1000 frequency, independent vertical scales, >=10 total occurrences. Concepts/words selected by maximum-minus-minimum annual value.
+- Method collapsed; explanatory copy shortened. Load failure has Italian retry and localhost canonical-site link. WORKFLOW.md operating memory updated.
+- Surfaces: local branch files updated, source data unchanged, index navigation preserved, published site pending parent delivery; no commit/push/publication by this agent.
+
+## 2026-10-23 · public export verification
+- Command: `python tools/check_reflections.py`
+- PASS: full retained-text coverage (239619 words), 14 annual aggregates including PDF 2013/2019 and English-timestamp 2023, fixed-label public schema, score bounds, no period selector, generator navigation.
+- 2026-10-23 mobile legibility polish: small-multiple annual ticks enlarged 10→14 SVG px, y-scale labels 9→11 SVG px; all 14 years retained. Removed unused heatColor/heatText functions. `node --check vita/come-sto/trends.js`: PASS.
+
+## 2026-10-23 · final mobile and insight prepublication checks
+- Browser at491px: 35 trend cards, 14 annual points each, 3 insight cards, 0 period selectors; body scroll width491/491px. Method collapsed. Touching2026 reports7 sections /4715 words and preserves all14 years. PASS.
+- Independent source check of largest adjacent tone change: 2018→2019, delta -0.371; rounded display −0.37. This is a model estimate about writing, not wellbeing.
+- `python tools/check_reflections.py` and `node --check vita/come-sto/trends.js`: PASS. Public data unchanged; only presentation, retry UX and documentation updated. Publication explicitly authorized.
