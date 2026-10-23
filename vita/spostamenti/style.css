@@ -72,3 +72,35 @@ footer{max-width:1280px;margin:auto;padding:2rem 4rem 4rem;border-top:1px solid 
 @media(max-width:980px){.hero{padding:2rem 2rem 6rem}.totals{grid-template-columns:repeat(3,1fr)}.story{grid-template-columns:1fr}.map-stage{height:58vh;z-index:5;padding:1.5rem 2rem;background:var(--night)}.chronicle{border-left:0;padding:4rem 3rem 8rem}.trip-list{gap:10vh}.trip{min-height:34vh}.gesture{display:none}.year-rail{display:none}.after{padding:8rem 2rem}.half-feature{grid-template-columns:1fr}.feature-grid{grid-template-columns:1fr}.method{padding:4rem 2rem;grid-template-columns:1fr;gap:3rem}footer{padding:2rem;flex-direction:column}}
 @media(max-width:600px){.hero{padding:5rem 1rem 5rem;min-height:auto}.crumbs{top:1.2rem}.totals{grid-template-columns:repeat(2,1fr);margin-top:2.5rem}.total{padding:1rem .75rem}.map-stage{height:55vh;padding:1rem}.map-head h2{font-size:2rem}.map-head>p{max-width:12ch}.legend{gap:.6rem}.legend span:first-child{display:none}.chronicle{padding:3rem 1rem 6rem}.chronicle-head{align-items:start;flex-direction:column;margin-bottom:3rem}.trip{min-height:38vh;padding-left:.3rem;padding-right:.3rem}.trip h3{font-size:3.2rem}.trip-places ul{grid-template-columns:1fr}.after{padding:6rem 1rem}.feature{padding:1.2rem}.half-feature{gap:1rem}.feature-grid{gap:.8rem}.heatmap{border-spacing:3px}.heat-cell{width:20px;height:20px}.method{padding:3rem 1rem;margin-bottom:2rem}footer{padding:1.5rem 1rem 3rem}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.trip{transition:none}}
+
+/* ---------- 23/10/2026: stesso stile della home e di /vita ----------
+   Chiaro, a quadretti, carattere pixel VT323 nei titoli, ombre nette. I colori della
+   mappa stanno tutti qui sotto: app.js non ne scrive nessuno, quindi basta riassegnare. */
+:root{
+  --night:#f8f9fa;--deep:#fff;--panel:#fff;--ink:#202124;--soft:#3c4043;--muted:#5f6368;
+  --gold:#8a5a00;--blue:#245bb1;--violet:#6b3fc7;
+  --line:rgba(32,33,36,.30);--line-strong:rgba(32,33,36,.6);--neo:4px 4px 0 0 #202124;
+  color-scheme:light;
+}
+::selection{background:#fbbc04;color:#000}
+html,body{background:#f8f9fa}
+body{background:#f8f9fa;font-family:"Plus Jakarta Sans","DM Sans",system-ui,sans-serif;
+  background-image:linear-gradient(to right,rgba(32,33,36,.075) 1px,transparent 1px),linear-gradient(to bottom,rgba(32,33,36,.075) 1px,transparent 1px);
+  background-size:24px 24px;background-repeat:repeat}
+.skip{border-radius:0}
+.crumbs,.kicker,.eyebrow,.total span,.source-note{font-family:ui-monospace,"SFMono-Regular",Menlo,monospace}
+h1,h2,h3{font-family:"VT323",ui-monospace,monospace;font-weight:400;letter-spacing:.01em}
+h1{display:inline-block;align-self:flex-start;max-width:none;text-transform:uppercase;line-height:.92;
+  font-size:clamp(3.2rem,12vw,5.6rem);background:#fff;border:3px solid #202124;box-shadow:var(--neo);padding:2px 18px 0;margin:.35em 0 .3em}
+.lede{font-family:"Plus Jakarta Sans",system-ui,sans-serif;font-weight:400;color:var(--soft)}
+.totals{background:rgba(32,33,36,.3);border-color:#202124;border-width:2px;box-shadow:var(--neo)}
+.total{background:#fff}
+.total b{font-family:"VT323",ui-monospace,monospace;font-weight:400;font-size:clamp(1.6rem,3vw,2.4rem)}
+.map-stage{background:transparent}
+.sphere{fill:#e8f0fb;stroke:#202124;stroke-width:1.2}
+.graticule{stroke:rgba(32,33,36,.12)}
+.land{fill:#fff;stroke:#9aa0a6;stroke-width:.45}
+.heat-halo{fill:rgba(251,188,4,.16)}.heat-dot{fill:rgba(251,188,4,.7);stroke:#202124}
+.route-path{stroke:#245bb1;filter:none}
+.feature{background:#fff;border:2px solid #202124;box-shadow:var(--neo)}
+.tooltip{background:#fff;color:#202124;border:2px solid #202124;border-radius:0;box-shadow:2px 2px 0 #202124}

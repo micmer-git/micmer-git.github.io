@@ -271,7 +271,7 @@ if (ran) {
       "e c'e' anche la scheda per il caso 'nessuno l'ha dichiarata'");
   } else ok(false, "window.CRUSCOTTO.info non e' esposto");
 
-  for (const r of ["2a", "1a", "3m", "sempre"]) {
+  for (const r of ["6m", "1a", "2a", "sempre"]) {
     let threw = 0, empty = [];
     try { K.setRange(r); } catch (e) { fails.push(`FAIL setRange(${r}): ${e && e.stack || e}`); }
     K.MOUNTED.forEach(([n, t]) => {
@@ -386,8 +386,10 @@ if (ran) {
       const svg = n.box._kids.find(c => c.tagName === "svg");
       if (!svg) continue;
       const kids = svg.descendants();
-      const bars = kids.filter(c => c.tagName === "rect" && c.attrs.fill === "var(--ink)" &&
-        parseFloat(c.attrs.height) === 3);
+      /* 23/10/2026: la fascia sotto il grafico non c'e' piu'. Ogni ottavo e' un trattino
+         (stroke-width 2.2) sulla scala del grafico, con il numero sopra. */
+      const bars = kids.filter(c => c.tagName === "line" && c.attrs.stroke === "var(--ink)" &&
+        parseFloat(c.attrs["stroke-width"]) === 2.2);
       if (!bars.length) continue;
       framed++;
       if (bars.length > 8) tooMany.push(`[${etichetta}] ${t.title}: ${bars.length} ottavi`);
@@ -409,12 +411,7 @@ if (ran) {
         if (/(^|[^\d])\d{2,}\.\d{3}([^\d]|$)/.test(q.textContent || ""))
           grosse.push(`[${etichetta}] ${t.title}: "${q.textContent}" non e' arrotondato alle migliaia`);
       }
-      const filetto = kids.find(c => c.tagName === "line" && c.attrs.stroke === "var(--rule)");
-      const sopra = kids.filter(c => c.tagName === "line" && c.attrs.stroke === "var(--ink)" &&
-        c.attrs.opacity === ".42" && filetto &&
-        parseFloat(c.attrs.y1) < parseFloat(filetto.attrs.y1));
-      if (sopra.length !== bars.length)
-        senzaRiga.push(`[${etichetta}] ${t.title}: ${bars.length} ottavi ma ${sopra.length} medie sul disegno`);
+      const sopra = bars;   /* le medie ora stanno solo sul disegno: una per ottavo, per costruzione */
       const [, , VW] = svg.attrs.viewBox.split(/\s+/).map(Number);
       const lab = kids.filter(c => c.tagName === "text" && c.attrs["font-weight"] === "700")
         .map(c => { const lw = (c.textContent || "").length * GLYPH * (MEAN_FS / GLYPH_FS);
@@ -430,7 +427,7 @@ if (ran) {
            barra o sotto): due a piu' di MEAN_FS di distanza non si toccano */
         if (Math.abs(lab[i].y - lab[i - 1].y) > MEAN_FS) continue;
         if (lab[i].l < lab[i - 1].r + 1)
-          spill.push(`[${etichetta}] ${t.title}: "${lab[i - 1].s}" e "${lab[i].s}" si toccano`);
+          spill.push(`[${etichetta}] ${t.title}: "${lab[i - 1].s}" e "${lab[i].s}" si toccano y=${lab[i-1].y},${lab[i].y} x=${lab[i-1].r},${lab[i].l}`);
       }
     }
     return { framed, tooMany, spill, muti, senzaRiga, grosse };
@@ -879,7 +876,7 @@ if (ran) {
       /* una corsia congelata per volta: la striscia appiccicata e' un secondo SVG
          con la sua geometria, e non verrebbe mai misurata se non ce ne fosse una */
       C.pin(C.series[0].key);
-      for (const r of ["2a", "1a", "3m", "sempre"]) {
+      for (const r of ["6m", "1a", "2a", "sempre"]) {
         try { K.setRange(r); } catch (e) { fails.push(`FAIL compatta setRange(${r}): ${e && e.stack || e}`); }
         const s = scan(`${w}px/${r}`);
         gOut.push(...s.out); gNan.push(...s.nan); gColl.push(...s.coll);
