@@ -1,0 +1,3606 @@
+{
+  "method": "contextual-it-v2",
+  "model": "Qwen3.5-9B Q4_K_M · locale",
+  "generated": "2026-10-22",
+  "minimumEntries": 3,
+  "topics": [
+    "Movimento",
+    "Recupero",
+    "Nutrizione",
+    "Lavoro e studio",
+    "Relazioni",
+    "Natura e viaggi",
+    "Creatività e cultura",
+    "Riflessione e scelte",
+    "Routine quotidiana"
+  ],
+  "emotions": [
+    "Gioia",
+    "Serenità",
+    "Gratitudine",
+    "Curiosità",
+    "Motivazione",
+    "Tristezza",
+    "Preoccupazione",
+    "Frustrazione",
+    "Rabbia",
+    "Stanchezza"
+  ],
+  "years": [
+    {
+      "period": "2013",
+      "entries": 33,
+      "passages": 33,
+      "words": 19798,
+      "valence": 0.211,
+      "activation": 0.589,
+      "tonePassages": 33,
+      "confidence": 0.83,
+      "valenceRange": [
+        -0.8,
+        0.9
+      ],
+      "topics": {
+        "Movimento": 6.1,
+        "Recupero": 6.1,
+        "Nutrizione": 9.1,
+        "Lavoro e studio": 33.3,
+        "Relazioni": 97.0,
+        "Natura e viaggi": 42.4,
+        "Creatività e cultura": 45.5,
+        "Riflessione e scelte": 69.7,
+        "Routine quotidiana": 69.7
+      },
+      "emotions": {
+        "Gioia": 78.8,
+        "Serenità": 75.8,
+        "Gratitudine": 63.6,
+        "Curiosità": 30.3,
+        "Motivazione": 12.1,
+        "Tristezza": 39.4,
+        "Preoccupazione": 42.4,
+        "Frustrazione": 54.5,
+        "Rabbia": 3.0,
+        "Stanchezza": 33.3
+      },
+      "keywords": {
+        "affetto": 78.8,
+        "desiderio": 57.6,
+        "convivialità": 45.5,
+        "calma": 42.4,
+        "fatica": 39.4,
+        "amicizia": 36.4,
+        "solitudine": 36.4,
+        "cambiamento": 33.3,
+        "futuro": 30.3,
+        "famiglia": 27.3,
+        "ricerca": 27.3,
+        "condivisione": 24.2,
+        "quotidianità": 24.2,
+        "collaborazione": 21.2,
+        "studio": 21.2,
+        "consapevolezza": 15.2,
+        "creatività": 15.2,
+        "dialogo": 15.2,
+        "dubbio": 15.2,
+        "libertà": 15.2,
+        "nostalgia": 15.2,
+        "viaggio": 15.2,
+        "attesa": 12.1,
+        "crescita": 12.1,
+        "esplorazione": 12.1,
+        "lettura": 9.1,
+        "speranza": 9.1,
+        "ascolto": 6.1,
+        "gara": 6.1,
+        "musica": 6.1,
+        "natura": 6.1,
+        "riposo": 6.1,
+        "soddisfazione": 6.1,
+        "apprendimento": 3.0,
+        "cammino": 3.0,
+        "ciclismo": 3.0,
+        "cucina": 3.0,
+        "entusiasmo": 3.0,
+        "equilibrio": 3.0,
+        "gratitudine": 3.0,
+        "lavoro": 3.0,
+        "mare": 3.0,
+        "motivazione": 3.0,
+        "movimento": 3.0,
+        "preoccupazione": 3.0,
+        "progetto": 3.0,
+        "resistenza": 3.0,
+        "scelta": 3.0,
+        "sonno": 3.0,
+        "tempo": 3.0,
+        "vicinanza": 3.0
+      },
+      "literalWords": {
+        "lavoro": {
+          "count": 8,
+          "per1000": 0.404
+        },
+        "viaggio": {
+          "count": 23,
+          "per1000": 1.162
+        },
+        "studio": {
+          "count": 10,
+          "per1000": 0.505
+        },
+        "gioia": {
+          "count": 2,
+          "per1000": 0.101
+        },
+        "tempo": {
+          "count": 36,
+          "per1000": 1.818
+        },
+        "scrittura": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "musica": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "riposo": {
+          "count": 2,
+          "per1000": 0.101
+        },
+        "mare": {
+          "count": 5,
+          "per1000": 0.253
+        },
+        "amicizia": {
+          "count": 2,
+          "per1000": 0.101
+        },
+        "lettura": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "allenamento": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "ascolto": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "gara": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "cucina": {
+          "count": 3,
+          "per1000": 0.152
+        },
+        "scelta": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "fatica": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "famiglia": {
+          "count": 6,
+          "per1000": 0.303
+        },
+        "futuro": {
+          "count": 9,
+          "per1000": 0.455
+        },
+        "corsa": {
+          "count": 2,
+          "per1000": 0.101
+        },
+        "condivisione": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "attesa": {
+          "count": 10,
+          "per1000": 0.505
+        },
+        "speranza": {
+          "count": 2,
+          "per1000": 0.101
+        },
+        "obiettivo": {
+          "count": 2,
+          "per1000": 0.101
+        },
+        "tristezza": {
+          "count": 2,
+          "per1000": 0.101
+        },
+        "sonno": {
+          "count": 7,
+          "per1000": 0.354
+        },
+        "dubbio": {
+          "count": 3,
+          "per1000": 0.152
+        },
+        "quotidianità": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "entusiasmo": {
+          "count": 2,
+          "per1000": 0.101
+        },
+        "cambiamento": {
+          "count": 2,
+          "per1000": 0.101
+        },
+        "equilibrio": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "desiderio": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "calma": {
+          "count": 2,
+          "per1000": 0.101
+        },
+        "bellezza": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "nostalgia": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "dialogo": {
+          "count": 2,
+          "per1000": 0.101
+        },
+        "montagna": {
+          "count": 2,
+          "per1000": 0.101
+        },
+        "libertà": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "consapevolezza": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "cammino": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "ricerca": {
+          "count": 1,
+          "per1000": 0.051
+        }
+      }
+    },
+    {
+      "period": "2014",
+      "entries": 37,
+      "passages": 37,
+      "words": 22977,
+      "valence": 0.067,
+      "activation": 0.627,
+      "tonePassages": 37,
+      "confidence": 0.83,
+      "valenceRange": [
+        -0.8,
+        0.8
+      ],
+      "topics": {
+        "Movimento": 2.7,
+        "Recupero": 5.4,
+        "Nutrizione": 8.1,
+        "Lavoro e studio": 51.4,
+        "Relazioni": 94.6,
+        "Natura e viaggi": 27.0,
+        "Creatività e cultura": 27.0,
+        "Riflessione e scelte": 81.1,
+        "Routine quotidiana": 70.3
+      },
+      "emotions": {
+        "Gioia": 45.9,
+        "Serenità": 75.7,
+        "Gratitudine": 40.5,
+        "Curiosità": 32.4,
+        "Motivazione": 16.2,
+        "Tristezza": 51.4,
+        "Preoccupazione": 54.1,
+        "Frustrazione": 67.6,
+        "Rabbia": 0.0,
+        "Stanchezza": 35.1
+      },
+      "keywords": {
+        "solitudine": 64.9,
+        "desiderio": 48.6,
+        "cambiamento": 45.9,
+        "futuro": 45.9,
+        "amicizia": 43.2,
+        "convivialità": 40.5,
+        "fatica": 37.8,
+        "affetto": 35.1,
+        "calma": 27.0,
+        "nostalgia": 27.0,
+        "condivisione": 24.3,
+        "dubbio": 24.3,
+        "quotidianità": 24.3,
+        "studio": 24.3,
+        "famiglia": 21.6,
+        "viaggio": 21.6,
+        "collaborazione": 18.9,
+        "musica": 16.2,
+        "ricerca": 16.2,
+        "speranza": 13.5,
+        "crescita": 10.8,
+        "lettura": 10.8,
+        "scrittura": 10.8,
+        "ascolto": 8.1,
+        "dialogo": 8.1,
+        "esplorazione": 8.1,
+        "scelta": 8.1,
+        "tempo": 8.1,
+        "apprendimento": 5.4,
+        "consapevolezza": 5.4,
+        "curiosità": 5.4,
+        "equilibrio": 5.4,
+        "gratitudine": 5.4,
+        "libertà": 5.4,
+        "attesa": 2.7,
+        "bellezza": 2.7,
+        "cammino": 2.7,
+        "creatività": 2.7,
+        "entusiasmo": 2.7,
+        "frustrazione": 2.7,
+        "lavoro": 2.7,
+        "mare": 2.7,
+        "montagna": 2.7,
+        "natura": 2.7,
+        "nuoto": 2.7,
+        "preoccupazione": 2.7,
+        "progetto": 2.7,
+        "soddisfazione": 2.7
+      },
+      "literalWords": {
+        "tempo": {
+          "count": 53,
+          "per1000": 2.307
+        },
+        "affetto": {
+          "count": 1,
+          "per1000": 0.044
+        },
+        "tristezza": {
+          "count": 5,
+          "per1000": 0.218
+        },
+        "studio": {
+          "count": 21,
+          "per1000": 0.914
+        },
+        "futuro": {
+          "count": 9,
+          "per1000": 0.392
+        },
+        "equilibrio": {
+          "count": 2,
+          "per1000": 0.087
+        },
+        "gara": {
+          "count": 6,
+          "per1000": 0.261
+        },
+        "viaggio": {
+          "count": 10,
+          "per1000": 0.435
+        },
+        "corsa": {
+          "count": 5,
+          "per1000": 0.218
+        },
+        "attesa": {
+          "count": 4,
+          "per1000": 0.174
+        },
+        "solitudine": {
+          "count": 2,
+          "per1000": 0.087
+        },
+        "amicizia": {
+          "count": 2,
+          "per1000": 0.087
+        },
+        "famiglia": {
+          "count": 7,
+          "per1000": 0.305
+        },
+        "fiducia": {
+          "count": 1,
+          "per1000": 0.044
+        },
+        "cucina": {
+          "count": 3,
+          "per1000": 0.131
+        },
+        "sonno": {
+          "count": 3,
+          "per1000": 0.131
+        },
+        "bellezza": {
+          "count": 3,
+          "per1000": 0.131
+        },
+        "scelta": {
+          "count": 2,
+          "per1000": 0.087
+        },
+        "cammino": {
+          "count": 1,
+          "per1000": 0.044
+        },
+        "natura": {
+          "count": 2,
+          "per1000": 0.087
+        },
+        "speranza": {
+          "count": 3,
+          "per1000": 0.131
+        },
+        "musica": {
+          "count": 10,
+          "per1000": 0.435
+        },
+        "lavoro": {
+          "count": 4,
+          "per1000": 0.174
+        },
+        "libertà": {
+          "count": 1,
+          "per1000": 0.044
+        },
+        "cambiamento": {
+          "count": 2,
+          "per1000": 0.087
+        },
+        "esplorazione": {
+          "count": 1,
+          "per1000": 0.044
+        },
+        "mare": {
+          "count": 3,
+          "per1000": 0.131
+        },
+        "ricerca": {
+          "count": 3,
+          "per1000": 0.131
+        },
+        "dialogo": {
+          "count": 1,
+          "per1000": 0.044
+        },
+        "fatica": {
+          "count": 1,
+          "per1000": 0.044
+        },
+        "soddisfazione": {
+          "count": 1,
+          "per1000": 0.044
+        },
+        "calma": {
+          "count": 1,
+          "per1000": 0.044
+        },
+        "scrittura": {
+          "count": 1,
+          "per1000": 0.044
+        },
+        "vicinanza": {
+          "count": 1,
+          "per1000": 0.044
+        },
+        "riposo": {
+          "count": 1,
+          "per1000": 0.044
+        }
+      }
+    },
+    {
+      "period": "2015",
+      "entries": 54,
+      "passages": 57,
+      "words": 45099,
+      "valence": -0.001,
+      "activation": 0.652,
+      "tonePassages": 57,
+      "confidence": 0.81,
+      "valenceRange": [
+        -0.9,
+        0.6
+      ],
+      "topics": {
+        "Movimento": 3.7,
+        "Recupero": 5.6,
+        "Nutrizione": 5.6,
+        "Lavoro e studio": 42.6,
+        "Relazioni": 90.7,
+        "Natura e viaggi": 40.7,
+        "Creatività e cultura": 44.4,
+        "Riflessione e scelte": 72.2,
+        "Routine quotidiana": 74.1
+      },
+      "emotions": {
+        "Gioia": 48.1,
+        "Serenità": 66.7,
+        "Gratitudine": 37.0,
+        "Curiosità": 27.8,
+        "Motivazione": 5.6,
+        "Tristezza": 40.7,
+        "Preoccupazione": 50.0,
+        "Frustrazione": 68.5,
+        "Rabbia": 1.9,
+        "Stanchezza": 66.7
+      },
+      "keywords": {
+        "fatica": 64.8,
+        "solitudine": 57.4,
+        "cambiamento": 50.0,
+        "amicizia": 48.1,
+        "desiderio": 44.4,
+        "calma": 38.9,
+        "studio": 33.3,
+        "futuro": 31.5,
+        "viaggio": 29.6,
+        "convivialità": 27.8,
+        "quotidianità": 27.8,
+        "condivisione": 20.4,
+        "musica": 20.4,
+        "famiglia": 18.5,
+        "collaborazione": 16.7,
+        "dubbio": 16.7,
+        "esplorazione": 16.7,
+        "affetto": 14.8,
+        "lettura": 14.8,
+        "nostalgia": 14.8,
+        "dialogo": 13.0,
+        "lavoro": 13.0,
+        "libertà": 13.0,
+        "scrittura": 13.0,
+        "tempo": 13.0,
+        "attesa": 11.1,
+        "ricerca": 11.1,
+        "riposo": 11.1,
+        "cammino": 9.3,
+        "scelta": 9.3,
+        "consapevolezza": 7.4,
+        "crescita": 5.6,
+        "cucina": 5.6,
+        "speranza": 5.6,
+        "autonomia": 3.7,
+        "bellezza": 3.7,
+        "creatività": 3.7,
+        "entusiasmo": 3.7,
+        "equilibrio": 3.7,
+        "frustrazione": 3.7,
+        "gioia": 3.7,
+        "progetto": 3.7,
+        "sonno": 3.7,
+        "apprendimento": 1.9,
+        "ascolto": 1.9,
+        "energia": 1.9,
+        "mare": 1.9,
+        "montagna": 1.9,
+        "motivazione": 1.9,
+        "natura": 1.9,
+        "preoccupazione": 1.9
+      },
+      "literalWords": {
+        "gioia": {
+          "count": 1,
+          "per1000": 0.022
+        },
+        "mare": {
+          "count": 22,
+          "per1000": 0.488
+        },
+        "ricerca": {
+          "count": 5,
+          "per1000": 0.111
+        },
+        "amicizia": {
+          "count": 2,
+          "per1000": 0.044
+        },
+        "studio": {
+          "count": 26,
+          "per1000": 0.577
+        },
+        "famiglia": {
+          "count": 6,
+          "per1000": 0.133
+        },
+        "tempo": {
+          "count": 93,
+          "per1000": 2.062
+        },
+        "ascolto": {
+          "count": 6,
+          "per1000": 0.133
+        },
+        "abitudine": {
+          "count": 1,
+          "per1000": 0.022
+        },
+        "lavoro": {
+          "count": 22,
+          "per1000": 0.488
+        },
+        "viaggio": {
+          "count": 37,
+          "per1000": 0.82
+        },
+        "solitudine": {
+          "count": 2,
+          "per1000": 0.044
+        },
+        "attesa": {
+          "count": 12,
+          "per1000": 0.266
+        },
+        "sonno": {
+          "count": 9,
+          "per1000": 0.2
+        },
+        "montagna": {
+          "count": 9,
+          "per1000": 0.2
+        },
+        "futuro": {
+          "count": 12,
+          "per1000": 0.266
+        },
+        "progetto": {
+          "count": 2,
+          "per1000": 0.044
+        },
+        "tristezza": {
+          "count": 7,
+          "per1000": 0.155
+        },
+        "riposo": {
+          "count": 5,
+          "per1000": 0.111
+        },
+        "desiderio": {
+          "count": 1,
+          "per1000": 0.022
+        },
+        "corsa": {
+          "count": 8,
+          "per1000": 0.177
+        },
+        "musica": {
+          "count": 21,
+          "per1000": 0.466
+        },
+        "fatica": {
+          "count": 11,
+          "per1000": 0.244
+        },
+        "bellezza": {
+          "count": 2,
+          "per1000": 0.044
+        },
+        "preoccupazione": {
+          "count": 3,
+          "per1000": 0.067
+        },
+        "collaborazione": {
+          "count": 1,
+          "per1000": 0.022
+        },
+        "libertà": {
+          "count": 6,
+          "per1000": 0.133
+        },
+        "gara": {
+          "count": 9,
+          "per1000": 0.2
+        },
+        "obiettivo": {
+          "count": 3,
+          "per1000": 0.067
+        },
+        "cambiamento": {
+          "count": 2,
+          "per1000": 0.044
+        },
+        "vicinanza": {
+          "count": 3,
+          "per1000": 0.067
+        },
+        "dialogo": {
+          "count": 4,
+          "per1000": 0.089
+        },
+        "affetto": {
+          "count": 1,
+          "per1000": 0.022
+        },
+        "scrittura": {
+          "count": 2,
+          "per1000": 0.044
+        },
+        "lettura": {
+          "count": 3,
+          "per1000": 0.067
+        },
+        "allenamento": {
+          "count": 3,
+          "per1000": 0.067
+        },
+        "scelta": {
+          "count": 4,
+          "per1000": 0.089
+        },
+        "entusiasmo": {
+          "count": 1,
+          "per1000": 0.022
+        },
+        "fiducia": {
+          "count": 1,
+          "per1000": 0.022
+        },
+        "speranza": {
+          "count": 2,
+          "per1000": 0.044
+        },
+        "equilibrio": {
+          "count": 1,
+          "per1000": 0.022
+        },
+        "calma": {
+          "count": 2,
+          "per1000": 0.044
+        },
+        "cucina": {
+          "count": 3,
+          "per1000": 0.067
+        },
+        "dubbio": {
+          "count": 2,
+          "per1000": 0.044
+        },
+        "soddisfazione": {
+          "count": 1,
+          "per1000": 0.022
+        },
+        "rabbia": {
+          "count": 1,
+          "per1000": 0.022
+        },
+        "esplorazione": {
+          "count": 1,
+          "per1000": 0.022
+        },
+        "curiosità": {
+          "count": 1,
+          "per1000": 0.022
+        },
+        "natura": {
+          "count": 1,
+          "per1000": 0.022
+        },
+        "alimentazione": {
+          "count": 1,
+          "per1000": 0.022
+        }
+      }
+    },
+    {
+      "period": "2016",
+      "entries": 23,
+      "passages": 23,
+      "words": 17716,
+      "valence": -0.082,
+      "activation": 0.585,
+      "tonePassages": 22,
+      "confidence": 0.81,
+      "valenceRange": [
+        -0.7,
+        0.6
+      ],
+      "topics": {
+        "Movimento": 8.7,
+        "Recupero": 8.7,
+        "Nutrizione": 0.0,
+        "Lavoro e studio": 65.2,
+        "Relazioni": 82.6,
+        "Natura e viaggi": 47.8,
+        "Creatività e cultura": 21.7,
+        "Riflessione e scelte": 73.9,
+        "Routine quotidiana": 78.3
+      },
+      "emotions": {
+        "Gioia": 30.4,
+        "Serenità": 65.2,
+        "Gratitudine": 47.8,
+        "Curiosità": 21.7,
+        "Motivazione": 0.0,
+        "Tristezza": 65.2,
+        "Preoccupazione": 73.9,
+        "Frustrazione": 65.2,
+        "Rabbia": 0.0,
+        "Stanchezza": 43.5
+      },
+      "keywords": {
+        "solitudine": 78.3,
+        "amicizia": 56.5,
+        "cambiamento": 56.5,
+        "futuro": 56.5,
+        "fatica": 43.5,
+        "studio": 43.5,
+        "convivialità": 39.1,
+        "famiglia": 39.1,
+        "nostalgia": 34.8,
+        "viaggio": 30.4,
+        "calma": 26.1,
+        "crescita": 21.7,
+        "desiderio": 21.7,
+        "quotidianità": 21.7,
+        "ricerca": 17.4,
+        "riposo": 17.4,
+        "collaborazione": 13.0,
+        "esplorazione": 13.0,
+        "lavoro": 13.0,
+        "apprendimento": 8.7,
+        "dubbio": 8.7,
+        "libertà": 8.7,
+        "musica": 8.7,
+        "affetto": 4.3,
+        "appetito": 4.3,
+        "autonomia": 4.3,
+        "bellezza": 4.3,
+        "condivisione": 4.3,
+        "frustrazione": 4.3,
+        "gara": 4.3,
+        "lettura": 4.3,
+        "montagna": 4.3,
+        "movimento": 4.3,
+        "progetto": 4.3,
+        "scelta": 4.3,
+        "speranza": 4.3,
+        "tempo": 4.3
+      },
+      "literalWords": {
+        "tempo": {
+          "count": 41,
+          "per1000": 2.314
+        },
+        "studio": {
+          "count": 8,
+          "per1000": 0.452
+        },
+        "famiglia": {
+          "count": 8,
+          "per1000": 0.452
+        },
+        "condivisione": {
+          "count": 1,
+          "per1000": 0.056
+        },
+        "corsa": {
+          "count": 5,
+          "per1000": 0.282
+        },
+        "preoccupazione": {
+          "count": 2,
+          "per1000": 0.113
+        },
+        "consapevolezza": {
+          "count": 3,
+          "per1000": 0.169
+        },
+        "lavoro": {
+          "count": 5,
+          "per1000": 0.282
+        },
+        "attesa": {
+          "count": 3,
+          "per1000": 0.169
+        },
+        "gara": {
+          "count": 8,
+          "per1000": 0.452
+        },
+        "fatica": {
+          "count": 8,
+          "per1000": 0.452
+        },
+        "futuro": {
+          "count": 11,
+          "per1000": 0.621
+        },
+        "equilibrio": {
+          "count": 1,
+          "per1000": 0.056
+        },
+        "speranza": {
+          "count": 3,
+          "per1000": 0.169
+        },
+        "viaggio": {
+          "count": 7,
+          "per1000": 0.395
+        },
+        "lettura": {
+          "count": 1,
+          "per1000": 0.056
+        },
+        "scrittura": {
+          "count": 1,
+          "per1000": 0.056
+        },
+        "fiducia": {
+          "count": 2,
+          "per1000": 0.113
+        },
+        "resistenza": {
+          "count": 1,
+          "per1000": 0.056
+        },
+        "calma": {
+          "count": 1,
+          "per1000": 0.056
+        },
+        "ricerca": {
+          "count": 8,
+          "per1000": 0.452
+        },
+        "apprendimento": {
+          "count": 1,
+          "per1000": 0.056
+        },
+        "libertà": {
+          "count": 2,
+          "per1000": 0.113
+        },
+        "riposo": {
+          "count": 3,
+          "per1000": 0.169
+        },
+        "dubbio": {
+          "count": 2,
+          "per1000": 0.113
+        },
+        "dialogo": {
+          "count": 1,
+          "per1000": 0.056
+        },
+        "ascolto": {
+          "count": 2,
+          "per1000": 0.113
+        },
+        "rabbia": {
+          "count": 1,
+          "per1000": 0.056
+        },
+        "cambiamento": {
+          "count": 2,
+          "per1000": 0.113
+        },
+        "mare": {
+          "count": 4,
+          "per1000": 0.226
+        },
+        "bellezza": {
+          "count": 2,
+          "per1000": 0.113
+        },
+        "tristezza": {
+          "count": 3,
+          "per1000": 0.169
+        },
+        "amicizia": {
+          "count": 3,
+          "per1000": 0.169
+        },
+        "musica": {
+          "count": 2,
+          "per1000": 0.113
+        },
+        "obiettivo": {
+          "count": 1,
+          "per1000": 0.056
+        },
+        "affetto": {
+          "count": 1,
+          "per1000": 0.056
+        }
+      }
+    },
+    {
+      "period": "2017",
+      "entries": 23,
+      "passages": 24,
+      "words": 17059,
+      "valence": 0.014,
+      "activation": 0.63,
+      "tonePassages": 24,
+      "confidence": 0.82,
+      "valenceRange": [
+        -0.7,
+        0.6
+      ],
+      "topics": {
+        "Movimento": 21.7,
+        "Recupero": 0.0,
+        "Nutrizione": 0.0,
+        "Lavoro e studio": 30.4,
+        "Relazioni": 91.3,
+        "Natura e viaggi": 47.8,
+        "Creatività e cultura": 43.5,
+        "Riflessione e scelte": 82.6,
+        "Routine quotidiana": 73.9
+      },
+      "emotions": {
+        "Gioia": 43.5,
+        "Serenità": 78.3,
+        "Gratitudine": 56.5,
+        "Curiosità": 43.5,
+        "Motivazione": 8.7,
+        "Tristezza": 56.5,
+        "Preoccupazione": 56.5,
+        "Frustrazione": 60.9,
+        "Rabbia": 4.3,
+        "Stanchezza": 43.5
+      },
+      "keywords": {
+        "solitudine": 73.9,
+        "fatica": 65.2,
+        "amicizia": 56.5,
+        "cambiamento": 47.8,
+        "convivialità": 43.5,
+        "desiderio": 34.8,
+        "futuro": 30.4,
+        "quotidianità": 30.4,
+        "affetto": 26.1,
+        "speranza": 26.1,
+        "calma": 21.7,
+        "famiglia": 21.7,
+        "viaggio": 21.7,
+        "libertà": 17.4,
+        "nostalgia": 17.4,
+        "ricerca": 17.4,
+        "riposo": 17.4,
+        "collaborazione": 13.0,
+        "dialogo": 13.0,
+        "dubbio": 13.0,
+        "gioia": 13.0,
+        "soddisfazione": 13.0,
+        "studio": 13.0,
+        "attesa": 8.7,
+        "ciclismo": 8.7,
+        "condivisione": 8.7,
+        "consapevolezza": 8.7,
+        "crescita": 8.7,
+        "esplorazione": 8.7,
+        "lavoro": 8.7,
+        "mare": 8.7,
+        "progetto": 8.7,
+        "tempo": 8.7,
+        "allenamento": 4.3,
+        "ascolto": 4.3,
+        "autonomia": 4.3,
+        "bellezza": 4.3,
+        "cammino": 4.3,
+        "entusiasmo": 4.3,
+        "frustrazione": 4.3,
+        "lettura": 4.3,
+        "montagna": 4.3,
+        "movimento": 4.3,
+        "musica": 4.3,
+        "natura": 4.3,
+        "preoccupazione": 4.3,
+        "scrittura": 4.3
+      },
+      "literalWords": {
+        "viaggio": {
+          "count": 7,
+          "per1000": 0.41
+        },
+        "famiglia": {
+          "count": 5,
+          "per1000": 0.293
+        },
+        "futuro": {
+          "count": 7,
+          "per1000": 0.41
+        },
+        "corsa": {
+          "count": 2,
+          "per1000": 0.117
+        },
+        "tempo": {
+          "count": 47,
+          "per1000": 2.755
+        },
+        "lavoro": {
+          "count": 9,
+          "per1000": 0.528
+        },
+        "quotidianità": {
+          "count": 1,
+          "per1000": 0.059
+        },
+        "studio": {
+          "count": 3,
+          "per1000": 0.176
+        },
+        "riposo": {
+          "count": 3,
+          "per1000": 0.176
+        },
+        "attesa": {
+          "count": 3,
+          "per1000": 0.176
+        },
+        "preoccupazione": {
+          "count": 2,
+          "per1000": 0.117
+        },
+        "fiducia": {
+          "count": 1,
+          "per1000": 0.059
+        },
+        "musica": {
+          "count": 8,
+          "per1000": 0.469
+        },
+        "tristezza": {
+          "count": 2,
+          "per1000": 0.117
+        },
+        "amicizia": {
+          "count": 3,
+          "per1000": 0.176
+        },
+        "ciclismo": {
+          "count": 3,
+          "per1000": 0.176
+        },
+        "sonno": {
+          "count": 5,
+          "per1000": 0.293
+        },
+        "libertà": {
+          "count": 2,
+          "per1000": 0.117
+        },
+        "ricerca": {
+          "count": 7,
+          "per1000": 0.41
+        },
+        "allenamento": {
+          "count": 1,
+          "per1000": 0.059
+        },
+        "natura": {
+          "count": 1,
+          "per1000": 0.059
+        },
+        "progetto": {
+          "count": 2,
+          "per1000": 0.117
+        },
+        "consapevolezza": {
+          "count": 1,
+          "per1000": 0.059
+        },
+        "solitudine": {
+          "count": 2,
+          "per1000": 0.117
+        },
+        "resistenza": {
+          "count": 1,
+          "per1000": 0.059
+        },
+        "desiderio": {
+          "count": 1,
+          "per1000": 0.059
+        },
+        "affetto": {
+          "count": 2,
+          "per1000": 0.117
+        },
+        "fatica": {
+          "count": 3,
+          "per1000": 0.176
+        },
+        "scelta": {
+          "count": 2,
+          "per1000": 0.117
+        },
+        "gara": {
+          "count": 2,
+          "per1000": 0.117
+        },
+        "rabbia": {
+          "count": 3,
+          "per1000": 0.176
+        },
+        "mare": {
+          "count": 12,
+          "per1000": 0.703
+        },
+        "bellezza": {
+          "count": 1,
+          "per1000": 0.059
+        },
+        "dubbio": {
+          "count": 1,
+          "per1000": 0.059
+        },
+        "soddisfazione": {
+          "count": 2,
+          "per1000": 0.117
+        },
+        "montagna": {
+          "count": 3,
+          "per1000": 0.176
+        },
+        "dialogo": {
+          "count": 1,
+          "per1000": 0.059
+        },
+        "cambiamento": {
+          "count": 1,
+          "per1000": 0.059
+        }
+      }
+    },
+    {
+      "period": "2018",
+      "entries": 20,
+      "passages": 20,
+      "words": 11587,
+      "valence": 0.3,
+      "activation": 0.661,
+      "tonePassages": 20,
+      "confidence": 0.82,
+      "valenceRange": [
+        -0.7,
+        0.85
+      ],
+      "topics": {
+        "Movimento": 10.0,
+        "Recupero": 0.0,
+        "Nutrizione": 0.0,
+        "Lavoro e studio": 55.0,
+        "Relazioni": 85.0,
+        "Natura e viaggi": 65.0,
+        "Creatività e cultura": 30.0,
+        "Riflessione e scelte": 50.0,
+        "Routine quotidiana": 70.0
+      },
+      "emotions": {
+        "Gioia": 65.0,
+        "Serenità": 75.0,
+        "Gratitudine": 55.0,
+        "Curiosità": 45.0,
+        "Motivazione": 10.0,
+        "Tristezza": 45.0,
+        "Preoccupazione": 40.0,
+        "Frustrazione": 50.0,
+        "Rabbia": 0.0,
+        "Stanchezza": 25.0
+      },
+      "keywords": {
+        "futuro": 70.0,
+        "amicizia": 65.0,
+        "convivialità": 55.0,
+        "cambiamento": 50.0,
+        "ricerca": 50.0,
+        "desiderio": 45.0,
+        "fatica": 45.0,
+        "solitudine": 35.0,
+        "calma": 30.0,
+        "libertà": 30.0,
+        "condivisione": 25.0,
+        "esplorazione": 25.0,
+        "famiglia": 25.0,
+        "nostalgia": 25.0,
+        "viaggio": 25.0,
+        "musica": 20.0,
+        "dubbio": 15.0,
+        "cammino": 10.0,
+        "consapevolezza": 10.0,
+        "crescita": 10.0,
+        "gioia": 10.0,
+        "lettura": 10.0,
+        "quotidianità": 10.0,
+        "scelta": 10.0,
+        "speranza": 10.0,
+        "studio": 10.0,
+        "affetto": 5.0,
+        "apprendimento": 5.0,
+        "ascolto": 5.0,
+        "attesa": 5.0,
+        "autonomia": 5.0,
+        "bellezza": 5.0,
+        "equilibrio": 5.0,
+        "gara": 5.0,
+        "lavoro": 5.0,
+        "natura": 5.0,
+        "resistenza": 5.0,
+        "riposo": 5.0
+      },
+      "literalWords": {
+        "amicizia": {
+          "count": 6,
+          "per1000": 0.518
+        },
+        "cambiamento": {
+          "count": 2,
+          "per1000": 0.173
+        },
+        "tempo": {
+          "count": 34,
+          "per1000": 2.934
+        },
+        "futuro": {
+          "count": 15,
+          "per1000": 1.295
+        },
+        "musica": {
+          "count": 5,
+          "per1000": 0.432
+        },
+        "viaggio": {
+          "count": 5,
+          "per1000": 0.432
+        },
+        "lavoro": {
+          "count": 11,
+          "per1000": 0.949
+        },
+        "speranza": {
+          "count": 1,
+          "per1000": 0.086
+        },
+        "obiettivo": {
+          "count": 3,
+          "per1000": 0.259
+        },
+        "gara": {
+          "count": 1,
+          "per1000": 0.086
+        },
+        "studio": {
+          "count": 1,
+          "per1000": 0.086
+        },
+        "ricerca": {
+          "count": 7,
+          "per1000": 0.604
+        },
+        "scrittura": {
+          "count": 2,
+          "per1000": 0.173
+        },
+        "bellezza": {
+          "count": 2,
+          "per1000": 0.173
+        },
+        "vicinanza": {
+          "count": 1,
+          "per1000": 0.086
+        },
+        "progetto": {
+          "count": 1,
+          "per1000": 0.086
+        },
+        "fatica": {
+          "count": 2,
+          "per1000": 0.173
+        },
+        "mare": {
+          "count": 2,
+          "per1000": 0.173
+        },
+        "montagna": {
+          "count": 2,
+          "per1000": 0.173
+        },
+        "dialogo": {
+          "count": 1,
+          "per1000": 0.086
+        },
+        "scelta": {
+          "count": 1,
+          "per1000": 0.086
+        },
+        "fiducia": {
+          "count": 1,
+          "per1000": 0.086
+        },
+        "soddisfazione": {
+          "count": 1,
+          "per1000": 0.086
+        },
+        "entusiasmo": {
+          "count": 1,
+          "per1000": 0.086
+        },
+        "ciclismo": {
+          "count": 1,
+          "per1000": 0.086
+        },
+        "motivazione": {
+          "count": 1,
+          "per1000": 0.086
+        },
+        "attesa": {
+          "count": 3,
+          "per1000": 0.259
+        },
+        "famiglia": {
+          "count": 1,
+          "per1000": 0.086
+        },
+        "libertà": {
+          "count": 1,
+          "per1000": 0.086
+        },
+        "crescita": {
+          "count": 1,
+          "per1000": 0.086
+        },
+        "corsa": {
+          "count": 1,
+          "per1000": 0.086
+        }
+      }
+    },
+    {
+      "period": "2019",
+      "entries": 5,
+      "passages": 5,
+      "words": 3363,
+      "valence": -0.071,
+      "activation": 0.682,
+      "tonePassages": 5,
+      "confidence": 0.79,
+      "valenceRange": [
+        -0.4,
+        0.1
+      ],
+      "topics": {
+        "Movimento": 0.0,
+        "Recupero": 0.0,
+        "Nutrizione": 0.0,
+        "Lavoro e studio": 40.0,
+        "Relazioni": 100.0,
+        "Natura e viaggi": 40.0,
+        "Creatività e cultura": 20.0,
+        "Riflessione e scelte": 100.0,
+        "Routine quotidiana": 100.0
+      },
+      "emotions": {
+        "Gioia": 20.0,
+        "Serenità": 80.0,
+        "Gratitudine": 20.0,
+        "Curiosità": 0.0,
+        "Motivazione": 20.0,
+        "Tristezza": 80.0,
+        "Preoccupazione": 100.0,
+        "Frustrazione": 80.0,
+        "Rabbia": 0.0,
+        "Stanchezza": 60.0
+      },
+      "keywords": {
+        "amicizia": 80.0,
+        "famiglia": 80.0,
+        "solitudine": 80.0,
+        "studio": 80.0,
+        "desiderio": 40.0,
+        "futuro": 40.0,
+        "lavoro": 40.0,
+        "musica": 40.0,
+        "viaggio": 40.0,
+        "affetto": 20.0,
+        "attesa": 20.0,
+        "calma": 20.0,
+        "cambiamento": 20.0,
+        "collaborazione": 20.0,
+        "convivialità": 20.0,
+        "creatività": 20.0,
+        "dialogo": 20.0,
+        "dubbio": 20.0,
+        "fatica": 20.0,
+        "lettura": 20.0,
+        "mare": 20.0,
+        "progetto": 20.0,
+        "quotidianità": 20.0
+      },
+      "literalWords": {
+        "tempo": {
+          "count": 10,
+          "per1000": 2.974
+        },
+        "musica": {
+          "count": 4,
+          "per1000": 1.189
+        },
+        "futuro": {
+          "count": 1,
+          "per1000": 0.297
+        },
+        "energia": {
+          "count": 2,
+          "per1000": 0.595
+        },
+        "tristezza": {
+          "count": 1,
+          "per1000": 0.297
+        },
+        "viaggio": {
+          "count": 1,
+          "per1000": 0.297
+        },
+        "speranza": {
+          "count": 1,
+          "per1000": 0.297
+        },
+        "bellezza": {
+          "count": 1,
+          "per1000": 0.297
+        },
+        "scrittura": {
+          "count": 1,
+          "per1000": 0.297
+        }
+      }
+    },
+    {
+      "period": "2020",
+      "entries": 13,
+      "passages": 14,
+      "words": 9971,
+      "valence": -0.196,
+      "activation": 0.57,
+      "tonePassages": 14,
+      "confidence": 0.84,
+      "valenceRange": [
+        -0.9,
+        0.8
+      ],
+      "topics": {
+        "Movimento": 23.1,
+        "Recupero": 30.8,
+        "Nutrizione": 7.7,
+        "Lavoro e studio": 7.7,
+        "Relazioni": 92.3,
+        "Natura e viaggi": 15.4,
+        "Creatività e cultura": 15.4,
+        "Riflessione e scelte": 100.0,
+        "Routine quotidiana": 61.5
+      },
+      "emotions": {
+        "Gioia": 23.1,
+        "Serenità": 61.5,
+        "Gratitudine": 38.5,
+        "Curiosità": 15.4,
+        "Motivazione": 15.4,
+        "Tristezza": 84.6,
+        "Preoccupazione": 69.2,
+        "Frustrazione": 76.9,
+        "Rabbia": 7.7,
+        "Stanchezza": 46.2
+      },
+      "keywords": {
+        "calma": 69.2,
+        "desiderio": 69.2,
+        "solitudine": 61.5,
+        "cambiamento": 53.8,
+        "fatica": 53.8,
+        "nostalgia": 46.2,
+        "speranza": 38.5,
+        "amicizia": 30.8,
+        "dubbio": 30.8,
+        "futuro": 30.8,
+        "affetto": 23.1,
+        "cammino": 23.1,
+        "condivisione": 23.1,
+        "libertà": 23.1,
+        "attesa": 15.4,
+        "convivialità": 15.4,
+        "famiglia": 15.4,
+        "gratitudine": 15.4,
+        "natura": 15.4,
+        "ricerca": 15.4,
+        "vicinanza": 15.4,
+        "alimentazione": 7.7,
+        "appetito": 7.7,
+        "ascolto": 7.7,
+        "bellezza": 7.7,
+        "collaborazione": 7.7,
+        "corsa": 7.7,
+        "entusiasmo": 7.7,
+        "equilibrio": 7.7,
+        "fiducia": 7.7,
+        "gioia": 7.7,
+        "lettura": 7.7,
+        "motivazione": 7.7,
+        "musica": 7.7,
+        "preoccupazione": 7.7,
+        "quotidianità": 7.7,
+        "recupero": 7.7,
+        "riposo": 7.7,
+        "scelta": 7.7,
+        "soddisfazione": 7.7
+      },
+      "literalWords": {
+        "motivazione": {
+          "count": 4,
+          "per1000": 0.401
+        },
+        "allenamento": {
+          "count": 1,
+          "per1000": 0.1
+        },
+        "natura": {
+          "count": 2,
+          "per1000": 0.201
+        },
+        "attesa": {
+          "count": 3,
+          "per1000": 0.301
+        },
+        "preoccupazione": {
+          "count": 1,
+          "per1000": 0.1
+        },
+        "lettura": {
+          "count": 2,
+          "per1000": 0.201
+        },
+        "abitudine": {
+          "count": 1,
+          "per1000": 0.1
+        },
+        "lavoro": {
+          "count": 10,
+          "per1000": 1.003
+        },
+        "equilibrio": {
+          "count": 2,
+          "per1000": 0.201
+        },
+        "cambiamento": {
+          "count": 2,
+          "per1000": 0.201
+        },
+        "quotidianità": {
+          "count": 1,
+          "per1000": 0.1
+        },
+        "solitudine": {
+          "count": 2,
+          "per1000": 0.201
+        },
+        "amicizia": {
+          "count": 4,
+          "per1000": 0.401
+        },
+        "scelta": {
+          "count": 3,
+          "per1000": 0.301
+        },
+        "libertà": {
+          "count": 3,
+          "per1000": 0.301
+        },
+        "mare": {
+          "count": 4,
+          "per1000": 0.401
+        },
+        "fatica": {
+          "count": 4,
+          "per1000": 0.401
+        },
+        "bellezza": {
+          "count": 3,
+          "per1000": 0.301
+        },
+        "tempo": {
+          "count": 18,
+          "per1000": 1.805
+        },
+        "sonno": {
+          "count": 3,
+          "per1000": 0.301
+        },
+        "riposo": {
+          "count": 1,
+          "per1000": 0.1
+        },
+        "musica": {
+          "count": 1,
+          "per1000": 0.1
+        },
+        "gara": {
+          "count": 1,
+          "per1000": 0.1
+        },
+        "appetito": {
+          "count": 1,
+          "per1000": 0.1
+        },
+        "vicinanza": {
+          "count": 1,
+          "per1000": 0.1
+        },
+        "corsa": {
+          "count": 1,
+          "per1000": 0.1
+        },
+        "speranza": {
+          "count": 4,
+          "per1000": 0.401
+        },
+        "fiducia": {
+          "count": 1,
+          "per1000": 0.1
+        },
+        "calma": {
+          "count": 2,
+          "per1000": 0.201
+        },
+        "gioia": {
+          "count": 1,
+          "per1000": 0.1
+        },
+        "soddisfazione": {
+          "count": 1,
+          "per1000": 0.1
+        },
+        "ascolto": {
+          "count": 1,
+          "per1000": 0.1
+        },
+        "famiglia": {
+          "count": 2,
+          "per1000": 0.201
+        },
+        "montagna": {
+          "count": 1,
+          "per1000": 0.1
+        },
+        "energia": {
+          "count": 2,
+          "per1000": 0.201
+        },
+        "tristezza": {
+          "count": 1,
+          "per1000": 0.1
+        },
+        "obiettivo": {
+          "count": 1,
+          "per1000": 0.1
+        },
+        "consapevolezza": {
+          "count": 2,
+          "per1000": 0.201
+        },
+        "futuro": {
+          "count": 2,
+          "per1000": 0.201
+        }
+      }
+    },
+    {
+      "period": "2021",
+      "entries": 17,
+      "passages": 20,
+      "words": 20443,
+      "valence": 0.134,
+      "activation": 0.647,
+      "tonePassages": 20,
+      "confidence": 0.82,
+      "valenceRange": [
+        -0.9,
+        0.8
+      ],
+      "topics": {
+        "Movimento": 47.1,
+        "Recupero": 23.5,
+        "Nutrizione": 11.8,
+        "Lavoro e studio": 17.6,
+        "Relazioni": 88.2,
+        "Natura e viaggi": 47.1,
+        "Creatività e cultura": 17.6,
+        "Riflessione e scelte": 94.1,
+        "Routine quotidiana": 58.8
+      },
+      "emotions": {
+        "Gioia": 41.2,
+        "Serenità": 70.6,
+        "Gratitudine": 47.1,
+        "Curiosità": 23.5,
+        "Motivazione": 17.6,
+        "Tristezza": 41.2,
+        "Preoccupazione": 70.6,
+        "Frustrazione": 82.4,
+        "Rabbia": 0.0,
+        "Stanchezza": 70.6
+      },
+      "keywords": {
+        "solitudine": 76.5,
+        "fatica": 70.6,
+        "cambiamento": 58.8,
+        "desiderio": 52.9,
+        "calma": 47.1,
+        "convivialità": 47.1,
+        "amicizia": 41.2,
+        "allenamento": 35.3,
+        "futuro": 35.3,
+        "resistenza": 29.4,
+        "affetto": 23.5,
+        "corsa": 23.5,
+        "gara": 23.5,
+        "ricerca": 23.5,
+        "viaggio": 23.5,
+        "collaborazione": 17.6,
+        "libertà": 17.6,
+        "cucina": 11.8,
+        "dubbio": 11.8,
+        "esplorazione": 11.8,
+        "lavoro": 11.8,
+        "nostalgia": 11.8,
+        "preoccupazione": 11.8,
+        "riposo": 11.8,
+        "speranza": 11.8,
+        "attesa": 5.9,
+        "bellezza": 5.9,
+        "cammino": 5.9,
+        "ciclismo": 5.9,
+        "condivisione": 5.9,
+        "crescita": 5.9,
+        "energia": 5.9,
+        "entusiasmo": 5.9,
+        "equilibrio": 5.9,
+        "famiglia": 5.9,
+        "frustrazione": 5.9,
+        "mare": 5.9,
+        "montagna": 5.9,
+        "movimento": 5.9,
+        "musica": 5.9,
+        "natura": 5.9,
+        "nuoto": 5.9,
+        "quotidianità": 5.9,
+        "studio": 5.9
+      },
+      "literalWords": {
+        "lavoro": {
+          "count": 28,
+          "per1000": 1.37
+        },
+        "libertà": {
+          "count": 2,
+          "per1000": 0.098
+        },
+        "futuro": {
+          "count": 6,
+          "per1000": 0.293
+        },
+        "equilibrio": {
+          "count": 2,
+          "per1000": 0.098
+        },
+        "fiducia": {
+          "count": 2,
+          "per1000": 0.098
+        },
+        "tempo": {
+          "count": 36,
+          "per1000": 1.761
+        },
+        "consapevolezza": {
+          "count": 1,
+          "per1000": 0.049
+        },
+        "montagna": {
+          "count": 3,
+          "per1000": 0.147
+        },
+        "gara": {
+          "count": 22,
+          "per1000": 1.076
+        },
+        "mare": {
+          "count": 18,
+          "per1000": 0.88
+        },
+        "musica": {
+          "count": 8,
+          "per1000": 0.391
+        },
+        "famiglia": {
+          "count": 2,
+          "per1000": 0.098
+        },
+        "motivazione": {
+          "count": 2,
+          "per1000": 0.098
+        },
+        "tristezza": {
+          "count": 2,
+          "per1000": 0.098
+        },
+        "corsa": {
+          "count": 20,
+          "per1000": 0.978
+        },
+        "attesa": {
+          "count": 7,
+          "per1000": 0.342
+        },
+        "viaggio": {
+          "count": 18,
+          "per1000": 0.88
+        },
+        "dubbio": {
+          "count": 1,
+          "per1000": 0.049
+        },
+        "calma": {
+          "count": 3,
+          "per1000": 0.147
+        },
+        "ricerca": {
+          "count": 4,
+          "per1000": 0.196
+        },
+        "preoccupazione": {
+          "count": 1,
+          "per1000": 0.049
+        },
+        "cammino": {
+          "count": 1,
+          "per1000": 0.049
+        },
+        "obiettivo": {
+          "count": 4,
+          "per1000": 0.196
+        },
+        "condivisione": {
+          "count": 2,
+          "per1000": 0.098
+        },
+        "allenamento": {
+          "count": 6,
+          "per1000": 0.293
+        },
+        "bellezza": {
+          "count": 2,
+          "per1000": 0.098
+        },
+        "cambiamento": {
+          "count": 1,
+          "per1000": 0.049
+        },
+        "soddisfazione": {
+          "count": 1,
+          "per1000": 0.049
+        },
+        "nuoto": {
+          "count": 4,
+          "per1000": 0.196
+        },
+        "scelta": {
+          "count": 1,
+          "per1000": 0.049
+        },
+        "riposo": {
+          "count": 1,
+          "per1000": 0.049
+        },
+        "fatica": {
+          "count": 2,
+          "per1000": 0.098
+        },
+        "energia": {
+          "count": 1,
+          "per1000": 0.049
+        },
+        "esplorazione": {
+          "count": 1,
+          "per1000": 0.049
+        },
+        "collaborazione": {
+          "count": 1,
+          "per1000": 0.049
+        },
+        "quotidianità": {
+          "count": 2,
+          "per1000": 0.098
+        },
+        "speranza": {
+          "count": 1,
+          "per1000": 0.049
+        },
+        "progetto": {
+          "count": 1,
+          "per1000": 0.049
+        }
+      }
+    },
+    {
+      "period": "2022",
+      "entries": 22,
+      "passages": 23,
+      "words": 14022,
+      "valence": -0.001,
+      "activation": 0.533,
+      "tonePassages": 22,
+      "confidence": 0.78,
+      "valenceRange": [
+        -0.6,
+        0.8
+      ],
+      "topics": {
+        "Movimento": 36.4,
+        "Recupero": 4.5,
+        "Nutrizione": 9.1,
+        "Lavoro e studio": 9.1,
+        "Relazioni": 81.8,
+        "Natura e viaggi": 27.3,
+        "Creatività e cultura": 27.3,
+        "Riflessione e scelte": 95.5,
+        "Routine quotidiana": 77.3
+      },
+      "emotions": {
+        "Gioia": 40.9,
+        "Serenità": 72.7,
+        "Gratitudine": 45.5,
+        "Curiosità": 22.7,
+        "Motivazione": 13.6,
+        "Tristezza": 54.5,
+        "Preoccupazione": 50.0,
+        "Frustrazione": 68.2,
+        "Rabbia": 0.0,
+        "Stanchezza": 45.5
+      },
+      "keywords": {
+        "cambiamento": 72.7,
+        "futuro": 72.7,
+        "solitudine": 68.2,
+        "calma": 40.9,
+        "desiderio": 40.9,
+        "fatica": 40.9,
+        "amicizia": 31.8,
+        "nostalgia": 31.8,
+        "bellezza": 27.3,
+        "convivialità": 27.3,
+        "dubbio": 27.3,
+        "condivisione": 22.7,
+        "consapevolezza": 18.2,
+        "famiglia": 18.2,
+        "libertà": 18.2,
+        "ricerca": 18.2,
+        "scelta": 18.2,
+        "cammino": 13.6,
+        "esplorazione": 13.6,
+        "ascolto": 9.1,
+        "attesa": 9.1,
+        "crescita": 9.1,
+        "dialogo": 9.1,
+        "motivazione": 9.1,
+        "progetto": 9.1,
+        "rabbia": 9.1,
+        "resistenza": 9.1,
+        "viaggio": 9.1,
+        "affetto": 4.5,
+        "alimentazione": 4.5,
+        "autonomia": 4.5,
+        "collaborazione": 4.5,
+        "corsa": 4.5,
+        "entusiasmo": 4.5,
+        "equilibrio": 4.5,
+        "nuoto": 4.5,
+        "preoccupazione": 4.5,
+        "quotidianità": 4.5,
+        "riposo": 4.5,
+        "speranza": 4.5,
+        "studio": 4.5,
+        "vicinanza": 4.5
+      },
+      "literalWords": {
+        "corsa": {
+          "count": 11,
+          "per1000": 0.784
+        },
+        "solitudine": {
+          "count": 10,
+          "per1000": 0.713
+        },
+        "motivazione": {
+          "count": 2,
+          "per1000": 0.143
+        },
+        "futuro": {
+          "count": 16,
+          "per1000": 1.141
+        },
+        "famiglia": {
+          "count": 14,
+          "per1000": 0.998
+        },
+        "lavoro": {
+          "count": 19,
+          "per1000": 1.355
+        },
+        "tristezza": {
+          "count": 5,
+          "per1000": 0.357
+        },
+        "cucina": {
+          "count": 1,
+          "per1000": 0.071
+        },
+        "musica": {
+          "count": 5,
+          "per1000": 0.357
+        },
+        "ricerca": {
+          "count": 1,
+          "per1000": 0.071
+        },
+        "speranza": {
+          "count": 2,
+          "per1000": 0.143
+        },
+        "crescita": {
+          "count": 2,
+          "per1000": 0.143
+        },
+        "tempo": {
+          "count": 15,
+          "per1000": 1.07
+        },
+        "attesa": {
+          "count": 1,
+          "per1000": 0.071
+        },
+        "viaggio": {
+          "count": 11,
+          "per1000": 0.784
+        },
+        "mare": {
+          "count": 3,
+          "per1000": 0.214
+        },
+        "equilibrio": {
+          "count": 2,
+          "per1000": 0.143
+        },
+        "fatica": {
+          "count": 8,
+          "per1000": 0.571
+        },
+        "allenamento": {
+          "count": 2,
+          "per1000": 0.143
+        },
+        "autonomia": {
+          "count": 1,
+          "per1000": 0.071
+        },
+        "montagna": {
+          "count": 11,
+          "per1000": 0.784
+        },
+        "nuoto": {
+          "count": 1,
+          "per1000": 0.071
+        },
+        "libertà": {
+          "count": 6,
+          "per1000": 0.428
+        },
+        "esplorazione": {
+          "count": 2,
+          "per1000": 0.143
+        },
+        "lettura": {
+          "count": 1,
+          "per1000": 0.071
+        },
+        "preoccupazione": {
+          "count": 2,
+          "per1000": 0.143
+        },
+        "cambiamento": {
+          "count": 1,
+          "per1000": 0.071
+        },
+        "calma": {
+          "count": 1,
+          "per1000": 0.071
+        },
+        "bellezza": {
+          "count": 2,
+          "per1000": 0.143
+        },
+        "alimentazione": {
+          "count": 3,
+          "per1000": 0.214
+        },
+        "gara": {
+          "count": 1,
+          "per1000": 0.071
+        },
+        "collaborazione": {
+          "count": 1,
+          "per1000": 0.071
+        },
+        "consapevolezza": {
+          "count": 1,
+          "per1000": 0.071
+        },
+        "frustrazione": {
+          "count": 1,
+          "per1000": 0.071
+        },
+        "amicizia": {
+          "count": 1,
+          "per1000": 0.071
+        },
+        "sonno": {
+          "count": 1,
+          "per1000": 0.071
+        }
+      }
+    },
+    {
+      "period": "2023",
+      "entries": 20,
+      "passages": 20,
+      "words": 13222,
+      "valence": 0.008,
+      "activation": 0.567,
+      "tonePassages": 20,
+      "confidence": 0.84,
+      "valenceRange": [
+        -0.6,
+        0.6
+      ],
+      "topics": {
+        "Movimento": 60.0,
+        "Recupero": 10.0,
+        "Nutrizione": 10.0,
+        "Lavoro e studio": 40.0,
+        "Relazioni": 85.0,
+        "Natura e viaggi": 20.0,
+        "Creatività e cultura": 15.0,
+        "Riflessione e scelte": 90.0,
+        "Routine quotidiana": 75.0
+      },
+      "emotions": {
+        "Gioia": 35.0,
+        "Serenità": 70.0,
+        "Gratitudine": 35.0,
+        "Curiosità": 15.0,
+        "Motivazione": 15.0,
+        "Tristezza": 40.0,
+        "Preoccupazione": 55.0,
+        "Frustrazione": 80.0,
+        "Rabbia": 0.0,
+        "Stanchezza": 70.0
+      },
+      "keywords": {
+        "solitudine": 90.0,
+        "cambiamento": 55.0,
+        "futuro": 55.0,
+        "fatica": 50.0,
+        "desiderio": 35.0,
+        "scelta": 35.0,
+        "calma": 30.0,
+        "allenamento": 25.0,
+        "crescita": 25.0,
+        "dubbio": 25.0,
+        "equilibrio": 25.0,
+        "convivialità": 20.0,
+        "quotidianità": 20.0,
+        "ricerca": 20.0,
+        "viaggio": 20.0,
+        "amicizia": 15.0,
+        "ciclismo": 15.0,
+        "consapevolezza": 15.0,
+        "lavoro": 15.0,
+        "nostalgia": 15.0,
+        "collaborazione": 10.0,
+        "corsa": 10.0,
+        "dialogo": 10.0,
+        "famiglia": 10.0,
+        "gara": 10.0,
+        "libertà": 10.0,
+        "motivazione": 10.0,
+        "progetto": 10.0,
+        "rabbia": 10.0,
+        "resistenza": 10.0,
+        "speranza": 10.0,
+        "alimentazione": 5.0,
+        "attesa": 5.0,
+        "autonomia": 5.0,
+        "bellezza": 5.0,
+        "condivisione": 5.0,
+        "fiducia": 5.0,
+        "frustrazione": 5.0,
+        "lettura": 5.0,
+        "mare": 5.0,
+        "montagna": 5.0,
+        "musica": 5.0,
+        "studio": 5.0
+      },
+      "literalWords": {
+        "famiglia": {
+          "count": 11,
+          "per1000": 0.832
+        },
+        "gara": {
+          "count": 11,
+          "per1000": 0.832
+        },
+        "solitudine": {
+          "count": 10,
+          "per1000": 0.756
+        },
+        "lavoro": {
+          "count": 53,
+          "per1000": 4.008
+        },
+        "tempo": {
+          "count": 24,
+          "per1000": 1.815
+        },
+        "futuro": {
+          "count": 6,
+          "per1000": 0.454
+        },
+        "montagna": {
+          "count": 8,
+          "per1000": 0.605
+        },
+        "equilibrio": {
+          "count": 8,
+          "per1000": 0.605
+        },
+        "tristezza": {
+          "count": 1,
+          "per1000": 0.076
+        },
+        "musica": {
+          "count": 1,
+          "per1000": 0.076
+        },
+        "dubbio": {
+          "count": 1,
+          "per1000": 0.076
+        },
+        "corsa": {
+          "count": 17,
+          "per1000": 1.286
+        },
+        "fatica": {
+          "count": 4,
+          "per1000": 0.303
+        },
+        "progetto": {
+          "count": 1,
+          "per1000": 0.076
+        },
+        "nuoto": {
+          "count": 1,
+          "per1000": 0.076
+        },
+        "collaborazione": {
+          "count": 1,
+          "per1000": 0.076
+        },
+        "motivazione": {
+          "count": 3,
+          "per1000": 0.227
+        },
+        "quotidianità": {
+          "count": 2,
+          "per1000": 0.151
+        },
+        "soddisfazione": {
+          "count": 1,
+          "per1000": 0.076
+        },
+        "libertà": {
+          "count": 1,
+          "per1000": 0.076
+        },
+        "viaggio": {
+          "count": 13,
+          "per1000": 0.983
+        },
+        "cambiamento": {
+          "count": 1,
+          "per1000": 0.076
+        },
+        "rabbia": {
+          "count": 2,
+          "per1000": 0.151
+        },
+        "riposo": {
+          "count": 2,
+          "per1000": 0.151
+        },
+        "curiosità": {
+          "count": 1,
+          "per1000": 0.076
+        },
+        "obiettivo": {
+          "count": 3,
+          "per1000": 0.227
+        },
+        "ciclismo": {
+          "count": 1,
+          "per1000": 0.076
+        },
+        "lettura": {
+          "count": 2,
+          "per1000": 0.151
+        },
+        "attesa": {
+          "count": 1,
+          "per1000": 0.076
+        },
+        "crescita": {
+          "count": 2,
+          "per1000": 0.151
+        },
+        "amicizia": {
+          "count": 1,
+          "per1000": 0.076
+        },
+        "fiducia": {
+          "count": 1,
+          "per1000": 0.076
+        },
+        "desiderio": {
+          "count": 1,
+          "per1000": 0.076
+        },
+        "allenamento": {
+          "count": 1,
+          "per1000": 0.076
+        }
+      }
+    },
+    {
+      "period": "2024",
+      "entries": 10,
+      "passages": 18,
+      "words": 19661,
+      "valence": 0.207,
+      "activation": 0.576,
+      "tonePassages": 18,
+      "confidence": 0.82,
+      "valenceRange": [
+        -0.4,
+        0.85
+      ],
+      "topics": {
+        "Movimento": 50.0,
+        "Recupero": 10.0,
+        "Nutrizione": 30.0,
+        "Lavoro e studio": 30.0,
+        "Relazioni": 50.0,
+        "Natura e viaggi": 60.0,
+        "Creatività e cultura": 20.0,
+        "Riflessione e scelte": 100.0,
+        "Routine quotidiana": 90.0
+      },
+      "emotions": {
+        "Gioia": 30.0,
+        "Serenità": 100.0,
+        "Gratitudine": 70.0,
+        "Curiosità": 30.0,
+        "Motivazione": 20.0,
+        "Tristezza": 40.0,
+        "Preoccupazione": 50.0,
+        "Frustrazione": 80.0,
+        "Rabbia": 0.0,
+        "Stanchezza": 50.0
+      },
+      "keywords": {
+        "calma": 90.0,
+        "solitudine": 90.0,
+        "fatica": 70.0,
+        "cambiamento": 60.0,
+        "desiderio": 60.0,
+        "consapevolezza": 50.0,
+        "convivialità": 50.0,
+        "ricerca": 50.0,
+        "futuro": 40.0,
+        "viaggio": 40.0,
+        "libertà": 30.0,
+        "natura": 30.0,
+        "progetto": 30.0,
+        "resistenza": 30.0,
+        "allenamento": 20.0,
+        "amicizia": 20.0,
+        "attesa": 20.0,
+        "ciclismo": 20.0,
+        "collaborazione": 20.0,
+        "corsa": 20.0,
+        "crescita": 20.0,
+        "equilibrio": 20.0,
+        "famiglia": 20.0,
+        "lavoro": 20.0,
+        "quotidianità": 20.0,
+        "scelta": 20.0,
+        "soddisfazione": 20.0,
+        "studio": 20.0,
+        "autonomia": 10.0,
+        "bellezza": 10.0,
+        "fiducia": 10.0,
+        "mare": 10.0,
+        "motivazione": 10.0,
+        "obiettivo": 10.0,
+        "recupero": 10.0,
+        "riposo": 10.0,
+        "tempo": 10.0
+      },
+      "literalWords": {
+        "tempo": {
+          "count": 39,
+          "per1000": 1.984
+        },
+        "fatica": {
+          "count": 5,
+          "per1000": 0.254
+        },
+        "corsa": {
+          "count": 15,
+          "per1000": 0.763
+        },
+        "viaggio": {
+          "count": 20,
+          "per1000": 1.017
+        },
+        "lavoro": {
+          "count": 27,
+          "per1000": 1.373
+        },
+        "gara": {
+          "count": 15,
+          "per1000": 0.763
+        },
+        "musica": {
+          "count": 2,
+          "per1000": 0.102
+        },
+        "allenamento": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "fiducia": {
+          "count": 2,
+          "per1000": 0.102
+        },
+        "alimentazione": {
+          "count": 3,
+          "per1000": 0.153
+        },
+        "gratitudine": {
+          "count": 2,
+          "per1000": 0.102
+        },
+        "desiderio": {
+          "count": 3,
+          "per1000": 0.153
+        },
+        "libertà": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "crescita": {
+          "count": 5,
+          "per1000": 0.254
+        },
+        "solitudine": {
+          "count": 5,
+          "per1000": 0.254
+        },
+        "motivazione": {
+          "count": 4,
+          "per1000": 0.203
+        },
+        "abitudine": {
+          "count": 2,
+          "per1000": 0.102
+        },
+        "montagna": {
+          "count": 5,
+          "per1000": 0.254
+        },
+        "famiglia": {
+          "count": 7,
+          "per1000": 0.356
+        },
+        "equilibrio": {
+          "count": 6,
+          "per1000": 0.305
+        },
+        "soddisfazione": {
+          "count": 2,
+          "per1000": 0.102
+        },
+        "futuro": {
+          "count": 18,
+          "per1000": 0.916
+        },
+        "scelta": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "progetto": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "creatività": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "attesa": {
+          "count": 6,
+          "per1000": 0.305
+        },
+        "bellezza": {
+          "count": 6,
+          "per1000": 0.305
+        },
+        "calma": {
+          "count": 5,
+          "per1000": 0.254
+        },
+        "mare": {
+          "count": 4,
+          "per1000": 0.203
+        },
+        "quotidianità": {
+          "count": 3,
+          "per1000": 0.153
+        },
+        "obiettivo": {
+          "count": 3,
+          "per1000": 0.153
+        },
+        "natura": {
+          "count": 2,
+          "per1000": 0.102
+        },
+        "rabbia": {
+          "count": 2,
+          "per1000": 0.102
+        },
+        "entusiasmo": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "esplorazione": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "convivialità": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "sonno": {
+          "count": 2,
+          "per1000": 0.102
+        },
+        "cammino": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "scrittura": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "cucina": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "energia": {
+          "count": 1,
+          "per1000": 0.051
+        }
+      }
+    },
+    {
+      "period": "2025",
+      "entries": 31,
+      "passages": 33,
+      "words": 19680,
+      "valence": 0.325,
+      "activation": 0.625,
+      "tonePassages": 33,
+      "confidence": 0.82,
+      "valenceRange": [
+        -0.7,
+        0.85
+      ],
+      "topics": {
+        "Movimento": 67.7,
+        "Recupero": 9.7,
+        "Nutrizione": 16.1,
+        "Lavoro e studio": 19.4,
+        "Relazioni": 83.9,
+        "Natura e viaggi": 29.0,
+        "Creatività e cultura": 19.4,
+        "Riflessione e scelte": 83.9,
+        "Routine quotidiana": 77.4
+      },
+      "emotions": {
+        "Gioia": 54.8,
+        "Serenità": 83.9,
+        "Gratitudine": 51.6,
+        "Curiosità": 38.7,
+        "Motivazione": 25.8,
+        "Tristezza": 16.1,
+        "Preoccupazione": 41.9,
+        "Frustrazione": 51.6,
+        "Rabbia": 3.2,
+        "Stanchezza": 38.7
+      },
+      "keywords": {
+        "cambiamento": 54.8,
+        "solitudine": 48.4,
+        "futuro": 45.2,
+        "calma": 41.9,
+        "desiderio": 38.7,
+        "fatica": 38.7,
+        "allenamento": 35.5,
+        "libertà": 35.5,
+        "convivialità": 29.0,
+        "bellezza": 22.6,
+        "viaggio": 22.6,
+        "condivisione": 19.4,
+        "corsa": 19.4,
+        "amicizia": 16.1,
+        "consapevolezza": 16.1,
+        "cucina": 16.1,
+        "nostalgia": 16.1,
+        "recupero": 16.1,
+        "ciclismo": 12.9,
+        "energia": 12.9,
+        "esplorazione": 12.9,
+        "famiglia": 12.9,
+        "lettura": 12.9,
+        "mare": 12.9,
+        "quotidianità": 12.9,
+        "resistenza": 12.9,
+        "studio": 12.9,
+        "affetto": 9.7,
+        "attesa": 9.7,
+        "cammino": 9.7,
+        "collaborazione": 9.7,
+        "crescita": 9.7,
+        "equilibrio": 9.7,
+        "gratitudine": 9.7,
+        "musica": 9.7,
+        "ricerca": 9.7,
+        "dubbio": 6.5,
+        "montagna": 6.5,
+        "nuoto": 6.5,
+        "progetto": 6.5,
+        "riposo": 6.5,
+        "scelta": 6.5,
+        "soddisfazione": 6.5,
+        "speranza": 6.5,
+        "appetito": 3.2,
+        "apprendimento": 3.2,
+        "ascolto": 3.2,
+        "autonomia": 3.2,
+        "dialogo": 3.2,
+        "entusiasmo": 3.2,
+        "lavoro": 3.2,
+        "movimento": 3.2,
+        "rabbia": 3.2,
+        "scrittura": 3.2,
+        "vicinanza": 3.2
+      },
+      "literalWords": {
+        "allenamento": {
+          "count": 3,
+          "per1000": 0.152
+        },
+        "tempo": {
+          "count": 27,
+          "per1000": 1.372
+        },
+        "futuro": {
+          "count": 18,
+          "per1000": 0.915
+        },
+        "solitudine": {
+          "count": 14,
+          "per1000": 0.711
+        },
+        "lavoro": {
+          "count": 18,
+          "per1000": 0.915
+        },
+        "crescita": {
+          "count": 5,
+          "per1000": 0.254
+        },
+        "corsa": {
+          "count": 20,
+          "per1000": 1.016
+        },
+        "attesa": {
+          "count": 12,
+          "per1000": 0.61
+        },
+        "libertà": {
+          "count": 7,
+          "per1000": 0.356
+        },
+        "natura": {
+          "count": 3,
+          "per1000": 0.152
+        },
+        "mare": {
+          "count": 4,
+          "per1000": 0.203
+        },
+        "equilibrio": {
+          "count": 11,
+          "per1000": 0.559
+        },
+        "gara": {
+          "count": 22,
+          "per1000": 1.118
+        },
+        "famiglia": {
+          "count": 5,
+          "per1000": 0.254
+        },
+        "obiettivo": {
+          "count": 5,
+          "per1000": 0.254
+        },
+        "amicizia": {
+          "count": 4,
+          "per1000": 0.203
+        },
+        "esplorazione": {
+          "count": 2,
+          "per1000": 0.102
+        },
+        "lettura": {
+          "count": 7,
+          "per1000": 0.356
+        },
+        "scrittura": {
+          "count": 2,
+          "per1000": 0.102
+        },
+        "calma": {
+          "count": 3,
+          "per1000": 0.152
+        },
+        "soddisfazione": {
+          "count": 3,
+          "per1000": 0.152
+        },
+        "desiderio": {
+          "count": 2,
+          "per1000": 0.102
+        },
+        "studio": {
+          "count": 4,
+          "per1000": 0.203
+        },
+        "energia": {
+          "count": 3,
+          "per1000": 0.152
+        },
+        "gratitudine": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "motivazione": {
+          "count": 3,
+          "per1000": 0.152
+        },
+        "montagna": {
+          "count": 3,
+          "per1000": 0.152
+        },
+        "nuoto": {
+          "count": 5,
+          "per1000": 0.254
+        },
+        "viaggio": {
+          "count": 14,
+          "per1000": 0.711
+        },
+        "progetto": {
+          "count": 2,
+          "per1000": 0.102
+        },
+        "consapevolezza": {
+          "count": 2,
+          "per1000": 0.102
+        },
+        "cammino": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "musica": {
+          "count": 3,
+          "per1000": 0.152
+        },
+        "cucina": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "condivisione": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "bellezza": {
+          "count": 3,
+          "per1000": 0.152
+        },
+        "fatica": {
+          "count": 4,
+          "per1000": 0.203
+        },
+        "dialogo": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "movimento": {
+          "count": 2,
+          "per1000": 0.102
+        },
+        "rabbia": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "gioia": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "sonno": {
+          "count": 1,
+          "per1000": 0.051
+        },
+        "quotidianità": {
+          "count": 1,
+          "per1000": 0.051
+        }
+      }
+    },
+    {
+      "period": "2026",
+      "entries": 7,
+      "passages": 7,
+      "words": 4715,
+      "valence": 0.165,
+      "activation": 0.589,
+      "tonePassages": 7,
+      "confidence": 0.85,
+      "valenceRange": [
+        -0.4,
+        0.6
+      ],
+      "topics": {
+        "Movimento": 71.4,
+        "Recupero": 0.0,
+        "Nutrizione": 0.0,
+        "Lavoro e studio": 71.4,
+        "Relazioni": 100.0,
+        "Natura e viaggi": 0.0,
+        "Creatività e cultura": 14.3,
+        "Riflessione e scelte": 85.7,
+        "Routine quotidiana": 71.4
+      },
+      "emotions": {
+        "Gioia": 28.6,
+        "Serenità": 85.7,
+        "Gratitudine": 42.9,
+        "Curiosità": 57.1,
+        "Motivazione": 42.9,
+        "Tristezza": 0.0,
+        "Preoccupazione": 57.1,
+        "Frustrazione": 57.1,
+        "Rabbia": 0.0,
+        "Stanchezza": 57.1
+      },
+      "keywords": {
+        "futuro": 71.4,
+        "allenamento": 57.1,
+        "cambiamento": 57.1,
+        "famiglia": 57.1,
+        "calma": 42.9,
+        "collaborazione": 42.9,
+        "equilibrio": 42.9,
+        "progetto": 42.9,
+        "ciclismo": 28.6,
+        "condivisione": 28.6,
+        "convivialità": 28.6,
+        "corsa": 28.6,
+        "crescita": 28.6,
+        "desiderio": 28.6,
+        "natura": 28.6,
+        "resistenza": 28.6,
+        "amicizia": 14.3,
+        "dubbio": 14.3,
+        "gara": 14.3,
+        "lavoro": 14.3,
+        "libertà": 14.3,
+        "nuoto": 14.3,
+        "ricerca": 14.3,
+        "scelta": 14.3,
+        "solitudine": 14.3,
+        "studio": 14.3
+      },
+      "literalWords": {
+        "lavoro": {
+          "count": 25,
+          "per1000": 5.302
+        },
+        "tempo": {
+          "count": 9,
+          "per1000": 1.909
+        },
+        "equilibrio": {
+          "count": 5,
+          "per1000": 1.06
+        },
+        "allenamento": {
+          "count": 5,
+          "per1000": 1.06
+        },
+        "progetto": {
+          "count": 1,
+          "per1000": 0.212
+        },
+        "futuro": {
+          "count": 5,
+          "per1000": 1.06
+        },
+        "gara": {
+          "count": 9,
+          "per1000": 1.909
+        },
+        "desiderio": {
+          "count": 1,
+          "per1000": 0.212
+        },
+        "viaggio": {
+          "count": 1,
+          "per1000": 0.212
+        },
+        "corsa": {
+          "count": 2,
+          "per1000": 0.424
+        },
+        "crescita": {
+          "count": 3,
+          "per1000": 0.636
+        },
+        "famiglia": {
+          "count": 2,
+          "per1000": 0.424
+        },
+        "scrittura": {
+          "count": 1,
+          "per1000": 0.212
+        },
+        "natura": {
+          "count": 1,
+          "per1000": 0.212
+        },
+        "recupero": {
+          "count": 2,
+          "per1000": 0.424
+        },
+        "dubbio": {
+          "count": 1,
+          "per1000": 0.212
+        },
+        "motivazione": {
+          "count": 1,
+          "per1000": 0.212
+        },
+        "curiosità": {
+          "count": 1,
+          "per1000": 0.212
+        },
+        "fatica": {
+          "count": 1,
+          "per1000": 0.212
+        },
+        "entusiasmo": {
+          "count": 1,
+          "per1000": 0.212
+        }
+      }
+    }
+  ],
+  "sportYears": {
+    "2015": {
+      "hours": 29.5,
+      "activities": 7
+    },
+    "2016": {
+      "hours": 148.8,
+      "activities": 48
+    },
+    "2017": {
+      "hours": 171.8,
+      "activities": 75
+    },
+    "2018": {
+      "hours": 126.1,
+      "activities": 65
+    },
+    "2019": {
+      "hours": 111.9,
+      "activities": 106
+    },
+    "2020": {
+      "hours": 539.1,
+      "activities": 354
+    },
+    "2021": {
+      "hours": 515.0,
+      "activities": 392
+    },
+    "2023": {
+      "hours": 642.6,
+      "activities": 365
+    },
+    "2024": {
+      "hours": 699.8,
+      "activities": 387
+    },
+    "2025": {
+      "hours": 867.3,
+      "activities": 489
+    },
+    "2026": {
+      "hours": 701.5,
+      "activities": 363
+    },
+    "2022": {
+      "hours": 610.2,
+      "activities": 394
+    }
+  },
+  "audit": {
+    "documents": 12,
+    "sourceWords": 218060,
+    "documentsWithoutText": 1,
+    "duplicatesRemoved": 1,
+    "pdfPages": 505,
+    "pdfSourceWords": 220216,
+    "pdfDuplicateSections": 208,
+    "pdfAddedSections": 39,
+    "retainedWords": 239619,
+    "entries": 318,
+    "analysedPassages": 337,
+    "analysedWords": 239619,
+    "undatedWords": 306,
+    "elapsedSeconds": 217
+  },
+  "overall": {
+    "period": "all",
+    "entries": 318,
+    "passages": 337,
+    "words": 239619,
+    "valence": 0.083,
+    "activation": 0.614,
+    "tonePassages": 333,
+    "confidence": 0.81,
+    "valenceRange": [
+      -0.9,
+      0.9
+    ],
+    "topics": {
+      "Movimento": 24.2,
+      "Recupero": 7.5,
+      "Nutrizione": 7.5,
+      "Lavoro e studio": 36.5,
+      "Relazioni": 87.4,
+      "Natura e viaggi": 37.4,
+      "Creatività e cultura": 29.6,
+      "Riflessione e scelte": 79.9,
+      "Routine quotidiana": 73.0
+    },
+    "emotions": {
+      "Gioia": 46.5,
+      "Serenità": 73.6,
+      "Gratitudine": 46.5,
+      "Curiosità": 29.9,
+      "Motivazione": 13.5,
+      "Tristezza": 44.7,
+      "Preoccupazione": 53.5,
+      "Frustrazione": 64.8,
+      "Rabbia": 1.6,
+      "Stanchezza": 47.8
+    },
+    "keywords": {
+      "solitudine": 60.7,
+      "cambiamento": 50.9,
+      "fatica": 48.7,
+      "futuro": 44.0,
+      "desiderio": 43.7,
+      "amicizia": 39.9,
+      "calma": 37.7,
+      "convivialità": 35.2,
+      "famiglia": 22.0,
+      "viaggio": 22.0,
+      "affetto": 21.1,
+      "nostalgia": 19.8,
+      "studio": 19.8,
+      "ricerca": 19.5,
+      "quotidianità": 18.9,
+      "condivisione": 17.0,
+      "libertà": 17.0,
+      "dubbio": 16.4,
+      "collaborazione": 14.2,
+      "crescita": 11.0,
+      "esplorazione": 11.0,
+      "musica": 10.7,
+      "consapevolezza": 10.1,
+      "speranza": 10.1,
+      "allenamento": 9.1,
+      "scelta": 9.1,
+      "attesa": 8.2,
+      "lavoro": 8.2,
+      "lettura": 8.2,
+      "dialogo": 7.5,
+      "riposo": 7.5,
+      "bellezza": 7.2,
+      "equilibrio": 7.2,
+      "cammino": 6.3,
+      "progetto": 6.3,
+      "resistenza": 6.3,
+      "corsa": 5.7,
+      "ciclismo": 4.7,
+      "tempo": 4.7,
+      "natura": 4.4,
+      "mare": 4.1,
+      "scrittura": 4.1,
+      "ascolto": 3.8,
+      "cucina": 3.5,
+      "gara": 3.5,
+      "soddisfazione": 3.5,
+      "autonomia": 2.8,
+      "creatività": 2.8,
+      "entusiasmo": 2.8,
+      "apprendimento": 2.5,
+      "gioia": 2.5,
+      "gratitudine": 2.5,
+      "montagna": 2.5,
+      "motivazione": 2.5,
+      "preoccupazione": 2.5,
+      "frustrazione": 2.2,
+      "recupero": 2.2,
+      "energia": 1.9,
+      "nuoto": 1.9,
+      "movimento": 1.6,
+      "rabbia": 1.6,
+      "vicinanza": 1.6,
+      "alimentazione": 0.9,
+      "appetito": 0.9,
+      "fiducia": 0.9,
+      "sonno": 0.9,
+      "curiosità": 0.6,
+      "obiettivo": 0.3
+    }
+  },
+  "literalWords": {
+    "tempo": {
+      "count": 482,
+      "per1000": 2.012
+    },
+    "lavoro": {
+      "count": 239,
+      "per1000": 0.997
+    },
+    "viaggio": {
+      "count": 167,
+      "per1000": 0.697
+    },
+    "futuro": {
+      "count": 135,
+      "per1000": 0.563
+    },
+    "corsa": {
+      "count": 110,
+      "per1000": 0.459
+    },
+    "gara": {
+      "count": 108,
+      "per1000": 0.451
+    },
+    "mare": {
+      "count": 81,
+      "per1000": 0.338
+    },
+    "famiglia": {
+      "count": 77,
+      "per1000": 0.321
+    },
+    "studio": {
+      "count": 73,
+      "per1000": 0.305
+    },
+    "musica": {
+      "count": 71,
+      "per1000": 0.296
+    },
+    "attesa": {
+      "count": 65,
+      "per1000": 0.271
+    },
+    "fatica": {
+      "count": 54,
+      "per1000": 0.225
+    },
+    "solitudine": {
+      "count": 48,
+      "per1000": 0.2
+    },
+    "montagna": {
+      "count": 48,
+      "per1000": 0.2
+    },
+    "equilibrio": {
+      "count": 41,
+      "per1000": 0.171
+    },
+    "ricerca": {
+      "count": 36,
+      "per1000": 0.15
+    },
+    "libertà": {
+      "count": 33,
+      "per1000": 0.138
+    },
+    "sonno": {
+      "count": 31,
+      "per1000": 0.129
+    },
+    "tristezza": {
+      "count": 29,
+      "per1000": 0.121
+    },
+    "amicizia": {
+      "count": 28,
+      "per1000": 0.117
+    },
+    "bellezza": {
+      "count": 28,
+      "per1000": 0.117
+    },
+    "obiettivo": {
+      "count": 25,
+      "per1000": 0.104
+    },
+    "allenamento": {
+      "count": 24,
+      "per1000": 0.1
+    },
+    "motivazione": {
+      "count": 20,
+      "per1000": 0.083
+    },
+    "calma": {
+      "count": 20,
+      "per1000": 0.083
+    },
+    "speranza": {
+      "count": 19,
+      "per1000": 0.079
+    },
+    "crescita": {
+      "count": 18,
+      "per1000": 0.075
+    },
+    "riposo": {
+      "count": 18,
+      "per1000": 0.075
+    },
+    "lettura": {
+      "count": 17,
+      "per1000": 0.071
+    },
+    "cambiamento": {
+      "count": 16,
+      "per1000": 0.067
+    },
+    "scelta": {
+      "count": 15,
+      "per1000": 0.063
+    },
+    "soddisfazione": {
+      "count": 13,
+      "per1000": 0.054
+    },
+    "scrittura": {
+      "count": 12,
+      "per1000": 0.05
+    },
+    "natura": {
+      "count": 12,
+      "per1000": 0.05
+    },
+    "fiducia": {
+      "count": 12,
+      "per1000": 0.05
+    },
+    "cucina": {
+      "count": 12,
+      "per1000": 0.05
+    },
+    "progetto": {
+      "count": 11,
+      "per1000": 0.046
+    },
+    "dubbio": {
+      "count": 11,
+      "per1000": 0.046
+    },
+    "preoccupazione": {
+      "count": 11,
+      "per1000": 0.046
+    },
+    "quotidianità": {
+      "count": 11,
+      "per1000": 0.046
+    },
+    "consapevolezza": {
+      "count": 11,
+      "per1000": 0.046
+    },
+    "nuoto": {
+      "count": 11,
+      "per1000": 0.046
+    },
+    "dialogo": {
+      "count": 11,
+      "per1000": 0.046
+    },
+    "desiderio": {
+      "count": 10,
+      "per1000": 0.042
+    },
+    "ascolto": {
+      "count": 10,
+      "per1000": 0.042
+    },
+    "rabbia": {
+      "count": 10,
+      "per1000": 0.042
+    },
+    "energia": {
+      "count": 9,
+      "per1000": 0.038
+    },
+    "esplorazione": {
+      "count": 8,
+      "per1000": 0.033
+    },
+    "alimentazione": {
+      "count": 7,
+      "per1000": 0.029
+    },
+    "entusiasmo": {
+      "count": 6,
+      "per1000": 0.025
+    },
+    "vicinanza": {
+      "count": 6,
+      "per1000": 0.025
+    },
+    "gioia": {
+      "count": 5,
+      "per1000": 0.021
+    },
+    "cammino": {
+      "count": 5,
+      "per1000": 0.021
+    },
+    "condivisione": {
+      "count": 5,
+      "per1000": 0.021
+    },
+    "affetto": {
+      "count": 5,
+      "per1000": 0.021
+    },
+    "ciclismo": {
+      "count": 5,
+      "per1000": 0.021
+    },
+    "abitudine": {
+      "count": 4,
+      "per1000": 0.017
+    },
+    "collaborazione": {
+      "count": 4,
+      "per1000": 0.017
+    },
+    "curiosità": {
+      "count": 3,
+      "per1000": 0.013
+    },
+    "gratitudine": {
+      "count": 3,
+      "per1000": 0.013
+    },
+    "recupero": {
+      "count": 2,
+      "per1000": 0.008
+    },
+    "resistenza": {
+      "count": 2,
+      "per1000": 0.008
+    },
+    "movimento": {
+      "count": 2,
+      "per1000": 0.008
+    },
+    "appetito": {
+      "count": 1,
+      "per1000": 0.004
+    },
+    "apprendimento": {
+      "count": 1,
+      "per1000": 0.004
+    },
+    "creatività": {
+      "count": 1,
+      "per1000": 0.004
+    },
+    "convivialità": {
+      "count": 1,
+      "per1000": 0.004
+    },
+    "autonomia": {
+      "count": 1,
+      "per1000": 0.004
+    },
+    "frustrazione": {
+      "count": 1,
+      "per1000": 0.004
+    },
+    "nostalgia": {
+      "count": 1,
+      "per1000": 0.004
+    }
+  }
+}
