@@ -18,3 +18,11 @@ Venice context was fetched 2026-10-27: 35 runs from 2026-08-30 through 2026-10-2
 - Faint recordings sample distance at 250m and appear behind means; they may be clipped by the mean-based domains. Toggle available. The scatter shows selected-race faint raw points, not a fitted causal relationship.
 - Scatter dots represent 5 km bins. Selected-race dots can be tapped or activated with Enter/Space. The readout reports metres per beat = 60000 / (sec/km × bpm), a descriptive ratio influenced by terrain, temperature and sensor quality, not a physiological fitness score.
 - Ghost retains its recorded-time gap and trailing 5 km comparison.
+
+## Checkpoints / #splits
+
+The fourth destination compares cumulative recorded elapsed times at 10 km, HM (21.0975 km), 30 km and 35 km. Times use interpolation of the existing distance/time stream from distance zero; they are GPS checkpoints, not official timing mats. Sort buttons and column headers rank all nine races by a chosen checkpoint; every cell includes its gap from that column's fastest race. The selected race persists between Splits and Races. Hash navigation supports direct links, reload and browser Back.
+
+Steps are explicitly estimated: trapezoidal integration of cadence × 2 over recorded seconds, rounded to the nearest 10. Intervals cadence is per leg: https://forum.intervals.icu/t/new-running-metrics/132173 . Sampling reduction and collapsed stop positions mean these are not device-measured cumulative counts. Missing cadence, distance gaps >1 km or time gaps >60 s produce unavailable counts. Tests cover interpolation, both feet, zero cadence, gaps and missing data.
+
+At widths below 700px the selected checkpoint fills the table; desktop displays all four. `node qa-splits.mjs` checks 36 times/step estimates, rankings, selection and direct-link navigation at 320/390/1440px. Race data is unchanged.
