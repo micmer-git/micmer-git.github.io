@@ -1,0 +1,199 @@
+import React,{useState,useMemo,useRef,useEffect} from 'react';
+
+import {createRoot} from 'react-dom/client';
+
+import {atDistance,fiveKmMeans,rollingPace,lateFade,paceStability,hrDrift,MARATHON} from './lib/races.mjs';
+
+import type {Race,Context} from './v2-types';
+
+import Route from './Route';
+
+import './style.css';
+
+
+
+const colors=['#a64e36','#526c78','#997427','#677348','#6b647e','#ad583e','#7d6a51','#356b60','#385e94'];
+
+const landmarks=[5000,10000,21097.5,30000,35000,40000,MARATHON];
+
+const samples=[...Array.from({length:169},(_,i)=>i*250),MARATHON];
+
+const clock=(n:number|null|undefined)=>{if(n==null)return '—';const s=Math.round(n);return [Math.floor(s/3600),Math.floor(s%3600/60).toString().padStart(2,'0'),(s%60).toString().padStart(2,'0')].join(':')};
+
+const pace=(n:number|null)=>n==null?'—':Math.floor(Math.round(n)/60)+':'+(Math.round(n)%60).toString().padStart(2,'0');
+
+const num=(n:number|null|undefined)=>n==null?'—':Math.round(n).toString();
+
+const signed=(n:number|null,digits=0)=>n==null?'—':(n>0?'+':n<0?'−':'')+Math.abs(n).toFixed(digits);
+
+const date=(s:string)=>new Date(s+'T12:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+
+const checkpoint=(d:number)=>d===21097.5?'HM':d===MARATHON?'Finish':d/1000+'K';
+
+const segmentAt=(r:Race,d:number)=>fiveKmMeans(r.points).find(b=>d>=b.start&&(d<b.end||b.end===MARATHON));
+const gap=(a:Race,b:Race,d:number)=>{const x=atDistance(a.points,d),y=atDistance(b.points,d);return x==null||y==null?null:x-y};
+
+const x=(d:number)=>38+d/MARATHON*644;
+
+const plotPath=(values:(number|null)[],y:(n:number)=>number,mapX=x)=>{let pen=false;return values.map((n,i)=>{if(n==null){pen=false;return ''}const command=pen?'L':'M';pen=true;return command+mapX(samples[i]).toFixed(2)+','+y(n).toFixed(2)}).join(' ')};
+
+function useChartWidth(){
+
+ const ref=useRef<SVGSVGElement>(null),[width,setWidth]=useState(358);
+
+ useEffect(()=>{const el=ref.current;if(!el)return;const observer=new ResizeObserver(()=>setWidth(el.getBoundingClientRect().width));observer.observe(el);return ()=>observer.disconnect()},[]);
+
+ return {ref,width,mapX:(d:number)=>34+d/MARATHON*(width-44)};
+
+}
+
+function useScrub(setDistance:(d:number)=>void){
+
+ const active=useRef<number|null>(null);
+
+ const change=(e:React.PointerEvent<SVGSVGElement>)=>{const box=e.currentTarget.getBoundingClientRect();setDistance(Math.max(0,Math.min(MARATHON,(e.clientX-box.left-34)/(box.width-44)*MARATHON)))};
+
+ return {onPointerDown:(e:React.PointerEvent<SVGSVGElement>)=>{active.current=e.pointerId;e.currentTarget.setPointerCapture(e.pointerId);change(e)},onPointerMove:(e:React.PointerEvent<SVGSVGElement>)=>{if(active.current===e.pointerId)change(e)},onPointerUp:()=>{active.current=null},onPointerCancel:()=>{active.current=null}};
+
+}
+
+function MeanPanel({races,selected,distance,setDistance,allRaces,metric}:{races:Race[];selected:string;distance:number;setDistance:(d:number)=>void;allRaces:Race[];metric:'pace'|'hr'}){
+
+ const {ref,width,mapX:x}=useChartWidth(),scrub=useScrub(setDistance);
+
+ const lines=useMemo(()=>races.map(race=>({race,bins:fiveKmMeans(race.points)})),[races]);
+
+ const values=lines.flatMap(l=>l.bins.map(b=>b[metric])).filter((v):v is number=>v!==null);
+
+ const low=values.length?Math.min(...values):0,high=values.length?Math.max(...values):1;
+
+ const pad=Math.max((high-low)*.18,metric==='pace'?3:2),lo=low-pad,hi=high+pad;
+
+ const y=(v:number)=>metric==='pace'?30+(v-lo)/(hi-lo)*170:200-(v-lo)/(hi-lo)*170;
+
+ const fmt=(v:number)=>metric==='pace'?pace(v):num(v);
+
+ const ordered=[...lines].sort((a,b)=>Number(a.race.id===selected)-Number(b.race.id===selected));
+
+ return <div className="mean-panel"><div className="mean-heading"><span>{metric==='pace'?'Pace · /km':'Heart rate · bpm'}</span><small>5 km averages</small></div><svg className="pace-chart" ref={ref} viewBox={`0 0 ${width} 250`} role="img" aria-label={metric==='pace'?'Pace averages every 5 km':'Heart rate averages every 5 km'} {...scrub}>
+
+ {[0,5000,10000,15000,20000,25000,30000,35000,40000,MARATHON].map(d=><line key={d} x1={x(d)} x2={x(d)} y1="20" y2="215" className="gridline"/>)}
+
+ {ordered.map(({race,bins})=><g key={race.id} data-race-line={metric==='pace'?race.id:undefined} opacity={race.id===selected?1:.3}>{bins.map((bin,i)=>{const v=bin[metric];if(v===null)return null;const active=race.id===selected,c=colors[allRaces.findIndex(r=>r.id===race.id)%colors.length];return <g key={i}><title>{race.city} · {bin.start/1000}–{bin.end/1000} km · {fmt(v)} {metric==='pace'?'/km':'bpm'}</title><line data-mean-segment={metric} x1={x(bin.start)+2} x2={x(bin.end)-2} y1={y(v)} y2={y(v)} stroke={c} strokeWidth={active?2.8:1.4}/>{active&&<text className="mean-value" x={(x(bin.start)+x(bin.end))/2} y={y(v)+(i===8?16:-8)} textAnchor="middle" style={{fill:c}}>{fmt(v)}</text>}</g>})}</g>)}
+
+ <line x1={x(distance)} x2={x(distance)} y1="16" y2="218" className="crosshair"/>
+
+ {[0,10,20,30,40].map(k=><text key={k} x={x(k*1000)} y="242" textAnchor={k===0?'start':'middle'}>{k}</text>)}
+
+ {!values.length&&<text x={width/2} y="120" textAnchor="middle">{metric==='pace'?'Distance':'Heart rate'} data unavailable</text>}
+
+ </svg></div>;
+
+}
+
+function PaceChart(props:{races:Race[];selected:string;distance:number;setDistance:(d:number)=>void;allRaces:Race[];hr?:boolean}){
+
+ return <div className="pace-figure"><MeanPanel {...props} metric="pace"/>{props.hr&&<MeanPanel {...props} metric="hr"/>}<p className="chart-note">Distance · km · final segment 40–42.195 km. Scales follow averages; labels show the selected race.{props.hr?' HR weighted by recorded time.':''}</p></div>;
+
+}
+
+function Scrubber({distance,setDistance}:{distance:number;setDistance:(n:number)=>void}){
+
+ return <div className="scrub"><div><span className="eyebrow">At distance</span><output data-testid="distance">{(distance/1000).toFixed(3)} <small>km</small></output></div><input type="range" aria-label="Shared distance" min="0" max={MARATHON} step="0.5" value={distance} onChange={e=>setDistance(+e.target.value)}/></div>
+
+}
+
+function Checkpoints({distance,setDistance,a,b}:{distance:number;setDistance:(n:number)=>void;a?:Race;b?:Race}){
+
+ return <div className={'checkpoints '+(a?'ghost-checkpoints':'')} aria-label="Distance landmarks">{landmarks.map(d=><button key={d} aria-pressed={Math.abs(distance-d)<1} onClick={()=>setDistance(d)}><span>{checkpoint(d)}</span>{a&&b&&<b>{signed(gap(a,b,d))}{gap(a,b,d)!=null?'s':''}</b>}</button>)}</div>
+
+}
+
+function RaceRail({races,selected,onSelect,label='Choose race'}:{races:Race[];selected:string;onSelect:(id:string)=>void;label?:string}){
+
+ const rail=useRef<HTMLDivElement>(null);
+
+ useEffect(()=>{const el=rail.current?.querySelector<HTMLElement>('[aria-pressed="true"]');if(el&&rail.current)rail.current.scrollLeft=el.offsetLeft-rail.current.offsetLeft-12},[selected]);
+
+ return <div className="race-rail" aria-label={label} ref={rail}>{[...races].reverse().map(r=><button key={r.id} aria-pressed={r.id===selected} onClick={()=>onSelect(r.id)}><small>{r.date.slice(0,4)}</small> {r.city}</button>)}</div>
+
+}
+
+function Wellness({label,morning,week,baseline,unit}:{label:string;morning:number|null;week:number|null;baseline:number|null;unit:string}){
+
+ const value=morning??week;
+
+ return <div><dt>{label}</dt><dd>{value==null?<span className="missing">not recorded</span>:<>{value} <small>{unit}</small></>}</dd><small>{value==null?'':morning!=null?'race morning':'7d average'}</small>{week!=null&&baseline!=null&&<small className="delta">{signed(week-baseline,1)} · 7d vs prior 28d</small>}</div>
+
+}
+
+function StartLine({context:c}:{context:Context|null}){
+
+ if(!c)return <section className="start-line"><h2>Start line</h2><p className="note">Context not recorded.</p></section>;
+
+ return <section className="start-line"><div className="section-title"><h2>Start line</h2><span className="eyebrow">The days before</span></div><dl className="context-grid"><div><dt>Weight</dt><dd>{c.weightKg??'—'} <small>kg</small></dd><small>{c.weightSource==='activity_profile'?'activity profile':c.weightSource==='wellness'?(c.weightDaysBefore===0?'race day scale':`scale · ${c.weightDaysBefore??'?'}d before`):'not recorded'}</small></div><div><dt>Recorded temp</dt><dd>{c.temperatureC??'—'} <small>°C</small></dd><small>{c.temperatureSource==='device'?'device':'source not recorded'}</small></div><Wellness label="RHR" morning={c.restingHrMorning} week={c.restingHr7d} baseline={c.restingHrBaseline28d} unit="bpm"/><Wellness label="HRV" morning={c.hrvMorning} week={c.hrv7d} baseline={c.hrvBaseline28d} unit="ms"/></dl><div className="volume"><div className="section-title"><div><span className="eyebrow">8 weeks in</span><p><strong>{c.runKmPerWeek8w??'—'}</strong> km/wk <small>· prior 8 weeks</small></p></div><span className="volume-peak">Peak {c.peakRunKmWeek8w??'—'} km</span></div><div className="volume-bars" role="img" aria-label={'Running kilometres, oldest to newest: '+c.runKmWeeksPrior8.join(', ')}>{c.runKmWeeksPrior8.map((v,i)=><div key={i}><span>{v}</span><i style={{height:Math.max(1,v/Math.max(...c.runKmWeeksPrior8)*44)}}/><small>−{8-i}w</small></div>)}</div><p className="chart-note">{c.trainingVolumeSource} · exact 56 days before race</p></div></section>
+
+}
+
+function RaceDetails({race:r}:{race:Race}){
+
+ return <details className="race-details"><summary>Course & recorded metrics <span>+</span></summary><div className="detail-body"><div className="course-poster"><Route race={r}/><p>{r.event}</p><small>Recorded GPS · {(r.distance/1000).toFixed(3)} km</small></div><dl className="detail-stats">{[['First half',clock(r.split.first)],['Second half',clock(r.split.second)],['Split delta',signed(r.split.delta)+' s'],['Recorded pace',pace(r.avgPace)+' /km'],['Pace stability',(paceStability(r.points)==null?'—':paceStability(r.points)!.toFixed(1)+' s/km MAD')],['Altitude gain',num(r.elevation)+' m'],['Average HR',num(r.avgHr)+' bpm'],['Maximum HR',num(r.maxHr)+' bpm'],['Cadence',num(r.cadence)+' rpm'],['Full activity',clock(r.elapsed)]].map(([k,v])=><div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl></div><p className="note">Pace stability is median absolute deviation of 1 km split pace from 5–40 km after implausible spikes are excluded. Lower means more even. Splits use recorded elapsed; GPS distance is not rescaled.</p></details>
+
+}
+
+function Ghost({races,a,b,setA,setB,distance,setDistance}:{races:Race[];a:string;b:string;setA:(id:string)=>void;setB:(id:string)=>void;distance:number;setDistance:(d:number)=>void}){
+
+ const [editing,setEditing]=useState<'a'|'b'|null>(null);
+
+ const {ref,width,mapX:x}=useChartWidth();
+
+ const first=races.find(r=>r.id===a)!,second=races.find(r=>r.id===b)!;
+
+ const values=samples.map(d=>gap(first,second,d)),bound=Math.max(30,...values.filter((v):v is number=>v!=null).map(Math.abs))*1.12;
+
+ const y=(v:number)=>125+v/bound*95,delta=gap(first,second,distance),scrub=useScrub(setDistance);
+
+ const triggers=useRef<(HTMLButtonElement|null)[]>([]),chooser=useRef<HTMLDivElement>(null);
+
+ useEffect(()=>{if(editing)chooser.current?.querySelector<HTMLButtonElement>('[aria-pressed="true"]')?.focus()},[editing]);
+
+ const close=()=>{const index=editing==='a'?0:1;setEditing(null);triggers.current[index]?.focus()};
+
+ return <><div className="surface-heading"><p className="eyebrow">Two races · one starting line</p><h1>Chase the <em>ghost.</em></h1></div><div className="pair">{[first,second].map((r,i)=><button key={i} ref={el=>{triggers.current[i]=el}} className="pair-button" aria-expanded={editing===(i===0?'a':'b')} aria-controls="pair-choices" onClick={()=>setEditing(editing===(i===0?'a':'b')?null:i===0?'a':'b')}><small>{i===0?'First race':'Second race'}</small><span>{r.city} <small>{r.date.slice(0,4)}</small></span><span className="change">Change</span></button>)}</div>
+
+ {editing&&<div className="pair-choices" id="pair-choices" ref={chooser} onKeyDown={e=>{if(e.key==='Escape')close()}}><div className="section-title"><p>Choose {editing==='a'?'first':'second'} race</p><button onClick={close}>Close</button></div><div>{[...races].reverse().map(r=><button key={r.id} aria-pressed={r.id===(editing==='a'?a:b)} onClick={()=>{(editing==='a'?setA:setB)(r.id);close()}}>{r.city} <small>{r.date.slice(0,4)}</small></button>)}</div></div>}
+
+ <div className="ghost-readout"><strong>{signed(delta)}{delta!=null?<small>s</small>:null}</strong><div>{delta==null?'Gap not recorded':delta===0?'Level at this distance':`${first.city} is ${delta<0?'ahead':'behind'}`}<small>first minus second · recorded elapsed</small></div></div>
+
+ <div className="ghost-chart"><div className="section-title chart-note"><span>AHEAD −{Math.round(bound)}s ↑</span><span>BEHIND +{Math.round(bound)}s ↓</span></div><svg ref={ref} viewBox={`0 0 ${width} 250`} preserveAspectRatio="none" role="img" aria-label={`Cumulative recorded gap: ${first.city} minus ${second.city}`} {...scrub}><line x1="34" x2={width-10} y1="125" y2="125" className="zero"/>{landmarks.map(d=><line key={d} x1={x(d)} x2={x(d)} y1="15" y2="235" className="gridline"/>)}<path d={plotPath(values,y,x)} fill="none" stroke="#a64e36" strokeWidth="2.5" vectorEffect="non-scaling-stroke"/><line x1={x(distance)} x2={x(distance)} y1="15" y2="235" className="crosshair"/>{delta!=null&&<circle cx={x(distance)} cy={y(delta)} r="4" fill="#a64e36"/>}{values.every(v=>v==null)&&<text x={width/2} y="100" textAnchor="middle">Distance streams unavailable</text>}</svg></div>
+
+ <Scrubber distance={distance} setDistance={setDistance}/><Checkpoints distance={distance} setDistance={setDistance} a={first} b={second}/><div className="ghost-paces"><span className="eyebrow">5 km smooth</span><span>{first.city} <b>{pace(rollingPace(first.points,distance))}</b></span><span>{second.city} <b>{pace(rollingPace(second.points,distance))}</b></span></div><p className="note">Same recorded distance, including stops. Negative = first race ahead. Official results never enter this comparison. Full 5 km pace windows start at 5K.</p></>
+
+}
+
+function App({races,asOf}:{races:Race[];asOf:string|null}){
+
+ const [surface,setSurface]=useState('races'),[selected,setSelected]=useState(races.at(-1)!.id),[distance,setDistance]=useState(30000),[a,setA]=useState(races.at(-1)!.id),[b,setB]=useState(races[Math.max(0,races.length-3)].id);
+
+ const race=races.find(r=>r.id===selected)!,c=race.context;
+
+ const fade=lateFade(race.points),stability=paceStability(race.points),drift=hrDrift(race.points);
+
+ const sorted=[...races].sort((a,b)=>(segmentAt(a,distance)?.pace??Infinity)-(segmentAt(b,distance)?.pace??Infinity));
+
+ const changeSurface=(s:string)=>{setSurface(s);window.scrollTo({top:0,behavior:'instant'})};
+
+ return <div className="app"><header><span className="wordmark">MA <i>/</i> MARATHON ATLAS</span><span className="edition">2023—2026</span></header><main id="main">
+
+ {surface==='races'&&<div className="races-surface"><RaceRail races={races} selected={selected} onSelect={setSelected}/><div className="race-layout"><div><div className="race-hero" style={{color:colors[races.indexOf(race)]}}><div><p className="eyebrow">{date(race.date)}</p><h1>{race.city}</h1><div className="result">{clock(race.officialTime??race.elapsed)}</div><p className="result-basis">{race.officialTime!=null?'Official result':'Recorded elapsed'}{race.officialTime!=null&&<span> · {clock(race.elapsed)} recorded</span>}</p></div><Route race={race}/></div><StartLine context={c}/></div><div className="race-effort"><div className="section-title"><h2>Race effort</h2><span className="eyebrow">Pace + heart rate</span></div><PaceChart races={[race]} selected={selected} distance={distance} setDistance={setDistance} allRaces={races} hr/><Scrubber distance={distance} setDistance={setDistance}/><div className="effort-readout"><span><b>{pace(segmentAt(race,distance)?.pace??null)}</b> /km · segment</span><span><b>{num(fiveKmMeans(race.points).find(b=>distance>=b.start&&(distance<b.end||b.end===MARATHON))?.hr)}</b> bpm · segment</span></div><details className="durability"><summary><span className="eyebrow">Durability</span><span>Late fade <b>{signed(fade)} s/km</b></span><span>Stability <b>{stability==null?'—':stability.toFixed(1)} s/km</b></span><span>HR drift <b>{signed(drift)} bpm</b></span></summary><p className="note">Late fade compares 30–40 km with 5–25 km. Stability is 1 km split MAD from 5–40 km; HR drift uses the same early/late windows. Descriptive only, not a readiness score.</p></details></div></div><RaceDetails race={race}/><p className="snapshot-note">Michele’s running archive · snapshot {asOf??'date unavailable'}</p></div>}
+
+ {surface==='overlay'&&<div className="overlay-surface"><div className="surface-heading"><p className="eyebrow">{races.length} races · one distance</p><h1>Every effort.<br/><em>One line of sight.</em></h1><p className="subtitle">5 km averages. Touch to compare.</p></div><div className="overlay-layout"><div className="overlay-plot"><PaceChart races={races} selected={selected} distance={distance} setDistance={setDistance} allRaces={races}/><Scrubber distance={distance} setDistance={setDistance}/><Checkpoints distance={distance} setDistance={setDistance}/></div><div className="overlay-legend"><div className="section-title"><span className="eyebrow">5 km segment at cursor</span><small>Tap a race to highlight</small></div><div className="live-legend">{sorted.map(r=><button key={r.id} aria-pressed={r.id===selected} style={{'--race':colors[races.indexOf(r)]} as React.CSSProperties} onClick={()=>setSelected(r.id)}><i/><span>{r.city}<small>{r.date.slice(0,4)}</small></span><b>{pace(segmentAt(r,distance)?.pace??null)}</b></button>)}</div><p className="note">All {races.length} lines stay visible. Readouts are unclipped. Final segment: 40–42.195 km.</p></div></div></div>}
+
+ {surface==='ghost'&&<div className="ghost-surface"><Ghost races={races} a={a} b={b} setA={setA} setB={setB} distance={distance} setDistance={setDistance}/></div>}
+
+ </main><nav className="bottom-nav" aria-label="Primary">{['races','overlay','ghost'].map((s,i)=><button key={s} aria-current={s===surface?'page':undefined} onClick={()=>changeSurface(s)}><svg viewBox="0 0 24 24" aria-hidden="true">{i===0?<path d="M5 20V4h14l-4 5 4 5H5"/>:i===1?<path d="M3 17l5-7 5 3 8-9M3 10l6 5 5-8 7 8"/>:<path d="M4 18c5 0 3-12 8-12s3 12 8 12M4 12h16"/>}</svg><span>{s}</span></button>)}</nav></div>
+
+}
+
+fetch(`${import.meta.env.BASE_URL}data/races.json`).then(r=>{if(!r.ok)throw Error('Snapshot could not be loaded');return r.json()}).then(data=>{if(!Array.isArray(data.races)||!data.races.length)throw Error('No verified races in the snapshot');createRoot(document.getElementById('root')!).render(<App races={data.races} asOf={data.asOf||null}/>)}).catch(e=>{createRoot(document.getElementById('root')!).render(<main className="error"><h1>The atlas is unavailable.</h1><p>{e.message}. Please reload after restoring the data snapshot.</p></main>)});
+
