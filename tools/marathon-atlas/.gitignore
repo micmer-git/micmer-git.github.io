@@ -2,3 +2,5 @@ node_modules/
 dist/
 artifacts/
 public/data/races.json
+
+__pycache__/
