@@ -135,6 +135,7 @@ svg text{font-family:var(--sans)}
   .cont .ch{animation:none}
   .rail i b{transition:none}
 }
+.auto-sync-note{font:11px/1.6 system-ui,sans-serif;opacity:.7;padding:14px 20px;margin:0;max-width:90ch}
 </style>
 </head>
 <body>
@@ -312,6 +313,8 @@ svg text{font-family:var(--sans)}
 </main>
 
 <script src="_data.js"></script>
+<script src="_auto.js"></script>
+<script src="_merge-auto.js"></script>
 <script>
 "use strict";
 const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;

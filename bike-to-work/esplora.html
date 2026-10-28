@@ -99,6 +99,7 @@ tr:hover td{background:var(--rule-soft)}
 .pill.rt{background:#dfe5f7;color:#314c9e}
 .pill.es{background:#eceada;color:#6d6f60}
 footer{margin-top:80px;font-size:.8rem;color:var(--ink-3);line-height:1.7}
+.auto-sync-note{font:11px/1.6 system-ui,sans-serif;opacity:.7;padding:14px 20px;margin:0;max-width:90ch}
 </style>
 </head>
 <body>
@@ -218,6 +219,8 @@ footer{margin-top:80px;font-size:.8rem;color:var(--ink-3);line-height:1.7}
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="_data.js"></script>
+<script src="_auto.js"></script>
+<script src="_merge-auto.js"></script>
 <script>
 "use strict";
 const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;

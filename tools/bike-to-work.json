@@ -1,0 +1,1 @@
+{"athlete_id":"i302515","radius_m":350,"minimum_work_dwell_s":1800,"lookback_days":14,"minimum_leg_m":15000,"maximum_leg_m":120000,"minimum_leg_s":1200,"maximum_leg_s":21600,"data_file":"../bike-to-work/_data.js","output_file":"../bike-to-work/_auto.js"}

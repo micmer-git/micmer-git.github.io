@@ -1,7 +1,7 @@
 name: Hourly Vita sync
 
-# Monday morning: pull whatever landed on Intervals.icu during the week into the
-# climb data, then rebuild /vita so the hub reflects it. Also runnable by hand.
+# Hourly request: sync Intervals trackers, then rebuild /vita.
+# GitHub may delay scheduled runs. Also runnable by hand.
 on:
   schedule:
     - cron: "17 * * * *"       # offset from the busy top of the hour
@@ -60,6 +60,19 @@ jobs:
           echo "::endgroup::"
           exit $rc
 
+      - name: Test automatic commute matching
+        run: python -m unittest discover -s tools/tests -p 'test_bike_to_work.py'
+
+      - name: Sync Bike to Work from Intervals.icu
+        id: bike_sync
+        continue-on-error: true
+        env:
+          INTERVALS_API_KEY: ${{ secrets.INTERVALS_API_KEY }}
+        run: python tools/sync_bike_to_work.py
+
+      - name: Validate commute data and merge
+        run: node tools/check_bike_to_work.cjs
+
       # Lo stesso pull alimenta /vita e il CSV attività letto dal modello del cibo.
       # La prima fase rinnova cache + attività senza comporre la pagina; dopo il
       # rebuild del cibo, la build offline compone il risultato senza un'altra GET.
@@ -88,13 +101,13 @@ jobs:
       - name: Rebuild i dati dell'alimentazione
         run: python tools/build_food.py
 
-      # /vita is rebuilt from scratch each week rather than appended to: it holds no
+      # /vita is rebuilt from scratch each run rather than appended to: it holds no
       # state of its own, every number in it comes from the pull.
       - name: Rebuild /vita
         run: python tools/build_vita.py --offline
 
       # Cheap, no network, and the only thing standing between a broken chart and a
-      # week of it being live: the page ships as one flat file, so nothing else
+      # stale data being live: the page ships as one flat file, so nothing else
       # would notice.
       - name: Smoke-test /vita
         run: node tools/check_vita.cjs
@@ -103,7 +116,7 @@ jobs:
         run: |
           git config user.name  "vita-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A gazzaniga-orezzo sogni-di-un-unno diario-di-un-unno vita \
+          git add -A gazzaniga-orezzo sogni-di-un-unno diario-di-un-unno vita bike-to-work/_auto.js \
                      signoredellecime top-20 tools/signore.json tools/top-20.json \
                      tools/vita_tests.md tools/food/data
           if git diff --cached --quiet; then
@@ -112,3 +125,10 @@ jobs:
             git commit -m "hourly: sync intervals.icu + rebuild /vita"
             git push
           fi
+
+      # Keep other trackers publishing, but never hide a failed commute refresh.
+      - name: Report commute sync failure
+        if: steps.bike_sync.outcome == 'failure'
+        run: |
+          echo "::error::Bike to Work sync failed; previous commute data preserved."
+          exit 1
