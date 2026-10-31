@@ -1176,6 +1176,8 @@ def render(D, gen):
         '<link rel="canonical" href="https://micmer-git.github.io/signore-dei-kj.html">',
         '<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400'
         '&family=IBM+Plex+Mono:wght@400;600&family=Cinzel:wght@600;700&display=swap" rel="stylesheet">',
+        '<link rel="stylesheet" href="assets/micmer.css">',
+        '<script src="assets/micmer.js" defer></script>',
         f"<style>{CSS}</style>\n</head>\n<body>",
         '<h1 class="book-main"><span class="accent">la saga, mese per mese</span>Il Signore dei kJ</h1>',
         f'<p class="subtitle">Dall\'{data_it(D["era0"])} al {data_it(day(D["era"][-1]))} Michele Merelli ha forgiato '
@@ -1307,6 +1309,8 @@ def render_alias(D, gen):
 <link rel="canonical" href="https://micmer-git.github.io/signore-dei-kj.html">
 <meta name="robots" content="noindex">
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=Cinzel:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/micmer.css">
+<script src="assets/micmer.js" defer></script>
 <style>
  body{{background:#faf6ed;color:#2a2317;font-family:'EB Garamond',Georgia,serif;font-size:19px;
    line-height:1.7;max-width:640px;margin:0 auto;padding:80px 24px}}

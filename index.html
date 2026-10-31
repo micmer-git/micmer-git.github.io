@@ -66,7 +66,10 @@
     </script>
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650;9..144,750&family=IBM+Plex+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Schibsted+Grotesk:wght@400;500;600;700;800&family=VT323&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650;9..144,750&family=IBM+Plex+Mono:wght@500;600&family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/micmer.css">
+    <link rel="stylesheet" href="assets/home.css">
+    <script src="assets/micmer.js" defer></script>
     
     <!-- Babel Standalone -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -76,8 +79,9 @@
         theme: {
           extend: {
             fontFamily: {
-              sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-              pixel: ['"VT323"', 'monospace'],
+              sans: ['Roboto', 'system-ui', 'sans-serif'],
+              pixel: ['Roboto', 'system-ui', 'sans-serif'],
+              mono: ['"Roboto Mono"', 'ui-monospace', 'monospace'],
             },
             colors: {
               'brand-bg': '#f8f9fa',
@@ -1501,29 +1505,29 @@
                           <PixelScene />
                       </div>
 
-                      {/* Stats Grid: Mobile = 1 line (grid cols 4), Desktop = grid cols 2 */}
-                      <div className="flex-1 w-full grid grid-cols-4 sm:grid-cols-2 gap-2 sm:gap-4">
-                           <div className="flex flex-col p-1 sm:p-3 bg-white border-2 border-io-red rounded-none shadow-[2px_2px_0px_0px_#EA4335] sm:shadow-[4px_4px_0px_0px_#EA4335] hover:translate-x-1 transition-transform cursor-default">
-                              <span className="font-mono text-[9px] sm:text-[10px] text-io-red uppercase font-bold tracking-widest mb-0 sm:mb-1">Dove</span>
-                              <div className="flex items-center gap-1 sm:gap-2 font-bold font-sans text-brand-dark text-xs sm:text-lg">
+                      {/* Stats: two columns on the phone, same on a wider card. */}
+                      <div className="flex-1 w-full grid grid-cols-2 gap-3 sm:gap-4">
+                           <div className="flex flex-col p-3 bg-white border-2 border-io-red rounded-none shadow-[2px_2px_0px_0px_#EA4335] sm:shadow-[4px_4px_0px_0px_#EA4335] hover:translate-x-1 transition-transform cursor-default">
+                              <span className="font-mono text-xs sm:text-sm text-io-red uppercase font-bold tracking-widest mb-0 sm:mb-1">Dove</span>
+                              <div className="flex items-center gap-1 sm:gap-2 font-bold font-sans text-brand-dark text-base sm:text-lg">
                                   MI, IT <MapPin size={14} className="text-io-red hidden sm:block" />
                               </div>
                            </div>
-                           <div className="flex flex-col p-1 sm:p-3 bg-white border-2 border-io-yellow rounded-none shadow-[2px_2px_0px_0px_#FBBC04] sm:shadow-[4px_4px_0px_0px_#FBBC04] hover:translate-x-1 transition-transform cursor-default">
-                              <span className="font-mono text-[9px] sm:text-[10px] text-io-yellow uppercase font-bold tracking-widest mb-0 sm:mb-1">Nato</span>
-                              <div className="flex items-center gap-1 sm:gap-2 font-bold font-sans text-brand-dark text-xs sm:text-lg">
+                           <div className="flex flex-col p-3 bg-white border-2 border-io-yellow rounded-none shadow-[2px_2px_0px_0px_#FBBC04] sm:shadow-[4px_4px_0px_0px_#FBBC04] hover:translate-x-1 transition-transform cursor-default">
+                              <span className="font-mono text-xs sm:text-sm text-io-yellow uppercase font-bold tracking-widest mb-0 sm:mb-1">Nato</span>
+                              <div className="flex items-center gap-1 sm:gap-2 font-bold font-sans text-brand-dark text-base sm:text-lg">
                                   1994 <Calendar size={14} className="text-io-yellow hidden sm:block" />
                               </div>
                            </div>
-                           <a href="mailto:michelemerelli.8@gmail.com" className="flex flex-col p-1 sm:p-3 bg-white border-2 border-io-green rounded-none shadow-[2px_2px_0px_0px_#34A853] sm:shadow-[4px_4px_0px_0px_#34A853] hover:translate-x-1 hover:bg-io-green/5 transition-all cursor-pointer">
-                              <span className="font-mono text-[9px] sm:text-[10px] text-io-green uppercase font-bold tracking-widest mb-0 sm:mb-1">Email</span>
-                              <div className="flex items-center gap-1 sm:gap-2 font-bold font-sans text-brand-dark text-xs sm:text-lg truncate">
+                           <a href="mailto:michelemerelli.8@gmail.com" className="flex flex-col p-3 bg-white border-2 border-io-green rounded-none shadow-[2px_2px_0px_0px_#34A853] sm:shadow-[4px_4px_0px_0px_#34A853] hover:translate-x-1 hover:bg-io-green/5 transition-all cursor-pointer">
+                              <span className="font-mono text-xs sm:text-sm text-io-green uppercase font-bold tracking-widest mb-0 sm:mb-1">Email</span>
+                              <div className="flex items-center gap-1 sm:gap-2 font-bold font-sans text-brand-dark text-base sm:text-lg truncate">
                                   Gmail <Mail size={14} className="text-io-green hidden sm:block" />
                               </div>
                            </a>
-                           <a href="https://drive.google.com/file/d/1J-3KZLJ2AVqPxMlo1c_rmP15QtrQ2ztH/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="flex flex-col p-1 sm:p-3 bg-white border-2 border-io-blue rounded-none shadow-[2px_2px_0px_0px_#4285F4] sm:shadow-[4px_4px_0px_0px_#4285F4] hover:translate-x-1 hover:bg-io-blue/5 transition-all cursor-pointer">
-                              <span className="font-mono text-[9px] sm:text-[10px] text-io-blue uppercase font-bold tracking-widest mb-0 sm:mb-1">MSc</span>
-                              <div className="flex items-center gap-1 sm:gap-2 font-bold font-sans text-brand-dark text-xs sm:text-lg truncate">
+                           <a href="https://drive.google.com/file/d/1J-3KZLJ2AVqPxMlo1c_rmP15QtrQ2ztH/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="flex flex-col p-3 bg-white border-2 border-io-blue rounded-none shadow-[2px_2px_0px_0px_#4285F4] sm:shadow-[4px_4px_0px_0px_#4285F4] hover:translate-x-1 hover:bg-io-blue/5 transition-all cursor-pointer">
+                              <span className="font-mono text-xs sm:text-sm text-io-blue uppercase font-bold tracking-widest mb-0 sm:mb-1">MSc</span>
+                              <div className="flex items-center gap-1 sm:gap-2 font-bold font-sans text-brand-dark text-base sm:text-lg truncate">
                                   Nano <Cpu size={14} className="text-io-blue hidden sm:block" />
                               </div>
                            </a>
