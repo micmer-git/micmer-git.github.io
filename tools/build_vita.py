@@ -820,9 +820,8 @@ TEMPLATE = r"""<!DOCTYPE html>
 <meta property="og:title" content="Vita — Michele Merelli">
 <meta property="og:description" content="Carico, forma, sonno, HRV, peso, volume: ogni serie che misuro, in un pannello solo.">
 <link rel="icon" type="image/png" href="../favicon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/micmer.css">
+<script src="../assets/micmer.js" defer></script>
 <style>
   :root{
     /* LO STESSO VESTITO DELLA HOME (micmer-git.github.io/): pixel art, quadretti,
@@ -1655,19 +1654,10 @@ TEMPLATE = r"""<!DOCTYPE html>
   }
   @media(max-width:560px){
     body{padding:16px 11px 60px; font-size:17px}
-    /* TRE COLONNE, NON DUE (Michele, ordine #22 del 19/08/2026: «invece di due colonne
-       magari tre per essere più compatto… insomma più compatto, più in linea»).
-       A 390 px restano 368 di riga utile: tre colonne da 117 con 8 di gronda ci stanno,
-       e le tre file che si risparmiano sono duecento pixel di pagina in cima. Il corpo
-       delle cifre scende con loro, o «12.274» andrebbe a capo dentro la sua colonna —
-       una cifra spezzata a meta' e' peggio di una cifra piccola. */
-    .totals{grid-template-columns:repeat(3,minmax(0,1fr)); gap:11px 6px}
-    .total{padding:3px 1px}
-    .total .n{font-size:1.1rem}
-    .total .l{font-size:.58rem; letter-spacing:.06em; margin-top:2px}
-    .total .d{font-size:.58rem; margin-top:1px}
-    .headline-stats{margin-top:18px; gap:12px}
-    .headline-label{margin-bottom:7px}
+    /* La griglia delle cifre non si stringe più a tre colonne qui. Dal 2026-10-31
+       sta in assets/vita-skin.css: due colonne sul telefono, tre da 720px, quattro
+       da 1100px, con il numero grande e l'unità staccata. Tre colonne da ~110px
+       spezzavano «12.274» e rendevano illeggibile la variazione. */
     h1{font-size:clamp(2.6rem,13vw,5.6rem)}
     .sub{margin-top:10px; font-size:1rem}
     .fortnight{margin-top:9px}
@@ -1707,11 +1697,12 @@ TEMPLATE = r"""<!DOCTYPE html>
     .food-intake{grid-template-columns:1fr}
   }
 </style>
+<link rel="stylesheet" href="../assets/vita-skin.css">
 </head>
 <body>
 
 <header>
-  <div class="eyebrow">micmer · quadro di comando</div>
+  <div class="eyebrow">Quadro di comando</div>
   <h1>Vita</h1>
   <p class="sub">Undici anni di dati, in una colonna sola.<span id="ico-testata"></span></p>
 </header>
@@ -1739,7 +1730,7 @@ TEMPLATE = r"""<!DOCTYPE html>
 <!-- Le schede in cima scorrono di lato (Michele, 23/10/2026): rapporto, diario, maratone,
      sonno, come sto. Una fila sola invece di cinque blocchi impilati, e il primo grafico
      torna dove uno se lo aspetta. -->
-<div class="deck" id="deck" role="region" aria-label="Schede: scorri di lato" tabindex="0">
+<div class="deck" id="deck" role="region" aria-label="Schede" tabindex="0">
 <section class="coach-card deck-card" aria-labelledby="coach-h">
   <div class="coach-k">il rapporto</div>
   <h2 id="coach-h">L'opinione del coach</h2>
@@ -6024,7 +6015,16 @@ document.getElementById("tracks").innerHTML = (D.tracks || []).map(t => `
     ["proteine",F.protein_g,v=>nf(v,0)+" g",0,1],["carboidrati",F.carb_g,v=>nf(v,0)+" g",0,1],
     ["fibre",F.fiber_g,v=>nf(v,1)+" g",0,1],["vegetale",F.pct_plant,v=>nf(v,0)+"%",0,1]];
   const items=defs.map(([label,arr,fmt,invert,food,anchorLast])=>{const w=window14(arr,anchorLast);return{label,arr,now:w.now,prior:w.prior,d:delta(w.now,w.prior),fmt,invert,food,through:w.hi};}).filter(x=>x.now!=null);
-  const render=xs=>xs.map(x=>{const good=x.d!=null&&(x.invert?x.d<0:x.d>0),tag=x.food?"button":"div";return `<${tag} class="total" ${x.food?`type="button" data-food="${x.label}"`:''}><div class="n">${x.fmt(x.now)}</div><div class="l">${x.label}</div><div class="d ${x.d==null||x.neutro?'':good?'up':'down'}">${fd(x.d)} vs prima</div></${tag}>`;}).join("");
+  const splitNum=raw=>{const s=String(raw);let m=s.match(/^(.*\d)\s+(\S+)$/);if(m&&/[A-Za-z%/]/.test(m[2]))return{v:m[1],u:m[2]};m=s.match(/^(.*\d)(%)$/);if(m)return{v:m[1],u:m[2]};return{v:s,u:""};};
+  const render=xs=>xs.map(x=>{
+    const good=x.d!=null&&(x.invert?x.d<0:x.d>0);
+    const flat=x.d==null||x.neutro||Math.abs(x.d)<0.5;
+    const cls=x.d==null?"":flat?"flat":good?"up":"down";
+    const tag=x.food?"button":"div";
+    const parts=splitNum(x.fmt(x.now));
+    const unit=parts.u?`<span class="u">${parts.u}</span>`:"";
+    return `<${tag} class="total"${x.food?` type="button" data-food="${x.label}"`:""}><div class="k-val"><span class="n">${parts.v}</span>${unit}</div><div class="l">${x.label}</div><div class="d ${cls}">${fd(x.d)} vs prima</div></${tag}>`;
+  }).join("");
   document.getElementById("totals-recovery").innerHTML=render(items.filter(x=>!x.food));
   document.getElementById("totals-food").innerHTML=render(items.filter(x=>x.food));
 
@@ -6043,11 +6043,14 @@ document.getElementById("tracks").innerHTML = (D.tracks || []).map(t => `
     const prima=(arr,pre)=>{for(let i=pre-1;i>=0;i--){const v=arr&&arr[i];if(v!=null&&isFinite(v))return{i,v};}return null;};
     const magra=(D.weight||[]).map((w,i)=>{const f=(D.bodyfat||[])[i];
       return w!=null&&f!=null&&isFinite(w)&&isFinite(f)?w*(1-f/100):null;});
-    const defsC=[["peso",D.weight,v=>nf(v,1)+" kg"],["massa grassa",D.bodyfat,v=>nf(v,1)+"%"],
-      ["massa magra",magra,v=>nf(v,1)+" kg"]];
-    const xs=defsC.map(([label,arr,fmt])=>{const u=ultima(arr);if(!u)return null;
+    /* Direzione del delta: il peso non ha un verso «buono» (resta neutro).
+       La massa grassa che scende è un miglioramento, la massa magra che sale anche.
+       FC a riposo è già invertita più su: salire è peggio. Il sonno che sale è meglio. */
+    const defsC=[["peso",D.weight,v=>nf(v,1)+" kg",1,0],["massa grassa",D.bodyfat,v=>nf(v,1)+"%",0,1],
+      ["massa magra",magra,v=>nf(v,1)+" kg",0,0]];
+    const xs=defsC.map(([label,arr,fmt,neutro,invert])=>{const u=ultima(arr);if(!u)return null;
       const p=prima(arr,u.i);
-      return{label,now:u.v,d:p?delta(u.v,p.v):null,fmt,neutro:1,i:u.i};}).filter(Boolean);
+      return{label,now:u.v,d:p?delta(u.v,p.v):null,fmt,neutro,invert,i:u.i};}).filter(Boolean);
     if(!xs.length)return;
     const box=document.getElementById("totals-body");if(!box)return;
     box.innerHTML=render(xs);

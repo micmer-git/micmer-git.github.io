@@ -1,0 +1,235 @@
+/* Presentation layer for /vita. Loaded after the inline stylesheet so the
+   measured chart tokens (--s1..--s4, --paper, --muted, --accent) stay put
+   and the layout can change around them.
+   Phone: two KPI columns. 720px: three. 1100px: four.
+   The old three-up phone grid (19/08/2026) made the numbers too small to read. */
+
+body{
+  font-family:"Roboto",system-ui,-apple-system,sans-serif;
+  font-size:17px;
+  background:var(--bg);
+  padding:8px 16px 80px;
+}
+html{background:var(--bg)}
+body::before{display:none}
+
+header{text-align:left; padding-top:18px}
+.eyebrow{
+  font-family:"Roboto",system-ui,sans-serif;
+  font-size:.78rem; font-weight:700; letter-spacing:.14em;
+  text-transform:uppercase; color:#1558d6;
+}
+h1{
+  font-family:"Roboto",system-ui,sans-serif;
+  font-weight:700; font-size:clamp(2.35rem,9vw,3.2rem);
+  letter-spacing:-.04em; line-height:1.02; text-transform:none;
+  display:block; background:none; border:0; box-shadow:none;
+  padding:0; margin:6px 0 0; color:var(--ink);
+}
+.sub{margin:10px 0 0; text-align:left; max-width:38em}
+
+.headline-stats{gap:22px; margin-top:22px}
+.headline-group{border:0; padding-top:2px}
+.headline-label{
+  font-family:"Roboto",system-ui,sans-serif;
+  font-size:.78rem; font-weight:700; letter-spacing:.12em;
+  text-align:left; color:#1558d6; margin-bottom:12px;
+}
+
+.totals{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+.total{
+  text-align:left;
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:16px;
+  box-shadow:0 1px 2px rgba(16,32,51,.04);
+  padding:14px 14px 12px;
+  min-width:0;
+}
+button.total{width:100%; cursor:pointer}
+button.total:hover{border-color:#1558d6; background:var(--paper)}
+.k-val{display:flex; align-items:baseline; gap:6px; flex-wrap:wrap; min-width:0}
+.total .n, .k-val .n{
+  font-family:"Roboto Mono",ui-monospace,monospace;
+  font-size:clamp(1.65rem,6.4vw,2rem);
+  font-weight:600; letter-spacing:-.04em; line-height:1.05;
+  color:var(--ink);
+}
+.k-val .u{
+  font-family:"Roboto Mono",ui-monospace,monospace;
+  font-size:.82rem; font-weight:500; color:var(--muted);
+}
+.total .l{
+  font-family:"Roboto",system-ui,sans-serif;
+  font-size:.72rem; font-weight:500; letter-spacing:.08em;
+  margin-top:8px; color:var(--muted);
+}
+.total .d{
+  display:inline-flex; align-items:center;
+  margin-top:10px; padding:3px 8px; border-radius:999px;
+  font-family:"Roboto Mono",ui-monospace,monospace;
+  font-size:.78rem; font-weight:600; line-height:1.3;
+  background:#eef2f7; color:#3d4d63;
+}
+.total .d.up{color:#0d7a45; background:#e5f6ee}
+.total .d.down{color:#b42318; background:#fdecea}
+.total .d.flat{color:#3d4d63; background:#eef2f7}
+.fortnight{text-align:left; margin-top:14px; font-size:.9rem}
+
+@media (min-width:720px){
+  .totals{grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px}
+  .total .n, .k-val .n{font-size:1.9rem}
+  body{padding-left:28px; padding-right:28px}
+}
+@media (min-width:1100px){
+  .totals{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+
+/* Cards under the KPIs: a column on the phone, a snapping row on a wide screen. */
+.deck{
+  flex-direction:column;
+  overflow:visible;
+  scroll-snap-type:none;
+  margin:22px 0 0;
+  padding:0;
+}
+.deck .deck-card{
+  flex:1 1 auto;
+  width:100%;
+  max-width:none;
+  scroll-snap-align:none;
+  margin:0;
+  border:1px solid var(--rule);
+  border-left:4px solid #1558d6;
+  border-radius:16px;
+  box-shadow:0 1px 2px rgba(16,32,51,.04);
+}
+.coach-card, .marathon-card{
+  border-radius:16px;
+  box-shadow:0 1px 2px rgba(16,32,51,.04);
+}
+.coach-k{
+  font-family:"Roboto",system-ui,sans-serif;
+  font-size:.72rem; font-weight:700; letter-spacing:.12em; color:#1558d6;
+}
+.coach-card h2, .marathon-card h2{
+  font-family:"Roboto",system-ui,sans-serif;
+  font-size:1.35rem; font-weight:700; letter-spacing:-.02em;
+  text-transform:none; line-height:1.15;
+}
+.coach-card button, .diary-open button{
+  font-family:"Roboto",system-ui,sans-serif;
+  letter-spacing:.04em; text-transform:none; font-size:.95rem; font-weight:600;
+  border-radius:999px; border-color:#1558d6; color:#1558d6;
+  min-height:44px;
+}
+.coach-card button:hover, .diary-open button:hover{
+  background:#1558d6; color:#fff; border-color:#1558d6;
+}
+.marathon-stats b{
+  font-family:"Roboto Mono",ui-monospace,monospace;
+  font-size:1.15rem; font-weight:600;
+}
+.marathon-go{font-family:"Roboto",system-ui,sans-serif; letter-spacing:.04em}
+
+@media (min-width:960px){
+  .deck{
+    flex-direction:row;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    overscroll-behavior-x:contain;
+    padding:2px 2px 14px;
+    gap:14px;
+    -webkit-mask-image:linear-gradient(to right,#000 calc(100% - 36px),transparent);
+    mask-image:linear-gradient(to right,#000 calc(100% - 36px),transparent);
+  }
+  .deck .deck-card{
+    flex:0 0 min(440px,78%);
+    width:auto;
+    scroll-snap-align:start;
+  }
+}
+
+h2.band{
+  font-family:"Roboto",system-ui,sans-serif;
+  font-size:1rem; font-weight:700; letter-spacing:.12em;
+  text-align:left; text-transform:uppercase; color:var(--ink);
+  display:block; width:auto; max-width:none;
+  background:transparent; border:0;
+  border-bottom:2px solid #1558d6;
+  box-shadow:none; padding:0 0 8px; margin:36px 0 8px;
+}
+h2.band[data-c]{--band-c:transparent}
+.band-sub{font-size:1rem}
+
+.tile, .compare, .cx-main, .cx-rail, .track, .tip, .sheet-in{
+  border:1px solid var(--rule);
+  border-radius:16px;
+  box-shadow:0 1px 2px rgba(16,32,51,.04);
+}
+.tile{background:var(--paper)}
+.tile:hover{transform:none; box-shadow:0 8px 24px rgba(16,32,51,.06); border-color:var(--rule)}
+.track h3, .cr-item h5, .cr-sec > h4{
+  font-family:"Roboto",system-ui,sans-serif;
+}
+.compare-result b, .t-now, .mono, .total .n{
+  font-family:"Roboto Mono",ui-monospace,monospace;
+}
+
+.ranges button, .cx-presets button, .cx-chip, .cx-sw, .secsel select{
+  font-family:"Roboto",system-ui,sans-serif;
+  letter-spacing:.02em;
+}
+.ranges button[aria-pressed="true"],
+.cx-presets button[aria-pressed="true"],
+.cx-rail-h button[aria-pressed="true"]{
+  background:#1558d6; border-color:#1558d6; color:#fff;
+}
+.controls{
+  top:var(--mm-bar-h);
+  background:color-mix(in srgb, var(--bg) 94%, transparent);
+  border-bottom:1px solid var(--rule);
+}
+.cx-pin{top:calc(var(--bar-h) + var(--mm-bar-h))}
+.cx-rail{top:calc(var(--bar-h) + var(--mm-bar-h) + 8px)}
+
+.also a{
+  font-family:"Roboto",system-ui,sans-serif;
+  border:1px solid var(--rule); border-radius:999px;
+  box-shadow:none; background:var(--paper);
+}
+.also a:hover{border-color:#1558d6; color:#1558d6}
+footer{font-family:"Roboto",system-ui,sans-serif}
+
+::selection{background:#d6e4ff; color:#122033}
+
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0e1520;
+    --paper:#172033;
+    --paper-2:#1e2a40;
+    --ink:#e8eef7;
+    --ink-soft:#c5d2e4;
+    --muted:#b7c4d6;
+    --accent:#e8eef7;
+    --rule:rgba(232,238,247,.18);
+    --grid:rgba(232,238,247,.08);
+    --axis:rgba(232,238,247,.28);
+  }
+  .eyebrow, .headline-label, .coach-k{color:#8eb4ff}
+  h2.band{border-bottom-color:#8eb4ff}
+  .deck .deck-card{border-left-color:#8eb4ff}
+  .total .d.up{color:#8ee0b5; background:#143528}
+  .total .d.down{color:#ffb4ab; background:#3b1d1d}
+  .total .d.flat{color:#c5d2e4; background:#243044}
+  .ranges button[aria-pressed="true"],
+  .cx-presets button[aria-pressed="true"],
+  .coach-card button:hover{background:#8eb4ff; border-color:#8eb4ff; color:#0e1520}
+  .coach-card button, .diary-open button{color:#8eb4ff; border-color:#8eb4ff}
+  ::selection{background:#234a86; color:#fff}
+  .cx-pin{background:color-mix(in srgb, var(--paper) 94%, transparent)}
+}
