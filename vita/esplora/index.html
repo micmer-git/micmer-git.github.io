@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attività · Esplora · Vita</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="Tutte le attività sportive (Strava + Intervals.icu) in un unico archivio: foto, mappa, gare, viaggi in bici.">
+<link rel="icon" type="image/png" href="../../favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<link rel="stylesheet" href="esplora.css">
+</head>
+<body>
+<header>
+  <div class="eyebrow"><a href="../">Vita</a> · esplora</div>
+  <h1>Attività</h1>
+  <p class="sub" id="sub"></p>
+  <div class="headline-stats"><div class="headline-group">
+    <div class="headline-label" id="tot-label">Totale</div>
+    <div class="totals" id="totals"></div>
+  </div></div>
+</header>
+
+<div class="controls" id="controls">
+  <input type="search" id="q" placeholder="Cerca: nome, data, «gara», «km>100», città…" aria-label="Cerca attività">
+  <div class="ranges" id="sports"></div>
+  <div class="ranges viewsw" id="views">
+    <button data-v="foto" aria-pressed="true">Foto</button>
+    <button data-v="mappa" aria-pressed="false">Mappa</button>
+    <button data-v="elenco" aria-pressed="false">Elenco</button>
+  </div>
+</div>
+
+<div class="yearbar">
+  <div class="yb-row"><b id="yb-label">Tutti gli anni</b><span>km per anno · linea tratteggiata = media annua · tocca un anno</span></div>
+  <svg id="yb-svg" viewBox="0 0 1000 64" preserveAspectRatio="none" aria-label="km per anno"></svg>
+  <input type="range" id="year" min="2014" max="2026" step="1" value="2014" aria-label="Anno (tutto a sinistra = tutti)">
+</div>
+<div class="ysum" id="ysum"></div>
+
+<section class="view" id="v-foto"></section>
+<section class="view" id="v-mappa" hidden><div id="map"></div><div class="maplegend t-legend" id="maplegend"></div>
+  <p class="hint" id="maphint"></p></section>
+<section class="view" id="v-elenco" hidden></section>
+<nav class="rail" id="rail" aria-label="Salta all'anno"></nav>
+
+<h2 class="band" data-c="blu" id="s-anni">Anno per anno</h2>
+<p class="band-sub">Ogni grafico ha la media del periodo come linea orizzontale tratteggiata.</p>
+<div class="panel" id="p-anni"></div>
+
+<h2 class="band" data-c="giallo" id="s-record">Record</h2>
+<div class="rec" id="p-record" style="margin-top:14px"></div>
+
+<h2 class="band" data-c="rosso" id="s-lunghe">Le più lunghe</h2>
+<div class="panel" id="p-lunghe"></div>
+
+<h2 class="band" data-c="viola" id="s-maratone">Maratone</h2>
+<div class="panel" id="p-maratone"></div>
+
+<h2 class="band" data-c="giallo" id="s-gare">Gare</h2>
+<div class="panel" id="p-gare"></div>
+
+<h2 class="band" data-c="verde" id="s-viaggi">Cicloviaggi</h2>
+<div class="panel" id="p-viaggi-chart"></div>
+<div class="trips" id="p-viaggi" style="margin-top:14px"></div>
+
+<h2 class="band" data-c="rosso" id="s-qualita">Dati da controllare</h2>
+<p class="band-sub">Valori lasciati come sono: qui sono solo segnalati.</p>
+<div class="panel" id="p-qualita"></div>
+
+<footer id="foot"></footer>
+
+<div class="sheet" id="sheet" role="dialog" aria-modal="true"><div class="sheet-in wide" id="sheet-in"></div></div>
+<div class="lb" id="lb"><img id="lb-img" alt=""></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="data/index.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

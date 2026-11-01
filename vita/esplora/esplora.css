@@ -1,0 +1,424 @@
+/* Vita · esplora — stile estratto da vita/index.html (palette, font, componenti invariati) */
+  :root{
+    /* LO STESSO VESTITO DELLA HOME (micmer-git.github.io/): pixel art, quadretti,
+       ombre secche, palette Google I/O. Fino al 16/08/2026 questa pagina era scura
+       e serif, e sembrava di un altro sito — chiesto da Michele (ordine #10).
+       Quello che NON e' cambiato e' la disciplina: due valori qui dentro restano
+       MISURATI, non scelti, e `node tools/check_vita.cjs` li rimisura a ogni run.
+         --muted  e' il colore di OGNI piede, didascalia, etichetta d'asse e
+                  intestazione di tabella: deve stare sopra 4,5:1 sulla scheda.
+                  #5f6368 (il grigio I/O) sta a 5,9:1 sul bianco.
+         --accent e' l'accento del sito e deve stare a ΔE >= 15 da OGNI slot dei
+                  grafici, o si spaccia per una serie di dati. Si chiamava --gold ed
+                  era oro: sul bianco NESSUN accento saturo passa piu' quel cancello,
+                  perche' i quattro slot si prendono lo spazio cromatico — misurati,
+                  i candidati migliori (ocra #a26401, teal #00695c, viola #6a1b9a)
+                  stanno fra ΔE 7 e 14. Quindi l'accento e' il nero della home,
+                  #202124: ΔE 27,4 dallo slot piu' vicino e 16:1 di contrasto. Non e'
+                  una rinuncia, e' come e' fatta la home — li' l'accento sono i
+                  riquadri neri con l'ombra secca, e il colore lo portano i FONDI
+                  delle schede. Rinominato apposta: una variabile chiamata --gold che
+                  contiene nero e' la prossima mezz'ora persa da qualcuno. */
+    --bg:#f8f9fa; --paper:#ffffff; --paper-2:#f1f3f4;
+    --ink:#202124; --ink-soft:#3c4043; --muted:#5f6368;
+    --accent:#202124; --rule:rgba(32,33,36,.30);
+    --grid:rgba(32,33,36,.10); --axis:rgba(32,33,36,.30);
+    /* Categorical slots 1-4. Dal 17/08/2026 sono i colori LETTERALI della home
+       (`tailwind.config` di index.html: io-blue #4285F4, io-red #EA4335,
+       io-green #34A853), tranne due scostamenti misurati e voluti:
+         --s3 e' #1e8e3e e non #34A853 perche' il verde I/O sta a 2,8:1 sul bianco
+              e una linea da 2px sotto 3:1 non e' un oggetto grafico leggibile
+              (WCAG 1.4.11). Stessa famiglia, quattro decimi di luminanza in meno.
+         --s4 resta viola: il quarto colore della home e' il GIALLO, e il giallo
+              I/O sta a 1,7:1 — li' e' un FONDO dietro testo nero, mai un tratto.
+              Il giallo torna dov'e' nato, in --io-yellow, e fa da riempimento.
+       Il registro dei colori resta uno: `SCH` in pagina legge queste variabili e
+       `C` in build_vita.py disegna i PNG con gli stessi valori. */
+    --s1:#4285f4; --s2:#ea4335; --s3:#1e8e3e; --s4:#8430ce; --neg:#ea4335;
+    --io-yellow:#fbbc04; --io-green:#34a853;
+    /* l'ombra secca della home: nessuna sfocatura, e' quella che fa lo stile */
+    --neo:4px 4px 0 0 rgba(32,33,36,1); --neo-sm:2px 2px 0 0 rgba(32,33,36,1);
+  }
+  ::selection{background:var(--io-yellow); color:#000}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth;max-width:100%;overflow-x:hidden;overflow-x:clip}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif; font-size:17px; line-height:1.6;
+    max-width:1280px; margin:0 auto; padding:44px 20px 90px;
+    -webkit-text-size-adjust:100%; width:100%; overflow-x:hidden; overflow-x:clip;
+  }
+  /* i quadretti della home, che li' stanno solo in cima e poi sfumano */
+  body::before{
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:-1;
+    background-image:
+      linear-gradient(to right,rgba(32,33,36,.075) 1px,transparent 1px),
+      linear-gradient(to bottom,rgba(32,33,36,.075) 1px,transparent 1px);
+    background-size:24px 24px;
+    -webkit-mask-image:linear-gradient(to bottom,#000 0,transparent 62vh);
+    mask-image:linear-gradient(to bottom,#000 0,transparent 62vh);
+  }
+  a{color:inherit}
+  .mono{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace}
+  /* VT323 e' il carattere pixel della home. Va bene grande: sotto i 15px le sue
+     aste sottili spariscono, quindi le etichette minute restano mono di sistema. */
+  .pixel{font-family:'VT323',ui-monospace,monospace; letter-spacing:.02em}
+
+  /* ---------- hero ---------- */
+  header{text-align:center}
+  .eyebrow{font-family:'VT323',ui-monospace,monospace; font-size:1.15rem; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--accent)}
+  .eyebrow a{text-decoration:none; border-bottom:1px solid var(--rule)}
+  .eyebrow a:hover{color:var(--ink)}
+  h1{font-family:'VT323',ui-monospace,monospace; font-size:clamp(3.2rem,12vw,5.6rem); font-weight:400;
+    letter-spacing:.01em; line-height:.92; margin:10px 0 6px; text-transform:uppercase;
+    display:inline-block; background:var(--paper); color:var(--ink);
+    border:3px solid var(--ink); box-shadow:var(--neo); padding:2px 18px 0}
+  .sub{color:var(--ink-soft); max-width:36em; margin:16px auto 0;
+    font-size:1.08rem}
+
+  /* ---------- headline numbers ---------- */
+  .headline-stats{max-width:1000px; margin:30px auto 0; display:grid; gap:16px}
+  .headline-group{border-top:1px solid var(--rule); padding-top:10px}
+  .headline-label{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.72rem;
+    letter-spacing:.17em; text-transform:uppercase; color:var(--accent); text-align:center;
+    margin-bottom:10px}
+  .totals{display:grid; grid-template-columns:repeat(auto-fit,minmax(112px,1fr));
+    gap:16px 10px; max-width:1000px}
+  .total{text-align:center}
+  .total .n{font-family:'VT323',ui-monospace,monospace; font-size:1.95rem; font-weight:700; color:var(--accent);
+    font-variant-numeric:tabular-nums; line-height:1.1}
+  .total .l{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.7rem; letter-spacing:.11em;
+    text-transform:uppercase; color:var(--muted); margin-top:4px; overflow-wrap:anywhere}
+  .total{border:0;background:transparent;color:inherit;font:inherit;padding:5px;min-width:0}
+  button.total{cursor:pointer;border-radius:7px}
+  button.total:hover{background:var(--paper);outline:1px solid var(--rule)}
+  .total .d{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;font-size:.68rem;margin-top:3px;color:var(--ink-soft)}
+  .total .d.up{color:var(--s3)} .total .d.down{color:var(--neg)}
+  .fortnight{margin:15px auto 0;max-width:900px;text-align:center;color:var(--muted);font-size:.9rem}
+     una barra trasparente sopra un disegno in movimento non e' leggera, e' illeggibile.
+     --bar-h e' l'altezza che questa barra si prende: la legge la striscia congelata
+     della ridgeline per non finirci sotto. */
+  :root{--bar-h:54px}
+  .controls{position:sticky; top:0; z-index:8;
+    display:flex; gap:8px 18px; justify-content:center; align-items:center;
+    flex-wrap:wrap; margin:30px -20px 8px; padding:9px 20px;
+    background:rgba(248,249,250,.95);
+    -webkit-backdrop-filter:blur(7px); backdrop-filter:blur(7px);
+    border-bottom:2px solid var(--ink)}
+  .controls .ranges{margin:0}
+  .viewsw{border-left:2px solid var(--ink); padding-left:18px}
+  .ranges{display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:30px 0 6px}
+  .ranges button{
+    font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.78rem; letter-spacing:.12em;
+    text-transform:uppercase; padding:8px 16px; border-radius:999px; cursor:pointer;
+    background:transparent; border:1px solid var(--rule); color:var(--ink-soft);
+    transition:border-color .15s,color .15s,background .15s;
+  }
+  .ranges button:hover{border-color:var(--accent); color:var(--ink)}
+  .ranges button[aria-pressed="true"]{border-color:var(--accent); color:var(--bg);
+    background:var(--accent); font-weight:600}
+  .ranges button:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+  /* Il riquadro e' una SCHEDA DELLA HOME: filetto nero da 2px, spigolo vivo, ombra
+     secca. Prima era un rettangolo bianco con un bordo al 20 % e l'angolo stondato —
+     onesto ma anonimo, e infatti dal telefono la pagina non sembrava di questo sito
+     (Michele, 17/08/2026: "il background e i colori piu' vicini all'indice"). */
+  .tile{
+    /* Il fondo lascia passare i quadretti della pagina: Michele, 17/08, «grafici in bg
+       piu' trasparenti». Non trasparente e basta — sotto un grafico serve comunque un
+       piano chiaro, o le linee sottili si perdono sul reticolo. */
+    position:relative; background:color-mix(in srgb, var(--paper) 74%, transparent);
+    border:2px solid var(--ink);
+    border-radius:0; box-shadow:var(--neo-sm);
+    padding:10px 14px 8px; transition:box-shadow .16s,transform .16s,background .16s;
+    min-width:0; display:grid; grid-template-columns:180px 1fr; gap:0 16px;
+    align-items:center;
+  }
+  .tile:hover{border-color:var(--ink); background:var(--paper-2);
+    box-shadow:var(--neo); transform:translate(-1px,-1px)}
+  .t-side{min-width:0}
+  .t-head{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap}
+  /* La pastiglia di provenienza. E' la terza regola di casa resa visibile: un numero
+     misurato e uno ricostruito da un modello non si disegnano uguali. Prima lo diceva
+     `dataNote`, con sette formulazioni diverse per tre concetti, e solo su 9 riquadri
+     su 42. Ora e' un vocabolario chiuso, obbligatorio, e la stessa parola vuol sempre
+     dire la stessa cosa. Non c'e' colore nuovo: sono gli slot dei grafici. */
+  .t-src{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.62rem;
+    letter-spacing:.13em; text-transform:uppercase; font-weight:600; padding:2px 7px;
+    border-radius:999px; border:1px solid currentColor; opacity:.85; white-space:nowrap;
+    align-self:center; cursor:pointer; background:none}
+  .t-src[data-src="misurato"]{color:var(--s3)}
+  .t-src[data-src="ricostruito"]{color:var(--s4)}
+  .t-src[data-src="modello"]{color:var(--s1)}
+  .t-src[data-src="stima"]{color:var(--s2)}
+  .t-src:hover,.t-src:focus-visible{opacity:1}
+  .t-title{font-family:'VT323',ui-monospace,monospace; font-size:1.55rem; font-weight:600;
+    letter-spacing:.02em; line-height:1.2}
+  .t-now{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:1.3rem; font-weight:600;
+    font-variant-numeric:tabular-nums; color:var(--accent); line-height:1.15; margin-top:3px}
+  .t-now small{display:block; font-size:.68rem; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--muted); font-weight:400; margin-top:1px}
+  .t-legend{display:flex; gap:9px; flex-wrap:wrap; margin:3px 0 0;
+    font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem; letter-spacing:.05em;
+    text-transform:uppercase; color:var(--ink-soft)}
+  .t-legend i{display:inline-block; width:8px; height:8px; border-radius:2px;
+    margin-right:4px; vertical-align:-1px}
+  /* le leve dell'indice microbiota: l'emoji dice quale, il numero quanto e' tirata */
+  .t-shift{display:flex; gap:11px; flex-wrap:wrap; margin-top:5px; font-size:.95rem}
+  .t-shift b{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.8rem; font-weight:600}
+  /* La parola accanto all'emoji. Prima stava solo dentro `title=`, e su un telefono
+     non c'e' hover: quel testo non e' mai comparso a nessuno. */
+  .t-shift .sh-l{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.62rem;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-style:normal}
+  svg.plot{width:100%; height:auto; display:block; touch-action:pan-y; overflow:hidden}
+  /* La riga di sotto: provenienza della finestra a sinistra, «dati» a destra, sullo
+     stesso rigo. Aperto, «dati» si riprende la larghezza intera. */
+  .t-bottom{grid-column:1/-1; display:flex; flex-wrap:wrap; align-items:baseline;
+    justify-content:space-between; gap:2px 12px; margin-top:3px}
+  details.data[open]{flex:1 0 100%}
+  .t-foot{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.68rem; letter-spacing:.05em;
+    color:var(--muted); margin-top:0; line-height:1.45; min-width:0}
+  .t-empty{font-style:italic; color:var(--muted); font-size:.92rem; padding:14px 0;
+    text-align:center}
+  /* ---------- il popup della giornata ---------- */
+  .sheet{position:fixed; inset:0; z-index:20; display:none; background:rgba(32,33,36,.55);
+    backdrop-filter:blur(2px); padding:4vh 14px; overflow-y:auto}
+  .sheet.on{display:block}
+  .sheet-in{position:relative; max-width:760px; margin:0 auto; background:var(--paper);
+    border:2px solid var(--ink); border-radius:0; padding:20px 22px 24px;
+    box-shadow:6px 6px 0 0 rgba(32,33,36,1)}
+  .sheet h3{font-family:'VT323',ui-monospace,monospace; font-size:1.95rem; font-weight:700; margin:0}
+  .sheet .when{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.72rem; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--accent)}
+  .sheet-x{position:absolute; top:12px; right:12px; background:none; border:0; cursor:pointer;
+    color:var(--muted); font-size:1.5rem; line-height:1; padding:4px 8px}
+  .sheet-x:hover{color:var(--ink)}
+  .sheet-hd{padding-right:34px}
+  .sheet h4{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.72rem; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--accent); font-weight:600; margin:20px 0 7px;
+    border-top:1px solid var(--rule); padding-top:11px}
+  .kv{display:grid; grid-template-columns:repeat(auto-fit,minmax(94px,1fr)); gap:10px 14px}
+  .kv div b{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.95rem; color:var(--ink);
+    font-variant-numeric:tabular-nums; display:block}
+  .kv div span{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.65rem; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--muted)}
+  .acts li{list-style:none; display:flex; justify-content:space-between; gap:12px;
+    padding:6px 0; border-bottom:1px solid rgba(32,33,36,.14); flex-wrap:wrap}
+  .acts a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--rule)}
+  .acts a:hover{color:var(--accent)}
+  .acts em{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace; font-size:.76rem; color:var(--muted);
+    font-style:normal; white-space:nowrap}
+  /* ---------- sections ----------
+     Il titolo di sezione e' un blocco pieno col filetto nero e l'ombra secca, come i
+     riquadri colorati della home. Il colore ruota fra i quattro della palette I/O e
+     NON codifica niente: e' l'unico posto della pagina in cui un colore non e' un
+     dato, ed e' anche il motivo per cui li' dentro il testo e' sempre nero. */
+  h2.band{font-family:'VT323',ui-monospace,monospace; font-size:1.7rem; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--ink); text-align:center; font-weight:600;
+    margin:40px auto 8px; display:block; width:max-content; max-width:100%;
+    background:var(--band-c,var(--io-yellow)); border:2px solid var(--ink);
+    box-shadow:var(--neo-sm); padding:3px 20px 0}
+  h2.band[data-c="blu"]{--band-c:#aecbfa}
+  h2.band[data-c="rosso"]{--band-c:#f6aea9}
+  h2.band[data-c="verde"]{--band-c:#a8dab5}
+  h2.band[data-c="viola"]{--band-c:#d7aefb}
+  h2.band[data-c="giallo"]{--band-c:#fdd663}
+  /* Una riga sola, a sinistra, sotto il titolo: e' un'ETICHETTA di sezione. Centrata e in
+     corsivo su 52em era una didascalia da saggio, ed e' meta' dell'impressione che
+     Michele ha fotografato dal telefono il 16/08/2026 ("quanto cavolo di testo"). */
+  .band-sub{text-align:left; color:var(--ink-soft); font-size:.96rem;
+    max-width:52em; margin:0 auto}
+  /* ---------- also / footer ---------- */
+  .also{margin-top:44px; text-align:center}
+  .also a{display:inline-block; margin:6px 6px; padding:7px 15px; border-radius:999px;
+    border:2px solid var(--ink); color:var(--ink); text-decoration:none; font-size:.94rem;
+    box-shadow:var(--neo-sm); background:var(--paper)}
+  .also a:hover{border-color:var(--accent); color:var(--ink)}
+  footer{margin-top:34px; text-align:center; color:var(--muted); font-size:.88rem;
+    line-height:1.7}
+  @media(prefers-reduced-motion:reduce){*{transition:none !important}}
+  /* Sotto i 720px la colonna laterale del riquadro non ci sta piu' accanto al
+     grafico: titolo e numero passano sopra, il grafico prende tutta la larghezza.
+     E' l'unico punto in cui il layout cambia forma, non solo dimensione. */
+  @media(max-width:720px){
+    .tile{grid-template-columns:1fr; gap:5px 0; padding:11px 12px 8px}
+    .t-side{display:flex; align-items:baseline; justify-content:space-between;
+      gap:10px; flex-wrap:wrap}
+    .t-now{font-size:1rem; margin-top:0; text-align:right}
+    .t-now small{display:inline; margin-left:5px}
+  }
+  @media(max-width:760px){
+    /* La barra appesa ha quattro finestre, due viste e il menu delle sezioni: a 360px
+       andrebbero a capo due volte e la barra si prenderebbe novanta pixel fissi in
+       cima, cioe' esattamente lo spazio che si sta cercando di recuperare. Una riga
+       sola che scorre di lato. */
+    .controls{flex-wrap:nowrap; overflow-x:auto; justify-content:flex-start;
+      -webkit-overflow-scrolling:touch}
+    .controls > *{flex:none}
+    .ranges{flex-wrap:nowrap}
+    .viewsw{padding-left:12px}
+    .secsel span{display:none}
+  }
+  @media(max-width:560px){
+    body{padding:16px 11px 60px; font-size:17px}
+    /* TRE COLONNE, NON DUE (Michele, ordine #22 del 19/08/2026: «invece di due colonne
+       magari tre per essere più compatto… insomma più compatto, più in linea»).
+       A 390 px restano 368 di riga utile: tre colonne da 117 con 8 di gronda ci stanno,
+       e le tre file che si risparmiano sono duecento pixel di pagina in cima. Il corpo
+       delle cifre scende con loro, o «12.274» andrebbe a capo dentro la sua colonna —
+       una cifra spezzata a meta' e' peggio di una cifra piccola. */
+    .totals{grid-template-columns:repeat(3,minmax(0,1fr)); gap:11px 6px}
+    .total{padding:3px 1px}
+    .total .n{font-size:1.1rem}
+    .total .l{font-size:.58rem; letter-spacing:.06em; margin-top:2px}
+    .total .d{font-size:.58rem; margin-top:1px}
+    .headline-stats{margin-top:18px; gap:12px}
+    .headline-label{margin-bottom:7px}
+    h1{font-size:clamp(2.6rem,13vw,5.6rem)}
+    .sub{margin-top:10px; font-size:1rem}
+    .fortnight{margin-top:9px}
+    /* i titoli di sezione: quaranta pixel di aria sopra ognuno, per sette sezioni,
+       sono duecentottanta pixel di scorrimento che non dicono niente */
+    h2.band{margin:24px auto 6px}
+    .panel{margin-top:14px; gap:10px}
+    .tile{padding:8px 11px 7px}
+    .coach-card{margin-top:18px; padding:12px 14px 13px}
+    .coach-lead{font-size:1.02rem; line-height:1.5; margin-bottom:9px}
+    /* la barra appesa segue il padding del telefono, o il suo fondo lascia scoperti
+       undici pixel per parte e sotto ci passano i grafici */
+    .controls{margin-left:-11px; margin-right:-11px; padding-left:11px; padding-right:11px}
+    .ranges{gap:6px}
+    .ranges button{padding:7px 13px; font-size:.72rem}
+    /* i due gruppi vanno a capo: il filetto di separazione, in verticale, taglierebbe
+       la riga sbagliata */
+    .viewsw{border-left:0; padding-left:0}
+    .compare{padding:13px 11px 11px}
+    .compare-controls label,.compare-controls select{width:100%; max-width:none; min-width:0}
+    .compare-body{grid-template-columns:1fr}
+    .compare-result{border-left:0; border-top:1px solid var(--rule); padding:10px 0 0;
+      display:grid; grid-template-columns:auto 1fr; column-gap:12px; align-items:baseline}
+    .compare-result p{grid-column:1/-1}
+    .sheet{padding:8vh 0 0; align-items:flex-end}
+    .sheet.on{display:flex}
+    /* dal telefono e' un foglio che sale dal basso: spigolo vivo come tutto il resto,
+       e senza ombra secca — un'ombra sfalsata di 6px su un pannello a filo del bordo
+       si vedrebbe solo come una striscia nera tagliata */
+    .sheet-in{width:100%; max-height:92vh; overflow-y:auto; margin:auto 0 0;
+      border-radius:0; border-bottom:0; box-shadow:none;
+      padding:18px 15px calc(20px + env(safe-area-inset-bottom))}
+    .sheet h3{font-size:1.22rem; line-height:1.2; padding-right:32px}
+    .sheet .when{padding-right:34px; font-size:.66rem}
+    .insight-list .bar{grid-template-columns:minmax(0,1fr) minmax(96px,auto); gap:4px 8px}
+    .insight-list .bar b{text-align:right; min-width:0; white-space:normal; font-size:.7rem}
+    .food-intake{grid-template-columns:1fr}
+  }
+/* ---- explorer ---- */
+  /* ===== explorer: solo aggiunte, stesso vocabolario della pagina Vita ===== */
+  .controls input[type=search]{border:2px solid var(--ink); border-radius:0; background:var(--paper);
+    padding:6px 10px; font:500 .84rem ui-monospace,'SFMono-Regular',Menlo,monospace; width:min(320px,70vw); color:var(--ink)}
+  .controls input[type=search]:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+  .yearbar{max-width:1000px; margin:14px auto 0; border:2px solid var(--ink); box-shadow:var(--neo-sm);
+    background:color-mix(in srgb, var(--paper) 74%, transparent); padding:10px 14px 8px}
+  .yearbar svg{display:block; width:100%; height:64px; cursor:pointer}
+  .yearbar input[type=range]{width:100%; accent-color:#202124; margin:4px 0 0}
+  .yb-row{display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap}
+  .yb-row b{font:400 1.6rem 'VT323',ui-monospace,monospace}
+  .yb-row span{font:500 .7rem ui-monospace,'SFMono-Regular',Menlo,monospace; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
+  .ysum{max-width:1000px; margin:10px auto 0; text-align:center; font:500 .78rem ui-monospace,'SFMono-Regular',Menlo,monospace; color:var(--ink-soft); letter-spacing:.04em}
+  .ysum i{font-style:normal; display:inline-block; margin:0 6px; white-space:nowrap}
+  .ysum i::before{content:""; display:inline-block; width:8px; height:8px; margin-right:4px; background:var(--c); vertical-align:0}
+  /* griglia foto, alla Google Foto */
+  .view{margin-top:18px}
+  .mgroup{content-visibility:auto; contain-intrinsic-size:auto 600px; margin-bottom:18px}
+  .mhead{display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;
+    border-bottom:2px solid var(--ink); margin:0 0 8px; padding-bottom:2px}
+  .mhead b{font:400 1.55rem 'VT323',ui-monospace,monospace; letter-spacing:.04em; text-transform:uppercase}
+  .mhead span{font:500 .7rem ui-monospace,'SFMono-Regular',Menlo,monospace; letter-spacing:.08em; color:var(--muted); text-transform:uppercase}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:8px}
+  .card{position:relative; aspect-ratio:1; border:2px solid var(--ink); background:var(--paper); overflow:hidden;
+    cursor:pointer; padding:0; text-align:left; font:inherit; color:var(--ink); box-shadow:var(--neo-sm);
+    transition:box-shadow .16s,transform .16s}
+  .card:hover,.card:focus-visible{box-shadow:var(--neo); transform:translate(-1px,-1px); outline:none}
+  .card img{width:100%; height:100%; object-fit:cover; display:block; background:var(--paper-2)}
+  .card .cap{position:absolute; left:0; right:0; bottom:0; padding:16px 7px 5px;
+    background:linear-gradient(to top,rgba(32,33,36,.82),rgba(32,33,36,0)); color:#fff}
+  .card .cap b{display:block; font:600 .76rem/1.25 'Plus Jakarta Sans',system-ui,sans-serif; overflow:hidden;
+    text-overflow:ellipsis; white-space:nowrap}
+  .card .cap span{font:500 .62rem ui-monospace,'SFMono-Regular',Menlo,monospace; letter-spacing:.05em; opacity:.92}
+  .card.nophoto{background:var(--bandc,#f1f3f4)}
+  .card.nophoto .cap{background:none; color:var(--ink)}
+  .card.nophoto svg{position:absolute; inset:10px 10px 40px 10px; width:calc(100% - 20px); height:calc(100% - 50px)}
+  .card .km{position:absolute; top:6px; left:8px; font:400 1.5rem/1 'VT323',ui-monospace,monospace}
+  .card .bdg{position:absolute; top:5px; right:5px; display:flex; gap:3px}
+  .bdg i{font-style:normal; font:700 .58rem ui-monospace,'SFMono-Regular',Menlo,monospace; letter-spacing:.06em;
+    background:var(--io-yellow); color:#000; border:1px solid var(--ink); padding:1px 4px; text-transform:uppercase}
+  .bdg i.m{background:#f6aea9} .bdg i.t{background:#a8dab5} .bdg i.q{background:#fff; color:var(--neg)}
+  .more{display:block; margin:14px auto; }
+  /* mappa */
+  #map{position:relative; z-index:0; isolation:isolate; scroll-margin-top:calc(var(--bar-h) + 12px); height:min(72vh,720px); border:2px solid var(--ink); box-shadow:var(--neo-sm)}
+  .leaflet-container{background:#f1f3f4; font-family:'Plus Jakarta Sans',system-ui,sans-serif}
+  .leaflet-tile-pane{filter:grayscale(.55) contrast(.95)}
+  .maplegend{display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:8px}
+  /* elenco */
+  table.list{width:100%; border-collapse:collapse; font-size:.86rem; background:color-mix(in srgb, var(--paper) 80%, transparent)}
+  table.list th,table.list td{padding:5px 8px; border-bottom:1px solid rgba(32,33,36,.14); text-align:right; white-space:nowrap}
+  table.list th{font:500 .66rem ui-monospace,'SFMono-Regular',Menlo,monospace; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); cursor:pointer; position:sticky; top:var(--bar-h); background:var(--bg)}
+  table.list td:nth-child(2),table.list th:nth-child(2){text-align:left; white-space:normal}
+  table.list td:first-child,table.list th:first-child{text-align:left}
+  table.list tr{cursor:pointer} table.list tbody tr:hover{background:var(--paper-2)}
+  .listwrap{overflow-x:auto; border:2px solid var(--ink); box-shadow:var(--neo-sm)}
+  /* liste dentro i riquadri */
+  .tile.block{display:block}
+  .tile .acts{margin-top:6px}
+  .acts li{cursor:pointer}
+  .acts li b{font-weight:500; font-size:.92rem}
+  .rec{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px}
+  .rec button{all:unset; cursor:pointer; display:block; border:2px solid var(--ink); background:var(--paper); box-shadow:var(--neo-sm); padding:9px 12px}
+  .rec button:hover{box-shadow:var(--neo); transform:translate(-1px,-1px)}
+  .rec .l{font:500 .64rem ui-monospace,'SFMono-Regular',Menlo,monospace; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+  .rec .v{font:400 2rem/1.05 'VT323',ui-monospace,monospace}
+  .rec .n{font-size:.86rem; color:var(--ink-soft); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .trips{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:12px}
+  .trip{all:unset; cursor:pointer; display:block; border:2px solid var(--ink); background:var(--paper); box-shadow:var(--neo-sm)}
+  .trip:hover{box-shadow:var(--neo); transform:translate(-1px,-1px)}
+  .trip .ph{aspect-ratio:16/9; background:#a8dab5 center/cover no-repeat; border-bottom:2px solid var(--ink)}
+  .trip .tx{padding:8px 11px 9px}
+  .trip .tx b{font:400 1.35rem/1.1 'VT323',ui-monospace,monospace; display:block}
+  .trip .tx span{font:500 .68rem ui-monospace,'SFMono-Regular',Menlo,monospace; color:var(--muted); letter-spacing:.05em}
+  /* foglio di dettaglio */
+  .sheet-in.wide{max-width:980px}
+  #dmap{height:320px; border:2px solid var(--ink); margin-top:4px}
+  .gal{display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:6px}
+  .gal img{width:100%; aspect-ratio:1; object-fit:cover; border:2px solid var(--ink); cursor:zoom-in; display:block}
+  .dbdg{display:flex; gap:6px; flex-wrap:wrap; margin-top:8px}
+  .dbdg span{font:600 .64rem ui-monospace,'SFMono-Regular',Menlo,monospace; letter-spacing:.1em; text-transform:uppercase;
+    border:2px solid var(--ink); padding:2px 8px; background:var(--paper-2)}
+  .dbdg .race{background:var(--io-yellow)} .dbdg .mar{background:#f6aea9} .dbdg .trip{all:unset;font:600 .64rem ui-monospace,'SFMono-Regular',Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;border:2px solid var(--ink);padding:2px 8px;background:#a8dab5;cursor:pointer}
+  .dq{border-left:3px solid var(--neg); padding:6px 10px; background:#fdecea; font-size:.88rem; margin-top:10px}
+  .desc{white-space:pre-wrap; color:var(--ink-soft); font-size:.95rem}
+  .dnav{display:flex; justify-content:space-between; gap:10px; margin-top:18px}
+  .dnav button,.btn{font:600 .72rem ui-monospace,'SFMono-Regular',Menlo,monospace; letter-spacing:.1em; text-transform:uppercase;
+    border:2px solid var(--ink); background:var(--paper); padding:6px 12px; cursor:pointer; box-shadow:var(--neo-sm); color:var(--ink)}
+  .dnav button:hover,.btn:hover{box-shadow:var(--neo)}
+  .lb{position:fixed; inset:0; z-index:40; background:rgba(32,33,36,.92); display:none; align-items:center; justify-content:center; padding:2vh}
+  .lb.on{display:flex} .lb img{max-width:96vw; max-height:92vh; border:2px solid #fff}
+  /* il cursore degli anni a destra, come Google Foto */
+  .rail{position:fixed; right:8px; top:50%; transform:translateY(-50%); z-index:7; display:none; flex-direction:column; gap:2px}
+  .rail button{all:unset; cursor:pointer; font:400 1.05rem/1 'VT323',ui-monospace,monospace; padding:2px 6px; text-align:right; color:var(--muted)}
+  .rail button:hover,.rail button.on{color:var(--ink); background:var(--io-yellow)}
+  @media(min-width:1380px){ .rail.show{display:flex} }
+  .chart-avg{font:500 10px ui-monospace,Menlo,monospace}
+  .hint{font:500 .7rem ui-monospace,'SFMono-Regular',Menlo,monospace; color:var(--muted); text-align:center; margin-top:6px}
+  @media(max-width:560px){
+    .grid{grid-template-columns:repeat(3,minmax(0,1fr)); gap:4px}
+    .card{box-shadow:none; border-width:1px}
+    .card .cap{padding:12px 4px 3px} .card .cap b{font-size:.62rem} .card .cap span{font-size:.54rem}
+    .card .km{font-size:1.1rem}
+    #map{height:62vh}
+    .controls input[type=search]{width:58vw}
+    #dmap{height:240px}
+  }
+
+  #dmap{position:relative; z-index:0; isolation:isolate}
+  #v-mappa{scroll-margin-top:calc(var(--bar-h) + 12px)}
+  .card img:not([src]){visibility:hidden}
