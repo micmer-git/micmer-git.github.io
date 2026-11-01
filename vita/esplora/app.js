@@ -118,25 +118,106 @@ function rail(){const ys=[...new Set(gridList.map(a=>a.y))];const r=$('#rail');r
   r.innerHTML=ys.map(y=>`<button data-y="${y}">${y}</button>`).join('')}
 $('#rail').addEventListener('click',e=>{const y=e.target.dataset?.y;if(!y)return;let g=document.querySelector(`.mgroup[data-y="${y}"]`);
   while(!g&&gridShown<gridList.length){moreFoto();g=document.querySelector(`.mgroup[data-y="${y}"]`)}g&&g.scrollIntoView({behavior:'smooth'})});
-// ---------- vista mappa ----------
-let map,layer,renderer;const W_=b=>b&&b.isValid()&&(b.getEast()-b.getWest()>12||b.getNorth()-b.getSouth()>8);
-function renderMappa(list){if(!window.L){$('#maphint').textContent='Leaflet non caricato (serve la rete).';return}
-  if(!map){renderer=L.canvas({tolerance:6});map=L.map('map',{preferCanvas:true,renderer}).setView([45.8,9.9],8);
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap'}).addTo(map)}
-  setTimeout(()=>map.invalidateSize(),50);
-  const ys=[...new Set(list.filter(a=>a.trk).map(a=>a.y))];$('#maphint').textContent=`carico ${ys.length} anni di tracce…`;
-  Promise.all(ys.map(loadYear)).then(()=>{if(layer)layer.remove();layer=L.layerGroup().addTo(map);let n=0,b=null;
-    list.filter(a=>a.trk).forEach(a=>{const segs=segsOf(a);if(!segs)return;n++;
-      segs.forEach(s=>{const pl=L.polyline(s,{renderer,color:GROUPS[a.g].hex,weight:a.race||a.ct?3:2,opacity:.75});pl.bindTooltip(`${esc(a.n)} · ${dshort(a.d)} · ${fmt(a.km,1)} km`,{sticky:true});pl.on('click',()=>openDetail(a.id));pl.addTo(layer);
-        b=b?b.extend(pl.getBounds()):pl.getBounds()})});
-    if(b&&b.isValid()){const W=b.getEast()-b.getWest(),H=b.getNorth()-b.getSouth();
-      if(W>12||H>8){const st=list.filter(a=>a.st&&a.trk),med=k=>{const v=st.map(a=>a.st[k]).sort((x,y)=>x-y);return v[v.length>>1]};
-        const c=[med(0),med(1)],near=st.filter(a=>Math.abs(a.st[0]-c[0])<1.6&&Math.abs(a.st[1]-c[1])<2.2);
-        const bb=L.latLngBounds(near.map(a=>[[a.bb[0],a.bb[1]],[a.bb[2],a.bb[3]]]).flat());
-        map.fitBounds(bb.isValid()?bb.pad(.03):b.pad(.03),{maxZoom:13});$('#maphint').dataset.zoomed='1'}
-      else map.fitBounds(b.pad(.03),{maxZoom:13})}
-    const noTrk=list.length-n;$('#maphint').textContent=`${fmt(n)} tracce sulla mappa${noTrk?` · ${fmt(noTrk)} senza traccia pubblicabile (indoor, senza GPS o tutte dentro una zona privata)`:''} · tocca una traccia per aprirla${W_(b)?' · vista centrata sulla zona più frequente: allontana lo zoom per il resto del mondo':''}`;
-    $('#maplegend').innerHTML=Object.entries(GROUPS).map(([k,v])=>`<span><i style="background:${v.hex}"></i>${v.l}</span>`).join('')})}
+// ---------- vista mappa: globo (MapLibre) ----------
+// Le tracce lontane c'erano già. La camera no: se il riquadro del mondo superava
+// 12°×8°, la vista si chiudeva sulla mediana delle partenze (il mucchio delle
+// uscite di tutti i giorni) e Giappone, Hong Kong, Nepal restavano fuori.
+// Qui il globo parte sul mondo. I punti sono l'inizio della traccia già tagliata:
+// niente segnaposto sul centro di una zona privata. Le uscite virtuali non
+// finiscono sul globo: quel GPS è il simulatore, non un luogo.
+const GLOBE_AT={center:[92,22],zoom:1.22};
+const isVirt=a=>/virtual/i.test(a.sp||'');
+const onGlobe=a=>!!(a.st&&a.trk&&!isVirt(a));
+const fc=features=>({type:'FeatureCollection',features});
+function clumpsOf(pts){const gs=[];pts.forEach(a=>{
+  let g=gs.find(g=>Math.abs(g.la-a.st[0])<2.4&&Math.abs(g.lo-a.st[1])<3);
+  if(!g){g={la:a.st[0],lo:a.st[1],n:0,sla:0,slo:0,names:[]};gs.push(g)}
+  g.n++;g.sla+=a.st[0];g.slo+=a.st[1];g.names.push(a.n||'');g.la=g.sla/g.n;g.lo=g.slo/g.n});return gs}
+let everyday=null;
+function everydayClump(){if(everyday)return everyday;const gs=clumpsOf(A.filter(onGlobe)).sort((a,b)=>b.n-a.n);everyday=gs[0]&&gs[0].n>40?gs[0]:null;return everyday}
+function placeLabel(g,city){const raw=g.names.join(' ');
+  if(/kyoto/i.test(raw))return 'Kyoto';
+  if(city)return city;
+  return raw.replace(/[^\p{L}\p{N} .'+-]+/gu,' ').replace(/\s+/g,' ').trim().slice(0,18)}
+function placeFeatures(list){const home=everydayClump(),feats=[];
+  (D.travel||[]).forEach(t=>{const pts=list.filter(a=>a.tv===t.id&&onGlobe(a));
+    clumpsOf(pts).forEach(g=>{
+      if(g.n<1)return;
+      if(home&&Math.abs(g.la-home.la)<8&&Math.abs(g.lo-home.lo)<10)return;
+      const label=placeLabel(g,t.city);if(!label)return;
+      feats.push({type:'Feature',geometry:{type:'Point',coordinates:[g.lo,g.la]},properties:{label,n:g.n,prio:-g.n}})})});
+  return fc(feats)}
+function pointFeatures(list){return fc(list.filter(onGlobe).map(a=>({type:'Feature',geometry:{type:'Point',coordinates:[a.st[1],a.st[0]]},properties:{id:String(a.id),color:GROUPS[a.g].hex}})))}
+function spanOf(pts){if(!pts.length)return null;let s=90,n=-90,w=180,e=-180;
+  pts.forEach(a=>{s=Math.min(s,a.st[0]);n=Math.max(n,a.st[0]);w=Math.min(w,a.st[1]);e=Math.max(e,a.st[1])});
+  return {s,n,w,e,wide:(e-w)>40||(n-s)>28}}
+function frameOf(list){const pts=list.filter(onGlobe),sp=spanOf(pts);if(!sp)return null;
+  const focused=!!ST.q.trim()||pts.length<80;
+  if(!(focused&&sp.wide))return sp;
+  let best=null,bn=0;
+  pts.forEach(a=>{const n=pts.filter(b=>Math.abs(b.st[0]-a.st[0])<4&&Math.abs(b.st[1]-a.st[1])<5).length;if(n>bn){bn=n;best=a}});
+  if(best&&bn>=Math.max(3,pts.length*0.5))return spanOf(pts.filter(b=>Math.abs(b.st[0]-best.st[0])<4&&Math.abs(b.st[1]-best.st[1])<5));
+  return sp}
+let gmap=null,gReady=false,gPending=null,gWide=false,trackTok=0,trackTimer=0;
+function refreshTracks(){if(!gmap||!gReady)return;const list=gmap.__list||[],src=gmap.getSource('tracks');if(!src)return;
+  const z=gmap.getZoom();
+  if(z<6.4){src.setData(fc([]));return}
+  const b=gmap.getBounds(),pad=.35;
+  let vis=list.filter(onGlobe);
+  if(vis.length>50)vis=vis.filter(a=>{if(!a.bb)return false;const [s,w,n,e]=a.bb;return n>=b.getSouth()-pad&&s<=b.getNorth()+pad&&e>=b.getWest()-pad&&w<=b.getEast()+pad});
+  vis=vis.slice(0,140);
+  const tok=++trackTok,ys=[...new Set(vis.map(a=>a.y))];
+  Promise.all(ys.map(loadYear)).then(()=>{if(tok!==trackTok)return;const features=[];
+    vis.forEach(a=>{const segs=segsOf(a);if(!segs)return;segs.forEach(seg=>{if(seg.length<2)return;
+      features.push({type:'Feature',properties:{id:String(a.id),color:GROUPS[a.g].hex},geometry:{type:'LineString',coordinates:seg.map(([la,lo])=>[lo,la])}})})});
+    src.setData(fc(features))})}
+function applyGlobe(list){gmap.__list=list;
+  const ptsSrc=gmap.getSource('acts'),labSrc=gmap.getSource('places');
+  if(ptsSrc)ptsSrc.setData(pointFeatures(list));
+  if(labSrc)labSrc.setData(placeFeatures(list));
+  const sp=frameOf(list),pts=list.filter(onGlobe);
+  if(sp&&sp.wide){if(!gWide){gmap.jumpTo({center:GLOBE_AT.center,zoom:GLOBE_AT.zoom,bearing:0,pitch:0});gWide=true}}
+  else if(sp){gWide=false;try{gmap.fitBounds([[sp.w,sp.s],[sp.e,sp.n]],{padding:48,maxZoom:12.5,duration:650})}catch(e){gmap.jumpTo({center:[(sp.w+sp.e)/2,(sp.s+sp.n)/2],zoom:8})}}
+  const virt=list.filter(isVirt).length,noGps=list.filter(a=>!a.trk&&!isVirt(a)).length;
+  $('#maphint').textContent=(pts.length?`${fmt(pts.length)} attività sul globo`:'Nessun punto sul globo')
+    +(noGps?` · ${fmt(noGps)} senza traccia pubblicabile`:'')
+    +(virt?` · ${fmt(virt)} virtuali non segnate: il GPS non è un luogo`:'')
+    +' · tocca un punto per aprirla, avvicina lo zoom per la traccia';
+  $('#maplegend').innerHTML=Object.entries(GROUPS).map(([k,v])=>`<span><i style="background:${v.hex}"></i>${v.l}</span>`).join('');
+  clearTimeout(trackTimer);trackTimer=setTimeout(refreshTracks,160)}
+function renderMappa(list){if(!window.maplibregl){$('#maphint').textContent='Mappa non caricata (serve la rete).';return}
+  gPending=list;
+  if(!gmap){gmap=new maplibregl.Map({container:'map',style:'https://tiles.openfreemap.org/styles/positron',
+    center:GLOBE_AT.center,zoom:GLOBE_AT.zoom,attributionControl:true,canvasContextAttributes:{antialias:true},
+    cooperativeGestures:matchMedia('(max-width:760px)').matches});
+    window.VXMAP=gmap;
+    gmap.addControl(new maplibregl.NavigationControl({showCompass:false,visualizePitch:false}),'top-right');
+    gmap.on('style.load',()=>{gmap.setProjection({type:'globe'});
+      gmap.addSource('tracks',{type:'geojson',data:fc([])});
+      gmap.addSource('acts',{type:'geojson',data:fc([]),cluster:true,clusterRadius:42,clusterMaxZoom:8});
+      gmap.addSource('places',{type:'geojson',data:fc([])});
+      gmap.addLayer({id:'tracks',type:'line',source:'tracks',paint:{'line-color':['get','color'],'line-width':['interpolate',['linear'],['zoom'],6,1.4,13,3.2],'line-opacity':.9}});
+      gmap.addLayer({id:'clusters',type:'circle',source:'acts',filter:['has','point_count'],paint:{
+        'circle-color':'#202124','circle-stroke-width':2,'circle-stroke-color':'#fbbc04',
+        'circle-radius':['step',['get','point_count'],12,10,16,50,20,200,26,800,32]}});
+      gmap.addLayer({id:'cluster-count',type:'symbol',source:'acts',filter:['has','point_count'],layout:{
+        'text-field':['get','point_count_abbreviated'],'text-font':['Noto Sans Bold'],'text-size':11},paint:{'text-color':'#ffffff'}});
+      gmap.addLayer({id:'points',type:'circle',source:'acts',filter:['!',['has','point_count']],paint:{
+        'circle-color':['get','color'],'circle-radius':6,'circle-stroke-width':2,'circle-stroke-color':'#202124'}});
+      gmap.addLayer({id:'places',type:'symbol',source:'places',maxzoom:6.2,layout:{
+        'text-field':['get','label'],'text-font':['Noto Sans Bold'],'text-size':13,'text-offset':[0,1.05],'text-anchor':'top',
+        'text-allow-overlap':false,'text-padding':2,'symbol-sort-key':['get','prio']},
+        paint:{'text-color':'#202124','text-halo-color':'#ffffff','text-halo-width':1.6}});
+      gmap.on('click','clusters',e=>{const f=e.features&&e.features[0];if(!f)return;const id=f.properties.cluster_id;
+        Promise.resolve(gmap.getSource('acts').getClusterExpansionZoom(id)).then(z=>{gmap.easeTo({center:f.geometry.coordinates,zoom:z})})});
+      gmap.on('click','points',e=>{const id=e.features&&e.features[0]&&e.features[0].properties.id;if(id)openDetail(String(id))});
+      gmap.on('click','tracks',e=>{const id=e.features&&e.features[0]&&e.features[0].properties.id;if(id)openDetail(String(id))});
+      ['clusters','points','tracks'].forEach(id=>{gmap.on('mouseenter',id,()=>{gmap.getCanvas().style.cursor='pointer'});gmap.on('mouseleave',id,()=>{gmap.getCanvas().style.cursor=''})});
+      gmap.on('moveend',()=>{clearTimeout(trackTimer);trackTimer=setTimeout(refreshTracks,120)});
+      gReady=true;if(gPending)applyGlobe(gPending);gmap.resize()});
+  }
+  setTimeout(()=>{if(gmap)gmap.resize()},60);
+  if(gReady)applyGlobe(list)}
 // ---------- vista elenco ----------
 const COLS=[['d','Data'],['n','Nome'],['spi','Sport'],['km','km'],['up','D+ m'],['mv','Tempo'],['kmh','km/h'],['hr','FC']];
 function renderElenco(list){const k=ST.sort.replace('-',''),dir=ST.sort[0]==='-'?1:-1;
