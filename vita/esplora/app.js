@@ -206,8 +206,12 @@ function renderMappa(list){if(!window.maplibregl){$('#maphint').textContent='Map
       gmap.addLayer({id:'clusters',type:'circle',source:'acts',filter:['has','point_count'],paint:{
         'circle-color':'#202124','circle-stroke-width':2,'circle-stroke-color':'#fbbc04',
         'circle-radius':['step',['get','point_count'],12,10,16,50,20,200,26,800,32]}});
+      // Il numero sta DENTRO il cerchio. Non entra nella collisione delle etichette:
+      // «Tokyo» sotto il cerchio nascondeva il 7, mentre il 2.4k (senza etichetta
+      // sopra, a questo zoom) restava. Le città continuano a non sovrapporsi fra loro.
       gmap.addLayer({id:'cluster-count',type:'symbol',source:'acts',filter:['has','point_count'],layout:{
-        'text-field':['get','point_count_abbreviated'],'text-font':['Noto Sans Bold'],'text-size':11},paint:{'text-color':'#ffffff'}});
+        'text-field':['get','point_count_abbreviated'],'text-font':['Noto Sans Bold'],'text-size':11,
+        'text-allow-overlap':true,'text-ignore-placement':true},paint:{'text-color':'#ffffff'}});
       gmap.addLayer({id:'points',type:'circle',source:'acts',filter:['!',['has','point_count']],paint:{
         'circle-color':['get','color'],'circle-radius':6,'circle-stroke-width':2,'circle-stroke-color':'#202124'}});
       const placeLayout={'text-field':['get','label'],'text-font':['Noto Sans Bold'],'text-size':13,'text-offset':[0,1.05],'text-anchor':'top',
