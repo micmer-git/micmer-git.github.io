@@ -135,17 +135,23 @@ function clumpsOf(pts){const gs=[];pts.forEach(a=>{
   g.n++;g.sla+=a.st[0];g.slo+=a.st[1];g.names.push(a.n||'');g.la=g.sla/g.n;g.lo=g.slo/g.n});return gs}
 let everyday=null;
 function everydayClump(){if(everyday)return everyday;const gs=clumpsOf(A.filter(onGlobe)).sort((a,b)=>b.n-a.n);everyday=gs[0]&&gs[0].n>40?gs[0]:null;return everyday}
-function placeLabel(g,city){const raw=g.names.join(' ');
-  if(/kyoto/i.test(raw))return 'Kyoto';
-  if(city)return city;
-  return raw.replace(/[^\p{L}\p{N} .'+-]+/gu,' ').replace(/\s+/g,' ').trim().slice(0,18)}
+// Il nome è quello del viaggio, non di ogni tappa: «Kathmandu» passa anche da
+// Baku. Se il viaggio ha più di un mucchio e i nomi di quel mucchio non dicono
+// la città, l'etichetta si toglie — non se ne inventa un'altra. Quelle vicine
+// al mucchio di tutti i giorni restano nascoste finché lo zoom non le stacca.
+function fold(s){return String(s||'').toLowerCase().normalize('NFD').replace(/\p{M}/gu,'')}
+function cityInNames(names,city){const raw=fold(names.join(' ')),c=fold(city);if(!c)return false;
+  if(raw.includes(c))return true;
+  if(c==='kathmandu'&&/katmandu|\bktm\b/.test(raw))return true;
+  return false}
 function placeFeatures(list){const home=everydayClump(),feats=[];
-  (D.travel||[]).forEach(t=>{const pts=list.filter(a=>a.tv===t.id&&onGlobe(a));
-    clumpsOf(pts).forEach(g=>{
-      if(g.n<1)return;
-      if(home&&Math.abs(g.la-home.la)<8&&Math.abs(g.lo-home.lo)<10)return;
-      const label=placeLabel(g,t.city);if(!label)return;
-      feats.push({type:'Feature',geometry:{type:'Point',coordinates:[g.lo,g.la]},properties:{label,n:g.n,prio:-g.n}})})});
+  (D.travel||[]).forEach(t=>{if(!t.city)return;const pts=list.filter(a=>a.tv===t.id&&onGlobe(a));
+    const gs=clumpsOf(pts).filter(g=>!(home&&Math.abs(g.la-home.la)<8&&Math.abs(g.lo-home.lo)<10));
+    const multi=gs.length>1;
+    gs.forEach(g=>{
+      if(multi&&!cityInNames(g.names,t.city))return;
+      const near=home&&Math.abs(g.la-home.la)<16&&Math.abs(g.lo-home.lo)<18?1:0;
+      feats.push({type:'Feature',geometry:{type:'Point',coordinates:[g.lo,g.la]},properties:{label:t.city,n:g.n,prio:-g.n,near}})})});
   return fc(feats)}
 function pointFeatures(list){return fc(list.filter(onGlobe).map(a=>({type:'Feature',geometry:{type:'Point',coordinates:[a.st[1],a.st[0]]},properties:{id:String(a.id),color:GROUPS[a.g].hex}})))}
 function spanOf(pts){if(!pts.length)return null;let s=90,n=-90,w=180,e=-180;
@@ -204,10 +210,11 @@ function renderMappa(list){if(!window.maplibregl){$('#maphint').textContent='Map
         'text-field':['get','point_count_abbreviated'],'text-font':['Noto Sans Bold'],'text-size':11},paint:{'text-color':'#ffffff'}});
       gmap.addLayer({id:'points',type:'circle',source:'acts',filter:['!',['has','point_count']],paint:{
         'circle-color':['get','color'],'circle-radius':6,'circle-stroke-width':2,'circle-stroke-color':'#202124'}});
-      gmap.addLayer({id:'places',type:'symbol',source:'places',maxzoom:6.2,layout:{
-        'text-field':['get','label'],'text-font':['Noto Sans Bold'],'text-size':13,'text-offset':[0,1.05],'text-anchor':'top',
-        'text-allow-overlap':false,'text-padding':2,'symbol-sort-key':['get','prio']},
-        paint:{'text-color':'#202124','text-halo-color':'#ffffff','text-halo-width':1.6}});
+      const placeLayout={'text-field':['get','label'],'text-font':['Noto Sans Bold'],'text-size':13,'text-offset':[0,1.05],'text-anchor':'top',
+        'text-allow-overlap':false,'text-ignore-placement':false,'text-padding':8,'symbol-sort-key':['get','prio']};
+      const placePaint={'text-color':'#202124','text-halo-color':'#ffffff','text-halo-width':1.6};
+      gmap.addLayer({id:'places',type:'symbol',source:'places',maxzoom:6.2,filter:['==',['get','near'],0],layout:placeLayout,paint:placePaint});
+      gmap.addLayer({id:'places-near',type:'symbol',source:'places',minzoom:3.4,maxzoom:6.2,filter:['==',['get','near'],1],layout:placeLayout,paint:placePaint});
       gmap.on('click','clusters',e=>{const f=e.features&&e.features[0];if(!f)return;const id=f.properties.cluster_id;
         Promise.resolve(gmap.getSource('acts').getClusterExpansionZoom(id)).then(z=>{gmap.easeTo({center:f.geometry.coordinates,zoom:z})})});
       gmap.on('click','points',e=>{const id=e.features&&e.features[0]&&e.features[0].properties.id;if(id)openDetail(String(id))});
