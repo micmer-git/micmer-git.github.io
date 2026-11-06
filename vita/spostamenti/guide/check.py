@@ -35,7 +35,8 @@ for g in reg:
  for s,f,row in zip(ss,geo['features'],csvrows):
   assert f['geometry']['coordinates']==[s['lon'],s['lat']]
   assert float(row['Latitude'])==s['lat'] and float(row['Longitude'])==s['lon']
-  assert s['kind'] in ['food','place'] and (d/s['photo']).is_file()
+  assert s['kind'] in ['food','place']
+  if s.get('photo'):assert (d/s['photo']).is_file()
  hashes=set()
  for r in rs:
   p=d/r['gpx'];raw=p.read_bytes();hashes.add(hashlib.sha256(raw).hexdigest());elements=list(ET.fromstring(raw).iter());points=[e for e in elements if e.tag.endswith('trkpt')]
@@ -63,6 +64,9 @@ for p in B.rglob('*.html'):
 for p in B.rglob('*'):
  if p.is_file():assert p.suffix.lower() in {'.html','.css','.js','.json','.webp','.gpx','.geojson','.kml','.csv','.txt','.zip','.py'},p
 assert totalTracks==18 and totalStops==21
+for name in ['PXL_20250204_014839770.MP','PXL_20250203_134620477.MP','PXL_20250204_012719993.MP','PXL_20250204_123039601.MP']:
+ assert not any(name in p.name for p in (B/'hong-kong-shenzhen/images').iterdir())
+ assert name not in (B/'hong-kong-shenzhen/index.html').read_text(encoding='utf-8')
 app=(B.parent/'app.js').read_text(encoding='utf-8');assert 'data-featured' in app and 'filter === "selezionati"'in app and 'guide/index.json' in app
 assert 'data-filter="selezionati"'in(B.parent/'index.html').read_text(encoding='utf-8')
 if '--live'in sys.argv:
