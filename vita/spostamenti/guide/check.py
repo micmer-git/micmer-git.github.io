@@ -68,6 +68,9 @@ assert 'data-filter="selezionati"'in(B.parent/'index.html').read_text(encoding='
 if '--live'in sys.argv:
  base=sys.argv[sys.argv.index('--live')+1].rstrip('/')+'/'
  for f in [B/'index.html',B/'index.json']+[B/g['id']/n for g in reg for n in ['index.html','data.json',g['id']+'-gpx-soste.zip']]:
-  rel=f.relative_to(B).as_posix();remote=urlopen(base+rel).read();assert remote==f.read_bytes(),rel
+  rel=f.relative_to(B).as_posix();remote=urlopen(base+rel).read();local=f.read_bytes()
+  # Git normalizes Windows CRLF in text blobs; ZIP bytes must match exactly.
+  if f.suffix!='.zip':remote=remote.replace(b'\r\n',b'\n');local=local.replace(b'\r\n',b'\n')
+  assert remote==local,rel
  print('Live content matches the verified local guide files.')
 print(f'PASS: {len(reg)} guides, {totalTracks} recorded tracks, {totalStops} consistent stop pins; links, stats, GPX privacy and ZIP contents verified.')
