@@ -1,0 +1,80 @@
+[
+  {
+    "id": "hong-kong-shenzhen",
+    "title": "Hong Kong & Shenzhen",
+    "tripId": "20250130-hong-kong",
+    "activityIds": [
+      "13500211693",
+      "13505864623",
+      "13515015867",
+      "13524699464",
+      "13533780980",
+      "13541434039",
+      "13555370969",
+      "13559620057",
+      "13568089022"
+    ],
+    "featured": true,
+    "dates": "31 gennaio — 8 febbraio 2025",
+    "totals": {
+      "runs": 9,
+      "km": 170.46,
+      "ascent_m": 1538,
+      "moving_seconds": 46399,
+      "swim_km": 0,
+      "tracks": 9
+    },
+    "stops": 7,
+    "hero": "hong-kong-shenzhen/images/PXL_20250205_025015337.MP.webp",
+    "intro": "Nove corse tra il porto, le salite del Peak e Shenzhen. In mezzo, un sacchetto di pasticceria, pranzi dal banco e dim sum: qui ho raccolto le tracce e le soste del viaggio."
+  },
+  {
+    "id": "cuba",
+    "title": "Cuba",
+    "tripId": "20230811-l-avana",
+    "activityIds": [
+      "9662372904",
+      "9662375137",
+      "9672931076",
+      "9681062258",
+      "9688969198",
+      "9688970668",
+      "9691479297"
+    ],
+    "featured": true,
+    "dates": "11–25 agosto 2023",
+    "totals": {
+      "runs": 6,
+      "tracks": 7,
+      "km": 60.45,
+      "ascent_m": 396,
+      "moving_seconds": 17134,
+      "swim_km": 0.3
+    },
+    "stops": 8,
+    "hero": "cuba/images/PXL_20230823_213234384.PORTRAIT.webp",
+    "intro": "L’Avana, Viñales, Trinidad e Varadero: sei corse, una breve nuotata e parecchie soste. Ho raccolto le tracce di quelle mattine e i luoghi fotografati tra un’uscita e l’altra."
+  },
+  {
+    "id": "kyoto",
+    "title": "Kyoto",
+    "tripId": "20231026-tokyo",
+    "activityIds": [
+      "10150227183",
+      "10155612669"
+    ],
+    "featured": true,
+    "dates": "2–4 novembre 2023",
+    "totals": {
+      "runs": 2,
+      "tracks": 2,
+      "km": 21.85,
+      "ascent_m": 509,
+      "moving_seconds": 7162,
+      "swim_km": 0
+    },
+    "stops": 6,
+    "hero": "kyoto/images/PXL_20231102_082211854.MP.webp",
+    "intro": "Due corse tra le colline e le strade di Kyoto. Poi templi, torii, dolci ai fagioli rossi e mochi: i miei percorsi e le soste di quei giorni."
+  }
+]

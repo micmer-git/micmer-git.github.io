@@ -1,0 +1,9 @@
+Kyoto — Michele Merelli
+https://micmer-git.github.io/vita/spostamenti/guide/kyoto/
+Esperienza: 2–4 novembre 2023
+
+gpx/: 2 tracce complete, con elevazioni. Tempi e dati dei sensori rimossi. I punti originali non sono semplificati. Le tracce descrivono le attività di Michele, non un percorso verificato oggi.
+stops.geojson / stops.kml / stops.csv: gli stessi 6 pin food e luoghi della guida. KML o CSV si possono importare in una mappa personale (es. Google My Maps). I pin non sono collegati artificialmente alle corse.
+
+Le soste non identificate sono fotografie geolocalizzate del viaggio; non promettono che lo stesso banco o locale sia ancora aperto. Per i luoghi identificati, la pagina rimanda alle fonti ufficiali. Prezzi e orari del viaggio non sono proposti come attuali.
+I tempi in pagina sono quelli registrati da Michele, non una previsione per chi ripete il percorso. Non sono inclusi consigli di allenamento personalizzati.

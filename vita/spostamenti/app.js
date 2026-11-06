@@ -2,15 +2,17 @@ const IT = new Intl.NumberFormat("it-IT");
 const shortDate = new Intl.DateTimeFormat("it-IT", { day:"numeric", month:"short", year:"numeric" });
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
+let GUIDES = [];
 let DATA, WORLD, projection, path, globeSvg, land, activeTrip, observer;
 let navLockUntil = 0;
 const prefersReduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 Promise.all([
   fetch("data/travel.json?v=20260811b").then(r => r.json()),
-  fetch("data/countries-110m.json?v=20260811b").then(r => r.json())
-]).then(([data, world]) => {
-  DATA = data; WORLD = world;
+  fetch("data/countries-110m.json?v=20260811b").then(r => r.json()),
+  fetch("guide/index.json?v=20261106").then(r => r.ok ? r.json() : []).catch(() => [])
+]).then(([data, world, guides]) => {
+  DATA = data; WORLD = world; GUIDES = guides;
   renderTotals(); renderTrips(); renderYearRail(); renderHeatmap(); renderBars();
   initGlobe(); observeTrips();
   const linked = location.hash ? document.getElementById(location.hash.slice(1)) : null;
@@ -45,16 +47,19 @@ function spanDate(t){ return t.start === t.end ? date(t.start) : `${date(t.start
 function renderTrips(){
   $("#trip-list").innerHTML = DATA.trips.map((t,i) => {
     const places = (t.places || []).slice(0,8);
+    const guide = GUIDES.find(g => g.featured && g.tripId === t.id);
+    const guideLink = guide ? `<a class="trip-guide" href="guide/${escapeHtml(guide.id)}/">Selezionato · GPX + food + soste ↗</a>` : "";
     const numbers = t.mode === "volo"
       ? `<div><b>${IT.format(t.flightKm)} km</b><span>in volo osservati</span></div><div><b>${IT.format(t.co2Kg)} kg</b><span>CO₂e stimata</span></div>`
       : `<div><b>${IT.format(t.distanceFromHomeKm)} km</b><span>raggio del viaggio</span></div>`;
     const placeList = places.length ? `<div class="trip-places"><b>Luoghi osservati</b><ul>${places.map(p => `<li><span>${escapeHtml(p.city)}</span><small>${escapeHtml(p.country)}${p.visits ? ` · ${IT.format(p.visits)} ${p.visits===1?"visita":"visite"}` : ""}</small></li>`).join("")}</ul></div>` : "";
-    return `<article class="trip" id="trip-${t.id}" data-trip-id="${escapeHtml(t.id)}" data-i="${i}" data-mode="${t.mode}" data-year="${t.year}" tabindex="-1">
+    return `<article class="trip" id="trip-${t.id}" data-trip-id="${escapeHtml(t.id)}" data-i="${i}" data-mode="${t.mode}" data-year="${t.year}" data-featured="${Boolean(guide)}" tabindex="-1">
       <div class="trip-top"><span class="trip-year">${t.year}</span><span class="trip-mode">${t.mode}</span></div>
       <h3>${escapeHtml(t.city)}</h3><div class="trip-country">${escapeHtml(t.country)}</div>
       <p class="trip-date">${spanDate(t)}</p>
       ${placeList}
       <div class="trip-numbers">${numbers}</div>
+      ${guideLink}
     </article>`;
   }).join("");
   $$(".filters button").forEach(b => b.addEventListener("click", () => {
@@ -64,8 +69,10 @@ function renderTrips(){
 
 function setFilter(filter){
   $$(".filters button").forEach(x => x.classList.toggle("active", x.dataset.filter === filter));
-  $$(".trip").forEach(card => card.hidden = filter !== "tutti" && card.dataset.mode !== filter);
+  $$(".trip").forEach(card => card.hidden = filter === "selezionati" ? card.dataset.featured !== "true" : filter !== "tutti" && card.dataset.mode !== filter);
   observeTrips();
+  const current = document.querySelector(".trip.active");
+  if(!current || current.hidden) activate(document.querySelector(".trip:not([hidden])"));
 }
 
 function goToTrip(id){

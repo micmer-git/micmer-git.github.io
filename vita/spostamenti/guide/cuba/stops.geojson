@@ -1,0 +1,157 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.36515,
+          23.14208888888889
+        ]
+      },
+      "properties": {
+        "id": "malecon",
+        "name": "Malecón al mattino",
+        "kind": "place",
+        "city": "Havana",
+        "text": "Il punto fotografato appena prima della mia corsa del 15 agosto. Lungomare, luce bassa e dieci chilometri davanti.",
+        "when": "Alla partenza del giro sul Malecón",
+        "maps": "https://www.google.com/maps/search/?api=1&query=23.14208888888889,-82.36515"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.35185277777778,
+          23.13608888888889
+        ]
+      },
+      "properties": {
+        "id": "havana-market",
+        "name": "Un mercato di frutta",
+        "kind": "food",
+        "city": "Havana",
+        "text": "La sosta fotografata durante la passeggiata della prima giornata cubana. Il pin conserva quel banco, senza attribuirgli un nome commerciale.",
+        "when": "Una deviazione a piedi nella città vecchia",
+        "maps": "https://www.google.com/maps/search/?api=1&query=23.13608888888889,-82.35185277777778"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.35603611111111,
+          23.139091666666666
+        ]
+      },
+      "properties": {
+        "id": "havana-dinner",
+        "name": "La cena all’Avana",
+        "kind": "food",
+        "city": "Havana",
+        "text": "Riso, fagioli e una tavola da fotografare. Questo è il punto della mia cena del 14 agosto 2023.",
+        "when": "La sera, tra le passeggiate in città",
+        "maps": "https://www.google.com/maps/search/?api=1&query=23.139091666666666,-82.35603611111111"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.71522222222222,
+          22.616005555555557
+        ]
+      },
+      "properties": {
+        "id": "vinales-view",
+        "name": "Il panorama di Viñales",
+        "kind": "place",
+        "city": "Vinales",
+        "text": "La vallata alla fine del 16 agosto. Ho diviso questa fotografia in due slide consecutive del carosello.",
+        "when": "Una pausa al tramonto, separata dalla corsa",
+        "maps": "https://www.google.com/maps/search/?api=1&query=22.616005555555557,-83.71522222222222"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -79.98265555555555,
+          21.804961111111112
+        ]
+      },
+      "properties": {
+        "id": "trinidad-sunset",
+        "name": "Trinidad dall’alto",
+        "kind": "place",
+        "city": "Trinidad",
+        "text": "Il panorama sui tetti fotografato la sera del 18 agosto, prima della notte nella grotta.",
+        "when": "Prima di uscire la sera",
+        "maps": "https://www.google.com/maps/search/?api=1&query=21.804961111111112,-79.98265555555555"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -81.26179722222223,
+          23.149863888888888
+        ]
+      },
+      "properties": {
+        "id": "varadero-pizza",
+        "name": "Pizza sulla spiaggia",
+        "kind": "food",
+        "city": "Varadero",
+        "text": "La mia pizza e una Cristal davanti al mare. Il 20 agosto ho registrato anche 300 metri a nuoto e una corsa breve.",
+        "when": "Una sosta al mare; pin della foto del 2023",
+        "maps": "https://www.google.com/maps/search/?api=1&query=23.149863888888888,-81.26179722222223"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -81.26617777777778,
+          23.147044444444443
+        ]
+      },
+      "properties": {
+        "id": "varadero-dinner",
+        "name": "La cena a Varadero",
+        "kind": "food",
+        "city": "Varadero",
+        "text": "Il piatto della sera: pollo, riso, fagioli e verdure visibili nella foto. Il ristorante non è identificato.",
+        "when": "La sera dopo la giornata a Varadero",
+        "maps": "https://www.google.com/maps/search/?api=1&query=23.147044444444443,-81.26617777777778"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -81.26910277777777,
+          23.14655
+        ]
+      },
+      "properties": {
+        "id": "varadero-beach",
+        "name": "Il risveglio sulla spiaggia",
+        "kind": "place",
+        "city": "Varadero",
+        "text": "La luce del 22 agosto. Nel carosello il video di questa mattina accompagna anche la traccia del giro verso la DuPont del giorno prima.",
+        "when": "Per una passeggiata al mattino",
+        "maps": "https://www.google.com/maps/search/?api=1&query=23.14655,-81.26910277777777"
+      }
+    }
+  ]
+}

@@ -1,0 +1,119 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.78070555555556,
+          34.99808055555555
+        ]
+      },
+      "properties": {
+        "id": "yasaka-pagoda",
+        "name": "Yasaka Pagoda · Higashiyama",
+        "kind": "place",
+        "city": "Kyoto",
+        "text": "La via e la pagoda al tramonto del 2 novembre. Qui ho scattato anche il selfie che apre il carosello.",
+        "when": "Passeggiata al tramonto, separata dalle corse",
+        "maps": "https://www.google.com/maps/search/?api=1&query=34.99808055555555,135.78070555555556"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.79321388888889,
+          35.01221388888889
+        ]
+      },
+      "properties": {
+        "id": "nanzenji",
+        "name": "Nanzen-ji · Sanmon",
+        "kind": "place",
+        "city": "Kyoto",
+        "text": "La porta del tempio nella luce del mattino del 4 novembre. La visita fotografata è successiva all’uscita registrata di quel giorno.",
+        "when": "Dopo la corsa, a piedi",
+        "maps": "https://www.google.com/maps/search/?api=1&query=35.01221388888889,135.79321388888889"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.76293055555556,
+          35.004983333333335
+        ]
+      },
+      "properties": {
+        "id": "wagashi",
+        "name": "La sosta wagashi",
+        "kind": "food",
+        "city": "Kyoto",
+        "text": "Un dolce con ripieno di fagioli rossi e il banco fotografato il 3 novembre. Il pin è quello dello scatto: il nome del negozio resta da identificare.",
+        "when": "Durante l’esplorazione del centro, dopo la corsa",
+        "maps": "https://www.google.com/maps/search/?api=1&query=35.004983333333335,135.76293055555556"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.78186666666667,
+          34.96830277777778
+        ]
+      },
+      "properties": {
+        "id": "fushimi-inari",
+        "name": "Fushimi Inari · tra i torii",
+        "kind": "place",
+        "city": "Kyoto",
+        "text": "Una visita a piedi nella tarda mattina del 4 novembre. I torii del video e della foto appartengono a questa visita; la traccia di corsa non viene allungata per includerli.",
+        "when": "Una visita distinta dal giro del mattino",
+        "maps": "https://www.google.com/maps/search/?api=1&query=34.96830277777778,135.78186666666667"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.76948611111112,
+          34.96816944444445
+        ]
+      },
+      "properties": {
+        "id": "fox-sweet",
+        "name": "Il dolce con la faccia",
+        "kind": "food",
+        "city": "Kyoto",
+        "text": "La foto non aveva bisogno di una recensione: mi sono messo il dolce davanti al viso. Il pin conserva il punto di quella sosta a Fushimi.",
+        "when": "Dopo la visita a Fushimi Inari",
+        "maps": "https://www.google.com/maps/search/?api=1&query=34.96816944444445,135.76948611111112"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.78023055555556,
+          35.008580555555554
+        ]
+      },
+      "properties": {
+        "id": "mochi",
+        "name": "L’ultimo mochi",
+        "kind": "food",
+        "city": "Kyoto",
+        "text": "Un mochi davanti alla bandiera verde del negozio, l’ultimo pomeriggio a Kyoto. L’insegna visibile indica yomogi mochi; il nome commerciale non è confermato.",
+        "when": "Prima di lasciare Kyoto",
+        "maps": "https://www.google.com/maps/search/?api=1&query=35.008580555555554,135.78023055555556"
+      }
+    }
+  ]
+}
