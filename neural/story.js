@@ -76,27 +76,17 @@
   addEventListener('resize', queueProgress);
   updateProgress();
 
-  const dialog = document.querySelector('.film-dialog');
-  const player = dialog.querySelector('.player');
-  const trigger = document.querySelector('[data-film]');
-  if (typeof dialog.showModal !== 'function') return;
-  trigger.addEventListener('click', event => {
-    if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
-    event.preventDefault();
-    const iframe = document.createElement('iframe');
-    iframe.title = '3D Printed Helices — Particleworks Europe';
-    iframe.src = 'https://www.youtube-nocookie.com/embed/AH0ia7rLy0s?autoplay=1';
-    iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
-    iframe.allowFullscreen = true;
-    iframe.referrerPolicy = 'strict-origin-when-cross-origin';
-    player.replaceChildren(iframe);
-    dialog.showModal();
-    dialog.querySelector('button').focus();
+  const atlas = document.querySelector('[data-sequence]');
+  const controls = document.querySelector('.atlas-controls');
+  const step = document.querySelector('[data-atlas-next]');
+  const status = document.querySelector('[data-atlas-status]');
+  atlas.addEventListener('atlas-state', event => {
+    const {stage, label} = event.detail;
+    controls.hidden = stage === 0;
+    step.textContent = stage === 1 ? 'Next design' : 'Next step';
+    status.textContent = label;
   });
-  dialog.querySelector('[data-close-film]').addEventListener('click', () => dialog.close());
-  dialog.addEventListener('click', event => { if (event.target === dialog) {
-    const bounds = dialog.getBoundingClientRect();
-    if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
-  }});
-  dialog.addEventListener('close', () => { player.replaceChildren(); trigger.focus({preventScroll:true}); });
+  step.addEventListener('click', () => {
+    atlas.dispatchEvent(new CustomEvent('atlas-step', {detail:{direction:1}}));
+  });
 })();

@@ -19,6 +19,11 @@
     ['#87495a','#ae535a','#cc605b','#e87a64','#f89973','#ffc190','#ffe1ad'],
     ['#31476c','#365d8c','#417cb0','#519bc5','#6bbbd6','#91d9e1','#caf3e9']
   ];
+  // Opaque, graded inks keep dense sleeping traces dark even where many pixels coincide.
+  const traceInks=Array.from({length:16},(_,level)=>materials.map(strand=>strand.map(hex=>{
+    const rgb=parseInt(hex.slice(1),16),v=level/15;
+    return 'rgb('+[16,8,0].map((shift,i)=>round(mix([16,36,52][i],(rgb>>shift)&255,v))).join(',')+')';
+  })));
   function block(c,x,y,w,h,color) {
     c.fillStyle=color; c.fillRect(round(x),round(y),w,h);
   }
@@ -111,21 +116,79 @@
     block(c,243,80,4,4,'#9bb8b4');
     type(c,'ROTATING NOZZLE',134,70,10,'#9db7b9','right');
   }
-  const cx=[104,211,318],cy=[83,160,237];
-  function study(c) {
-    type(c,'PITCH',211,23,11,palette.mint);
-    line(c,64,37,356,37,palette.line);line(c,64,34,64,40,palette.bevel);
-    wire(c,[[351,34],[356,37],[351,40]],palette.bevel);
-    line(c,40,58,40,260,palette.line);line(c,37,58,43,58,palette.bevel);
-    wire(c,[[37,255],[40,260],[43,255]],palette.bevel);
-    c.save(); c.translate(25,158); c.rotate(-Math.PI/2);
-    type(c,'DIAMETER',0,0,10,palette.mint);c.restore();
-    for(const y of cy)for(const x of cx){
-      block(c,x-48,y-30,96,60,'#102437');
-      frame(c,x-48,y-30,96,60,'#2c455b');
-      block(c,x-48,y-30,8,1,'#658493'); block(c,x+39,y+29,9,1,'#658493');
-      for(let d=-29;d<=28;d+=10)block(c,x+d,y+13,5,1,'#2a4052');
+  const cx=[54,116,178],cy=[84,151,218];
+  const pitches=['Tight','Medium','Open'],diameters=['fine','medium','wide'];
+  const workflow=['Agent prepares a tool call','MCP dispatches the request','Particleworks runs the simulation','Agent receives the result'];
+  function corners(c,x,y,w,h,color,length=6) {
+    for(const [a,b,sx,sy] of [[x,y,1,1],[x+w,y,-1,1],[x,y+h,1,-1],[x+w,y+h,-1,-1]]){
+      line(c,a,b,a+sx*length,b,color);line(c,a,b,a,b+sy*length,color);
     }
+  }
+  function study(c) {
+    type(c,'PITCH',116,28,11,palette.mint);
+    line(c,32,43,201,43,palette.line);line(c,32,40,32,46,palette.bevel);
+    wire(c,[[196,40],[201,43],[196,46]],palette.bevel);
+    c.save();c.translate(13,151);c.rotate(-Math.PI/2);type(c,'DIAMETER',0,0,9,palette.mint);c.restore();
+    for(const y of cy)for(const x of cx){
+      block(c,x-28,y-25,57,51,'#122839');frame(c,x-28,y-25,57,51,'#314f60');
+      for(let dx=-19;dx<=20;dx+=8)line(c,x+dx,y+18,x+dx,y+20,'#355568');
+      block(c,x-25,y-22,3,2,'#577789');block(c,x+22,y+21,3,1,'#486678');
+    }
+    // A connected inspection chamber gives the small multiples a physical counterpart.
+    const shell=[[222,41],[233,29],[385,29],[398,42],[398,244],[386,256],[234,256],[222,244]];
+    face(c,shell,'#243d4d');wire(c,[...shell,shell[0]],'#769193');
+    block(c,228,47,164,191,'#101f2e');frame(c,228,47,164,191,'#536d78');
+    for(let x=240;x<389;x+=13)for(let y=58;y<228;y+=13)block(c,x,y,1,1,'#294758');
+    block(c,234,54,3,172,'#203b4e');block(c,383,54,3,172,'#203b4e');
+    for(let y=61;y<226;y+=8){block(c,237,y,3,1,'#476372');block(c,380,y,3,1,'#476372');}
+    for(const [x,y] of [[230,40],[388,40],[232,245],[388,245]]){block(c,x-1,y-1,3,3,'#647c80');block(c,x,y,1,1,'#adc0b0');}
+    type(c,'OPTICAL SECTION',309,39,10,'#cad4c5');
+    const bed=[[248,207],[311,183],[370,203],[305,229]];
+    face(c,bed,'#172f41');
+    for(let i=0;i<=6;i++){
+      const u=i/6;line(c,mix(248,311,u),mix(207,183,u),mix(305,370,u),mix(229,203,u),'#345166');
+      line(c,mix(248,305,u),mix(207,229,u),mix(311,370,u),mix(183,203,u),'#345166');
+    }
+    wire(c,[...bed,bed[0]],'#66818b');
+    block(c,245,245,100,2,'#101e2d');
+    for(let i=0;i<7;i++)block(c,354+i*4,244,2,3,'#64818c');
+    line(c,27,271,392,271,palette.line);
+    type(c,'SPECIMEN',30,288,10,'#94acaf','left');
+  }
+  function lens(cell){
+    const col=cell%3,row=Math.floor(cell/3),points=[];
+    for(let length=0;length<170;length++)for(let radial=0;radial<9;radial++)for(let material=0;material<2;material++){
+      const p=thread(length/169,radial/4-1,material,270,194,348,92,
+        4.2-col*1.17,9+row*2.9,5+row*.9,random(length*20+radial,material+10));
+      points.push([p,material]);
+    }
+    points.sort((a,b)=>a[0][2]-b[0][2]);
+    return panel(c=>{
+      for(const [p,material] of points)block(c,p[0],p[1],2,2,materials[material][p[3]]);
+    });
+  }
+  function examination(c,index,time,motion,lensArt) {
+    const col=index%3,row=Math.floor(index/3);
+    const x=cx[col],y=cy[row];
+    const sweep=motion?(time*.29)%1:.53;
+    // The mint probe surveys neighboring cells, the copper brackets hold the inspected one.
+    const scout=motion?(index+Math.floor(time/2.75))%9:index;
+    const sx=cx[scout%3],sy=cy[Math.floor(scout/3)],beam=Math.round(sx-22+(motion?(time/2.75)%1:.53)*44);
+    block(c,beam-3,sy-16,3,32,'rgba(127,225,206,.14)');
+    line(c,beam,sy-17,beam,sy+16,'#8edacc');block(c,beam-2,sy-19,5,2,'#d4f2d2');
+    corners(c,x-28,y-25,56,50,palette.amber,9);
+    block(c,x-24,y+20,5,2,'#edaa78');block(c,x-17,y+20,2,2,'#edaa78');
+    const railY=cy[row]+29;
+    wire(c,[[x,railY-4],[x,railY],[211,railY],[216,railY-5],[222,railY-5]],'#856961');
+    c.drawImage(lensArt[index],0,0);
+    // A moving scan plane and its carriage reveal successive cross-sections.
+    const headY=78+sweep*126;
+    const plane=[[243,headY],[313,headY-10],[377,headY],[307,headY+12]];
+    face(c,plane,'rgba(133,222,199,.15)');wire(c,[...plane,plane[0]],'#70b7b3');
+    block(c,231,headY-3,8,6,'#719c9e');block(c,232,headY-1,6,2,'#c3f0d8');
+    block(c,381,headY-3,7,6,'#719c9e');block(c,381,headY-1,6,2,'#c3f0d8');
+    block(c,245,245,round(100*sweep),2,'#8ad3c5');
+    type(c,(pitches[col]+' pitch / '+diameters[row]+' filament').toUpperCase(),102,288,11,'#f3ca9d','left');
   }
   const traces=[
     [[91,81],[112,81],[151,120],[151,134],[171,154]],
@@ -166,12 +229,62 @@
     block(c,309,118,81,74,'#112738');frame(c,309,118,81,74,'#536e7a');
     const tray=[[319,166],[350,156],[381,165],[349,179]];
     face(c,tray,'#253e55');wire(c,[...tray,tray[0]],'#75979e');
+    for(let i=1;i<5;i++){
+      const t=i/5;
+      line(c,mix(319,350,t),mix(166,156,t),mix(349,381,t),mix(179,165,t),'#355367');
+    }
     wire(c,[[319,143],[319,166],[349,179],[349,154],[319,143],[350,131],[381,142],[349,154]],'#4b7488');
     wire(c,[[381,142],[381,165]],'#4b7488');
+    wire(c,[[316,135],[322,135],[327,140]],'#a0b4af');
+    wire(c,[[382,133],[376,133],[371,139]],'#a0b4af');
+    block(c,325,139,4,2,'#e9a47d');block(c,370,138,4,2,'#85c7d2');
     for(let j=0;j<5;j++)block(c,312+j*5,198,3,2,j<2?palette.amber:'#527383');
     block(c,367,198,14,3,'#799597');
+    face(c,[[300,210],[395,210],[400,216],[305,216]],'#426071');
+    for(let j=0;j<10;j++)block(c,311+j*6,212,4,1,'#7e979b');
     type(c,'AGENTS',58,277,12,palette.mint);
     type(c,'PARTICLEWORKS',349,228,10,palette.mint);
+    // Copper traces continue underneath the socket. A row of four lamps follows the call.
+    for(let j=0;j<4;j++)wire(c,[[187+j*5,119],[187+j*5,99-j*5],[197+j*5,89-j*5],[236+j*6,89-j*5]],'#244457');
+    for(let j=0;j<3;j++)wire(c,[[195+j*7,202],[195+j*7,218+j*5],[205+j*7,228+j*5],[227+j*7,228+j*5]],'#244457');
+    line(c,23,288,396,288,'#345162');
+  }
+  const rails=[56,157,266,362];
+  function packet(c,route,progress,color,backward=false) {
+    for(let i=0;i<5;i++){
+      const t=(progress+.99-i*.024)%1;
+      const p=locateTrace(route,backward?1-t:t);
+      block(c,p[0]-1,p[1]-1,i===0?5:3,i===0?5:3,i===0?'#f5e6be':color);
+    }
+  }
+  function activeCircuit(c,step,phase) {
+    const tag=['REQUEST','ROUTE','SOLVE','RETURN'][step];
+    type(c,tag,211,44,16,step===2?'#a1dece':'#f3be91');
+    const hot=step===2?'#91ddc9':'#f6b482';
+    if(step===0){
+      corners(c,22,57,70,47,hot,9);wire(c,[[41,73],[47,79],[41,85]],'#ffe0aa');
+      block(c,52,84,10,3,hot);packet(c,traces[0],phase,hot);
+    }else if(step===1){
+      corners(c,166,120,87,80,hot,11);
+      for(let n=0;n<7;n++)block(c,181+n*8,119,3,6,(n+Math.floor(phase*9))%3===0?'#ffe3a9':'#bc8167');
+      packet(c,traces[3],phase,hot);
+    }else if(step===2){
+      corners(c,301,110,96,101,hot,10);
+      const scan=round(319+phase*59);
+      block(c,scan-7,132,7,45,'rgba(109,209,196,.15)');line(c,scan,132,scan,177,'#8bd3c5');
+      block(c,315,199,58*phase,2,hot);
+    }else{
+      corners(c,22,215,70,47,hot,9);
+      packet(c,traces[4],Math.min(1,phase*2),hot,true);
+      packet(c,traces[2],Math.max(0,phase*2-1),hot,true);
+      for(let n=0;n<5;n++)block(c,41+n*7,247-n*3,4,2+n*3,n%2?'#c6e1c8':'#ebae86');
+    }
+    for(let i=0;i<4;i++){
+      const x=rails[i];
+      block(c,x-4,284,8,8,i===step?hot:'#365569');
+      if(i===step)block(c,x-1,286,3,3,'#f8e1b7');
+      type(c,['ASK','DISPATCH','SIMULATE','RETURN'][i],x,303,10,i===step?'#f7d6af':'#91a9ae');
+    }
   }
   function locateTrace(points,t) {
     const lengths=points.slice(1).map((p,i)=>Math.hypot(p[0]-points[i][0],p[1]-points[i][1]));
@@ -199,19 +312,27 @@
       const material=i%2,t=random(i,1),s=random(i,2)*2-1,grain=random(i,3);
       const cell=Math.floor(i/2)%9,col=cell%3,row=Math.floor(cell/3);
       const a=thread(t,s,material,72,228,294,138,4.4,9.0,6.5,grain);
-      const b=thread(t,s,material,cx[col]-33,cy[row]+8,cx[col]+33,cy[row]-8,
-        4.2-col*1.17,3.5+row*1.8,2.35+row*.65,grain);
+      const b=thread(t,s,material,cx[col]-19,cy[row]+8,cx[col]+19,cy[row]-8,
+        4.2-col*1.17,2.8+row*1.25,1.7+row*.5,grain);
       const group=Math.floor(random(i,4)*7),slot=Math.floor(t*8);
       let x,y;
       if(group<5){
         const p=locateTrace(traces[group],(slot+.16+(t*8-slot)*.40)/8);
         x=p[0];y=p[1]+(material?1.25:-1.25)+s*.85;
       }else{
-        // The receiving viewport contains two simulated material streams.
-        const run=t*.96+.02;
-        x=321+56*run; y=161+Math.sin(run*tau*1.14+material*2.1)*3.8+s*2.3-Math.sin(run*Math.PI)*6;
+        // The two feedstocks reappear as jets striking a particle-filled receiving tray.
+        const side=material?-1:1;
+        if(t<.53){
+          const flight=t/.53;
+          x=(material?371:327)+side*(17*flight)+s*(.55+flight*.9);
+          y=141+flight*5+flight*flight*14+(grain-.5)*2.6;
+        }else{
+          const spill=(t-.53)/.47;
+          x=347+side*(4+spill*22)+s*1.5;
+          y=164+Math.sin(spill*Math.PI*2-.55)*2.2+(grain-.5)*(4-spill*1.7);
+        }
       }
-      result.push({a,b,end:[x,y,0,round(2+grain*4)],material,grain,t,
+      result.push({a,b,end:[x,y,0,round(2+grain*4)],material,grain,t,group,
         driftX:(random(i,8)-.5)*94,driftY:(random(i,9)-.5)*122,cell});
     }
     return result;
@@ -226,24 +347,46 @@
     const c=canvas.getContext('2d',{alpha:false});if(!c)return;
     canvas.width=W;canvas.height=H;canvas.style.imageRendering='pixelated';c.imageSmoothingEnabled=false;
     const background=panel(ground),decor=[printer,study,network].map(panel),cloud=particles();
+    const lenses=Array.from({length:9},(_,index)=>lens(index));
     const ordered=[...cloud].sort((p,q)=>p.a[2]-q.a[2]);
     const studyOrder=[...cloud].sort((p,q)=>p.b[2]-q.b[2]);
     const captions=['01 / Helical deposition','02 / Design exploration','03 / Agent orchestration'];
     const system=matchMedia('(prefers-reduced-motion: reduce)');
     const moving=()=>document.documentElement.dataset.motion==='on' ||
       (document.documentElement.dataset.motion!=='off'&&!system.matches);
-    let active=-1,visible=true,frame=0,clock=0,last=0,position=0,dirty=true;
+    const selection=[0,0,0],manual=[false,false,false];
+    let active=-1,visible=true,frame=0,clock=0,last=0,position=0,dirty=true,entered=0;
+    function currentCircuitStep(){
+      const elapsed=Math.max(0,clock-entered);
+      const advance=moving()&&!manual[2]?Math.floor(elapsed/2.7):0;
+      return (selection[2]+advance)%4;
+    }
+    function publish(){
+      const index=selection[active];
+      const label=active===0?'Two materials, one rotating nozzle':active===1?
+        pitches[index%3]+' pitch, '+diameters[Math.floor(index/3)]+' filament':
+        manual[2]?workflow[index]:'Agent → MCP → solver → result';
+      canvas.dispatchEvent(new CustomEvent('atlas-state',{bubbles:true,detail:{stage:active,index,label}}));
+    }
     function measure(){
       const vh=window.innerHeight;
       position=0;
       for(let i=1;i<3;i++)position+=smooth((vh*.74-sections[i].getBoundingClientRect().top)/(vh*.43));
       const index=round(position);
-      if(active!==index){active=index;if(caption)caption.textContent=captions[index];}
+      if(active!==index){
+        active=index;entered=clock;
+        if(caption)caption.textContent=captions[index];
+        publish();
+      }
       dirty=true;
     }
     function render(){
       const motion=moving(),p=motion?position:round(position);
       const step=Math.min(1,Math.floor(p)),f=p-step,bend=Math.sin(Math.PI*f);
+      const time=Math.max(0,clock-entered);
+      const circuitStep=currentCircuitStep();
+      const phase=motion?(time/2.7)%1:.60;
+      const studyOpacity=smooth((.52-Math.abs(p-1))/.52),circuitOpacity=smooth((p-1.47)/.53);
       c.drawImage(background,0,0);
       c.globalAlpha=1-smooth(f/.74);c.drawImage(decor[step],0,0);
       c.globalAlpha=smooth((f-.26)/.74);c.drawImage(decor[step+1],0,0);c.globalAlpha=1;
@@ -253,11 +396,30 @@
         const q=clamp(f+(item.grain-.5)*bend*.28),arc=Math.sin(Math.PI*q);
         const x=mix(from[0],to[0],q)+item.driftX*arc;
         const y=mix(from[1],to[1],q)+item.driftY*arc;
-        let shade=round(mix(from[3],to[3],q));
-        if(p>1.84 && motion && Math.sin(item.t*tau*2-clock*2.4)>.89)shade=Math.min(6,shade+1);
+        const shade=round(mix(from[3],to[3],q));
+        let ink=materials[item.material][shade];
+        if(circuitOpacity){
+          let strength;
+          if(item.group>=5){
+            const completed=circuitStep===3 || (circuitStep===2 && item.t<=phase);
+            strength=completed?1:.14;
+          }else{
+            const routeOn=(circuitStep===0&&item.group===0)||(circuitStep===1&&item.group===3)||
+              (circuitStep===3&&(item.group===4||item.group===2));
+            strength=routeOn?.72:.18;
+          }
+          ink=traceInks[round(mix(1,strength,circuitOpacity)*15)][item.material][shade];
+        }
         const size=p<.55&&item.grain>.56?3:2;
-        block(c,x,y,size,size,materials[item.material][shade]);
+        block(c,x,y,size,size,ink);
       }
+      c.globalAlpha=1;
+      if(studyOpacity){
+        c.globalAlpha=studyOpacity;
+        examination(c,selection[1],time,motion,lenses);
+      }
+      if(circuitOpacity){c.globalAlpha=circuitOpacity;activeCircuit(c,circuitStep,phase);}
+      c.globalAlpha=1;
       if(motion&&p<.12){
         c.globalAlpha=(1-p/.12)*(.38+.45*(1+Math.sin(clock*2))/2);
         block(c,291,130,3,3,'#ffe2ac');c.globalAlpha=1;
@@ -277,6 +439,15 @@
     function visibility(){
       if(frame)cancelAnimationFrame(frame);frame=0;last=0;sync();
     }
+    canvas.addEventListener('atlas-step',event=>{
+      if(active<=0)return;
+      const amount=typeof event.detail==='number'?event.detail:event.detail?.direction;
+      const count=active===1?9:4;
+      const current=active===2?currentCircuitStep():selection[active];
+      selection[active]=(current+(Number(amount)<0?-1:1)+count)%count;
+      manual[active]=true;entered=clock;dirty=true;
+      publish();schedule();
+    });
     // Measure on the first frame as well as after the browser restores a deep-linked position.
     measure();render();schedule();
     if('IntersectionObserver'in window)new IntersectionObserver(([entry])=>{

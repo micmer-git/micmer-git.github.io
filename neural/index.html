@@ -17,6 +17,8 @@
   <script defer src="lake.js"></script>
   <script defer src="lab.js"></script>
   <script defer src="sequence.js"></script>
+  <script defer src="reader.js"></script>
+  <script defer src="film.js"></script>
 </head>
 <body>
   <a class="skip" href="#simulation">Skip to the work</a>
@@ -60,8 +62,11 @@
       <div class="section-copy">
         <p class="eyebrow"><span class="tile"></span> Particleworks / Engineering</p>
         <h2 id="sim-title">Where does<br>the oil go<span class="punct">?</span></h2>
-        <p>Inside a running gearbox, the housing hides the most interesting part. A gear dips into oil, carries it upward and throws it off. Does the oil reach the bearing? In an electric motor the question changes. Which windings does the cooling jet actually wet?</p>
-        <p>I’ve spent eight years working with Particleworks on questions like these. My job is to model the flow, then show a design team what it can change on the next iteration.</p>
+        <p>Eight years with Particleworks, helping engineers see inside a running machine.</p>
+        <ul class="story-points">
+          <li><strong>Gearboxes.</strong> Does oil thrown from the gears reach the bearings?</li>
+          <li><strong>Electric motors.</strong> Which windings does the cooling jet reach, and where should the nozzle point?</li>
+        </ul>
       </div>
       <figure class="lab-instrument">
         <div class="instrument-head"><span>Flow bench</span><small>Illustrative model</small></div>
@@ -77,9 +82,9 @@
     <section class="field" id="field" aria-labelledby="field-title"><div class="shell field-layout">
       <div class="field-title"><p class="eyebrow"><span class="tile"></span> Conferences</p><h2 id="field-title">Out of<br>the solver<span class="punct">.</span></h2></div>
       <div class="field-notes">
-        <p class="lead">At more than ten engineering conferences, I’ve taken simulation work into rooms where people design the hardware.</p>
-        <div class="event"><span class="station" aria-hidden="true"></span><div><small>Valencia · 2022</small><h3>Electrical machines</h3><p>ICEM brought the electric motor problem into focus. Showing where the oil lands makes a winding-cooling discussion much more concrete.</p><a href="https://www.icem.cc/2022/">ICEM conference</a></div></div>
-        <div class="event"><span class="station" aria-hidden="true"></span><div><small>Berlin · Multiple editions</small><h3>Transmissions and e-drives</h3><p>I returned to the CTI Symposium with Particleworks Europe to talk with drivetrain engineers about splash lubrication and churning losses.</p><a href="https://www.linkedin.com/feed/update/urn%3Ali%3Aactivity%3A7269618891436281857/">Particleworks at CTI Berlin</a></div></div>
+        <p class="lead">10+ conferences discussing simulation with the engineers who design the hardware.</p>
+        <div class="event"><span class="station" aria-hidden="true"></span><div><small>Valencia · 2022</small><h3>ICEM</h3><p>Oil jets and winding cooling in electric machines.</p><a href="https://www.icem.cc/2022/">Conference programme</a></div></div>
+        <div class="event"><span class="station" aria-hidden="true"></span><div><small>Berlin · Multiple editions</small><h3>CTI Symposium</h3><p>Splash lubrication and churning losses in e-drives.</p><a href="https://www.linkedin.com/feed/update/urn%3Ali%3Aactivity%3A7269618891436281857/">Particleworks at CTI</a></div></div>
       </div>
     </div></section>
 
@@ -87,45 +92,63 @@
       <p class="eyebrow"><span class="tile"></span> Selected publications</p>
       <h2 id="papers-title">The paper trail<span class="punct">.</span></h2>
       <div class="paper-grid">
-        <article class="paper"><a class="paper-image" href="assets/emotors-e-drive-spray-cooling.pdf" aria-label="Read the e-drive spray cooling paper"><img loading="lazy" width="800" height="464" src="assets/emotors-publisher-image.png" alt="EnginSoft illustration accompanying the e-drive oil spray cooling study"></a>
-          <div class="paper-copy"><small>Futurities / Spring 2022 · pp. 23–27</small><h3>Optimizing the spray cooling of e-drives with moving particle simulation</h3><p>Ioan Deac, Juan Wang &amp; Michele Merelli</p><a class="text-link" href="assets/emotors-e-drive-spray-cooling.pdf" download>Download paper <b>PDF</b></a></div>
+        <article class="paper" data-title="Optimizing the spray cooling of e-drives with moving particle simulation"><a data-read class="paper-image" href="assets/emotors-e-drive-spray-cooling.pdf" aria-label="Read the e-drive spray cooling paper"><img loading="lazy" width="800" height="464" src="assets/emotors-publisher-image.png" alt="Exploded assembly drawing of the e-drive"></a>
+          <div class="paper-copy"><small>EMOTORS / 2022</small><h3>Oil spray cooling for e-drives</h3><p>Ioan Deac, Juan Wang &amp; Michele Merelli</p><a data-read class="text-link" href="assets/emotors-e-drive-spray-cooling.pdf">Read paper <b>PDF · 5 pp.</b></a></div>
         </article>
-        <article class="paper"><a class="paper-image" href="assets/easyrain-anti-aquaplaning.pdf" aria-label="Read the anti-aquaplaning paper"><img loading="lazy" width="800" height="464" src="assets/easyrain-publisher-image.png" alt="EnginSoft illustration accompanying the automotive anti-aquaplaning study"></a>
-          <div class="paper-copy"><small>Futurities / Autumn 2022 · pp. 36–39</small><h3>Optimization of water spray parameters by 3D CFD particle simulation for an automotive anti-aquaplaning system</h3><p>Federico Accardo, Paolo Alberto Fina &amp; Michele Merelli</p><a class="text-link" href="assets/easyrain-anti-aquaplaning.pdf" download>Download paper <b>PDF</b></a></div>
+        <article class="paper" data-title="Optimization of water spray parameters by 3D CFD particle simulation for an automotive anti-aquaplaning system"><a data-read class="paper-image" href="assets/easyrain-anti-aquaplaning.pdf" aria-label="Read the anti-aquaplaning paper"><img loading="lazy" width="800" height="464" src="assets/easyrain-publisher-image.png" alt="Photograph and particle simulation of spray in front of a tyre"></a>
+          <div class="paper-copy"><small>Easyrain / 2022</small><h3>A water jet against aquaplaning</h3><p>Federico Accardo, Paolo Alberto Fina &amp; Michele Merelli</p><a data-read class="text-link" href="assets/easyrain-anti-aquaplaning.pdf">Read paper <b>PDF · 4 pp.</b></a></div>
+        </article>
+        <article class="paper" data-title="CFD study of a Pelton turbine runner"><a data-read class="paper-image" href="assets/pelton-runner.pdf" aria-label="Read the Pelton turbine runner paper"><img loading="lazy" width="800" height="464" src="assets/pelton-runner.png" alt="Flow contours at the outlet of a Pelton turbine nozzle"></a>
+          <div class="paper-copy"><small>ZECO Hydropower / 2020</small><h3>Two jets, one Pelton runner</h3><p>M. Minozzo, R. Bergamin, M. Merelli &amp; M. Galbiati</p><a data-read class="text-link" href="assets/pelton-runner.pdf">Read paper <b>PDF · 4 pp.</b></a></div>
         </article>
       </div>
+      <article class="polestar">
+        <div class="polestar-art"><img src="assets/polestar-stator.png" width="267" height="254" loading="lazy" alt="Oil distribution across an electric motor’s end windings, from Polestar’s Particleworks presentation"></div>
+        <div class="polestar-copy"><p class="eyebrow"><span class="tile"></span> Polestar / IEEE IEMDC 2023</p><h3>Cooling a traction motor, inside and out.</h3><p>I co-authored two papers with Polestar. We checked stator oil flow against a prototype, then explored how oil could cool the rotor from within.</p>
+          <div class="paper-pair"><a href="https://doi.org/10.1109/IEMDC55163.2023.10238860">Part I · Stator cooling <b>DOI</b></a><a href="https://doi.org/10.1109/IEMDC55163.2023.10239076">Part II · Rotor cooling <b>DOI</b></a></div>
+          <a class="source-credit" href="https://particleworks-europe.com/experience/proceedings2023.php">Image from Gabriele Puccio’s Polestar presentation</a></div>
+      </article>
       <div class="citations"><a href="https://doi.org/10.23919/AEITAUTOMOTIVE58986.2023.10217192"><small>IEEE / 2023</small><span>e-Motor cooling with oil jets</span><b>DOI</b></a>
       <a href="https://doi.org/10.4271/2024-24-0013"><small>SAE / 2024</small><span>Tribological optimization of EV transmissions and e-axles</span><b>DOI</b></a></div>
-      <p class="credits">Futurities papers and images © EnginSoft. <a href="assets/enginsoft-notice.txt">Publisher’s notice</a>.</p>
+      <p class="credits">Papers and images from the EnginSoft Newsletter and Futurities © EnginSoft. <a href="assets/enginsoft-notice.txt">Publisher’s notice</a>.</p>
     </section>
 
     <div class="journey"><div class="shell journey-grid">
       <figure class="sequence" aria-label="Scroll-driven illustration of material extrusion, a design study and an agent workflow">
         <div class="sequence-sticky"><div class="instrument-head"><span>Particle atlas</span><small>Scroll study</small></div>
         <canvas data-sequence width="420" height="320" aria-hidden="true"></canvas>
-        <figcaption data-sequence-label>01 / Helical deposition</figcaption></div>
+        <figcaption data-sequence-label>01 / Helical deposition</figcaption>
+        <div class="atlas-controls" hidden><button type="button" data-atlas-next>Next design</button><output data-atlas-status aria-live="polite"></output></div></div>
       </figure>
       <div class="beats">
         <section class="beat" id="award" data-beat aria-labelledby="award-title">
           <p class="eyebrow light"><span class="tile"></span> Erfurt / 2023</p>
           <h2 id="award-title">A paper worth printing<span class="coral">.</span></h2>
-          <p>A paper in <em>Nature</em> made me stop. Natalie Larson and colleagues had shown how a rotating nozzle could lay down a filament with a helix inside it. I wanted to see whether I could reproduce that twist in Particleworks.</p>
-          <p>With Massimo Galbiati at EnginSoft, I modelled the co-extrusion and turned the results into a film and photorealistic renders. Our project won the Digital category at the 2023 3D Pioneers Challenge.</p>
+          <ul class="story-points">
+            <li>Natalie Larson’s team used a rotating nozzle to print a helix inside a filament. <a href="https://www.nature.com/articles/s41586-022-05490-7">Nature paper</a></li>
+            <li>With Massimo Galbiati, I recreated the co-extrusion in Particleworks and rendered the twist frame by frame.</li>
+            <li><strong>Digital category winner</strong> at the 2023 <a href="https://3dpc.io/en/2023">3D Pioneers Challenge</a>.</li>
+          </ul>
+          <figure class="award-film"><div class="film-frame" data-film-frame><a class="film-poster" href="https://www.youtube.com/watch?v=AH0ia7rLy0s" aria-label="Watch the Particleworks helix simulation"><img loading="lazy" width="1280" height="720" src="assets/helix-film.jpg" alt="Particleworks film showing two materials twisting inside an extruded filament"><span aria-hidden="true">Play film</span></a><div data-film-mount></div></div><figcaption>Helical co-extrusion · Particleworks Europe · 0:39 &nbsp; <a href="https://www.youtube.com/watch?v=AH0ia7rLy0s">YouTube</a></figcaption></figure>
           <figure class="award-photo"><a href="https://www.linkedin.com/posts/particleworks-europe_particleworks-3dpioneerschallenge-activity-7063807731891077120-xVVf"><img loading="lazy" width="800" height="533" src="assets/award-erfurt.jpg" alt="On stage in Erfurt with the prize cheque and red and blue simulated helices projected behind the winners."></a><figcaption>3D Pioneers Challenge, Erfurt. Photo © Christian Seeling. <a href="https://www.linkedin.com/posts/particleworks-europe_particleworks-3dpioneerschallenge-activity-7063807731891077120-xVVf">Original post</a></figcaption></figure>
-          <div class="link-row"><a class="film-link" data-film href="https://www.youtube.com/watch?v=AH0ia7rLy0s"><i aria-hidden="true"></i>Watch the simulation</a><a href="https://www.nature.com/articles/s41586-022-05490-7">Nature paper</a><a href="https://3dpc.io/en/2023">Award record</a></div>
         </section>
         <section class="beat" id="automation" data-beat aria-labelledby="automation-title">
           <p class="eyebrow light"><span class="tile"></span> Design exploration / modeFRONTIER</p>
           <h2 id="automation-title">One run becomes a study<span class="coral">.</span></h2>
-          <p>A single simulation can tell you where a jet lands. Comparing many runs lets you ask where the nozzle should point in the first place.</p>
-          <p>I explored coupling modeFRONTIER with meshless Particleworks simulations to automate runs and compare candidate designs. With Python and the Particleworks API, I could carry a change from setup through post-processing and teach engineers to run the workflow themselves.</p>
+          <ul class="story-points">
+            <li><strong>Vary the design.</strong> I explored how modeFRONTIER could compare candidate designs across meshless Particleworks runs.</li>
+            <li><strong>Repeat the study.</strong> I automated setup and post-processing with Python, then taught engineers to run it themselves.</li>
+          </ul>
           <div class="link-row"><a href="https://www.enginsoft.com/course-catalogue/online/fluiddynamics-mesh-free/particleworks-%E2%80%93-corso-avanzato-di-automazione-e-ottimizzazione.html">My automation course at EnginSoft</a></div>
         </section>
         <section class="beat" id="agents" data-beat aria-labelledby="agents-title">
           <p class="eyebrow light"><span class="tile"></span> Engineering AI / Today</p>
           <h2 id="agents-title">Give the agent a tool<span class="coral">.</span></h2>
-          <p>I started with early autocomplete in Cursor. Over several years I moved to coordinating agents across platforms. The turning point was building a Model Context Protocol (MCP) server for Particleworks so an agent could operate the software. We now offer it commercially to customers.</p>
-          <p>I brought the proposal to management, promoted the webinar and worked with the development team in Japan to move implementation forward. Management approved the project and gave me responsibility for coordinating AI adoption across our engineering teams.</p>
+          <ul class="story-points">
+            <li>From Cursor autocomplete to coordinating agents across platforms, I wanted them to run the solver themselves.</li>
+            <li>I built a <strong>Model Context Protocol (MCP) server</strong> for Particleworks. We now sell it to customers.</li>
+            <li>I won management backing, worked with our developers in Japan and promoted the webinar. I now coordinate AI adoption across engineering teams.</li>
+          </ul>
           <div class="link-row"><a href="https://particleworks-europe.com/webinar-ai-particleworks.php">Particleworks AI webinar</a><a href="https://particleworks-europe.com/experience/workshop.php">My Modena workshop</a></div>
         </section>
       </div>
@@ -133,11 +156,15 @@
     <section class="closing shell" aria-labelledby="end-title"><div>
       <p class="eyebrow"><span class="tile"></span> For Neural Concept</p>
       <h2 id="end-title">What I’d bring<br>to Lausanne<span class="punct">.</span></h2></div>
-      <div><p class="lead">I can sit with a simulation engineer, trace a problem back to the physics, and turn that work into a demo a customer can question. That’s the part of engineering AI I’d like to build with Neural Concept.</p>
+      <div><p class="lead">I turn a simulation engineer’s question into a demo a customer can interrogate. That’s the work I’d like to do with Neural Concept.</p>
       <a class="contact" href="mailto:michelemerelli.8@gmail.com">Get in touch</a><a class="profile" href="https://www.linkedin.com/in/michelemerelli/">LinkedIn</a></div>
     </section>
   </main>
   <footer><div class="shell"><span>Michele Merelli · Personal portfolio</span><a href="#top">Return to the lake</a></div></footer>
-  <dialog class="film-dialog" aria-labelledby="film-title"><div class="film-bar"><strong id="film-title">3D printed helices</strong><button type="button" data-close-film>Close</button></div><div class="player"></div><a href="https://www.youtube.com/watch?v=AH0ia7rLy0s" target="_blank" rel="noopener">View on YouTube</a></dialog>
+  <dialog class="reader" aria-labelledby="reader-title">
+    <header><h2 id="reader-title">Paper reader</h2><button type="button" data-reader-close>Close</button></header>
+    <div class="reader-tools"><button type="button" data-reader-prev>Previous</button><output data-reader-page aria-live="polite"></output><button type="button" data-reader-next>Next</button><button type="button" data-reader-zoom aria-pressed="false">Zoom</button><a data-reader-download download>Download PDF</a></div>
+    <div class="reader-view" tabindex="0" aria-label="Paper page"><canvas aria-hidden="true"></canvas><p data-reader-status role="status"></p><div data-reader-text class="visually-hidden"></div></div>
+  </dialog>
 </body>
 </html>
