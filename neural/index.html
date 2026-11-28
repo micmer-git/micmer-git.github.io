@@ -12,6 +12,7 @@
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
   <link rel="preload" href="assets/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="story.css">
+  <link rel="stylesheet" href="column.css">
   <title>Micmer × Neural Concept — Michele Merelli</title>
   <script defer src="story.js"></script>
   <script defer src="lake.js"></script>
@@ -19,6 +20,7 @@
   <script defer src="sequence.js"></script>
   <script defer src="reader.js"></script>
   <script defer src="film.js"></script>
+  <script defer src="scrolly.js"></script>
 </head>
 <body>
   <a class="skip" href="#simulation">Skip to the work</a>
@@ -58,17 +60,18 @@
       <canvas class="wake" width="420" height="38" aria-hidden="true"></canvas>
     </section>
 
-    <section class="section shell lab-section" id="simulation" aria-labelledby="sim-title">
-      <div class="section-copy">
+    <section class="section chapter lab-section" id="simulation" aria-labelledby="sim-title">
+      <div class="prose section-copy">
         <p class="eyebrow"><span class="tile"></span> Particleworks / Engineering</p>
         <h2 id="sim-title">Where does<br>the oil go<span class="punct">?</span></h2>
         <p>Eight years with Particleworks, helping engineers see inside a running machine.</p>
-        <ul class="story-points">
-          <li><strong>Gearboxes.</strong> Does oil thrown from the gears reach the bearings?</li>
-          <li><strong>Electric motors.</strong> Which windings does the cooling jet reach, and where should the nozzle point?</li>
-        </ul>
       </div>
-      <figure class="lab-instrument">
+      <div class="scrolly wide" data-scrolly="oil">
+        <ul class="story-points steps">
+          <li class="step" data-step="gearbox"><strong>Gearboxes.</strong> Does oil thrown from the gears reach the bearings?</li>
+          <li class="step" data-step="motor"><strong>Electric motors.</strong> Which windings does the cooling jet reach, and where should the nozzle point?</li>
+        </ul>
+      <figure class="lab-instrument scrolly-figure">
         <div class="instrument-head"><span>Flow bench</span><small>Illustrative model</small></div>
         <canvas data-lab width="360" height="230" role="img" aria-label="Illustration of gears lifting oil from a sump or oil jets cooling a motor."></canvas>
         <div class="sim-settings" hidden>
@@ -77,9 +80,11 @@
         </div>
         <figcaption data-lab-caption>A gear lifts oil from the sump. This qualitative sketch illustrates the mechanism.</figcaption>
       </figure>
+      </div>
     </section>
+    <canvas class="drip" width="96" height="40" aria-hidden="true"></canvas>
 
-    <section class="field" id="field" aria-labelledby="field-title"><div class="shell field-layout">
+    <section class="field chapter" id="field" aria-labelledby="field-title"><div class="prose field-layout">
       <div class="field-title"><p class="eyebrow"><span class="tile"></span> Conferences</p><h2 id="field-title">Out of<br>the solver<span class="punct">.</span></h2></div>
       <div class="field-notes">
         <p class="lead">10+ conferences discussing simulation with the engineers who design the hardware.</p>
@@ -87,11 +92,12 @@
         <div class="event"><span class="station" aria-hidden="true"></span><div><small>Berlin · Multiple editions</small><h3>CTI Symposium</h3><p>Splash lubrication and churning losses in e-drives.</p><a href="https://www.linkedin.com/feed/update/urn%3Ali%3Aactivity%3A7269618891436281857/">Particleworks at CTI</a></div></div>
       </div>
     </div></section>
+    <canvas class="drip" width="96" height="40" aria-hidden="true"></canvas>
 
-    <section class="section shell papers" id="papers" aria-labelledby="papers-title">
-      <p class="eyebrow"><span class="tile"></span> Selected publications</p>
-      <h2 id="papers-title">The paper trail<span class="punct">.</span></h2>
-      <div class="paper-grid">
+    <section class="section chapter papers" id="papers" aria-labelledby="papers-title">
+      <div class="prose"><p class="eyebrow"><span class="tile"></span> Selected publications</p>
+      <h2 id="papers-title">The paper trail<span class="punct">.</span></h2></div>
+      <div class="paper-grid wide">
         <article class="paper" data-title="Optimizing the spray cooling of e-drives with moving particle simulation"><a data-read class="paper-image" href="assets/emotors-e-drive-spray-cooling.pdf" aria-label="Read the e-drive spray cooling paper"><img loading="lazy" width="800" height="464" src="assets/emotors-publisher-image.png" alt="Exploded assembly drawing of the e-drive"></a>
           <div class="paper-copy"><small>EMOTORS / 2022</small><h3>Oil spray cooling for e-drives</h3><p>Ioan Deac, Juan Wang &amp; Michele Merelli</p><a data-read class="text-link" href="assets/emotors-e-drive-spray-cooling.pdf">Read paper <b>PDF · 5 pp.</b></a></div>
         </article>
@@ -102,6 +108,7 @@
           <div class="paper-copy"><small>ZECO Hydropower / 2020</small><h3>Two jets, one Pelton runner</h3><p>M. Minozzo, R. Bergamin, M. Merelli &amp; M. Galbiati</p><a data-read class="text-link" href="assets/pelton-runner.pdf">Read paper <b>PDF · 4 pp.</b></a></div>
         </article>
       </div>
+      <div class="prose">
       <article class="polestar">
         <div class="polestar-art"><img src="assets/polestar-stator.png" width="267" height="254" loading="lazy" alt="Oil distribution across an electric motor’s end windings, from Polestar’s Particleworks presentation"></div>
         <div class="polestar-copy"><p class="eyebrow"><span class="tile"></span> Polestar / IEEE IEMDC 2023</p><h3>Cooling a traction motor, inside and out.</h3><p>I co-authored two papers with Polestar. We checked stator oil flow against a prototype, then explored how oil could cool the rotor from within.</p>
@@ -111,17 +118,19 @@
       <div class="citations"><a href="https://doi.org/10.23919/AEITAUTOMOTIVE58986.2023.10217192"><small>IEEE / 2023</small><span>e-Motor cooling with oil jets</span><b>DOI</b></a>
       <a href="https://doi.org/10.4271/2024-24-0013"><small>SAE / 2024</small><span>Tribological optimization of EV transmissions and e-axles</span><b>DOI</b></a></div>
       <p class="credits">Papers and images from the EnginSoft Newsletter and Futurities © EnginSoft. <a href="assets/enginsoft-notice.txt">Publisher’s notice</a>.</p>
+      </div>
     </section>
 
-    <div class="journey"><div class="shell journey-grid">
+    <div class="journey"><div class="journey-grid wide" data-scrolly="atlas">
       <figure class="sequence" aria-label="Scroll-driven illustration of material extrusion, a design study and an agent workflow">
         <div class="sequence-sticky"><div class="instrument-head"><span>Particle atlas</span><small>Scroll study</small></div>
         <canvas data-sequence width="420" height="320" aria-hidden="true"></canvas>
         <figcaption data-sequence-label>01 / Helical deposition</figcaption>
+        <ol class="pips" aria-hidden="true"><li></li><li></li><li></li></ol>
         <div class="atlas-controls" hidden><button type="button" data-atlas-next>Next design</button><output data-atlas-status aria-live="polite"></output></div></div>
       </figure>
       <div class="beats">
-        <section class="beat" id="award" data-beat aria-labelledby="award-title">
+        <section class="beat step" id="award" data-beat data-step="0" aria-labelledby="award-title">
           <p class="eyebrow light"><span class="tile"></span> Erfurt / 2023</p>
           <h2 id="award-title">A paper worth printing<span class="coral">.</span></h2>
           <ul class="story-points">
@@ -132,7 +141,7 @@
           <figure class="award-film"><div class="film-frame" data-film-frame><a class="film-poster" href="https://www.youtube.com/watch?v=AH0ia7rLy0s" aria-label="Watch the Particleworks helix simulation"><img loading="lazy" width="1280" height="720" src="assets/helix-film.jpg" alt="Particleworks film showing two materials twisting inside an extruded filament"><span aria-hidden="true">Play film</span></a><div data-film-mount></div></div><figcaption>Helical co-extrusion · Particleworks Europe · 0:39 &nbsp; <a href="https://www.youtube.com/watch?v=AH0ia7rLy0s">YouTube</a></figcaption></figure>
           <figure class="award-photo"><a href="https://www.linkedin.com/posts/particleworks-europe_particleworks-3dpioneerschallenge-activity-7063807731891077120-xVVf"><img loading="lazy" width="800" height="533" src="assets/award-erfurt.jpg" alt="On stage in Erfurt with the prize cheque and red and blue simulated helices projected behind the winners."></a><figcaption>3D Pioneers Challenge, Erfurt. Photo © Christian Seeling. <a href="https://www.linkedin.com/posts/particleworks-europe_particleworks-3dpioneerschallenge-activity-7063807731891077120-xVVf">Original post</a></figcaption></figure>
         </section>
-        <section class="beat" id="automation" data-beat aria-labelledby="automation-title">
+        <section class="beat step" id="automation" data-beat data-step="1" aria-labelledby="automation-title">
           <p class="eyebrow light"><span class="tile"></span> Design exploration / modeFRONTIER</p>
           <h2 id="automation-title">One run becomes a study<span class="coral">.</span></h2>
           <ul class="story-points">
@@ -141,7 +150,7 @@
           </ul>
           <div class="link-row"><a href="https://www.enginsoft.com/course-catalogue/online/fluiddynamics-mesh-free/particleworks-%E2%80%93-corso-avanzato-di-automazione-e-ottimizzazione.html">My automation course at EnginSoft</a></div>
         </section>
-        <section class="beat" id="agents" data-beat aria-labelledby="agents-title">
+        <section class="beat step" id="agents" data-beat data-step="2" aria-labelledby="agents-title">
           <p class="eyebrow light"><span class="tile"></span> Engineering AI / Today</p>
           <h2 id="agents-title">Give the agent a tool<span class="coral">.</span></h2>
           <ul class="story-points">
@@ -153,7 +162,7 @@
         </section>
       </div>
     </div></div>
-    <section class="closing shell" aria-labelledby="end-title"><div>
+    <section class="closing prose chapter" aria-labelledby="end-title"><div>
       <p class="eyebrow"><span class="tile"></span> For Neural Concept</p>
       <h2 id="end-title">What I’d bring<br>to Lausanne<span class="punct">.</span></h2></div>
       <div><p class="lead">I turn a simulation engineer’s question into a demo a customer can interrogate. That’s the work I’d like to do with Neural Concept.</p>
